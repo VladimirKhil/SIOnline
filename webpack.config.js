@@ -1,6 +1,5 @@
 const path = require('path');
 const webpack = require('webpack');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const CheckerPlugin = require('awesome-typescript-loader').CheckerPlugin;
 const HtmlWebPackPlugin = require("html-webpack-plugin");
 
