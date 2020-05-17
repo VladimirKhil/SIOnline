@@ -1,0 +1,29 @@
+.flyoutButton_flyout {
+    position: absolute;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 1.0);
+    z-index: 1;
+}
+
+    .flyoutButton_flyout li {
+        color: #FFE682;
+        font-family: SI;
+        font-size: 26px;
+        cursor: pointer;
+        text-shadow: 1px 1px 0 #000;
+    }
+
+    .flyoutButton_flyout.light li:hover {
+        background-color: #000451;
+    }
+
+    .flyoutButton_flyout.dark {
+        background: rgb(0, 4, 81);
+    }
+
+        .flyoutButton_flyout.dark > ul > li {
+            padding: 10pt 30pt;
+        }
+
+.flyoutButton_flyout.dark li:hover {
+    background: #98B9FF;
+}

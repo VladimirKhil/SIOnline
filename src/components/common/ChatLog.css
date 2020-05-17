@@ -1,0 +1,7 @@
+#gameLog {
+    overflow-y: auto;
+}
+
+    #gameLog span {
+        display: block;
+    }

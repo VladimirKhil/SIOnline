@@ -1,0 +1,21 @@
+.gameinfoHost {
+    overflow: hidden;
+    height: 100%;
+}
+
+.gameinfoHost > header {
+    height: 0;
+}
+
+@media screen and (min-width: 800px) {
+    .gameinfoHost {
+        position: relative;
+        height: 100%;
+        z-index: 0;
+        flex: 1;
+    }
+
+    .gameinfoHost > header {
+        height: 35pt;
+    }
+}

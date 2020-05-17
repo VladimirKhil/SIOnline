@@ -1,0 +1,14 @@
+#playersList {
+    background-color: #C0CFF4;
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    overflow-y: scroll;
+    padding: 0;
+}
+
+#playersList li {
+    padding: 6px 8px;
+}

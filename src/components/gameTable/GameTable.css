@@ -1,0 +1,250 @@
+#table {
+    flex-grow: 2;
+    height: 100%;
+    margin: 0;
+    background-color: #000451;
+    background: radial-gradient(#0009AD, #000451);
+    display: flex;
+    overflow: hidden;
+    position: relative;
+}
+
+#table .pauseLogo {
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	background-color: #000000AA;
+	text-shadow: 2px 2px 0 #000;
+}
+
+    #table .tableBorder {
+        flex-grow: 1;
+        border: 10px solid #FFE682;
+    }
+
+    #table .tableBorderCentered {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-grow: 1;
+    }
+
+    #table .centerBlock {
+        text-align: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    #table .logoBlock {
+        width: 100%;
+    }
+
+    #table .answerBlock {
+        text-align: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        flex-grow: 1;
+        margin-top: 40px;
+        margin-bottom: 40px;
+        background-color: rgba(0, 0, 0, 0.333);
+    }
+
+    #table .tableText {
+        height: 100%;
+        width: 100%;
+        font-family: SI;
+        font-size: 36px;
+        color: #FFE682;
+        text-shadow: 1px 1px 0 #000;
+        padding: 5px;
+        white-space: pre-line;
+        display: flex;
+        align-items: center;
+    }
+
+    #table .tableTextCenter {
+        text-align: center;
+        justify-content: center;
+    }
+
+    #table .invisible {
+        color: transparent;
+        text-shadow: none;
+    }
+
+    #table .tableGameThemes {
+        width: 100%;
+        text-align: center;
+        font-family: SI;
+        color: #FFE682;
+        text-shadow: 1px 1px 0 #000;
+        font-size: 36px;
+        position: absolute;
+        top: 100%;
+        transition: top linear 10s;
+    }
+
+    #table .scaleText {
+        transform: scale(0);
+        transition: transform .2s linear;
+        width: 100%;
+        height: 100%;
+    }
+
+    #table .roundTable {
+        color: #FFE682;
+        text-shadow: 1px 1px 0 #000;
+        font-family: SI;
+        width: calc(100% + 1px);
+        height: calc(100% + 2px);
+        display: flex;
+        flex-direction: column;
+        margin: 0 -1px -1px 0;
+        text-align: center;
+        overflow: hidden;
+    }
+
+    @keyframes roundRows {
+        to {
+            transform: translate(0);
+        }
+    }
+
+        #table .roundTable .roundTableRow {
+            flex: 1 0 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+
+            animation: roundRows;
+            animation-duration: .5s;
+            animation-fill-mode: forwards;
+        }
+
+        #table .roundTable .roundTableRow.left {
+            transform: translate(-100%);
+        }
+
+            #table .roundTable .roundTableRow.right {
+                transform: translate(100%);
+            }
+
+        #table .roundTable .roundTableCell {
+            border: 1px solid #FFE682;
+            margin: -1px 0 0 -1px;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 7px;
+        }
+
+        #table .roundTable .themeHeader {
+            flex: 0 0 40%;
+        }
+
+        #table .roundTable .questHeader {
+            flex: 1 0 0;
+        }
+
+#table .roundTable.selectable .questHeader.active:hover {
+    background: radial-gradient(circle, rgba(229, 232, 205, 0.66) 0%, transparent 110%);
+    cursor: pointer;
+}
+
+@keyframes blink {
+    from {
+        background: transparent;
+    }
+    to {
+        background: radial-gradient(circle, cyan 0%, transparent 110%);
+    }
+}
+
+#table .roundTable .questHeader.blink {
+    animation: blink;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+    animation-duration: 0.1s;
+    color: darkblue;
+}
+
+#table .specialTable {
+    color: #FFE682;
+    text-shadow: 1px 1px 0 #000;
+    font-family: SI;
+    width: calc(100% + 1px);
+    height: calc(100% + 2px);
+    display: flex;
+    flex-direction: row;
+    margin: 0 -1px -1px 0;
+    text-align: center;
+}
+
+#table .specialThemes {
+    flex: 0 0 40%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+#table .specialTheme {
+    flex: 1 0 0;
+    border: 1px solid #FFE682;
+    margin: -1px 0 0 -1px;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 7px;
+}
+
+    #table .specialTheme.active {
+        background: radial-gradient(circle, cyan 0%, transparent 110%);
+        color: darkblue;
+    }
+
+#table .specialHost {
+    flex: 1 0 0;
+    padding: 10px;
+}
+
+#table .finalTable {
+    margin: 20px;
+    display: flex;
+    flex-direction: column;
+    height: calc(100% - 40px);
+    width: 100%;
+    color: #FFE682;
+    text-shadow: 1px 1px 0 #000;
+    font-family: SI;
+}
+
+#table .finalTableCell {
+    border: 1px solid #FFE682;
+    margin: -1px 0 0 -1px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 7px;
+    flex: 1 0 0;
+}
+
+    #table .finalTableCell.blink {
+        animation: blink;
+        animation-iteration-count: 1;
+        animation-direction: alternate;
+        animation-duration: 0.6s;
+        color: darkblue;
+    }
+
+#table .finalTable.selectable .finalTableCell.active:hover {
+    background: radial-gradient(circle, rgba(229, 232, 205, 0.66) 0%, transparent 110%);
+    cursor: pointer;
+}

@@ -1,0 +1,65 @@
+#newGameDialog {
+    background-color: #5A95E2;
+}
+
+#newGameDialog .settings {
+    padding-left: 13px;
+}
+
+#newGameDialog p {
+    margin-top: 15px;
+    font-size: 16px;
+}
+
+#newGameDialog input, #newGameDialog select {
+    font-size: 16px;
+    max-width: 95%;
+    width: 95%;
+}
+
+#newGameDialog select {
+    height: 29px;
+}
+
+#newGameDialog .startGame {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    font-size: 25px;
+    height: 45px;
+    width: 100%;
+}
+
+#newGameDialog .gameCreationError {
+    color: darkred;
+    position: absolute;
+    bottom: 55px;
+    left: 5px;
+    right: 5px;
+    text-align: center;
+    margin: auto;
+    width: calc(100% - 10px);
+    max-height: 100px;
+}
+
+@media screen and (min-width: 800px) {
+    #newGameDialog {
+        right: 300px;
+    }
+
+        #newGameDialog input, #newGameDialog select {
+            width: 400px;
+        }
+
+        #newGameDialog .startGame {
+            left: initial;
+            width: 200px;
+        }
+}
+
+@media screen and (min-width: 1100px) {
+    #newGameDialog {
+        right: 400px;
+    }
+}

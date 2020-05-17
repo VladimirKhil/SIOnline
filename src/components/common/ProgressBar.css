@@ -1,0 +1,30 @@
+.progress {
+    height: 5px;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    border-radius: 0;
+    background-color: darkblue;
+    overflow: hidden;
+    z-index: 2;
+}
+
+.progress-bar {
+    background-color: #183CF3;
+    background: linear-gradient(to right, darkblue, #183CF3, darkblue);
+    width: 100px;
+    height: 5px;
+    animation: moveLeft;
+    animation-duration: 2s;
+    animation-iteration-count: infinite;
+    position: relative;
+}
+
+@keyframes moveLeft {
+    from {
+        left: 0;
+    }
+    to {
+        left: 100%;
+    }
+}

@@ -1,0 +1,32 @@
+.dialog {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    z-index: 1;
+    overflow-y: auto;
+}
+
+.dialog_closeButton {
+    padding: 4px;
+    width: 30px;
+    height: 30px;
+    border-width: 0;
+    position: absolute;
+    right: 15px;
+    top: 15px;
+    cursor: pointer;
+}
+
+.dialog header {
+    padding-left: 13px;
+    font-family: SI;
+    color: #FFE682;
+    text-shadow: 1px 1px 0 #000;
+}
+
+.dialog h1 {
+    margin-top: 10px;
+    margin-bottom: 0;
+}

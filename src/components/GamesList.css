@@ -1,0 +1,24 @@
+.gameslistHost {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    background-color: #000451;
+    background: linear-gradient(to bottom, #000451 0%,#183CF3 50%,#000451 100%);
+}
+
+.flyoutButton_flyout.dark > ul.gamesFilter > li {
+    padding: 10pt 30pt 10pt 0;
+}
+
+@media screen and (min-width: 800px) {
+    .gameslistHost {
+        flex: 0 0 300px;
+        width: 300px;
+    }
+}
+
+@media screen and (min-width: 1100px) {
+    .gameslistHost {
+        flex: 0 0 400px;
+    }
+}

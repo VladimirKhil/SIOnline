@@ -1,0 +1,13 @@
+.onlineView {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    display: flex;
+}
+
+#gameInfoDialog {
+    background-color: #5A95E2;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}

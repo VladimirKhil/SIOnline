@@ -1,0 +1,1045 @@
+﻿@font-face {
+    font-family: SI;
+    src: url('/fonts/FuturaC.eot');
+    src: local('вє'), url('/fonts/FuturaC.woff') format('woff'), url('/fonts/FuturaC.ttf') format('truetype'), url('/fonts/FuturaC.svg') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Clefs';
+    src: url('/fonts/Clefs.eot');
+    src: url('/fonts/Clefs.eot?#iefix') format('embedded-opentype'), url('/fonts/Clefs.woff') format('woff'), url('/fonts/Clefs.ttf') format('truetype'), url('/fonts/Clefs.svg#Clefs') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+html,body { height:100%; }
+
+body {
+    background-color: #000451;
+    background: linear-gradient(to bottom, #000451 0%,#183CF3 50%,#000451 100%);
+    color: black;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    line-height: 1.42857143;
+}
+
+#reactHost {
+    height: 100%;
+}
+
+/* Set padding to keep content from hitting the edges */
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Override the default bootstrap behavior where horizontal description lists 
+   will truncate terms that are too long to fit in the left column 
+*/
+.dl-horizontal dt {
+    white-space: normal;
+}
+
+dl {
+  margin-bottom: 20px;
+}
+
+dt,
+dd {
+  line-height: 1.428571429;
+}
+
+dt {
+  font-weight: bold;
+}
+
+dd {
+  margin-left: 0;
+}
+
+/* Set width on the form input elements since they're 100% wide by default */
+input,
+select,
+textarea {
+    max-width: 280px;
+    line-height: inherit;
+}
+
+h1 {
+    font-weight: 500;
+    font-size: 36px;
+    line-height: 39px;
+}
+
+*,
+*:before,
+*:after {
+  -webkit-box-sizing: border-box;
+     -moz-box-sizing: border-box;
+          box-sizing: border-box;
+}
+
+ul {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+
+.gameHost {
+    height: 100%;
+}
+
+#entermain {
+    margin-left: 16pt;
+    text-align: center;
+}
+
+#entername {
+    display: block;
+    font-size: 17pt;
+    height: 33px;
+    margin: 0 22px;
+    width: calc(100% - 44px);
+    max-width: calc(100% - 44px);
+}
+
+#logonButtons {
+    font-size: 25px;
+    width: 100%;
+    display: flex;
+}
+
+#logonButtons button {
+    flex: 1 0 0;
+}
+
+#howToPlay, #enter {
+    height: 45px;
+    padding: 5px 40px;
+    width: 100%;
+}
+
+.main .header {
+    font-size: 18px;
+    text-align: left;
+    padding-left: 22px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-right: 12px;
+    vertical-align: middle;
+}
+
+.logonHost {
+    display: flex;
+    flex-direction: column;
+    flex: 1 0 0;
+}
+
+.sexLogin {
+    text-align: left;
+    margin-top: -5px;
+}
+
+    .sexLogin input {
+        margin-left: 22px;
+        margin-right: 5px;
+        vertical-align: middle;
+    }
+
+    .sexLogin label {
+        font-size: 14px;
+        font-weight: normal;
+        margin-top: 2px;
+        margin-bottom: 0;
+    }
+
+.gamesblock header {
+    height: 35pt;
+}
+
+.gameslistHost header, .chatHost header {
+    display: flex;
+}
+
+    .gameslistHost h1 {
+        display: inline;
+        margin: 10px 5px 10px 5px;
+        color: #FFE682;
+        font-family: SI;
+        font-size: 26px;
+        line-height: 26px;
+        text-shadow: 1px 1px 0 #000;
+        white-space: nowrap;
+    }
+
+.gamesFilterButton {
+    border: 0;
+    font-size: 26px;
+    margin-left: auto;
+    padding: 0 6px 0 6px;
+}
+
+.filterText {
+    white-space: nowrap;
+}
+
+.triangle {
+    position: relative;
+    top: 2px;
+    left: 1px;
+}
+/*#sGamesType option {
+    background: #C0CFF4;
+}*/
+.gamenames {
+    overflow: auto;
+    width: 100%;
+    height: calc(100% - 135px);
+    background-color: #C0CFF4;
+    margin: 0;
+}
+
+.gamenames li {
+    padding-left: 15px;
+    cursor: pointer;
+}
+
+.gamenames li:hover {
+    background-color: #98B9FF;
+}
+
+.gamenames li.active {
+    background-color: #5A95E2;
+}
+
+.gamenames li div {
+    height: 45px;
+    line-height: 45px;
+    vertical-align: middle;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+#newGame, #newAutoGame {
+    display: block;
+    width: 100%;
+    max-width: none;
+    height: 45px;
+    position: absolute;
+    font-size: 26px;
+    line-height: 26px;
+}
+
+#newGame {
+    bottom: 0;
+}
+
+#newAutoGame {
+    bottom: 44px;
+}
+
+button {
+    color: #FFE682;
+    background-color: transparent;
+    border: 1px solid #FFE682;
+    padding: 5px 10px 6px 7px; 
+    font-family: SI;
+    text-shadow: 1px 1px 0 #000;
+    font-size: inherit;
+}
+
+button:hover {
+    background-color: #98B9FF;
+}
+
+button:disabled {
+    color: darkgray;
+    border-color: darkgray;
+    background-color: transparent;
+}
+
+#gameinfo {
+    background-color: #5A95E2;
+    height: 100%;
+    padding: 20px 0 0 0;
+}
+
+#gameinfo h1 {
+    margin-top: 0;
+    font-size: 36px;
+    margin-bottom: 10px;
+    padding-left: 20px;
+}
+
+.closeButton {
+    padding: 4px;
+    width: 30px;
+    height: 30px;
+    border-width: 0;
+    position: absolute;
+    right: 15px;
+    top: 15px;
+}
+
+#innerinfo {
+    font-size: 11pt;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+#gameName {
+    height: 55px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    margin-right: 50px;
+}
+
+.maininfo {
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-left: 20px;
+    flex: 1;
+}
+
+#innerinfo dt {
+    margin-top: 10pt;
+}
+
+.passwordInfo {
+    text-align: center;
+    display: block;
+    width: 100%;
+    margin-top: 10px;
+}
+
+#password {
+    font-size: 15pt;
+    width: calc(100% - 30px);
+    max-width: initial;
+    display: block;
+    margin: 5px 15px;
+}
+
+#actionsHost {
+    display: flex;
+}
+
+.actions button {
+    margin: 0;
+    display: inline;
+    flex: 1 0 0;
+}
+
+.join {
+    font-size: 18pt;
+    line-height: 18pt;
+    padding: 7pt 2px;
+    margin: 0;
+    margin-left: -1px;
+}
+
+.cannotConnect {
+    color: darkred;
+    text-align: center;
+    height: 45px;
+    line-height: 45px;
+    overflow: hidden;
+}
+
+    .cannotConnect span {
+        line-height: normal;
+        display: block;
+        margin: 0 3px;
+    }
+
+.tabHeader h1 {
+    display: inline-block;
+    font-family: SI;
+    font-size: 26px;
+    line-height: 24pt;
+    border-bottom: 2px solid #897831;
+    margin: 6px 0px 7px 5px;
+    color: #897831;
+    text-shadow: 1px 1px 0 #000;
+    cursor: pointer;
+}
+
+#extraMenu {
+    top: 35pt;
+    right: 0;
+}
+
+h1.activeTab {
+    color: #FFE682;
+    border-color: #FFE682;
+}
+
+#playersTitle {
+    margin-left: 8px;
+}
+
+    .tabHeader h1:hover, #playersTitle:hover {
+        color: #FFF2BD;
+        border-color: #FFF2BD;
+    }
+
+.chatBody {
+    height: calc(100% - 35pt);
+    /*margin-left: 5px;*/
+    position: relative;
+}
+
+.chat span {
+    display: block;
+    word-wrap: break-word;
+}
+
+#chatHostTitle {
+    padding-top: 2px;
+    display: flex;
+}
+
+#gamesList, #game {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+}
+
+#personsDialog {
+    background-color: #000451;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+}
+
+#personsDialog header {
+    flex: 0 0 60px;
+}
+
+#rules, #started, #showman, #players, #viewers {
+    min-height: 20px;
+}
+
+#name {
+    margin-left: 5px;
+}
+
+.game__utilsArea {
+    display: flex;
+    flex-direction: row;
+    flex: 0 0 90px;
+    position: relative;
+}
+
+#gameLogHost {
+    background-color: #5A95E2;
+    flex: 0 0 130px;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+#playerButtonHost {
+    height: 100%;
+}
+
+.sideArea {
+    flex: 1 0 0;
+    display: flex;
+}
+
+.game__chat {
+    display: flex;
+    flex-direction: column;
+    flex: 1 0 0;
+}
+
+.game__log {
+    overflow-y: auto;
+    height: 100%;
+    flex: 1 0 0;
+    border-top: 1px solid lightyellow;
+    flex: 1 0 0;
+}
+
+#game__playerButton {
+    height: 45px;
+    margin-right: -1px;
+    position: relative;
+}
+
+.game__persons {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    flex: 1 0 0;
+}
+
+showman, player, viewer {
+    font-weight: bold;
+    margin-right: 5px;
+}
+
+showman::after, player::after, viewer::after {
+    content: ": "
+}
+
+#showmanReplic {
+    width: 100%;
+    margin: 0;
+    padding: 5px;
+    flex: 0 0 90px;
+    background-color: lightyellow;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+#showmanReplic.highlighted {
+    background-color: orange;
+}
+
+#gameMessageHost {
+    flex: 2 0 0;
+    margin: 0;
+    position: relative;
+}
+
+#messageWrapper {
+    position: relative;
+    width: 100%;
+    height: 45px;
+}
+
+#showChat {
+    position: absolute;
+    height: 45px;
+    width: 45px;
+    border: 0;
+    font-size: 20px;
+    color: #FFE682;
+    right: 0;
+    top: 0;
+    bottom: 0;
+}
+
+#showChat span {
+    position: relative;
+    bottom: 0;
+}
+
+.gameInputBox {
+    max-width: none;
+    width: 100%;
+    margin: 0;
+    height: 45px;
+    top: 0;
+    border: 0;
+    border-top: 1px solid gray;
+    font-size: 14pt;
+    padding-left: 10px;
+    padding-right: 47px;
+    box-sizing: border-box;
+    pointer-events: initial;
+}
+
+.gameMessage {
+    background-color: #C0CFF4;
+}
+
+#answerBox {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: lightyellow;
+}
+
+#buttons {
+    width: 100%;
+    margin: 0;
+    position: relative;
+    display: flex;
+    background-color: #5A95E2;
+}
+
+#buttons button {
+    height: 45px;
+}
+
+.playerButtonWrapper {
+    flex: 1 0 0;
+    position: relative;
+}
+
+.playerButton {
+    font-size: 19pt;
+    line-height: 19pt;
+    margin: 0;
+    padding: 7pt 0pt;
+    border-width: 1px;
+    background: #690000;
+    width: 100%;
+    height: 100%;
+}
+
+.playerButton:hover {
+    background: #FF0000;
+}
+
+.playerButton:active {
+    background: #f2daa0;
+}
+
+.playerButton:disabled {
+    background: gray;
+}
+
+.hoverButton {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+#pauseButton {
+    display: none;
+    flex: 1 0 0;
+    font-size: 19pt;
+    padding: 0;
+    margin-right: -1px;
+}
+
+#gameMenuHost {
+    flex: 1 0 0;
+    position: relative;
+}
+
+#gameMenuButton, .gameMenuButton {
+    font-size: 19pt;
+    line-height: 19pt;
+    padding: 7pt 0pt;
+    margin: 0;
+    width: 100%;
+    border-width: 1px 0 1px 1px;
+}
+
+#exitHost {
+    flex: 1 0 0;
+    position: relative;
+}
+
+#exit, .exit {
+    font-size: 19pt;
+    line-height: 19pt;
+    padding: 7pt 0pt;
+    margin: 0;
+    border-width: 1px;
+    width: 100%;
+}
+    
+    .gameMenu, .exitMenu {
+        bottom: 45px;
+        width: 100%;
+        background-color: rgb(192, 207, 244);
+    }
+
+    .exitMenu p {
+        margin: 5px 10px;
+        text-align: center;
+        font-size: 10pt;
+    }
+
+ul.gameMenu, .exitMenu ul {
+    line-height: 30pt;
+    padding: 5px 0 5px 0;
+}
+
+.gameMenu li, .exitMenu li {
+    text-align: center;
+}
+
+#exitMenuPopup {
+    padding-top: 10px;
+}
+
+#managedPersons {
+    width: 100%;
+}
+
+.inGameImg {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+video, audio {
+    margin: 10px 0;
+    max-width: 480px;
+    width: calc(100% - 20px);
+}
+
+.navButton {
+    border: 0;
+    font-size: 26px;
+    margin: 0;
+    height: 47px;
+    width: 47px;
+}
+
+.mainNav {
+    top: 47px;
+    left: 0;
+}
+
+#personsList {
+    overflow: auto;
+    width: 100%;
+    flex: 1 0 0;
+    background-color: #C0CFF4;
+}
+
+    #personsList li {
+        padding-left: 15px;
+        cursor: pointer;
+        height: 40px;
+        line-height: 40px;
+        vertical-align: middle;
+    }
+
+        #personsList li:hover {
+            background-color: #98B9FF;
+        }
+
+        #personsList li.active {
+            background-color: #5A95E2;
+        }
+
+        #personsList li.me {
+            font-weight: bold;
+        }
+
+.buttonsPanel {
+    height: 45px;
+    flex: 0 0 45px;
+    display: flex;
+    width: 100%;
+}
+
+    .buttonsPanel button {
+        flex: 1 0 0;
+        font-size: 25px;
+    }
+
+@keyframes spinner {
+    from {
+        transform: rotateY(-90deg);
+    }
+
+    to {
+        transform: rotateY(90deg);
+    }
+}
+
+.clef {
+    font-family: 'Clefs';
+    font-weight: normal;
+    font-style: normal;
+    color: #FFE682;
+    text-shadow: 1px 1px 0 #000;
+    font-size: 80px;
+}
+
+.rotate {
+    animation-name: spinner;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    animation-duration: 2s;
+}
+
+.siAdHost {
+    flex: 1 0 0;
+    margin: 10px;
+    overflow: hidden;
+}
+
+#lastReplic {
+    position: absolute;
+    top: -65px;
+    height: 65px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    background: #ffffe0;
+    border-top: 1px solid gray;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 1.0);
+    overflow: hidden;
+    padding: 2px 6px;
+    opacity: 0.7;
+}
+
+.stakeSum {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    max-width: 100%;
+    text-align: center;
+    background-color: #c0cff4;
+    border: 1px solid yellow;
+    font-size: 24px;
+}
+
+.stakeRangeHost {
+    position: absolute;
+    top: 1px;
+    bottom: 0;
+    left: 10px;
+    right: 10px;
+    background-color: #c0cff4;
+    width: calc(100% - 20px);
+}
+
+.stakeRange {
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
+}
+
+#stakeButtonsHost {
+    position: absolute;
+    top: -44px;
+    height: 45px;
+    width: 100%;
+}
+
+#stakeButtons {
+    height: 100%;
+    display: flex;
+    background-color: #5a95e2;
+    width: 100%;
+    font-size: 25px;
+}
+
+    #stakeButtons button, .wideStakeHost button {
+        flex: 1 0 0;
+    }
+
+.wideStakeHost {
+    position: absolute;
+    background-color: #5a95e2;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+}
+
+    .wideStakeHost button {
+        font-size: 25px;
+    }
+
+.wideStakeHost__number {
+    flex: 0 0 80px;
+    font-size: 24px;
+    text-align: center;
+}
+
+.wideStakeHost__range {
+    flex: 3 0 0;
+    margin: 0 10px;
+    max-width: 100%;
+}
+
+.answerForWide {
+    display: none;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    pointer-events: none;
+}
+
+.answerForWide input {
+    background-color: lightyellow;
+}
+
+.wide {
+    display: none;
+}
+
+.commandButton {
+    height: 45px;
+    font-size: 19pt;
+}
+
+.bottomButton {
+    margin-bottom: -1px;
+}
+
+.gameHeader {
+    padding-left: 10px;
+    height: 50px;
+}
+
+.playerAvatar {
+    height: 100%;
+    float: left;
+}
+
+@media screen and (min-width: 470px) {
+    #entername {
+        margin: 0 22px;
+        width: calc(100% - 44px);
+        max-width: calc(100% - 44px);
+    }
+
+    .main {
+        height: 560px;
+        padding: 10px 0 0 0;
+        border: 1px solid #111111;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    }
+
+    #logonButtons {
+        left: initial;
+        width: auto;
+        display: flex;
+    }
+
+    #howToPlay, #enter {
+        width: auto;
+    }
+}
+
+@media screen and (min-width: 800px) {
+    #gameinfo {
+        height: calc(100% - 35pt);
+    }
+
+    .gameInfo_close {
+        display: none;
+    }
+
+    .passwordInfo {
+        left: 300px;
+        right: 295px;
+    }
+
+    #password {
+        display: inline;
+        width: initial; /* Эффект есть */
+    }
+
+    .actions {
+        left: 300px;
+        right: 300px;
+        z-index: 0;
+    }
+
+    .game__utilsArea {
+        flex: 0 0 45px;
+    }
+
+    #gameMessageHost {
+        display: flex;
+    }
+
+    #messageWrapper {
+        width: 70%;
+    }
+
+    #buttons {
+        width: calc(60% + 1px);
+    }
+
+    #gamesTitle, #chatHostTitle {
+        padding-left: 0;
+    }
+
+    #nav, .navButton {
+        display: none;   
+    }
+
+    .cannotConnect span {
+        display: inline-block;
+    }
+
+    #personsDialog {
+        width: 300px;
+        top: 49px;
+        left: initial;
+        bottom: 45px;
+        border-left: 1px solid darkgray;
+        z-index: 0;
+    }
+}
+
+@media screen and (min-width: 1100px) {
+    .actions {
+        left: 400px;
+        right: 400px;
+    }
+
+    .gameMain {
+        flex-direction: row;
+    }
+
+    .game__mainArea {
+        flex: 1 0 0;
+    }
+
+    #gameLogHost {
+        flex: 1 0 0;
+    }
+
+    #gameMenuHost {
+        display: none;
+    }
+
+    #messageWrapper {
+        display: none;
+    }
+
+    #playerButtonHost {
+        display: none;
+    }
+
+    .playerButtonWrapper {
+        flex: 0 0 0;
+    }
+
+    #gameMessageHost {
+        flex: 1 0 0;
+    }
+
+    #buttons {
+        width: 100%;
+    }
+
+    #pauseButton {
+        display: initial;
+    }
+
+    .answerForWide {
+        display: initial;
+    }
+
+    .wide {
+        display: initial;
+    }
+
+    #stakeButtonsHost {
+        display: none;
+    }
+}

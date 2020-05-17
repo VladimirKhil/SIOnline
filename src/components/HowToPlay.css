@@ -1,0 +1,8 @@
+#helpDialog {
+    background-color: #5A95E2;
+}
+
+.helpText {
+    margin: 13px;
+    overflow-y: auto;
+}

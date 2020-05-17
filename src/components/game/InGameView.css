@@ -1,0 +1,17 @@
+.gameMain {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.game__mainArea {
+    display: flex;
+    flex-direction: column;
+}
+
+.game__tableArea {
+    display: flex;
+    flex-direction: column;
+    flex: 4 0 0;
+    overflow: hidden;
+}
