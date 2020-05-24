@@ -9,6 +9,7 @@ import Role from '../model/enums/Role';
 import RunState, { initialState as runInitialState } from './run/RunState';
 import GameInfo from '../model/server/GameInfo';
 import localization from '../model/resources/localization';
+import SettingsState, { initialState as settingsInitialState } from './settings/SettingsState';
 
 export default interface State {
 	user: {
@@ -53,6 +54,7 @@ export default interface State {
 		computerAccounts: string[] | null;
 		isConnected: boolean;
 	};
+	settings: SettingsState;
 }
 
 export const initialState: State = {
@@ -100,5 +102,6 @@ export const initialState: State = {
 	common: {
 		computerAccounts: null,
 		isConnected: true
-	}
+	},
+	settings: settingsInitialState
 };

@@ -3,8 +3,10 @@ import State from '../../state/State';
 import { Dispatch, Action } from 'redux';
 import { connect } from 'react-redux';
 import runActionCreators from '../../state/run/runActionCreators';
+import MuteButton from '../common/MuteButton';
 
 interface TableVideoProps {
+	isSoundEnabled: boolean;
 	canTry: boolean;
 	text: string;
 	isMediaStopped: boolean;
@@ -12,6 +14,7 @@ interface TableVideoProps {
 }
 
 const mapStateToProps = (state: State) => ({
+	isSoundEnabled: state.settings.isSoundEnabled,
 	canTry: state.run.table.canPress,
 	text: state.run.table.text,
 	isMediaStopped: state.run.stage.isGamePaused || state.run.table.isMediaStopped
@@ -50,7 +53,10 @@ export class TableVideo extends React.Component<TableVideoProps> {
 
 		return (
 			<div className="tableBorder tableBorderCentered" style={style}>
-				<video ref={this.videoRef} autoPlay onEnded={e => this.props.onMediaEnded()}><source src={this.props.text} /></video>
+				<video ref={this.videoRef} autoPlay muted={!this.props.isSoundEnabled} onEnded={e => this.props.onMediaEnded()}>
+					<source src={this.props.text} />
+				</video>
+				<MuteButton />
 			</div>
 		);
 	}

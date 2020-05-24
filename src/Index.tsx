@@ -39,7 +39,11 @@ function setState(state: State, savedState: SavedState | null): State {
 			role: savedState.game.role,
 			type: savedState.game.type,
 			playersCount: savedState.game.playersCount
-		} : state.game
+		} : state.game,
+		settings: savedState.settings ? {
+			...state.settings,
+			...savedState.settings
+		} : state.settings
 	};
 }
 
@@ -90,6 +94,16 @@ async function run() {
 		state,
 		applyMiddleware(reduxThunk.withExtraArgument(dataContext))
 	);
+
+	let currentSettings = state.settings;
+	store.subscribe(() => {
+		const newState = store.getState();
+		const newSettings = newState.settings;
+		if (newSettings !== currentSettings) {
+			currentSettings = newSettings;
+			actionCreators.saveStateToStorage(newState);
+		}
+	});
 
 	subscribeToExternalEvents(store);
 

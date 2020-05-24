@@ -89,7 +89,8 @@ const saveStateToStorage = (state: State) => {
 			role: state.game.role,
 			type: state.game.type,
 			playersCount: state.game.playersCount
-		}
+		},
+		settings: state.settings
 	});
 };
 
@@ -517,6 +518,7 @@ async function gameInit(gameId: number, dataContext: DataContext, role: Role) {
 }
 
 const actionCreators = {
+	saveStateToStorage,
 	onConnectionChanged,
 	computerAccountsChanged,
 	navigateToLogin,

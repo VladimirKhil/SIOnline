@@ -9,8 +9,10 @@ import { KnownRunAction } from './run/runActions';
 import runReducer from './run/runReducer';
 import OnlineMode from '../model/enums/OnlineMode';
 import * as runState from './run/RunState';
+import settingsReducer from './settings/settingsReducer';
+import { KnownSettingsAction } from './settings/SettingsActions';
 
-const reducer: Reducer<State> = (state: State = initialState, action: KnownAction | KnownRunAction): State => {
+const reducer: Reducer<State> = (state: State = initialState, action: KnownAction | KnownRunAction | KnownSettingsAction): State => {
 	switch (action.type) {
 		case ActionTypes.IsConnectedChanged:
 			return {
@@ -400,7 +402,8 @@ const reducer: Reducer<State> = (state: State = initialState, action: KnownActio
 	}
 
 	return {...state,
-		run: runReducer(state.run, action as KnownRunAction)
+		run: runReducer(state.run, action as KnownRunAction),
+		settings: settingsReducer(state.settings, action as KnownSettingsAction)
 	};
 };
 

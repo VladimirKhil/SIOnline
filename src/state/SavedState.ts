@@ -1,5 +1,6 @@
 ﻿import Role from '../model/enums/Role';
 import GameType from '../model/enums/GameType';
+import SettingsState from './settings/SettingsState';
 
 const STATE_KEY = 'SIOnline_State';
 
@@ -11,6 +12,7 @@ export default interface SavedState {
 		type: GameType;
 		playersCount: number;
 	};
+	settings: SettingsState;
 }
 
 export function loadState(): SavedState | null {
