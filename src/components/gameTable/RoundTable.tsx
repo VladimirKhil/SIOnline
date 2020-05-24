@@ -62,7 +62,7 @@ export class RoundTable extends React.Component<RoundTableProps> {
 
 							return (
 								<AutoSizedText key={questionIndex} className={`roundTableCell questHeader ${isActive ? 'active' : ''} ${isBlinking ? 'blink' : ''}`}
-									maxFontSize={72}
+									maxFontSize={144}
 									text={isActive ? question.toString() : ''}
 									onClick={() => this.onSelectQuestion(themeIndex, questionIndex)} />
 							);

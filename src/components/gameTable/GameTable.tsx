@@ -43,7 +43,7 @@ export function GameTable(props: GameTableProps) {
 		<div id="table">
 			{getContent(props.mode)}
 			{props.isPaused || !props.isConnected ?
-				<AutoSizedText maxFontSize={144} text={props.isPaused ? localization.pause : localization.connectionClosed}
+				<AutoSizedText maxFontSize={288} text={props.isPaused ? localization.pause : localization.connectionClosed}
 					className={`pauseLogo tableText tableTextCenter ${props.isConnected ? '' : 'warning'}`} /> : null}
 		</div>
 	);

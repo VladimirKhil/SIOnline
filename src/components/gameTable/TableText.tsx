@@ -26,7 +26,7 @@ export function TableText(props: TableTextProps) {
 
 	return (
 		<div className="tableBorder tableBorderCentered" style={style}>
-			<AutoSizedText className="tableText tableTextCenter" text={props.text} maxFontSize={72} />
+			<AutoSizedText className="tableText tableTextCenter" text={props.text} maxFontSize={144} />
 		</div>
 	);
 }

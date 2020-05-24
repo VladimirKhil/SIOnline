@@ -52,7 +52,7 @@ export class FinalTable extends React.Component<FinalTableProps> {
 					const isBlinking = this.props.activeThemeIndex === themeIndex;
 
 					return (
-						<AutoSizedText key={themeIndex} maxFontSize={72} text={isActive ? theme.name : ''}
+						<AutoSizedText key={themeIndex} maxFontSize={144} text={isActive ? theme.name : ''}
 							className={`finalTableCell  ${isActive ? 'active' : ''} ${isBlinking ? 'blink' : ''}`}
 							onClick={() => this.onSelectTheme(themeIndex)} />
 					);

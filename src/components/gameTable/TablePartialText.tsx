@@ -30,7 +30,7 @@ export function TablePartialText(props: TablePartialTextProps) {
 
 	return (
 		<div className="tableBorder tableBorderCentered" style={style}>
-			<AutoSizedText className="tableText" content={innerText} maxFontSize={72} />
+			<AutoSizedText className="tableText" content={innerText} maxFontSize={144} />
 		</div>
 	);
 }

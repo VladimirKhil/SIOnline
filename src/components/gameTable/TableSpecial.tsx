@@ -35,7 +35,7 @@ export class TableSpecial extends React.Component<TableSpecialProps> {
 						const isActive = themeIndex === activeThemeIndex;
 						return (
 							<AutoSizedText key={themeIndex} className={`roundTableCell specialTheme themeHeader ${isActive ? 'active' : ''}`}
-								maxFontSize={72} text={isActive ? themeInfo.name : ''} />
+								maxFontSize={144} text={isActive ? themeInfo.name : ''} />
 						);
 					})}
 				</div>
