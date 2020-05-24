@@ -6,7 +6,7 @@
   "scripts": {
     "build-dev": "webpack",
     "build-prod": "webpack --env.prod -p",
-    "start": "webpack-dev-server --open",
+    "start": "webpack-dev-server",
     "test": "jest",
     "lint": "tslint --project tsconfig.json src/**/*.ts src/**/*.tsx"
   },
@@ -49,6 +49,7 @@
     "tslint-config-airbnb": "^5.11.1",
     "typescript": "^3.8.3",
     "url-loader": "^1.1.2",
+    "@svgr/webpack": "^5.4.0",
     "webpack": "^4.39.3",
     "webpack-cli": "^3.3.7",
     "webpack-dev-server": "^3.11.0"

@@ -2,6 +2,7 @@
 import localization from '../../model/resources/localization';
 
 import './Dialog.css';
+import closeSvg from '../../../wwwroot/images/close.svg';
 
 interface DialogProps {
 	id: string;
@@ -16,7 +17,7 @@ export default function Dialog(props: DialogProps) {
 		<section id={props.id} className="dialog">
 			<header><h1>{props.title}</h1></header>
 			<button className="dialog_closeButton" onClick={props.onClose}>
-				<img src="/images/close.svg" alt={localization.close} />
+				<img src={closeSvg} alt={localization.close} />
 			</button>
 			{props.children}
 		</section>

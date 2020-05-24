@@ -20,7 +20,11 @@ module.exports = (env) => {
 			rules: [
 				{ test: /\.tsx?$/, use: 'awesome-typescript-loader?silent=true' },
 				{ test: /\.css$/, use: isDevBuild ? ['style-loader', 'css-loader'] : ['style-loader', 'css-loader', 'postcss-loader'] },
-				{ test: /\.(png|jpg|jpeg|gif|svg)$/, use: 'url-loader?limit=25000' },
+				{ test: /\.(png|jpg|jpeg|gif)$/, use: 'url-loader?limit=25000' },
+				{
+					test: /\.svg$/,
+					use: ['@svgr/webpack', 'url-loader']
+				},
 				{
 					test: /\.html$/,
 					use: [

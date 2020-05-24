@@ -1,6 +1,8 @@
 ﻿import * as React from 'react';
 import localization from '../../model/resources/localization';
 
+// import logoPng from '../../../wwwroot/images/logo.png'; TODO: not working
+
 interface TableLogoProps {
 
 }
