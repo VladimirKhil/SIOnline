@@ -10,7 +10,6 @@ import ChatMessage from '../../model/ChatMessage';
 import GameButton from './GameButton';
 import ChatInput from './ChatInput';
 import AnswerInput from './AnswerInput';
-import StakeTypes from '../../model/enums/StakeTypes';
 import StakeSumEditor from './stakes/StakeSumEditor';
 import SendPassButton from './stakes/SendPassButton';
 import SendStakeButton from './stakes/SendStakeButton';
@@ -19,6 +18,7 @@ import SendAllInButton from './stakes/SendAllInButton';
 import './SideControlPanel.css';
 
 interface SideControlPanelProps {
+	isConnected: boolean;
 	role: Role;
 	isChatVisible: boolean;
 	isChatActive: boolean;
@@ -34,6 +34,7 @@ interface SideControlPanelProps {
 }
 
 const mapStateToProps = (state: State) => ({
+	isConnected: state.common.isConnected,
 	role: state.run.role,
 	isChatVisible: state.run.chat.isVisible,
 	isChatActive: state.run.chat.isActive,
@@ -69,6 +70,8 @@ export function SideControlPanel(props: SideControlPanelProps) {
 
 	const pauseTitle = props.isPaused ? localization.resume : localization.pause;
 
+	const enabledClass = props.isConnected ? '' : 'disabled';
+
 	return (
 		<div className="game__utilsArea">
 			{props.role ?
@@ -95,13 +98,13 @@ export function SideControlPanel(props: SideControlPanelProps) {
 				</div>
 
 				<div id="buttons">
-					{props.isHost ? <button id="pauseButton" onClick={() => props.onPause()}>{pauseTitle}</button> : null}
+					{props.isHost ? <button id="pauseButton" disabled={!props.isConnected} onClick={() => props.onPause()}>{pauseTitle}</button> : null}
 					<div id="gameMenuHost">
 						<FlyoutButton className="gameMenuButton" title={localization.menu} flyout={
 							<ul className="gameMenu">
-								<li onClick={() => props.onMarkQuestion()} title={localization.complainHint}>{localization.complain}</li>
+								<li className={enabledClass} onClick={() => props.onMarkQuestion()} title={localization.complainHint}>{localization.complain}</li>
 								<li onClick={() => props.onShowPersons()}>{localization.members}</li>
-								{props.isHost ? <li onClick={() => props.onPause()}>{pauseTitle}</li> : null}
+								{props.isHost ? <li className={enabledClass} onClick={() => props.onPause()}>{pauseTitle}</li> : null}
 							</ul>
 						} theme={FlyoutTheme.Light} alignWidth={true} verticalOrientation={FlyoutVerticalOrientation.Top}>…</FlyoutButton>
 					</div>
@@ -111,7 +114,7 @@ export function SideControlPanel(props: SideControlPanelProps) {
 								<div id="exitMenuPopup" className="gameMenuPopup">
 									<p>{localization.exitConfirmation}</p>
 									<ul>
-										<li onClick={() => props.onExit()}>{localization.exitFromGame}</li>
+										<li className={enabledClass} onClick={() => props.onExit()}>{localization.exitFromGame}</li>
 									</ul>
 								</div>
 							</div>

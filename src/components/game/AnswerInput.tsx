@@ -6,6 +6,7 @@ import { Dispatch, Action } from 'redux';
 import Constants from '../../model/enums/Constants';
 
 interface AnswerInputProps {
+	isConnected: boolean;
 	id: string;
 	isAnswering: boolean;
 	answer: string;
@@ -14,6 +15,7 @@ interface AnswerInputProps {
 }
 
 const mapStateToProps = (state: State) => ({
+	isConnected: state.common.isConnected,
 	isAnswering: state.run.stage.isAnswering,
 	answer: state.run.answer || ''
 });
@@ -35,7 +37,10 @@ export function AnswerInput(props: AnswerInputProps) {
 
 	const onAnswerKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
 		if (e.charCode === Constants.KEY_ENTER) {
-			props.sendAnswer();
+			if (props.isConnected) {
+				props.sendAnswer();
+			}
+
 			e.preventDefault();
 		}
 	};

@@ -1,20 +1,21 @@
 import { connect } from 'react-redux';
-import localization from '../../model/resources/localization';
 import * as React from 'react';
-import Sex from '../../model/enums/Sex';
 import runActionCreators from '../../state/run/runActionCreators';
-import Role from '../../model/enums/Role';
 import State from '../../state/State';
 import { Dispatch, Action } from 'redux';
 import Constants from '../../model/enums/Constants';
 
+import './ChatInput.css';
+
 interface ChatInputProps {
+	isConnected: boolean;
 	message: string;
 	onChatMessageChanged: (message : string) => void;
 	onChatMessageSend: () => void;
 }
 
 const mapStateToProps = (state: State) => ({
+	isConnected: state.common.isConnected,
 	message: state.run.chat.message
 });
 
@@ -35,13 +36,16 @@ export function ChatInput(props: ChatInputProps) {
 
 	const onMessageKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
 		if (e.charCode === Constants.KEY_ENTER) {
-			props.onChatMessageSend();
+			if (props.isConnected) {
+				props.onChatMessageSend();
+			}
+
 			e.preventDefault();
 		}
 	};
 
 	return (
-		<input className="gameInputBox gameMessage" value={props.message}
+		<input className={`gameInputBox gameMessage ${props.isConnected ? '' : 'disconnected'}`} value={props.message}
 			onChange={onMessageChanged} onKeyPress={onMessageKeyPress} />
 	);
 }

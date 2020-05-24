@@ -21,15 +21,16 @@ export function attachListeners(connection: signalR.HubConnection, dispatch: Dis
 	});
 
 	connection.onreconnecting((e) => {
-		dispatch(actionCreators.receiveMessage('', `${localization.connectionReconnecting} ${e?.message}`));
+		const errorMessage = e ? ` (${e.message})` : '';
+		dispatch(actionCreators.onConnectionChanged(false, `${localization.connectionReconnecting}${errorMessage}`) as object as AnyAction);
 	});
 
 	connection.onreconnected(() => {
-		dispatch(actionCreators.receiveMessage('', localization.connectionReconnected));
+		dispatch(actionCreators.onConnectionChanged(true, localization.connectionReconnected) as object as AnyAction);
 	});
 
 	connection.onclose((e) => {
-		dispatch(actionCreators.receiveMessage('', `${localization.connectionClosed} ${e?.message}`));
+		dispatch(actionCreators.onConnectionChanged(false, `${localization.connectionClosed} ${e?.message || ''}`) as object as AnyAction);
 	});
 }
 

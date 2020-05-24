@@ -19,7 +19,35 @@ import GameType from '../model/enums/GameType';
 import * as GameErrorsHelper from '../utils/GameErrorsHelper';
 import GameInfo from '../model/server/GameInfo';
 import { sendMessageToServer, attachListeners } from '../utils/ConnectionHelpers';
+import MainView from '../model/enums/MainView';
 import runActionCreators from './run/runActionCreators';
+
+const isConnectedChanged: ActionCreator<Actions.IsConnectedChangedAction> = (isConnected: boolean) => ({
+	type: Actions.ActionTypes.IsConnectedChanged, isConnected
+});
+
+const onConnectionChanged: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (isConnected: boolean, message: string) =>
+	async (dispatch: Dispatch<any>, getState: () => State, dataContext: DataContext) => {
+		dispatch(isConnectedChanged(isConnected));
+
+		const state = getState();
+		if (state.ui.mainView === MainView.Game) {
+			dispatch(runActionCreators.chatMessageAdded({ sender: '', text: message }));
+		} else {
+			dispatch(receiveMessage('', message));
+		}
+
+		if (!isConnected) {
+			return;
+		}
+
+		// Необходимо восстановить состояние, в котором находится лобби или игра
+		if (state.ui.mainView === MainView.Game) {
+			await sendMessageToServer(dataContext.connection, 'INFO');
+		} else {
+			navigateToGamesList(-1)(dispatch, getState, dataContext);
+		}
+	};
 
 const computerAccountsChanged: ActionCreator<Actions.ComputerAccountsChangedAction> = (computerAccounts: string[]) => ({
 	type: Actions.ActionTypes.ComputerAccountsChanged, computerAccounts
@@ -489,6 +517,7 @@ async function gameInit(gameId: number, dataContext: DataContext, role: Role) {
 }
 
 const actionCreators = {
+	onConnectionChanged,
 	computerAccountsChanged,
 	navigateToLogin,
 	navigateToHowToPlay,

@@ -9,6 +9,7 @@ import runActionCreators from '../../state/run/runActionCreators';
 import './PersonsView.css';
 
 interface PersonsViewProps {
+	isConnected: boolean;
 	persons: Account[];
 	login: string;
 	selectedPersonName: string | null;
@@ -21,6 +22,7 @@ const mapStateToProps = (state: State) => {
 	const result = Object.values(state.run.persons.all);
 
 	return {
+		isConnected: state.common.isConnected,
 		persons: result.sort((p1, p2) => p1.name.localeCompare(p2.name)),
 		login: state.user.login,
 		selectedPersonName: state.run.chat.selectedPersonName
@@ -57,8 +59,8 @@ export function PersonsView(props: PersonsViewProps) {
 				))}
 			</ul>
 			<div className="buttonsPanel">
-				<button onClick={() => props.kick()} disabled={!canKick}>{localization.kick}</button>
-				<button onClick={() => props.ban()} disabled={!canKick}>{localization.ban}</button>
+				<button onClick={() => props.kick()} disabled={!props.isConnected || !canKick}>{localization.kick}</button>
+				<button onClick={() => props.ban()} disabled={!props.isConnected || !canKick}>{localization.ban}</button>
 			</div>
 		</React.Fragment>
 	);

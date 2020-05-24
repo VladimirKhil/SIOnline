@@ -7,6 +7,7 @@ import Role from '../model/enums/Role';
 import GameInfo from '../model/server/GameInfo';
 
 export const enum ActionTypes {
+	IsConnectedChanged = 'IS_CONNECTED_CHANGED',
 	ComputerAccountsChanged = 'COMPUTER_ACCOUNTS_CHANGED',
 	NavigateToLogin = 'NAVIGATE_TO_LOGIN',
 	NavigateToHowToPlay = 'NAVIGATE_TO_HOW_TO_PLAY',
@@ -45,6 +46,7 @@ export const enum ActionTypes {
 	GameSet = 'GAME_SET'
 }
 
+export type IsConnectedChangedAction = { type: ActionTypes.IsConnectedChanged, isConnected: boolean };
 export type ComputerAccountsChangedAction = { type: ActionTypes.ComputerAccountsChanged, computerAccounts: string[] };
 export type NavigateToLoginAction = { type: ActionTypes.NavigateToLogin };
 export type NavigateToHowToPlayAction = { type: ActionTypes.NavigateToHowToPlay };
@@ -83,7 +85,8 @@ export type GameCreationEndAction = { type: ActionTypes.GameCreationEnd, error: 
 export type GameSetAction = { type: ActionTypes.GameSet, id: number, isHost: boolean, isAutomatic: boolean, role: Role };
 
 export type KnownAction =
-	ComputerAccountsChangedAction
+	IsConnectedChangedAction
+	| ComputerAccountsChangedAction
 	| NavigateToLoginAction
 	| NavigateToHowToPlayAction
 	| NavigateBackAction

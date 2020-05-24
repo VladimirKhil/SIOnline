@@ -13,6 +13,7 @@ import Constants from '../model/enums/Constants';
 import './NewGameDialog.css';
 
 interface NewGameDialogProps {
+	isConnected: boolean;
 	gameName: string;
 	gameType: GameType;
 	gameRole: Role;
@@ -28,6 +29,7 @@ interface NewGameDialogProps {
 }
 
 const mapStateToProps = (state: State) => ({
+	isConnected: state.common.isConnected,
 	gameName: state.game.name,
 	gameType: state.game.type,
 	gameRole: state.game.role,
@@ -114,7 +116,8 @@ export class NewGameDialog extends React.Component<NewGameDialogProps> {
 					</select>
 				</div>
 				<span className="gameCreationError">{this.props.error}</span>
-				<button className="startGame" disabled={this.props.inProgress} onClick={this.props.onCreate}>{localization.startGame}</button>
+				<button className="startGame" disabled={!this.props.isConnected || this.props.inProgress}
+					onClick={this.props.onCreate}>{localization.startGame}</button>
 				{this.props.inProgress ? <ProgressBar /> : null}
 			</Dialog>
 		);

@@ -10,6 +10,11 @@
     padding: 10pt 30pt 10pt 0;
 }
 
+ul.gamesFilter > li.disabled {
+    color: darkgray;
+    pointer-events: none;
+}
+
 @media screen and (min-width: 800px) {
     .gameslistHost {
         flex: 0 0 300px;

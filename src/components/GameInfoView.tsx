@@ -1,16 +1,16 @@
 ﻿import * as React from 'react';
 import localization from '../model/resources/localization';
 import Role from '../model/enums/Role';
-import { connect, MapStateToProps, MapDispatchToProps } from 'react-redux';
+import { connect } from 'react-redux';
 import State from '../state/State';
 import actionCreators from '../state/actionCreators';
-import { Dispatch, Action } from 'redux';
 import GameInfo from '../model/server/GameInfo';
-
-import './GameInfoView.css';
 import GameType from '../model/enums/GameType';
 
+import './GameInfoView.css';
+
 interface GameInfoViewOwnProps {
+	isConnected: boolean;
 	onPasswordChanged: (password: string) => void;
 	onJoin: (gameId: number, role: Role) => void;
 }
@@ -24,11 +24,10 @@ interface GameInfoViewProps extends GameInfoViewOwnProps, GameInfoViewStateProps
 	showGameName: boolean;
 }
 
-const mapStateToProps = (state: State) => {
-	return {
-		password: state.online.password
-	};
-};
+const mapStateToProps = (state: State) => ({
+	isConnected: state.common.isConnected,
+	password: state.online.password
+});
 
 const mapDispatchToProps = (dispatch: any) => ({
 	onPasswordChanged: (newPassword: string) => {
@@ -178,11 +177,11 @@ export function GameInfoView(props: GameInfoViewProps) {
 						<div className="actions">
 							<div id="actionsHost">
 								<button className="join" onClick={() => props.onJoin(game.gameID, Role.Showman)}
-									disabled={game.passwordRequired && !props.password || !canJoinAsShowman}>{localization.joinAsShowman}</button>
+									disabled={!props.isConnected || game.passwordRequired && !props.password || !canJoinAsShowman}>{localization.joinAsShowman}</button>
 								<button className="join" onClick={() => props.onJoin(game.gameID, Role.Player)}
-									disabled={game.passwordRequired && !props.password || !canJoinAsPlayer}>{localization.joinAsPlayer}</button>
+									disabled={!props.isConnected || game.passwordRequired && !props.password || !canJoinAsPlayer}>{localization.joinAsPlayer}</button>
 								<button className="join" onClick={() => props.onJoin(game.gameID, Role.Viewer)}
-									disabled={game.passwordRequired && !props.password}>{localization.joinAsViewer}</button>
+									disabled={!props.isConnected || game.passwordRequired && !props.password}>{localization.joinAsViewer}</button>
 							</div>
 						</div>
 					</div>

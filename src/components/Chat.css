@@ -19,3 +19,7 @@
     background-color: #C0CFF4;
     font-size: 12pt;
 }
+
+.chatHost .message.disconnected {
+    color: gray;
+}

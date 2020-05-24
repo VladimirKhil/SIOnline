@@ -15,8 +15,12 @@
 	right: 0;
 	top: 0;
 	bottom: 0;
-	background-color: #000000AA;
+	background-color: #000000CC;
 	text-shadow: 2px 2px 0 #000;
+}
+
+#table .pauseLogo.warning {
+	color: darkgray;
 }
 
     #table .tableBorder {

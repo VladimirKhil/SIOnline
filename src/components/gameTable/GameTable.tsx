@@ -24,9 +24,11 @@ import localization from '../../model/resources/localization';
 interface GameTableProps {
 	mode: TableMode;
 	isPaused: boolean;
+	isConnected: boolean;
 }
 
 const mapStateToProps = (state: State) => ({
+	isConnected: state.common.isConnected,
 	mode: state.run.table.mode,
 	isPaused: state.run.stage.isGamePaused
 });
@@ -40,7 +42,9 @@ export function GameTable(props: GameTableProps) {
 	return (
 		<div id="table">
 			{getContent(props.mode)}
-			{props.isPaused ? <AutoSizedText maxFontSize={144} text={localization.pause} className="pauseLogo tableText tableTextCenter" /> : null}
+			{props.isPaused || !props.isConnected ?
+				<AutoSizedText maxFontSize={144} text={props.isPaused ? localization.pause : localization.connectionClosed}
+					className={`pauseLogo tableText tableTextCenter ${props.isConnected ? '' : 'warning'}`} /> : null}
 		</div>
 	);
 }

@@ -1,0 +1,57 @@
+#gameMenuHost {
+    flex: 1 0 0;
+    position: relative;
+}
+
+#gameMenuButton, .gameMenuButton {
+    font-size: 19pt;
+    line-height: 19pt;
+    padding: 7pt 0pt;
+    margin: 0;
+    width: 100%;
+    border-width: 1px 0 1px 1px;
+}
+
+#exitHost {
+    flex: 1 0 0;
+    position: relative;
+}
+
+#exit, .exit {
+    font-size: 19pt;
+    line-height: 19pt;
+    padding: 7pt 0pt;
+    margin: 0;
+    border-width: 1px;
+    width: 100%;
+}
+    
+    .gameMenu, .exitMenu {
+        bottom: 45px;
+        width: 100%;
+        background-color: rgb(192, 207, 244);
+    }
+
+    .exitMenu p {
+        margin: 5px 10px;
+        text-align: center;
+        font-size: 10pt;
+    }
+
+ul.gameMenu, .exitMenu ul {
+    line-height: 30pt;
+    padding: 5px 0 5px 0;
+}
+
+.gameMenu li, .exitMenu li {
+    text-align: center;
+}
+
+.gameMenu li.disabled, .exitMenu li.disabled {
+	color: gray;
+	pointer-events: none;
+}
+
+#exitMenuPopup {
+    padding-top: 10px;
+}

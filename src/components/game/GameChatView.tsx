@@ -12,19 +12,19 @@ import ChatInput from './ChatInput';
 import './GameChatView.css';
 
 interface GameChatViewProps {
+	isConnected: boolean;
 	chatMode: ChatMode;
 	personsCount: number;
 	onChatModeChanged: (chatMode: ChatMode) => void;
 	onMarkQuestion: () => void;
 }
 
-const mapStateToProps = (state: State) => {
-	return {
-		chatMode: state.run.chat.mode,
-		personsCount: Object.values(state.run.persons.all).length,
-		message: state.run.chat.message
-	};
-};
+const mapStateToProps = (state: State) => ({
+	isConnected: state.common.isConnected,
+	chatMode: state.run.chat.mode,
+	personsCount: Object.values(state.run.persons.all).length,
+	message: state.run.chat.message
+});
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	onChatModeChanged: (chatMode: ChatMode) => {
@@ -58,7 +58,7 @@ export function GameChatView(props: GameChatViewProps) {
 					</div>
 				)}
 			</div>
-			<button className="wide commandButton bottomButton"
+			<button className="wide commandButton bottomButton" disabled={!props.isConnected}
 				onClick={() => props.onMarkQuestion()} title={localization.complainHint}>{localization.complain}</button>
 		</div>
 	);

@@ -12,6 +12,15 @@ import * as runState from './run/RunState';
 
 const reducer: Reducer<State> = (state: State = initialState, action: KnownAction | KnownRunAction): State => {
 	switch (action.type) {
+		case ActionTypes.IsConnectedChanged:
+			return {
+				...state,
+				common: {
+					...state.common,
+					isConnected: action.isConnected
+				}
+			};
+
 		case ActionTypes.ComputerAccountsChanged:
 			return {
 				...state,

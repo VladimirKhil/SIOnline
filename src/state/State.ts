@@ -51,6 +51,7 @@ export default interface State {
 	run: RunState;
 	common: {
 		computerAccounts: string[] | null;
+		isConnected: boolean;
 	};
 }
 
@@ -97,6 +98,7 @@ export const initialState: State = {
 	},
 	run: runInitialState,
 	common: {
-		computerAccounts: null
+		computerAccounts: null,
+		isConnected: true
 	}
 };

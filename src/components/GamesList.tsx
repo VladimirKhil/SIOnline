@@ -13,6 +13,7 @@ import GameInfo from '../model/server/GameInfo';
 import './GamesList.css';
 
 interface GamesListOwnProps {
+	isConnected: boolean;
 	onShowGames: () => void;
 	onShowChat: () => void;
 	onHowToPlay: () => void;
@@ -34,6 +35,7 @@ interface GamesListProps extends GamesListOwnProps, GamesListStateProps {
 }
 
 const mapStateToProps = (state: State) => ({
+	isConnected: state.common.isConnected,
 	gamesFilter: state.online.gamesFilter
 });
 
@@ -71,6 +73,8 @@ export function GamesList(props: GamesListProps) {
 	const sortedGames = props.games.slice();
 	sortedGames.sort((game1, game2) => game1.gameName.localeCompare(game2.gameName));
 
+	const enabledClass = props.isConnected ? '' : 'disabled';
+
 	return (
 		<section className="gameslistHost gamesblock">
 			<header>
@@ -86,16 +90,16 @@ export function GamesList(props: GamesListProps) {
 				<h1 id="gamesTitle">{localization.games} (<span>{props.games.length}</span>)</h1>
 				<FlyoutButton className="gamesFilterButton" hideOnClick={false} flyout={
 					<ul className="gamesFilter">
-						<li onClick={() => props.onToggleFilterItem(GamesFilter.New)}>
+						<li className={enabledClass} onClick={() => props.onToggleFilterItem(GamesFilter.New)}>
 							<CheckBox isChecked={(props.gamesFilter & GamesFilter.New) > 0} header={localization.new} />
 						</li>
-						<li onClick={() => props.onToggleFilterItem(GamesFilter.Sport)}>
+						<li className={enabledClass} onClick={() => props.onToggleFilterItem(GamesFilter.Sport)}>
 							<CheckBox isChecked={(props.gamesFilter & GamesFilter.Sport) > 0} header={localization.sportPlural} />
 						</li>
-						<li onClick={() => props.onToggleFilterItem(GamesFilter.Tv)}>
+						<li className={enabledClass} onClick={() => props.onToggleFilterItem(GamesFilter.Tv)}>
 							<CheckBox isChecked={(props.gamesFilter & GamesFilter.Tv) > 0} header={localization.tvPlural} />
 						</li>
-						<li onClick={() => props.onToggleFilterItem(GamesFilter.NoPassword)}>
+						<li className={enabledClass} onClick={() => props.onToggleFilterItem(GamesFilter.NoPassword)}>
 							<CheckBox isChecked={(props.gamesFilter & GamesFilter.NoPassword) > 0} header={localization.withoutPassword} />
 						</li>
 					</ul>
@@ -115,8 +119,9 @@ export function GamesList(props: GamesListProps) {
 					</li>
 				))}
 			</ul>
-			<button id="newAutoGame" onClick={props.onNewAutoSearchGame} title={localization.autoSearchHint}>{localization.autoSearch}</button>
-			<button id="newGame" onClick={props.onNewGame}>{localization.newGame.toLocaleUpperCase()}</button>
+			<button id="newAutoGame" disabled={!props.isConnected} onClick={props.onNewAutoSearchGame}
+				title={localization.autoSearchHint}>{localization.autoSearch}</button>
+			<button id="newGame" disabled={!props.isConnected} onClick={props.onNewGame}>{localization.newGame.toLocaleUpperCase()}</button>
 		</section>
 	);
 }

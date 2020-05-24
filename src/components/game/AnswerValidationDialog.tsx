@@ -9,6 +9,7 @@ import Dialog from '../common/Dialog';
 import './AnswerValidationDialog.css';
 
 interface AnswerValidationDialogProps {
+	isConnected: boolean;
 	header: string;
 	message: string;
 	rightAnswers: string[];
@@ -18,6 +19,7 @@ interface AnswerValidationDialogProps {
 }
 
 const mapStateToProps = (state: State) => ({
+	isConnected: state.common.isConnected,
 	header: state.run.validation.header,
 	message: state.run.validation.message,
 	rightAnswers: state.run.validation.rightAnswers,
@@ -57,8 +59,8 @@ export class AnswerValidationDialog extends React.Component<AnswerValidationDial
 					</div>
 				</div>
 				<div className="buttonsPanel">
-					<button onClick={() => this.props.onApprove()}>{localization.yes}</button>
-					<button onClick={() => this.props.onReject()}>{localization.no}</button>
+					<button disabled={!this.props.isConnected} onClick={() => this.props.onApprove()}>{localization.yes}</button>
+					<button disabled={!this.props.isConnected} onClick={() => this.props.onReject()}>{localization.no}</button>
 				</div>
 			</Dialog>
 		);

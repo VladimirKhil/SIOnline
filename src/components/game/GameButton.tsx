@@ -8,6 +8,7 @@ import State from '../../state/State';
 import { Dispatch, Action } from 'redux';
 
 interface GameButtonProps {
+	isConnected: boolean;
 	role: Role;
 	isGameButtonEnabled: boolean;
 	isAfterQuestion: boolean;
@@ -17,6 +18,7 @@ interface GameButtonProps {
 }
 
 const mapStateToProps = (state: State) => ({
+	isConnected: state.common.isConnected,
 	role: state.run.role,
 	isGameButtonEnabled: state.run.isGameButtonEnabled,
 	isAfterQuestion: state.run.stage.isAfterQuestion,
@@ -36,10 +38,10 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 export function GameButton(props: GameButtonProps) {
 	return (
 		<>
-			<button className="playerButton" title={localization.gameButton} disabled={!props.isGameButtonEnabled}
+			<button className="playerButton" title={localization.gameButton} disabled={!props.isConnected || !props.isGameButtonEnabled}
 				onClick={() => props.pressGameButton()}>&nbsp;</button>
 			{props.isAfterQuestion ? (
-				<button className="playerButton hoverButton" title={localization.apellateAnswer} onClick={() => props.apellate()}>
+				<button className="playerButton hoverButton" disabled={!props.isConnected} title={localization.apellateAnswer} onClick={() => props.apellate()}>
 					{props.sex === Sex.Female ? localization.iAmRightFemale : localization.iAmRightMale}
 				</button>
 			) : null}

@@ -6,12 +6,14 @@ import { Dispatch, Action } from 'redux';
 import StakeTypes from '../../../model/enums/StakeTypes';
 
 interface SendStakeButtonProps {
+	isConnected: boolean;
 	allowedStakeTypes: Record<StakeTypes, boolean>;
 	stake: number;
 	sendStake: () => void;
 }
 
 const mapStateToProps = (state: State) => ({
+	isConnected: state.common.isConnected,
 	allowedStakeTypes: state.run.stakes.allowedStakeTypes,
 	stake: state.run.stakes.stake
 });
@@ -26,7 +28,7 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 export function SendStakeButton(props: SendStakeButtonProps) {
 	const canSendStake = props.allowedStakeTypes[StakeTypes.Sum];
 
-	return <button onClick={() => props.sendStake()} disabled={!canSendStake}>{canSendStake ? props.stake : ''}</button>;
+	return <button onClick={() => props.sendStake()} disabled={!props.isConnected || !canSendStake}>{canSendStake ? props.stake : ''}</button>;
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(SendStakeButton);
