@@ -32,3 +32,9 @@
         flex: 0 0 400px;
     }
 }
+
+@media screen and (min-width: 1600px) {
+    .chatHost {
+        flex: 0 0 600px;
+    }
+}

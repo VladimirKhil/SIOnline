@@ -27,3 +27,9 @@ ul.gamesFilter > li.disabled {
         flex: 0 0 400px;
     }
 }
+
+@media screen and (min-width: 1600px) {
+    .gameslistHost {
+        flex: 0 0 600px;
+    }
+}
