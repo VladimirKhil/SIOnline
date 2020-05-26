@@ -8,13 +8,15 @@ import UsersView from './UsersView';
 import OnlineMode from '../model/enums/OnlineMode';
 import NewGameDialog from './NewGameDialog';
 import GameInfo from '../model/server/GameInfo';
-
-import './OnlineView.css';
 import Dialog from './common/Dialog';
 import actionCreators from '../state/actionCreators';
 import { Dispatch, Action } from 'redux';
+import ProgressBar from './common/ProgressBar';
+
+import './OnlineView.css';
 
 interface OnlineViewProps {
+	inProgress: boolean;
 	filteredGames: GameInfo[];
 	selectedGameId: number;
 	selectedGame?: GameInfo;
@@ -57,6 +59,7 @@ const mapStateToProps = (state: State) => {
 	const selectedGameId = hasSelectedGame ? state.online.selectedGameId : (filteredGames.length > 0 ? filteredGames[0].gameID : -1);
 
 	return {
+		inProgress: state.online.inProgress,
 		filteredGames,
 		selectedGameId,
 		selectedGame: state.online.games[selectedGameId],
@@ -90,6 +93,7 @@ export class OnlineView extends React.Component<OnlineViewProps> {
 			if (this.props.mode === OnlineMode.Games || this.props.mode === OnlineMode.GameInfo) {
 				return (
 					<div className="onlineView">
+						{this.props.inProgress ? <ProgressBar /> : null}
 						<GamesList games={this.props.filteredGames} selectedGameId={this.props.selectedGameId} showInfo={true} />
 						{this.props.newGameShown ? <NewGameDialog /> : null}
 					</div>
@@ -101,6 +105,7 @@ export class OnlineView extends React.Component<OnlineViewProps> {
 
 		return (
 			<div className="onlineView">
+				{this.props.inProgress ? <ProgressBar /> : null}
 				<GamesList games={this.props.filteredGames} selectedGameId={this.props.selectedGameId} showInfo={false} />
 				<GameInfoView game={this.props.selectedGame} showGameName={true} />
 				<UsersView />
