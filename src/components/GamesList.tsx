@@ -17,6 +17,7 @@ interface GamesListOwnProps {
 	onShowGames: () => void;
 	onShowChat: () => void;
 	onHowToPlay: () => void;
+	onShowSettings: () => void;
 	onExit: () => void;
 	onToggleFilterItem: (gamesFilterItem: GamesFilter) => void;
 	onSelectGame: (gameId: number, showInfo: boolean) => void;
@@ -45,6 +46,9 @@ const mapDispatchToProps = (dispatch: any) => ({
 	},
 	onShowChat: () => {
 		dispatch(actionCreators.onOnlineModeChanged(OnlineMode.Chat));
+	},
+	onShowSettings: () => {
+		dispatch(actionCreators.showSettings(true));
 	},
 	onHowToPlay: () => {
 		dispatch(actionCreators.navigateToHowToPlay());
@@ -82,6 +86,7 @@ export function GamesList(props: GamesListProps) {
 					<ul>
 						<li onClick={props.onShowGames}>{localization.games}</li>
 						<li onClick={props.onShowChat}>{localization.chat}</li>
+						<li onClick={props.onShowSettings}>{localization.settings}</li>
 						<li onClick={props.onHowToPlay}>{localization.howToPlay}</li>
 						<li onClick={props.onExit}>{localization.exit}</li>
 					</ul>

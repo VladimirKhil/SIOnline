@@ -57,6 +57,10 @@ const navigateToLogin: ActionCreator<Actions.NavigateToLoginAction> = () => ({
 	type: Actions.ActionTypes.NavigateToLogin
 });
 
+const showSettings: ActionCreator<Actions.ShowSettingsAction> = (show: boolean) => ({
+	type: Actions.ActionTypes.ShowSettings, show
+});
+
 const navigateToHowToPlay: ActionCreator<Actions.NavigateToHowToPlayAction> = () => ({
 	type: Actions.ActionTypes.NavigateToHowToPlay
 });
@@ -522,6 +526,7 @@ const actionCreators = {
 	onConnectionChanged,
 	computerAccountsChanged,
 	navigateToLogin,
+	showSettings,
 	navigateToHowToPlay,
 	navigateBack,
 	onLoginChanged,

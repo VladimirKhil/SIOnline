@@ -42,6 +42,15 @@ const reducer: Reducer<State> = (state: State = initialState, action: KnownActio
 				}
 			};
 
+		case ActionTypes.ShowSettings:
+			return {
+				...state,
+				ui: {
+					...state.ui,
+					areSettingsVisible: action.show
+				}
+			};
+
 		case ActionTypes.NavigateToHowToPlay:
 			return {
 				...state,

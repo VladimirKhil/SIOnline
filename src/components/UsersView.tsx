@@ -21,6 +21,7 @@ interface UsersViewOwnProps {
 	onChatModeChanged: (chatMode: ChatMode) => void;
 	onShowGames: () => void;
 	onShowChat: () => void;
+	onShowSettings: () => void;
 	onHowToPlay: () => void;
 	onExit: () => void;
 }
@@ -45,6 +46,9 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	},
 	onShowChat: () => {
 		dispatch(actionCreators.onOnlineModeChanged(OnlineMode.Chat));
+	},
+	onShowSettings: () => {
+		dispatch(actionCreators.showSettings(true));
 	},
 	onHowToPlay: () => {
 		dispatch(actionCreators.navigateToHowToPlay());
@@ -82,6 +86,7 @@ export function UsersView(props: UsersViewProps) {
 				</div>
 				<FlyoutButton className="logOffButton" flyout={
 					<ul>
+						<li onClick={props.onShowSettings}>{localization.settings}</li>
 						<li onClick={props.onHowToPlay}>{localization.howToPlay}</li>
 						<li onClick={props.onExit}>{localization.exit}</li>
 					</ul>

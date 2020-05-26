@@ -10,6 +10,7 @@ export const enum ActionTypes {
 	IsConnectedChanged = 'IS_CONNECTED_CHANGED',
 	ComputerAccountsChanged = 'COMPUTER_ACCOUNTS_CHANGED',
 	NavigateToLogin = 'NAVIGATE_TO_LOGIN',
+	ShowSettings = 'SHOW_SETTINGS',
 	NavigateToHowToPlay = 'NAVIGATE_TO_HOW_TO_PLAY',
 	NavigateBack = 'NAVIGATE_BACK',
 	LoginChanged = 'LOGIN_CHANGED',
@@ -49,6 +50,7 @@ export const enum ActionTypes {
 export type IsConnectedChangedAction = { type: ActionTypes.IsConnectedChanged, isConnected: boolean };
 export type ComputerAccountsChangedAction = { type: ActionTypes.ComputerAccountsChanged, computerAccounts: string[] };
 export type NavigateToLoginAction = { type: ActionTypes.NavigateToLogin };
+export type ShowSettingsAction = { type: ActionTypes.ShowSettings, show: boolean };
 export type NavigateToHowToPlayAction = { type: ActionTypes.NavigateToHowToPlay };
 export type NavigateBackAction = { type: ActionTypes.NavigateBack };
 export type LoginChangedAction = { type: ActionTypes.LoginChanged, newLogin: string };
@@ -88,6 +90,7 @@ export type KnownAction =
 	IsConnectedChangedAction
 	| ComputerAccountsChangedAction
 	| NavigateToLoginAction
+	| ShowSettingsAction
 	| NavigateToHowToPlayAction
 	| NavigateBackAction
 	| LoginChangedAction

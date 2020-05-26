@@ -25,6 +25,7 @@ export default interface State {
 		previousMainView: MainView;
 		onlineView: OnlineMode;
 		windowWidth: number;
+		areSettingsVisible: boolean;
 	};
 	online: {
 		inProgress: boolean;
@@ -70,7 +71,8 @@ export const initialState: State = {
 		mainView: MainView.Loading,
 		previousMainView: MainView.Loading,
 		onlineView: OnlineMode.Games,
-		windowWidth: window.innerWidth
+		windowWidth: window.innerWidth,
+		areSettingsVisible: false
 	},
 	online: {
 		inProgress: false,

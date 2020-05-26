@@ -1,0 +1,33 @@
+#settingsDialog {
+	background-color: #5A95E2;
+}
+
+.settingsDialogBody {
+	padding: 20px;
+	font-size: 20px;
+}
+
+.settingsDialogBody input[type=checkbox] {
+    transform: scale(1.5);
+}
+
+.settingsDialogBody label {
+	margin-left: 10px;
+    vertical-align: text-bottom;
+    cursor: pointer;
+}
+
+@media screen and (min-width: 800px) {
+    #settingsDialog {
+        width: 300px;
+        left: initial;
+        border-left: 1px solid #FFE682;
+        z-index: 0;
+    }
+}
+
+@media screen and (min-width: 1600px) {
+    #settingsDialog {
+        width: 600px;
+    }
+}

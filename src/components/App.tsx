@@ -10,14 +10,19 @@ import Loading from './Loading';
 import HowToPlay from './HowToPlay';
 import OnlineView from './OnlineView';
 import InGameView from './game/InGameView';
+import SettingsDialog from './settings/SettingsDialog';
+
+import './App.css';
 
 interface AppProps {
 	ads?: string;
 	mainView: MainView;
+	areSettingsVisible: boolean;
 }
 
 const mapStateToProps = (state: State) => ({
-	mainView: state.ui.mainView
+	mainView: state.ui.mainView,
+	areSettingsVisible: state.ui.areSettingsVisible
 });
 
 declare const onLoad: () => void;
@@ -33,7 +38,7 @@ export class App extends React.Component<AppProps> {
 		}
 	}
 
-	render() {
+	getContent() {
 		switch (this.props.mainView) {
 			case MainView.Loading:
 				return <Loading />;
@@ -52,6 +57,15 @@ export class App extends React.Component<AppProps> {
 		}
 
 		return null;
+	}
+
+	render() {
+		return (
+			<div className="app">
+				{this.getContent()}
+				{this.props.areSettingsVisible ? <SettingsDialog /> : null}
+			</div>
+		);
 	}
 }
 
