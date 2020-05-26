@@ -64,6 +64,8 @@ export default class FlyoutButton extends React.Component<FlyoutButtonProps, Fly
 			x: 0,
 			y: 0
 		};
+
+		this.hideFlyout = this.hideFlyout.bind(this); // 'resize' почему-то не передаёт this
 	}
 
 	static defaultProps: Partial<FlyoutButtonProps> = {
@@ -82,7 +84,7 @@ export default class FlyoutButton extends React.Component<FlyoutButtonProps, Fly
 		}
 
 		window.removeEventListener('mousedown', this.hideFlyout);
-		window.removeEventListener('resize', this.hideFlyout.bind(this));
+		window.removeEventListener('resize', this.hideFlyout);
 
 		if (this.timerRef) {
 			window.clearTimeout(this.timerRef);
@@ -98,7 +100,7 @@ export default class FlyoutButton extends React.Component<FlyoutButtonProps, Fly
 		}
 
 		window.addEventListener('mousedown', this.hideFlyout);
-		window.addEventListener('resize', this.hideFlyout.bind(this));
+		window.addEventListener('resize', this.hideFlyout);
 
 		const rect = this.buttonRef.current.getBoundingClientRect();
 
@@ -116,7 +118,7 @@ export default class FlyoutButton extends React.Component<FlyoutButtonProps, Fly
 		}
 
 		window.removeEventListener('mousedown', this.hideFlyout);
-		window.removeEventListener('resize', this.hideFlyout.bind(this));
+		window.removeEventListener('resize', this.hideFlyout);
 
 		this.timerRef = window.setTimeout(
 			() => {
