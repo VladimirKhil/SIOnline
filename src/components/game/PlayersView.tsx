@@ -2,14 +2,13 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import State from '../../state/State';
 import { Dispatch, Action } from 'redux';
-import Account from '../../model/Account';
 import runActionCreators from '../../state/run/runActionCreators';
-
-import './PlayersView.css';
 import AutoSizedText from '../autoSizedText/AutoSizedText';
 import PlayerInfo from '../../model/PlayerInfo';
 import Persons from '../../model/Persons';
 import PlayerStates from '../../model/enums/PlayerStates';
+
+import './PlayersView.css';
 
 interface PlayersViewProps {
 	players: PlayerInfo[];
@@ -64,14 +63,16 @@ export function PlayersView(props: PlayersViewProps) {
 							className={buildPlayerClasses(player, player.name === props.login, player.canBeSelected)}
 							onClick={() => props.onPlayerSelected(index)}>
 							{account && account.avatar ? <img className="playerAvatar" src={account.avatar} /> : null}
-							<span className="name">{player.name}</span>
-							<div className="sum">
-								<span>{player.sum}</span>
-								{player.stake > 0 ? <span className="stake">{player.stake}</span> : null}
+							<div className="playerInfo">
+								<span className="name">{player.name}</span>
+								<div className="sum">
+									<span>{player.sum}</span>
+									{player.stake > 0 ? <span className="stake">{player.stake}</span> : null}
+								</div>
 							</div>
 							{player.replic && player.replic.length > 0 ? (
 								<AutoSizedText id={`playerReplic_${index}`} className="playerReplic"
-									text={player.replic} maxFontSize={24} />
+									text={player.replic} maxFontSize={48} />
 								) : null
 							}
 						</li>

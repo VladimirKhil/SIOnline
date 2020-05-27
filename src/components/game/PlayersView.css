@@ -22,6 +22,14 @@
         border-bottom: 1px solid darkgray;
         padding: 4px;
         position: relative;
+        display: flex;
+    }
+
+    .gamePlayers .playerInfo {
+        flex: 1;
+        display: flex;
+        flex-flow: column;
+        justify-content: center;
     }
 
     .gamePlayers li.me .name {
@@ -49,7 +57,6 @@
     }
 
     .gamePlayers .name {
-        height: 22px;
         overflow: hidden;
         white-space: nowrap;
         text-overflow: ellipsis;
@@ -73,6 +80,10 @@
         z-index: 1;
     }
 
+.playerAvatar {
+    height: 100%;
+}
+
 .gamePlayer {
     background-color: transparent;
 }
@@ -95,4 +106,26 @@
 
 .gamePlayer.selectable {
     background-color: cyan;
+}
+
+@media screen and (min-width: 1100px) {
+    .gamePlayers li {
+        height: 150px;
+    }
+
+    .gamePlayers .playerReplic {
+        top: 149px;
+        height: 200px;
+    }
+
+    .gamePlayers .playerInfo {
+        font-size: 26px;
+    }
+
+    .gamePlayers .stake {
+        display: block;
+        border-left-width: 0;
+        padding-left: 0;
+        margin-left: 0;
+    }
 }

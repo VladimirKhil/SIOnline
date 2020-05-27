@@ -479,23 +479,6 @@ showman::after, player::after, viewer::after {
     content: ": "
 }
 
-#showmanReplic {
-    width: 100%;
-    margin: 0;
-    padding: 5px;
-    flex: 0 0 90px;
-    background-color: lightyellow;
-    text-align: center;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
-}
-
-#showmanReplic.highlighted {
-    background-color: orange;
-}
-
 #gameMessageHost {
     flex: 2 0 0;
     margin: 0;
@@ -826,11 +809,6 @@ video, audio {
 .gameHeader {
     padding-left: 10px;
     height: 50px;
-}
-
-.playerAvatar {
-    height: 100%;
-    float: left;
 }
 
 @media screen and (min-width: 470px) {

@@ -2,17 +2,20 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import State from '../../state/State';
 import { Dispatch, Action } from 'redux';
+import AutoSizedText from '../autoSizedText/AutoSizedText';
+import Account from '../../model/Account';
 
 import './ShowmanReplicView.css';
-import AutoSizedText from '../autoSizedText/AutoSizedText';
 
 interface ShowmanReplicViewProps {
 	replic: string | null;
+	account: Account;
 	decisionNeeded: boolean;
 }
 
 const mapStateToProps = (state: State) => ({
 	replic: state.run.persons.showman.replic,
+	account: state.run.persons.all[state.run.persons.showman.name],
 	decisionNeeded: state.run.stage.isDecisionNeeded
 });
 
@@ -22,8 +25,16 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 
 // tslint:disable-next-line: function-name
 export function ShowmanReplicView(props: ShowmanReplicViewProps) {
-	return <AutoSizedText id="showmanReplic" className={props.decisionNeeded ? 'highlighted' : ''}
-		text={props.replic || ''} maxFontSize={36} />;
+	return (
+		<div className="showmanArea">
+			<div className="showmanInfo">
+				{props.account && props.account.avatar ? <div className="showmanAvatar"><img src={props.account.avatar} /></div> : null}
+				<div className="showmanName">{props.account?.name}</div>
+			</div>
+			<AutoSizedText id="showmanReplic" className={props.decisionNeeded ? 'highlighted' : ''}
+				text={props.replic || ''} maxFontSize={72} />
+		</div>
+	);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(ShowmanReplicView);

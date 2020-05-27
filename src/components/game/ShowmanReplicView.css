@@ -1,0 +1,57 @@
+.showmanArea {
+    width: 100%;
+    flex: 0 0 90px;
+    display: flex;
+    overflow: hidden;
+    padding: 4px;
+    background-color: lightyellow;
+}
+
+#showmanReplic {
+    width: 100%;
+    margin: 0;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#showmanReplic.highlighted {
+    background-color: orange;
+}
+
+.showmanInfo {
+    display: none;
+    flex-flow: column;
+    flex: 0 0 160px;
+}
+
+.showmanAvatar {
+    overflow: hidden;
+    flex: 1;
+    display: flex;
+    width: 160px;
+    justify-content: center;
+}
+
+.showmanAvatar img {
+    height: 100%;
+}
+
+.showmanName {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: center;
+    width: 160px;
+}
+
+@media screen and (min-width: 1100px) {
+    .showmanArea {
+        flex: 0 0 150px;
+    }
+
+    .showmanInfo {
+        display: flex;
+    }
+}
