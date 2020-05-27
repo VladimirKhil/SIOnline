@@ -12,19 +12,16 @@ import './Login.css';
 
 interface LoginProps {
 	login: string;
-	sex: Sex;
 	inProgress: boolean;
 	error: string | null;
 	ads?: string;
 	onLoginChanged: (newLogin: string) => void;
-	onSexChanged: (newSex: Sex) => void;
 	onHowToPlay: () => void;
 	onLogin: () => void;
 }
 
 const mapStateToProps = (state: State) => ({
 	login: state.user.login,
-	sex: state.user.sex,
 	inProgress: state.login.inProgress,
 	error: state.login.errorMessage,
 });
@@ -35,9 +32,6 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	},
 	onLoginChanged: (newLogin: string) => {
 		dispatch(actionCreators.onLoginChanged(newLogin));
-	},
-	onSexChanged: (newSex: Sex) => {
-		dispatch(actionCreators.onSexChanged(newSex));
 	},
 	onLogin: () => {
 		dispatch(actionCreators.login() as object as Action); // TODO: разобраться с типизацией
@@ -51,10 +45,6 @@ export class Login extends React.Component<LoginProps> {
 
 	private onLoginChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
 		this.props.onLoginChanged(e.target.value);
-	}
-
-	private onSexChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
-		this.props.onSexChanged(e.target.id === 'male' && e.target.checked ? Sex.Male : Sex.Female);
 	}
 
 	private onLoginKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -74,15 +64,7 @@ export class Login extends React.Component<LoginProps> {
 						<input id="entername" name="name" autoFocus value={this.props.login} maxLength={30} disabled={this.props.inProgress}
 							onChange={this.onLoginChanged} onKeyPress={this.onLoginKeyPress} />
 
-						<p className="header">{localization.sex}</p>
-						<div className="sexLogin">
-							<input type="radio" id="male" name="sex" disabled={this.props.inProgress}
-								checked={this.props.sex === Sex.Male} onChange={this.onSexChanged} />
-							<label htmlFor="male">{localization.male}</label>
-							<input type="radio" id="female" name="sex" disabled={this.props.inProgress}
-								checked={this.props.sex === Sex.Female} onChange={this.onSexChanged} />
-							<label htmlFor="female">{localization.female}</label>
-						</div>
+						<p>{localization.settingsHint}</p>
 
 						<div className="siAdHost" dangerouslySetInnerHTML={{ __html: this.props.ads ? this.props.ads : '' }} />
 

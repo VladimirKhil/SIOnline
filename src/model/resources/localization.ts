@@ -112,6 +112,7 @@
 	selectStaker: 'Выберите ставящего',
 	selectThemeDeleter: 'Выберите убирающего тему',
 	settings: 'Настройки',
+	settingsHint: 'Вы можете изменить пол в разделе "Настройки"',
 	sex: 'Пол',
 	showChat: 'Показать чат',
 	showman: 'Ведущий',

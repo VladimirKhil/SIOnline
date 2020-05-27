@@ -22,7 +22,7 @@ const mapStateToProps = (state: State) => ({
 	role: state.run.role,
 	isGameButtonEnabled: state.run.isGameButtonEnabled,
 	isAfterQuestion: state.run.stage.isAfterQuestion,
-	sex: state.user.sex
+	sex: state.settings.sex
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({

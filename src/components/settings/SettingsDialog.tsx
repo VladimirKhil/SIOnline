@@ -6,13 +6,15 @@ import State from '../../state/State';
 import actionCreators from '../../state/actionCreators';
 import localization from '../../model/resources/localization';
 import SettingsState from '../../state/settings/SettingsState';
+import settingsActionCreators from '../../state/settings/settingsActionCreators';
+import Sex from '../../model/enums/Sex';
 
 import './SettingsDialog.css';
-import settingsActionCreators from '../../state/settings/settingsActionCreators';
 
 interface SettingsDialogProps {
 	settings: SettingsState;
 	onMute: (isSoundEnabled: boolean) => void;
+	onSexChanged: (newSex: Sex) => void;
 	onClose: () => void;
 }
 
@@ -23,6 +25,9 @@ const mapStateToProps = (state: State) => ({
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	onMute: (isSoundEnabled: boolean) => {
 		dispatch(settingsActionCreators.isSoundEnabledChanged(isSoundEnabled));
+	},
+	onSexChanged: (newSex: Sex) => {
+		dispatch(settingsActionCreators.onSexChanged(newSex));
 	},
 	onClose: () => {
 		dispatch(actionCreators.showSettings(false));
@@ -56,6 +61,10 @@ export class SettingsDialog extends React.Component<SettingsDialogProps> {
 		console.log('a');
 	}
 
+	private onSexChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
+		this.props.onSexChanged(e.target.id === 'male' && e.target.checked ? Sex.Male : Sex.Female);
+	}
+
 	render() {
 		return (
 			<Dialog id="settingsDialog" title={localization.settings} onClose={this.props.onClose}>
@@ -63,6 +72,16 @@ export class SettingsDialog extends React.Component<SettingsDialogProps> {
 					<input id="isSoundEnabled" type="checkbox" checked={this.props.settings.isSoundEnabled}
 						onChange={() => this.props.onMute(!this.props.settings.isSoundEnabled)} />
 					<label htmlFor="isSoundEnabled">{localization.sound}</label>
+
+					<p className="header">{localization.sex}</p>
+						<div className="sexLogin">
+							<input type="radio" id="male" name="sex"
+								checked={this.props.settings.sex === Sex.Male} onChange={this.onSexChanged} />
+							<label htmlFor="male">{localization.male}</label>
+							<input type="radio" id="female" name="sex"
+								checked={this.props.settings.sex === Sex.Female} onChange={this.onSexChanged} />
+							<label htmlFor="female">{localization.female}</label>
+						</div>
 				</div>
 			</Dialog>
 		);

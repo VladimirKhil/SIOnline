@@ -14,7 +14,6 @@ import SettingsState, { initialState as settingsInitialState } from './settings/
 export default interface State {
 	user: {
 		login: string;
-		sex: Sex;
 	};
 	login: {
 		inProgress: boolean;
@@ -60,8 +59,7 @@ export default interface State {
 
 export const initialState: State = {
 	user: {
-		login: '',
-		sex: Sex.Male
+		login: ''
 	},
 	login: {
 		inProgress: false,

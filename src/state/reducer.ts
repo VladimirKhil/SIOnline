@@ -79,15 +79,6 @@ const reducer: Reducer<State> = (state: State = initialState, action: KnownActio
 				}
 			};
 
-		case ActionTypes.SexChanged:
-			return {
-				...state,
-				user: {
-					...state.user,
-					sex: action.newSex
-				}
-			};
-
 		case ActionTypes.LoginStart:
 			return {
 				...state,

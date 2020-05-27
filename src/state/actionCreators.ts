@@ -73,10 +73,6 @@ const onLoginChanged: ActionCreator<Actions.LoginChangedAction> = (newLogin: str
 	type: Actions.ActionTypes.LoginChanged, newLogin
 });
 
-const onSexChanged: ActionCreator<Actions.SexChangedAction> = (newSex: Sex) => ({
-	type: Actions.ActionTypes.SexChanged, newSex
-});
-
 const loginStart: ActionCreator<Actions.LoginStartAction> = () => ({
 	type: Actions.ActionTypes.LoginStart
 });
@@ -270,7 +266,7 @@ const joinGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (
 				return;
 			}
 
-			const result = await dataContext.connection.invoke('JoinGameNew', gameId, role, state.user.sex === Sex.Male, state.online.password);
+			const result = await dataContext.connection.invoke('JoinGameNew', gameId, role, state.settings.sex === Sex.Male, state.online.password);
 
 			if (result.errorMessage) {
 				alert(`${localization.joinError}: ${result.errorMessage}`);
@@ -380,7 +376,7 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 		const players = [];
 		const viewers = [];
 
-		const me = { Name: state.user.login, IsHuman: true, Sex: state.user.sex === Sex.Male };
+		const me = { Name: state.user.login, IsHuman: true, Sex: state.settings.sex === Sex.Male };
 
 		const playersCount = state.game.playersCount;
 
@@ -486,7 +482,7 @@ const createNewAutoGame: ActionCreator<ThunkAction<void, State, DataContext, Act
 		dispatch(gameCreationStart());
 
 		try {
-			const result = await dataContext.connection.invoke('CreateAutomaticGameNew', state.user.login, state.user.sex === Sex.Male);
+			const result = await dataContext.connection.invoke('CreateAutomaticGameNew', state.user.login, state.settings.sex === Sex.Male);
 
 			saveStateToStorage(state);
 
@@ -530,7 +526,6 @@ const actionCreators = {
 	navigateToHowToPlay,
 	navigateBack,
 	onLoginChanged,
-	onSexChanged,
 	login,
 	navigateToGamesList,
 	onOnlineModeChanged,
