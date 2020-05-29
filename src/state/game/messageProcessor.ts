@@ -73,6 +73,15 @@ const userMessageReceived: ActionCreator<ThunkAction<void, State, DataContext, A
 
 const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataContext, args: string[]) => {
 	switch (args[0]) {
+		case 'ADS':
+			if (args.length === 1) {
+				break;
+			}
+
+			const adsMessage = args[1];
+			// TODO: show ad on screen
+			break;
+
 		case 'ATOM':
 			switch (args[1]) {
 				case 'text':
@@ -256,25 +265,6 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 			break;
 		}
 
-		case 'PRINT':
-			{
-				let text = '';
-				for (let i = 1; i < args.length; i++) {
-					if (text.length > 0) {
-						text += '<br>';
-					}
-
-					text += args[i];
-				}
-
-				if (text.lastIndexOf('<special>Рекламное сообщение:', 0) === 0) {
-					break;
-				}
-
-				print(dispatch, state, text);
-			}
-			break;
-
 		case 'QTYPE':
 			const qType = args[1];
 			switch (qType) {
@@ -298,6 +288,14 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 			dispatch(runActionCreators.playersStateCleared());
 			dispatch(tableActionCreators.showText(args[1]));
 			dispatch(runActionCreators.afterQuestionStateChanged(false));
+			break;
+
+		case 'REPLIC':
+			if (args.length < 3) {
+				break;
+			}
+
+			onReplic(dispatch, state, args);
 			break;
 
 		case 'RESUME':
@@ -697,69 +695,34 @@ function info(dispatch: Dispatch<RunActions.KnownRunAction>, ...args: string[]) 
 	dispatch(runActionCreators.infoChanged(all, showman, players));
 }
 
-function print(dispatch: Dispatch<RunActions.KnownRunAction>, state: State, text: string) {
-	let textToPrint: string = text;
+function onReplic(dispatch: Dispatch<RunActions.KnownRunAction>, state: State, args: string[]) {
+	const personCode = args[1];
 
-	if (text.indexOf('<replic old="true"') > -1) {
-		if (text.indexOf('Правильный ответ:') > -1) {
-			textToPrint = '<showman></showman><replic>Правильный ответ:</replic><line />';
-		} else {
-			return; // Эти реплики дублируются игровым табло, и их показывать не надо
+	let text = '';
+	for (let i = 2; i < args.length; i++) {
+		if (text.length > 0) {
+			text += '<br>';
 		}
+
+		text += args[i];
 	}
 
-	if (text.lastIndexOf('<showman>', 0) === 0) {
-		let replicMarker = '<replic>';
-		let replicStart = text.indexOf(replicMarker);
-
-		if (replicStart === -1) {
-			replicMarker = '<replic old=\"true\">';
-			replicStart = text.indexOf(replicMarker);
-			if (replicStart === -1) {
-				replicStart = text.indexOf('<system>');
-			}
-		}
-
-		let replicEnd = text.indexOf('</replic>');
-
-		if (replicEnd === -1) {
-			replicEnd = text.indexOf('</system>');
-		}
-
-		const replic = text.substring(replicStart + replicMarker.length, replicEnd);
-
-		dispatch(runActionCreators.showmanReplicChanged(replic.replace(/&amp;/g, '&').replace(/&quot;/g, '"')));
-
-		if (text.indexOf(`${localization.adsMessage}:`) === -1) { // Bad design
-			return;
-		}
-
-		textToPrint = replic;
-
-	} else if (text.lastIndexOf('<player>', 0) === 0) {
-		const index = parseInt(text['<player>'.length], 10);
-
-		const replicStart = text.indexOf('<replic>');
-		const replicEnd = text.indexOf('</replic>');
-		const replic = text.substring(replicStart + 8, replicEnd);
-
-		dispatch(runActionCreators.playerReplicChanged(index, replic.replace(/&amp;/g, '&').replace(/&quot;/g, '"')));
+	if (personCode === 's') {
+		dispatch(runActionCreators.showmanReplicChanged(text));
 		return;
-	} else if (text.lastIndexOf('<system>', 0) === 0) {
-		// Omit system messages
-		// const systemEnd = text.indexOf('</system>', 0);
-		// if (systemEnd > -1) {
-		// 	textToPrint = text.substring('<system>'.length, systemEnd);
-		// }
-		return;
-	} else if (text.lastIndexOf('<special>', 0) === 0) {
-		const systemEnd = text.indexOf('</special>', 0);
-		if (systemEnd > -1) {
-			textToPrint = text.substring('<special>'.length, systemEnd);
-		}
 	}
 
-	dispatch(runActionCreators.chatMessageAdded({ sender: null, text: textToPrint.replace(/&amp;/g, '&').replace(/&quot;/g, '"') }));
+	if (personCode.startsWith('p') && personCode.length > 1) {
+		const index = parseInt(personCode.substring(1), 10);
+		dispatch(runActionCreators.playerReplicChanged(index, text));
+		return;
+	}
+
+	if (personCode !== 'l') {
+		return;
+	}
+
+	dispatch(runActionCreators.chatMessageAdded({ sender: null, text }));
 }
 
 function preprocessServerUri(uri: string, dataContext: DataContext) {
