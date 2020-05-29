@@ -80,6 +80,11 @@
         z-index: 1;
     }
 
+    .gameMainView.reversed .gamePlayers .playerReplic {
+        top: initial;
+        bottom: 49px;
+    }
+
 .playerAvatar {
     height: 100%;
 }
@@ -108,18 +113,25 @@
     background-color: cyan;
 }
 
-@media screen and (min-width: 1100px) {
+@media screen and (min-width: 1100px) and (min-height: 700px) {
     .gamePlayers li {
-        height: 150px;
+        height: 125px;
+        padding: 10px;
     }
 
     .gamePlayers .playerReplic {
-        top: 149px;
+        top: 124px;
         height: 200px;
     }
 
+    .gameMainView.reversed .gamePlayers .playerReplic {
+        top: initial;
+        bottom: 124px;
+    }
+
     .gamePlayers .playerInfo {
-        font-size: 26px;
+        font-size: 15px;
+        padding: 2px;
     }
 
     .gamePlayers .stake {
@@ -127,5 +139,27 @@
         border-left-width: 0;
         padding-left: 0;
         margin-left: 0;
+    }
+}
+
+@media screen and (min-width: 1600px) and (min-height: 700px) {
+    .gamePlayers li {
+        height: 150px;
+        padding: 16px;
+    }
+
+    .gamePlayers .playerReplic {
+        top: 149px;
+        height: 200px;
+    }
+
+    .gameMainView.reversed .gamePlayers .playerReplic {
+        top: initial;
+        bottom: 149px;
+    }
+
+    .gamePlayers .playerInfo {
+        font-size: 18px;
+        padding: 3px;
     }
 }

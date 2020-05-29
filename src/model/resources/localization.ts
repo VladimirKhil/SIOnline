@@ -115,6 +115,7 @@
 	settingsHint: 'Вы можете изменить пол в разделе "Настройки"',
 	sex: 'Пол',
 	showChat: 'Показать чат',
+	showPersonsAtBottomOnWideScreen: 'Показывать участников внизу окна на широком экране',
 	showman: 'Ведущий',
 	sound: 'Звук',
 	sport: 'Упрощённая',

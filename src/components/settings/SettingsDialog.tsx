@@ -14,6 +14,7 @@ import './SettingsDialog.css';
 interface SettingsDialogProps {
 	settings: SettingsState;
 	onMute: (isSoundEnabled: boolean) => void;
+	onShowPersonsAtBottomOnWideScreenChanged: (showPersonsAtBottomOnWideScreen: boolean) => void;
 	onSexChanged: (newSex: Sex) => void;
 	onClose: () => void;
 }
@@ -25,6 +26,9 @@ const mapStateToProps = (state: State) => ({
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	onMute: (isSoundEnabled: boolean) => {
 		dispatch(settingsActionCreators.isSoundEnabledChanged(isSoundEnabled));
+	},
+	onShowPersonsAtBottomOnWideScreenChanged: (showPersonsAtBottomOnWideScreen: boolean) => {
+		dispatch(settingsActionCreators.showPersonsAtBottomOnWideScreenChanged(showPersonsAtBottomOnWideScreen));
 	},
 	onSexChanged: (newSex: Sex) => {
 		dispatch(settingsActionCreators.onSexChanged(newSex));
@@ -69,9 +73,17 @@ export class SettingsDialog extends React.Component<SettingsDialogProps> {
 		return (
 			<Dialog id="settingsDialog" title={localization.settings} onClose={this.props.onClose}>
 				<div ref={this.layout} className="settingsDialogBody">
-					<input id="isSoundEnabled" type="checkbox" checked={this.props.settings.isSoundEnabled}
-						onChange={() => this.props.onMute(!this.props.settings.isSoundEnabled)} />
-					<label htmlFor="isSoundEnabled">{localization.sound}</label>
+					<div>
+						<input id="isSoundEnabled" type="checkbox" checked={this.props.settings.isSoundEnabled}
+							onChange={() => this.props.onMute(!this.props.settings.isSoundEnabled)} />
+						<label htmlFor="isSoundEnabled">{localization.sound}</label>
+					</div>
+
+					<div>
+						<input id="showPersonsAtBottomOnWideScreen" type="checkbox" checked={this.props.settings.showPersonsAtBottomOnWideScreen}
+							onChange={() => this.props.onShowPersonsAtBottomOnWideScreenChanged(!this.props.settings.showPersonsAtBottomOnWideScreen)} />
+						<label htmlFor="showPersonsAtBottomOnWideScreen">{localization.showPersonsAtBottomOnWideScreen}</label>
+					</div>
 
 					<p className="header">{localization.sex}</p>
 						<div className="sexLogin">

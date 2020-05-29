@@ -6,12 +6,19 @@ const isSoundEnabledChanged: ActionCreator<SettingsActions.IsSoundEnabledChanged
 	type: SettingsActions.SettingsActionTypes.IsSoundEnabledChanged, isSoundEnabled
 });
 
+const showPersonsAtBottomOnWideScreenChanged: ActionCreator<SettingsActions.ShowPersonsAtBottomOnWideScreenChangedAction> = (
+	showPersonsAtBottomOnWideScreen: boolean
+	) => ({
+		type: SettingsActions.SettingsActionTypes.ShowPersonsAtBottomOnWideScreenChanged, showPersonsAtBottomOnWideScreen
+	});
+
 const onSexChanged: ActionCreator<SettingsActions.SexChangedAction> = (newSex: Sex) => ({
 	type: SettingsActions.SettingsActionTypes.SexChanged, newSex
 });
 
 const settingsActionCreators = {
 	isSoundEnabledChanged,
+	showPersonsAtBottomOnWideScreenChanged,
 	onSexChanged
 };
 

@@ -15,3 +15,14 @@
     flex: 4 0 0;
     overflow: hidden;
 }
+
+.gameMainView {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow: hidden;
+}
+
+.gameMainView.reversed {
+    flex-direction: column-reverse;
+}

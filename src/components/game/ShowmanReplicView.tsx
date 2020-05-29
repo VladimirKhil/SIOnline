@@ -32,7 +32,7 @@ export function ShowmanReplicView(props: ShowmanReplicViewProps) {
 				<div className="showmanName">{props.account?.name}</div>
 			</div>
 			<AutoSizedText id="showmanReplic" className={props.decisionNeeded ? 'highlighted' : ''}
-				text={props.replic || ''} maxFontSize={72} />
+				text={props.replic || ''} maxFontSize={48} />
 		</div>
 	);
 }

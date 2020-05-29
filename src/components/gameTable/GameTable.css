@@ -65,7 +65,7 @@
         font-size: 36px;
         color: #FFE682;
         text-shadow: 1px 1px 0 #000;
-        padding: 5px;
+        padding: 15px;
         white-space: pre-line;
         display: flex;
         align-items: center;
@@ -251,4 +251,10 @@
 #table .finalTable.selectable .finalTableCell.active:hover {
     background: radial-gradient(circle, rgba(229, 232, 205, 0.66) 0%, transparent 110%);
     cursor: pointer;
+}
+
+@media screen and (min-width: 1100px) {
+    #table .tableText {
+        padding: 40px;
+    }
 }

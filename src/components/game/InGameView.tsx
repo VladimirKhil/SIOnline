@@ -18,6 +18,7 @@ import './InGameView.css';
 interface InGameViewProps {
 	windowWidth: number;
 	isChatOpen: boolean;
+	showPersonsAtBottomOnWideScreen: boolean;
 	isPersonsDialogVisible: boolean;
 	isAnswerValidationDialogVisible: boolean;
 }
@@ -25,6 +26,7 @@ interface InGameViewProps {
 const mapStateToProps = (state: State) => ({
 	windowWidth: state.ui.windowWidth,
 	isChatOpen: state.run.chat.isVisible,
+	showPersonsAtBottomOnWideScreen: state.settings.showPersonsAtBottomOnWideScreen,
 	isPersonsDialogVisible: state.run.personsVisible,
 	isAnswerValidationDialogVisible: state.run.validation.isVisible
 });
@@ -38,9 +40,11 @@ export function InGameView(props: InGameViewProps) {
 	return (
 		<section className="gameMain">
 			<div className="game__tableArea">
-				<PlayersView />
-				<ShowmanReplicView />
-				<GameTable />
+				<div className={`gameMainView ${props.showPersonsAtBottomOnWideScreen && props.windowWidth >= 1100 ? 'reversed' : ''}`}>
+					<PlayersView />
+					<ShowmanReplicView />
+					<GameTable />
+				</div>
 				<BottomControlPanel />
 			</div>
 			<div className="game__mainArea">

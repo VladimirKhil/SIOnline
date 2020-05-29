@@ -12,6 +12,12 @@ const settingsReducer: Reducer<SettingsState> = (state: SettingsState = initialS
 				isSoundEnabled: action.isSoundEnabled
 			};
 
+		case SettingsActionTypes.ShowPersonsAtBottomOnWideScreenChanged:
+			return {
+				...state,
+				showPersonsAtBottomOnWideScreen: action.showPersonsAtBottomOnWideScreen
+			};
+
 		case SettingsActionTypes.SexChanged:
 			return {
 				...state,
