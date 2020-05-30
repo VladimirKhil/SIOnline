@@ -7,6 +7,7 @@ import AutoSizedText from '../autoSizedText/AutoSizedText';
 import PlayerInfo from '../../model/PlayerInfo';
 import Persons from '../../model/Persons';
 import PlayerStates from '../../model/enums/PlayerStates';
+import Sex from '../../model/enums/Sex';
 
 import './PlayersView.css';
 
@@ -57,12 +58,13 @@ export function PlayersView(props: PlayersViewProps) {
 			<ul className="gamePlayers" style={mainStyle}>
 				{props.players.map((player, index) => {
 					const account = props.all[player.name];
+					const avatar = account ? (account.avatar ? account.avatar : (account.sex === Sex.Male ? '/images/avatar-m.png' : '/images/avatar-f.png')) : null;
 
 					return (
 						<li key={`${player.name}_${index}`} style={playerStyle}
 							className={buildPlayerClasses(player, player.name === props.login, player.canBeSelected)}
 							onClick={() => props.onPlayerSelected(index)}>
-							{account && account.avatar ? <img className="playerAvatar" src={account.avatar} /> : null}
+							{avatar ? <img className="playerAvatar" src={avatar} /> : null}
 							<div className="playerInfo">
 								<span className="name">{player.name}</span>
 								<div className="sum">

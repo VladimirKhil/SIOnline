@@ -389,7 +389,7 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 		const players = [];
 		const viewers = [];
 
-		const me = { Name: state.user.login, IsHuman: true, Sex: state.settings.sex === Sex.Male };
+		const me = { Name: state.user.login, IsHuman: true, IsMale: state.settings.sex === Sex.Male };
 
 		const playersCount = state.game.playersCount;
 
@@ -466,7 +466,7 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 		};
 
 		try {
-			const result = await dataContext.connection.invoke('CreateAndJoinGame', gameSettings, packageSettings, []);
+			const result = await dataContext.connection.invoke('CreateAndJoinGameNew', gameSettings, packageSettings, [], state.settings.sex === Sex.Male);
 
 			saveStateToStorage(state);
 

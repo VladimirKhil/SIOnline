@@ -4,6 +4,7 @@ import State from '../../state/State';
 import { Dispatch, Action } from 'redux';
 import AutoSizedText from '../autoSizedText/AutoSizedText';
 import Account from '../../model/Account';
+import Sex from '../../model/enums/Sex';
 
 import './ShowmanReplicView.css';
 
@@ -25,10 +26,12 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 
 // tslint:disable-next-line: function-name
 export function ShowmanReplicView(props: ShowmanReplicViewProps) {
+	const avatar = props.account ? (props.account.avatar ? props.account.avatar : (props.account.sex === Sex.Male ? '/images/avatar-m.png' : '/images/avatar-f.png')) : null;
+
 	return (
 		<div className={`showmanArea ${props.decisionNeeded ? 'highlighted' : ''}`}>
 			<div className="showmanInfo">
-				{props.account && props.account.avatar ? <div className="showmanAvatar"><img src={props.account.avatar} /></div> : null}
+				{avatar ? <div className="showmanAvatar"><img src={avatar} /></div> : null}
 				<div className="showmanName">{props.account?.name}</div>
 			</div>
 			<AutoSizedText id="showmanReplic" text={props.replic || ''} maxFontSize={48} />

@@ -63,3 +63,9 @@
         right: 400px;
     }
 }
+
+@media screen and (min-width: 1600px) {
+    #newGameDialog {
+        right: 600px;
+    }
+}

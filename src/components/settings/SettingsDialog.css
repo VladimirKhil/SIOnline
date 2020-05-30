@@ -26,6 +26,12 @@
     }
 }
 
+@media screen and (min-width: 1100px) {
+    #settingsDialog {
+        width: 400px;
+    }
+}
+
 @media screen and (min-width: 1600px) {
     #settingsDialog {
         width: 600px;
