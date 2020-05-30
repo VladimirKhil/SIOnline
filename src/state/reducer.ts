@@ -117,12 +117,21 @@ const reducer: Reducer<State> = (state: State = initialState, action: KnownActio
 				}
 			};
 
+		case ActionTypes.ClearGames:
+			return {
+				...state,
+				online: {
+					...state.online,
+					games: {}
+				}
+			};
+
 		case ActionTypes.ReceiveGames:
 			return {
 				...state,
 				online: {
 					...state.online,
-					games: create(action.games, game => game.gameID)
+					games: { ...state.online.games, ...create(action.games, game => game.gameID) }
 				}
 			};
 

@@ -17,6 +17,7 @@ export const enum ActionTypes {
 	LoginStart = 'LOGIN_START',
 	LoginEnd = 'LOGIN_END',
 	NavigateToGamesList = 'NAVIGATE_TO_GAMES_LIST',
+	ClearGames = 'CLEAR_GAMES',
 	ReceiveGames = 'RECEIVE_GAMES',
 	ReceiveUsers = 'RECEIVE_USERS',
 	ReceiveMessage = 'RECEIVE_MESSAGE',
@@ -56,6 +57,7 @@ export type LoginChangedAction = { type: ActionTypes.LoginChanged, newLogin: str
 export type LoginStartAction = { type: ActionTypes.LoginStart };
 export type LoginEndAction = { type: ActionTypes.LoginEnd, error: string | null };
 export type NavigateToGamesListAction = { type: ActionTypes.NavigateToGamesList };
+export type ClearGamesAction = { type: ActionTypes.ClearGames };
 export type ReceiveGamesAction = { type: ActionTypes.ReceiveGames, games: GameInfo[] };
 export type ReceiveUsersAction = { type: ActionTypes.ReceiveUsers, users: string[] };
 export type ReceiveMessageAction = { type: ActionTypes.ReceiveMessage, sender: string, message: string };
@@ -95,6 +97,7 @@ export type KnownAction =
 	| LoginStartAction
 	| LoginEndAction
 	| NavigateToGamesListAction
+	| ClearGamesAction
 	| ReceiveGamesAction
 	| ReceiveUsersAction
 	| ReceiveMessageAction

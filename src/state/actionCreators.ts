@@ -21,6 +21,7 @@ import GameInfo from '../model/server/GameInfo';
 import { sendMessageToServer, attachListeners } from '../utils/ConnectionHelpers';
 import MainView from '../model/enums/MainView';
 import runActionCreators from './run/runActionCreators';
+import Slice from '../model/server/Slice';
 
 const isConnectedChanged: ActionCreator<Actions.IsConnectedChangedAction> = (isConnected: boolean) => ({
 	type: Actions.ActionTypes.IsConnectedChanged, isConnected
@@ -171,31 +172,43 @@ const navigateToGamesList: ActionCreator<ThunkAction<void, State, DataContext, A
 
 		// Фильтрацию осуществляем на клиенте
 		try {
-			const games = await server.invoke('GetFilteredGames', GamesFilter.NoFilter.toString());
+			const hostInfo = await server.invoke('GetGamesHostInfo');
 
-			dispatch(receiveGames(games));
+			dataContext.contentUris = hostInfo.contentPublicBaseUrls;
 
-			const users = await server.invoke('GetUsers');
+			dispatch(clearGames());
+
+			let fromId = 0;
+			let gamesSlice: Slice<GameInfo> = { data: [], isLastSlice: false };
+			do {
+				fromId = gamesSlice.data.length > 0 ? gamesSlice.data[gamesSlice.data.length - 1].gameID + 1 : 0;
+
+				gamesSlice = await server.invoke('GetGamesSlice', fromId);
+
+				dispatch(receiveGames(gamesSlice.data));
+			} while (!gamesSlice.isLastSlice);
+
+			const users: string[] = await server.invoke('GetUsers');
 
 			const sortedUsers = users.sort((user1: string, user2: string) => { return user1.localeCompare(user2); });
 
 			dispatch(receiveUsers(sortedUsers));
 
-			const news = await server.invoke('GetNews');
+			const news: string | null = await server.invoke('GetNews');
 
 			if (news !== null) {
 				dispatch(receiveMessage(localization.news, news));
 			}
-
-			const hostInfo = await server.invoke('GetGamesHostInfo');
-
-			dataContext.contentUris = hostInfo.contentPublicBaseUrls;
 
 			dispatch(onlineLoadFinish());
 		} catch (error) {
 			alert(error.message); // TODO: normal error message
 		}
 	};
+
+const clearGames: ActionCreator<Actions.ClearGamesAction> = () => ({
+	type: Actions.ActionTypes.ClearGames
+});
 
 const receiveGames: ActionCreator<Actions.ReceiveGamesAction> = (games: any[]) => ({
 	type: Actions.ActionTypes.ReceiveGames, games
