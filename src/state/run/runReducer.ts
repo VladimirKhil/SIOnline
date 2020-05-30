@@ -450,24 +450,17 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 				answer: action.answer
 			};
 
-		case RunActionTypes.SetRightVersions:
+		case RunActionTypes.Validate:
 			return {
 				...state,
 				answer: action.answer,
 				validation: {
 					...state.validation,
-					rightAnswers: action.rightAnswers
-				}
-			};
-
-		case RunActionTypes.Validate:
-			return {
-				...state,
-				validation: {
-					...state.validation,
 					isVisible: true,
+					rightAnswers: action.rightAnswers,
 					wrongAnswers: action.wrongAnswers,
 					header: action.header,
+					name: action.name,
 					message: action.message
 				}
 			};

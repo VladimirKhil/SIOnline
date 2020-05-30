@@ -44,6 +44,7 @@ export default interface RunState {
 	validation: {
 		isVisible: boolean;
 		header: string;
+		name: string;
 		message: string;
 		rightAnswers: string[];
 		wrongAnswers: string[];
@@ -102,6 +103,7 @@ export const initialState: RunState = {
 	validation: {
 		isVisible: false,
 		header: '',
+		name: '',
 		message: '',
 		rightAnswers: [],
 		wrongAnswers: []

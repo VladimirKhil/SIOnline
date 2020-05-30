@@ -5,6 +5,5 @@ config = {
 };
 
 onLoad = function () {
-    console.log('Load test!');
+    console.log('SI Online successfully loaded!');
 };
-

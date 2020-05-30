@@ -130,7 +130,7 @@
 	tv: 'Классическая',
 	tvPlural: 'Классические',
 	users: 'Игроки',
-	validateAnswer: 'Примите решение: засчитать ли ответ?',
+	validateAnswer: 'Верен ли ответ игрока?',
 	viewer: 'Зритель',
 	viewers: 'Зрители',
 	withoutPassword: 'Без пароля',

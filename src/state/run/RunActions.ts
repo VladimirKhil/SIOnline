@@ -47,7 +47,6 @@ export const enum RunActionTypes {
 	IsGameButtonEnabledChanged = 'IS_GAME_BUTTON_ENABLED',
 	IsAnswering = 'IS_ANSWERING',
 	AnswerChanged = 'ANSWER_CHANGED',
-	SetRightVersions = 'SET_RIGHT_VERSIONS',
 	Validate = 'VALIDATE',
 	SetStakes = 'SET_STAKES',
 	StakeChanged = 'STAKE_CHANGED',
@@ -91,8 +90,15 @@ export type ClearDecisionsAction = { type: RunActionTypes.ClearDecisions };
 export type IsGameButtonEnabledChangedAction = { type: RunActionTypes.IsGameButtonEnabledChanged, isGameButtonEnabled: boolean };
 export type IsAnsweringAction = { type: RunActionTypes.IsAnswering };
 export type AnswerChangedAction = { type: RunActionTypes.AnswerChanged, answer: string };
-export type SetRightVersionsAction = { type: RunActionTypes.SetRightVersions, answer: string, rightAnswers: string[] };
-export type ValidateAction = { type: RunActionTypes.Validate, wrongAnswers: string[], header: string, message: string };
+export type ValidateAction = {
+	type: RunActionTypes.Validate,
+	name: string,
+	answer: string,
+	rightAnswers: string[],
+	wrongAnswers: string[],
+	header: string,
+	message: string
+};
 export type SetStakesAction = {
 	type: RunActionTypes.SetStakes,
 	allowedStakeTypes: Record<StakeTypes, boolean>,
@@ -144,7 +150,6 @@ export type KnownRunAction =
 	| IsGameButtonEnabledChangedAction
 	| IsAnsweringAction
 	| AnswerChangedAction
-	| SetRightVersionsAction
 	| ValidateAction
 	| SetStakesAction
 	| StakeChangedAction

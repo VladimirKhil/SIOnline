@@ -26,13 +26,12 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 // tslint:disable-next-line: function-name
 export function ShowmanReplicView(props: ShowmanReplicViewProps) {
 	return (
-		<div className="showmanArea">
+		<div className={`showmanArea ${props.decisionNeeded ? 'highlighted' : ''}`}>
 			<div className="showmanInfo">
 				{props.account && props.account.avatar ? <div className="showmanAvatar"><img src={props.account.avatar} /></div> : null}
 				<div className="showmanName">{props.account?.name}</div>
 			</div>
-			<AutoSizedText id="showmanReplic" className={props.decisionNeeded ? 'highlighted' : ''}
-				text={props.replic || ''} maxFontSize={48} />
+			<AutoSizedText id="showmanReplic" text={props.replic || ''} maxFontSize={48} />
 		</div>
 	);
 }

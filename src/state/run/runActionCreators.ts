@@ -304,13 +304,16 @@ const sendAnswer: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 		dispatch(clearDecisions());
 	};
 
-const setRightVersions: ActionCreator<RunActions.SetRightVersionsAction> = (answer: string, rightAnswers: string[]) => ({
-	type: RunActions.RunActionTypes.SetRightVersions, answer, rightAnswers
-});
-
-const validate: ActionCreator<RunActions.ValidateAction> = (wrongAnswers: string[], header: string, message: string) => ({
-	type: RunActions.RunActionTypes.Validate, wrongAnswers, header, message
-});
+const validate: ActionCreator<RunActions.ValidateAction> = (
+	name: string,
+	answer: string,
+	rightAnswers: string[],
+	wrongAnswers: string[],
+	header: string,
+	message: string) => ({
+		type: RunActions.RunActionTypes.Validate, name, answer, rightAnswers, wrongAnswers, header, message
+	}
+);
 
 const approveAnswer: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () =>
 	async (dispatch: Dispatch<any>, getState: () => State, dataContext: DataContext) => {
@@ -454,7 +457,6 @@ const runActionCreators = {
 	isAnswering,
 	onAnswerChanged,
 	sendAnswer,
-	setRightVersions,
 	validate,
 	approveAnswer,
 	rejectAnswer,

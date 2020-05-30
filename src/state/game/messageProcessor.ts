@@ -506,17 +506,6 @@ const playerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 			}
 			break;
 
-		case 'ISRIGHT':
-			const answer = args[1];
-
-			const right = [];
-			for (let i = 2; i < args.length; i++) {
-				right.push(args[i]);
-			}
-
-			dispatch(runActionCreators.setRightVersions(answer, right));
-			break;
-
 		case 'STAKE':
 			{
 				const allowedStakeTypes = {
@@ -539,14 +528,8 @@ const playerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 			}
 			break;
 
-		case 'WRONG':
-			const wrong = [];
-			for (let i = 1; i < args.length; i++) {
-				wrong.push(args[i]);
-			}
-
-			const validationMesssage = `${localization.thePlayerThinksThatHisHerAnswer} "${state.run.answer}" ${localization.isRightValidateIt}`;
-			dispatch(runActionCreators.validate(wrong, localization.apellation, validationMesssage));
+		case 'VALIDATIION':
+			startValidation(dispatch, localization.apellation, args);
 			break;
 	}
 };
@@ -582,32 +565,39 @@ const showmanHandler = (dispatch: Dispatch<any>, state: State, dataContext: Data
 			// TODO
 			break;
 
-		case 'ISRIGHT':
-			const answer = args[1];
-
-			const right = [];
-			for (let i = 2; i < args.length; i++) {
-				right.push(args[i]);
-			}
-
-			dispatch(runActionCreators.setRightVersions(answer, right));
-			break;
-
 		case 'STAGE':
 			dispatch(runActionCreators.decisionNeededChanged(false));
 			break;
 
-		case 'WRONG':
-			const wrong = [];
-			for (let i = 1; i < args.length; i++) {
-				wrong.push(args[i]);
-			}
-
-			const validationMesssage = `${localization.playersAnswer}: "${state.run.answer}". ${localization.validateAnswer}`;
-			dispatch(runActionCreators.validate(wrong, localization.answerChecking, validationMesssage));
+		case 'VALIDATIION':
+			startValidation(dispatch, localization.answerChecking, args);
 			break;
 	}
 };
+
+function startValidation(dispatch: Dispatch<RunActions.KnownRunAction>, title: string, args: string[]) {
+	if (args.length < 5) {
+		return;
+	}
+
+	const name = args[1];
+	const answer = args[2];
+	const isVoteForTheRightAnswer = args[3] === '+'; // Not used
+	const rightAnswersCount = Math.min(parseInt(args[4], 10), args.length - 5);
+
+	const right = [];
+	for (let i = 0; i < rightAnswersCount; i++) {
+		right.push(args[5 + i]);
+	}
+
+	const wrong = [];
+	for (let i = 5 + rightAnswersCount; i < args.length; i++) {
+		wrong.push(args[i]);
+	}
+
+	const validationMesssage = `${localization.playersAnswer} ${name} "${answer}". ${localization.validateAnswer}`;
+	dispatch(runActionCreators.validate(name, answer, right, wrong, title, validationMesssage));
+}
 
 function getIndices(args: string[]): number[] {
 	const indices: number[] = [];
