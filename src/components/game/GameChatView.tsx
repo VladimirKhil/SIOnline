@@ -8,6 +8,7 @@ import ChatMode from '../../model/enums/ChatMode';
 import runActionCreators from '../../state/run/runActionCreators';
 import localization from '../../model/resources/localization';
 import ChatInput from './ChatInput';
+import Role from '../../model/enums/Role';
 
 import './GameChatView.css';
 
@@ -15,15 +16,17 @@ interface GameChatViewProps {
 	isConnected: boolean;
 	chatMode: ChatMode;
 	personsCount: number;
+	role: Role;
 	onChatModeChanged: (chatMode: ChatMode) => void;
 	onMarkQuestion: () => void;
+	onEditSums: () => void;
 }
 
 const mapStateToProps = (state: State) => ({
 	isConnected: state.common.isConnected,
 	chatMode: state.run.chat.mode,
 	personsCount: Object.values(state.run.persons.all).length,
-	message: state.run.chat.message
+	role: state.run.role
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
@@ -32,6 +35,9 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	},
 	onMarkQuestion: () => {
 		dispatch((runActionCreators.markQuestion() as object) as Action);
+	},
+	onEditSums: () => {
+		dispatch((runActionCreators.areSumsEditableChanged(true) as object) as Action);
 	}
 });
 
@@ -58,8 +64,14 @@ export function GameChatView(props: GameChatViewProps) {
 					</div>
 				)}
 			</div>
-			<button className="wide commandButton bottomButton" disabled={!props.isConnected}
-				onClick={() => props.onMarkQuestion()} title={localization.complainHint}>{localization.complain}</button>
+			<div className="sideButtonHost">
+				{props.role === Role.Showman ? (
+					<button className="wide commandButton bottomButton" disabled={!props.isConnected}
+						onClick={() => props.onEditSums()}>{localization.changeSums}</button>
+					) : null}
+				<button className="wide commandButton bottomButton" disabled={!props.isConnected}
+					onClick={() => props.onMarkQuestion()} title={localization.complainHint}>{localization.complain}</button>
+			</div>
 		</div>
 	);
 }

@@ -31,6 +31,7 @@ interface SideControlPanelProps {
 	onShowPersons: () => void;
 	onPause: () => void;
 	onExit: () => void;
+	onEditSums: () => void;
 }
 
 const mapStateToProps = (state: State) => ({
@@ -59,6 +60,9 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	},
 	onExit: () => {
 		dispatch((runActionCreators.exitGame() as object) as Action);
+	},
+	onEditSums: () => {
+		dispatch((runActionCreators.areSumsEditableChanged(true) as object) as Action);
 	}
 });
 
@@ -74,7 +78,7 @@ export function SideControlPanel(props: SideControlPanelProps) {
 
 	return (
 		<div className="game__utilsArea">
-			{props.role ?
+			{props.role === Role.Player ?
 				(<div className="playerButtonWrapper">
 					<div id="playerButtonHost">
 						<GameButton />
@@ -102,14 +106,17 @@ export function SideControlPanel(props: SideControlPanelProps) {
 					<div id="gameMenuHost">
 						<FlyoutButton className="gameMenuButton" title={localization.menu} flyout={
 							<ul className="gameMenu">
+								{props.role === Role.Showman ?
+									<li className={enabledClass} onClick={() => props.onEditSums()}>{localization.changeSums}</li>
+									: null
+								}
 								<li className={enabledClass} onClick={() => props.onMarkQuestion()} title={localization.complainHint}>{localization.complain}</li>
 								<li onClick={() => props.onShowPersons()}>{localization.members}</li>
 								{props.isHost ? <li className={enabledClass} onClick={() => props.onPause()}>{pauseTitle}</li> : null}
 							</ul>
 						} theme={FlyoutTheme.Light} alignWidth={true} verticalOrientation={FlyoutVerticalOrientation.Top}>…</FlyoutButton>
 					</div>
-					<div id="exitHost">
-						<FlyoutButton className="exit" title={localization.menu} flyout={
+					<FlyoutButton className="exit" title={localization.menu} flyout={
 							<div id="exitMenu" className="exitMenu">
 								<div id="exitMenuPopup" className="gameMenuPopup">
 									<p>{localization.exitConfirmation}</p>
@@ -120,7 +127,6 @@ export function SideControlPanel(props: SideControlPanelProps) {
 							</div>
 						} theme={FlyoutTheme.Light} alignWidth={true}
 						verticalOrientation={FlyoutVerticalOrientation.Top}>{localization.exit}</FlyoutButton>
-					</div>
 				</div>
 			</div>
 

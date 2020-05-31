@@ -50,7 +50,8 @@ export const enum RunActionTypes {
 	Validate = 'VALIDATE',
 	SetStakes = 'SET_STAKES',
 	StakeChanged = 'STAKE_CHANGED',
-	SelectionEnabled = 'SELECTION_ENABLED'
+	SelectionEnabled = 'SELECTION_ENABLED',
+	AreSumsEditableChanged = 'ARE_SUMS_EDITABLE_CHANGED'
 }
 
 export type RunChatModeChangedAction = { type: RunActionTypes.RunChatModeChanged, chatMode: ChatMode };
@@ -111,6 +112,7 @@ export type SetStakesAction = {
 };
 export type StakeChangedAction = { type: RunActionTypes.StakeChanged, stake: number };
 export type SelectionEnabledAction = { type: RunActionTypes.SelectionEnabled, allowedIndices: number[], message: string };
+export type AreSumsEditableChangedAction = { type: RunActionTypes.AreSumsEditableChanged, areSumsEditable: boolean };
 
 export type KnownRunAction =
 	RunChatModeChangedAction
@@ -154,4 +156,5 @@ export type KnownRunAction =
 	| SetStakesAction
 	| StakeChangedAction
 	| SelectionEnabledAction
+	| AreSumsEditableChangedAction
 	;

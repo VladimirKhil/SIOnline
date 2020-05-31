@@ -1,0 +1,11 @@
+.sideButtonHost {
+	display: flex;
+}
+
+.sideButtonHost button {
+	flex: 1;
+}
+
+.sideButtonHost button:not(:last-child) {
+	margin-right: -1px;
+}

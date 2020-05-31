@@ -8,6 +8,7 @@ import PlayerInfo from '../../model/PlayerInfo';
 import Persons from '../../model/Persons';
 import PlayerStates from '../../model/enums/PlayerStates';
 import Sex from '../../model/enums/Sex';
+import NumericTextBox from '../common/NumericTextBox';
 
 import './PlayersView.css';
 
@@ -16,20 +17,30 @@ interface PlayersViewProps {
 	all: Persons;
 	login: string;
 	isSelectionEnabled: boolean;
+	isSumEditable: boolean;
 
 	onPlayerSelected: (playerIndex: number) => void;
+	onSumChanged: (playerIndex: number, sum: number) => void;
+	onCancelSumChange: () => void;
 }
 
 const mapStateToProps = (state: State) => ({
 	players: state.run.persons.players,
 	all: state.run.persons.all,
 	login: state.user.login,
-	isSelectionEnabled: state.run.selection.isEnabled
+	isSelectionEnabled: state.run.selection.isEnabled,
+	isSumEditable: state.run.areSumsEditable
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	onPlayerSelected: (playerIndex: number) => {
 		dispatch(runActionCreators.playerSelected(playerIndex) as object as Action);
+	},
+	onSumChanged: (playerIndex: number, sum: number) => {
+		dispatch(runActionCreators.changePlayerSum(playerIndex, sum) as object as Action);
+	},
+	onCancelSumChange: () => {
+		dispatch(runActionCreators.areSumsEditableChanged(false) as object as Action);
 	}
 });
 
@@ -53,6 +64,11 @@ export function PlayersView(props: PlayersViewProps) {
 		return `gamePlayer ${stateClass} ${meClass} ${selectableClass}`;
 	};
 
+	const onSumChanged = (index: number, value: number) => {
+		props.onSumChanged(index, value);
+		props.onCancelSumChange();
+	};
+
 	return (
 		<div id="playersPanel">
 			<ul className="gamePlayers" style={mainStyle}>
@@ -68,7 +84,10 @@ export function PlayersView(props: PlayersViewProps) {
 							<div className="playerInfo">
 								<span className="name">{player.name}</span>
 								<div className="sum">
-									<span>{player.sum}</span>
+									{props.isSumEditable ?
+										<NumericTextBox value={player.sum} onValueChanged={value => onSumChanged(index, value)} onCancel={props.onCancelSumChange} />
+										: <span>{player.sum}</span>
+									}
 									{player.stake > 0 ? <span className="stake">{player.stake}</span> : null}
 								</div>
 							</div>

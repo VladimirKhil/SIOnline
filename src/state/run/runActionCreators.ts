@@ -408,6 +408,15 @@ const onMediaEnded: ActionCreator<ThunkAction<void, State, DataContext, Action>>
 		msg(dataContext.connection, 'ATOM');
 	};
 
+const areSumsEditableChanged: ActionCreator<RunActions.AreSumsEditableChangedAction> = (areSumsEditable: boolean) => ({
+	type: RunActions.RunActionTypes.AreSumsEditableChanged, areSumsEditable
+});
+
+const changePlayerSum: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (playerIndex: number, sum: number) =>
+	async (dispatch: Dispatch<any>, getState: () => State, dataContext: DataContext) => {
+		msg(dataContext.connection, 'CHANGE', playerIndex + 1, sum); // playerIndex здесь почему-то начинается с 1
+	};
+
 const runActionCreators = {
 	runChatModeChanged,
 	runChatMessageChanged,
@@ -468,7 +477,9 @@ const runActionCreators = {
 	sendAllIn,
 	selectionEnabled,
 	showLeftSeconds,
-	onMediaEnded
+	onMediaEnded,
+	areSumsEditableChanged,
+	changePlayerSum
 };
 
 export default runActionCreators;

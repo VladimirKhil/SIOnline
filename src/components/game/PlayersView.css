@@ -113,6 +113,10 @@
     background-color: cyan;
 }
 
+.playerInfo .numericTextBox {
+    font-size: smaller;
+}
+
 @media screen and (min-width: 1100px) and (min-height: 700px) {
     .gamePlayers li {
         height: 125px;
@@ -122,6 +126,7 @@
     .gamePlayers .playerReplic {
         top: 124px;
         height: 200px;
+        padding: 15px;
     }
 
     .gameMainView.reversed .gamePlayers .playerReplic {

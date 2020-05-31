@@ -508,6 +508,12 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 					isDecisionNeeded: true
 				}
 			};
+
+		case RunActionTypes.AreSumsEditableChanged:
+			return {
+				...state,
+				areSumsEditable: action.areSumsEditable
+			};
 	}
 
 	return {...state,

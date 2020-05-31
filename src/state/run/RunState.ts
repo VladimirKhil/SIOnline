@@ -59,6 +59,7 @@ export default interface RunState {
 	};
 	personsVisible: boolean;
 	isGameButtonEnabled: boolean;
+	areSumsEditable: boolean;
 }
 
 export const initialState: RunState = {
@@ -117,5 +118,6 @@ export const initialState: RunState = {
 		selectedPersonName: null
 	},
 	personsVisible: false,
-	isGameButtonEnabled: true
+	isGameButtonEnabled: true,
+	areSumsEditable: false
 };
