@@ -24,6 +24,7 @@ export const enum ActionTypes {
 	OnlineLoadFinished = 'ONLINE_LOAD_FINISHED',
 	OnlineModeChanged = 'ONLINE_MODE_CHANGED',
 	GamesFilterToggle = 'GAMES_FILTER_TOGGLE',
+	GamesSearchChanged = 'GAMES_SEARCH_CHANGED',
 	SelectGame = 'SELECT_GAME',
 	CloseGameInfo = 'CLOSE_GAME_INFO',
 	NewAutoGame = 'NEW_AUTO_GAME',
@@ -64,6 +65,7 @@ export type ReceiveMessageAction = { type: ActionTypes.ReceiveMessage, sender: s
 export type OnlineLoadFinishedAction = { type: ActionTypes.OnlineLoadFinished };
 export type OnlineModeChangedAction = { type: ActionTypes.OnlineModeChanged, mode: OnlineMode };
 export type GamesFilterToggleAction = { type: ActionTypes.GamesFilterToggle, filter: GamesFilter };
+export type GamesSearchChangedAction = { type: ActionTypes.GamesSearchChanged, search: string };
 export type SelectGameAction = { type: ActionTypes.SelectGame, gameId: number, showInfo: boolean };
 export type CloseGameInfoAction = { type: ActionTypes.CloseGameInfo };
 export type NewAutoGameAction = { type: ActionTypes.NewAutoGame };
@@ -104,6 +106,7 @@ export type KnownAction =
 	| OnlineLoadFinishedAction
 	| OnlineModeChangedAction
 	| GamesFilterToggleAction
+	| GamesSearchChangedAction
 	| SelectGameAction
 	| CloseGameInfoAction
 	| NewAutoGameAction

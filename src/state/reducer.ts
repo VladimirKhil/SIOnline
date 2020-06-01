@@ -227,6 +227,16 @@ const reducer: Reducer<State> = (state: State = initialState, action: KnownActio
 			};
 		}
 
+		case ActionTypes.GamesSearchChanged: {
+			return {
+				...state,
+				online: {
+					...state.online,
+					gamesSearch: action.search
+				}
+			};
+		}
+
 		case ActionTypes.SelectGame:
 			return {
 				...state,

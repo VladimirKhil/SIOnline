@@ -29,6 +29,7 @@ export default interface State {
 	online: {
 		inProgress: boolean;
 		gamesFilter: GamesFilter;
+		gamesSearch: string;
 		games: Record<number, GameInfo>;
 		selectedGameId: number;
 		users: string[];
@@ -75,6 +76,7 @@ export const initialState: State = {
 	online: {
 		inProgress: false,
 		gamesFilter: GamesFilter.NoFilter,
+		gamesSearch: '',
 		games: {},
 		selectedGameId: -1,
 		users: [],

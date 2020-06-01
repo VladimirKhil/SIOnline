@@ -66,7 +66,6 @@ dd {
 input,
 select,
 textarea {
-    max-width: 280px;
     line-height: inherit;
 }
 
@@ -160,88 +159,6 @@ ul {
 
 .gamesblock header {
     height: 35pt;
-}
-
-.gameslistHost header, .chatHost header {
-    display: flex;
-}
-
-    .gameslistHost h1 {
-        display: inline;
-        margin: 10px 5px 10px 5px;
-        color: #FFE682;
-        font-family: SI;
-        font-size: 26px;
-        line-height: 26px;
-        text-shadow: 1px 1px 0 #000;
-        white-space: nowrap;
-    }
-
-.gamesFilterButton {
-    border: 0;
-    font-size: 26px;
-    margin-left: auto;
-    padding: 0 6px 0 6px;
-}
-
-.filterText {
-    white-space: nowrap;
-}
-
-.triangle {
-    position: relative;
-    top: 2px;
-    left: 1px;
-}
-/*#sGamesType option {
-    background: #C0CFF4;
-}*/
-.gamenames {
-    overflow: auto;
-    width: 100%;
-    height: calc(100% - 135px);
-    background-color: #C0CFF4;
-    margin: 0;
-}
-
-.gamenames li {
-    padding-left: 15px;
-    cursor: pointer;
-}
-
-.gamenames li:hover {
-    background-color: #98B9FF;
-}
-
-.gamenames li.active {
-    background-color: #5A95E2;
-}
-
-.gamenames li div {
-    height: 45px;
-    line-height: 45px;
-    vertical-align: middle;
-    overflow-x: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-#newGame, #newAutoGame {
-    display: block;
-    width: 100%;
-    max-width: none;
-    height: 45px;
-    position: absolute;
-    font-size: 26px;
-    line-height: 26px;
-}
-
-#newGame {
-    bottom: 0;
-}
-
-#newAutoGame {
-    bottom: 44px;
 }
 
 button {

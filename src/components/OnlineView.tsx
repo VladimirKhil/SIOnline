@@ -27,7 +27,7 @@ interface OnlineViewProps {
 	closeGameInfo: () => void;
 }
 
-function filterGames(games: GameInfo[], filter: GamesFilter) {
+function filterGames(games: GameInfo[], filter: GamesFilter, search: string) {
 	const filteredGames: GameInfo[] = [];
 
 	const onlyNew = (filter & GamesFilter.New) > 0;
@@ -37,12 +37,15 @@ function filterGames(games: GameInfo[], filter: GamesFilter) {
 
 	const allModes = sport && tv || !sport && !tv;
 
+	const normalizedSearch = search.toLocaleLowerCase();
+
 	for (let j = 0; j < games.length; j++) {
 		const game = games[j];
 
 		const filteredOk = (allModes || (game.mode === 1 ? sport && !tv : tv && !sport))
 			&& (!game.passwordRequired || !noPassword)
-			&& (!game.started || !onlyNew);
+			&& (!game.started || !onlyNew)
+			&& (normalizedSearch.length === 0 || game.gameName.toLocaleLowerCase().includes(normalizedSearch));
 
 		if (filteredOk) {
 			filteredGames.push(games[j]);
@@ -53,7 +56,7 @@ function filterGames(games: GameInfo[], filter: GamesFilter) {
 }
 
 const mapStateToProps = (state: State) => {
-	const filteredGames = filterGames(Object.values(state.online.games), state.online.gamesFilter);
+	const filteredGames = filterGames(Object.values(state.online.games), state.online.gamesFilter, state.online.gamesSearch);
 
 	const hasSelectedGame = filteredGames.some(game => game.gameID === state.online.selectedGameId);
 	const selectedGameId = hasSelectedGame ? state.online.selectedGameId : (filteredGames.length > 0 ? filteredGames[0].gameID : -1);

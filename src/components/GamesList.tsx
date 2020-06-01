@@ -20,6 +20,7 @@ interface GamesListOwnProps {
 	onShowSettings: () => void;
 	onExit: () => void;
 	onToggleFilterItem: (gamesFilterItem: GamesFilter) => void;
+	onGamesSearchChanged: (search: string) => void;
 	onSelectGame: (gameId: number, showInfo: boolean) => void;
 	onNewAutoSearchGame: () => void;
 	onNewGame: () => void;
@@ -27,6 +28,7 @@ interface GamesListOwnProps {
 
 interface GamesListStateProps {
 	gamesFilter: GamesFilter;
+	gamesSearch: string;
 }
 
 interface GamesListProps extends GamesListOwnProps, GamesListStateProps {
@@ -37,7 +39,8 @@ interface GamesListProps extends GamesListOwnProps, GamesListStateProps {
 
 const mapStateToProps = (state: State) => ({
 	isConnected: state.common.isConnected,
-	gamesFilter: state.online.gamesFilter
+	gamesFilter: state.online.gamesFilter,
+	gamesSearch: state.online.gamesSearch
 });
 
 const mapDispatchToProps = (dispatch: any) => ({
@@ -58,6 +61,9 @@ const mapDispatchToProps = (dispatch: any) => ({
 	},
 	onToggleFilterItem: (gamesFilterItem: GamesFilter) => {
 		dispatch(actionCreators.onGamesFilterToggle(gamesFilterItem));
+	},
+	onGamesSearchChanged: (gamesSearch: string) => {
+		dispatch(actionCreators.onGamesSearchChanged(gamesSearch));
 	},
 	onSelectGame: (gameId: number, showInfo: boolean) => {
 		dispatch(actionCreators.selectGame(gameId, showInfo));
@@ -116,6 +122,8 @@ export function GamesList(props: GamesListProps) {
 					</span>
 				</FlyoutButton>
 			</header>
+			<input className="gamesSearch" type="search" value={props.gamesSearch} placeholder={localization.searchGames}
+				onChange={e => props.onGamesSearchChanged(e.target.value)} />
 			<ul className="gamenames">
 				{sortedGames.map(game => (
 					<li key={game.gameID} className={game.gameID === props.selectedGameId ? 'active' : ''}

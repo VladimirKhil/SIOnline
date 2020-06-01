@@ -109,6 +109,7 @@
 	role: 'Роль',
 	round: 'Раунд',
 	rules: 'Правила',
+	searchGames: 'Поиск игр',
 	selectFirstPlayer: 'Выберите начинающего раунд',
 	selectStaker: 'Выберите ставящего',
 	selectThemeDeleter: 'Выберите убирающего тему',

@@ -4,4 +4,5 @@
 
     #gameLog span {
         display: block;
+        overflow: hidden;
     }

@@ -4,6 +4,98 @@
     position: relative;
     background-color: #000451;
     background: linear-gradient(to bottom, #000451 0%,#183CF3 50%,#000451 100%);
+    display: flex;
+    flex-direction: column;
+}
+
+.gameslistHost header, .chatHost header {
+    display: flex;
+}
+
+    .gameslistHost h1 {
+        display: inline;
+        margin: 10px 5px 10px 5px;
+        color: #FFE682;
+        font-family: SI;
+        font-size: 26px;
+        line-height: 26px;
+        text-shadow: 1px 1px 0 #000;
+        white-space: nowrap;
+    }
+
+.gamesFilterButton {
+    border: 0;
+    font-size: 26px;
+    margin-left: auto;
+    padding: 0 6px 0 6px;
+}
+
+.filterText {
+    white-space: nowrap;
+}
+
+.triangle {
+    position: relative;
+    top: 2px;
+    left: 1px;
+}
+
+.gamesSearch {
+    height: 45px;
+    font-size: 17px;
+    line-height: 45px;
+    padding: 4px 10px;
+}
+
+.gamesSearch::placeholder {
+    color: lightgray;
+}
+
+.gamenames {
+    overflow: auto;
+    width: 100%;
+    height: calc(100% - 135px);
+    background-color: #C0CFF4;
+    margin: 0;
+}
+
+.gamenames li {
+    padding-left: 15px;
+    cursor: pointer;
+}
+
+.gamenames li:hover {
+    background-color: #98B9FF;
+}
+
+.gamenames li.active {
+    background-color: #5A95E2;
+}
+
+.gamenames li div {
+    height: 45px;
+    line-height: 45px;
+    vertical-align: middle;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+#newGame, #newAutoGame {
+    display: block;
+    width: 100%;
+    max-width: none;
+    height: 45px;
+    font-size: 26px;
+    line-height: 26px;
+}
+
+#newGame {
+    bottom: 0;
+}
+
+#newAutoGame {
+    bottom: 44px;
 }
 
 .flyoutButton_flyout.dark > ul.gamesFilter > li {

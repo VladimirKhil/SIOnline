@@ -250,6 +250,10 @@ const onGamesFilterToggle: ActionCreator<Actions.GamesFilterToggleAction> = (fil
 	type: Actions.ActionTypes.GamesFilterToggle, filter
 });
 
+const onGamesSearchChanged: ActionCreator<Actions.GamesSearchChangedAction> = (search: string) => ({
+	type: Actions.ActionTypes.GamesSearchChanged, search
+});
+
 const selectGame: ActionCreator<Actions.SelectGameAction> = (gameId: number, showInfo: boolean) => ({
 	type: Actions.ActionTypes.SelectGame, gameId, showInfo
 });
@@ -544,6 +548,7 @@ const actionCreators = {
 	onOnlineModeChanged,
 	onExit,
 	onGamesFilterToggle,
+	onGamesSearchChanged,
 	selectGame,
 	closeGameInfo,
 	newAutoGame,
