@@ -22,6 +22,7 @@ export const enum ActionTypes {
 	ReceiveUsers = 'RECEIVE_USERS',
 	ReceiveMessage = 'RECEIVE_MESSAGE',
 	OnlineLoadFinished = 'ONLINE_LOAD_FINISHED',
+	OnlineLoadError = 'ONLINE_LOAD_ERROR',
 	OnlineModeChanged = 'ONLINE_MODE_CHANGED',
 	GamesFilterToggle = 'GAMES_FILTER_TOGGLE',
 	GamesSearchChanged = 'GAMES_SEARCH_CHANGED',
@@ -63,6 +64,7 @@ export type ReceiveGamesAction = { type: ActionTypes.ReceiveGames, games: GameIn
 export type ReceiveUsersAction = { type: ActionTypes.ReceiveUsers, users: string[] };
 export type ReceiveMessageAction = { type: ActionTypes.ReceiveMessage, sender: string, message: string };
 export type OnlineLoadFinishedAction = { type: ActionTypes.OnlineLoadFinished };
+export type OnlineLoadErrorAction = { type: ActionTypes.OnlineLoadError, error: string };
 export type OnlineModeChangedAction = { type: ActionTypes.OnlineModeChanged, mode: OnlineMode };
 export type GamesFilterToggleAction = { type: ActionTypes.GamesFilterToggle, filter: GamesFilter };
 export type GamesSearchChangedAction = { type: ActionTypes.GamesSearchChanged, search: string };
@@ -104,6 +106,7 @@ export type KnownAction =
 	| ReceiveUsersAction
 	| ReceiveMessageAction
 	| OnlineLoadFinishedAction
+	| OnlineLoadErrorAction
 	| OnlineModeChangedAction
 	| GamesFilterToggleAction
 	| GamesSearchChangedAction

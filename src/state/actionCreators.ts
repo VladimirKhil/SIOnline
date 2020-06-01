@@ -18,7 +18,7 @@ import * as signalRMsgPack from '@microsoft/signalr-protocol-msgpack';
 import GameType from '../model/enums/GameType';
 import * as GameErrorsHelper from '../utils/GameErrorsHelper';
 import GameInfo from '../model/server/GameInfo';
-import { sendMessageToServer, attachListeners } from '../utils/ConnectionHelpers';
+import { sendMessageToServer, attachListeners, detachListeners, activeConnections } from '../utils/ConnectionHelpers';
 import MainView from '../model/enums/MainView';
 import runActionCreators from './run/runActionCreators';
 import Slice from '../model/server/Slice';
@@ -129,6 +129,10 @@ const login: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () =
 			try {
 				await dataContext.connection.start();
 
+				if (dataContext.connection.connectionId) {
+					activeConnections.push(dataContext.connection.connectionId);
+				}
+
 				attachListeners(dataContext.connection, dispatch);
 
 				const computerAccounts: string[] = await dataContext.connection.invoke('GetComputerAccounts');
@@ -202,7 +206,7 @@ const navigateToGamesList: ActionCreator<ThunkAction<void, State, DataContext, A
 
 			dispatch(onlineLoadFinish());
 		} catch (error) {
-			alert(error.message); // TODO: normal error message
+			dispatch(onlineLoadError(error.message));
 		}
 	};
 
@@ -226,6 +230,10 @@ const onlineLoadFinish: ActionCreator<Actions.OnlineLoadFinishedAction> = () => 
 	type: Actions.ActionTypes.OnlineLoadFinished
 });
 
+const onlineLoadError: ActionCreator<Actions.OnlineLoadErrorAction> = (error: string) => ({
+	type: Actions.ActionTypes.OnlineLoadError, error
+});
+
 const onOnlineModeChanged: ActionCreator<Actions.OnlineModeChangedAction> = (mode: OnlineMode) => ({
 	type: Actions.ActionTypes.OnlineModeChanged, mode
 });
@@ -238,12 +246,19 @@ const onExit: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () 
 			return;
 		}
 
-		server.invoke('LogOut').then(() => {
-			document.cookie = 'SIOnline=; path=/';
+		try	{
+			await server.invoke('LogOut');
+			if (server.connectionId) {
+				activeConnections.splice(activeConnections.indexOf(server.connectionId), 1);
+			}
+
+			detachListeners(server);
+			await server.stop();
+
 			dispatch(navigateToLogin());
-		}).catch((message) => {
-			alert(message);
-		});
+		} catch (error) {
+			alert(error.message); // TODO: normal error message
+		}
 	};
 
 const onGamesFilterToggle: ActionCreator<Actions.GamesFilterToggleAction> = (filter: GamesFilter) => ({

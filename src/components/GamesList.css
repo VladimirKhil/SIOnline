@@ -2,8 +2,6 @@
     width: 100%;
     height: 100%;
     position: relative;
-    background-color: #000451;
-    background: linear-gradient(to bottom, #000451 0%,#183CF3 50%,#000451 100%);
     display: flex;
     flex-direction: column;
 }
@@ -105,6 +103,19 @@
 ul.gamesFilter > li.disabled {
     color: darkgray;
     pointer-events: none;
+}
+
+.loadError {
+    color: darkred;
+    width: 100%;
+    height: calc(100% - 135px);
+    background-color: #C0CFF4;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    text-align: center;
 }
 
 @media screen and (min-width: 800px) {

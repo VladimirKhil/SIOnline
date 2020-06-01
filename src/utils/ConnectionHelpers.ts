@@ -6,6 +6,8 @@ import actionCreators from '../state/actionCreators';
 import Message from '../model/Message';
 import messageProcessor from '../state/game/messageProcessor';
 
+export const activeConnections: string[] = [];
+
 export function attachListeners(connection: signalR.HubConnection, dispatch: Dispatch<AnyAction>) {
 	connection.on('Joined', (login: string) => dispatch(actionCreators.userJoined(login)));
 	connection.on('Leaved', (login: string) => dispatch(actionCreators.userLeaved(login)));
@@ -21,17 +23,44 @@ export function attachListeners(connection: signalR.HubConnection, dispatch: Dis
 	});
 
 	connection.onreconnecting((e) => {
+		if (!connection.connectionId || !activeConnections.includes(connection.connectionId)) {
+			return;
+		}
+
 		const errorMessage = e ? ` (${e.message})` : '';
 		dispatch(actionCreators.onConnectionChanged(false, `${localization.connectionReconnecting}${errorMessage}`) as object as AnyAction);
 	});
 
 	connection.onreconnected(() => {
+		if (!connection.connectionId || !activeConnections.includes(connection.connectionId)) {
+			return;
+		}
+
 		dispatch(actionCreators.onConnectionChanged(true, localization.connectionReconnected) as object as AnyAction);
 	});
 
 	connection.onclose((e) => {
+		if (!connection.connectionId || !activeConnections.includes(connection.connectionId)) {
+			return;
+		}
+
 		dispatch(actionCreators.onConnectionChanged(false, `${localization.connectionClosed} ${e?.message || ''}`) as object as AnyAction);
 	});
+}
+
+export function detachListeners(connection: signalR.HubConnection) {
+	connection.off('Joined');
+	connection.off('Leaved');
+	connection.off('Say');
+	connection.off('GameCreated');
+	connection.off('GameChanged');
+	connection.off('GameDeleted');
+	connection.off('Receive');
+	connection.off('Disconnect');
+
+	connection.onreconnecting((e) => { });
+	connection.onreconnected(() => { });
+	connection.onclose((e) => { });
 }
 
 export async function sendMessageToServer(connection: signalR.HubConnection | null, message: string) {

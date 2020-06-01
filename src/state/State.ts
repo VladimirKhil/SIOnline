@@ -1,5 +1,4 @@
-﻿import Sex from '../model/enums/Sex';
-import MainView from '../model/enums/MainView';
+﻿import MainView from '../model/enums/MainView';
 import GamesFilter from '../model/enums/GamesFilter';
 import OnlineMode from '../model/enums/OnlineMode';
 import ChatMessage from '../model/ChatMessage';
@@ -28,6 +27,7 @@ export default interface State {
 	};
 	online: {
 		inProgress: boolean;
+		error: string;
 		gamesFilter: GamesFilter;
 		gamesSearch: string;
 		games: Record<number, GameInfo>;
@@ -75,6 +75,7 @@ export const initialState: State = {
 	},
 	online: {
 		inProgress: false,
+		error: '',
 		gamesFilter: GamesFilter.NoFilter,
 		gamesSearch: '',
 		games: {},

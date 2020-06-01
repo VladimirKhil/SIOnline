@@ -113,7 +113,8 @@ const reducer: Reducer<State> = (state: State = initialState, action: KnownActio
 					games: [],
 					users: [],
 					messages: [],
-					inProgress: true
+					inProgress: true,
+					error: ''
 				}
 			};
 
@@ -214,6 +215,16 @@ const reducer: Reducer<State> = (state: State = initialState, action: KnownActio
 				online: {
 					...state.online,
 					inProgress: false
+				}
+			};
+
+		case ActionTypes.OnlineLoadError:
+			return {
+				...state,
+				online: {
+					...state.online,
+					inProgress: false,
+					error: action.error
 				}
 			};
 

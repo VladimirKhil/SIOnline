@@ -14,6 +14,7 @@ import './GamesList.css';
 
 interface GamesListOwnProps {
 	isConnected: boolean;
+	error: string;
 	onShowGames: () => void;
 	onShowChat: () => void;
 	onHowToPlay: () => void;
@@ -39,6 +40,7 @@ interface GamesListProps extends GamesListOwnProps, GamesListStateProps {
 
 const mapStateToProps = (state: State) => ({
 	isConnected: state.common.isConnected,
+	error: state.online.error,
 	gamesFilter: state.online.gamesFilter,
 	gamesSearch: state.online.gamesSearch
 });
@@ -124,14 +126,16 @@ export function GamesList(props: GamesListProps) {
 			</header>
 			<input className="gamesSearch" type="search" value={props.gamesSearch} placeholder={localization.searchGames}
 				onChange={e => props.onGamesSearchChanged(e.target.value)} />
-			<ul className="gamenames">
-				{sortedGames.map(game => (
-					<li key={game.gameID} className={game.gameID === props.selectedGameId ? 'active' : ''}
-						onClick={() => props.onSelectGame(game.gameID, props.showInfo)}>
-						<div style={{ color: game.passwordRequired ? '#760000' : 'black' }}>{game.gameName}</div>
-					</li>
-				))}
-			</ul>
+			{props.error.length === 0 ? (
+				<ul className="gamenames">
+					{sortedGames.map(game => (
+						<li key={game.gameID} className={game.gameID === props.selectedGameId ? 'active' : ''}
+							onClick={() => props.onSelectGame(game.gameID, props.showInfo)}>
+							<div style={{ color: game.passwordRequired ? '#760000' : 'black' }}>{game.gameName}</div>
+						</li>
+					))}
+				</ul>
+				) : <span className="loadError">{props.error}</span>}
 			<button id="newAutoGame" disabled={!props.isConnected} onClick={props.onNewAutoSearchGame}
 				title={localization.autoSearchHint}>{localization.autoSearch}</button>
 			<button id="newGame" disabled={!props.isConnected} onClick={props.onNewGame}>{localization.newGame.toLocaleUpperCase()}</button>
