@@ -44,6 +44,10 @@ ul.gameMenu, .exitMenu ul {
     text-align: center;
 }
 
+.gameMenu li.active {
+    background-color: lightyellow;
+}
+
 .gameMenu li.disabled, .exitMenu li.disabled {
 	color: gray;
 	pointer-events: none;

@@ -26,12 +26,13 @@ interface SideControlPanelProps {
 	isPaused: boolean;
 	lastReplic: ChatMessage | null;
 	areStakesVisible: boolean;
+	areSumsEditable: boolean;
 	onChatVisibilityChanged: (isOpen: boolean) => void;
 	onMarkQuestion: () => void;
 	onShowPersons: () => void;
 	onPause: () => void;
 	onExit: () => void;
-	onEditSums: () => void;
+	onEditSums: (enable: boolean) => void;
 }
 
 const mapStateToProps = (state: State) => ({
@@ -42,7 +43,8 @@ const mapStateToProps = (state: State) => ({
 	isHost: state.game.isHost,
 	isPaused: state.run.stage.isGamePaused,
 	lastReplic: state.run.lastReplic,
-	areStakesVisible: state.run.stakes.areVisible
+	areStakesVisible: state.run.stakes.areVisible,
+	areSumsEditable: state.run.areSumsEditable
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
@@ -61,8 +63,8 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	onExit: () => {
 		dispatch((runActionCreators.exitGame() as object) as Action);
 	},
-	onEditSums: () => {
-		dispatch((runActionCreators.areSumsEditableChanged(true) as object) as Action);
+	onEditSums: (enable: boolean) => {
+		dispatch((runActionCreators.areSumsEditableChanged(enable) as object) as Action);
 	}
 });
 
@@ -107,7 +109,8 @@ export function SideControlPanel(props: SideControlPanelProps) {
 						<FlyoutButton className="gameMenuButton" title={localization.menu} flyout={
 							<ul className="gameMenu">
 								{props.role === Role.Showman ?
-									<li className={enabledClass} onClick={() => props.onEditSums()}>{localization.changeSums}</li>
+									<li className={`${enabledClass} ${props.areSumsEditable ? 'active' : ''}`}
+										onClick={() => props.onEditSums(!props.areSumsEditable)}>{localization.changeSums}</li>
 									: null
 								}
 								<li className={enabledClass} onClick={() => props.onMarkQuestion()} title={localization.complainHint}>{localization.complain}</li>

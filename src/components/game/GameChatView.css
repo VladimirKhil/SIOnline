@@ -6,6 +6,11 @@
 	flex: 1;
 }
 
+.sideButtonHost button.active {
+	flex: 1;
+	background-color: lightyellow;
+}
+
 .sideButtonHost button:not(:last-child) {
 	margin-right: -1px;
 }

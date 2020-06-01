@@ -17,16 +17,18 @@ interface GameChatViewProps {
 	chatMode: ChatMode;
 	personsCount: number;
 	role: Role;
+	areSumsEditable: boolean;
 	onChatModeChanged: (chatMode: ChatMode) => void;
 	onMarkQuestion: () => void;
-	onEditSums: () => void;
+	onEditSums: (enable: boolean) => void;
 }
 
 const mapStateToProps = (state: State) => ({
 	isConnected: state.common.isConnected,
 	chatMode: state.run.chat.mode,
 	personsCount: Object.values(state.run.persons.all).length,
-	role: state.run.role
+	role: state.run.role,
+	areSumsEditable: state.run.areSumsEditable
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
@@ -36,8 +38,8 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	onMarkQuestion: () => {
 		dispatch((runActionCreators.markQuestion() as object) as Action);
 	},
-	onEditSums: () => {
-		dispatch((runActionCreators.areSumsEditableChanged(true) as object) as Action);
+	onEditSums: (enable: boolean) => {
+		dispatch((runActionCreators.areSumsEditableChanged(enable) as object) as Action);
 	}
 });
 
@@ -66,8 +68,8 @@ export function GameChatView(props: GameChatViewProps) {
 			</div>
 			<div className="sideButtonHost">
 				{props.role === Role.Showman ? (
-					<button className="wide commandButton bottomButton" disabled={!props.isConnected}
-						onClick={() => props.onEditSums()}>{localization.changeSums}</button>
+					<button className={`wide commandButton bottomButton ${props.areSumsEditable ? 'active' : ''}`} disabled={!props.isConnected}
+						onClick={() => props.onEditSums(!props.areSumsEditable)}>{localization.changeSums}</button>
 					) : null}
 				<button className="wide commandButton bottomButton" disabled={!props.isConnected}
 					onClick={() => props.onMarkQuestion()} title={localization.complainHint}>{localization.complain}</button>
