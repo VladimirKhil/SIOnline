@@ -40,6 +40,8 @@ export default interface State {
 		newGameShown: boolean;
 		gameCreationProgress: boolean;
 		gameCreationError: string | null;
+		joinGameProgress: boolean;
+		joingGameError: string | null;
 	};
 	game: {
 		name: string;
@@ -90,7 +92,9 @@ export const initialState: State = {
 		chatMode: ChatMode.Chat,
 		newGameShown: false,
 		gameCreationProgress: false,
-		gameCreationError: null
+		gameCreationError: null,
+		joinGameProgress: false,
+		joingGameError: null
 	},
 	game: {
 		name: '',

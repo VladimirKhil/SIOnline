@@ -7,6 +7,63 @@
     height: 0;
 }
 
+#gameinfo {
+    background-color: #5A95E2;
+    height: 100%;
+    padding: 20px 0 0 0;
+    position: relative;
+}
+
+#gameinfo h1 {
+    margin-top: 0;
+    font-size: 36px;
+    margin-bottom: 10px;
+    padding-left: 20px;
+}
+
+#innerinfo dt {
+    margin-top: 10pt;
+}
+
+.passwordInfo {
+    text-align: center;
+    display: block;
+    width: 100%;
+    margin-top: 10px;
+}
+
+#password {
+    font-size: 15pt;
+    width: calc(100% - 30px);
+    max-width: initial;
+    display: block;
+    margin: 5px 15px;
+}
+
+.joinGameProgress {
+    position: absolute;
+    display: flex;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    justify-content: center;
+    background-color: #00000055;
+}
+
+.joinGameProgress .progress {
+    position: static;
+}
+
+.joinGameError {
+    color: darkred;
+    height: 40px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 @media screen and (min-width: 800px) {
     .gameinfoHost {
         position: relative;
@@ -17,5 +74,29 @@
 
     .gameinfoHost > header {
         height: 35pt;
+    }
+
+    #gameinfo {
+        height: calc(100% - 35pt);
+    }
+
+    .gameInfo_close {
+        display: none;
+    }
+
+    .passwordInfo {
+        left: 300px;
+        right: 295px;
+    }
+
+    #password {
+        display: inline;
+        width: initial; /* Эффект есть */
+    }
+
+    .actions {
+        left: 300px;
+        right: 300px;
+        z-index: 0;
     }
 }

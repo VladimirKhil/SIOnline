@@ -46,7 +46,9 @@ export const enum ActionTypes {
 	PlayersCountChanged = 'PLAYERS_COUNT_CHANGED',
 	GameCreationStart = 'GAME_CREATION_START',
 	GameCreationEnd = 'GAME_CREATION_END',
-	GameSet = 'GAME_SET'
+	GameSet = 'GAME_SET',
+	JoinGameStarted = 'JOIN_GAME_STARTED',
+	JoinGameFinished = 'JOIN_GAME_FINISHED'
 }
 
 export type IsConnectedChangedAction = { type: ActionTypes.IsConnectedChanged, isConnected: boolean };
@@ -89,6 +91,8 @@ export type PlayersCountChangedAction = { type: ActionTypes.PlayersCountChanged,
 export type GameCreationStartAction = { type: ActionTypes.GameCreationStart };
 export type GameCreationEndAction = { type: ActionTypes.GameCreationEnd, error: string | null };
 export type GameSetAction = { type: ActionTypes.GameSet, id: number, isHost: boolean, isAutomatic: boolean, role: Role };
+export type JoinGameStartedAction = { type: ActionTypes.JoinGameStarted };
+export type JoinGameFinishedAction = { type: ActionTypes.JoinGameFinished, error: string | null };
 
 export type KnownAction =
 	IsConnectedChangedAction
@@ -131,4 +135,6 @@ export type KnownAction =
 	| GameCreationStartAction
 	| GameCreationEndAction
 	| GameSetAction
+	| JoinGameStartedAction
+	| JoinGameFinishedAction
 	;

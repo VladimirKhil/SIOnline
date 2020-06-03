@@ -181,19 +181,6 @@ button:disabled {
     background-color: transparent;
 }
 
-#gameinfo {
-    background-color: #5A95E2;
-    height: 100%;
-    padding: 20px 0 0 0;
-}
-
-#gameinfo h1 {
-    margin-top: 0;
-    font-size: 36px;
-    margin-bottom: 10px;
-    padding-left: 20px;
-}
-
 .closeButton {
     padding: 4px;
     width: 30px;
@@ -225,25 +212,6 @@ button:disabled {
     overflow-x: hidden;
     padding-left: 20px;
     flex: 1;
-}
-
-#innerinfo dt {
-    margin-top: 10pt;
-}
-
-.passwordInfo {
-    text-align: center;
-    display: block;
-    width: 100%;
-    margin-top: 10px;
-}
-
-#password {
-    font-size: 15pt;
-    width: calc(100% - 30px);
-    max-width: initial;
-    display: block;
-    margin: 5px 15px;
 }
 
 #actionsHost {
@@ -757,30 +725,6 @@ video, audio {
 }
 
 @media screen and (min-width: 800px) {
-    #gameinfo {
-        height: calc(100% - 35pt);
-    }
-
-    .gameInfo_close {
-        display: none;
-    }
-
-    .passwordInfo {
-        left: 300px;
-        right: 295px;
-    }
-
-    #password {
-        display: inline;
-        width: initial; /* Эффект есть */
-    }
-
-    .actions {
-        left: 300px;
-        right: 300px;
-        z-index: 0;
-    }
-
     .game__utilsArea {
         flex: 0 0 45px;
     }

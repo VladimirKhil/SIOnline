@@ -393,7 +393,8 @@ const reducer: Reducer<State> = (state: State = initialState, action: KnownActio
 				...state,
 				online: {
 					...state.online,
-					gameCreationProgress: true
+					gameCreationProgress: true,
+					gameCreationError: null
 				}
 			};
 		}
@@ -426,6 +427,28 @@ const reducer: Reducer<State> = (state: State = initialState, action: KnownActio
 				run: {
 					...runState.initialState,
 					role: action.role
+				}
+			};
+		}
+
+		case ActionTypes.JoinGameStarted: {
+			return {
+				...state,
+				online: {
+					...state.online,
+					joinGameProgress: true,
+					joingGameError: null
+				}
+			};
+		}
+
+		case ActionTypes.JoinGameFinished: {
+			return {
+				...state,
+				online: {
+					...state.online,
+					joinGameProgress: false,
+					joingGameError: action.error
 				}
 			};
 		}

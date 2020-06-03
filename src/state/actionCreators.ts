@@ -289,8 +289,18 @@ const newGameCancel: ActionCreator<Actions.NewGameCancelAction> = () => ({
 	type: Actions.ActionTypes.NewGameCancel
 });
 
+const joinGameStarted: ActionCreator<Actions.JoinGameStartedAction> = () => ({
+	type: Actions.ActionTypes.JoinGameStarted
+});
+
+const joinGameFinished: ActionCreator<Actions.JoinGameFinishedAction> = (error: string | null) => ({
+	type: Actions.ActionTypes.JoinGameFinished, error
+});
+
 const joinGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (gameId: number, role: Role) =>
 	async (dispatch: Dispatch<any>, getState: () => State, dataContext: DataContext) => {
+		dispatch(joinGameStarted());
+
 		try {
 			const state = getState();
 
@@ -301,16 +311,18 @@ const joinGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (
 			const result = await dataContext.connection.invoke('JoinGameNew', gameId, role, state.settings.sex === Sex.Male, state.online.password);
 
 			if (result.errorMessage) {
-				alert(`${localization.joinError}: ${result.errorMessage}`);
-			} else {
-				dispatch(gameSet(gameId, false, false, role));
-
-				await gameInit(gameId, dataContext, role);
+				dispatch(joinGameFinished(`${localization.joinError}: ${result.errorMessage}`));
+				return;
 			}
 
+			dispatch(gameSet(gameId, false, false, role));
+
+			await gameInit(gameId, dataContext, role);
+
 			saveStateToStorage(state);
+			dispatch(joinGameFinished(null));
 		} catch (error) {
-			alert(error.message); // TODO: normal error in UI
+			dispatch(joinGameFinished(error.message));
 		}
 	};
 
