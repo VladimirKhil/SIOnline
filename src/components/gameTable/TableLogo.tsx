@@ -11,7 +11,7 @@ interface TableLogoProps {
 export function TableLogo(props: TableLogoProps) {
 	return (
 		<div className="centerBlock logoBlock">
-			<img className="inGameImg" src="/images/logo.png" alt={localization.logo} />
+			<img className="inGameImg" src="images/logo.png" alt={localization.logo} />
 		</div>
 	);
 }

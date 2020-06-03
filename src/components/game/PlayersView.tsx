@@ -74,7 +74,7 @@ export function PlayersView(props: PlayersViewProps) {
 			<ul className="gamePlayers" style={mainStyle}>
 				{props.players.map((player, index) => {
 					const account = props.all[player.name];
-					const avatar = account ? (account.avatar ? account.avatar : (account.sex === Sex.Male ? '/images/avatar-m.png' : '/images/avatar-f.png')) : null;
+					const avatar = account ? (account.avatar ? account.avatar : (account.sex === Sex.Male ? 'images/avatar-m.png' : 'images/avatar-f.png')) : null;
 
 					return (
 						<li key={`${player.name}_${index}`} style={playerStyle}
