@@ -9,18 +9,26 @@ import State from '../state/State';
 import Role from '../model/enums/Role';
 import GameType from '../model/enums/GameType';
 import Constants from '../model/enums/Constants';
+import PackageType from '../model/enums/PackageType';
 
 import './NewGameDialog.css';
 
 interface NewGameDialogProps {
 	isConnected: boolean;
 	gameName: string;
+	gamePackageType: PackageType;
+	gamePackageName: string;
+	gamePackageData: File | null;
 	gameType: GameType;
 	gameRole: Role;
 	playersCount: number;
 	inProgress: boolean;
 	error: string | null;
+	uploadPackageProgress: boolean;
+	uploadPackagePercentage: number;
 	onGameNameChanged: (newGameName: string) => void;
+	onGamePackageTypeChanged: (type: PackageType) => void;
+	onGamePackageDataChanged: (name: string, data: File | null) => void;
 	onGameTypeChanged: (newGameType: number) => void;
 	onGameRoleChanged: (newGameRole: Role) => void;
 	onPlayersCountChanged: (gamePlayersCount: number) => void;
@@ -31,16 +39,27 @@ interface NewGameDialogProps {
 const mapStateToProps = (state: State) => ({
 	isConnected: state.common.isConnected,
 	gameName: state.game.name,
+	gamePackageType: state.game.package.type,
+	gamePackageName: state.game.package.name,
+	gamePackageData: state.game.package.data,
 	gameType: state.game.type,
 	gameRole: state.game.role,
 	playersCount: state.game.playersCount,
 	inProgress: state.online.gameCreationProgress,
-	error: state.online.gameCreationError
+	error: state.online.gameCreationError,
+	uploadPackageProgress: state.online.uploadPackageProgress,
+	uploadPackagePercentage: state.online.uploadPackagePercentage
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	onGameNameChanged: (newGameName: string) => {
 		dispatch(actionCreators.gameNameChanged(newGameName));
+	},
+	onGamePackageTypeChanged: (type: PackageType) => {
+		dispatch(actionCreators.gamePackageTypeChanged(type));
+	},
+	onGamePackageDataChanged: (name: string, data: File | null) => {
+		dispatch(actionCreators.gamePackageDataChanged(name, data));
 	},
 	onGameTypeChanged: (newGameType: number) => {
 		dispatch(actionCreators.gameTypeChanged(newGameType));
@@ -60,8 +79,12 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 });
 
 export class NewGameDialog extends React.Component<NewGameDialogProps> {
+	private fileRef: React.RefObject<HTMLInputElement>;
+
 	constructor(props: NewGameDialogProps) {
 		super(props);
+
+		this.fileRef = React.createRef<HTMLInputElement>();
 	}
 
 	private onGameNameChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -71,6 +94,16 @@ export class NewGameDialog extends React.Component<NewGameDialogProps> {
 	private onGameNameKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
 		if (e.charCode === Constants.KEY_ENTER) {
 			this.props.onCreate();
+		}
+	}
+
+	private onGamePackageTypeChanged = (e: React.ChangeEvent<HTMLSelectElement>) => {
+		this.props.onGamePackageTypeChanged(parseInt(e.target.value, 10));
+	}
+
+	private onGamePackageDataChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
+		if (e.target.files && e.target.files.length > 0) {
+			this.props.onGamePackageDataChanged(e.target.value, e.target.files[0]);
 		}
 	}
 
@@ -86,12 +119,30 @@ export class NewGameDialog extends React.Component<NewGameDialogProps> {
 		this.props.onPlayersCountChanged(parseInt(e.target.value, 10));
 	}
 
+	private onSelectFile = () => {
+		if (this.fileRef.current) {
+			this.fileRef.current.click();
+		}
+	}
+
 	render() {
 		return (
 			<Dialog id="newGameDialog" title={localization.newGame} onClose={this.props.onClose}>
 				<div className="settings">
 					<p>{localization.gameName}</p>
 					<input type="text" value={this.props.gameName} onChange={this.onGameNameChanged} onKeyPress={this.onGameNameKeyPress} />
+					<p>{localization.questionPackage}</p>
+					<select className="packageTypeSelector" value={this.props.gamePackageType} onChange={this.onGamePackageTypeChanged}>
+						<option value="0">{localization.randomThemes}</option>
+						<option value="1">{localization.file}</option>
+					</select>
+					{this.props.gamePackageType === PackageType.File ?
+						<div className="packageFileBox">
+							<input ref={this.fileRef} type="file" accept=".siq" onChange={this.onGamePackageDataChanged} />
+							<input className="selector" type="button" value={localization.select} onClick={this.onSelectFile} />
+							{this.props.gamePackageData ? <span>{this.props.gamePackageData.name}</span> : null}
+						</div>
+						: null}
 					<p>{localization.gameType}</p>
 					<select value={this.props.gameType} onChange={this.onGameTypeChanged}>
 						<option value="1">{localization.sport}</option>
@@ -122,6 +173,12 @@ export class NewGameDialog extends React.Component<NewGameDialogProps> {
 				<button className="startGame" disabled={!this.props.isConnected || this.props.inProgress}
 					onClick={this.props.onCreate}>{localization.startGame}</button>
 				{this.props.inProgress ? <ProgressBar /> : null}
+				{this.props.uploadPackageProgress ? (
+					<div className="uploadPackagePanel">
+						<span>{localization.sendingPackage}</span>
+						<ProgressBar isIndeterminate={false} value={this.props.uploadPackagePercentage} />
+					</div>
+				) : null}
 			</Dialog>
 		);
 	}

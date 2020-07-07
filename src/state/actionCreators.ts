@@ -22,6 +22,10 @@ import { sendMessageToServer, attachListeners, detachListeners, activeConnection
 import MainView from '../model/enums/MainView';
 import runActionCreators from './run/runActionCreators';
 import Slice from '../model/server/Slice';
+import PackageType from '../model/enums/PackageType';
+import PackageKey from '../model/server/PackageKey';
+
+import * as JSZip from 'jszip';
 
 const isConnectedChanged: ActionCreator<Actions.IsConnectedChangedAction> = (isConnected: boolean) => ({
 	type: Actions.ActionTypes.IsConnectedChanged, isConnected
@@ -182,15 +186,17 @@ const navigateToGamesList: ActionCreator<ThunkAction<void, State, DataContext, A
 
 			dispatch(clearGames());
 
-			let fromId = 0;
 			let gamesSlice: Slice<GameInfo> = { data: [], isLastSlice: false };
+			let whileGuard = 100;
 			do {
-				fromId = gamesSlice.data.length > 0 ? gamesSlice.data[gamesSlice.data.length - 1].gameID + 1 : 0;
+				const fromId = gamesSlice.data.length > 0 ? gamesSlice.data[gamesSlice.data.length - 1].gameID + 1 : 0;
 
 				gamesSlice = await server.invoke('GetGamesSlice', fromId);
 
 				dispatch(receiveGames(gamesSlice.data));
-			} while (!gamesSlice.isLastSlice);
+
+				whileGuard--;
+			} while (!gamesSlice.isLastSlice && whileGuard > 0);
 
 			const users: string[] = await server.invoke('GetUsers');
 
@@ -382,6 +388,14 @@ const gameNameChanged: ActionCreator<Actions.GameNameChangedAction> = (gameName:
 	type: Actions.ActionTypes.GameNameChanged, gameName
 });
 
+const gamePackageTypeChanged: ActionCreator<Actions.GamePackageTypeChangedAction> = (packageType: PackageType) => ({
+	type: Actions.ActionTypes.GamePackageTypeChanged, packageType
+});
+
+const gamePackageDataChanged: ActionCreator<Actions.GamePackageDataChangedAction> = (packageName: string, packageData: File | null) => ({
+	type: Actions.ActionTypes.GamePackageDataChanged, packageName, packageData
+});
+
 const gameTypeChanged: ActionCreator<Actions.GameTypeChangedAction> = (gameType: GameType) => ({
 	type: Actions.ActionTypes.GameTypeChanged, gameType
 });
@@ -401,6 +415,104 @@ const gameCreationStart: ActionCreator<Actions.GameCreationStartAction> = () => 
 const gameCreationEnd: ActionCreator<Actions.GameCreationEndAction> = (error: string | null = null) => ({
 	type: Actions.ActionTypes.GameCreationEnd, error
 });
+
+const uploadPackageStarted: ActionCreator<Actions.UploadPackageStartedAction> = () => ({
+	type: Actions.ActionTypes.UploadPackageStarted
+});
+
+const uploadPackageFinished: ActionCreator<Actions.UploadPackageFinishedAction> = () => ({
+	type: Actions.ActionTypes.UploadPackageFinished
+});
+
+const uploadPackageProgress: ActionCreator<Actions.UploadPackageProgressAction> = (progress: number) => ({
+	type: Actions.ActionTypes.UploadPackageProgress, progress
+});
+
+function uploadPackageAsync(packageHash: string, packageData: File, serverUri: string, dispatch: Dispatch<any>): Promise<boolean> {
+	dispatch(uploadPackageStarted());
+
+	const formData = new FormData();
+	formData.append('file', packageData, packageData.name);
+
+	// fetch() does not support reporting progress right now
+	// Switch to fetch() when progress support would be implemented
+	// const response = await fetch(`${serverUri}/api/upload/package`, {
+	// 	method: 'POST',
+	// 	credentials: 'include',
+	// 	body: formData,
+	// 	headers: {
+	// 		'Content-MD5': hashArrayEncoded
+	// 	}
+	// });
+
+	// if (!response.ok) {
+	// 	throw new Error(`${localization.uploadingPackageError}: ${response.status} ${await response.text()}`);
+	// }
+
+	return new Promise<boolean>((resolve, reject) => {
+		const xhr = new XMLHttpRequest();
+
+		xhr.onload = () => {
+			dispatch(uploadPackageFinished());
+			if (xhr.status >= 200 && xhr.status < 300) {
+				resolve(true);
+			} else {
+				reject(new Error(xhr.response));
+			}
+		};
+		xhr.onerror = () => {
+			dispatch(uploadPackageFinished());
+			reject(new Error(xhr.statusText));
+		};
+		xhr.upload.onprogress = (e) => {
+			dispatch(uploadPackageProgress(e.loaded / e.total));
+		};
+
+		xhr.open('post', `${serverUri}/api/upload/package`, true);
+		xhr.setRequestHeader('Content-MD5', packageHash);
+		xhr.send(formData);
+	});
+}
+
+async function checkAndUploadPackageAsync(
+	connection: signalR.HubConnection,
+	serverUri: string,
+	packageData: File,
+	dispatch: Dispatch<any>
+	): Promise<PackageKey> {
+	const zip = new JSZip();
+	await zip.loadAsync(packageData);
+	const contentFile = zip.file('content.xml');
+
+	if (!contentFile) {
+		throw new Error(localization.corruptedPackage);
+	}
+
+	const content = await contentFile.async('text');
+
+	const parser = new DOMParser();
+	const xmlDoc = parser.parseFromString(content.substring(39), 'application/xml');
+
+	const id = xmlDoc.getElementsByTagName('package')[0].getAttribute('id');
+
+	const hash = await crypto.subtle.digest('SHA-1', await packageData.arrayBuffer());
+
+	const hashArray = new Uint8Array(hash);
+	const hashArrayEncoded = btoa(String.fromCharCode.apply(null, hashArray as any));
+
+	const packageKey: PackageKey = {
+		name: packageData.name,
+		hash: hashArrayEncoded,
+		id
+	};
+
+	const hasPackage = await connection.invoke('HasPackage', packageKey);
+	if (!hasPackage) {
+		await uploadPackageAsync(hashArrayEncoded, packageData, serverUri, dispatch);
+	}
+
+	return packageKey;
+}
 
 const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () =>
 	async (dispatch: Dispatch<any>, getState: () => State, dataContext: DataContext) => {
@@ -490,14 +602,19 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 			AppSettings: appSettings
 		};
 
-		const packageSettings = {
-			Name: '',
-			Hash: null,
-			ID: null
-		};
-
 		try {
-			const result = await dataContext.connection.invoke('CreateAndJoinGameNew', gameSettings, packageSettings, [], state.settings.sex === Sex.Male);
+			const packageKey: PackageKey | null = state.game.package.type === PackageType.Random || !state.game.package.data ? {
+				name: '',
+				hash: null,
+				id: null
+			} : await checkAndUploadPackageAsync(dataContext.connection, dataContext.serverUri, state.game.package.data, dispatch);
+
+			if (!packageKey) {
+				dispatch(gameCreationEnd(localization.badPackage));
+				return;
+			}
+
+			const result = await dataContext.connection.invoke('CreateAndJoinGameNew', gameSettings, packageKey, [], state.settings.sex === Sex.Male);
 
 			saveStateToStorage(state);
 
@@ -552,7 +669,7 @@ async function gameInit(gameId: number, dataContext: DataContext, role: Role) {
 		return;
 	}
 
-	window.history.pushState({}, `${localization.game} ${gameId}`, `${dataContext.config.rootUri}/${gameId}`);
+	window.history.pushState({}, `${localization.game} ${gameId}`, `${dataContext.config.rootUri}?gameId=${gameId}`);
 
 	await sendMessageToServer(dataContext.connection, 'INFO');
 
@@ -594,6 +711,8 @@ const actionCreators = {
 	receiveMessage,
 	windowWidthChanged,
 	gameNameChanged,
+	gamePackageTypeChanged,
+	gamePackageDataChanged,
 	gameTypeChanged,
 	gameRoleChanged,
 	playersCountChanged,

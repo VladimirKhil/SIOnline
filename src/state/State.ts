@@ -9,6 +9,7 @@ import RunState, { initialState as runInitialState } from './run/RunState';
 import GameInfo from '../model/server/GameInfo';
 import localization from '../model/resources/localization';
 import SettingsState, { initialState as settingsInitialState } from './settings/SettingsState';
+import PackageType from '../model/enums/PackageType';
 
 export default interface State {
 	user: {
@@ -42,9 +43,16 @@ export default interface State {
 		gameCreationError: string | null;
 		joinGameProgress: boolean;
 		joingGameError: string | null;
+		uploadPackageProgress: boolean;
+		uploadPackagePercentage: number;
 	};
 	game: {
 		name: string;
+		package: {
+			type: PackageType;
+			name: string;
+			data: File | null;
+		};
 		type: GameType;
 		role: Role;
 		playersCount: number;
@@ -94,10 +102,17 @@ export const initialState: State = {
 		gameCreationProgress: false,
 		gameCreationError: null,
 		joinGameProgress: false,
-		joingGameError: null
+		joingGameError: null,
+		uploadPackageProgress: false,
+		uploadPackagePercentage: 0
 	},
 	game: {
 		name: '',
+		package: {
+			type: PackageType.Random,
+			name: '',
+			data: null
+		},
 		type: GameType.Simple,
 		role: Role.Player,
 		playersCount: 3,

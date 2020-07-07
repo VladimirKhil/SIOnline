@@ -177,7 +177,7 @@ export function GameInfoView(props: GameInfoViewProps) {
 						</div>
 						{game.passwordRequired ? (<div className="passwordInfo">
 							<span>{localization.password}</span>
-							<input id="password" type="text" disabled={props.joinGameProgress} value={props.password}
+							<input id="password" type="password" disabled={props.joinGameProgress} value={props.password}
 								onChange={e => props.onPasswordChanged(e.target.value)} />
 						</div>) : null}
 						<div className="joinGameError">{props.joinGameError}</div>

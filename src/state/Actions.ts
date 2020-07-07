@@ -5,6 +5,7 @@ import ChatMode from '../model/enums/ChatMode';
 import GameType from '../model/enums/GameType';
 import Role from '../model/enums/Role';
 import GameInfo from '../model/server/GameInfo';
+import PackageType from '../model/enums/PackageType';
 
 export const enum ActionTypes {
 	IsConnectedChanged = 'IS_CONNECTED_CHANGED',
@@ -41,6 +42,8 @@ export const enum ActionTypes {
 	MessageChanged = 'MESSAGE_CHANGED',
 	WindowWidthChanged = 'WINDOW_WIDTH_CHANGED',
 	GameNameChanged = 'GAME_NAME_CHANGED',
+	GamePackageTypeChanged = 'GAME_PACKAGE_TYPE_CHANGED',
+	GamePackageDataChanged = 'GAME_PACKAGE_DATA_CHANGED',
 	GameTypeChanged = 'GAME_TYPE_CHANGED',
 	GameRoleChanged = 'GAME_ROLE_CHANGED',
 	PlayersCountChanged = 'PLAYERS_COUNT_CHANGED',
@@ -48,7 +51,10 @@ export const enum ActionTypes {
 	GameCreationEnd = 'GAME_CREATION_END',
 	GameSet = 'GAME_SET',
 	JoinGameStarted = 'JOIN_GAME_STARTED',
-	JoinGameFinished = 'JOIN_GAME_FINISHED'
+	JoinGameFinished = 'JOIN_GAME_FINISHED',
+	UploadPackageStarted = 'UPLOAD_PACKAGE_STARTED',
+	UploadPackageFinished = 'UPLOAD_PACKAGE_FINISHED',
+	UploadPackageProgress = 'UPLOAD_PACKAGE_PROGRESS'
 }
 
 export type IsConnectedChangedAction = { type: ActionTypes.IsConnectedChanged, isConnected: boolean };
@@ -85,6 +91,8 @@ export type UserLeavedAction = { type: ActionTypes.UserLeaved, login: string };
 export type MessageChangedAction = { type: ActionTypes.MessageChanged, message: string };
 export type WindowWidthChangedAction = { type: ActionTypes.WindowWidthChanged, width: number };
 export type GameNameChangedAction = { type: ActionTypes.GameNameChanged, gameName: string };
+export type GamePackageTypeChangedAction = { type: ActionTypes.GamePackageTypeChanged, packageType: PackageType };
+export type GamePackageDataChangedAction = { type: ActionTypes.GamePackageDataChanged, packageName: string, packageData: File | null };
 export type GameTypeChangedAction = { type: ActionTypes.GameTypeChanged, gameType: GameType };
 export type GameRoleChangedAction = { type: ActionTypes.GameRoleChanged, gameRole: Role };
 export type PlayersCountChangedAction = { type: ActionTypes.PlayersCountChanged, playersCount: number };
@@ -93,6 +101,9 @@ export type GameCreationEndAction = { type: ActionTypes.GameCreationEnd, error: 
 export type GameSetAction = { type: ActionTypes.GameSet, id: number, isHost: boolean, isAutomatic: boolean, role: Role };
 export type JoinGameStartedAction = { type: ActionTypes.JoinGameStarted };
 export type JoinGameFinishedAction = { type: ActionTypes.JoinGameFinished, error: string | null };
+export type UploadPackageStartedAction = { type: ActionTypes.UploadPackageStarted };
+export type UploadPackageFinishedAction = { type: ActionTypes.UploadPackageFinished };
+export type UploadPackageProgressAction = { type: ActionTypes.UploadPackageProgress, progress: number };
 
 export type KnownAction =
 	IsConnectedChangedAction
@@ -129,6 +140,8 @@ export type KnownAction =
 	| MessageChangedAction
 	| WindowWidthChangedAction
 	| GameNameChangedAction
+	| GamePackageTypeChangedAction
+	| GamePackageDataChangedAction
 	| GameTypeChangedAction
 	| GameRoleChangedAction
 	| PlayersCountChangedAction
@@ -137,4 +150,7 @@ export type KnownAction =
 	| GameSetAction
 	| JoinGameStartedAction
 	| JoinGameFinishedAction
+	| UploadPackageStartedAction
+	| UploadPackageFinishedAction
+	| UploadPackageProgressAction
 	;

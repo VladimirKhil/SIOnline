@@ -358,6 +358,33 @@ const reducer: Reducer<State> = (state: State = initialState, action: KnownActio
 			};
 		}
 
+		case ActionTypes.GamePackageTypeChanged: {
+			return {
+				...state,
+				game: {
+					...state.game,
+					package: {
+						...state.game.package,
+						type: action.packageType
+					}
+				}
+			};
+		}
+
+		case ActionTypes.GamePackageDataChanged: {
+			return {
+				...state,
+				game: {
+					...state.game,
+					package: {
+						...state.game.package,
+						name: action.packageName,
+						data: action.packageData
+					}
+				}
+			};
+		}
+
 		case ActionTypes.GameTypeChanged: {
 			return {
 				...state,
@@ -452,6 +479,34 @@ const reducer: Reducer<State> = (state: State = initialState, action: KnownActio
 				}
 			};
 		}
+
+		case ActionTypes.UploadPackageStarted:
+			return {
+				...state,
+				online: {
+					...state.online,
+					uploadPackageProgress: true,
+					uploadPackagePercentage: 0
+				}
+			};
+
+		case ActionTypes.UploadPackageFinished:
+			return {
+				...state,
+				online: {
+					...state.online,
+					uploadPackageProgress: false
+				}
+			};
+
+		case ActionTypes.UploadPackageProgress:
+			return {
+				...state,
+				online: {
+					...state.online,
+					uploadPackagePercentage: action.progress
+				}
+			};
 	}
 
 	return {...state,

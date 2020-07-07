@@ -68,7 +68,7 @@ async function run() {
 
 		const serverUrisResponse = await fetch(serverDiscoveryUri);
 		if (!serverUrisResponse.ok) {
-			throw new Error(`Server discovery is broken! ${serverUrisResponse.status} ${serverUrisResponse.text()}`);
+			throw new Error(`Server discovery is broken! ${serverUrisResponse.status} ${await serverUrisResponse.text()}`);
 		}
 
 		const serverUris = (await serverUrisResponse.json()) as ServerInfo[];

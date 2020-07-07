@@ -43,6 +43,46 @@
     max-height: 100px;
 }
 
+.packageTypeSelector {
+    margin-right: 10px;
+}
+
+.packageFileBox {
+    margin-top: 10px;
+}
+
+.packageFileBox span {
+    margin-left: 10px;
+}
+
+.packageFileBox input[type='file'] {
+    display: none;
+}
+
+#newGameDialog .packageFileBox input.selector {
+    width: 100px;
+}
+
+.uploadPackagePanel {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background-color: #FFFFFF88;
+    display: flex;
+    justify-content: center;
+    align-items: center;    
+    flex-flow: column;
+    padding: 100px;
+}
+
+.uploadPackagePanel .progress {
+    position: static;
+    display: block;
+    margin: 25px;
+}
+
 @media screen and (min-width: 800px) {
     #newGameDialog {
         right: 300px;
