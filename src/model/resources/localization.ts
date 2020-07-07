@@ -135,6 +135,7 @@
 	theGameWillStartIn: 'Игра начнётся через',
 	thePlayerThinksThatHisHerAnswer: 'Игрок считает, что его ответ',
 	theme: 'Тема',
+	tooManyGamesByIp: 'Слишком много игр на одном адресе!',
 	tv: 'Классическая',
 	tvPlural: 'Классические',
 	uploadingPackageError: 'Ошибка отправки пакета',
@@ -144,6 +145,7 @@
 	viewers: 'Зрители',
 	withoutPassword: 'Без пароля',
 	wrongAnswers: 'Неправильные ответы',
+	wrongGameSettings: 'Неверные настройки игры!',
 	yes: 'Да',
 	youAreKicked: 'Вас выгнали из игры!',
 	yourName: 'Ваше имя'
