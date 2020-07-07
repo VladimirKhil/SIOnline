@@ -109,7 +109,6 @@ const reducer: Reducer<State> = (state: State = initialState, action: KnownActio
 				},
 				online: {
 					...state.online,
-					selectedGameId: -1,
 					games: [],
 					users: [],
 					messages: [],

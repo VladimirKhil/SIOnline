@@ -22,7 +22,7 @@ import ServerInfo from './model/server/ServerInfo';
 
 declare const config: Config;
 
-function setState(state: State, savedState: SavedState | null): State {
+function setState(state: State, savedState: SavedState | null, gameId: string | null): State {
 	if (!savedState) {
 		return state;
 	}
@@ -43,7 +43,11 @@ function setState(state: State, savedState: SavedState | null): State {
 		settings: savedState.settings ? {
 			...state.settings,
 			...savedState.settings
-		} : state.settings
+		} : state.settings,
+		online: {
+			...state.online,
+			selectedGameId: gameId ? parseInt(gameId, 10) : -1
+		}
 	};
 }
 
@@ -79,8 +83,11 @@ async function run() {
 		serverUri = serverUris[0].uri;
 	}
 
+	const urlParams = new URLSearchParams(window.location.search);
+	const gameId = urlParams.get('gameId');
+
 	const savedState = loadState();
-	const state = setState(initialState, savedState);
+	const state = setState(initialState, savedState, gameId);
 
 	const dataContext: DataContext = {
 		config,
