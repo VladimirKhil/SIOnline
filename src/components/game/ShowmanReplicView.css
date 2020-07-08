@@ -51,7 +51,7 @@
 
 @media screen and (min-width: 1100px) {
     .showmanArea {
-        flex: 0 0 170px;
+        flex: 0 0 150px;
     }
 
     .showmanInfo {
@@ -61,6 +61,6 @@
 
 @media screen and (min-width: 1600px) {
     .showmanArea {
-        flex: 0 0 200px;
+        flex: 0 0 175px;
     }
 }

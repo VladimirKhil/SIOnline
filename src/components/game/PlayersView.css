@@ -87,6 +87,10 @@
 
 .playerAvatar {
     height: 100%;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    overflow: hidden;
 }
 
 .gamePlayer {
@@ -118,9 +122,19 @@
 }
 
 @media screen and (min-width: 1100px) and (min-height: 700px) {
+    .gamePlayers {
+        flex-flow: initial;
+    }
+
     .gamePlayers li {
         height: 125px;
         padding: 10px;
+        flex: 1;
+        flex-flow: column;
+    }
+
+    .playerAvatar {
+        height: calc(50%);
     }
 
     .gamePlayers .playerReplic {

@@ -80,9 +80,9 @@ export function PlayersView(props: PlayersViewProps) {
 						<li key={`${player.name}_${index}`} style={playerStyle}
 							className={buildPlayerClasses(player, player.name === props.login, player.canBeSelected)}
 							onClick={() => props.onPlayerSelected(index)}>
-							{avatar ? <img className="playerAvatar" src={avatar} /> : null}
+							{avatar ? <div className="playerAvatar" style={{ backgroundImage: `url(${avatar})` }} /> : null}
 							<div className="playerInfo">
-								<span className="name">{player.name}</span>
+								<span className="name" title={player.name}>{player.name}</span>
 								<div className="sum">
 									{props.isSumEditable ?
 										<NumericTextBox value={player.sum} onValueChanged={value => onSumChanged(index, value)} onCancel={props.onCancelSumChange} />
