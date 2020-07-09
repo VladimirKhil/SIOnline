@@ -124,6 +124,7 @@
 @media screen and (min-width: 1100px) and (min-height: 700px) {
     .gamePlayers {
         flex-flow: initial;
+        height: 125px;
     }
 
     .gamePlayers li {
@@ -162,6 +163,10 @@
 }
 
 @media screen and (min-width: 1600px) and (min-height: 700px) {
+    .gamePlayers {
+        height: 150px;
+    }
+
     .gamePlayers li {
         height: 150px;
         padding: 16px;
