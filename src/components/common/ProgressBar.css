@@ -9,7 +9,7 @@
     z-index: 2;
 }
 
-.progressindeterminate {
+.progress.indeterminate {
     background-color: darkblue;
 }
 

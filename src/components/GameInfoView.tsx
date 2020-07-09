@@ -199,7 +199,7 @@ export function GameInfoView(props: GameInfoViewProps) {
 						</div>
 					</div>
 				) : null}
-				{props.joinGameProgress ? <div className="joinGameProgress"><ProgressBar /></div> : null}
+				{props.joinGameProgress ? <div className="joinGameProgress"><ProgressBar isIndeterminate={true} /></div> : null}
 			</div>
 		</section>
 	);

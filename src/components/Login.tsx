@@ -57,7 +57,7 @@ export class Login extends React.Component<LoginProps> {
 		return (
 			<div id="logon">
 				<div className="main">
-					{this.props.inProgress ? <ProgressBar /> : null}
+					{this.props.inProgress ? <ProgressBar isIndeterminate={true} /> : null}
 					<header><h1>{localization.appName}</h1></header>
 					<div className="logonHost">
 						<p className="header">{localization.yourName}</p>

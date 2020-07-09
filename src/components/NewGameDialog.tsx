@@ -172,7 +172,7 @@ export class NewGameDialog extends React.Component<NewGameDialogProps> {
 				<span className="gameCreationError">{this.props.error}</span>
 				<button className="startGame" disabled={!this.props.isConnected || this.props.inProgress}
 					onClick={this.props.onCreate}>{localization.startGame}</button>
-				{this.props.inProgress ? <ProgressBar /> : null}
+				{this.props.inProgress ? <ProgressBar isIndeterminate={true} /> : null}
 				{this.props.uploadPackageProgress ? (
 					<div className="uploadPackagePanel">
 						<span>{localization.sendingPackage}</span>

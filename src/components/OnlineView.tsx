@@ -96,7 +96,7 @@ export class OnlineView extends React.Component<OnlineViewProps> {
 			if (this.props.mode === OnlineMode.Games || this.props.mode === OnlineMode.GameInfo) {
 				return (
 					<div className="onlineView">
-						{this.props.inProgress ? <ProgressBar /> : null}
+						{this.props.inProgress ? <ProgressBar isIndeterminate={true} /> : null}
 						<GamesList games={this.props.filteredGames} selectedGameId={this.props.selectedGameId} showInfo={true} />
 						{this.props.newGameShown ? <NewGameDialog /> : null}
 					</div>
@@ -108,7 +108,7 @@ export class OnlineView extends React.Component<OnlineViewProps> {
 
 		return (
 			<div className="onlineView">
-				{this.props.inProgress ? <ProgressBar /> : null}
+				{this.props.inProgress ? <ProgressBar isIndeterminate={true} /> : null}
 				<GamesList games={this.props.filteredGames} selectedGameId={this.props.selectedGameId} showInfo={false} />
 				<GameInfoView game={this.props.selectedGame} showGameName={true} />
 				<UsersView />
