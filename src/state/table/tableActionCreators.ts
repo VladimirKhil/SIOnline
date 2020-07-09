@@ -17,8 +17,8 @@ const showRoundThemes: ActionCreator<TableActions.ShowRoundThemesAction> = (
 		type: TableActions.TableActionTypes.ShowRoundThemes, roundThemes, isFinal, display
 	});
 
-const showText: ActionCreator<TableActions.ShowTextAction> = (text: string) => ({
-	type: TableActions.TableActionTypes.ShowText, text
+const showText: ActionCreator<TableActions.ShowTextAction> = (text: string, animateReading: boolean) => ({
+	type: TableActions.TableActionTypes.ShowText, text, animateReading
 });
 
 const showAnswer: ActionCreator<TableActions.ShowAnswerAction> = (text: string) => ({

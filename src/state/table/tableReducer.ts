@@ -32,7 +32,8 @@ const tableReducer: Reducer<TableState> = (state: TableState = initialState, any
 			return {
 				...state,
 				mode: TableMode.Text,
-				text: action.text
+				text: action.text,
+				animateReading: action.animateReading
 			};
 
 		case TableActionTypes.ShowAnswer:

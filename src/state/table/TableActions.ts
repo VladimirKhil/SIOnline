@@ -30,7 +30,7 @@ export type ShowRoundThemesAction = {
 	isFinal: boolean,
 	display: boolean
 };
-export type ShowTextAction = { type: TableActionTypes.ShowText, text: string };
+export type ShowTextAction = { type: TableActionTypes.ShowText, text: string, animateReading: boolean };
 export type ShowAnswerAction = { type: TableActionTypes.ShowAnswer, text: string };
 export type ShowRoundTableAction = { type: TableActionTypes.ShowRoundTable };
 export type BlinkQuestionAction = { type: TableActionTypes.BlinkQuestion, themeIndex: number, questionIndex: number };

@@ -6,6 +6,7 @@ export default interface TableState {
 	mode: TableMode;
 	text: string;
 	tail: string;
+	animateReading: boolean;
 	canPress: boolean;
 	gameThemes: string[];
 	roundInfo: ThemeInfo[];
@@ -19,6 +20,7 @@ export const initialState: TableState = {
 	mode: TableMode.Text,
 	text: localization.tableHint,
 	tail: '',
+	animateReading: false,
 	canPress: false,
 	gameThemes: [],
 	roundInfo: [],

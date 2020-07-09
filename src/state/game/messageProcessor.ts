@@ -97,7 +97,7 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 						}
 
 						if (args[1] === 'text') {
-							dispatch(tableActionCreators.showText(text));
+							dispatch(tableActionCreators.showText(text, true));
 						} else {
 							dispatch(tableActionCreators.appendPartialText(text));
 						}
@@ -286,8 +286,16 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 
 		case 'QUESTION':
 			dispatch(runActionCreators.playersStateCleared());
-			dispatch(tableActionCreators.showText(args[1]));
+			dispatch(tableActionCreators.showText(args[1], false));
 			dispatch(runActionCreators.afterQuestionStateChanged(false));
+			break;
+
+		case 'READINGSPEED':
+			if (args.length < 2) {
+				break;
+			}
+
+			dispatch(runActionCreators.readingSpeedChanged(parseInt(args[1], 10)));
 			break;
 
 		case 'REPLIC':
@@ -333,7 +341,7 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 			}
 
 			if (stage === 'Round' || stage === 'Final') {
-				dispatch(tableActionCreators.showText(args[2]));
+				dispatch(tableActionCreators.showText(args[2], false));
 				dispatch(runActionCreators.playersStateCleared());
 			} else if (stage === 'After') {
 				dispatch(tableActionCreators.showLogo());
@@ -419,7 +427,7 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 		case 'THEME':
 			dispatch(runActionCreators.playersStateCleared());
 			dispatch(runActionCreators.showmanReplicChanged(''));
-			dispatch(tableActionCreators.showText(`${localization.theme}: ${args[1]}`));
+			dispatch(tableActionCreators.showText(`${localization.theme}: ${args[1]}`, false));
 			dispatch(runActionCreators.afterQuestionStateChanged(false));
 			break;
 

@@ -1,0 +1,7 @@
+.animatableCharacter {
+	animation: color-change 0.5s forwards;
+}
+
+@keyframes color-change {
+	100% { color: cyan; }
+}

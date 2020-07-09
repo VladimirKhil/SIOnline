@@ -16,10 +16,10 @@ import TableRoundThemes from './TableRoundThemes';
 import RoundTable from './RoundTable';
 import TableSpecial from './TableSpecial';
 import FinalTable from './FinalTable';
-
-import './GameTable.css';
 import AutoSizedText from '../autoSizedText/AutoSizedText';
 import localization from '../../model/resources/localization';
+
+import './GameTable.css';
 
 interface GameTableProps {
 	mode: TableMode;

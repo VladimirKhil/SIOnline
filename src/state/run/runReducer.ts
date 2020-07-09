@@ -514,6 +514,12 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 				...state,
 				areSumsEditable: action.areSumsEditable
 			};
+
+		case RunActionTypes.ReadingSpeedChanged:
+			return {
+				...state,
+				readingSpeed: action.readingSpeed
+			};
 	}
 
 	return {...state,

@@ -417,6 +417,10 @@ const changePlayerSum: ActionCreator<ThunkAction<void, State, DataContext, Actio
 		msg(dataContext.connection, 'CHANGE', playerIndex + 1, sum); // playerIndex здесь почему-то начинается с 1
 	};
 
+const readingSpeedChanged: ActionCreator<RunActions.ReadingSpeedChangedAction> = (readingSpeed: number) => ({
+	type: RunActions.RunActionTypes.ReadingSpeedChanged, readingSpeed
+});
+
 const runActionCreators = {
 	runChatModeChanged,
 	runChatMessageChanged,
@@ -479,7 +483,8 @@ const runActionCreators = {
 	showLeftSeconds,
 	onMediaEnded,
 	areSumsEditableChanged,
-	changePlayerSum
+	changePlayerSum,
+	readingSpeedChanged
 };
 
 export default runActionCreators;
