@@ -6,6 +6,7 @@ import PlayerInfo from '../../model/PlayerInfo';
 import Persons from '../../model/Persons';
 import Role from '../../model/enums/Role';
 import StakeTypes from '../../model/enums/StakeTypes';
+import Timers from '../../model/Timers';
 
 export default interface RunState {
 	persons: {
@@ -26,6 +27,8 @@ export default interface RunState {
 		themeIndex: number;
 		currentPrice: number;
 	};
+	timers: Timers;
+	showMainTimer: boolean;
 	table: TableState;
 	selection: {
 		isEnabled: boolean;
@@ -66,7 +69,7 @@ export default interface RunState {
 export const initialState: RunState = {
 	persons: {
 		all: {},
-		showman: { name: '', isReady: false, replic: null },
+		showman: { name: '', isReady: false, replic: null, isDeciding: false },
 		players: []
 	},
 	role: Role.Player,
@@ -82,6 +85,27 @@ export const initialState: RunState = {
 		themeIndex: -1,
 		currentPrice: 0
 	},
+	timers: {
+		round: {
+			isPausedBySystem: true,
+			isPausedByUser: false,
+			value: 0,
+			maximum: 0
+		},
+		press: {
+			isPausedBySystem: true,
+			isPausedByUser: false,
+			value: 0,
+			maximum: 0
+		},
+		decision: {
+			isPausedBySystem: true,
+			isPausedByUser: false,
+			value: 0,
+			maximum: 0
+		}
+	},
+	showMainTimer: false,
 	table: tableInitialState,
 	selection: {
 		isEnabled: false,

@@ -421,6 +421,42 @@ const readingSpeedChanged: ActionCreator<RunActions.ReadingSpeedChangedAction> =
 	type: RunActions.RunActionTypes.ReadingSpeedChanged, readingSpeed
 });
 
+const runTimer: ActionCreator<RunActions.RunTimerAction> = (timerIndex: number, maximumTime: number, runByUser: boolean) => ({
+	type: RunActions.RunActionTypes.RunTimer, timerIndex, maximumTime, runByUser
+});
+
+const pauseTimer: ActionCreator<RunActions.PauseTimerAction> = (timerIndex: number, currentTime: number, pausedByUser: boolean) => ({
+	type: RunActions.RunActionTypes.PauseTimer, timerIndex, currentTime, pausedByUser
+});
+
+const resumeTimer: ActionCreator<RunActions.ResumeTimerAction> = (timerIndex: number, runByUser: boolean) => ({
+	type: RunActions.RunActionTypes.ResumeTimer, timerIndex, runByUser
+});
+
+const stopTimer: ActionCreator<RunActions.StopTimerAction> = (timerIndex: number) => ({
+	type: RunActions.RunActionTypes.StopTimer, timerIndex
+});
+
+const timerMaximumChanged: ActionCreator<RunActions.TimerMaximumChangedAction> = (timerIndex: number, maximumTime: number) => ({
+	type: RunActions.RunActionTypes.TimerMaximumChanged, timerIndex, maximumTime
+});
+
+const activateShowmanDecision: ActionCreator<RunActions.ActivateShowmanDecisionAction> = () => ({
+	type: RunActions.RunActionTypes.ActivateShowmanDecision
+});
+
+const activatePlayerDecision: ActionCreator<RunActions.ActivatePlayerDecisionAction> = (playerIndex: number) => ({
+	type: RunActions.RunActionTypes.ActivatePlayerDecision, playerIndex
+});
+
+const showMainTimer: ActionCreator<RunActions.ShowMainTimerAction> = () => ({
+	type: RunActions.RunActionTypes.ShowMainTimer
+});
+
+const clearDecisionsAndMainTimer: ActionCreator<RunActions.ClearDecisionsAndMainTimerAction> = () => ({
+	type: RunActions.RunActionTypes.ClearDecisionsAndMainTimer
+});
+
 const runActionCreators = {
 	runChatModeChanged,
 	runChatMessageChanged,
@@ -484,7 +520,16 @@ const runActionCreators = {
 	onMediaEnded,
 	areSumsEditableChanged,
 	changePlayerSum,
-	readingSpeedChanged
+	readingSpeedChanged,
+	runTimer,
+	pauseTimer,
+	resumeTimer,
+	stopTimer,
+	timerMaximumChanged,
+	activateShowmanDecision,
+	activatePlayerDecision,
+	showMainTimer,
+	clearDecisionsAndMainTimer
 };
 
 export default runActionCreators;

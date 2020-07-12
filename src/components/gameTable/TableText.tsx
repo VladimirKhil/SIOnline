@@ -3,18 +3,17 @@ import State from '../../state/State';
 import { Dispatch, Action } from 'redux';
 import { connect } from 'react-redux';
 import AutoSizedText from '../autoSizedText/AutoSizedText';
+import TableBorder from './TableBorder';
 
 import './TableText.css';
 
 interface TableTextProps {
-	canTry: boolean;
 	text: string;
 	animateReading: boolean;
 	readingSpeed: number;
 }
 
 const mapStateToProps = (state: State) => ({
-	canTry: state.run.table.canPress,
 	text: state.run.table.text,
 	animateReading: state.run.table.animateReading,
 	readingSpeed: state.run.readingSpeed
@@ -26,10 +25,6 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 
 // tslint:disable-next-line: function-name
 export function TableText(props: TableTextProps) {
-	const style: React.CSSProperties = {
-		borderColor: props.canTry ? '#FFE682' : 'transparent'
-	};
-
 	let textElem: JSX.Element;
 	if (props.animateReading) {
 		// Each letter is wrapped into its own span with animation-delay.
@@ -55,9 +50,9 @@ export function TableText(props: TableTextProps) {
 	}
 
 	return (
-		<div className="tableBorder tableBorderCentered" style={style}>
+		<TableBorder>
 			{textElem}
-		</div>
+		</TableBorder>
 	);
 }
 

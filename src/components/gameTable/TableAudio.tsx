@@ -4,10 +4,10 @@ import { Dispatch, Action } from 'redux';
 import { connect } from 'react-redux';
 import runActionCreators from '../../state/run/runActionCreators';
 import MuteButton from '../common/MuteButton';
+import TableBorder from './TableBorder';
 
 interface TableAudioProps {
 	isSoundEnabled: boolean;
-	canTry: boolean;
 	text: string;
 	isMediaStopped: boolean;
 	onMediaEnded: () => void;
@@ -15,7 +15,6 @@ interface TableAudioProps {
 
 const mapStateToProps = (state: State) => ({
 	isSoundEnabled: state.settings.isSoundEnabled,
-	canTry: state.run.table.canPress,
 	text: state.run.table.text,
 	isMediaStopped: state.run.stage.isGamePaused || state.run.table.isMediaStopped
 });
@@ -47,12 +46,8 @@ export class TableAudio extends React.Component<TableAudioProps> {
 	}
 
 	render() {
-		const style: React.CSSProperties = {
-			borderColor: this.props.canTry ? '#FFE682' : 'transparent'
-		};
-
 		return (
-			<div className="tableBorder tableBorderCentered" style={style}>
+			<TableBorder>
 				<audio ref={this.audioRef} autoPlay muted={!this.props.isSoundEnabled} onEnded={e => this.props.onMediaEnded()}>
 					<source src={this.props.text} />
 				</audio>
@@ -60,7 +55,7 @@ export class TableAudio extends React.Component<TableAudioProps> {
 					<span className="clef rotate">&amp;</span>
 				</div>
 				<MuteButton />
-			</div>
+			</TableBorder>
 		);
 	}
 }

@@ -172,6 +172,8 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 				const index = (Number)(args[1]);
 				if (index !== NaN && index > -1 && index < state.run.persons.players.length) {
 					dispatch(runActionCreators.playerStateChanged(index, PlayerStates.Press));
+				} else if (args[1] === 'A') {
+					dispatch(runActionCreators.stopTimer(1));
 				}
 			}
 			break;
@@ -416,11 +418,61 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 			break;
 
 		case 'TIMER':
+			// Special case for automatic game
 			if (!state.run.stage.isGameStarted && state.game.isAutomatic && args.length === 5 &&
 				args[1] === '2' && args[2] === 'GO' && args[4] === '-2') {
 				const leftSeconds = parseInt(args[3], 10) / 10;
 
 				runActionCreators.showLeftSeconds(leftSeconds, dispatch);
+			} else if (args.length > 2) {
+				const timerIndex = parseInt(args[1], 10);
+				const timerCommand = args[2];
+				const timerArgument = args.length > 3 ? parseInt(args[3], 10) : 0;
+				const timerPersonIndex = args.length > 4 ? parseInt(args[4], 10) : null;
+
+				switch (timerCommand) {
+					case 'GO':
+						dispatch(runActionCreators.runTimer(timerIndex, timerArgument, false));
+
+						if (timerIndex === 2 && timerPersonIndex) {
+							if (timerPersonIndex === -1) {
+								dispatch(runActionCreators.activateShowmanDecision());
+							} else if (timerPersonIndex === -2) {
+								dispatch(runActionCreators.showMainTimer());
+							} else if (timerPersonIndex > -1 && timerPersonIndex < state.run.persons.players.length) {
+								dispatch(runActionCreators.activatePlayerDecision(timerPersonIndex));
+							}
+						}
+						break;
+
+					case 'STOP':
+						dispatch(runActionCreators.stopTimer(timerIndex));
+
+						if (timerIndex === 2) {
+							dispatch(runActionCreators.clearDecisionsAndMainTimer());
+						}
+						break;
+
+					case 'PAUSE':
+						dispatch(runActionCreators.pauseTimer(timerIndex, timerArgument, false));
+						break;
+
+					case 'USER_PAUSE':
+						dispatch(runActionCreators.pauseTimer(timerIndex, timerArgument, true));
+						break;
+
+					case 'RESUME':
+						dispatch(runActionCreators.resumeTimer(timerIndex, false));
+						break;
+
+					case 'USER_RESUME':
+						dispatch(runActionCreators.resumeTimer(timerIndex, true));
+						break;
+
+					case 'MAXTIME':
+						dispatch(runActionCreators.timerMaximumChanged(timerIndex, timerArgument));
+						break;
+				}
 			}
 			break;
 
@@ -633,7 +685,8 @@ function info(dispatch: Dispatch<RunActions.KnownRunAction>, ...args: string[]) 
 	const showman: ShowmanInfo = {
 		name,
 		isReady,
-		replic: null
+		replic: null,
+		isDeciding: false
 	};
 
 	if (isConnected) {
@@ -661,7 +714,8 @@ function info(dispatch: Dispatch<RunActions.KnownRunAction>, ...args: string[]) 
 			stake: 0,
 			state: PlayerStates.None,
 			canBeSelected: false,
-			replic: null
+			replic: null,
+			isDeciding: false
 		});
 
 		if (isConnected) {

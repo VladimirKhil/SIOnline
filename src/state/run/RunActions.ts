@@ -52,7 +52,16 @@ export const enum RunActionTypes {
 	StakeChanged = 'STAKE_CHANGED',
 	SelectionEnabled = 'SELECTION_ENABLED',
 	AreSumsEditableChanged = 'ARE_SUMS_EDITABLE_CHANGED',
-	ReadingSpeedChanged = 'READING_SPEED_CHANGED'
+	ReadingSpeedChanged = 'READING_SPEED_CHANGED',
+	RunTimer = 'RUN_TIMER',
+	PauseTimer = 'PAUSE_TIMER',
+	ResumeTimer = 'RESUME_TIMER',
+	StopTimer = 'STOP_TIMER',
+	TimerMaximumChanged = 'TIMER_MAXIMUM_CHANGED',
+	ActivateShowmanDecision = 'ACTIVATE_SHOWMAN_DECISION',
+	ActivatePlayerDecision = 'ACTIVATE_PLAYER_DECISION',
+	ShowMainTimer = 'SHOW_MAIN_TIMER',
+	ClearDecisionsAndMainTimer = 'CLEAR_DECISIONS_AND_MAIN_TIMER'
 }
 
 export type RunChatModeChangedAction = { type: RunActionTypes.RunChatModeChanged, chatMode: ChatMode };
@@ -115,6 +124,15 @@ export type StakeChangedAction = { type: RunActionTypes.StakeChanged, stake: num
 export type SelectionEnabledAction = { type: RunActionTypes.SelectionEnabled, allowedIndices: number[], message: string };
 export type AreSumsEditableChangedAction = { type: RunActionTypes.AreSumsEditableChanged, areSumsEditable: boolean };
 export type ReadingSpeedChangedAction = { type: RunActionTypes.ReadingSpeedChanged, readingSpeed: number };
+export type RunTimerAction = { type: RunActionTypes.RunTimer, timerIndex: number, maximumTime: number, runByUser: boolean };
+export type PauseTimerAction = { type: RunActionTypes.PauseTimer, timerIndex: number, currentTime: number, pausedByUser: boolean };
+export type ResumeTimerAction = { type: RunActionTypes.ResumeTimer, timerIndex: number, runByUser: boolean };
+export type StopTimerAction = { type: RunActionTypes.StopTimer, timerIndex: number };
+export type TimerMaximumChangedAction = { type: RunActionTypes.TimerMaximumChanged, timerIndex: number, maximumTime: number };
+export type ActivateShowmanDecisionAction = { type: RunActionTypes.ActivateShowmanDecision };
+export type ActivatePlayerDecisionAction = { type: RunActionTypes.ActivatePlayerDecision, playerIndex: number };
+export type ShowMainTimerAction = { type: RunActionTypes.ShowMainTimer };
+export type ClearDecisionsAndMainTimerAction = { type: RunActionTypes.ClearDecisionsAndMainTimer };
 
 export type KnownRunAction =
 	RunChatModeChangedAction
@@ -160,4 +178,13 @@ export type KnownRunAction =
 	| SelectionEnabledAction
 	| AreSumsEditableChangedAction
 	| ReadingSpeedChangedAction
+	| RunTimerAction
+	| PauseTimerAction
+	| ResumeTimerAction
+	| StopTimerAction
+	| TimerMaximumChangedAction
+	| ActivateShowmanDecisionAction
+	| ActivatePlayerDecisionAction
+	| ShowMainTimerAction
+	| ClearDecisionsAndMainTimerAction
 	;

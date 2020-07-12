@@ -1,0 +1,71 @@
+#table .tableBorder {
+	flex-grow: 1;
+	border: 10px solid transparent;
+}
+
+#table .tableBorderCentered {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-grow: 1;
+}
+
+.tableBorder .topBorder {
+	position: absolute;
+	top: 0;
+	left: auto;
+	right: auto;
+	width: 100%;
+	height: 10px;
+	background-color: #FFE682;
+}
+
+.tableBorder .topBorder.animate, .tableBorder .bottomBorder.animate {
+	animation-name: animateWidth;
+	animation-fill-mode: forwards;
+	animation-timing-function: linear;
+}
+
+.tableBorder .rightBorder {
+	position: absolute;
+	right: 0;
+	top: auto;
+	bottom: auto;
+	height: 100%;
+	width: 10px;
+	background-color: #FFE682;
+}
+
+.tableBorder .bottomBorder {
+	position: absolute;
+	bottom: 0;
+	left: auto;
+	right: auto;
+	width: 100%;
+	height: 10px;
+	background-color: #FFE682;
+}
+
+.tableBorder .leftBorder {
+	position: absolute;
+	left: 0;
+	top: auto;
+	bottom: auto;
+	height: 100%;
+	width: 10px;
+	background-color: #FFE682;
+}
+
+.tableBorder .leftBorder.animate, .tableBorder .rightBorder.animate {
+	animation-name: animateHeight;
+	animation-fill-mode: forwards;
+	animation-timing-function: linear;
+}
+
+@keyframes animateWidth {
+	100% { width: 0; }
+}
+
+@keyframes animateHeight {
+	100% { height: 0; }
+}

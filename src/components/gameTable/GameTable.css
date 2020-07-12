@@ -23,18 +23,6 @@
 	color: darkgray;
 }
 
-    #table .tableBorder {
-        flex-grow: 1;
-        border: 10px solid #FFE682;
-    }
-
-    #table .tableBorderCentered {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        flex-grow: 1;
-    }
-
     #table .centerBlock {
         text-align: center;
         display: flex;

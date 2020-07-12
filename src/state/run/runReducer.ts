@@ -7,6 +7,7 @@ import { KnownTableAction } from '../table/TableActions';
 import { set, removeS } from '../../utils/RecordExtensions';
 import PlayerStates from '../../model/enums/PlayerStates';
 import Constants from '../../model/enums/Constants';
+import { updateTimers } from '../../utils/TimerInfoHelpers';
 
 const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction: AnyAction): RunState => {
 	const action = anyAction as KnownRunAction;
@@ -278,7 +279,8 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 						state: PlayerStates.None,
 						canBeSelected: false,
 						isReady: false,
-						replic: null
+						replic: null,
+						isDeciding: false
 					}]
 				}
 			};
@@ -519,6 +521,105 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 			return {
 				...state,
 				readingSpeed: action.readingSpeed
+			};
+
+		case RunActionTypes.RunTimer:
+			return {
+				...state,
+				timers: updateTimers(state.timers, action.timerIndex, timer => ({
+					isPausedByUser: action.runByUser ? false : timer.isPausedByUser,
+					isPausedBySystem: !action.runByUser ? false : timer.isPausedBySystem,
+					maximum: action.maximumTime,
+					value: 0
+				}))
+			};
+
+		case RunActionTypes.PauseTimer:
+			return {
+				...state,
+				timers: updateTimers(state.timers, action.timerIndex, timer => ({
+					...timer,
+					isPausedByUser: action.pausedByUser ? true : timer.isPausedByUser,
+					isPausedBySystem: !action.pausedByUser ? true : timer.isPausedBySystem,
+					value: action.currentTime
+				}))
+			};
+
+		case RunActionTypes.ResumeTimer:
+			return {
+				...state,
+				timers: updateTimers(state.timers, action.timerIndex, timer => ({
+					...timer,
+					isPausedByUser: action.runByUser ? false : timer.isPausedByUser,
+					isPausedBySystem: !action.runByUser ? false : timer.isPausedBySystem
+				}))
+			};
+
+		case RunActionTypes.StopTimer:
+			return {
+				...state,
+				timers: updateTimers(state.timers, action.timerIndex, timer => ({
+					...timer,
+					isPausedByUser: false,
+					isPausedBySystem: true,
+					value: 0
+				}))
+			};
+
+		case RunActionTypes.TimerMaximumChanged:
+			return {
+				...state,
+				timers: updateTimers(state.timers, action.timerIndex, timer => ({
+					...timer,
+					maximum: action.maximumTime
+				}))
+			};
+
+		case RunActionTypes.ActivateShowmanDecision:
+			return {
+				...state,
+				persons: {
+					...state.persons,
+					showman: {
+						...state.persons.showman,
+						isDeciding: true
+					}
+				}
+			};
+
+		case RunActionTypes.ActivatePlayerDecision:
+			return {
+				...state,
+				persons: {
+					...state.persons,
+					players: replace(state.persons.players, action.playerIndex, {
+						...state.persons.players[action.playerIndex],
+						isDeciding: true
+					})
+				}
+			};
+
+		case RunActionTypes.ShowMainTimer:
+			return {
+				...state,
+				showMainTimer: true
+			};
+
+		case RunActionTypes.ClearDecisionsAndMainTimer:
+			return {
+				...state,
+				showMainTimer: false,
+				persons: {
+					...state.persons,
+					showman: {
+						...state.persons.showman,
+						isDeciding: false
+					},
+					players: state.persons.players.map(p => ({
+						...p,
+						isDeciding: false
+					}))
+				}
 			};
 	}
 
