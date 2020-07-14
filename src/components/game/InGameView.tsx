@@ -12,6 +12,7 @@ import ShowmanReplicView from './ShowmanReplicView';
 import PersonsDialog from './PersonsDialog';
 import GameLogView from './GameLogView';
 import AnswerValidationDialog from './AnswerValidationDialog';
+import RoundProgress from './RoundProgress';
 
 import './InGameView.css';
 
@@ -56,6 +57,7 @@ export function InGameView(props: InGameViewProps) {
 									<GameLogView />
 								</div>
 							</div>
+							<RoundProgress />
 						</div>
 					) : null)}
 				<SideControlPanel />

@@ -7,6 +7,7 @@ interface ProgressBarProps {
 	isIndeterminate?: boolean;
 	value?: number;
 	valueChangeDuration?: number;
+	title?: string;
 }
 
 // tslint:disable-next-line: function-name
@@ -26,7 +27,8 @@ export default function ProgressBar(props: ProgressBarProps) {
 	}
 
 	return (
-		<div className={`progress progress-striped active ${props.isIndeterminate ? 'indeterminate' : ''} ${props.className}`}>
+		<div className={`progress progress-striped active ${props.isIndeterminate ? 'indeterminate' : ''} ${props.className}`}
+			title={props.title}>
 			<div className="progress-bar" style={style} role="progressbar"
 				aria-valuenow={props.isIndeterminate ? 100 : props.value} aria-valuemin={0} aria-valuemax={100}>
 			</div>

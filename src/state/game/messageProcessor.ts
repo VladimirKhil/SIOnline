@@ -365,6 +365,14 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 			dispatch(runActionCreators.gameStateCleared());
 			break;
 
+		case 'STOP':
+			dispatch(runActionCreators.stopTimer(0));
+			dispatch(runActionCreators.stopTimer(1));
+			dispatch(runActionCreators.stopTimer(2));
+
+			dispatch(tableActionCreators.showLogo());
+			break;
+
 		case 'SUMS':
 			const max = Math.min(args.length - 1, Object.keys(state.run.persons.players).length);
 			const sums: number[] = [];

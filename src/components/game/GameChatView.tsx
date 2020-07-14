@@ -9,6 +9,7 @@ import runActionCreators from '../../state/run/runActionCreators';
 import localization from '../../model/resources/localization';
 import ChatInput from './ChatInput';
 import Role from '../../model/enums/Role';
+import RoundProgress from './RoundProgress';
 
 import './GameChatView.css';
 
@@ -74,6 +75,7 @@ export function GameChatView(props: GameChatViewProps) {
 				<button className="wide commandButton bottomButton" disabled={!props.isConnected}
 					onClick={() => props.onMarkQuestion()} title={localization.complainHint}>{localization.complain}</button>
 			</div>
+			<RoundProgress />
 		</div>
 	);
 }

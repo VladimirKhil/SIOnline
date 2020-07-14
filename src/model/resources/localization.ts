@@ -112,6 +112,7 @@
 	rightAnswers: 'Правильные ответы',
 	role: 'Роль',
 	round: 'Раунд',
+	roundTime: 'Время раунда',
 	rules: 'Правила',
 	searchGames: 'Поиск игр',
 	select: 'Выбрать…',
