@@ -16,13 +16,20 @@
         height: 50px;
         list-style-type: none;
         flex-grow: 1;
-        border-top: 1px solid transparent;
+        border-top: 0;
         border-left: 1px solid transparent;
         border-right: 1px solid darkgray;
         border-bottom: 1px solid darkgray;
-        padding: 4px;
         position: relative;
         display: flex;
+        justify-content: center;
+    }
+
+    .gamePlayers .playerCard {
+        padding: 4px;        
+        height: 100%;
+        display: flex;
+        justify-content: center;
     }
 
     .gamePlayers .playerInfo {
@@ -77,7 +84,7 @@
         justify-content: center;
         align-items: center;
         box-shadow: 0 5px 15px rgba(0, 0, 0, 1.0);
-        z-index: 1;
+        z-index: 3;
     }
 
     .gameMainView.reversed .gamePlayers .playerReplic {
@@ -91,6 +98,8 @@
     background-repeat: no-repeat;
     background-position: center;
     overflow: hidden;
+    min-width: 43px;
+    margin-right: 10px;
 }
 
 .gamePlayer {
@@ -129,9 +138,13 @@
 
     .gamePlayers li {
         height: 125px;
-        padding: 10px;
         flex: 1;
         flex-flow: column;
+    }
+
+    .gamePlayers .playerCard {
+        padding: 10px;
+        flex-direction: column;
     }
 
     .playerAvatar {
@@ -140,7 +153,7 @@
 
     .gamePlayers .playerReplic {
         top: 124px;
-        height: 200px;
+        height: 145px;
         padding: 15px;
     }
 
@@ -160,6 +173,10 @@
         padding-left: 0;
         margin-left: 0;
     }
+    
+    .playerAvatar {
+        margin-right: 0;
+    }
 }
 
 @media screen and (min-width: 1600px) and (min-height: 700px) {
@@ -169,12 +186,15 @@
 
     .gamePlayers li {
         height: 150px;
+    }
+
+    .gamePlayers .playerCard {
         padding: 16px;
     }
 
     .gamePlayers .playerReplic {
         top: 149px;
-        height: 200px;
+        height: 169px;
     }
 
     .gameMainView.reversed .gamePlayers .playerReplic {

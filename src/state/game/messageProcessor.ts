@@ -212,7 +212,20 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 			break;
 
 		case 'PAUSE':
-			dispatch(runActionCreators.isPausedChanged(args[1] === '+'));
+			const isPaused = args[1] === '+';
+			dispatch(runActionCreators.isPausedChanged(isPaused));
+
+			if (args.length > 4) {
+				if (isPaused) {
+					dispatch(runActionCreators.pauseTimer(0, args[2], true));
+					dispatch(runActionCreators.pauseTimer(1, args[3], true));
+					dispatch(runActionCreators.pauseTimer(2, args[4], true));
+				} else {
+					dispatch(runActionCreators.resumeTimer(0, true));
+					dispatch(runActionCreators.resumeTimer(1, true));
+					dispatch(runActionCreators.resumeTimer(2, true));
+				}
+			}
 			break;
 
 		case 'PERSON':
@@ -434,7 +447,7 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 					case 'GO':
 						dispatch(runActionCreators.runTimer(timerIndex, timerArgument, false));
 
-						if (timerIndex === 2 && timerPersonIndex) {
+						if (timerIndex === 2 && timerPersonIndex !== null) {
 							if (timerPersonIndex === -1) {
 								dispatch(runActionCreators.activateShowmanDecision());
 							} else if (timerPersonIndex === -2) {

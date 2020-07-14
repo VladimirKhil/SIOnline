@@ -9,6 +9,9 @@ import Persons from '../../model/Persons';
 import PlayerStates from '../../model/enums/PlayerStates';
 import Sex from '../../model/enums/Sex';
 import NumericTextBox from '../common/NumericTextBox';
+import ProgressBar from '../common/ProgressBar';
+import TimerInfo from '../../model/TimerInfo';
+import { isRunning } from '../../utils/TimerInfoHelpers';
 
 import './PlayersView.css';
 
@@ -18,7 +21,7 @@ interface PlayersViewProps {
 	login: string;
 	isSelectionEnabled: boolean;
 	isSumEditable: boolean;
-
+	decisionTimer: TimerInfo;
 	onPlayerSelected: (playerIndex: number) => void;
 	onSumChanged: (playerIndex: number, sum: number) => void;
 	onCancelSumChange: () => void;
@@ -29,7 +32,8 @@ const mapStateToProps = (state: State) => ({
 	all: state.run.persons.all,
 	login: state.user.login,
 	isSelectionEnabled: state.run.selection.isEnabled,
-	isSumEditable: state.run.areSumsEditable
+	isSumEditable: state.run.areSumsEditable,
+	decisionTimer: state.run.timers.decision
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
@@ -80,15 +84,17 @@ export function PlayersView(props: PlayersViewProps) {
 						<li key={`${player.name}_${index}`} style={playerStyle}
 							className={buildPlayerClasses(player, player.name === props.login, player.canBeSelected)}
 							onClick={() => props.onPlayerSelected(index)}>
-							{avatar ? <div className="playerAvatar" style={{ backgroundImage: `url(${avatar})` }} /> : null}
-							<div className="playerInfo">
-								<span className="name" title={player.name}>{player.name}</span>
-								<div className="sum">
-									{props.isSumEditable ?
-										<NumericTextBox value={player.sum} onValueChanged={value => onSumChanged(index, value)} onCancel={props.onCancelSumChange} />
-										: <span>{player.sum}</span>
-									}
-									{player.stake > 0 ? <span className="stake">{player.stake}</span> : null}
+							<div className="playerCard">
+								{avatar ? <div className="playerAvatar" style={{ backgroundImage: `url(${avatar})` }} /> : null}
+								<div className="playerInfo">
+									<span className="name" title={player.name}>{player.name}</span>
+									<div className="sum">
+										{props.isSumEditable ?
+											<NumericTextBox value={player.sum} onValueChanged={value => onSumChanged(index, value)} onCancel={props.onCancelSumChange} />
+											: <span>{player.sum}</span>
+										}
+										{player.stake > 0 ? <span className="stake">{player.stake}</span> : null}
+									</div>
 								</div>
 							</div>
 							{player.replic && player.replic.length > 0 ? (
@@ -96,6 +102,10 @@ export function PlayersView(props: PlayersViewProps) {
 									text={player.replic} maxFontSize={48} />
 								) : null
 							}
+							{player.isDeciding ?
+								<ProgressBar value={1 - props.decisionTimer.value / props.decisionTimer.maximum}
+									valueChangeDuration={isRunning(props.decisionTimer) ? (props.decisionTimer.maximum - props.decisionTimer.value) / 10 : 0} />
+							: null}
 						</li>
 					);
 				}

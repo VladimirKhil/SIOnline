@@ -5,6 +5,9 @@ import { Dispatch, Action } from 'redux';
 import AutoSizedText from '../autoSizedText/AutoSizedText';
 import Account from '../../model/Account';
 import Sex from '../../model/enums/Sex';
+import ProgressBar from '../common/ProgressBar';
+import TimerInfo from '../../model/TimerInfo';
+import { isRunning } from '../../utils/TimerInfoHelpers';
 
 import './ShowmanReplicView.css';
 
@@ -12,12 +15,16 @@ interface ShowmanReplicViewProps {
 	replic: string | null;
 	account: Account;
 	decisionNeeded: boolean;
+	isDeciding: boolean;
+	decisionTimer: TimerInfo;
 }
 
 const mapStateToProps = (state: State) => ({
 	replic: state.run.persons.showman.replic,
 	account: state.run.persons.all[state.run.persons.showman.name],
-	decisionNeeded: state.run.stage.isDecisionNeeded
+	decisionNeeded: state.run.stage.isDecisionNeeded,
+	isDeciding: state.run.persons.showman.isDeciding,
+	decisionTimer: state.run.timers.decision
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
@@ -35,6 +42,10 @@ export function ShowmanReplicView(props: ShowmanReplicViewProps) {
 				<div className="showmanName">{props.account?.name}</div>
 			</div>
 			<AutoSizedText id="showmanReplic" text={props.replic || ''} maxFontSize={48} />
+			{props.isDeciding ?
+				<ProgressBar value={1 - props.decisionTimer.value / props.decisionTimer.maximum}
+					valueChangeDuration={isRunning(props.decisionTimer) ? (props.decisionTimer.maximum - props.decisionTimer.value) / 10 : 0} />
+			: null}
 		</div>
 	);
 }

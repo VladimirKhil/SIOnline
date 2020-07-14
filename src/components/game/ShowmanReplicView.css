@@ -1,9 +1,9 @@
 .showmanArea {
+    position: relative;
     width: 100%;
     flex: 0 0 90px;
     display: flex;
     overflow: hidden;
-    padding: 4px;
     background-color: lightyellow;
 }
 

@@ -6,13 +6,24 @@ interface ProgressBarProps {
 	className?: string;
 	isIndeterminate?: boolean;
 	value?: number;
+	valueChangeDuration?: number;
 }
 
 // tslint:disable-next-line: function-name
 export default function ProgressBar(props: ProgressBarProps) {
-	const style: React.CSSProperties = props.isIndeterminate ? {} : {
+	let style: React.CSSProperties = props.isIndeterminate ? {} : {
 		width: props.value ? `calc(${100 * props.value}%)` : '0'
 	};
+
+	if (props.valueChangeDuration) {
+		style = {
+			...style,
+			animationName: 'widthZero',
+			animationFillMode: 'forwards',
+			animationDuration: `${props.valueChangeDuration}s`,
+			animationTimingFunction: 'linear'
+		};
+	}
 
 	return (
 		<div className={`progress progress-striped active ${props.isIndeterminate ? 'indeterminate' : ''} ${props.className}`}>
