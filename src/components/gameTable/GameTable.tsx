@@ -18,6 +18,9 @@ import TableSpecial from './TableSpecial';
 import FinalTable from './FinalTable';
 import AutoSizedText from '../autoSizedText/AutoSizedText';
 import localization from '../../model/resources/localization';
+import TimerInfo from '../../model/TimerInfo';
+import ProgressBar from '../common/ProgressBar';
+import { isRunning } from '../../utils/TimerInfoHelpers';
 
 import './GameTable.css';
 
@@ -25,12 +28,16 @@ interface GameTableProps {
 	mode: TableMode;
 	isPaused: boolean;
 	isConnected: boolean;
+	showMainTimer: boolean;
+	decisionTimer: TimerInfo;
 }
 
 const mapStateToProps = (state: State) => ({
 	isConnected: state.common.isConnected,
 	mode: state.run.table.mode,
-	isPaused: state.run.stage.isGamePaused
+	isPaused: state.run.stage.isGamePaused,
+	showMainTimer: state.run.showMainTimer,
+	decisionTimer: state.run.timers.decision
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
@@ -42,6 +49,10 @@ export function GameTable(props: GameTableProps) {
 	return (
 		<div id="table">
 			{getContent(props.mode)}
+			{props.showMainTimer ? (
+				<ProgressBar className="commonProgress" value={1 - props.decisionTimer.value / props.decisionTimer.maximum}
+					valueChangeDuration={isRunning(props.decisionTimer) ? (props.decisionTimer.maximum - props.decisionTimer.value) / 10 : 0} />
+				) : null}
 			{props.isPaused || !props.isConnected ?
 				<AutoSizedText maxFontSize={288} text={props.isPaused ? localization.pause : localization.connectionClosed}
 					className={`pauseLogo tableText tableTextCenter ${props.isConnected ? '' : 'warning'}`} /> : null}
