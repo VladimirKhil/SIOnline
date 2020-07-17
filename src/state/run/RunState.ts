@@ -64,6 +64,7 @@ export default interface RunState {
 	isGameButtonEnabled: boolean;
 	areSumsEditable: boolean;
 	readingSpeed: number;
+	hint: string | null;
 }
 
 export const initialState: RunState = {
@@ -145,5 +146,6 @@ export const initialState: RunState = {
 	personsVisible: false,
 	isGameButtonEnabled: true,
 	areSumsEditable: false,
-	readingSpeed: 20
+	readingSpeed: 20,
+	hint: null
 };

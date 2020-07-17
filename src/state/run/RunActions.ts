@@ -61,7 +61,8 @@ export const enum RunActionTypes {
 	ActivateShowmanDecision = 'ACTIVATE_SHOWMAN_DECISION',
 	ActivatePlayerDecision = 'ACTIVATE_PLAYER_DECISION',
 	ShowMainTimer = 'SHOW_MAIN_TIMER',
-	ClearDecisionsAndMainTimer = 'CLEAR_DECISIONS_AND_MAIN_TIMER'
+	ClearDecisionsAndMainTimer = 'CLEAR_DECISIONS_AND_MAIN_TIMER',
+	HintChanged = 'HINT_CHANGED'
 }
 
 export type RunChatModeChangedAction = { type: RunActionTypes.RunChatModeChanged, chatMode: ChatMode };
@@ -133,6 +134,7 @@ export type ActivateShowmanDecisionAction = { type: RunActionTypes.ActivateShowm
 export type ActivatePlayerDecisionAction = { type: RunActionTypes.ActivatePlayerDecision, playerIndex: number };
 export type ShowMainTimerAction = { type: RunActionTypes.ShowMainTimer };
 export type ClearDecisionsAndMainTimerAction = { type: RunActionTypes.ClearDecisionsAndMainTimer };
+export type HintChangedAction = { type: RunActionTypes.HintChanged, hint: string | null };
 
 export type KnownRunAction =
 	RunChatModeChangedAction
@@ -187,4 +189,5 @@ export type KnownRunAction =
 	| ActivatePlayerDecisionAction
 	| ShowMainTimerAction
 	| ClearDecisionsAndMainTimerAction
+	| HintChangedAction
 	;

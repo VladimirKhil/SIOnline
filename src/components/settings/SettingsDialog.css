@@ -17,6 +17,15 @@
     cursor: pointer;
 }
 
+#settingsDialog h2 {
+    font-family: SI;
+    color: #FFE682;
+    text-shadow: 1px 1px 0 #000;
+    font-weight: normal;
+    font-size: 30px;
+    margin: 20px 0 5px 0;
+}
+
 @media screen and (min-width: 800px) {
     #settingsDialog {
         width: 300px;

@@ -16,6 +16,7 @@ interface SettingsDialogProps {
 	onMute: (isSoundEnabled: boolean) => void;
 	onShowPersonsAtBottomOnWideScreenChanged: (showPersonsAtBottomOnWideScreen: boolean) => void;
 	onSexChanged: (newSex: Sex) => void;
+	onHintShowmanChanged: (hintShowman: boolean) => void;
 	onClose: () => void;
 }
 
@@ -32,6 +33,9 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	},
 	onSexChanged: (newSex: Sex) => {
 		dispatch(settingsActionCreators.onSexChanged(newSex));
+	},
+	onHintShowmanChanged: (hintShowman: boolean) => {
+		dispatch(settingsActionCreators.onHintShowmanChanged(hintShowman));
 	},
 	onClose: () => {
 		dispatch(actionCreators.showSettings(false));
@@ -86,14 +90,21 @@ export class SettingsDialog extends React.Component<SettingsDialogProps> {
 					</div>
 
 					<p className="header">{localization.sex}</p>
-						<div className="sexLogin">
-							<input type="radio" id="male" name="sex"
-								checked={this.props.settings.sex === Sex.Male} onChange={this.onSexChanged} />
-							<label htmlFor="male">{localization.male}</label>
-							<input type="radio" id="female" name="sex"
-								checked={this.props.settings.sex === Sex.Female} onChange={this.onSexChanged} />
-							<label htmlFor="female">{localization.female}</label>
-						</div>
+					<div className="sexLogin">
+						<input type="radio" id="male" name="sex"
+							checked={this.props.settings.sex === Sex.Male} onChange={this.onSexChanged} />
+						<label htmlFor="male">{localization.male}</label>
+						<input type="radio" id="female" name="sex"
+							checked={this.props.settings.sex === Sex.Female} onChange={this.onSexChanged} />
+						<label htmlFor="female">{localization.female}</label>
+					</div>
+
+					<h2>{localization.game}</h2>
+					<div>
+						<input id="hintShowman" type="checkbox" checked={this.props.settings.appSettings.hintShowman}
+							onChange={() => this.props.onHintShowmanChanged(!this.props.settings.appSettings.hintShowman)} />
+						<label htmlFor="hintShowman">{localization.hintShowman}</label>
+					</div>
 				</div>
 			</Dialog>
 		);

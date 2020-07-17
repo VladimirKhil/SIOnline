@@ -457,6 +457,10 @@ const clearDecisionsAndMainTimer: ActionCreator<RunActions.ClearDecisionsAndMain
 	type: RunActions.RunActionTypes.ClearDecisionsAndMainTimer
 });
 
+const hintChanged: ActionCreator<RunActions.HintChangedAction> = (hint: string | null) => ({
+	type: RunActions.RunActionTypes.HintChanged, hint
+});
+
 const runActionCreators = {
 	runChatModeChanged,
 	runChatMessageChanged,
@@ -529,7 +533,8 @@ const runActionCreators = {
 	activateShowmanDecision,
 	activatePlayerDecision,
 	showMainTimer,
-	clearDecisionsAndMainTimer
+	clearDecisionsAndMainTimer,
+	hintChanged
 };
 
 export default runActionCreators;

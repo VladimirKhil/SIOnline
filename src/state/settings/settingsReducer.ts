@@ -23,6 +23,15 @@ const settingsReducer: Reducer<SettingsState> = (state: SettingsState = initialS
 				...state,
 				sex: action.newSex
 			};
+
+		case SettingsActionTypes.HintShowmanChanged:
+			return {
+				...state,
+				appSettings: {
+					...state.appSettings,
+					hintShowman: action.hintShowman
+				}
+			};
 	}
 
 	return state;

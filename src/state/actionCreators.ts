@@ -580,7 +580,7 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 			TimeSettings: timeSettings,
 			ReadingSpeed: 20,
 			FalseStart: true,
-			HintShowman: false,
+			HintShowman: state.settings.appSettings.hintShowman,
 			DefaultOral: false,
 			IgnoreWrong: false,
 			GameMode: gameMode.toString(),

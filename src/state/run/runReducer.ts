@@ -426,7 +426,8 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 					areSimple: false,
 					areVisible: false
 				},
-				answer: null
+				answer: null,
+				hint: null
 			};
 
 		case RunActionTypes.IsGameButtonEnabledChanged:
@@ -620,6 +621,12 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 						isDeciding: false
 					}))
 				}
+			};
+
+		case RunActionTypes.HintChanged:
+			return {
+				...state,
+				hint: action.hint
 			};
 	}
 

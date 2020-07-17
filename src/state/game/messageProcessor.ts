@@ -643,11 +643,18 @@ const showmanHandler = (dispatch: Dispatch<any>, state: State, dataContext: Data
 		}
 
 		case 'HINT':
-			// TODO
+			if (args.length > 1) {
+				dispatch(runActionCreators.hintChanged(`${localization.rightAnswer}: ${args[1]}`));
+			}
+			break;
+
+		case 'RIGHTANSWER':
+			dispatch(runActionCreators.hintChanged(null));
 			break;
 
 		case 'STAGE':
 			dispatch(runActionCreators.decisionNeededChanged(false));
+			dispatch(runActionCreators.hintChanged(null));
 			break;
 
 		case 'VALIDATIION':

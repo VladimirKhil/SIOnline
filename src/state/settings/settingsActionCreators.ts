@@ -16,10 +16,15 @@ const onSexChanged: ActionCreator<SettingsActions.SexChangedAction> = (newSex: S
 	type: SettingsActions.SettingsActionTypes.SexChanged, newSex
 });
 
+const onHintShowmanChanged: ActionCreator<SettingsActions.HintShowmanChangedAction> = (hintShowman: boolean) => ({
+	type: SettingsActions.SettingsActionTypes.HintShowmanChanged, hintShowman
+});
+
 const settingsActionCreators = {
 	isSoundEnabledChanged,
 	showPersonsAtBottomOnWideScreenChanged,
-	onSexChanged
+	onSexChanged,
+	onHintShowmanChanged
 };
 
 export default settingsActionCreators;

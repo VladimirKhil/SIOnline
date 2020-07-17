@@ -13,6 +13,7 @@ import PersonsDialog from './PersonsDialog';
 import GameLogView from './GameLogView';
 import AnswerValidationDialog from './AnswerValidationDialog';
 import RoundProgress from './RoundProgress';
+import GameHint from './GameHint';
 
 import './InGameView.css';
 
@@ -44,7 +45,10 @@ export function InGameView(props: InGameViewProps) {
 				<div className={`gameMainView ${props.showPersonsAtBottomOnWideScreen && props.windowWidth >= 1100 ? 'reversed' : ''}`}>
 					<PlayersView />
 					<ShowmanReplicView />
-					<GameTable />
+					<div className="tableArea">
+						<GameTable />
+						<GameHint />
+					</div>
 				</div>
 				<BottomControlPanel />
 			</div>
