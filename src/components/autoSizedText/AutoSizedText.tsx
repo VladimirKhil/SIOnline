@@ -2,8 +2,7 @@
 
 interface AutoSizedTextProps {
 	id?: string;
-	text?: string;
-	content?: JSX.Element;
+	children: React.ReactNode;
 	style?: React.CSSProperties;
 	className?: string;
 	maxFontSize: number;
@@ -104,7 +103,7 @@ export default class AutoSizedText extends React.Component<AutoSizedTextProps> {
 		return (
 			<div id={this.props.id} ref={this.myRef} className={`centeredBlock ${this.props.className}`}
 				onClick={e => this.onClick()}>
-				<span>{this.props.content || this.props.text}</span>
+				<span>{this.props.children}</span>
 			</div>
 		);
 	}

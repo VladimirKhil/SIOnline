@@ -20,14 +20,20 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 });
 
 // tslint:disable-next-line: function-name
-export function TablePartialText(props: TablePartialTextProps) {
-	const innerText = <><span>{props.text}</span><span className="invisible">{props.tail}</span></>;
+export class TablePartialText extends React.Component<TablePartialTextProps> {
+	constructor(props: TablePartialTextProps) {
+		super(props);
+	}
 
-	return (
-		<TableBorder>
-			<AutoSizedText className="tableText" content={innerText} maxFontSize={144} />
-		</TableBorder>
-	);
+	render() {
+		return (
+			<TableBorder>
+				<AutoSizedText className="tableText" maxFontSize={144}>
+					<span>{this.props.text}</span><span className="invisible">{this.props.tail}</span>
+				</AutoSizedText>
+			</TableBorder>
+		);
+	}
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(TablePartialText);

@@ -41,7 +41,7 @@ export function ShowmanReplicView(props: ShowmanReplicViewProps) {
 				{avatar ? <div className="showmanAvatar"><img src={avatar} /></div> : null}
 				<div className="showmanName">{props.account?.name}</div>
 			</div>
-			<AutoSizedText id="showmanReplic" text={props.replic || ''} maxFontSize={48} />
+			<AutoSizedText id="showmanReplic" maxFontSize={48}>{props.replic || ''}</AutoSizedText>
 			{props.isDeciding ?
 				<ProgressBar value={1 - props.decisionTimer.value / props.decisionTimer.maximum}
 					valueChangeDuration={isRunning(props.decisionTimer) ? (props.decisionTimer.maximum - props.decisionTimer.value) / 10 : 0} />

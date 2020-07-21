@@ -22,7 +22,7 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 // tslint:disable-next-line: function-name
 export function GameHint(props: GameHintProps) {
 	return props.hint ? (
-		<AutoSizedText className="gameHint" maxFontSize={31} text={props.hint} />
+		<AutoSizedText className="gameHint" maxFontSize={31}>{props.hint}</AutoSizedText>
 	) : null;
 }
 

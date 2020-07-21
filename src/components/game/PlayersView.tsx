@@ -98,8 +98,9 @@ export function PlayersView(props: PlayersViewProps) {
 								</div>
 							</div>
 							{player.replic && player.replic.length > 0 ? (
-								<AutoSizedText id={`playerReplic_${index}`} className="playerReplic"
-									text={player.replic} maxFontSize={48} />
+								<AutoSizedText id={`playerReplic_${index}`} className="playerReplic" maxFontSize={48}>
+									{player.replic}
+								</AutoSizedText>
 								) : null
 							}
 							{player.isDeciding ?

@@ -54,8 +54,10 @@ export function GameTable(props: GameTableProps) {
 					valueChangeDuration={isRunning(props.decisionTimer) ? (props.decisionTimer.maximum - props.decisionTimer.value) / 10 : 0} />
 				) : null}
 			{props.isPaused || !props.isConnected ?
-				<AutoSizedText maxFontSize={288} text={props.isPaused ? localization.pause : localization.connectionClosed}
-					className={`pauseLogo tableText tableTextCenter ${props.isConnected ? '' : 'warning'}`} /> : null}
+				<AutoSizedText maxFontSize={288} className={`pauseLogo tableText tableTextCenter ${props.isConnected ? '' : 'warning'}`}>
+					{props.isPaused ? localization.pause : localization.connectionClosed}
+				</AutoSizedText>
+				: null}
 		</div>
 	);
 }

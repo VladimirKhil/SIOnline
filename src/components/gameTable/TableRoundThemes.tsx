@@ -93,8 +93,9 @@ export class TableRoundThemes extends React.Component<TableRoundThemesProps, Tab
 
 		return (
 			<div className="tableBorderCentered scaleText" ref={this.textRef}>
-				<AutoSizedText id="tableText" className="tableText tableTextCenter"
-						text={text} maxFontSize={288} />
+				<AutoSizedText id="tableText" className="tableText tableTextCenter" maxFontSize={288}>
+					{text}
+				</AutoSizedText>
 			</div>
 		);
 	}

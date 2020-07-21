@@ -54,17 +54,20 @@ export class RoundTable extends React.Component<RoundTableProps> {
 					const hasQuestions = themeInfo.questions.some(q => q > -1);
 
 					return (<div key={themeIndex} className={`roundTableRow ${className}`}>
-						<AutoSizedText className="roundTableCell themeHeader" maxFontSize={72} text={hasQuestions ? themeInfo.name : ''} />
+						<AutoSizedText className="roundTableCell themeHeader" maxFontSize={72}>
+							{hasQuestions ? themeInfo.name : ''}
+						</AutoSizedText>
 						{themeInfo.questions.map((question, questionIndex) => {
 							const isActive = question > -1;
 							const isBlinking = themeIndex === this.props.activeThemeIndex
 								&& questionIndex === this.props.actionQuestionIndex;
 
 							return (
-								<AutoSizedText key={questionIndex} className={`roundTableCell questHeader ${isActive ? 'active' : ''} ${isBlinking ? 'blink' : ''}`}
-									maxFontSize={144}
-									text={isActive ? question.toString() : ''}
-									onClick={() => this.onSelectQuestion(themeIndex, questionIndex)} />
+								<AutoSizedText key={questionIndex}
+									className={`roundTableCell questHeader ${isActive ? 'active' : ''} ${isBlinking ? 'blink' : ''}`}
+									maxFontSize={144} onClick={() => this.onSelectQuestion(themeIndex, questionIndex)}>
+									{isActive ? question.toString() : ''}
+								</AutoSizedText>
 							);
 						})}
 					</div>);

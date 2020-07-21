@@ -44,9 +44,9 @@ export function TableText(props: TableTextProps) {
 		}
 
 		const content = <span>{animatedText}</span>;
-		textElem = <AutoSizedText className="tableText tableTextCenter" content={content} maxFontSize={144} />;
+		textElem = <AutoSizedText className="tableText tableTextCenter" maxFontSize={144}>{content}</AutoSizedText>;
 	} else {
-		textElem = <AutoSizedText className="tableText tableTextCenter" text={props.text} maxFontSize={144} />;
+		textElem = <AutoSizedText className="tableText tableTextCenter" maxFontSize={144}>{props.text}</AutoSizedText>;
 	}
 
 	return (

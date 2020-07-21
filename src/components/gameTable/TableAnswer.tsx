@@ -20,7 +20,9 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 export function TableAnswer(props: TableAnswerProps) {
 	return (
 		<div className="answerBlock">
-			<AutoSizedText id="tableText" className="tableText tableTextCenter" text={props.text} maxFontSize={144} />
+			<AutoSizedText id="tableText" className="tableText tableTextCenter" maxFontSize={144}>
+				{props.text}
+			</AutoSizedText>
 		</div>
 	);
 }
