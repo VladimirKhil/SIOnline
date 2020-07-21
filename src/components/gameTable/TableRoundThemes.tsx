@@ -2,10 +2,8 @@ import * as React from 'react';
 import State from '../../state/State';
 import { Dispatch, Action } from 'redux';
 import { connect } from 'react-redux';
-import { render } from 'react-dom';
-
 import tableActionCreators from '../../state/table/tableActionCreators';
-import AutoSizedText from '../autoSizedText/AutoSizedText';
+import AutoSizedText from '../common/AutoSizedText';
 
 interface TableRoundThemesProps {
 	roundThemes: string[];

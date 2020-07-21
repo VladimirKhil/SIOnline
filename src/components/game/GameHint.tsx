@@ -1,11 +1,10 @@
 import * as React from 'react';
-import ChatMessage from '../../model/ChatMessage';
 import State from '../../state/State';
 import { connect } from 'react-redux';
 import { Action, Dispatch } from 'redux';
+import AutoSizedText from '../common/AutoSizedText';
 
 import './GameHint.css';
-import AutoSizedText from '../autoSizedText/AutoSizedText';
 
 interface GameHintProps {
 	hint: string | null;

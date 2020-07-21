@@ -2,7 +2,7 @@ import * as React from 'react';
 import State from '../../state/State';
 import { Dispatch, Action } from 'redux';
 import { connect } from 'react-redux';
-import AutoSizedText from '../autoSizedText/AutoSizedText';
+import AutoSizedText from '../common/AutoSizedText';
 
 interface TableAnswerProps {
 	text: string;

@@ -16,7 +16,7 @@ import TableRoundThemes from './TableRoundThemes';
 import RoundTable from './RoundTable';
 import TableSpecial from './TableSpecial';
 import FinalTable from './FinalTable';
-import AutoSizedText from '../autoSizedText/AutoSizedText';
+import AutoSizedText from '../common/AutoSizedText';
 import localization from '../../model/resources/localization';
 import TimerInfo from '../../model/TimerInfo';
 import ProgressBar from '../common/ProgressBar';

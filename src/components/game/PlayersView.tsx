@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import State from '../../state/State';
 import { Dispatch, Action } from 'redux';
 import runActionCreators from '../../state/run/runActionCreators';
-import AutoSizedText from '../autoSizedText/AutoSizedText';
+import AutoSizedText from '../common/AutoSizedText';
 import PlayerInfo from '../../model/PlayerInfo';
 import Persons from '../../model/Persons';
 import PlayerStates from '../../model/enums/PlayerStates';

@@ -2,7 +2,7 @@
 import State from '../../state/State';
 import { Dispatch, Action } from 'redux';
 import { connect } from 'react-redux';
-import AutoSizedText from '../autoSizedText/AutoSizedText';
+import AutoSizedText from '../common/AutoSizedText';
 import TableBorder from './TableBorder';
 
 import './TableText.css';

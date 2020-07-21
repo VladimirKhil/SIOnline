@@ -2,7 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import State from '../../state/State';
 import { Dispatch, Action } from 'redux';
-import AutoSizedText from '../autoSizedText/AutoSizedText';
+import AutoSizedText from '../common/AutoSizedText';
 import Account from '../../model/Account';
 import Sex from '../../model/enums/Sex';
 import ProgressBar from '../common/ProgressBar';
