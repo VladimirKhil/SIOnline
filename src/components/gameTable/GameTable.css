@@ -63,11 +63,6 @@
         justify-content: center;
     }
 
-    #table .invisible {
-        color: transparent;
-        text-shadow: none;
-    }
-
     #table .tableGameThemes {
         width: 100%;
         text-align: center;

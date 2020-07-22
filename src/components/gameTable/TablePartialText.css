@@ -1,0 +1,19 @@
+#table .tableText.nonAligned {
+    align-items: flex-start;
+    color: cyan;
+}
+
+.animatablePartialCharacter {
+    opacity: 0;
+    animation: animateOpacity 0.5s forwards;
+}
+
+@keyframes animateOpacity {
+    100% { opacity: 1; }
+}
+
+#table .invisible {
+    color: transparent;
+    text-shadow: none;
+    letter-spacing: 3px;
+}
