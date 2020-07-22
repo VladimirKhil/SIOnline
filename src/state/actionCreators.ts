@@ -26,6 +26,7 @@ import PackageType from '../model/enums/PackageType';
 import PackageKey from '../model/server/PackageKey';
 
 import * as JSZip from 'jszip';
+import * as Rusha from 'rusha';
 
 const isConnectedChanged: ActionCreator<Actions.IsConnectedChangedAction> = (isConnected: boolean) => ({
 	type: Actions.ActionTypes.IsConnectedChanged, isConnected
@@ -462,7 +463,7 @@ function uploadPackageAsync(packageHash: string, packageData: File, serverUri: s
 		};
 		xhr.onerror = () => {
 			dispatch(uploadPackageFinished());
-			reject(new Error(xhr.statusText));
+			reject(new Error(xhr.statusText || localization.unknownError));
 		};
 		xhr.upload.onprogress = (e) => {
 			dispatch(uploadPackageProgress(e.loaded / e.total));
@@ -470,8 +471,17 @@ function uploadPackageAsync(packageHash: string, packageData: File, serverUri: s
 
 		xhr.open('post', `${serverUri}/api/upload/package`, true);
 		xhr.setRequestHeader('Content-MD5', packageHash);
+		xhr.withCredentials = true;
 		xhr.send(formData);
 	});
+}
+
+async function hashData(data: ArrayBuffer): Promise<ArrayBuffer> {
+	if (location.protocol === 'https:') {
+		await crypto.subtle.digest('SHA-1', data);
+	}
+
+	return Rusha.createHash().update(data).digest();
 }
 
 async function checkAndUploadPackageAsync(
@@ -495,7 +505,7 @@ async function checkAndUploadPackageAsync(
 
 	const id = xmlDoc.getElementsByTagName('package')[0].getAttribute('id');
 
-	const hash = await crypto.subtle.digest('SHA-1', await packageData.arrayBuffer());
+	const hash = await hashData(await packageData.arrayBuffer());
 
 	const hashArray = new Uint8Array(hash);
 	const hashArrayEncoded = btoa(String.fromCharCode.apply(null, hashArray as any));

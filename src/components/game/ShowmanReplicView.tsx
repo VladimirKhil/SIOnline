@@ -8,8 +8,11 @@ import Sex from '../../model/enums/Sex';
 import ProgressBar from '../common/ProgressBar';
 import TimerInfo from '../../model/TimerInfo';
 import { isRunning } from '../../utils/TimerInfoHelpers';
+import Config from '../../state/Config';
 
 import './ShowmanReplicView.css';
+
+declare const config: Config;
 
 interface ShowmanReplicViewProps {
 	replic: string | null;
@@ -33,7 +36,7 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 
 // tslint:disable-next-line: function-name
 export function ShowmanReplicView(props: ShowmanReplicViewProps) {
-	const avatar = props.account ? (props.account.avatar ? props.account.avatar : (props.account.sex === Sex.Male ? 'images/avatar-m.png' : 'images/avatar-f.png')) : null;
+	const avatar = props.account ? (props.account.avatar ? props.account.avatar : (props.account.sex === Sex.Male ? `${config.rootUri}/images/avatar-m.png` : `${config.rootUri}/images/avatar-f.png`)) : null;
 
 	return (
 		<div className={`showmanArea ${props.decisionNeeded ? 'highlighted' : ''}`}>

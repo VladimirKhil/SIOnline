@@ -141,6 +141,7 @@
 	tooManyGamesByIp: 'Слишком много игр на одном адресе!',
 	tv: 'Классическая',
 	tvPlural: 'Классические',
+	unknownError: 'Неизвестная ошибка',
 	uploadingPackageError: 'Ошибка отправки пакета',
 	users: 'Игроки',
 	validateAnswer: 'Верен ли ответ игрока?',
