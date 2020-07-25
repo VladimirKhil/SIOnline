@@ -8,6 +8,7 @@ export default interface SavedState {
 	login: string;
 	game: {
 		name: string;
+		password: string;
 		role: Role;
 		type: GameType;
 		playersCount: number;

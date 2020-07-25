@@ -16,6 +16,7 @@ import './NewGameDialog.css';
 interface NewGameDialogProps {
 	isConnected: boolean;
 	gameName: string;
+	gamePassword: string;
 	gamePackageType: PackageType;
 	gamePackageName: string;
 	gamePackageData: File | null;
@@ -27,6 +28,7 @@ interface NewGameDialogProps {
 	uploadPackageProgress: boolean;
 	uploadPackagePercentage: number;
 	onGameNameChanged: (newGameName: string) => void;
+	onGamePasswordChanged: (newGamePassword: string) => void;
 	onGamePackageTypeChanged: (type: PackageType) => void;
 	onGamePackageDataChanged: (name: string, data: File | null) => void;
 	onGameTypeChanged: (newGameType: number) => void;
@@ -39,6 +41,7 @@ interface NewGameDialogProps {
 const mapStateToProps = (state: State) => ({
 	isConnected: state.common.isConnected,
 	gameName: state.game.name,
+	gamePassword: state.game.password,
 	gamePackageType: state.game.package.type,
 	gamePackageName: state.game.package.name,
 	gamePackageData: state.game.package.data,
@@ -54,6 +57,9 @@ const mapStateToProps = (state: State) => ({
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	onGameNameChanged: (newGameName: string) => {
 		dispatch(actionCreators.gameNameChanged(newGameName));
+	},
+	onGamePasswordChanged: (newGamePassword: string) => {
+		dispatch(actionCreators.gamePasswordChanged(newGamePassword));
 	},
 	onGamePackageTypeChanged: (type: PackageType) => {
 		dispatch(actionCreators.gamePackageTypeChanged(type));
@@ -91,7 +97,11 @@ export class NewGameDialog extends React.Component<NewGameDialogProps> {
 		this.props.onGameNameChanged(e.target.value);
 	}
 
-	private onGameNameKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+	private onGamePasswordChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
+		this.props.onGamePasswordChanged(e.target.value);
+	}
+
+	private onKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
 		if (e.charCode === Constants.KEY_ENTER) {
 			this.props.onCreate();
 		}
@@ -130,7 +140,9 @@ export class NewGameDialog extends React.Component<NewGameDialogProps> {
 			<Dialog id="newGameDialog" title={localization.newGame} onClose={this.props.onClose}>
 				<div className="settings">
 					<p>{localization.gameName}</p>
-					<input type="text" value={this.props.gameName} onChange={this.onGameNameChanged} onKeyPress={this.onGameNameKeyPress} />
+					<input type="text" value={this.props.gameName} onChange={this.onGameNameChanged} onKeyPress={this.onKeyPress} />
+					<p>{localization.password}</p>
+					<input type="password" value={this.props.gamePassword} onChange={this.onGamePasswordChanged} onKeyPress={this.onKeyPress} />
 					<p>{localization.questionPackage}</p>
 					<select className="packageTypeSelector" value={this.props.gamePackageType} onChange={this.onGamePackageTypeChanged}>
 						<option value="0">{localization.randomThemes}</option>

@@ -1,5 +1,4 @@
-﻿import Sex from '../model/enums/Sex';
-import OnlineMode from '../model/enums/OnlineMode';
+﻿import OnlineMode from '../model/enums/OnlineMode';
 import GamesFilter from '../model/enums/GamesFilter';
 import ChatMode from '../model/enums/ChatMode';
 import GameType from '../model/enums/GameType';
@@ -42,6 +41,7 @@ export const enum ActionTypes {
 	MessageChanged = 'MESSAGE_CHANGED',
 	WindowWidthChanged = 'WINDOW_WIDTH_CHANGED',
 	GameNameChanged = 'GAME_NAME_CHANGED',
+	GamePasswordChanged = 'GAME_PASSWORD_CHANGED',
 	GamePackageTypeChanged = 'GAME_PACKAGE_TYPE_CHANGED',
 	GamePackageDataChanged = 'GAME_PACKAGE_DATA_CHANGED',
 	GameTypeChanged = 'GAME_TYPE_CHANGED',
@@ -91,6 +91,7 @@ export type UserLeavedAction = { type: ActionTypes.UserLeaved, login: string };
 export type MessageChangedAction = { type: ActionTypes.MessageChanged, message: string };
 export type WindowWidthChangedAction = { type: ActionTypes.WindowWidthChanged, width: number };
 export type GameNameChangedAction = { type: ActionTypes.GameNameChanged, gameName: string };
+export type GamePasswordChangedAction = { type: ActionTypes.GamePasswordChanged, gamePassword: string };
 export type GamePackageTypeChangedAction = { type: ActionTypes.GamePackageTypeChanged, packageType: PackageType };
 export type GamePackageDataChangedAction = { type: ActionTypes.GamePackageDataChanged, packageName: string, packageData: File | null };
 export type GameTypeChangedAction = { type: ActionTypes.GameTypeChanged, gameType: GameType };
@@ -140,6 +141,7 @@ export type KnownAction =
 	| MessageChangedAction
 	| WindowWidthChangedAction
 	| GameNameChangedAction
+	| GamePasswordChangedAction
 	| GamePackageTypeChangedAction
 	| GamePackageDataChangedAction
 	| GameTypeChangedAction

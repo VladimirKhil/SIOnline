@@ -48,6 +48,7 @@ export default interface State {
 	};
 	game: {
 		name: string;
+		password: string;
 		package: {
 			type: PackageType;
 			name: string;
@@ -108,6 +109,7 @@ export const initialState: State = {
 	},
 	game: {
 		name: '',
+		password: '',
 		package: {
 			type: PackageType.Random,
 			name: '',

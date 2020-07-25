@@ -92,6 +92,7 @@ const saveStateToStorage = (state: State) => {
 		login: state.user.login,
 		game: {
 			name: state.game.name,
+			password: state.game.password,
 			role: state.game.role,
 			type: state.game.type,
 			playersCount: state.game.playersCount
@@ -389,6 +390,10 @@ const gameNameChanged: ActionCreator<Actions.GameNameChangedAction> = (gameName:
 	type: Actions.ActionTypes.GameNameChanged, gameName
 });
 
+const gamePasswordChanged: ActionCreator<Actions.GamePasswordChangedAction> = (gamePassword: string) => ({
+	type: Actions.ActionTypes.GamePasswordChanged, gamePassword
+});
+
 const gamePackageTypeChanged: ActionCreator<Actions.GamePackageTypeChangedAction> = (packageType: PackageType) => ({
 	type: Actions.ActionTypes.GamePackageTypeChanged, packageType
 });
@@ -602,9 +607,9 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 
 		const gameSettings = {
 			HumanPlayerName: state.user.login,
-			RandomSpecials: true,
+			RandomSpecials: state.game.package.type === PackageType.Random,
 			NetworkGameName: state.game.name,
-			NetworkGamePassword: '',
+			NetworkGamePassword: state.game.password,
 			AllowViewers: true,
 			Showman: showman,
 			Players: players,
@@ -721,6 +726,7 @@ const actionCreators = {
 	receiveMessage,
 	windowWidthChanged,
 	gameNameChanged,
+	gamePasswordChanged,
 	gamePackageTypeChanged,
 	gamePackageDataChanged,
 	gameTypeChanged,

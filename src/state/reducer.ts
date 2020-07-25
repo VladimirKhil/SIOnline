@@ -357,6 +357,16 @@ const reducer: Reducer<State> = (state: State = initialState, action: KnownActio
 			};
 		}
 
+		case ActionTypes.GamePasswordChanged: {
+			return {
+				...state,
+				game: {
+					...state.game,
+					password: action.gamePassword
+				}
+			};
+		}
+
 		case ActionTypes.GamePackageTypeChanged: {
 			return {
 				...state,

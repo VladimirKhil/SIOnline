@@ -36,6 +36,7 @@ function setState(state: State, savedState: SavedState | null, gameId: string | 
 		game: savedState.game ? {
 			...state.game,
 			name: savedState.game.name,
+			password: savedState.game.password,
 			role: savedState.game.role,
 			type: savedState.game.type,
 			playersCount: savedState.game.playersCount
