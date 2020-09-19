@@ -1,0 +1,24 @@
+#helpDialog {
+    background-color: #5A95E2;
+}
+
+.helpText {
+    margin: 13px;
+    overflow-y: auto;
+}
+
+.dialog section header {
+    padding-left: 0;
+}
+
+.subHeader {
+    font-family: SI;
+    color: #FFE682;
+    text-shadow: 1px 1px 0 #000;
+}
+
+.components {
+    list-style-type: circle;
+    list-style-position: inside;
+    margin-left: 2px;
+}

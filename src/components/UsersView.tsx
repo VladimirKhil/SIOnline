@@ -73,7 +73,7 @@ export function UsersView(props: UsersViewProps) {
 					<ul>
 						<li onClick={props.onShowGames}>{localization.games}</li>
 						<li onClick={props.onShowChat}>{localization.chat}</li>
-						<li onClick={props.onHowToPlay}>{localization.howToPlay}</li>
+						<li onClick={props.onHowToPlay}>{localization.aboutTitle}</li>
 						<li onClick={props.onExit}>{localization.exit}</li>
 					</ul>
 				} horizontalOrientation={FlyoutHorizontalOrientation.Right}
@@ -87,7 +87,7 @@ export function UsersView(props: UsersViewProps) {
 				<FlyoutButton className="logOffButton" flyout={
 					<ul>
 						<li onClick={props.onShowSettings}>{localization.settings}</li>
-						<li onClick={props.onHowToPlay}>{localization.howToPlay}</li>
+						<li onClick={props.onHowToPlay}>{localization.aboutTitle}</li>
 						<li onClick={props.onExit}>{localization.exit}</li>
 					</ul>
 				} horizontalOrientation={FlyoutHorizontalOrientation.Left}

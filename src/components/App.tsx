@@ -7,7 +7,7 @@ import State from '../state/State';
 
 import Login from './Login';
 import Loading from './Loading';
-import HowToPlay from './HowToPlay';
+import About from './About';
 import OnlineView from './OnlineView';
 import InGameView from './game/InGameView';
 import SettingsDialog from './settings/SettingsDialog';
@@ -46,8 +46,8 @@ export class App extends React.Component<AppProps> {
 			case MainView.Login:
 				return <Login ads={this.props.ads} />;
 
-			case MainView.HowToPlay:
-				return <HowToPlay />;
+			case MainView.About:
+				return <About />;
 
 			case MainView.OnlineView:
 				return <OnlineView />;

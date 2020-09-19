@@ -95,7 +95,7 @@ export function GamesList(props: GamesListProps) {
 						<li onClick={props.onShowGames}>{localization.games}</li>
 						<li onClick={props.onShowChat}>{localization.chat}</li>
 						<li onClick={props.onShowSettings}>{localization.settings}</li>
-						<li onClick={props.onHowToPlay}>{localization.howToPlay}</li>
+						<li onClick={props.onHowToPlay}>{localization.aboutTitle}</li>
 						<li onClick={props.onExit}>{localization.exit}</li>
 					</ul>
 					} horizontalOrientation={FlyoutHorizontalOrientation.Right}

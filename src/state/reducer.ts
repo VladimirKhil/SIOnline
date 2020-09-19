@@ -57,7 +57,7 @@ const reducer: Reducer<State> = (state: State = initialState, action: KnownActio
 				...state,
 				ui: {
 					...state.ui,
-					mainView: MainView.HowToPlay,
+					mainView: MainView.About,
 					previousMainView: state.ui.mainView
 				}
 			};
