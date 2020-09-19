@@ -103,6 +103,10 @@
     margin: 5px 0;
 }
 
+.showmanTypeSelector {
+    margin-right: 10px;
+}
+
 @media screen and (min-width: 800px) {
     #newGameDialog {
         right: 300px;

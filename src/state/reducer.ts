@@ -415,6 +415,16 @@ const reducer: Reducer<State> = (state: State = initialState, action: KnownActio
 			};
 		}
 
+		case ActionTypes.ShowmanTypeChanged: {
+			return {
+				...state,
+				game: {
+					...state.game,
+					isShowmanHuman: action.isHuman
+				}
+			};
+		}
+
 		case ActionTypes.PlayersCountChanged: {
 			return {
 				...state,

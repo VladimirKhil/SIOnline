@@ -46,6 +46,7 @@ export const enum ActionTypes {
 	GamePackageDataChanged = 'GAME_PACKAGE_DATA_CHANGED',
 	GameTypeChanged = 'GAME_TYPE_CHANGED',
 	GameRoleChanged = 'GAME_ROLE_CHANGED',
+	ShowmanTypeChanged = 'SHOWMAN_TYPE_CHANGED',
 	PlayersCountChanged = 'PLAYERS_COUNT_CHANGED',
 	HumanPlayersCountChanged = 'HUMAN_PLAYERS_COUNT_CHANGED',
 	GameCreationStart = 'GAME_CREATION_START',
@@ -97,6 +98,7 @@ export type GamePackageTypeChangedAction = { type: ActionTypes.GamePackageTypeCh
 export type GamePackageDataChangedAction = { type: ActionTypes.GamePackageDataChanged, packageName: string, packageData: File | null };
 export type GameTypeChangedAction = { type: ActionTypes.GameTypeChanged, gameType: GameType };
 export type GameRoleChangedAction = { type: ActionTypes.GameRoleChanged, gameRole: Role };
+export type ShowmanTypeChangedAction = { type: ActionTypes.ShowmanTypeChanged, isHuman: boolean };
 export type PlayersCountChangedAction = { type: ActionTypes.PlayersCountChanged, playersCount: number };
 export type HumanPlayersCountChangedAction = { type: ActionTypes.HumanPlayersCountChanged, humanPlayersCount: number };
 export type GameCreationStartAction = { type: ActionTypes.GameCreationStart };
@@ -148,6 +150,7 @@ export type KnownAction =
 	| GamePackageDataChangedAction
 	| GameTypeChangedAction
 	| GameRoleChangedAction
+	| ShowmanTypeChangedAction
 	| PlayersCountChangedAction
 	| HumanPlayersCountChangedAction
 	| GameCreationStartAction

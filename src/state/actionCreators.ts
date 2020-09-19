@@ -24,6 +24,7 @@ import runActionCreators from './run/runActionCreators';
 import Slice from '../model/server/Slice';
 import PackageType from '../model/enums/PackageType';
 import PackageKey from '../model/server/PackageKey';
+import Constants from '../model/enums/Constants';
 
 import * as JSZip from 'jszip';
 import * as Rusha from 'rusha';
@@ -410,6 +411,10 @@ const gameRoleChanged: ActionCreator<Actions.GameRoleChangedAction> = (gameRole:
 	type: Actions.ActionTypes.GameRoleChanged, gameRole
 });
 
+const showmanTypeChanged: ActionCreator<Actions.ShowmanTypeChangedAction> = (isHuman: boolean) => ({
+	type: Actions.ActionTypes.ShowmanTypeChanged, isHuman
+});
+
 const playersCountChanged: ActionCreator<Actions.PlayersCountChangedAction> = (playersCount: number) => ({
 	type: Actions.ActionTypes.PlayersCountChanged, playersCount
 });
@@ -547,22 +552,20 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 
 		dispatch(gameCreationStart());
 
-		let showman = { Name: localization.defaultShowman };
+		const role = state.game.role;
+		const me = { Name: state.user.login, IsHuman: true, IsMale: state.settings.sex === Sex.Male };
+
+		const showman = role === Role.Showman ? me :
+			(state.game.isShowmanHuman ? { Name: Constants.ANY_NAME, IsHuman: true } : { Name: localization.defaultShowman });
 		const players = [];
 		const viewers = [];
 
-		const me = { Name: state.user.login, IsHuman: true, IsMale: state.settings.sex === Sex.Male };
-
 		const playersCount = state.game.playersCount;
 		const humanPlayersCount = state.game.humanPlayersCount;
-
-		const role = state.game.role;
 		if (role === Role.Viewer) {
 			viewers.push(me);
 		} else if (role === Role.Player) {
 			players.push(me);
-		} else {
-			showman = me;
 		}
 
 		const compPlayersCount = playersCount - humanPlayersCount - (role === Role.Player ? 1 : 0);
@@ -573,7 +576,7 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 		}
 
 		for (let i = 0; i < humanPlayersCount; i++) {
-			players.push({ Name: ' ', IsHuman: true });
+			players.push({ Name: Constants.ANY_NAME, IsHuman: true });
 		}
 
 		for (let i = 0; i < compPlayersCount; i++) {
@@ -739,6 +742,7 @@ const actionCreators = {
 	gamePackageDataChanged,
 	gameTypeChanged,
 	gameRoleChanged,
+	showmanTypeChanged,
 	playersCountChanged,
 	humanPlayersCountChanged,
 	createNewGame,

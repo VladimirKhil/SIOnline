@@ -22,6 +22,7 @@ interface NewGameDialogProps {
 	gamePackageData: File | null;
 	gameType: GameType;
 	gameRole: Role;
+	isShowmanHuman: boolean;
 	playersCount: number;
 	humanPlayersCount: number;
 	inProgress: boolean;
@@ -34,6 +35,7 @@ interface NewGameDialogProps {
 	onGamePackageDataChanged: (name: string, data: File | null) => void;
 	onGameTypeChanged: (newGameType: number) => void;
 	onGameRoleChanged: (newGameRole: Role) => void;
+	showmanTypeChanged: (isHuman: boolean) => void;
 	onPlayersCountChanged: (gamePlayersCount: number) => void;
 	onHumanPlayersCountChanged: (gameHumanPlayersCount: number) => void;
 	onCreate: () => void;
@@ -49,6 +51,7 @@ const mapStateToProps = (state: State) => ({
 	gamePackageData: state.game.package.data,
 	gameType: state.game.type,
 	gameRole: state.game.role,
+	isShowmanHuman: state.game.isShowmanHuman,
 	playersCount: state.game.playersCount,
 	humanPlayersCount: state.game.humanPlayersCount,
 	inProgress: state.online.gameCreationProgress,
@@ -75,6 +78,9 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	},
 	onGameRoleChanged: (newGameRole: Role) => {
 		dispatch(actionCreators.gameRoleChanged(newGameRole));
+	},
+	showmanTypeChanged: (isHuman: boolean) => {
+		dispatch(actionCreators.showmanTypeChanged(isHuman));
 	},
 	onPlayersCountChanged: (playersCount: number) => {
 		dispatch(actionCreators.playersCountChanged(playersCount));
@@ -131,6 +137,10 @@ export class NewGameDialog extends React.Component<NewGameDialogProps> {
 		this.props.onGameRoleChanged(parseInt(e.target.value, 10));
 	}
 
+	private onShowmanTypeChanged = (e: React.ChangeEvent<HTMLSelectElement>) => {
+		this.props.showmanTypeChanged(parseInt(e.target.value, 10) === 1);
+	}
+
 	private onPlayersCountChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
 		this.props.onPlayersCountChanged(parseInt(e.target.value, 10));
 	}
@@ -179,6 +189,16 @@ export class NewGameDialog extends React.Component<NewGameDialogProps> {
 						<option value="1">{localization.player}</option>
 						<option value="2">{localization.showman}</option>
 					</select>
+					{this.props.gameRole === Role.Showman ? null : (
+						<>
+							<p>{localization.showman}</p>
+							<select className="showmanTypeSelector" value={this.props.isShowmanHuman ? 1 : 0} onChange={this.onShowmanTypeChanged}>
+								<option value="1">{localization.human}</option>
+								<option value="0">{localization.bot}</option>
+							</select>
+							{this.props.isShowmanHuman ? '👤' : '🖥️'}
+						</>
+					)}
 					<p>{localization.players}</p>
 					<div className="playersBlock">
 						<span className="playersCountTitle">{localization.total} </span>
