@@ -83,6 +83,26 @@
     margin: 25px;
 }
 
+.playersCount {
+    vertical-align: bottom;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.playersCountTitle {
+    width: 50px;
+    display: inline-block;
+}
+
+.playersCountValue {
+    width: 20px;
+    display: inline-block;
+}
+
+.playersBlock {
+    margin: 5px 0;
+}
+
 @media screen and (min-width: 800px) {
     #newGameDialog {
         right: 300px;

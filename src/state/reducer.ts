@@ -11,6 +11,7 @@ import OnlineMode from '../model/enums/OnlineMode';
 import * as runState from './run/RunState';
 import settingsReducer from './settings/settingsReducer';
 import { KnownSettingsAction } from './settings/SettingsActions';
+import Role from '../model/enums/Role';
 
 const reducer: Reducer<State> = (state: State = initialState, action: KnownAction | KnownRunAction | KnownSettingsAction): State => {
 	switch (action.type) {
@@ -419,7 +420,18 @@ const reducer: Reducer<State> = (state: State = initialState, action: KnownActio
 				...state,
 				game: {
 					...state.game,
-					playersCount: action.playersCount
+					playersCount: action.playersCount,
+					humanPlayersCount: Math.min(state.game.humanPlayersCount, action.playersCount - (state.game.role === Role.Player ? 1 : 0))
+				}
+			};
+		}
+
+		case ActionTypes.HumanPlayersCountChanged: {
+			return {
+				...state,
+				game: {
+					...state.game,
+					humanPlayersCount: action.humanPlayersCount
 				}
 			};
 		}

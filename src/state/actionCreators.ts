@@ -414,6 +414,10 @@ const playersCountChanged: ActionCreator<Actions.PlayersCountChangedAction> = (p
 	type: Actions.ActionTypes.PlayersCountChanged, playersCount
 });
 
+const humanPlayersCountChanged: ActionCreator<Actions.HumanPlayersCountChangedAction> = (humanPlayersCount: number) => ({
+	type: Actions.ActionTypes.HumanPlayersCountChanged, humanPlayersCount
+});
+
 const gameCreationStart: ActionCreator<Actions.GameCreationStartAction> = () => ({
 	type: Actions.ActionTypes.GameCreationStart
 });
@@ -550,25 +554,29 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 		const me = { Name: state.user.login, IsHuman: true, IsMale: state.settings.sex === Sex.Male };
 
 		const playersCount = state.game.playersCount;
+		const humanPlayersCount = state.game.humanPlayersCount;
 
-		let compPlayers = playersCount - 1;
 		const role = state.game.role;
 		if (role === Role.Viewer) {
-			compPlayers = playersCount;
 			viewers.push(me);
 		} else if (role === Role.Player) {
 			players.push(me);
 		} else {
-			compPlayers = playersCount;
 			showman = me;
 		}
+
+		const compPlayersCount = playersCount - humanPlayersCount - (role === Role.Player ? 1 : 0);
 
 		const compIndicies = [];
 		for (let i = 0; i < state.common.computerAccounts.length; i++) {
 			compIndicies.push(i);
 		}
 
-		for (let i = 0; i < compPlayers; i++) {
+		for (let i = 0; i < humanPlayersCount; i++) {
+			players.push({ Name: ' ', IsHuman: true });
+		}
+
+		for (let i = 0; i < compPlayersCount; i++) {
 			const ind = Math.floor((Math.random() * compIndicies.length));
 			players.push({ Name: state.common.computerAccounts[compIndicies[ind]], IsHuman: false });
 			compIndicies.splice(ind, 1);
@@ -732,6 +740,7 @@ const actionCreators = {
 	gameTypeChanged,
 	gameRoleChanged,
 	playersCountChanged,
+	humanPlayersCountChanged,
 	createNewGame,
 	createNewAutoGame
 };

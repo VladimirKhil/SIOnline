@@ -57,6 +57,7 @@ export default interface State {
 		type: GameType;
 		role: Role;
 		playersCount: number;
+		humanPlayersCount: number;
 		id: number;
 		isHost: boolean;
 		isAutomatic: boolean;
@@ -118,6 +119,7 @@ export const initialState: State = {
 		type: GameType.Simple,
 		role: Role.Player,
 		playersCount: 3,
+		humanPlayersCount: 0,
 		id: -1,
 		isHost: false,
 		isAutomatic: false

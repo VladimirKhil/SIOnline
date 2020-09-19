@@ -23,6 +23,7 @@ interface NewGameDialogProps {
 	gameType: GameType;
 	gameRole: Role;
 	playersCount: number;
+	humanPlayersCount: number;
 	inProgress: boolean;
 	error: string | null;
 	uploadPackageProgress: boolean;
@@ -34,6 +35,7 @@ interface NewGameDialogProps {
 	onGameTypeChanged: (newGameType: number) => void;
 	onGameRoleChanged: (newGameRole: Role) => void;
 	onPlayersCountChanged: (gamePlayersCount: number) => void;
+	onHumanPlayersCountChanged: (gameHumanPlayersCount: number) => void;
 	onCreate: () => void;
 	onClose: () => void;
 }
@@ -48,6 +50,7 @@ const mapStateToProps = (state: State) => ({
 	gameType: state.game.type,
 	gameRole: state.game.role,
 	playersCount: state.game.playersCount,
+	humanPlayersCount: state.game.humanPlayersCount,
 	inProgress: state.online.gameCreationProgress,
 	error: state.online.gameCreationError,
 	uploadPackageProgress: state.online.uploadPackageProgress,
@@ -75,6 +78,9 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	},
 	onPlayersCountChanged: (playersCount: number) => {
 		dispatch(actionCreators.playersCountChanged(playersCount));
+	},
+	onHumanPlayersCountChanged: (humanPlayersCount: number) => {
+		dispatch(actionCreators.humanPlayersCountChanged(humanPlayersCount));
 	},
 	onCreate: () => {
 		dispatch((actionCreators.createNewGame() as object) as Action);
@@ -125,8 +131,12 @@ export class NewGameDialog extends React.Component<NewGameDialogProps> {
 		this.props.onGameRoleChanged(parseInt(e.target.value, 10));
 	}
 
-	private onPlayersCountChanged = (e: React.ChangeEvent<HTMLSelectElement>) => {
+	private onPlayersCountChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
 		this.props.onPlayersCountChanged(parseInt(e.target.value, 10));
+	}
+
+	private onHumanPlayersCountChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
+		this.props.onHumanPlayersCountChanged(parseInt(e.target.value, 10));
 	}
 
 	private onSelectFile = () => {
@@ -136,6 +146,9 @@ export class NewGameDialog extends React.Component<NewGameDialogProps> {
 	}
 
 	render() {
+		const humanPlayersMaxCount = this.props.playersCount - (this.props.gameRole === Role.Player ? 1 : 0);
+		const botsCount = humanPlayersMaxCount - this.props.humanPlayersCount;
+
 		return (
 			<Dialog id="newGameDialog" title={localization.newGame} onClose={this.props.onClose}>
 				<div className="settings">
@@ -166,20 +179,28 @@ export class NewGameDialog extends React.Component<NewGameDialogProps> {
 						<option value="1">{localization.player}</option>
 						<option value="2">{localization.showman}</option>
 					</select>
-					<p>{localization.playersCount}</p>
-					<select value={this.props.playersCount} onChange={this.onPlayersCountChanged}>
-						<option value="2">2</option>
-						<option value="3">3</option>
-						<option value="4">4</option>
-						<option value="5">5</option>
-						<option value="6">6</option>
-						<option value="7">7</option>
-						<option value="8">8</option>
-						<option value="9">9</option>
-						<option value="10">10</option>
-						<option value="11">11</option>
-						<option value="12">12</option>
-					</select>
+					<p>{localization.players}</p>
+					<div className="playersBlock">
+						<span className="playersCountTitle">{localization.total} </span>
+						<span className="playersCountValue">{this.props.playersCount}</span>
+						<input type="range" className="playersCount" min={2} max={12}
+							value={this.props.playersCount} onChange={this.onPlayersCountChanged} />
+					</div>
+					<div className="playersBlock">
+						<span className="playersCountTitle">{localization.humanPlayers} </span>
+						<span className="playersCountValue">{this.props.humanPlayersCount}</span>
+						<input type="range" className="playersCount" min={0} max={humanPlayersMaxCount} disabled={humanPlayersMaxCount === 0}
+							value={this.props.humanPlayersCount} onChange={this.onHumanPlayersCountChanged} />
+					</div>
+					<div className="playersBlock">
+						<span className="playersCountTitle">{localization.computerPlayers} </span>
+						<span className="playersCountValue">{botsCount}</span>
+					</div>
+					<div className="playersBlock">
+						{this.props.gameRole === Role.Player ? '🧑' : null}
+						{Array.from(Array(this.props.humanPlayersCount).keys()).map(value => '👤')}
+						{Array.from(Array(botsCount).keys()).map(value => '🖥️')}
+					</div>
 				</div>
 				<span className="gameCreationError">{this.props.error}</span>
 				<button className="startGame" disabled={!this.props.isConnected || this.props.inProgress}
