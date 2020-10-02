@@ -806,11 +806,17 @@ function onReplic(dispatch: Dispatch<RunActions.KnownRunAction>, state: State, a
 }
 
 function preprocessServerUri(uri: string, dataContext: DataContext) {
-	return uri.replace(
+	const result = uri.replace(
 		'<SERVERHOST>',
 		dataContext.contentUris && dataContext.contentUris.length > 0 ? dataContext.contentUris[0]
 			: dataContext.serverUri
 	);
+
+	if (location.protocol === 'https:') {
+		return result.replace('http://', 'https://');
+	}
+
+	return result;
 }
 
 function connected(dispatch: Dispatch<RunActions.KnownRunAction>, state: State, ...args: string[]) {

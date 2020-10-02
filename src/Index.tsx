@@ -53,11 +53,6 @@ function setState(state: State, savedState: SavedState | null, gameId: string | 
 }
 
 async function run() {
-	// Временно до перехода на HTTPS
-	if (location.protocol !== 'http:') {
-		location.replace(`http:${location.href.substring(location.protocol.length)}`);
-	}
-
 	document.title = localization.appTitle;
 
 	if (!config) {
