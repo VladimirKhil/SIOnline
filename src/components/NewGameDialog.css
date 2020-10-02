@@ -1,9 +1,14 @@
 #newGameDialog {
     background-color: #5A95E2;
+    overflow-y: hidden;
+    display: flex;
+    flex-flow: column;
 }
 
 #newGameDialog .settings {
     padding-left: 13px;
+    margin-bottom: 45px;
+    overflow-y: auto;
 }
 
 #newGameDialog p {
