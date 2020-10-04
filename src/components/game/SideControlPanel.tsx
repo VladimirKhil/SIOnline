@@ -75,6 +75,7 @@ export function SideControlPanel(props: SideControlPanelProps) {
 	};
 
 	const pauseTitle = props.isPaused ? localization.resume : localization.pause;
+	const canPause = props.isHost || props.role === Role.Showman;
 
 	const enabledClass = props.isConnected ? '' : 'disabled';
 
@@ -104,7 +105,7 @@ export function SideControlPanel(props: SideControlPanelProps) {
 				</div>
 
 				<div id="buttons">
-					{props.isHost ? <button id="pauseButton" disabled={!props.isConnected} onClick={() => props.onPause()}>{pauseTitle}</button> : null}
+					{canPause ? <button id="pauseButton" disabled={!props.isConnected} onClick={() => props.onPause()}>{pauseTitle}</button> : null}
 					<div id="gameMenuHost">
 						<FlyoutButton className="gameMenuButton" title={localization.menu} flyout={
 							<ul className="gameMenu">
@@ -115,7 +116,7 @@ export function SideControlPanel(props: SideControlPanelProps) {
 								}
 								<li className={enabledClass} onClick={() => props.onMarkQuestion()} title={localization.complainHint}>{localization.complain}</li>
 								<li onClick={() => props.onShowPersons()}>{localization.members}</li>
-								{props.isHost ? <li className={enabledClass} onClick={() => props.onPause()}>{pauseTitle}</li> : null}
+								{canPause ? <li className={enabledClass} onClick={() => props.onPause()}>{pauseTitle}</li> : null}
 							</ul>
 						} theme={FlyoutTheme.Light} alignWidth={true} verticalOrientation={FlyoutVerticalOrientation.Top}>…</FlyoutButton>
 					</div>
