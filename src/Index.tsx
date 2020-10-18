@@ -59,6 +59,11 @@ async function run() {
 		throw new Error('Config is undefined!');
 	}
 
+	// Временно до перехода на HTTPS
+	if (config.disableHttps && location.protocol !== 'http:') {
+		location.replace(`http:${location.href.substring(location.protocol.length)}`);
+	}
+
 	let serverUri = config.serverUri;
 	if (!serverUri) {
 		const serverDiscoveryUri = config.serverDiscoveryUri;

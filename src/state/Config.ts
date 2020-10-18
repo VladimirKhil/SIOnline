@@ -4,4 +4,5 @@ export default interface Config {
 	rootUri?: string;
 	useMessagePackProtocol?: boolean;
 	ads?: string;
+	disableHttps?: boolean;
 }
