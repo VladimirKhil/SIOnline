@@ -1,6 +1,6 @@
 config = {
     serverDiscoveryUri: 'http://vladimirkhil.com/api/si/GetGameServersUrisNew',
-    rootUri: 'http://localhost:8080',
+    rootUri: '/',
     ads: '<b>Test ad</b>'
 };
 

@@ -61,12 +61,10 @@ export class SettingsDialog extends React.Component<SettingsDialogProps> {
 
 	componentWillUnmount() {
 		window.removeEventListener('mousedown', this.hide);
-		console.log('b');
 	}
 
 	componentDidMount() {
 		window.addEventListener('mousedown', this.hide);
-		console.log('a');
 	}
 
 	private onSexChanged = (e: React.ChangeEvent<HTMLInputElement>) => {

@@ -12,9 +12,11 @@ import NumericTextBox from '../common/NumericTextBox';
 import ProgressBar from '../common/ProgressBar';
 import TimerInfo from '../../model/TimerInfo';
 import { isRunning } from '../../utils/TimerInfoHelpers';
-import Config from '../../state/Config';
 
 import './PlayersView.css';
+
+import avatarMPng from '../../../assets/images/avatar-m.png';
+import avatarFPng from '../../../assets/images/avatar-f.png';
 
 interface PlayersViewProps {
 	players: PlayerInfo[];
@@ -49,8 +51,6 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	}
 });
 
-declare const config: Config;
-
 // tslint:disable-next-line: function-name
 export function PlayersView(props: PlayersViewProps) {
 	const playersCount = Object.keys(props.players).length;
@@ -81,7 +81,7 @@ export function PlayersView(props: PlayersViewProps) {
 			<ul className="gamePlayers" style={mainStyle}>
 				{props.players.map((player, index) => {
 					const account = props.all[player.name];
-					const avatar = account ? (account.avatar ? account.avatar : (account.sex === Sex.Male ? `${config.rootUri}/images/avatar-m.png` : `${config.rootUri}/images/avatar-f.png`)) : null;
+					const avatar = account ? (account.avatar ? account.avatar : (account.sex === Sex.Male ? avatarMPng : avatarFPng)) : null;
 
 					return (
 						<li key={`${player.name}_${index}`} style={playerStyle}

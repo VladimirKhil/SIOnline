@@ -11,7 +11,7 @@
       "outDir": "dist"
     },
     "include": [
-      "src", "custom.d.ts", "wwwroot"
+      "src", "wwwroot"
     ],
     "compileOnSave": false
 }

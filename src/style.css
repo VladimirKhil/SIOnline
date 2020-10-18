@@ -19,7 +19,7 @@ html,body { height:100%; }
 body {
     background-color: #000451;
     background: linear-gradient(to bottom, #000451 0%,#183CF3 50%,#000451 100%);
-    background-image: url('../wwwroot/images/main_background.png');
+    background-image: url('../assets/images/main_background.png');
     background-size: cover;
     color: black;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;

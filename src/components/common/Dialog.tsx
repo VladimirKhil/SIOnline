@@ -2,7 +2,8 @@
 import localization from '../../model/resources/localization';
 
 import './Dialog.css';
-import closeSvg from '../../../wwwroot/images/close.svg';
+
+import closeSvg from '../../../assets/images/close.svg';
 
 interface DialogProps {
 	id: string;
