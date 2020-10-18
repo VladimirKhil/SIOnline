@@ -1,15 +1,15 @@
 ﻿@font-face {
     font-family: SI;
-    src: url('/fonts/FuturaC.eot');
-    src: local('вє'), url('/fonts/FuturaC.woff') format('woff'), url('/fonts/FuturaC.ttf') format('truetype'), url('/fonts/FuturaC.svg') format('svg');
+    src: url('../assets/fonts/FuturaC.eot');
+    src: local('вє'), url('../assets/fonts/FuturaC.woff') format('woff'), url('../assets/fonts/FuturaC.ttf') format('truetype'), url('../assets/fonts/FuturaC.svg') format('svg');
     font-weight: normal;
     font-style: normal;
 }
 
 @font-face {
     font-family: 'Clefs';
-    src: url('/fonts/Clefs.eot');
-    src: url('/fonts/Clefs.eot?#iefix') format('embedded-opentype'), url('/fonts/Clefs.woff') format('woff'), url('/fonts/Clefs.ttf') format('truetype'), url('/fonts/Clefs.svg#Clefs') format('svg');
+    src: url('../assets/fonts/Clefs.eot');
+    src: url('../assets/fonts/Clefs.eot?#iefix') format('embedded-opentype'), url('../assets/fonts/Clefs.woff') format('woff'), url('../assets/fonts/Clefs.ttf') format('truetype'), url('../assets/fonts/Clefs.svg#Clefs') format('svg');
     font-weight: normal;
     font-style: normal;
 }

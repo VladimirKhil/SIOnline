@@ -33,7 +33,8 @@ module.exports = (env) => {
 						options: { minimize: true }
 					  }
 					]
-				}
+				},
+				{ test: /\.(eot|ttf|woff|otf)$/, use: 'url-loader?limit=25000' }
 			]
 		},
 		resolve: {
