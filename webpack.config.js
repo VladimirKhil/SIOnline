@@ -8,7 +8,7 @@ module.exports = (env) => {
 	return {
 		mode: isDevBuild ? 'development' : 'production',
 		entry: {			
-			config: './wwwroot/config.js',
+			config: './assets/config.js',
 			main: './src/Index.tsx'
 		},
 		devtool: isDevBuild ? 'inline-source-map' : undefined,

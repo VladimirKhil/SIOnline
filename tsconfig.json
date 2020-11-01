@@ -11,7 +11,7 @@
       "outDir": "dist"
     },
     "include": [
-      "src", "wwwroot"
+      "src"
     ],
     "compileOnSave": false
 }

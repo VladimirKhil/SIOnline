@@ -127,6 +127,14 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 			}
 			break;
 
+		case 'ATOM_SECOND':
+			// TODO: process
+			break;
+
+		case 'BUTTON_BLOCKING_TIME':
+			// TODO: process
+			break;
+
 		case 'CHOICE':
 			{
 				const themeIndex = parseInt(args[1], 10);
@@ -178,6 +186,18 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 			}
 			break;
 
+		case 'FALSESTART':
+			// TODO: process
+			break;
+
+		case 'FINALROUND':
+			// TODO: process
+			break;
+
+		case 'FINALTHINK':
+			// TODO: process
+			break;
+
 		case 'GAMETHEMES':
 			{
 				const gameThemes = [];
@@ -211,6 +231,14 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 			}
 			break;
 
+		case 'PACKAGELOGO':
+			// TODO: process
+			break;
+
+		case 'PASS':
+			// TODO: process
+			break;
+
 		case 'PAUSE':
 			const isPaused = args[1] === '+';
 			dispatch(runActionCreators.isPausedChanged(isPaused));
@@ -237,6 +265,18 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 					dispatch(runActionCreators.playerStateChanged(index, isRight ? PlayerStates.Right : PlayerStates.Wrong));
 				}
 			}
+			break;
+
+		case 'PERSONAPELLATED':
+			// TODO: process
+			break;
+
+		case 'PERSONFINALANSWER':
+			// TODO: process
+			break;
+
+		case 'PERSONFINALSTAKE':
+			// TODO: process
 			break;
 
 		case 'PERSONSTAKE':
@@ -313,6 +353,10 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 			dispatch(runActionCreators.readingSpeedChanged(parseInt(args[1], 10)));
 			break;
 
+		case 'READY':
+			// TODO: process
+			break;
+
 		case 'REPLIC':
 			if (args.length < 3) {
 				break;
@@ -331,16 +375,18 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 			break;
 
 		case 'ROUNDTHEMES':
-			{
-				const printThemes = args[1] === '+';
+			const printThemes = args[1] === '+';
 
-				const roundThemes: ThemeInfo[] = [];
-				for (let i = 2; i < args.length; i++) {
-					roundThemes.push({ name: args[i], questions: [] });
-				}
-
-				dispatch(tableActionCreators.showRoundThemes(roundThemes, state.run.stage.name === 'Final', printThemes));
+			const roundThemes: ThemeInfo[] = [];
+			for (let i = 2; i < args.length; i++) {
+				roundThemes.push({ name: args[i], questions: [] });
 			}
+
+			dispatch(tableActionCreators.showRoundThemes(roundThemes, state.run.stage.name === 'Final', printThemes));
+			break;
+
+		case 'SETCHOOSER':
+			// TODO: process
 			break;
 
 		case 'SHOWTABLO':
@@ -422,7 +468,6 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 			});
 
 			dispatch(tableActionCreators.showRoundThemes(newRoundInfo, state.run.stage.name === 'Final', false));
-
 			break;
 
 		case 'TEXTSHAPE':
@@ -436,6 +481,10 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 			}
 
 			dispatch(tableActionCreators.showPartialText(text));
+			break;
+
+		case 'TIMEOUT':
+			// TODO: process
 			break;
 
 		case 'TIMER':
@@ -506,6 +555,10 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 
 		case 'TRY':
 			dispatch(tableActionCreators.canPressChanged(true));
+			break;
+
+		case 'WINNER':
+			// TODO: process
 			break;
 
 		case 'WRONGTRY':
@@ -587,6 +640,10 @@ const playerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 			}
 			break;
 
+		case 'REPORT':
+			// TODO: process
+			break;
+
 		case 'STAKE':
 			{
 				const allowedStakeTypes = {
@@ -660,6 +717,8 @@ const showmanHandler = (dispatch: Dispatch<any>, state: State, dataContext: Data
 		case 'VALIDATIION':
 			startValidation(dispatch, localization.answerChecking, args);
 			break;
+
+		// TODO: implement player messages support for oral game
 	}
 };
 

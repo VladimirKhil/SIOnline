@@ -25,6 +25,8 @@ import Slice from '../model/server/Slice';
 import PackageType from '../model/enums/PackageType';
 import PackageKey from '../model/server/PackageKey';
 import Constants from '../model/enums/Constants';
+import HostInfo from '../model/server/HostInfo';
+import GameCreationResult from '../model/server/GameCreationResult';
 
 import * as JSZip from 'jszip';
 import * as Rusha from 'rusha';
@@ -142,7 +144,7 @@ const login: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () =
 
 				attachListeners(dataContext.connection, dispatch);
 
-				const computerAccounts: string[] = await dataContext.connection.invoke('GetComputerAccounts');
+				const computerAccounts = await dataContext.connection.invoke<string[]>('GetComputerAccounts');
 
 				dispatch(computerAccountsChanged(computerAccounts));
 
@@ -183,7 +185,7 @@ const navigateToGamesList: ActionCreator<ThunkAction<void, State, DataContext, A
 
 		// Фильтрацию осуществляем на клиенте
 		try {
-			const hostInfo = await server.invoke('GetGamesHostInfo');
+			const hostInfo = await server.invoke<HostInfo>('GetGamesHostInfo');
 
 			dataContext.contentUris = hostInfo.contentPublicBaseUrls;
 
@@ -201,13 +203,13 @@ const navigateToGamesList: ActionCreator<ThunkAction<void, State, DataContext, A
 				whileGuard--;
 			} while (!gamesSlice.isLastSlice && whileGuard > 0);
 
-			const users: string[] = await server.invoke('GetUsers');
+			const users = await server.invoke<string[]>('GetUsers');
 
 			const sortedUsers = users.sort((user1: string, user2: string) => { return user1.localeCompare(user2); });
 
 			dispatch(receiveUsers(sortedUsers));
 
-			const news: string | null = await server.invoke('GetNews');
+			const news = await server.invoke<string | null>('GetNews');
 
 			if (news !== null) {
 				dispatch(receiveMessage(localization.news, news));
@@ -317,7 +319,13 @@ const joinGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (
 				return;
 			}
 
-			const result = await dataContext.connection.invoke('JoinGameNew', gameId, role, state.settings.sex === Sex.Male, state.online.password);
+			const result = await dataContext.connection.invoke<GameCreationResult>(
+				'JoinGameNew',
+				gameId,
+				role,
+				state.settings.sex === Sex.Male,
+				state.online.password
+			);
 
 			if (result.errorMessage) {
 				dispatch(joinGameFinished(`${localization.joinError}: ${result.errorMessage}`));
@@ -530,7 +538,7 @@ async function checkAndUploadPackageAsync(
 		id
 	};
 
-	const hasPackage = await connection.invoke('HasPackage', packageKey);
+	const hasPackage = await connection.invoke<boolean>('HasPackage', packageKey);
 	if (!hasPackage) {
 		await uploadPackageAsync(hashArrayEncoded, packageData, serverUri, dispatch);
 	}
@@ -640,7 +648,13 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 				return;
 			}
 
-			const result = await dataContext.connection.invoke('CreateAndJoinGameNew', gameSettings, packageKey, [], state.settings.sex === Sex.Male);
+			const result = await dataContext.connection.invoke<GameCreationResult>(
+				'CreateAndJoinGameNew',
+				gameSettings,
+				packageKey,
+				[],
+				state.settings.sex === Sex.Male
+			);
 
 			saveStateToStorage(state);
 
@@ -669,7 +683,11 @@ const createNewAutoGame: ActionCreator<ThunkAction<void, State, DataContext, Act
 		dispatch(gameCreationStart());
 
 		try {
-			const result = await dataContext.connection.invoke('CreateAutomaticGameNew', state.user.login, state.settings.sex === Sex.Male);
+			const result = await dataContext.connection.invoke<GameCreationResult>(
+				'CreateAutomaticGameNew',
+				state.user.login,
+				state.settings.sex === Sex.Male
+			);
 
 			saveStateToStorage(state);
 

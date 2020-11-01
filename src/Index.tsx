@@ -134,7 +134,7 @@ function subscribeToExternalEvents(store: Store<State, any>) {
 	window.onpopstate = () => true;
 
 	window.onkeydown = (e: KeyboardEvent) => {
-		if (e.keyCode === Constants.KEY_CTRL) {
+		if (e.key === Constants.KEY_CTRL) {
 			store.dispatch(runActionCreators.pressGameButton());
 		}
 

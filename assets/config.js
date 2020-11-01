@@ -1,5 +1,5 @@
 config = {
-    serverDiscoveryUri: 'http://vladimirkhil.com/api/si/GetGameServersUrisNew',
+    serverDiscoveryUri: 'https://vladimirkhil.com/api/si/servers',
     rootUri: '/',
     ads: '<b>Test ad</b>'
 };
