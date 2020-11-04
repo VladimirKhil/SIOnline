@@ -59,10 +59,6 @@ export function PlayersView(props: PlayersViewProps) {
 		fontSize: `${15.5 - playersCount * 0.5}px`
 	};
 
-	const playerStyle: React.CSSProperties = {
-		minWidth: `${140 - playersCount * 10}px`
-	};
-
 	const buildPlayerClasses = (player: PlayerInfo, isMe: boolean, canBeSelected: boolean) => {
 		const s = player.state;
 		const stateClass = `state_${PlayerStates[player.state].toLowerCase()}`;
@@ -84,7 +80,7 @@ export function PlayersView(props: PlayersViewProps) {
 					const avatar = account ? (account.avatar ? account.avatar : (account.sex === Sex.Male ? avatarMPng : avatarFPng)) : null;
 
 					return (
-						<li key={`${player.name}_${index}`} style={playerStyle}
+						<li key={`${player.name}_${index}`}
 							className={buildPlayerClasses(player, player.name === props.login, player.canBeSelected)}
 							onClick={() => props.onPlayerSelected(index)}>
 							<div className="playerCard">

@@ -1,5 +1,4 @@
 ﻿import * as React from 'react';
-import Sex from '../model/enums/Sex';
 import Constants from '../model/enums/Constants';
 import localization from '../model/resources/localization';
 import State from '../state/State';

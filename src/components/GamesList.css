@@ -79,13 +79,17 @@
     white-space: nowrap;
 }
 
+.commandButtonsPanel {
+    display: flex;
+}
+
 #newGame, #newAutoGame {
     display: block;
     width: 100%;
     max-width: none;
     height: 45px;
-    font-size: 26px;
-    line-height: 26px;
+    font-size: 19px;
+    line-height: 19px;
 }
 
 #newGame {
@@ -129,10 +133,26 @@ ul.gamesFilter > li.disabled {
     .gameslistHost {
         flex: 0 0 400px;
     }
+
+    #newGame, #newAutoGame {
+        font-size: 26px;
+        line-height: 26px;
+    }
 }
 
 @media screen and (min-width: 1600px) {
     .gameslistHost {
         flex: 0 0 600px;
+    }
+}
+
+@media screen and (min-height: 600px) {
+    .commandButtonsPanel {
+        flex-flow: column;
+    }
+
+    #newGame, #newAutoGame {
+        font-size: 26px;
+        line-height: 26px;
     }
 }

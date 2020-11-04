@@ -25,11 +25,25 @@
 
 .gameMainView {
     display: flex;
-    flex-direction: column;
     flex: 1;
     overflow: hidden;
 }
 
-.gameMainView.reversed {
-    flex-direction: column-reverse;
+.showmanTableArea {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+}
+
+@media screen and (min-height: 600px) {
+    .gameMainView {
+        flex-direction: column;
+    }
+
+    .gameMainView.reversed, .gameMainView.reversed .showmanTableArea {
+        flex-direction: column-reverse;
+    }
 }

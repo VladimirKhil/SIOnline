@@ -89,6 +89,10 @@ ul {
     list-style-type: none;
 }
 
+button {
+    cursor: pointer;
+}
+
 .gameHost {
     height: 100%;
 }
@@ -121,16 +125,6 @@ ul {
     height: 45px;
     padding: 5px 40px;
     width: 100%;
-}
-
-.main .header {
-    font-size: 18px;
-    text-align: left;
-    padding-left: 22px;
-    margin-top: 10px;
-    margin-bottom: 10px;
-    margin-right: 12px;
-    vertical-align: middle;
 }
 
 .logonHost {
@@ -698,31 +692,6 @@ video, audio {
 .gameHeader {
     padding-left: 10px;
     height: 50px;
-}
-
-@media screen and (min-width: 470px) {
-    #entername {
-        margin: 0 22px;
-        width: calc(100% - 44px);
-        max-width: calc(100% - 44px);
-    }
-
-    .main {
-        height: 560px;
-        padding: 10px 0 0 0;
-        border: 1px solid #111111;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-    }
-
-    #logonButtons {
-        left: initial;
-        width: auto;
-        display: flex;
-    }
-
-    #howToPlay, #enter {
-        width: auto;
-    }
 }
 
 @media screen and (min-width: 800px) {

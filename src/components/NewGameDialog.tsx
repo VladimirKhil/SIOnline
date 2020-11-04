@@ -222,7 +222,7 @@ export class NewGameDialog extends React.Component<NewGameDialogProps> {
 						{Array.from(Array(botsCount).keys()).map(value => '🖥️')}
 					</div>
 				</div>
-				<span className="gameCreationError">{this.props.error}</span>
+				<div className="gameCreationError">{this.props.error}</div>
 				<button className="startGame" disabled={!this.props.isConnected || this.props.inProgress}
 					onClick={this.props.onCreate}>{localization.startGame}</button>
 				{this.props.inProgress ? <ProgressBar isIndeterminate={true} /> : null}

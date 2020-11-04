@@ -44,10 +44,12 @@ export function InGameView(props: InGameViewProps) {
 			<div className="game__tableArea">
 				<div className={`gameMainView ${props.showPersonsAtBottomOnWideScreen && props.windowWidth >= 1100 ? 'reversed' : ''}`}>
 					<PlayersView />
-					<ShowmanReplicView />
-					<div className="tableArea">
-						<GameTable />
-						<GameHint />
+					<div className="showmanTableArea">
+						<ShowmanReplicView />
+						<div className="tableArea">
+							<GameTable />
+							<GameHint />
+						</div>
 					</div>
 				</div>
 				<BottomControlPanel />

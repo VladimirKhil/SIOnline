@@ -1,9 +1,13 @@
 #helpDialog {
     background-color: #5A95E2;
+    display: flex;
+    flex-flow: column;
+    overflow-y: hidden;
 }
 
 .helpText {
-    margin: 13px;
+    margin: 13px 0 13px 13px;
+    padding-right: 13px;
     overflow-y: auto;
 }
 

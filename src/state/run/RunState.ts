@@ -136,7 +136,7 @@ export const initialState: RunState = {
 		wrongAnswers: []
 	},
 	chat: {
-		isVisible: true,
+		isVisible: false,
 		isActive: false,
 		mode: ChatMode.Chat,
 		message: '',

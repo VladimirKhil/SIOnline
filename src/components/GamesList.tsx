@@ -136,9 +136,11 @@ export function GamesList(props: GamesListProps) {
 					))}
 				</ul>
 				) : <span className="loadError">{props.error}</span>}
-			<button id="newAutoGame" disabled={!props.isConnected} onClick={props.onNewAutoSearchGame}
-				title={localization.autoSearchHint}>{localization.autoSearch}</button>
-			<button id="newGame" disabled={!props.isConnected} onClick={props.onNewGame}>{localization.newGame.toLocaleUpperCase()}</button>
+			<div className="commandButtonsPanel">
+				<button id="newAutoGame" disabled={!props.isConnected} onClick={props.onNewAutoSearchGame}
+					title={localization.autoSearchHint}>{localization.autoSearch}</button>
+				<button id="newGame" disabled={!props.isConnected} onClick={props.onNewGame}>{localization.newGame.toLocaleUpperCase()}</button>
+			</div>
 		</section>
 	);
 }
