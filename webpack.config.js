@@ -1,5 +1,4 @@
 const path = require('path');
-const webpack = require('webpack');
 const CheckerPlugin = require('awesome-typescript-loader').CheckerPlugin;
 const HtmlWebPackPlugin = require("html-webpack-plugin");
 
@@ -7,7 +6,7 @@ module.exports = (env) => {
 	const isDevBuild = !(env && env.prod);
 	return {
 		mode: isDevBuild ? 'development' : 'production',
-		entry: {			
+		entry: {
 			config: './assets/config.js',
 			main: './src/Index.tsx'
 		},
@@ -64,8 +63,9 @@ module.exports = (env) => {
 			new CheckerPlugin(),
 			new HtmlWebPackPlugin({
 				template: "./src/index-template.html",
-				filename: "./index.html"
-			  })
+				filename: "./index.html",
+				favicon: './assets/images/favicon.ico'
+			})
 		]
 	}
 };
