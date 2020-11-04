@@ -110,56 +110,60 @@ const login: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () =
 
 		const state = getState();
 
-		const response = await fetch(`${dataContext.serverUri}/api/Account/LogOn`, {
-			method: 'POST',
-			credentials: 'include',
-			body: `login=${state.user.login}&password=`,
-			headers: {
-				'Content-Type': 'application/x-www-form-urlencoded'
-			}
-		});
+		try {
+			const response = await fetch(`${dataContext.serverUri}/api/Account/LogOn`, {
+				method: 'POST',
+				credentials: 'include',
+				body: `login=${state.user.login}&password=`,
+				headers: {
+					'Content-Type': 'application/x-www-form-urlencoded'
+				}
+			});
 
-		if (response.ok) {
-			saveStateToStorage(state);
+			if (response.ok) {
+				saveStateToStorage(state);
 
-			const token = await response.text();
-			const queryString = `?token=${encodeURIComponent(token)}`;
+				const token = await response.text();
+				const queryString = `?token=${encodeURIComponent(token)}`;
 
-			let connectionBuilder = new signalR.HubConnectionBuilder()
-				.withAutomaticReconnect()
-				.withUrl(`${dataContext.serverUri}/sionline${queryString}`);
+				let connectionBuilder = new signalR.HubConnectionBuilder()
+					.withAutomaticReconnect()
+					.withUrl(`${dataContext.serverUri}/sionline${queryString}`);
 
-			if (dataContext.config.useMessagePackProtocol) {
-				connectionBuilder = connectionBuilder.withHubProtocol(new signalRMsgPack.MessagePackHubProtocol());
-			}
-
-			dataContext.connection = connectionBuilder.build();
-
-			try {
-				await dataContext.connection.start();
-
-				if (dataContext.connection.connectionId) {
-					activeConnections.push(dataContext.connection.connectionId);
+				if (dataContext.config.useMessagePackProtocol) {
+					connectionBuilder = connectionBuilder.withHubProtocol(new signalRMsgPack.MessagePackHubProtocol());
 				}
 
-				attachListeners(dataContext.connection, dispatch);
+				dataContext.connection = connectionBuilder.build();
 
-				const computerAccounts = await dataContext.connection.invoke<string[]>('GetComputerAccounts');
+				try {
+					await dataContext.connection.start();
 
-				dispatch(computerAccountsChanged(computerAccounts));
+					if (dataContext.connection.connectionId) {
+						activeConnections.push(dataContext.connection.connectionId);
+					}
 
-				dispatch(loginEnd());
-				navigateToGamesList(-1)(dispatch, getState, dataContext);
+					attachListeners(dataContext.connection, dispatch);
 
-			} catch (error) {
-				dispatch(loginEnd(`${localization.cannotConnectToServer}: ${error.message}`));
+					const computerAccounts = await dataContext.connection.invoke<string[]>('GetComputerAccounts');
+
+					dispatch(computerAccountsChanged(computerAccounts));
+
+					dispatch(loginEnd());
+					navigateToGamesList(-1)(dispatch, getState, dataContext);
+
+				} catch (error) {
+					dispatch(loginEnd(`${localization.cannotConnectToServer}: ${error.message}`));
+				}
+			} else {
+				const errorText =
+					response.status === 409 ? localization.duplicateUserName :
+					response.status === 0 ? localization.cannotConnectToServer : response.statusText;
+
+				dispatch(loginEnd(errorText));
 			}
-		} else {
-			const errorText =
-				response.status === 409 ? localization.duplicateUserName :
-				response.status === 0 ? localization.cannotConnectToServer : response.statusText;
-
-			dispatch(loginEnd(errorText));
+		} catch (err) {
+			dispatch(loginEnd(`${localization.cannotConnectToServer}: ${err.message}`));
 		}
 	};
 

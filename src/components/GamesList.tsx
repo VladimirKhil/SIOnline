@@ -124,7 +124,7 @@ export function GamesList(props: GamesListProps) {
 					</span>
 				</FlyoutButton>
 			</header>
-			<input className="gamesSearch" type="search" value={props.gamesSearch} placeholder={localization.searchGames}
+			<input id="gamesSearch" className="gamesSearch" type="search" value={props.gamesSearch} placeholder={localization.searchGames}
 				onChange={e => props.onGamesSearchChanged(e.target.value)} />
 			{props.error.length === 0 ? (
 				<ul className="gamenames">
