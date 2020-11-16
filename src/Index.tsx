@@ -1,4 +1,6 @@
-﻿import * as React from 'react';
+﻿import './polyfills';
+
+import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { applyMiddleware, createStore, Store } from 'redux';
 import { Provider } from 'react-redux';
