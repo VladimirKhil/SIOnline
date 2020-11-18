@@ -1,12 +1,9 @@
-﻿import './polyfills';
-
-import * as React from 'react';
+﻿import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { applyMiddleware, createStore, Store } from 'redux';
 import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import reduxThunk from 'redux-thunk';
-
 import App from './components/App';
 import State, { initialState } from './state/State';
 import reducer from './state/reducer';
@@ -15,12 +12,13 @@ import { KnownAction } from './state/Actions';
 import actionCreators from './state/actionCreators';
 import DataContext from './model/DataContext';
 import Config from './state/Config';
-
-import './style.css';
 import Constants from './model/enums/Constants';
 import runActionCreators from './state/run/runActionCreators';
 import localization from './model/resources/localization';
 import ServerInfo from './model/server/ServerInfo';
+import './utils/polyfills';
+
+import './style.css';
 
 declare const config: Config;
 
