@@ -56,7 +56,7 @@ export function PlayersView(props: PlayersViewProps) {
 	const playersCount = Object.keys(props.players).length;
 
 	const mainStyle: React.CSSProperties = {
-		fontSize: `${15.5 - playersCount * 0.5}px`
+		fontSize: `${15.5 - playersCount * 0.2}px`
 	};
 
 	const buildPlayerClasses = (player: PlayerInfo, isMe: boolean, canBeSelected: boolean) => {

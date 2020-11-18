@@ -30,7 +30,7 @@
     }
 
     .gamePlayers .playerCard {
-        padding: 4px;        
+        padding: 2px;        
         height: 100%;
         width: 100%;
         display: flex;
@@ -42,6 +42,7 @@
         display: flex;
         flex-flow: column;
         justify-content: center;
+        width: 0;
     }
 
     .gamePlayers li.me .name {
@@ -77,10 +78,9 @@
     .gamePlayers .playerReplic {
         position: absolute;
         top: 0;
-        width: 100%;
-        min-width: 100px;
+        width: 200px;
         left: 100%;
-        height: 100px;
+        height: 100%;
         padding: 5px;
         background-color: #ffffee;
         text-align: center;
@@ -91,11 +91,6 @@
         z-index: 3;
     }
 
-    .gameMainView.reversed .gamePlayers .playerReplic {
-        top: initial;
-        bottom: 49px;
-    }
-
 .playerAvatar {
     height: 100%;
     background-size: contain;
@@ -103,7 +98,8 @@
     background-position: center;
     overflow: hidden;
     min-width: 10px;
-    margin-right: 10px;
+    margin-right: 5px;
+    flex: 0.3;
 }
 
 .gamePlayer {
@@ -146,6 +142,10 @@
         height: 125px;
     }
 
+    #playersPanel {
+        flex: initial !important;
+    }
+
     .gamePlayers li {
         height: 125px;
         flex: 1;
@@ -158,7 +158,8 @@
     }
 
     .playerAvatar {
-        height: calc(50%);
+        height: 50%;
+        flex: initial;
     }
 
     .gamePlayers .playerReplic {
@@ -175,6 +176,7 @@
     .gamePlayers .playerInfo {
         font-size: 15px;
         padding: 2px;
+        width: initial;
     }
 
     .gamePlayers .stake {
@@ -220,24 +222,32 @@
 
 @media screen and (min-height: 600px) {
     #playersPanel {
-        flex: initial;
+        flex: 0.3;
     }
 
     .gamePlayers {        
         flex-direction: row;
     }
 
-    .gamePlayers .playerCard {
-        width: initial;
-    }
-
     .gamePlayers .playerReplic {
-        top: 49px;
+        top: 100%;
         left: 0;
         right: 0;
+        width: 100%;
+        min-width: 100px;
+        height: 100px;
     }
 
     .playerAvatar {
         min-width: 43px;
+    }
+
+    .gamePlayers li {
+        height: initial;
+        width: 100px;
+    }
+
+    .gamePlayers .playerCard {
+        padding: 4px;
     }
 }
