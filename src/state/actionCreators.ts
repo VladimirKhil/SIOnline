@@ -18,18 +18,22 @@ import * as signalRMsgPack from '@microsoft/signalr-protocol-msgpack';
 import GameType from '../model/enums/GameType';
 import * as GameErrorsHelper from '../utils/GameErrorsHelper';
 import GameInfo from '../model/server/GameInfo';
-import { sendMessageToServer, attachListeners, detachListeners, activeConnections } from '../utils/ConnectionHelpers';
+import { attachListeners, detachListeners, activeConnections } from '../utils/ConnectionHelpers';
 import MainView from '../model/enums/MainView';
 import runActionCreators from './run/runActionCreators';
 import Slice from '../model/server/Slice';
 import PackageType from '../model/enums/PackageType';
 import PackageKey from '../model/server/PackageKey';
 import Constants from '../model/enums/Constants';
-import HostInfo from '../model/server/HostInfo';
-import GameCreationResult from '../model/server/GameCreationResult';
 
 import * as JSZip from 'jszip';
 import * as Rusha from 'rusha';
+import GameServerClient from '../client/GameServerClient';
+import TimeSettings from '../model/server/TimeSettings';
+import ServerAppSettings from '../model/server/ServerAppSettings';
+import AccountSettings from '../model/server/AccountSettings';
+import GameSettings from '../model/server/GameSettings';
+import IGameServerClient from '../client/IGameServerClient';
 
 const isConnectedChanged: ActionCreator<Actions.IsConnectedChangedAction> = (isConnected: boolean) => ({
 	type: Actions.ActionTypes.IsConnectedChanged, isConnected
@@ -52,7 +56,7 @@ const onConnectionChanged: ActionCreator<ThunkAction<void, State, DataContext, A
 
 		// Необходимо восстановить состояние, в котором находится лобби или игра
 		if (state.ui.mainView === MainView.Game) {
-			await sendMessageToServer(dataContext.connection, 'INFO');
+			await dataContext.gameClient.sendMessageToServerAsync('INFO');
 		} else if (state.ui.mainView === MainView.Lobby) {
 			navigateToLobby(-1)(dispatch, getState, dataContext);
 		}
@@ -134,7 +138,9 @@ const login: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () =
 					connectionBuilder = connectionBuilder.withHubProtocol(new signalRMsgPack.MessagePackHubProtocol());
 				}
 
-				dataContext.connection = connectionBuilder.build();
+				const connection = connectionBuilder.build();
+				dataContext.connection = connection;
+				dataContext.gameClient = new GameServerClient(connection);
 
 				try {
 					await dataContext.connection.start();
@@ -145,13 +151,11 @@ const login: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () =
 
 					attachListeners(dataContext.connection, dispatch);
 
-					const computerAccounts = await dataContext.connection.invoke<string[]>('GetComputerAccounts');
-
+					const computerAccounts = await dataContext.gameClient.getComputerAccountsAsync();
 					dispatch(computerAccountsChanged(computerAccounts));
 
 					dispatch(loginEnd());
 					dispatch(navigateToWelcome());
-
 				} catch (error) {
 					dispatch(loginEnd(`${localization.cannotConnectToServer}: ${error.message}`));
 				}
@@ -182,16 +186,9 @@ const friendsPlayInternal: ActionCreator<Actions.NavigateToGamesAction> = () => 
 const friendsPlay: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () =>
 	async (dispatch: Dispatch<Actions.KnownAction>, getState: () => State, dataContext: DataContext) => {
 		dispatch(friendsPlayInternal());
-
-		const server = dataContext.connection;
-
-		if (!server) {
-			return;
-		}
-
 		try {
-			await loadHostInfoAsync(server, dataContext);
-			await loadGamesAsync(dispatch, server);
+			await loadHostInfoAsync(dataContext);
+			await loadGamesAsync(dispatch, dataContext.gameClient);
 
 			dispatch(onlineLoadFinish());
 		} catch (error) {
@@ -213,24 +210,17 @@ const navigateToLobby: ActionCreator<ThunkAction<void, State, DataContext, Actio
 			window.history.pushState({}, '', dataContext.config.rootUri);
 		}
 
-		const server = dataContext.connection;
-
-		if (!server) {
-			return;
-		}
-
 		// Games filtering is performed on client
 		try {
-			await loadHostInfoAsync(server, dataContext);
-			await loadGamesAsync(dispatch, server);
+			await loadHostInfoAsync(dataContext);
+			await loadGamesAsync(dispatch, dataContext.gameClient);
 
-			const users = await server.invoke<string[]>('GetUsers');
-
+			const users = await dataContext.gameClient.getUsersAsync();
 			const sortedUsers = users.sort((user1: string, user2: string) => { return user1.localeCompare(user2); });
 
 			dispatch(receiveUsers(sortedUsers));
 
-			const news = await server.invoke<string | null>('GetNews');
+			const news = await dataContext.gameClient.getNewsAsync();
 
 			if (news !== null) {
 				dispatch(receiveMessage(localization.news, news));
@@ -279,7 +269,7 @@ const onExit: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () 
 		}
 
 		try	{
-			await server.invoke('LogOut');
+			await dataContext.gameClient.logOutAsync();
 			if (server.connectionId) {
 				activeConnections.splice(activeConnections.indexOf(server.connectionId), 1);
 			}
@@ -340,12 +330,7 @@ const joinGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (
 		try {
 			const state = getState();
 
-			if (!dataContext.connection) {
-				return;
-			}
-
-			const result = await dataContext.connection.invoke<GameCreationResult>(
-				'JoinGameNew',
+			const result = await dataContext.gameClient.joinGameAsync(
 				gameId,
 				role,
 				state.settings.sex === Sex.Male,
@@ -404,13 +389,9 @@ const sendMessage: ActionCreator<ThunkAction<void, State, DataContext, Action>> 
 	(dispatch: Dispatch<Actions.KnownAction>, getState: () => State, dataContext: DataContext) => {
 		const state = getState();
 
-		if (!dataContext.connection) {
-			return;
-		}
-
 		const text = state.online.currentMessage.trim();
 		if (text.length > 0) {
-			dataContext.connection.invoke('Say', text);
+			dataContext.gameClient.sayInLobbyAsync(text);
 		}
 
 		dispatch(messageChanged(''));
@@ -476,12 +457,12 @@ const uploadPackageProgress: ActionCreator<Actions.UploadPackageProgressAction> 
 	type: Actions.ActionTypes.UploadPackageProgress, progress
 });
 
-async function loadHostInfoAsync(server: signalR.HubConnection, dataContext: DataContext) {
-	const hostInfo = await server.invoke<HostInfo>('GetGamesHostInfo');
+async function loadHostInfoAsync(dataContext: DataContext) {
+	const hostInfo = await dataContext.gameClient.getGameHostInfoAsync();
 	dataContext.contentUris = hostInfo.contentPublicBaseUrls;
 }
 
-async function loadGamesAsync(dispatch: Dispatch<Actions.KnownAction>, server: signalR.HubConnection) {
+async function loadGamesAsync(dispatch: Dispatch<Actions.KnownAction>, gameClient: IGameServerClient) {
 	dispatch(clearGames());
 
 	let gamesSlice: Slice<GameInfo> = { data: [], isLastSlice: false };
@@ -489,7 +470,7 @@ async function loadGamesAsync(dispatch: Dispatch<Actions.KnownAction>, server: s
 	do {
 		const fromId = gamesSlice.data.length > 0 ? gamesSlice.data[gamesSlice.data.length - 1].gameID + 1 : 0;
 
-		gamesSlice = await server.invoke('GetGamesSlice', fromId);
+		gamesSlice = await gameClient.getGamesSliceAsync(fromId);
 
 		dispatch(receiveGames(gamesSlice.data));
 
@@ -553,7 +534,7 @@ async function hashData(data: ArrayBuffer): Promise<ArrayBuffer> {
 }
 
 async function checkAndUploadPackageAsync(
-	connection: signalR.HubConnection,
+	gameClient: IGameServerClient,
 	serverUri: string,
 	packageData: File,
 	dispatch: Dispatch<any>
@@ -584,7 +565,7 @@ async function checkAndUploadPackageAsync(
 		id
 	};
 
-	const hasPackage = await connection.invoke<boolean>('HasPackage', packageKey);
+	const hasPackage = await gameClient.hasPackageAsync(packageKey);
 	if (!hasPackage) {
 		await uploadPackageAsync(hashArrayEncoded, packageData, serverUri, dispatch);
 	}
@@ -602,10 +583,6 @@ function getRandomValue(): number {
 const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (isSingleGame: boolean) =>
 	async (dispatch: Dispatch<any>, getState: () => State, dataContext: DataContext) => {
 		const state = getState();
-
-		if (!dataContext.connection) {
-			return;
-		}
 
 		if (state.game.name.length === 0 || state.common.computerAccounts === null) {
 			return;
@@ -626,10 +603,10 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 		const role = game.role;
 		const me = { Name: state.user.login, IsHuman: true, IsMale: state.settings.sex === Sex.Male };
 
-		const showman = role === Role.Showman ? me :
+		const showman: AccountSettings = role === Role.Showman ? me :
 			(game.isShowmanHuman ? { Name: Constants.ANY_NAME, IsHuman: true } : { Name: localization.defaultShowman });
-		const players = [];
-		const viewers = [];
+		const players: AccountSettings[] = [];
+		const viewers: AccountSettings[] = [];
 
 		const playersCount = game.playersCount;
 		const humanPlayersCount = game.humanPlayersCount;
@@ -656,7 +633,7 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 			compIndicies.splice(ind, 1);
 		}
 
-		const timeSettings = {
+		const timeSettings: TimeSettings = {
 			TimeForChoosingQuestion: 30,
 			TimeForThinkingOnQuestion: 5,
 			TimeForPrintingAnswer: 25,
@@ -673,7 +650,7 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 
 		const gameMode = game.type;
 
-		const appSettings = {
+		const appSettings: ServerAppSettings = {
 			TimeSettings: timeSettings,
 			ReadingSpeed: 20,
 			FalseStart: true,
@@ -687,7 +664,7 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 			Culture: 'ru-RU'
 		};
 
-		const gameSettings = {
+		const gameSettings: GameSettings = {
 			HumanPlayerName: state.user.login,
 			RandomSpecials: game.package.type === PackageType.Random,
 			NetworkGameName: game.name,
@@ -704,20 +681,14 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 				name: '',
 				hash: null,
 				id: null
-			} : await checkAndUploadPackageAsync(dataContext.connection, dataContext.serverUri, game.package.data, dispatch);
+			} : await checkAndUploadPackageAsync(dataContext.gameClient, dataContext.serverUri, game.package.data, dispatch);
 
 			if (!packageKey) {
 				dispatch(gameCreationEnd(localization.badPackage));
 				return;
 			}
 
-			const result = await dataContext.connection.invoke<GameCreationResult>(
-				'CreateAndJoinGameNew',
-				gameSettings,
-				packageKey,
-				[],
-				state.settings.sex === Sex.Male
-			);
+			const result = await dataContext.gameClient.createAndJoinGameAsync(gameSettings, packageKey, state.settings.sex === Sex.Male);
 
 			saveStateToStorage(state);
 
@@ -739,15 +710,10 @@ const createNewAutoGame: ActionCreator<ThunkAction<void, State, DataContext, Act
 	async (dispatch: Dispatch<any>, getState: () => State, dataContext: DataContext) => {
 		const state = getState();
 
-		if (!dataContext.connection) {
-			return;
-		}
-
 		dispatch(gameCreationStart());
 
 		try {
-			const result = await dataContext.connection.invoke<GameCreationResult>(
-				'CreateAutomaticGameNew',
+			const result = await dataContext.gameClient.createAutomaticGameAsync(
 				state.user.login,
 				state.settings.sex === Sex.Male
 			);
@@ -772,16 +738,12 @@ const gameSet: ActionCreator<Actions.GameSetAction> = (id: number, isHost: boole
 });
 
 async function gameInit(gameId: number, dataContext: DataContext, role: Role) {
-	if (!dataContext.connection) {
-		return;
-	}
-
 	window.history.pushState({}, `${localization.game} ${gameId}`, `${dataContext.config.rootUri}?gameId=${gameId}`);
 
-	await sendMessageToServer(dataContext.connection, 'INFO');
+	await dataContext.gameClient.sendMessageToServerAsync('INFO');
 
 	if (role === Role.Player || role === Role.Showman) {
-		await sendMessageToServer(dataContext.connection, 'READY');
+		await dataContext.gameClient.sendMessageToServerAsync('READY');
 	}
 }
 

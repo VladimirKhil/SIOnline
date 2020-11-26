@@ -17,6 +17,7 @@ import runActionCreators from './state/run/runActionCreators';
 import localization from './model/resources/localization';
 import ServerInfo from './model/server/ServerInfo';
 import './utils/polyfills';
+import DummyGameServerClient from './client/DummyGameServerClient';
 
 import './style.css';
 
@@ -94,6 +95,7 @@ async function run() {
 		config,
 		serverUri,
 		connection: null,
+		gameClient: new DummyGameServerClient(),
 		contentUris: null
 	};
 

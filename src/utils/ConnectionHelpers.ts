@@ -62,35 +62,3 @@ export function detachListeners(connection: signalR.HubConnection) {
 	connection.onreconnected(() => { });
 	connection.onclose((e) => { });
 }
-
-export async function sendMessageToServer(connection: signalR.HubConnection | null, message: string) {
-	if (!connection) {
-		return;
-	}
-
-	await connection.invoke('SendMessage', {
-		Text: message,
-		IsSystem: true,
-		Receiver: '@'
-	});
-}
-
-export async function say(connection: signalR.HubConnection | null, message: string) {
-	if (!connection) {
-		return;
-	}
-
-	await connection.invoke('SendMessage', {
-		Text: message,
-		IsSystem: false,
-		Receiver: '*'
-	});
-}
-
-export async function msg(connection: signalR.HubConnection | null, ...args: any[]) {
-	if (!connection) {
-		return;
-	}
-
-	await sendMessageToServer(connection, args.join('\n'));
-}
