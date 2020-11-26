@@ -100,12 +100,55 @@ const reducer: Reducer<State> = (state: State = initialState, action: KnownActio
 				}
 			};
 
-		case ActionTypes.NavigateToGamesList:
+		case ActionTypes.NavigateToWelcome:
 			return {
 				...state,
 				ui: {
 					...state.ui,
-					mainView: MainView.OnlineView,
+					mainView: MainView.Welcome,
+					previousMainView: state.ui.mainView
+				}
+			};
+
+		case ActionTypes.NavigateToNewGame:
+			return {
+				...state,
+				ui: {
+					...state.ui,
+					mainView: MainView.NewGame,
+					previousMainView: state.ui.mainView
+				}
+			};
+
+		case ActionTypes.NavigateToGames:
+			return {
+				...state,
+				online: {
+					...state.online,
+					selectedGameId: -1
+				},
+				ui: {
+					...state.ui,
+					mainView: MainView.Games,
+					previousMainView: state.ui.mainView
+				}
+			};
+
+		case ActionTypes.UnselectGame:
+			return {
+				...state,
+				online: {
+					...state.online,
+					selectedGameId: -1
+				}
+			};
+
+		case ActionTypes.NavigateToLobby:
+			return {
+				...state,
+				ui: {
+					...state.ui,
+					mainView: MainView.Lobby,
 					previousMainView: state.ui.mainView
 				},
 				online: {

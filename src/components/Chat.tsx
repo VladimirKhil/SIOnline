@@ -1,6 +1,5 @@
 ﻿import * as React from 'react';
-import { connect, MapStateToProps, MapDispatchToProps } from 'react-redux';
-import localization from '../model/resources/localization';
+import { connect } from 'react-redux';
 import State from '../state/State';
 import Constants from '../model/enums/Constants';
 import { Dispatch, Action } from 'redux';

@@ -1,9 +1,12 @@
 ﻿const enum MainView {
 	Loading = 0,
 	Login = 1,
-	OnlineView = 2,
-	About = 3,
-	Game = 4
+	Welcome = 2,
+	NewGame = 3,
+	Games = 4,
+	Lobby = 5,
+	About = 6,
+	Game = 7
 }
 
 export default MainView;

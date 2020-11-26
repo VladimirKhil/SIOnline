@@ -8,9 +8,14 @@ import State from '../state/State';
 import Login from './Login';
 import Loading from './Loading';
 import About from './About';
+import WelcomeView from './WelcomeView';
 import OnlineView from './OnlineView';
 import InGameView from './game/InGameView';
 import SettingsDialog from './settings/SettingsDialog';
+import NewGameDialog from './NewGameDialog';
+import { Action, Dispatch } from 'redux';
+import actionCreators from '../state/actionCreators';
+import Games from './Games';
 
 import './App.css';
 
@@ -18,11 +23,19 @@ interface AppProps {
 	ads?: string;
 	mainView: MainView;
 	areSettingsVisible: boolean;
+
+	closeNewGame: () => void;
 }
 
 const mapStateToProps = (state: State) => ({
 	mainView: state.ui.mainView,
 	areSettingsVisible: state.ui.areSettingsVisible
+});
+
+const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
+	closeNewGame: () => {
+		dispatch(actionCreators.navigateToWelcome());
+	}
 });
 
 declare const onLoad: () => void;
@@ -49,7 +62,16 @@ export class App extends React.Component<AppProps> {
 			case MainView.About:
 				return <About />;
 
-			case MainView.OnlineView:
+			case MainView.Welcome:
+				return <WelcomeView />;
+
+			case MainView.NewGame:
+				return <NewGameDialog isSingleGame={true} onClose={this.props.closeNewGame} />;
+
+			case MainView.Games:
+				return <Games />;
+
+			case MainView.Lobby:
 				return <OnlineView />;
 
 			case MainView.Game:
@@ -69,4 +91,4 @@ export class App extends React.Component<AppProps> {
 	}
 }
 
-export default connect(mapStateToProps)(App);
+export default connect(mapStateToProps, mapDispatchToProps)(App);

@@ -16,7 +16,10 @@ export const enum ActionTypes {
 	LoginChanged = 'LOGIN_CHANGED',
 	LoginStart = 'LOGIN_START',
 	LoginEnd = 'LOGIN_END',
-	NavigateToGamesList = 'NAVIGATE_TO_GAMES_LIST',
+	NavigateToWelcome = 'NAVIGATE_TO_WELCOME',
+	NavigateToNewGame = 'NAVIGATE_TO_NEW_GAME',
+	NavigateToGames = 'NAVIGATE_TO_GAMES',
+	NavigateToLobby = 'NAVIGATE_TO_LOBBY',
 	ClearGames = 'CLEAR_GAMES',
 	ReceiveGames = 'RECEIVE_GAMES',
 	ReceiveUsers = 'RECEIVE_USERS',
@@ -56,7 +59,8 @@ export const enum ActionTypes {
 	JoinGameFinished = 'JOIN_GAME_FINISHED',
 	UploadPackageStarted = 'UPLOAD_PACKAGE_STARTED',
 	UploadPackageFinished = 'UPLOAD_PACKAGE_FINISHED',
-	UploadPackageProgress = 'UPLOAD_PACKAGE_PROGRESS'
+	UploadPackageProgress = 'UPLOAD_PACKAGE_PROGRESS',
+	UnselectGame = 'UNSELECT_GAME'
 }
 
 export type IsConnectedChangedAction = { type: ActionTypes.IsConnectedChanged, isConnected: boolean };
@@ -68,7 +72,10 @@ export type NavigateBackAction = { type: ActionTypes.NavigateBack };
 export type LoginChangedAction = { type: ActionTypes.LoginChanged, newLogin: string };
 export type LoginStartAction = { type: ActionTypes.LoginStart };
 export type LoginEndAction = { type: ActionTypes.LoginEnd, error: string | null };
-export type NavigateToGamesListAction = { type: ActionTypes.NavigateToGamesList };
+export type NavigateToWelcomeAction = { type: ActionTypes.NavigateToWelcome };
+export type NavigateToNewGameAction = { type: ActionTypes.NavigateToNewGame };
+export type NavigateToGamesAction = { type: ActionTypes.NavigateToGames };
+export type NavigateToLobbyAction = { type: ActionTypes.NavigateToLobby };
 export type ClearGamesAction = { type: ActionTypes.ClearGames };
 export type ReceiveGamesAction = { type: ActionTypes.ReceiveGames, games: GameInfo[] };
 export type ReceiveUsersAction = { type: ActionTypes.ReceiveUsers, users: string[] };
@@ -109,6 +116,7 @@ export type JoinGameFinishedAction = { type: ActionTypes.JoinGameFinished, error
 export type UploadPackageStartedAction = { type: ActionTypes.UploadPackageStarted };
 export type UploadPackageFinishedAction = { type: ActionTypes.UploadPackageFinished };
 export type UploadPackageProgressAction = { type: ActionTypes.UploadPackageProgress, progress: number };
+export type UnselectGameAction = { type: ActionTypes.UnselectGame };
 
 export type KnownAction =
 	IsConnectedChangedAction
@@ -120,7 +128,10 @@ export type KnownAction =
 	| LoginChangedAction
 	| LoginStartAction
 	| LoginEndAction
-	| NavigateToGamesListAction
+	| NavigateToWelcomeAction
+	| NavigateToNewGameAction
+	| NavigateToGamesAction
+	| NavigateToLobbyAction
 	| ClearGamesAction
 	| ReceiveGamesAction
 	| ReceiveUsersAction
@@ -161,4 +172,5 @@ export type KnownAction =
 	| UploadPackageStartedAction
 	| UploadPackageFinishedAction
 	| UploadPackageProgressAction
+	| UnselectGameAction
 	;

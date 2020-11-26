@@ -16,6 +16,7 @@ import Role from '../../model/enums/Role';
 import PlayerStates from '../../model/enums/PlayerStates';
 import tableActionCreators from '../table/tableActionCreators';
 import StakeTypes from '../../model/enums/StakeTypes';
+import MainView from '../../model/enums/MainView';
 
 let timerRef: number | null = null;
 
@@ -91,7 +92,11 @@ const exitGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (
 			timerRef = null;
 		}
 
-		actionCreators.navigateToGamesList(-1)(dispatch, getState, dataContext);
+		if (getState().ui.previousMainView === MainView.Lobby) {
+			actionCreators.navigateToLobby(-1)(dispatch, getState, dataContext);
+		} else {
+			dispatch(actionCreators.navigateToWelcome() as any);
+		}
 	};
 
 const chatMessageAdded: ActionCreator<RunActions.ChatMessageAddedAction> = (chatMessage: ChatMessage) => ({

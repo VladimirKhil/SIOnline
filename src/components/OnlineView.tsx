@@ -12,6 +12,7 @@ import Dialog from './common/Dialog';
 import actionCreators from '../state/actionCreators';
 import { Dispatch, Action } from 'redux';
 import ProgressBar from './common/ProgressBar';
+import { filterGames } from '../utils/GamesHelpers';
 
 import './OnlineView.css';
 
@@ -25,34 +26,7 @@ interface OnlineViewProps {
 	newGameShown: boolean;
 
 	closeGameInfo: () => void;
-}
-
-function filterGames(games: GameInfo[], filter: GamesFilter, search: string) {
-	const filteredGames: GameInfo[] = [];
-
-	const onlyNew = (filter & GamesFilter.New) > 0;
-	const sport = (filter & GamesFilter.Sport) > 0;
-	const tv = (filter & GamesFilter.Tv) > 0;
-	const noPassword = (filter & GamesFilter.NoPassword) > 0;
-
-	const allModes = sport && tv || !sport && !tv;
-
-	const normalizedSearch = search.toLocaleLowerCase();
-
-	for (let j = 0; j < games.length; j++) {
-		const game = games[j];
-
-		const filteredOk = (allModes || (game.mode === 1 ? sport && !tv : tv && !sport))
-			&& (!game.passwordRequired || !noPassword)
-			&& (!game.started || !onlyNew)
-			&& (normalizedSearch.length === 0 || game.gameName.toLocaleLowerCase().includes(normalizedSearch));
-
-		if (filteredOk) {
-			filteredGames.push(games[j]);
-		}
-	}
-
-	return filteredGames;
+	closeNewGame: () => void;
 }
 
 const mapStateToProps = (state: State) => {
@@ -75,6 +49,9 @@ const mapStateToProps = (state: State) => {
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	closeGameInfo: () => {
 		dispatch(actionCreators.closeGameInfo());
+	},
+	closeNewGame: () => {
+		dispatch(actionCreators.newGameCancel());
 	}
 });
 
@@ -84,6 +61,8 @@ export class OnlineView extends React.Component<OnlineViewProps> {
 	}
 
 	render() {
+		const newGame = <div className="newGameArea"><NewGameDialog isSingleGame={false} onClose={this.props.closeNewGame} /></div>;
+
 		if (this.props.windowWidth < 800) {
 			if (this.props.mode === OnlineMode.GameInfo && this.props.selectedGame) {
 				return (
@@ -98,7 +77,7 @@ export class OnlineView extends React.Component<OnlineViewProps> {
 					<div className="onlineView">
 						{this.props.inProgress ? <ProgressBar isIndeterminate={true} /> : null}
 						<GamesList games={this.props.filteredGames} selectedGameId={this.props.selectedGameId} showInfo={true} />
-						{this.props.newGameShown ? <NewGameDialog /> : null}
+						{this.props.newGameShown ? newGame : null}
 					</div>
 				);
 			}
@@ -112,7 +91,7 @@ export class OnlineView extends React.Component<OnlineViewProps> {
 				<GamesList games={this.props.filteredGames} selectedGameId={this.props.selectedGameId} showInfo={false} />
 				<GameInfoView game={this.props.selectedGame} showGameName={true} />
 				<UsersView />
-				{this.props.newGameShown ? <NewGameDialog /> : null}
+				{this.props.newGameShown ? newGame : null}
 			</div>
 		);
 	}

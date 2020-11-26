@@ -6,7 +6,6 @@ import ShowmanInfo from '../../model/ShowmanInfo';
 import PlayerInfo from '../../model/PlayerInfo';
 import Role from '../../model/enums/Role';
 import PlayerStates from '../../model/enums/PlayerStates';
-import { CanPressChangedAction } from '../table/TableActions';
 import StakeTypes from '../../model/enums/StakeTypes';
 
 export const enum RunActionTypes {

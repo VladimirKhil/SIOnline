@@ -1,0 +1,63 @@
+.games {
+	height: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.games_main {
+	width: 100%;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+}
+
+.games_main h2 {
+	color: #FFE682;
+	font-family: SI;
+	text-align: center;
+	font-size: 27px;
+	letter-spacing: 1px;
+}
+
+.games_controls {
+	display: flex;
+}
+
+.games_controls input {
+	flex: 1;
+}
+
+.games_controls button {
+	padding: 5px 20px;
+	width: initial !important;
+}
+
+.games .loadError {
+	height: 100%;
+}
+
+.searchHint {
+	background-color: #C0CFF4;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 100%;
+}
+
+.games_main .gamenames {
+	flex: 1;
+	height: initial;
+}
+
+@media screen and (min-width: 600px) {
+	.games {
+		width: 500px;
+		margin: auto;
+	}
+
+	.games_main {
+		height: 700px;
+		max-height: 100%;
+	}
+}

@@ -1,0 +1,56 @@
+.welcomeView {
+	height: 100%;
+	display: flex;
+	flex-flow: column;
+	align-items: center;
+	justify-content: center;
+	color: #FFE682;
+	font-family: SI;
+	font-size: 60px;
+	margin-top: 30px;
+}
+
+.welcomeView header {
+	color: white;
+}
+
+.welcomeViewActions {
+	margin-top: 30px;
+	margin-bottom: 30px;
+	width: 100%;
+	height: 100%;
+	flex: 1;
+	font-size: 40px;
+}
+
+.welcomeViewActions li {
+	border: 1px solid #FFE682;	
+	border-left-width: 0;
+	border-right-width: 0;
+	text-align: center;
+	padding: 15px 50px;
+	cursor: pointer;
+	margin-top: -1px;
+}
+
+.welcomeViewActions.disconnected li {
+	color: gray;
+}
+
+.welcomeViewActions li:hover {
+	background-color: #98B9FF;
+}
+
+@media screen and (min-width: 800px) {
+	.welcomeViewActions {
+		width: initial;
+		height: initial;
+		flex: initial;
+	}
+
+	.welcomeViewActions li {	
+		border-left-width: 1px;
+		border-right-width: 1px;
+	}
+}
+
