@@ -24,6 +24,15 @@ const settingsReducer: Reducer<SettingsState> = (state: SettingsState = initialS
 				sex: action.newSex
 			};
 
+		case SettingsActionTypes.FalseStartsChanged:
+			return {
+				...state,
+				appSettings: {
+					...state.appSettings,
+					falseStart: action.falseStarts
+				}
+			};
+
 		case SettingsActionTypes.HintShowmanChanged:
 			return {
 				...state,

@@ -1,5 +1,6 @@
 #settingsDialog {
-	background-color: #5A95E2;
+    background-color: #5A95E2;
+    z-index: 2;
 }
 
 .settingsDialogBody {
@@ -31,7 +32,6 @@
         width: 300px;
         left: initial;
         border-left: 1px solid #FFE682;
-        z-index: 0;
     }
 }
 

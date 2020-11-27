@@ -25,10 +25,14 @@
     height: 29px;
 }
 
-#newGameDialog .startGame {
+#newGameDialog .buttonsArea {
+    display: flex;
+}
+
+#newGameDialog .startGame, #newGameDialog .showSettings {
     font-size: 25px;
     height: 45px;
-    width: 100%;
+    flex: 1;
     margin-top: 5px;
 }
 
@@ -106,13 +110,13 @@
 }
 
 @media screen and (min-width: 800px) {
-        #newGameDialog input, #newGameDialog select {
-            width: 400px;
-        }
+    #newGameDialog input, #newGameDialog select {
+        width: 400px;
+    }
 
-        #newGameDialog .startGame {
-            width: 200px;
-            margin-left: auto;
-            margin-right: 0;
-        }
+    #newGameDialog .buttonsArea {
+        width: 400px;
+        margin-left: auto;
+        margin-right: 0;
+    }
 }

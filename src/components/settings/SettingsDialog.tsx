@@ -16,6 +16,7 @@ interface SettingsDialogProps {
 	onMute: (isSoundEnabled: boolean) => void;
 	onShowPersonsAtBottomOnWideScreenChanged: (showPersonsAtBottomOnWideScreen: boolean) => void;
 	onSexChanged: (newSex: Sex) => void;
+	onFalseStartsChanged: (falseStarts: boolean) => void;
 	onHintShowmanChanged: (hintShowman: boolean) => void;
 	onClose: () => void;
 }
@@ -33,6 +34,9 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	},
 	onSexChanged: (newSex: Sex) => {
 		dispatch(settingsActionCreators.onSexChanged(newSex));
+	},
+	onFalseStartsChanged: (falseStarts: boolean) => {
+		dispatch(settingsActionCreators.onFalseStartsChanged(falseStarts));
 	},
 	onHintShowmanChanged: (hintShowman: boolean) => {
 		dispatch(settingsActionCreators.onHintShowmanChanged(hintShowman));
@@ -98,6 +102,11 @@ export class SettingsDialog extends React.Component<SettingsDialogProps> {
 					</div>
 
 					<h2>{localization.game}</h2>
+					<div>
+						<input id="falseStarts" type="checkbox" checked={this.props.settings.appSettings.falseStart}
+							onChange={() => this.props.onFalseStartsChanged(!this.props.settings.appSettings.falseStart)} />
+						<label htmlFor="falseStarts">{`${localization.falseStarts} (${localization.falseStartsHint})`}</label>
+					</div>
 					<div>
 						<input id="hintShowman" type="checkbox" checked={this.props.settings.appSettings.hintShowman}
 							onChange={() => this.props.onHintShowmanChanged(!this.props.settings.appSettings.hintShowman)} />

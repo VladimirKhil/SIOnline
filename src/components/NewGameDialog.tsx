@@ -41,6 +41,7 @@ interface NewGameDialogProps {
 	onPlayersCountChanged: (gamePlayersCount: number) => void;
 	onHumanPlayersCountChanged: (gameHumanPlayersCount: number) => void;
 	onCreate: (isSingleGame: boolean) => void;
+	onShowSettings: () => void;
 	onClose: () => void;
 }
 
@@ -89,6 +90,9 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	},
 	onHumanPlayersCountChanged: (humanPlayersCount: number) => {
 		dispatch(actionCreators.humanPlayersCountChanged(humanPlayersCount));
+	},
+	onShowSettings: () => {
+		dispatch(actionCreators.showSettings(true));
 	},
 	onCreate: (isSingleGame: boolean) => {
 		dispatch((actionCreators.createNewGame(isSingleGame) as object) as Action);
@@ -228,8 +232,12 @@ export class NewGameDialog extends React.Component<NewGameDialogProps> {
 					</>)}
 				</div>
 				<div className="gameCreationError">{this.props.error}</div>
-				<button className="startGame" disabled={!this.props.isConnected || this.props.inProgress}
-					onClick={() => this.props.onCreate(this.props.isSingleGame)}>{localization.startGame}</button>
+				<div className="buttonsArea">
+					<button className="showSettings" disabled={!this.props.isConnected || this.props.inProgress}
+						onClick={() => this.props.onShowSettings()}>{`${localization.settings}…`}</button>
+					<button className="startGame" disabled={!this.props.isConnected || this.props.inProgress}
+						onClick={() => this.props.onCreate(this.props.isSingleGame)}>{localization.startGame}</button>
+				</div>
 				{this.props.inProgress ? <ProgressBar isIndeterminate={true} /> : null}
 				{this.props.uploadPackageProgress ? (
 					<div className="uploadPackagePanel">

@@ -13,6 +13,7 @@ export const initialState: SettingsState = {
 	showPersonsAtBottomOnWideScreen: true,
 	sex: Sex.Male,
 	appSettings: {
+		falseStart: true,
 		hintShowman: false
 	}
 };

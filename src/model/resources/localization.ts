@@ -68,6 +68,8 @@
 	exitConfirmation: 'Действительно выйти?',
 	exitError: 'Не удалось выйти из игры!',
 	exitFromGame: 'Выйти из игры',
+	falseStarts: 'Фальстарты',
+	falseStartsHint: 'нельзя нажимать на кнопку до окончания чтения вопроса',
 	female: 'женский',
 	file: 'Файл',
 	final: 'Финал',

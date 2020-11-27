@@ -653,7 +653,7 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 		const appSettings: ServerAppSettings = {
 			TimeSettings: timeSettings,
 			ReadingSpeed: 20,
-			FalseStart: true,
+			FalseStart: state.settings.appSettings.falseStart,
 			HintShowman: state.settings.appSettings.hintShowman,
 			DefaultOral: false,
 			IgnoreWrong: false,
