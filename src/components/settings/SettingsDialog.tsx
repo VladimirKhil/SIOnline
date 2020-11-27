@@ -16,6 +16,7 @@ interface SettingsDialogProps {
 	onMute: (isSoundEnabled: boolean) => void;
 	onShowPersonsAtBottomOnWideScreenChanged: (showPersonsAtBottomOnWideScreen: boolean) => void;
 	onSexChanged: (newSex: Sex) => void;
+	onOralChanged: (oral: boolean) => void;
 	onFalseStartsChanged: (falseStarts: boolean) => void;
 	onHintShowmanChanged: (hintShowman: boolean) => void;
 	onClose: () => void;
@@ -34,6 +35,9 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	},
 	onSexChanged: (newSex: Sex) => {
 		dispatch(settingsActionCreators.onSexChanged(newSex));
+	},
+	onOralChanged: (oral: boolean) => {
+		dispatch(settingsActionCreators.onOralChanged(oral));
 	},
 	onFalseStartsChanged: (falseStarts: boolean) => {
 		dispatch(settingsActionCreators.onFalseStartsChanged(falseStarts));
@@ -102,12 +106,17 @@ export class SettingsDialog extends React.Component<SettingsDialogProps> {
 					</div>
 
 					<h2>{localization.game}</h2>
-					<div>
+					<div className="settingItem">
+						<input id="oral" type="checkbox" checked={this.props.settings.appSettings.oral}
+							onChange={() => this.props.onOralChanged(!this.props.settings.appSettings.oral)} />
+						<label htmlFor="oral">{localization.oralGame}</label><span className="hint">{localization.oralGameHint}</span>
+					</div>
+					<div className="settingItem">
 						<input id="falseStarts" type="checkbox" checked={this.props.settings.appSettings.falseStart}
 							onChange={() => this.props.onFalseStartsChanged(!this.props.settings.appSettings.falseStart)} />
-						<label htmlFor="falseStarts">{`${localization.falseStarts} (${localization.falseStartsHint})`}</label>
+						<label htmlFor="falseStarts">{localization.falseStarts}</label><span className="hint">{localization.falseStartsHint}</span>
 					</div>
-					<div>
+					<div className="settingItem">
 						<input id="hintShowman" type="checkbox" checked={this.props.settings.appSettings.hintShowman}
 							onChange={() => this.props.onHintShowmanChanged(!this.props.settings.appSettings.hintShowman)} />
 						<label htmlFor="hintShowman">{localization.hintShowman}</label>

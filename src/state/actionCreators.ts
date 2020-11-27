@@ -655,7 +655,7 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 			ReadingSpeed: 20,
 			FalseStart: state.settings.appSettings.falseStart,
 			HintShowman: state.settings.appSettings.hintShowman,
-			DefaultOral: false,
+			Oral: state.settings.appSettings.oral,
 			IgnoreWrong: false,
 			GameMode: gameMode.toString(),
 			RandomQuestionsBasePrice: gameMode === GameType.Simple ? 10 : 100,

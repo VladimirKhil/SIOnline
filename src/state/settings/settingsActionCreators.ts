@@ -16,6 +16,10 @@ const onSexChanged: ActionCreator<SettingsActions.SexChangedAction> = (newSex: S
 	type: SettingsActions.SettingsActionTypes.SexChanged, newSex
 });
 
+const onOralChanged: ActionCreator<SettingsActions.OralChangedAction> = (oral: boolean) => ({
+	type: SettingsActions.SettingsActionTypes.OralChanged, oral
+});
+
 const onFalseStartsChanged: ActionCreator<SettingsActions.FalseStartsChangedAction> = (falseStarts: boolean) => ({
 	type: SettingsActions.SettingsActionTypes.FalseStartsChanged, falseStarts
 });
@@ -28,6 +32,7 @@ const settingsActionCreators = {
 	isSoundEnabledChanged,
 	showPersonsAtBottomOnWideScreenChanged,
 	onSexChanged,
+	onOralChanged,
 	onFalseStartsChanged,
 	onHintShowmanChanged
 };

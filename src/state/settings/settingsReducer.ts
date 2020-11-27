@@ -24,6 +24,15 @@ const settingsReducer: Reducer<SettingsState> = (state: SettingsState = initialS
 				sex: action.newSex
 			};
 
+		case SettingsActionTypes.OralChanged:
+			return {
+				...state,
+				appSettings: {
+					...state.appSettings,
+					oral: action.oral
+				}
+			};
+
 		case SettingsActionTypes.FalseStartsChanged:
 			return {
 				...state,

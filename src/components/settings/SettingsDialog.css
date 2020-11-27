@@ -27,6 +27,15 @@
     margin: 20px 0 5px 0;
 }
 
+.settingItem {
+    margin-top: 10px;
+}
+
+#settingsDialog .hint {
+    font-size: 15px;
+    display: block;
+}
+
 @media screen and (min-width: 800px) {
     #settingsDialog {
         width: 300px;
