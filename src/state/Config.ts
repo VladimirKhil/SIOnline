@@ -5,4 +5,5 @@ export default interface Config {
 	useMessagePackProtocol?: boolean;
 	ads?: string;
 	disableHttps?: boolean;
+	rewriteUrl?: boolean;
 }

@@ -206,7 +206,7 @@ const navigateToLobby: ActionCreator<ThunkAction<void, State, DataContext, Actio
 
 		if (gameId > -1) {
 			dispatch(selectGame(gameId, showInfo));
-		} else {
+		} else if (dataContext.config.rewriteUrl) {
 			window.history.pushState({}, '', dataContext.config.rootUri);
 		}
 
@@ -738,7 +738,9 @@ const gameSet: ActionCreator<Actions.GameSetAction> = (id: number, isHost: boole
 });
 
 async function gameInit(gameId: number, dataContext: DataContext, role: Role) {
-	window.history.pushState({}, `${localization.game} ${gameId}`, `${dataContext.config.rootUri}?gameId=${gameId}`);
+	if (dataContext.config.rewriteUrl) {
+		window.history.pushState({}, `${localization.game} ${gameId}`, `${dataContext.config.rootUri}?gameId=${gameId}`);
+	}
 
 	await dataContext.gameClient.sendMessageToServerAsync('INFO');
 

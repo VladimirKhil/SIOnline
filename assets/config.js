@@ -1,7 +1,8 @@
 config = {
     serverDiscoveryUri: 'https://vladimirkhil.com/api/si/servers',
     rootUri: '/',
-    ads: '<b>Test ad</b>'
+    ads: '<b>Test ad</b>',
+    rewriteUrl: true
 };
 
 onLoad = function () {

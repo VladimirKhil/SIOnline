@@ -1,17 +1,17 @@
-SIOnline - веб-версия игры SIGame.
+SIOnline is the web version of game SIGame.
 
-Для сборки и запуска проекта вам понадобится Node.js версии 12.16.3 и выше.
+For compilation and running you need Node.js version 12.16.3 or higher.
 
-Используемые технологии: Typescript, Webpack (с loader'ами и плагинами), React, Redux, Redux Thunk, SignalR, TSLint, Jest.
+Used technologies: Typescript, Webpack (with loaders and plugins), React, Redux, Redux Thunk, SignalR, TSLint, Jest.
 
-Запуск:
+Run:
 
 ```
 npm install
 npm run start
 ```
 
-Сборка:
+Build:
 
 ```
 npm install
