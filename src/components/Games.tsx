@@ -88,35 +88,35 @@ export class Games extends React.Component<GamesProps> {
 					<GameInfoView game={this.props.selectedGame} showGameName={false} />
 				</Dialog>
 			) : (
-			<section className="games">
-				<button className="dialog_closeButton" onClick={this.props.onClose}>
-					<img src={closeSvg} alt={localization.close} />
-				</button>
-				<div className="games_main">
-					<h2>{localization.gamesTitle}</h2>
-					<div className="games_controls">
-						<input id="gamesSearch" className="gamesSearch" type="search" value={this.props.gamesSearch}
-							placeholder={localization.searchGames} autoFocus
-							onChange={e => this.props.onGamesSearchChanged(e.target.value)} />
-						<button id="newGame" disabled={!this.props.isConnected} onClick={this.props.onNewGame}>
-							{localization.newGame.toLocaleUpperCase()}
-						</button>
-					</div>
-					{this.props.error.length === 0 ?
-						this.props.gamesSearch.length > 1 ? (
-							<ul className="gamenames">
-								{this.props.filteredGames.map(game => (
-									<li key={game.gameID}
-										onClick={() => this.props.onSelectGame(game.gameID, false)}>
-										<div style={{ color: game.passwordRequired ? '#760000' : 'black' }}>{game.gameName}</div>
-									</li>
-								))}
-							</ul>
-						) : <span className="searchHint">{localization.searchHint}</span>
+				<section className="games">
+					<button className="dialog_closeButton" onClick={this.props.onClose}>
+						<img src={closeSvg} alt={localization.close} />
+					</button>
+					<div className="games_main">
+						<h2>{localization.gamesTitle}</h2>
+						<div className="games_controls">
+							<input id="gamesSearch" className="gamesSearch" type="search" value={this.props.gamesSearch}
+								placeholder={localization.searchGames} autoFocus
+								onChange={e => this.props.onGamesSearchChanged(e.target.value)} />
+							<button id="newGame" disabled={!this.props.isConnected} onClick={this.props.onNewGame}>
+								{localization.newGame.toLocaleUpperCase()}
+							</button>
+						</div>
+						{this.props.error.length === 0 ?
+							this.props.gamesSearch.length > 1 ? (
+								<ul className="gamenames">
+									{this.props.filteredGames.map(game => (
+										<li key={game.gameID}
+											onClick={() => this.props.onSelectGame(game.gameID, false)}>
+											<div style={{ color: game.passwordRequired ? '#760000' : 'black' }}>{game.gameName}</div>
+										</li>
+									))}
+								</ul>
+							) : <span className="searchHint">{localization.searchHint}</span>
 							: <span className="loadError">{this.props.error}</span>}
-				</div>
-			</section>
-		);
+					</div>
+				</section>
+			);
 	}
 }
 

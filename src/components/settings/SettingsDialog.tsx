@@ -91,7 +91,9 @@ export class SettingsDialog extends React.Component<SettingsDialogProps> {
 
 					<div>
 						<input id="showPersonsAtBottomOnWideScreen" type="checkbox" checked={this.props.settings.showPersonsAtBottomOnWideScreen}
-							onChange={() => this.props.onShowPersonsAtBottomOnWideScreenChanged(!this.props.settings.showPersonsAtBottomOnWideScreen)} />
+							onChange={() => this.props.onShowPersonsAtBottomOnWideScreenChanged(
+								!this.props.settings.showPersonsAtBottomOnWideScreen
+							)} />
 						<label htmlFor="showPersonsAtBottomOnWideScreen">{localization.showPersonsAtBottomOnWideScreen}</label>
 					</div>
 

@@ -78,7 +78,6 @@ const mapDispatchToProps = (dispatch: any) => ({
 	}
 });
 
-// tslint:disable-next-line: function-name
 export function GamesList(props: GamesListProps) {
 	const filterValue = getFilterValue(props.gamesFilter);
 
@@ -98,8 +97,8 @@ export function GamesList(props: GamesListProps) {
 						<li onClick={props.onHowToPlay}>{localization.aboutTitle}</li>
 						<li onClick={props.onExit}>{localization.exit}</li>
 					</ul>
-					} horizontalOrientation={FlyoutHorizontalOrientation.Right}
-					verticalOrientation={FlyoutVerticalOrientation.Bottom}>☰</FlyoutButton>
+				} horizontalOrientation={FlyoutHorizontalOrientation.Right}
+				verticalOrientation={FlyoutVerticalOrientation.Bottom}>☰</FlyoutButton>
 				<h1 id="gamesTitle">{localization.games} (<span>{props.games.length}</span>)</h1>
 				<FlyoutButton className="gamesFilterButton" hideOnClick={false} flyout={
 					<ul className="gamesFilter">
@@ -117,7 +116,7 @@ export function GamesList(props: GamesListProps) {
 						</li>
 					</ul>
 				} horizontalOrientation={FlyoutHorizontalOrientation.Left}
-					verticalOrientation={FlyoutVerticalOrientation.Bottom}>
+				verticalOrientation={FlyoutVerticalOrientation.Bottom}>
 					<span className="filterText">
 						<span style={{ fontSize: filterValue.length > 15 ? '20px' : '26px' }}>{filterValue}</span>
 						<span className="triangle">▾</span>
@@ -135,7 +134,7 @@ export function GamesList(props: GamesListProps) {
 						</li>
 					))}
 				</ul>
-				) : <span className="loadError">{props.error}</span>}
+			) : <span className="loadError">{props.error}</span>}
 			<div className="commandButtonsPanel">
 				<button id="newAutoGame" disabled={!props.isConnected} onClick={props.onNewAutoSearchGame}
 					title={localization.autoSearchHint}>{localization.autoSearch}</button>

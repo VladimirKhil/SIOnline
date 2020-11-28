@@ -22,7 +22,6 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	}
 });
 
-// tslint:disable-next-line: function-name
 export function MuteButton(props: MuteButtonProps) {
 	return (
 		<button onClick={() => props.onMute(!props.isSoundEnabled)} className="muteButton"

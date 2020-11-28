@@ -72,7 +72,7 @@ export default class GameServerClient implements IGameServerClient {
 			password
 		)
 	}
-	
+
 	sendMessageToServerAsync(message: string) {
 		return this.connection.invoke('SendMessage', {
 			Text: message,

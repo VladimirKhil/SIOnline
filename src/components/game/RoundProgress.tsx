@@ -19,7 +19,6 @@ const mapDispatchToProps = (dispatch: React.Dispatch<Action>) => ({
 
 });
 
-// tslint:disable-next-line: function-name
 export function RoundProgress(props: RoundProgressProps) {
 	return (
 		<ProgressBar value={1 - props.roundTimer.value / props.roundTimer.maximum}

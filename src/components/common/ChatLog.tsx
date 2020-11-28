@@ -8,7 +8,6 @@ interface ChatLogProps {
 	className: string;
 }
 
-// tslint:disable-next-line: function-name
 export default class ChatLog extends React.Component<ChatLogProps> {
 	private myRef: React.RefObject<HTMLDivElement>;
 

@@ -30,7 +30,6 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	}
 });
 
-// tslint:disable-next-line: function-name
 export function StakeSumEditor(props: StakeSumEditorProps) {
 	const canSendStake = props.allowedStakeTypes[StakeTypes.Sum];
 

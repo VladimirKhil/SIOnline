@@ -168,10 +168,11 @@ export class NewGameDialog extends React.Component<NewGameDialogProps> {
 					<p>{localization.gameName}</p>
 					<input type="text" value={this.props.gameName} onChange={this.onGameNameChanged} onKeyPress={this.onKeyPress} />
 					{this.props.isSingleGame ? null : (
-					<>
-						<p>{localization.password}</p>
-						<input type="password" value={this.props.gamePassword} onChange={this.onGamePasswordChanged} onKeyPress={this.onKeyPress} />
-					</>)}
+						<>
+							<p>{localization.password}</p>
+							<input type="password" value={this.props.gamePassword} onChange={this.onGamePasswordChanged}
+								onKeyPress={this.onKeyPress} />
+						</>)}
 					<p>{localization.questionPackage}</p>
 					<select className="packageTypeSelector" value={this.props.gamePackageType} onChange={this.onGamePackageTypeChanged}>
 						<option value="0">{localization.randomThemes}</option>
@@ -213,23 +214,23 @@ export class NewGameDialog extends React.Component<NewGameDialogProps> {
 							value={this.props.playersCount} onChange={this.onPlayersCountChanged} />
 					</div>
 					{this.props.isSingleGame ? null : (
-					<>
-						<div className="playersBlock">
-							<span className="playersCountTitle">{localization.humanPlayers} </span>
-							<span className="playersCountValue">{this.props.humanPlayersCount}</span>
-							<input type="range" className="playersCount" min={0} max={humanPlayersMaxCount} disabled={humanPlayersMaxCount === 0}
-								value={this.props.humanPlayersCount} onChange={this.onHumanPlayersCountChanged} />
-						</div>
-						<div className="playersBlock">
-							<span className="playersCountTitle">{localization.computerPlayers} </span>
-							<span className="playersCountValue">{botsCount}</span>
-						</div>
-						<div className="playersBlock">
-							{this.props.gameRole === Role.Player ? '🧑' : null}
-							{Array.from(Array(this.props.humanPlayersCount).keys()).map(() => '👤')}
-							{Array.from(Array(botsCount).keys()).map(() => '🖥️')}
-						</div>
-					</>)}
+						<>
+							<div className="playersBlock">
+								<span className="playersCountTitle">{localization.humanPlayers} </span>
+								<span className="playersCountValue">{this.props.humanPlayersCount}</span>
+								<input type="range" className="playersCount" min={0} max={humanPlayersMaxCount} disabled={humanPlayersMaxCount === 0}
+									value={this.props.humanPlayersCount} onChange={this.onHumanPlayersCountChanged} />
+							</div>
+							<div className="playersBlock">
+								<span className="playersCountTitle">{localization.computerPlayers} </span>
+								<span className="playersCountValue">{botsCount}</span>
+							</div>
+							<div className="playersBlock">
+								{this.props.gameRole === Role.Player ? '🧑' : null}
+								{Array.from(Array(this.props.humanPlayersCount).keys()).map(() => '👤')}
+								{Array.from(Array(botsCount).keys()).map(() => '🖥️')}
+							</div>
+						</>)}
 				</div>
 				<div className="gameCreationError">{this.props.error}</div>
 				<div className="buttonsArea">
@@ -238,7 +239,7 @@ export class NewGameDialog extends React.Component<NewGameDialogProps> {
 					<button className="startGame" disabled={!this.props.isConnected || this.props.inProgress}
 						onClick={() => this.props.onCreate(this.props.isSingleGame)}>{localization.startGame}</button>
 				</div>
-				{this.props.inProgress ? <ProgressBar isIndeterminate={true} /> : null}
+				{this.props.inProgress ? <ProgressBar isIndeterminate /> : null}
 				{this.props.uploadPackageProgress ? (
 					<div className="uploadPackagePanel">
 						<span>{localization.sendingPackage}</span>

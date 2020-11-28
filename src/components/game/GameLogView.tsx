@@ -19,7 +19,6 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 
 });
 
-// tslint:disable-next-line: function-name
 export function GameLogView(props: GameLogViewProps) {
 	return (
 		<div className="game__log">

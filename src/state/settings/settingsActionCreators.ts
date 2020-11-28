@@ -8,9 +8,9 @@ const isSoundEnabledChanged: ActionCreator<SettingsActions.IsSoundEnabledChanged
 
 const showPersonsAtBottomOnWideScreenChanged: ActionCreator<SettingsActions.ShowPersonsAtBottomOnWideScreenChangedAction> = (
 	showPersonsAtBottomOnWideScreen: boolean
-	) => ({
-		type: SettingsActions.SettingsActionTypes.ShowPersonsAtBottomOnWideScreenChanged, showPersonsAtBottomOnWideScreen
-	});
+) => ({
+	type: SettingsActions.SettingsActionTypes.ShowPersonsAtBottomOnWideScreenChanged, showPersonsAtBottomOnWideScreen
+});
 
 const onSexChanged: ActionCreator<SettingsActions.SexChangedAction> = (newSex: Sex) => ({
 	type: SettingsActions.SettingsActionTypes.SexChanged, newSex

@@ -13,9 +13,10 @@ const showGameThemes: ActionCreator<TableActions.ShowGameThemesAction> = (gameTh
 const showRoundThemes: ActionCreator<TableActions.ShowRoundThemesAction> = (
 	roundThemes: ThemeInfo[],
 	isFinal: boolean,
-	display: boolean) => ({
-		type: TableActions.TableActionTypes.ShowRoundThemes, roundThemes, isFinal, display
-	});
+	display: boolean
+) => ({
+	type: TableActions.TableActionTypes.ShowRoundThemes, roundThemes, isFinal, display
+});
 
 const showText: ActionCreator<TableActions.ShowTextAction> = (text: string, animateReading: boolean) => ({
 	type: TableActions.TableActionTypes.ShowText, text, animateReading

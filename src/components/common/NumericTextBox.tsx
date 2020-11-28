@@ -14,7 +14,6 @@ interface NumericTextBoxState {
 	value: string; // string, чтобы поддерживать "-" первым символом
 }
 
-// tslint:disable-next-line: function-name
 export default class NumericTextBox extends React.Component<NumericTextBoxProps, NumericTextBoxState> {
 	constructor(props: NumericTextBoxProps) {
 		super(props);

@@ -25,7 +25,6 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	}
 });
 
-// tslint:disable-next-line: function-name
 export class TableVideo extends React.Component<TableVideoProps> {
 	private videoRef: React.RefObject<HTMLVideoElement>;
 

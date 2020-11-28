@@ -35,7 +35,6 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 
 });
 
-// tslint:disable-next-line: function-name
 export function ShowmanReplicView(props: ShowmanReplicViewProps) {
 	const avatar = props.account ? (props.account.avatar ? props.account.avatar : (props.account.sex === Sex.Male ? avatarMPng : avatarFPng)) : null;
 

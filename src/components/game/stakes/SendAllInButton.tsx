@@ -22,7 +22,6 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	}
 });
 
-// tslint:disable-next-line: function-name
 export function SendAllInButton(props: SendAllInButtonProps) {
 	return props.useSimpleStakes ? null : (<button disabled={!props.isConnected} onClick={() => props.sendAllIn()}>{localization.allIn}</button>);
 }

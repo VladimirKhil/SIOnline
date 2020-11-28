@@ -7,7 +7,6 @@ interface TableLogoProps {
 
 }
 
-// tslint:disable-next-line: function-name
 export function TableLogo(props: TableLogoProps) {
 	return (
 		<div className="centerBlock logoBlock">

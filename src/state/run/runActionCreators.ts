@@ -310,10 +310,10 @@ const validate: ActionCreator<RunActions.ValidateAction> = (
 	rightAnswers: string[],
 	wrongAnswers: string[],
 	header: string,
-	message: string) => ({
-		type: RunActions.RunActionTypes.Validate, name, answer, rightAnswers, wrongAnswers, header, message
-	}
-);
+	message: string
+) => ({
+	type: RunActions.RunActionTypes.Validate, name, answer, rightAnswers, wrongAnswers, header, message
+});
 
 const approveAnswer: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () =>
 	async (dispatch: Dispatch<any>, getState: () => State, dataContext: DataContext) => {

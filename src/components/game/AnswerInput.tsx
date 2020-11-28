@@ -29,7 +29,6 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	}
 });
 
-// tslint:disable-next-line: function-name
 export function AnswerInput(props: AnswerInputProps) {
 	const onAnswerChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
 		props.onAnswerChanged(e.target.value);

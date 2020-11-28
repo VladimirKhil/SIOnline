@@ -39,7 +39,6 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	}
 });
 
-// tslint:disable-next-line: function-name
 export function Chat(props: ChatProps) {
 	const onMessageChanged = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
 		props.onMessageChanged(e.target.value);

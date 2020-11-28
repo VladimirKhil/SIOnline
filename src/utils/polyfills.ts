@@ -5,12 +5,12 @@ const bufferPolyfill = function (this: Blob) {
 
 		fr.onload = () => {
 			if (fr.result === null) {
-				reject('fr.result === null');
+				reject(new Error('fr.result === null'));
 				return;
 			}
 
 			if (typeof fr.result === 'string') {
-				reject('typeof fr.result === \'string\'');
+				reject(new Error('typeof fr.result === \'string\''));
 				return;
 			}
 

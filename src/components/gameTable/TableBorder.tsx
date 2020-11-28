@@ -22,7 +22,6 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 
 });
 
-// tslint:disable-next-line: function-name
 export function TableBorder(props: TableBorderProps) {
 	const isTimerRunning = props.canTry && isRunning(props.pressTimer);
 	const animatingClass = isTimerRunning ? ' animate' : '';

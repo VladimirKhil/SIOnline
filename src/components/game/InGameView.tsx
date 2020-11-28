@@ -37,7 +37,6 @@ const mapDispatchToProps = (dispatch: React.Dispatch<Action>) => ({
 
 });
 
-// tslint:disable-next-line: function-name
 export function InGameView(props: InGameViewProps) {
 	return (
 		<section className="gameMain">

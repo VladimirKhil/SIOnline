@@ -23,7 +23,6 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 
 });
 
-// tslint:disable-next-line: function-name
 export class TablePartialText extends React.Component<TablePartialTextProps> {
 	private textRef: React.RefObject<HTMLSpanElement>;
 	private tailRef: React.RefObject<HTMLSpanElement>;
@@ -71,7 +70,8 @@ export class TablePartialText extends React.Component<TablePartialTextProps> {
 		return (
 			<TableBorder>
 				<AutoSizedText className="tableText nonAligned" maxFontSize={144}>
-					<span ref={this.textRef} key="text">{this.props.text}</span><span ref={this.tailRef} key="tail" className="invisible">{this.props.tail}</span>
+					<span ref={this.textRef} key="text">{this.props.text}</span>
+					<span ref={this.tailRef} key="tail" className="invisible">{this.props.tail}</span>
 				</AutoSizedText>
 			</TableBorder>
 		);

@@ -66,7 +66,7 @@ export class App extends React.Component<AppProps> {
 				return <WelcomeView />;
 
 			case MainView.NewGame:
-				return <NewGameDialog isSingleGame={true} onClose={this.props.closeNewGame} />;
+				return <NewGameDialog isSingleGame onClose={this.props.closeNewGame} />;
 
 			case MainView.Games:
 				return <Games />;

@@ -26,7 +26,6 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 
 });
 
-// tslint:disable-next-line: function-name
 export function BottomControlPanel(props: BottomControlPanelProps) {
 	return (
 		<div className="game__button wide">

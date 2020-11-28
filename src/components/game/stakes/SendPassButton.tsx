@@ -29,7 +29,6 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	}
 });
 
-// tslint:disable-next-line: function-name
 export function SendPassButton(props: SendPassButtonProps) {
 	const passStakeHeader = props.allowedStakeTypes[StakeTypes.Nominal] ? localization.nominal : localization.pass;
 	const passStakeAction = props.allowedStakeTypes[StakeTypes.Nominal] ? props.sendNominal : props.sendPass;

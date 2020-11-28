@@ -68,7 +68,6 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	}
 });
 
-// tslint:disable-next-line: function-name
 export function SideControlPanel(props: SideControlPanelProps) {
 	const chatButtonStyle: React.CSSProperties = {
 		backgroundColor: props.isChatActive ? 'lightyellow' : 'transparent'
@@ -114,23 +113,25 @@ export function SideControlPanel(props: SideControlPanelProps) {
 										onClick={() => props.onEditSums(!props.areSumsEditable)}>{localization.changeSums}</li>
 									: null
 								}
-								<li className={enabledClass} onClick={() => props.onMarkQuestion()} title={localization.complainHint}>{localization.complain}</li>
+								<li className={enabledClass} onClick={() => props.onMarkQuestion()} title={localization.complainHint}>
+									{localization.complain}
+								</li>
 								<li onClick={() => props.onShowPersons()}>{localization.members}</li>
 								{canPause ? <li className={enabledClass} onClick={() => props.onPause()}>{pauseTitle}</li> : null}
 							</ul>
-						} theme={FlyoutTheme.Light} alignWidth={true} verticalOrientation={FlyoutVerticalOrientation.Top}>…</FlyoutButton>
+						} theme={FlyoutTheme.Light} alignWidth verticalOrientation={FlyoutVerticalOrientation.Top}>…</FlyoutButton>
 					</div>
 					<FlyoutButton className="exit" title={localization.menu} flyout={
-							<div id="exitMenu" className="exitMenu">
-								<div id="exitMenuPopup" className="gameMenuPopup">
-									<p>{localization.exitConfirmation}</p>
-									<ul>
-										<li className={enabledClass} onClick={() => props.onExit()}>{localization.exitFromGame}</li>
-									</ul>
-								</div>
+						<div id="exitMenu" className="exitMenu">
+							<div id="exitMenuPopup" className="gameMenuPopup">
+								<p>{localization.exitConfirmation}</p>
+								<ul>
+									<li className={enabledClass} onClick={() => props.onExit()}>{localization.exitFromGame}</li>
+								</ul>
 							</div>
-						} theme={FlyoutTheme.Light} alignWidth={true}
-						verticalOrientation={FlyoutVerticalOrientation.Top}>{localization.exit}</FlyoutButton>
+						</div>
+					} theme={FlyoutTheme.Light} alignWidth
+					verticalOrientation={FlyoutVerticalOrientation.Top}>{localization.exit}</FlyoutButton>
 				</div>
 			</div>
 

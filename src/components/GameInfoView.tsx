@@ -95,7 +95,6 @@ const buildRules = (rules: number, isSimple: boolean) => {
 	return result;
 };
 
-// tslint:disable-next-line: function-name
 export function GameInfoView(props: GameInfoViewProps) {
 	if (!props.game) {
 		return (
@@ -122,22 +121,20 @@ export function GameInfoView(props: GameInfoViewProps) {
 		const person = persons[i];
 		if (!person.isOnline) {
 			free[person.role] = true;
-		} else {
-			if (person.role === Role.Showman) {
-				showman = person.name;
-			} else if (person.role === Role.Player) {
-				if (players.length > 0) {
-					players += ', ';
-				}
-
-				players += person.name;
-			} else {
-				if (viewers.length > 0) {
-					viewers += ', ';
-				}
-
-				viewers += person.name;
+		} else if (person.role === Role.Showman) {
+			showman = person.name;
+		} else if (person.role === Role.Player) {
+			if (players.length > 0) {
+				players += ', ';
 			}
+
+			players += person.name;
+		} else {
+			if (viewers.length > 0) {
+				viewers += ', ';
+			}
+
+			viewers += person.name;
 		}
 	}
 
@@ -184,22 +181,24 @@ export function GameInfoView(props: GameInfoViewProps) {
 						<div className="actions">
 							<div id="actionsHost">
 								<button className="join" onClick={() => props.onJoin(game.gameID, Role.Showman)}
-									disabled={!props.isConnected || props.joinGameProgress || game.passwordRequired && !props.password || !canJoinAsShowman}>
-										{localization.joinAsShowman}
+									disabled={!props.isConnected || props.joinGameProgress || game.passwordRequired
+									&& !props.password || !canJoinAsShowman}>
+									{localization.joinAsShowman}
 								</button>
 								<button className="join" onClick={() => props.onJoin(game.gameID, Role.Player)}
-									disabled={!props.isConnected || props.joinGameProgress || game.passwordRequired && !props.password || !canJoinAsPlayer}>
-										{localization.joinAsPlayer}
+									disabled={!props.isConnected || props.joinGameProgress || game.passwordRequired
+									&& !props.password || !canJoinAsPlayer}>
+									{localization.joinAsPlayer}
 								</button>
 								<button className="join" onClick={() => props.onJoin(game.gameID, Role.Viewer)}
 									disabled={!props.isConnected || props.joinGameProgress || game.passwordRequired && !props.password}>
-										{localization.joinAsViewer}
+									{localization.joinAsViewer}
 								</button>
 							</div>
 						</div>
 					</div>
 				) : null}
-				{props.joinGameProgress ? <div className="joinGameProgress"><ProgressBar isIndeterminate={true} /></div> : null}
+				{props.joinGameProgress ? <div className="joinGameProgress"><ProgressBar isIndeterminate /></div> : null}
 			</div>
 		</section>
 	);

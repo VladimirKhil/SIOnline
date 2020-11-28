@@ -34,8 +34,7 @@ const mapDispatchToProps = (dispatch: any) => ({
 	}
 });
 
-// tslint:disable-next-line: function-name
-export function WelcomeView(props: WelcomeViewProps) {
+export function WelcomeView(props: WelcomeViewProps): JSX.Element {
 	return (
 		<section className="welcomeView">
 			<header>{localization.welcomeTitle}</header>

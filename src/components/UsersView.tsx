@@ -58,7 +58,6 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	}
 });
 
-// tslint:disable-next-line: function-name
 export function UsersView(props: UsersViewProps) {
 	function chatModeChanged(chatMode: ChatMode) {
 		if (props.chatMode !== chatMode) {
@@ -77,7 +76,7 @@ export function UsersView(props: UsersViewProps) {
 						<li onClick={props.onExit}>{localization.exit}</li>
 					</ul>
 				} horizontalOrientation={FlyoutHorizontalOrientation.Right}
-					verticalOrientation={FlyoutVerticalOrientation.Bottom}>☰</FlyoutButton>
+				verticalOrientation={FlyoutVerticalOrientation.Bottom}>☰</FlyoutButton>
 				<div id="chatHostTitle" className="tabHeader">
 					<h1 id="chatTitle" className={props.chatMode === ChatMode.Chat ? 'activeTab' : ''}
 						onClick={() => chatModeChanged(ChatMode.Chat)}>{localization.chat}</h1>
@@ -91,7 +90,7 @@ export function UsersView(props: UsersViewProps) {
 						<li onClick={props.onExit}>{localization.exit}</li>
 					</ul>
 				} horizontalOrientation={FlyoutHorizontalOrientation.Left}
-					verticalOrientation={FlyoutVerticalOrientation.Bottom}>⚙</FlyoutButton>
+				verticalOrientation={FlyoutVerticalOrientation.Bottom}>⚙</FlyoutButton>
 			</header>
 
 			<div className="chatBody">

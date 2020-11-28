@@ -24,7 +24,6 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	}
 });
 
-// tslint:disable-next-line: function-name
 export function SendStakeButton(props: SendStakeButtonProps) {
 	const canSendStake = props.allowedStakeTypes[StakeTypes.Sum];
 

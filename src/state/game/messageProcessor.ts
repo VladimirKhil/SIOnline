@@ -178,7 +178,7 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 				dispatch(tableActionCreators.canPressChanged(false));
 
 				const index = (Number)(args[1]);
-				if (index !== NaN && index > -1 && index < state.run.persons.players.length) {
+				if (!isNaN(index) && index > -1 && index < state.run.persons.players.length) {
 					dispatch(runActionCreators.playerStateChanged(index, PlayerStates.Press));
 				} else if (args[1] === 'A') {
 					dispatch(runActionCreators.stopTimer(1));

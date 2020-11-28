@@ -24,7 +24,6 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	}
 });
 
-// tslint:disable-next-line: function-name
 export function StartGameButton(props: StartGameButtonProps) {
 	const enabledClass = props.isConnected ? '' : 'disabled';
 

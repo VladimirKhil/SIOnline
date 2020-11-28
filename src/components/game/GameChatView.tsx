@@ -44,7 +44,6 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	}
 });
 
-// tslint:disable-next-line: function-name
 export function GameChatView(props: GameChatViewProps) {
 	return (
 		<div id="gameLogHost">
@@ -71,7 +70,7 @@ export function GameChatView(props: GameChatViewProps) {
 				{props.role === Role.Showman ? (
 					<button className={`wide commandButton bottomButton ${props.areSumsEditable ? 'active' : ''}`} disabled={!props.isConnected}
 						onClick={() => props.onEditSums(!props.areSumsEditable)}>{localization.changeSums}</button>
-					) : null}
+				) : null}
 				<button className="wide commandButton bottomButton" disabled={!props.isConnected}
 					onClick={() => props.onMarkQuestion()} title={localization.complainHint}>{localization.complain}</button>
 			</div>

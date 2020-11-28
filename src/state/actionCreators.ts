@@ -162,7 +162,7 @@ const login: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () =
 			} else {
 				const errorText =
 					response.status === 409 ? localization.duplicateUserName :
-					response.status === 0 ? localization.cannotConnectToServer : response.statusText;
+						response.status === 0 ? localization.cannotConnectToServer : response.statusText;
 
 				dispatch(loginEnd(errorText));
 			}
@@ -538,7 +538,7 @@ async function checkAndUploadPackageAsync(
 	serverUri: string,
 	packageData: File,
 	dispatch: Dispatch<any>
-	): Promise<PackageKey> {
+): Promise<PackageKey> {
 	const zip = new JSZip();
 	await zip.loadAsync(packageData);
 	const contentFile = zip.file('content.xml');

@@ -55,7 +55,7 @@ export class FinalTable extends React.Component<FinalTableProps> {
 						<AutoSizedText key={themeIndex} maxFontSize={144}
 							className={`finalTableCell  ${isActive ? 'active' : ''} ${isBlinking ? 'blink' : ''}`}
 							onClick={() => this.onSelectTheme(themeIndex)}>
-								{isActive ? theme.name : ''}
+							{isActive ? theme.name : ''}
 						</AutoSizedText>
 					);
 				})}

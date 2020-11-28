@@ -56,7 +56,7 @@ export class Login extends React.Component<LoginProps> {
 		return (
 			<div id="logon">
 				<div className="main">
-					{this.props.inProgress ? <ProgressBar isIndeterminate={true} /> : null}
+					{this.props.inProgress ? <ProgressBar isIndeterminate /> : null}
 					<header><h1>{localization.appName}</h1></header>
 					<div className="logonHost">
 						<p className="header">{localization.yourName}</p>
@@ -69,8 +69,12 @@ export class Login extends React.Component<LoginProps> {
 
 						{this.props.error ? <p id="logonerror">{this.props.error}</p> : null}
 						<div id="logonButtons">
-							<button id="howToPlay" disabled={this.props.inProgress} onClick={this.props.onHowToPlay}>{localization.aboutTitle}</button>
-							<button id="enter" disabled={this.props.inProgress || this.props.login.length === 0} onClick={this.props.onLogin}>{localization.enter}</button>
+							<button id="howToPlay" disabled={this.props.inProgress} onClick={this.props.onHowToPlay}>
+								{localization.aboutTitle}
+							</button>
+							<button id="enter" disabled={this.props.inProgress || this.props.login.length === 0} onClick={this.props.onLogin}>
+								{localization.enter}
+							</button>
 						</div>
 					</div>
 				</div>

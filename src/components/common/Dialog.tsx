@@ -12,7 +12,6 @@ interface DialogProps {
 	onClose: () => void;
 }
 
-// tslint:disable-next-line: function-name
 export default function Dialog(props: DialogProps) {
 	return (
 		<section id={props.id} className="dialog">

@@ -7,7 +7,6 @@ interface CheckBoxProps {
 	isChecked: boolean;
 }
 
-// tslint:disable-next-line: function-name
 export default function CheckBox(props: CheckBoxProps) {
 	return (
 		<React.Fragment>

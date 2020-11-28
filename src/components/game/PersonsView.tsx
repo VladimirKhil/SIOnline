@@ -41,7 +41,6 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	}
 });
 
-// tslint:disable-next-line: function-name
 export function PersonsView(props: PersonsViewProps) {
 	const selectedPerson = props.persons.find(p => p.name === props.selectedPersonName);
 
@@ -54,8 +53,8 @@ export function PersonsView(props: PersonsViewProps) {
 			<ul id="personsList">
 				{props.persons.map(person => (
 					<li key={person.name}
-					className={(person.name === props.selectedPersonName ? 'active ' : '') + (person.name === props.login ? 'me' : '')}
-					onClick={() => props.selectPerson(person)}>{person.name}</li>
+						className={(person.name === props.selectedPersonName ? 'active ' : '') + (person.name === props.login ? 'me' : '')}
+						onClick={() => props.selectPerson(person)}>{person.name}</li>
 				))}
 			</ul>
 			<div className="buttonsPanel">

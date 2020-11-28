@@ -16,7 +16,6 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 
 });
 
-// tslint:disable-next-line: function-name
 export function TableAnswer(props: TableAnswerProps) {
 	return (
 		<div className="answerBlock">

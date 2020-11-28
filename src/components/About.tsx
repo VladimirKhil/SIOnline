@@ -50,7 +50,9 @@ export class About extends React.Component<AboutProps> {
 							<li><a href="https://github.com/Stuk/jszip/blob/master/LICENSE.markdown">JSZip (MIT)</a></li>
 							<li><a href="https://github.com/srijs/rusha/blob/master/LICENSE">Rusha (MIT)</a></li>
 							<li>
-								<a href="https://github.com/dotnet/aspnetcore/blob/master/LICENSE.txt">Microsoft SignalR, Microsoft SignalR MessagePack (Apache 2.0)</a>
+								<a href="https://github.com/dotnet/aspnetcore/blob/master/LICENSE.txt">
+									Microsoft SignalR, Microsoft SignalR MessagePack (Apache 2.0)
+								</a>
 							</li>
 						</ul>
 					</section>

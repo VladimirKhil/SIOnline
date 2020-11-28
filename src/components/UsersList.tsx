@@ -16,7 +16,6 @@ const mapStateToProps: MapStateToProps<UsersListProps, {}, State> = (state: Stat
 	};
 };
 
-// tslint:disable-next-line: function-name
 export function UsersList(props: UsersListProps) {
 	const users = props.users.slice();
 	users.sort((user1, user2) => user1.localeCompare(user2));

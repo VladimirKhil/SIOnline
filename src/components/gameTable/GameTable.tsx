@@ -44,7 +44,6 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 
 });
 
-// tslint:disable-next-line: function-name
 export function GameTable(props: GameTableProps) {
 	return (
 		<div id="table">
@@ -52,7 +51,7 @@ export function GameTable(props: GameTableProps) {
 			{props.showMainTimer ? (
 				<ProgressBar className="commonProgress" value={1 - props.decisionTimer.value / props.decisionTimer.maximum}
 					valueChangeDuration={isRunning(props.decisionTimer) ? (props.decisionTimer.maximum - props.decisionTimer.value) / 10 : 0} />
-				) : null}
+			) : null}
 			{props.isPaused || !props.isConnected ?
 				<AutoSizedText maxFontSize={288} className={`pauseLogo tableText tableTextCenter ${props.isConnected ? '' : 'warning'}`}>
 					{props.isPaused ? localization.pause : localization.connectionClosed}

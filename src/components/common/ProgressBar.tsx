@@ -10,7 +10,6 @@ interface ProgressBarProps {
 	title?: string;
 }
 
-// tslint:disable-next-line: function-name
 export default function ProgressBar(props: ProgressBarProps) {
 	let style: React.CSSProperties = props.isIndeterminate ? {} : {
 		width: props.value ? `calc(${100 * props.value}%)` : '0'

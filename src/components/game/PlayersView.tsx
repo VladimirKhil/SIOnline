@@ -51,7 +51,6 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	}
 });
 
-// tslint:disable-next-line: function-name
 export function PlayersView(props: PlayersViewProps) {
 	const playersCount = Object.keys(props.players).length;
 
@@ -89,7 +88,8 @@ export function PlayersView(props: PlayersViewProps) {
 									<span className="name" title={player.name}>{player.name}</span>
 									<div className="sum">
 										{props.isSumEditable ?
-											<NumericTextBox value={player.sum} onValueChanged={value => onSumChanged(index, value)} onCancel={props.onCancelSumChange} />
+											<NumericTextBox value={player.sum} onValueChanged={value => onSumChanged(index, value)}
+												onCancel={props.onCancelSumChange} />
 											: <span>{player.sum}</span>
 										}
 										{player.stake > 0 ? <span className="stake">{player.stake}</span> : null}
@@ -100,17 +100,16 @@ export function PlayersView(props: PlayersViewProps) {
 								<AutoSizedText id={`playerReplic_${index}`} className="playerReplic" maxFontSize={48}>
 									{player.replic}
 								</AutoSizedText>
-								) : null
+							) : null
 							}
 							{player.isDeciding ?
 								<ProgressBar value={1 - props.decisionTimer.value / props.decisionTimer.maximum}
-									valueChangeDuration={isRunning(props.decisionTimer) ? (props.decisionTimer.maximum - props.decisionTimer.value) / 10 : 0} />
-							: null}
+									valueChangeDuration={isRunning(props.decisionTimer)
+										? (props.decisionTimer.maximum - props.decisionTimer.value) / 10 : 0} />
+								: null}
 						</li>
 					);
-				}
-				)
-				}
+				})}
 			</ul>
 		</div>
 	);

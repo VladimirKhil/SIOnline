@@ -25,7 +25,6 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	}
 });
 
-// tslint:disable-next-line: function-name
 export class TableAudio extends React.Component<TableAudioProps> {
 	private audioRef: React.RefObject<HTMLAudioElement>;
 
