@@ -457,6 +457,11 @@ const hintChanged: ActionCreator<RunActions.HintChangedAction> = (hint: string |
 	type: RunActions.RunActionTypes.HintChanged, hint
 });
 
+const startGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () =>
+	(dispatch: Dispatch<RunActions.KnownRunAction>, getState: () => State, dataContext: DataContext) => {
+		dataContext.gameClient.msgAsync('START');
+	};
+
 const runActionCreators = {
 	runChatModeChanged,
 	runChatMessageChanged,
@@ -530,7 +535,8 @@ const runActionCreators = {
 	activatePlayerDecision,
 	showMainTimer,
 	clearDecisionsAndMainTimer,
-	hintChanged
+	hintChanged,
+	startGame
 };
 
 export default runActionCreators;

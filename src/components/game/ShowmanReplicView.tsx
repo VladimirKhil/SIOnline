@@ -8,6 +8,7 @@ import Sex from '../../model/enums/Sex';
 import ProgressBar from '../common/ProgressBar';
 import TimerInfo from '../../model/TimerInfo';
 import { isRunning } from '../../utils/TimerInfoHelpers';
+import StartGameButton from './StartGameButton';
 
 import './ShowmanReplicView.css';
 
@@ -48,7 +49,8 @@ export function ShowmanReplicView(props: ShowmanReplicViewProps) {
 			{props.isDeciding ?
 				<ProgressBar value={1 - props.decisionTimer.value / props.decisionTimer.maximum}
 					valueChangeDuration={isRunning(props.decisionTimer) ? (props.decisionTimer.maximum - props.decisionTimer.value) / 10 : 0} />
-			: null}
+				: null}
+			<StartGameButton />
 		</div>
 	);
 }

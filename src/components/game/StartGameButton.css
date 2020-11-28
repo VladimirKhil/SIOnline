@@ -1,0 +1,21 @@
+.start_button_host {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.start_button {
+	padding: 5px 40px;
+    font-family: SI;
+    font-size: 40px;
+    background-color: #00000022;
+}
+
+.start_button:hover {
+    background-color: #00000044;
+}
