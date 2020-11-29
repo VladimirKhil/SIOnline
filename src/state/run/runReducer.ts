@@ -103,8 +103,7 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 						...state.persons.showman,
 						replic: null
 					},
-					players: state.persons.players.map((p, i) =>
-						({ ...p, replic: i === action.playerIndex ? action.replic : null }))
+					players: state.persons.players.map((p, i) => ({ ...p, replic: i === action.playerIndex ? action.replic : null }))
 				}
 			};
 
@@ -628,11 +627,22 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 				...state,
 				hint: action.hint
 			};
-	}
 
-	return {...state,
-		table: tableReducer(state.table, action as KnownTableAction)
-	};
+		case RunActionTypes.OperationError:
+			return {
+				...state,
+				chat: {
+					...state.chat,
+					messages: [...state.chat.messages, { sender: '', text: action.error }]
+				}
+			};
+
+		default:
+			return {
+				...state,
+				table: tableReducer(state.table, action as KnownTableAction)
+			};
+	}
 };
 
 export default runReducer;

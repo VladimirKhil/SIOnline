@@ -1,0 +1,29 @@
+.personItem {
+	padding-left: 5px;
+	cursor: pointer;
+	height: 40px;
+	line-height: 40px;
+	vertical-align: middle;
+	display: flex;
+}
+
+	.personItem:hover {
+		background-color: #98B9FF;
+	}
+
+	.personItem.active {
+		background-color: #5A95E2;
+	}
+
+	.personItem.me {
+		font-weight: bold;
+	}
+
+.personItem_avatar {
+	width: 40px;
+	margin: 2px 10px 2px 2px;
+	height: calc(100% - 4px);
+	display: inline-block;
+	background-size: contain;
+    background-repeat: no-repeat;
+}

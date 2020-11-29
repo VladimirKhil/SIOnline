@@ -1,0 +1,14 @@
+.personsList {
+    overflow: auto;
+    width: 100%;
+    flex: 1 0 0;
+    background-color: #C0CFF4;
+}
+
+.personsHeader {
+	padding: 10px 10px;
+    background-color: rgb(0, 4, 81);
+    font-weight: bold;
+	font-size: 18px;
+	color: #FFE682;
+}

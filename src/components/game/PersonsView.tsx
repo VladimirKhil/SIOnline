@@ -1,67 +1,88 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
+import { Dispatch, AnyAction } from 'redux';
 import State from '../../state/State';
 import localization from '../../model/resources/localization';
-import { Dispatch, Action, AnyAction } from 'redux';
 import Account from '../../model/Account';
 import runActionCreators from '../../state/run/runActionCreators';
+import PersonView from './PersonView';
 
 import './PersonsView.css';
+import Sex from '../../model/enums/Sex';
 
 interface PersonsViewProps {
 	isConnected: boolean;
-	persons: Account[];
+	showman: Account | null;
+	players: Account[];
+	viewers: Account[];
 	login: string;
-	selectedPersonName: string | null;
-	selectPerson: (account: Account) => void;
+	selectedPerson: Account | null;
 	kick: () => void;
 	ban: () => void;
 }
 
 const mapStateToProps = (state: State) => {
-	const result = Object.values(state.run.persons.all);
+	const showman = state.run.persons.all[state.run.persons.showman.name];
+	const playersNames = state.run.persons.players.map(p => p.name);
+
+	// Players must be preserved in original order
+	const players = playersNames
+		.map(name => state.run.persons.all[name])
+		.filter(p => p);
+	const viewers = Object.keys(state.run.persons.all)
+		.filter(name => name !== state.run.persons.showman.name && !playersNames.includes(name))
+		.map(name => state.run.persons.all[name])
+		.sort((p1, p2) => p1.name.localeCompare(p2.name));
+
+	const { selectedPersonName } = state.run.chat;
 
 	return {
 		isConnected: state.common.isConnected,
-		persons: result.sort((p1, p2) => p1.name.localeCompare(p2.name)),
+		showman,
+		players,
+		viewers,
 		login: state.user.login,
-		selectedPersonName: state.run.chat.selectedPersonName
+		selectedPerson: selectedPersonName ? state.run.persons.all[selectedPersonName] : null
 	};
 };
 
-const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
+const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => ({
 	kick: () => {
 		dispatch((runActionCreators.kickPerson() as object) as AnyAction);
 	},
 	ban: () => {
 		dispatch((runActionCreators.banPerson() as object) as AnyAction);
-	},
-	selectPerson: (account: Account) => {
-		dispatch(runActionCreators.chatPersonSelected(account.name));
 	}
 });
 
-export function PersonsView(props: PersonsViewProps) {
-	const selectedPerson = props.persons.find(p => p.name === props.selectedPersonName);
+export function PersonsView(props: PersonsViewProps): JSX.Element {
+	const canKick = props.selectedPerson
+		&& props.selectedPerson.name !== props.login
+		&& props.selectedPerson.isHuman;
 
-	const canKick = selectedPerson
-		&& selectedPerson.name !== props.login
-		&& selectedPerson.isHuman;
+	const showman: Account = props.showman ? props.showman : { name: '', sex: Sex.Female, isHuman: false, avatar: '' };
 
 	return (
-		<React.Fragment>
-			<ul id="personsList">
-				{props.persons.map(person => (
-					<li key={person.name}
-						className={(person.name === props.selectedPersonName ? 'active ' : '') + (person.name === props.login ? 'me' : '')}
-						onClick={() => props.selectPerson(person)}>{person.name}</li>
-				))}
-			</ul>
-			<div className="buttonsPanel">
-				<button onClick={() => props.kick()} disabled={!props.isConnected || !canKick}>{localization.kick}</button>
-				<button onClick={() => props.ban()} disabled={!props.isConnected || !canKick}>{localization.ban}</button>
+		<>
+			<div className="personsList">
+				<div className="personsHeader">{localization.showman}</div>
+				<ul>
+					<PersonView account={showman} />
+				</ul>
+				<div className="personsHeader">{localization.players}</div>
+				<ul>
+					{props.players.map(person => <PersonView key={person.name} account={person} />)}
+				</ul>
+				<div className="personsHeader">{localization.viewers}</div>
+				<ul>
+					{props.viewers.map(person => <PersonView key={person.name} account={person} />)}
+				</ul>
 			</div>
-		</React.Fragment>
+			<div className="buttonsPanel">
+				<button type="button" onClick={() => props.kick()} disabled={!props.isConnected || !canKick}>{localization.kick}</button>
+				<button type="button" onClick={() => props.ban()} disabled={!props.isConnected || !canKick}>{localization.ban}</button>
+			</div>
+		</>
 	);
 }
 

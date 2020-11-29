@@ -122,31 +122,39 @@ const chatPersonSelected: ActionCreator<RunActions.ChatPersonSelectedAction> = (
 	type: RunActions.RunActionTypes.ChatPersonSelected, personName
 });
 
-const kickPerson: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () =>
-	async (dispatch: Dispatch<RunActions.KnownRunAction>, getState: () => State, dataContext: DataContext) => {
+const operationError: ActionCreator<RunActions.OperationErrorAction> = (error: string) => ({
+	type: RunActions.RunActionTypes.OperationError, error
+});
 
-		const personName = getState().run.chat.selectedPersonName;
-		if (personName) {
-			try {
-				dataContext.gameClient.msgAsync('KICK', personName);
-			} catch (e) {
-				alert(localization.exitError);
-			}
-		}
-	};
+const kickPerson: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
+	dispatch: Dispatch<RunActions.KnownRunAction>,
+	getState: () => State, dataContext: DataContext) => {
+	const personName = getState().run.chat.selectedPersonName;
+	if (!personName) {
+		return;
+	}
 
-const banPerson: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () =>
-	async (dispatch: Dispatch<RunActions.KnownRunAction>, getState: () => State, dataContext: DataContext) => {
+	try {
+		dataContext.gameClient.msgAsync('KICK', personName);
+	} catch (e) {
+		dispatch(operationError(e.message));
+	}
+};
 
-		const personName = getState().run.chat.selectedPersonName;
-		if (personName) {
-			try {
-				dataContext.gameClient.msgAsync('BAN', personName);
-			} catch (e) {
-				alert(localization.exitError);
-			}
-		}
-	};
+const banPerson: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
+	dispatch: Dispatch<RunActions.KnownRunAction>,
+	getState: () => State, dataContext: DataContext) => {
+	const personName = getState().run.chat.selectedPersonName;
+	if (!personName) {
+		return;
+	}
+
+	try {
+		dataContext.gameClient.msgAsync('BAN', personName);
+	} catch (e) {
+		dispatch(operationError(e.message));
+	}
+};
 
 const personAvatarChanged: ActionCreator<RunActions.PersonAvatarChangedAction> = (personName: string, avatarUri: string) => ({
 	type: RunActions.RunActionTypes.PersonAvatarChanged, personName, avatarUri
@@ -457,10 +465,13 @@ const hintChanged: ActionCreator<RunActions.HintChangedAction> = (hint: string |
 	type: RunActions.RunActionTypes.HintChanged, hint
 });
 
-const startGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () =>
-	(dispatch: Dispatch<RunActions.KnownRunAction>, getState: () => State, dataContext: DataContext) => {
-		dataContext.gameClient.msgAsync('START');
-	};
+const startGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => (
+	_dispatch: Dispatch<RunActions.KnownRunAction>,
+	_getState: () => State,
+	dataContext: DataContext
+) => {
+	dataContext.gameClient.msgAsync('START');
+};
 
 const runActionCreators = {
 	runChatModeChanged,
@@ -536,7 +547,8 @@ const runActionCreators = {
 	showMainTimer,
 	clearDecisionsAndMainTimer,
 	hintChanged,
-	startGame
+	startGame,
+	operationError
 };
 
 export default runActionCreators;

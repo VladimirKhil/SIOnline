@@ -43,6 +43,7 @@
 	close: 'Закрыть',
 	complain: 'Пожаловаться',
 	complainHint: 'В вопросе содержится орфографическая или фактическая ошибка',
+	computer: 'Бот',
 	computerPlayers: 'Боты:',
 	connectionClosed: 'Соединение с сервером разорвано!',
 	connectionReconnecting: 'Соединение потеряно, пытаемся переподключиться…',

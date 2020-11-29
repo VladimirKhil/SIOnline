@@ -501,33 +501,6 @@ video, audio {
     left: 0;
 }
 
-#personsList {
-    overflow: auto;
-    width: 100%;
-    flex: 1 0 0;
-    background-color: #C0CFF4;
-}
-
-    #personsList li {
-        padding-left: 15px;
-        cursor: pointer;
-        height: 40px;
-        line-height: 40px;
-        vertical-align: middle;
-    }
-
-        #personsList li:hover {
-            background-color: #98B9FF;
-        }
-
-        #personsList li.active {
-            background-color: #5A95E2;
-        }
-
-        #personsList li.me {
-            font-weight: bold;
-        }
-
 .buttonsPanel {
     height: 45px;
     flex: 0 0 45px;
