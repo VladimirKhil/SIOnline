@@ -1,6 +1,6 @@
 import { Dispatch, AnyAction, ActionCreator, Action } from 'redux';
-import Message from '../../model/Message';
 import { ThunkAction } from 'redux-thunk';
+import Message from '../../model/Message';
 import State from '../State';
 import DataContext from '../../model/DataContext';
 import * as RunActions from '../run/RunActions';
@@ -11,7 +11,7 @@ import Sex from '../../model/enums/Sex';
 import PlayerStates from '../../model/enums/PlayerStates';
 import tableActionCreators from '../table/tableActionCreators';
 import ThemeInfo from '../../model/ThemeInfo';
-import ShowmanInfo from '../../model/ShowmanInfo';
+import PersonInfo from '../../model/PersonInfo';
 import Persons from '../../model/Persons';
 import PlayerInfo from '../../model/PlayerInfo';
 import Constants from '../../model/enums/Constants';
@@ -55,7 +55,6 @@ const userMessageReceived: ActionCreator<ThunkAction<void, State, DataContext, A
 		dispatch(runActionCreators.chatMessageAdded(replic));
 
 		if (!getState().run.chat.isVisible && getState().ui.windowWidth < 800) {
-
 			dispatch(runActionCreators.lastReplicChanged(replic));
 
 			if (lastReplicLock) {
@@ -123,6 +122,9 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 						const uri = preprocessServerUri(args[3], dataContext);
 						dispatch(tableActionCreators.showVideo(uri));
 					}
+					break;
+
+				default:
 					break;
 			}
 			break;
@@ -305,6 +307,9 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 					case 3:
 						stake = player.sum;
 						break;
+
+					default:
+						break;
 				}
 
 				dispatch(runActionCreators.playerStakeChanged(playerIndex, stake));
@@ -334,6 +339,9 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 
 				case 'sponsored':
 					dispatch(tableActionCreators.showSpecial(localization.questionTypeNoRisk));
+					break;
+
+				default:
 					break;
 			}
 
@@ -542,6 +550,9 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 					case 'MAXTIME':
 						dispatch(runActionCreators.timerMaximumChanged(timerIndex, timerArgument));
 						break;
+
+					default:
+						break;
 				}
 			}
 			break;
@@ -578,6 +589,9 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 					}
 				}
 			}
+			break;
+
+		default:
 			break;
 	}
 };
@@ -669,6 +683,9 @@ const playerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 		case 'VALIDATIION':
 			startValidation(dispatch, localization.apellation, args);
 			break;
+
+		default:
+			break;
 	}
 };
 
@@ -716,6 +733,9 @@ const showmanHandler = (dispatch: Dispatch<any>, state: State, dataContext: Data
 
 		case 'VALIDATIION':
 			startValidation(dispatch, localization.answerChecking, args);
+			break;
+
+		default:
 			break;
 
 		// TODO: implement player messages support for oral game
@@ -769,11 +789,12 @@ function info(dispatch: Dispatch<RunActions.KnownRunAction>, ...args: string[]) 
 
 	const all: Persons = {};
 
-	const showman: ShowmanInfo = {
+	const showman: PersonInfo = {
 		name,
 		isReady,
 		replic: null,
-		isDeciding: false
+		isDeciding: false,
+		isHuman
 	};
 
 	if (isConnected) {
@@ -802,7 +823,8 @@ function info(dispatch: Dispatch<RunActions.KnownRunAction>, ...args: string[]) 
 			state: PlayerStates.None,
 			canBeSelected: false,
 			replic: null,
-			isDeciding: false
+			isDeciding: false,
+			isHuman
 		});
 
 		if (isConnected) {
@@ -816,7 +838,6 @@ function info(dispatch: Dispatch<RunActions.KnownRunAction>, ...args: string[]) 
 	}
 
 	for (let i = 0; i < viewersCount; i++) {
-
 		name = args[pIndex++];
 		isMale = args[pIndex++] === '+';
 		isConnected = args[pIndex++] === '+'; // is not used
@@ -904,6 +925,9 @@ function connected(dispatch: Dispatch<RunActions.KnownRunAction>, state: State, 
 
 		case 'player':
 			dispatch(runActionCreators.playerChanged(index, name));
+			break;
+
+		default:
 			break;
 	}
 }
@@ -1068,11 +1092,14 @@ function config(dispatch: Dispatch<RunActions.KnownRunAction>, state: State, ...
 
 			break;
 		}
+
+		default:
+			break;
 	}
 }
 
 function getMe(state: State): PlayerInfo | null {
-	const players = state.run.persons.players;
+	const { players } = state.run.persons;
 	for (let i = 0; i < players.length; i++) {
 		if (players[i].name === state.user.login) {
 			return players[i];

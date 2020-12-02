@@ -1,18 +1,19 @@
-#answerValidationDialog {
+.answerValidationDialog {
     background-color: #5A95E2;
+    z-index: 5;
 }
 
-#answerValidationDialog p {
+.answerValidationDialog p {
     margin: 13px;
     height: 40px;
 }
 
-#answerValidationDialog #answersPanel {
+.answerValidationDialog #answersPanel {
     margin: 13px;
     height: calc(100% - 172px);
 }
 
-#answerValidationDialog .answers {
+.answerValidationDialog .answers {
     display: inline-block;
     width: calc(50% - 6px);
     margin: 0 2px;
@@ -20,45 +21,45 @@
     height: 100%;
 }
 
-#answerValidationDialog > p {
+.answerValidationDialog > p {
     margin: 13px;
 }
 
-#answerValidationDialog .answers p {
+.answerValidationDialog .answers p {
     font-weight: bold;
     text-align: center;
     vertical-align: top;
     height: 40px;
 }
 
-#answerValidationDialog .answers ul {
+.answerValidationDialog .answers ul {
     background-color: #C0CFF4;
     height: calc(100% - 70px);
     overflow-y: auto;
     overflow-x: hidden;
 }
 
-#answerValidationDialog .answers li {
+.answerValidationDialog .answers li {
     padding-left: 15px;
     cursor: pointer;
     vertical-align: middle;
 }
 
-#answerValidationDialog .answers li span {
+.answerValidationDialog .answers li span {
     line-height: 40px;
     vertical-align: middle;
 }
 
-    #answerValidationDialog .answers li:hover {
+    .answerValidationDialog .answers li:hover {
         background-color: #98B9FF;
     }
 
-    #answerValidationDialog .answers li.active {
+    .answerValidationDialog .answers li.active {
         background-color: #5A95E2;
     }
     
 @media screen and (min-width: 800px) {
-    #answerValidationDialog {
+    .answerValidationDialog {
         width: 600px;
         margin-left: auto;
         margin-right: auto;

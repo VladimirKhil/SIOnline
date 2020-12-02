@@ -1,0 +1,17 @@
+.tableItem {
+	padding-left: 15px;
+	cursor: pointer;
+	height: 40px;
+	line-height: 40px;
+	vertical-align: middle;
+	display: flex;
+	background-color: #00000017;
+}
+
+	.tableItem:hover {
+		background-color: #98B9FF;
+	}
+
+	.tableItem.active {
+		background-color: #5A95E2;
+	}

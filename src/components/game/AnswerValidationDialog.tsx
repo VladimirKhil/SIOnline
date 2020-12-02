@@ -1,3 +1,4 @@
+/* eslint-disable react/no-array-index-key */
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch, Action } from 'redux';
@@ -28,43 +29,37 @@ const mapStateToProps = (state: State) => ({
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	onApprove: () => {
-		dispatch(runActionCreators.approveAnswer() as object as Action);
+		dispatch(runActionCreators.approveAnswer() as unknown as Action);
 	},
 	onReject: () => {
-		dispatch(runActionCreators.rejectAnswer() as object as Action);
+		dispatch(runActionCreators.rejectAnswer() as unknown as Action);
 	}
 });
 
-export class AnswerValidationDialog extends React.Component<AnswerValidationDialogProps> {
-	constructor(props: AnswerValidationDialogProps) {
-		super(props);
-	}
-
-	render() {
-		return (
-			<Dialog id="answerValidationDialog" title={this.props.header} onClose={this.props.onReject}>
-				<p>{this.props.message}</p>
-				<div id="answersPanel">
-					<div className="answers">
-						<p>{localization.rightAnswers}</p>
-						<ul>
-							{this.props.rightAnswers.map((answer, index) => <li key={index}><span>{answer}</span></li>)}
-						</ul>
-					</div>
-					<div className="answers">
-						<p>{localization.wrongAnswers}</p>
-						<ul>
-							{this.props.wrongAnswers.map((answer, index) => <li key={index}><span>{answer}</span></li>)}
-						</ul>
-					</div>
+export function AnswerValidationDialog(props: AnswerValidationDialogProps): JSX.Element {
+	return (
+		<Dialog className="answerValidationDialog" title={props.header} onClose={props.onReject}>
+			<p>{props.message}</p>
+			<div id="answersPanel">
+				<div className="answers">
+					<p>{localization.rightAnswers}</p>
+					<ul>
+						{props.rightAnswers.map((answer, index) => <li key={index}><span>{answer}</span></li>)}
+					</ul>
 				</div>
-				<div className="buttonsPanel">
-					<button disabled={!this.props.isConnected} onClick={() => this.props.onApprove()}>{localization.yes}</button>
-					<button disabled={!this.props.isConnected} onClick={() => this.props.onReject()}>{localization.no}</button>
+				<div className="answers">
+					<p>{localization.wrongAnswers}</p>
+					<ul>
+						{props.wrongAnswers.map((answer, index) => <li key={index}><span>{answer}</span></li>)}
+					</ul>
 				</div>
-			</Dialog>
-		);
-	}
+			</div>
+			<div className="buttonsPanel">
+				<button type="button" disabled={!props.isConnected} onClick={() => props.onApprove()}>{localization.yes}</button>
+				<button type="button" disabled={!props.isConnected} onClick={() => props.onReject()}>{localization.no}</button>
+			</div>
+		</Dialog>
+	);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(AnswerValidationDialog);

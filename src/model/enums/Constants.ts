@@ -3,5 +3,6 @@
 	KEY_CTRL: 'Control',
 	KEY_ESCAPE: 27,
 
-	ANY_NAME: ' '
+	ANY_NAME: ' ',
+	MAX_PLAYERS_COUNT: 12
 };

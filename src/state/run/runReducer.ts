@@ -53,6 +53,18 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 				personsVisible: false
 			};
 
+		case RunActionTypes.RunShowTables:
+			return {
+				...state,
+				tablesVisible: true
+			};
+
+		case RunActionTypes.RunHideTables:
+			return {
+				...state,
+				tablesVisible: false
+			};
+
 		case RunActionTypes.ChatMessageAdded:
 			return {
 				...state,
@@ -125,6 +137,12 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 					...state.chat,
 					selectedPersonName: action.personName
 				}
+			};
+
+		case RunActionTypes.TableSelected:
+			return {
+				...state,
+				selectedTableIndex: action.tableIndex
 			};
 
 		case RunActionTypes.PersonAvatarChanged:
@@ -279,7 +297,8 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 						canBeSelected: false,
 						isReady: false,
 						replic: null,
-						isDeciding: false
+						isDeciding: false,
+						isHuman: true
 					}]
 				}
 			};

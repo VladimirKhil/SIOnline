@@ -1,8 +1,8 @@
 import { connect } from 'react-redux';
 import * as React from 'react';
+import { Dispatch, Action } from 'redux';
 import runActionCreators from '../../state/run/runActionCreators';
 import State from '../../state/State';
-import { Dispatch, Action } from 'redux';
 import Constants from '../../model/enums/Constants';
 
 interface AnswerInputProps {
@@ -22,14 +22,14 @@ const mapStateToProps = (state: State) => ({
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	onAnswerChanged: (answer: string) => {
-		dispatch((runActionCreators.onAnswerChanged(answer) as object) as Action);
+		dispatch(runActionCreators.onAnswerChanged(answer) as unknown as Action);
 	},
 	sendAnswer: () => {
-		dispatch((runActionCreators.sendAnswer() as object) as Action);
+		dispatch(runActionCreators.sendAnswer() as unknown as Action);
 	}
 });
 
-export function AnswerInput(props: AnswerInputProps) {
+export function AnswerInput(props: AnswerInputProps): JSX.Element | null {
 	const onAnswerChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
 		props.onAnswerChanged(e.target.value);
 	};
@@ -45,8 +45,15 @@ export function AnswerInput(props: AnswerInputProps) {
 	};
 
 	return props.isAnswering ? (
-		<input id={props.id} autoFocus className="gameInputBox" value={props.answer}
-			onChange={onAnswerChanged} onKeyPress={onAnswerKeyPress} maxLength={250} />
+		<input
+			id={props.id}
+			autoFocus
+			className="gameInputBox"
+			value={props.answer}
+			onChange={onAnswerChanged}
+			onKeyPress={onAnswerKeyPress}
+			maxLength={250}
+		/>
 	) : null;
 }
 

@@ -1,7 +1,7 @@
 import TableState, { initialState as tableInitialState } from '../table/TableState';
 import ChatMode from '../../model/enums/ChatMode';
 import ChatMessage from '../../model/ChatMessage';
-import ShowmanInfo from '../../model/ShowmanInfo';
+import PersonInfo from '../../model/PersonInfo';
 import PlayerInfo from '../../model/PlayerInfo';
 import Persons from '../../model/Persons';
 import Role from '../../model/enums/Role';
@@ -11,7 +11,7 @@ import Timers from '../../model/Timers';
 export default interface RunState {
 	persons: {
 		all: Persons;
-		showman: ShowmanInfo;
+		showman: PersonInfo;
 		players: PlayerInfo[];
 	};
 	role: Role;
@@ -60,7 +60,9 @@ export default interface RunState {
 		messages: ChatMessage[];
 		selectedPersonName: string | null;
 	};
+	selectedTableIndex: number; // 0 for showman; {N} for player {N - 1}
 	personsVisible: boolean;
+	tablesVisible: boolean;
 	isGameButtonEnabled: boolean;
 	areSumsEditable: boolean;
 	readingSpeed: number;
@@ -70,7 +72,13 @@ export default interface RunState {
 export const initialState: RunState = {
 	persons: {
 		all: {},
-		showman: { name: '', isReady: false, replic: null, isDeciding: false },
+		showman: {
+			name: '',
+			isReady: false,
+			replic: null,
+			isDeciding: false,
+			isHuman: true
+		},
 		players: []
 	},
 	role: Role.Player,
@@ -143,7 +151,9 @@ export const initialState: RunState = {
 		messages: [],
 		selectedPersonName: null
 	},
+	selectedTableIndex: -1,
 	personsVisible: false,
+	tablesVisible: false,
 	isGameButtonEnabled: true,
 	areSumsEditable: false,
 	readingSpeed: 20,

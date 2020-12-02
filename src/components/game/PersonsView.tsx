@@ -8,11 +8,10 @@ import runActionCreators from '../../state/run/runActionCreators';
 import PersonView from './PersonView';
 
 import './PersonsView.css';
-import Sex from '../../model/enums/Sex';
 
 interface PersonsViewProps {
 	isConnected: boolean;
-	showman: Account | null;
+	showman: Account | undefined;
 	players: Account[];
 	viewers: Account[];
 	login: string;
@@ -25,10 +24,11 @@ const mapStateToProps = (state: State) => {
 	const showman = state.run.persons.all[state.run.persons.showman.name];
 	const playersNames = state.run.persons.players.map(p => p.name);
 
-	// Players must be preserved in original order
 	const players = playersNames
 		.map(name => state.run.persons.all[name])
-		.filter(p => p);
+		.filter(p => p)
+		.sort((p1, p2) => p1.name.localeCompare(p2.name));
+
 	const viewers = Object.keys(state.run.persons.all)
 		.filter(name => name !== state.run.persons.showman.name && !playersNames.includes(name))
 		.map(name => state.run.persons.all[name])
@@ -60,18 +60,20 @@ export function PersonsView(props: PersonsViewProps): JSX.Element {
 		&& props.selectedPerson.name !== props.login
 		&& props.selectedPerson.isHuman;
 
-	const showman: Account = props.showman ? props.showman : { name: '', sex: Sex.Female, isHuman: false, avatar: '' };
-
 	return (
 		<>
 			<div className="personsList">
 				<div className="personsHeader">{localization.showman}</div>
-				<ul>
-					<PersonView account={showman} />
-				</ul>
+				{props.showman ? (
+					<ul>
+						<PersonView account={props.showman} />
+					</ul>
+				) : null}
 				<div className="personsHeader">{localization.players}</div>
 				<ul>
-					{props.players.map(person => <PersonView key={person.name} account={person} />)}
+					{props.players.map((person, index) => (
+						<PersonView key={person ? person.name : index} account={person} />
+					))}
 				</ul>
 				<div className="personsHeader">{localization.viewers}</div>
 				<ul>

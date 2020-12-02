@@ -1,21 +1,22 @@
 import { ActionCreator, Action, Dispatch } from 'redux';
+import { ThunkAction } from 'redux-thunk';
 import * as RunActions from './RunActions';
 import ChatMode from '../../model/enums/ChatMode';
 import State from '../State';
-import { ThunkAction } from 'redux-thunk';
 import DataContext from '../../model/DataContext';
 import localization from '../../model/resources/localization';
 import actionCreators from '../actionCreators';
 import ChatMessage from '../../model/ChatMessage';
 import Account from '../../model/Account';
 import Persons from '../../model/Persons';
-import ShowmanInfo from '../../model/ShowmanInfo';
+import PersonInfo from '../../model/PersonInfo';
 import PlayerInfo from '../../model/PlayerInfo';
 import Role from '../../model/enums/Role';
 import PlayerStates from '../../model/enums/PlayerStates';
 import tableActionCreators from '../table/tableActionCreators';
 import StakeTypes from '../../model/enums/StakeTypes';
 import MainView from '../../model/enums/MainView';
+import Constants from '../../model/enums/Constants';
 
 let timerRef: number | null = null;
 
@@ -63,15 +64,25 @@ const runHidePersons: ActionCreator<RunActions.RunHidePersonsAction> = () => ({
 	type: RunActions.RunActionTypes.RunHidePersons
 });
 
+const runShowTables: ActionCreator<RunActions.RunShowTablesAction> = () => ({
+	type: RunActions.RunActionTypes.RunShowTables
+});
+
+const runHideTables: ActionCreator<RunActions.RunHideTablesAction> = () => ({
+	type: RunActions.RunActionTypes.RunHideTables
+});
+
 const runChatVisibilityChanged: ActionCreator<RunActions.RunChatVisibilityChangedAction> = (isOpen: boolean) => ({
 	type: RunActions.RunActionTypes.RunChatVisibilityChanged, isOpen
 });
 
-const playerSelected: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (playerIndex: number) =>
-	async (dispatch: Dispatch<RunActions.KnownRunAction>, getState: () => State, dataContext: DataContext) => {
-		dataContext.gameClient.msgAsync(getState().run.selection.message, playerIndex);
-		dispatch(clearDecisions());
-	};
+const playerSelected: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (playerIndex: number) => async (
+	dispatch: Dispatch<RunActions.KnownRunAction>,
+	getState: () => State,
+	dataContext: DataContext) => {
+	dataContext.gameClient.msgAsync(getState().run.selection.message, playerIndex);
+	dispatch(clearDecisions());
+};
 
 const exitGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () =>
 	async (dispatch: Dispatch<RunActions.KnownRunAction>, getState: () => State, dataContext: DataContext) => {
@@ -114,7 +125,7 @@ const playerReplicChanged: ActionCreator<RunActions.PlayerReplicChangedAction> =
 	type: RunActions.RunActionTypes.PlayerReplicChanged, playerIndex, replic
 });
 
-const infoChanged: ActionCreator<RunActions.InfoChangedAction> = (all: Persons, showman: ShowmanInfo, players: PlayerInfo[]) => ({
+const infoChanged: ActionCreator<RunActions.InfoChangedAction> = (all: Persons, showman: PersonInfo, players: PlayerInfo[]) => ({
 	type: RunActions.RunActionTypes.InfoChanged, all, showman, players
 });
 
@@ -122,9 +133,42 @@ const chatPersonSelected: ActionCreator<RunActions.ChatPersonSelectedAction> = (
 	type: RunActions.RunActionTypes.ChatPersonSelected, personName
 });
 
+const tableSelected: ActionCreator<RunActions.TableSelectedAction> = (tableIndex: number) => ({
+	type: RunActions.RunActionTypes.TableSelected, tableIndex
+});
+
 const operationError: ActionCreator<RunActions.OperationErrorAction> = (error: string) => ({
 	type: RunActions.RunActionTypes.OperationError, error
 });
+
+const addTable: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
+	dispatch: Dispatch<RunActions.KnownRunAction>,
+	getState: () => State, dataContext: DataContext) => {
+	if (getState().run.persons.players.length >= Constants.MAX_PLAYERS_COUNT) {
+		return;
+	}
+
+	try {
+		dataContext.gameClient.msgAsync('CONFIG', 'ADDTABLE');
+	} catch (e) {
+		dispatch(operationError(e.message));
+	}
+};
+
+const deleteTable: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
+	dispatch: Dispatch<RunActions.KnownRunAction>,
+	getState: () => State, dataContext: DataContext) => {
+	const tableIndex = getState().run.selectedTableIndex - 1;
+	if (tableIndex <= 0 || tableIndex >= getState().run.persons.players.length) {
+		return;
+	}
+
+	try {
+		dataContext.gameClient.msgAsync('CONFIG', 'DELETETABLE', tableIndex);
+	} catch (e) {
+		dispatch(operationError(e.message));
+	}
+};
 
 const kickPerson: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
 	dispatch: Dispatch<RunActions.KnownRunAction>,
@@ -242,38 +286,40 @@ const clearDecisions: ActionCreator<RunActions.ClearDecisionsAction> = () => ({
 	type: RunActions.RunActionTypes.ClearDecisions
 });
 
-const selectQuestion: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (themeIndex: number, questionIndex: number) =>
-	async (dispatch: Dispatch<any>, getState: () => State, dataContext: DataContext) => {
+const selectQuestion: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (themeIndex: number, questionIndex: number) => async (
+	dispatch: Dispatch<Action>,
+	getState: () => State, dataContext: DataContext
+) => {
+	if (!getState().run.table.isSelectable) {
+		return;
+	}
 
-		if (!getState().run.table.isSelectable) {
-			return;
-		}
-
-		const theme = getState().run.table.roundInfo[themeIndex];
-		if (theme) {
-			const question = theme.questions[questionIndex];
-			if (question > -1) {
-				dataContext.gameClient.msgAsync('CHOICE', themeIndex, questionIndex);
-				dispatch(tableActionCreators.isSelectableChanged(false));
-				dispatch(runActionCreators.decisionNeededChanged(false));
-			}
-		}
-	};
-
-const selectTheme: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (themeIndex: number) =>
-	async (dispatch: Dispatch<any>, getState: () => State, dataContext: DataContext) => {
-
-		if (!getState().run.table.isSelectable) {
-			return;
-		}
-
-		const theme = getState().run.table.roundInfo[themeIndex];
-		if (theme) {
-			dataContext.gameClient.msgAsync('DELETE', themeIndex);
+	const theme = getState().run.table.roundInfo[themeIndex];
+	if (theme) {
+		const question = theme.questions[questionIndex];
+		if (question > -1) {
+			dataContext.gameClient.msgAsync('CHOICE', themeIndex, questionIndex);
 			dispatch(tableActionCreators.isSelectableChanged(false));
-			dispatch(runActionCreators.decisionNeededChanged(false));
+			dispatch(decisionNeededChanged(false));
 		}
-	};
+	}
+};
+
+const selectTheme: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (themeIndex: number) => async (
+	dispatch: Dispatch<Action>,
+	getState: () => State, dataContext: DataContext
+) => {
+	if (!getState().run.table.isSelectable) {
+		return;
+	}
+
+	const theme = getState().run.table.roundInfo[themeIndex];
+	if (theme) {
+		dataContext.gameClient.msgAsync('DELETE', themeIndex);
+		dispatch(tableActionCreators.isSelectableChanged(false));
+		dispatch(decisionNeededChanged(false));
+	}
+};
 
 const isGameButtonEnabledChanged: ActionCreator<RunActions.IsGameButtonEnabledChangedAction> = (isGameButtonEnabled: boolean) => ({
 	type: RunActions.RunActionTypes.IsGameButtonEnabledChanged, isGameButtonEnabled
@@ -386,7 +432,7 @@ const selectionEnabled: ActionCreator<RunActions.SelectionEnabledAction> = (allo
 	type: RunActions.RunActionTypes.SelectionEnabled, allowedIndices, message
 });
 
-const showLeftSeconds = (leftSeconds: number, dispatch: Dispatch<RunActions.KnownRunAction>) => {
+const showLeftSeconds = (leftSeconds: number, dispatch: Dispatch<RunActions.KnownRunAction>): void => {
 	let leftSecondsString = (leftSeconds % 60).toString();
 
 	if (leftSecondsString.length < 2) {
@@ -407,10 +453,13 @@ const showLeftSeconds = (leftSeconds: number, dispatch: Dispatch<RunActions.Know
 	}
 };
 
-const onMediaEnded: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () =>
-	async (dispatch: Dispatch<any>, getState: () => State, dataContext: DataContext) => {
-		dataContext.gameClient.msgAsync('ATOM');
-	};
+const onMediaEnded: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
+	_dispatch: Dispatch<Action>,
+	_getState: () => State,
+	dataContext: DataContext
+) => {
+	dataContext.gameClient.msgAsync('ATOM');
+};
 
 const areSumsEditableChanged: ActionCreator<RunActions.AreSumsEditableChangedAction> = (areSumsEditable: boolean) => ({
 	type: RunActions.RunActionTypes.AreSumsEditableChanged, areSumsEditable
@@ -481,6 +530,8 @@ const runActionCreators = {
 	pause,
 	runShowPersons,
 	runHidePersons,
+	runShowTables,
+	runHideTables,
 	runChatVisibilityChanged,
 	playerSelected,
 	exitGame,
@@ -491,6 +542,9 @@ const runActionCreators = {
 	playerReplicChanged,
 	infoChanged,
 	chatPersonSelected,
+	tableSelected,
+	addTable,
+	deleteTable,
 	kickPerson,
 	banPerson,
 	personAvatarChanged,

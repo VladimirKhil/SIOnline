@@ -1,9 +1,8 @@
 ﻿import * as React from 'react';
-import State from '../../state/State';
 import { connect } from 'react-redux';
-import { Action } from 'redux';
+import { Action, Dispatch } from 'redux';
+import State from '../../state/State';
 import PlayersView from './PlayersView';
-
 import BottomControlPanel from './BottomControlPanel';
 import GameTable from '../gameTable/GameTable';
 import GameChatView from './GameChatView';
@@ -14,15 +13,24 @@ import GameLogView from './GameLogView';
 import AnswerValidationDialog from './AnswerValidationDialog';
 import RoundProgress from './RoundProgress';
 import GameHint from './GameHint';
+import localization from '../../model/resources/localization';
+import runActionCreators from '../../state/run/runActionCreators';
+import PersonsView from './PersonsView';
+import TablesView from './TablesView';
 
 import './InGameView.css';
 
 interface InGameViewProps {
 	windowWidth: number;
+	// eslint-disable-next-line react/no-unused-prop-types
 	isChatOpen: boolean;
 	showPersonsAtBottomOnWideScreen: boolean;
 	isPersonsDialogVisible: boolean;
+	isTablesDialogVisible: boolean;
 	isAnswerValidationDialogVisible: boolean;
+
+	onPersonsDialogClose: () => void;
+	onTablesDialogClose: () => void;
 }
 
 const mapStateToProps = (state: State) => ({
@@ -30,18 +38,43 @@ const mapStateToProps = (state: State) => ({
 	isChatOpen: state.run.chat.isVisible,
 	showPersonsAtBottomOnWideScreen: state.settings.showPersonsAtBottomOnWideScreen,
 	isPersonsDialogVisible: state.run.personsVisible,
+	isTablesDialogVisible: state.run.tablesVisible,
 	isAnswerValidationDialogVisible: state.run.validation.isVisible
 });
 
-const mapDispatchToProps = (dispatch: React.Dispatch<Action>) => ({
-
+const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
+	onPersonsDialogClose: () => {
+		dispatch(runActionCreators.runHidePersons());
+	},
+	onTablesDialogClose: () => {
+		dispatch(runActionCreators.runHideTables());
+	}
 });
 
-export function InGameView(props: InGameViewProps) {
+function getMainAreaContent(props: InGameViewProps): React.ReactNode {
+	if (props.windowWidth >= 1100) {
+		return <GameChatView />;
+	}
+
+	return props.isChatOpen ? (
+		<div id="gameLogHost">
+			<div className="sideArea">
+				<div className="game__chat">
+					<GameLogView />
+				</div>
+			</div>
+			<RoundProgress />
+		</div>
+	) : null;
+}
+
+export function InGameView(props: InGameViewProps) : JSX.Element {
+	const isScreenWide = props.windowWidth >= 1100;
+
 	return (
 		<section className="gameMain">
 			<div className="game__tableArea">
-				<div className={`gameMainView ${props.showPersonsAtBottomOnWideScreen && props.windowWidth >= 1100 ? 'reversed' : ''}`}>
+				<div className={`gameMainView ${props.showPersonsAtBottomOnWideScreen && isScreenWide ? 'reversed' : ''}`}>
 					<PlayersView />
 					<div className="showmanTableArea">
 						<ShowmanReplicView />
@@ -54,25 +87,22 @@ export function InGameView(props: InGameViewProps) {
 				<BottomControlPanel />
 			</div>
 			<div className="game__mainArea">
-				{props.windowWidth >= 1100 ? <GameChatView />
-					: (props.isChatOpen ? (
-						<div id="gameLogHost">
-							<div className="sideArea">
-								<div className="game__chat">
-									<GameLogView />
-								</div>
-							</div>
-							<RoundProgress />
-						</div>
-					) : null)}
+				{getMainAreaContent(props)}
 				<SideControlPanel />
 			</div>
-			{props.isPersonsDialogVisible && props.windowWidth < 1100 ? <PersonsDialog isCompact={props.windowWidth >= 800} /> : null}
+			{props.isPersonsDialogVisible && !isScreenWide ? (
+				<PersonsDialog title={localization.members} onClose={props.onPersonsDialogClose}>
+					<PersonsView />
+				</PersonsDialog>
+			) : null}
+			{props.isTablesDialogVisible && !isScreenWide ? (
+				<PersonsDialog title={localization.tables} onClose={props.onTablesDialogClose}>
+					<TablesView />
+				</PersonsDialog>
+			) : null}
 			{props.isAnswerValidationDialogVisible ? <AnswerValidationDialog /> : null}
 		</section>
 	);
 }
 
-const inGameHOC = connect(mapStateToProps, mapDispatchToProps)(InGameView);
-
-export default inGameHOC;
+export default connect(mapStateToProps, mapDispatchToProps)(InGameView);

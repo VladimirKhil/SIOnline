@@ -2,7 +2,7 @@ import ChatMode from '../../model/enums/ChatMode';
 import ChatMessage from '../../model/ChatMessage';
 import Account from '../../model/Account';
 import Persons from '../../model/Persons';
-import ShowmanInfo from '../../model/ShowmanInfo';
+import PersonInfo from '../../model/PersonInfo';
 import PlayerInfo from '../../model/PlayerInfo';
 import Role from '../../model/enums/Role';
 import PlayerStates from '../../model/enums/PlayerStates';
@@ -14,6 +14,8 @@ export const enum RunActionTypes {
 	RunChatVisibilityChanged = 'RUN_CHAT_VISIBILITY_CHANGED',
 	RunShowPersons = 'RUN_SHOW_PERSONS',
 	RunHidePersons = 'RUN_HIDE_PERSONS',
+	RunShowTables = 'RUN_SHOW_TABLES',
+	RunHideTables = 'RUN_HIDE_TABLES',
 	ChatMessageAdded = 'CHAT_MESSAGE_ADDED',
 	LastReplicChanged = 'LAST_REPLIC_CHANGED',
 	ActivateChat = 'ACTIVATE_CHAT',
@@ -21,6 +23,7 @@ export const enum RunActionTypes {
 	PlayerReplicChanged = 'PLAYER_REPLIC_CHANGED',
 	InfoChanged = 'INFO_CHANGED',
 	ChatPersonSelected = 'CHAT_PERSON_SELECTED',
+	TableSelected = 'TABLE_SELECTED',
 	PersonAvatarChanged = 'PERSON_AVATAR_CHANGED',
 	GameStarted = 'GAME_STARTED',
 	StageChanged = 'STAGE_CHANGED',
@@ -70,13 +73,16 @@ export type RunChatMessageChangedAction = { type: RunActionTypes.RunChatMessageC
 export type RunChatVisibilityChangedAction = { type: RunActionTypes.RunChatVisibilityChanged, isOpen: boolean };
 export type RunShowPersonsAction = { type: RunActionTypes.RunShowPersons };
 export type RunHidePersonsAction = { type: RunActionTypes.RunHidePersons };
+export type RunShowTablesAction = { type: RunActionTypes.RunShowTables };
+export type RunHideTablesAction = { type: RunActionTypes.RunHideTables };
 export type ChatMessageAddedAction = { type: RunActionTypes.ChatMessageAdded, chatMessage: ChatMessage };
 export type LastReplicChangedAction = { type: RunActionTypes.LastReplicChanged, chatMessage: ChatMessage | null };
 export type ActivateChatAction = { type: RunActionTypes.ActivateChat };
 export type ShowmanReplicChangedAction = { type: RunActionTypes.ShowmanReplicChanged, replic: string };
 export type PlayerReplicChangedAction = { type: RunActionTypes.PlayerReplicChanged, playerIndex: number, replic: string };
-export type InfoChangedAction = { type: RunActionTypes.InfoChanged, all: Persons, showman: ShowmanInfo, players: PlayerInfo[] };
+export type InfoChangedAction = { type: RunActionTypes.InfoChanged, all: Persons, showman: PersonInfo, players: PlayerInfo[] };
 export type ChatPersonSelectedAction = { type: RunActionTypes.ChatPersonSelected, personName: string };
+export type TableSelectedAction = { type: RunActionTypes.TableSelected, tableIndex: number };
 export type PersonAvatarChangedAction = { type: RunActionTypes.PersonAvatarChanged, personName: string, avatarUri: string };
 export type GameStartedAction = { type: RunActionTypes.GameStarted };
 export type StageChangedAction = { type: RunActionTypes.StageChanged, stageName: string };
@@ -143,6 +149,8 @@ export type KnownRunAction =
 	| RunChatVisibilityChangedAction
 	| RunShowPersonsAction
 	| RunHidePersonsAction
+	| RunShowTablesAction
+	| RunHideTablesAction
 	| ChatMessageAddedAction
 	| LastReplicChangedAction
 	| ActivateChatAction
@@ -150,6 +158,7 @@ export type KnownRunAction =
 	| PlayerReplicChangedAction
 	| InfoChangedAction
 	| ChatPersonSelectedAction
+	| TableSelectedAction
 	| PersonAvatarChangedAction
 	| GameStartedAction
 	| StageChangedAction

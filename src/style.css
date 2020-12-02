@@ -262,11 +262,7 @@ h1.activeTab {
     border-color: #FFE682;
 }
 
-#playersTitle {
-    margin-left: 8px;
-}
-
-    .tabHeader h1:hover, #playersTitle:hover {
+    .tabHeader h1:hover {
         color: #FFF2BD;
         border-color: #FFF2BD;
     }

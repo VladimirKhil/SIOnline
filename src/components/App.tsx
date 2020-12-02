@@ -1,10 +1,8 @@
 ﻿import * as React from 'react';
 import { connect } from 'react-redux';
-
+import { Action, Dispatch } from 'redux';
 import MainView from '../model/enums/MainView';
-
 import State from '../state/State';
-
 import Login from './Login';
 import Loading from './Loading';
 import About from './About';
@@ -13,7 +11,6 @@ import OnlineView from './OnlineView';
 import InGameView from './game/InGameView';
 import SettingsDialog from './settings/SettingsDialog';
 import NewGameDialog from './NewGameDialog';
-import { Action, Dispatch } from 'redux';
 import actionCreators from '../state/actionCreators';
 import Games from './Games';
 
@@ -41,10 +38,6 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 declare const onLoad: () => void;
 
 export class App extends React.Component<AppProps> {
-	constructor(props: AppProps) {
-		super(props);
-	}
-
 	componentDidMount() {
 		if (onLoad) {
 			onLoad();
@@ -76,12 +69,13 @@ export class App extends React.Component<AppProps> {
 
 			case MainView.Game:
 				return <InGameView />;
-		}
 
-		return null;
+			default:
+				return null;
+		}
 	}
 
-	render() {
+	render(): JSX.Element {
 		return (
 			<div className="app">
 				{this.getContent()}

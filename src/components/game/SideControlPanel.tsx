@@ -30,6 +30,7 @@ interface SideControlPanelProps {
 	onChatVisibilityChanged: (isOpen: boolean) => void;
 	onMarkQuestion: () => void;
 	onShowPersons: () => void;
+	onShowTables: () => void;
 	onPause: () => void;
 	onExit: () => void;
 	onEditSums: (enable: boolean) => void;
@@ -52,23 +53,26 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 		dispatch(runActionCreators.runChatVisibilityChanged(isOpen));
 	},
 	onMarkQuestion: () => {
-		dispatch((runActionCreators.markQuestion() as object) as Action);
+		dispatch(runActionCreators.markQuestion() as unknown as Action);
 	},
 	onShowPersons: () => {
 		dispatch(runActionCreators.runShowPersons());
 	},
+	onShowTables: () => {
+		dispatch(runActionCreators.runShowTables());
+	},
 	onPause: () => {
-		dispatch((runActionCreators.pause() as object) as Action);
+		dispatch(runActionCreators.pause() as unknown as Action);
 	},
 	onExit: () => {
-		dispatch((runActionCreators.exitGame() as object) as Action);
+		dispatch(runActionCreators.exitGame() as unknown as Action);
 	},
 	onEditSums: (enable: boolean) => {
-		dispatch((runActionCreators.areSumsEditableChanged(enable) as object) as Action);
+		dispatch(runActionCreators.areSumsEditableChanged(enable) as unknown as Action);
 	}
 });
 
-export function SideControlPanel(props: SideControlPanelProps) {
+export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 	const chatButtonStyle: React.CSSProperties = {
 		backgroundColor: props.isChatActive ? 'lightyellow' : 'transparent'
 	};
@@ -80,22 +84,29 @@ export function SideControlPanel(props: SideControlPanelProps) {
 
 	return (
 		<div className="game__utilsArea">
-			{props.role === Role.Player ?
-				(<div className="playerButtonWrapper">
-					<div id="playerButtonHost">
-						<GameButton />
-						{props.areStakesVisible ? <StakeSumEditor type="number" className="stakeSum checkSum" /> : null}
+			{props.role === Role.Player
+				? (
+					<div className="playerButtonWrapper">
+						<div id="playerButtonHost">
+							<GameButton />
+							{props.areStakesVisible ? <StakeSumEditor type="number" className="stakeSum checkSum" /> : null}
+						</div>
 					</div>
-				</div>) : null
-			}
+				) : null}
 
 			<div id="gameMessageHost">
 				<div id="messageWrapper">
 					<ChatInput />
 					<AnswerInput id="answerBox" />
-					<button id="showChat" onClick={() => props.onChatVisibilityChanged(!props.isChatVisible)}
+					<button
+						type="button"
+						id="showChat"
+						onClick={() => props.onChatVisibilityChanged(!props.isChatVisible)}
 						style={chatButtonStyle}
-						title={localization.showChat}><span>{props.isChatVisible ? '▼' : '▲'}</span></button>
+						title={localization.showChat}
+					>
+						<span>{props.isChatVisible ? '▼' : '▲'}</span>
+					</button>
 					{props.areStakesVisible ? (
 						<div className="stakeRangeHost">
 							<StakeSumEditor type="range" className="stakeRange" />
@@ -104,43 +115,76 @@ export function SideControlPanel(props: SideControlPanelProps) {
 				</div>
 
 				<div id="buttons">
-					{canPause ? <button id="pauseButton" disabled={!props.isConnected} onClick={() => props.onPause()}>{pauseTitle}</button> : null}
+					{canPause ? (
+						<button type="button" id="pauseButton" disabled={!props.isConnected} onClick={() => props.onPause()}>
+							{pauseTitle}
+						</button>
+					) : null}
 					<div id="gameMenuHost">
-						<FlyoutButton className="gameMenuButton" title={localization.menu} flyout={
-							<ul className="gameMenu">
-								{props.role === Role.Showman ?
-									<li className={`${enabledClass} ${props.areSumsEditable ? 'active' : ''}`}
-										onClick={() => props.onEditSums(!props.areSumsEditable)}>{localization.changeSums}</li>
-									: null
-								}
-								<li className={enabledClass} onClick={() => props.onMarkQuestion()} title={localization.complainHint}>
-									{localization.complain}
-								</li>
-								<li onClick={() => props.onShowPersons()}>{localization.members}</li>
-								{canPause ? <li className={enabledClass} onClick={() => props.onPause()}>{pauseTitle}</li> : null}
-							</ul>
-						} theme={FlyoutTheme.Light} alignWidth verticalOrientation={FlyoutVerticalOrientation.Top}>…</FlyoutButton>
-					</div>
-					<FlyoutButton className="exit" title={localization.menu} flyout={
-						<div id="exitMenu" className="exitMenu">
-							<div id="exitMenuPopup" className="gameMenuPopup">
-								<p>{localization.exitConfirmation}</p>
-								<ul>
-									<li className={enabledClass} onClick={() => props.onExit()}>{localization.exitFromGame}</li>
+						<FlyoutButton
+							className="gameMenuButton"
+							title={localization.menu}
+							flyout={(
+								<ul className="gameMenu">
+									{props.role === Role.Showman
+										? (
+											<li
+												className={`${enabledClass} ${props.areSumsEditable ? 'active' : ''}`}
+												onClick={() => props.onEditSums(!props.areSumsEditable)}
+											>
+												{localization.changeSums}
+											</li>
+										) : null}
+									<li className={enabledClass} onClick={() => props.onMarkQuestion()} title={localization.complainHint}>
+										{localization.complain}
+									</li>
+									<li onClick={() => props.onShowPersons()}>{localization.members}</li>
+									<li onClick={() => props.onShowTables()}>{localization.tables}</li>
+									{canPause ? <li className={enabledClass} onClick={() => props.onPause()}>{pauseTitle}</li> : null}
 								</ul>
+							)}
+							theme={FlyoutTheme.Light}
+							alignWidth
+							verticalOrientation={FlyoutVerticalOrientation.Top}
+						>
+							<span>…</span>
+						</FlyoutButton>
+					</div>
+					<FlyoutButton
+						className="exit"
+						title={localization.menu}
+						flyout={(
+							<div id="exitMenu" className="exitMenu">
+								<div id="exitMenuPopup" className="gameMenuPopup">
+									<p>{localization.exitConfirmation}</p>
+									<ul>
+										<li className={enabledClass} onClick={() => props.onExit()}>{localization.exitFromGame}</li>
+									</ul>
+								</div>
 							</div>
-						</div>
-					} theme={FlyoutTheme.Light} alignWidth
-					verticalOrientation={FlyoutVerticalOrientation.Top}>{localization.exit}</FlyoutButton>
+						)}
+						theme={FlyoutTheme.Light}
+						alignWidth
+						verticalOrientation={FlyoutVerticalOrientation.Top}
+					>
+						{localization.exit}
+					</FlyoutButton>
 				</div>
 			</div>
 
 			{props.lastReplic && props.lastReplic.text.length > 0 ? (
 				<div id="lastReplic">
-					<span>{props.lastReplic.sender ? (<span><b>{props.lastReplic.sender}</b>: </span>) : null}{props.lastReplic.text}</span>
-				</div>)
-				: null
-			}
+					<span>
+						{props.lastReplic.sender ? (
+							<span>
+								<b>{props.lastReplic.sender}</b>
+								<span>: </span>
+							</span>
+						) : null}
+						{props.lastReplic.text}
+					</span>
+				</div>
+			) : null}
 
 			<div id="stakeButtonsHost">
 				{props.areStakesVisible ? (

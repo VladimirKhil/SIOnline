@@ -1,18 +1,18 @@
-#personsDialog {
+.personsDialog {
     background-color: #000451;
-    z-index: 2;
+    z-index: 4;
     display: flex;
     flex-direction: column;
 }
 
-#personsDialog header {
+.personsDialog header {
     flex: 0 0 60px;
 }
 
 @media screen and (min-width: 800px) {
-    #personsDialog {
+    .personsDialog {
         width: 300px;
-        top: 49px;
+        top: 0;
         left: initial;
         bottom: 45px;
         border-left: 1px solid darkgray;

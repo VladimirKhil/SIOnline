@@ -1,0 +1,25 @@
+.tablesList {
+    overflow: auto;
+    width: 100%;
+    flex: 1 0 0;
+    background-color: #C0CFF4;
+}
+
+.tablesHeader {
+	padding: 0 10px;
+    background-color: rgb(0, 4, 81);
+    font-weight: bold;
+	font-size: 18px;
+	color: #FFE682;height: 43px;
+    display: flex;
+    align-items: center;
+}
+
+.addTableButton {
+    border: 0;
+    margin-left: 5px;
+    font-size: 22px;
+    font-weight: bold;
+    padding: 0;
+    width: 23px;
+}
