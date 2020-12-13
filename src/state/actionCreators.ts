@@ -108,72 +108,89 @@ const saveStateToStorage = (state: State) => {
 	});
 };
 
-const login: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () =>
-	async (dispatch: Dispatch<Actions.KnownAction>, getState: () => State, dataContext: DataContext) => {
-		dispatch(loginStart());
+function getLoginErrorByCode(response: Response): string {
+	switch (response.status) {
+		case 0:
+			return localization.cannotConnectToServer;
 
-		const state = getState();
+		case 403:
+			return localization.forbiddenNickname;
 
-		try {
-			const response = await fetch(`${dataContext.serverUri}/api/Account/LogOn`, {
-				method: 'POST',
-				credentials: 'include',
-				body: `login=${state.user.login}&password=`,
-				headers: {
-					'Content-Type': 'application/x-www-form-urlencoded'
-				}
-			});
+		case 409:
+			return localization.duplicateUserName;
 
-			if (response.ok) {
-				saveStateToStorage(state);
-
-				const token = await response.text();
-				const queryString = `?token=${encodeURIComponent(token)}`;
-
-				let connectionBuilder = new signalR.HubConnectionBuilder()
-					.withAutomaticReconnect()
-					.withUrl(`${dataContext.serverUri}/sionline${queryString}`);
-
-				if (dataContext.config.useMessagePackProtocol) {
-					connectionBuilder = connectionBuilder.withHubProtocol(new signalRMsgPack.MessagePackHubProtocol());
-				}
-
-				const connection = connectionBuilder.build();
-				dataContext.connection = connection;
-				dataContext.gameClient = new GameServerClient(connection);
-
-				try {
-					await dataContext.connection.start();
-
-					if (dataContext.connection.connectionId) {
-						activeConnections.push(dataContext.connection.connectionId);
-					}
-
-					attachListeners(dataContext.connection, dispatch);
-
-					const computerAccounts = await dataContext.gameClient.getComputerAccountsAsync();
-					dispatch(computerAccountsChanged(computerAccounts));
-
-					dispatch(loginEnd());
-					dispatch(navigateToWelcome());
-				} catch (error) {
-					dispatch(loginEnd(`${localization.cannotConnectToServer}: ${error.message}`));
-				}
-			} else {
-				const errorText =
-					response.status === 409 ? localization.duplicateUserName :
-						response.status === 0 ? localization.cannotConnectToServer : response.statusText;
-
-				dispatch(loginEnd(errorText));
-			}
-		} catch (err) {
-			dispatch(loginEnd(`${localization.cannotConnectToServer}: ${err.message}`));
-		}
-	};
+		default:
+			return response.statusText;
+	}
+}
 
 const navigateToWelcome: ActionCreator<Actions.NavigateToWelcomeAction> = () => ({
 	type: Actions.ActionTypes.NavigateToWelcome
 });
+
+const login: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
+	dispatch: Dispatch<Actions.KnownAction>,
+	getState: () => State,
+	dataContext: DataContext) => {
+	dispatch(loginStart());
+
+	const state = getState();
+
+	try {
+		const response = await fetch(`${dataContext.serverUri}/api/Account/LogOn`, {
+			method: 'POST',
+			credentials: 'include',
+			body: `login=${state.user.login}&password=`,
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded'
+			}
+		});
+
+		if (response.ok) {
+			saveStateToStorage(state);
+
+			const token = await response.text();
+			const queryString = `?token=${encodeURIComponent(token)}`;
+
+			let connectionBuilder = new signalR.HubConnectionBuilder()
+				.withAutomaticReconnect()
+				.withUrl(`${dataContext.serverUri}/sionline${queryString}`);
+
+			if (dataContext.config.useMessagePackProtocol) {
+				connectionBuilder = connectionBuilder.withHubProtocol(new signalRMsgPack.MessagePackHubProtocol());
+			}
+
+			const connection = connectionBuilder.build();
+			// eslint-disable-next-line no-param-reassign
+			dataContext.connection = connection;
+			// eslint-disable-next-line no-param-reassign
+			dataContext.gameClient = new GameServerClient(connection);
+
+			try {
+				await dataContext.connection.start();
+
+				if (dataContext.connection.connectionId) {
+					activeConnections.push(dataContext.connection.connectionId);
+				}
+
+				attachListeners(dataContext.connection, dispatch);
+
+				const computerAccounts = await dataContext.gameClient.getComputerAccountsAsync();
+				dispatch(computerAccountsChanged(computerAccounts));
+
+				dispatch(loginEnd());
+				dispatch(navigateToWelcome());
+			} catch (error) {
+				dispatch(loginEnd(`${localization.cannotConnectToServer}: ${error.message}`));
+			}
+		} else {
+			const errorText = getLoginErrorByCode(response);
+			dispatch(loginEnd(errorText));
+		}
+	} catch (err) {
+		dispatch(loginEnd(`${localization.cannotConnectToServer}: ${err.message}`));
+	}
+};
 
 const singlePlay: ActionCreator<Actions.NavigateToNewGameAction> = () => ({
 	type: Actions.ActionTypes.NavigateToNewGame
@@ -580,131 +597,132 @@ function getRandomValue(): number {
 	return array[0];
 }
 
-const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (isSingleGame: boolean) =>
-	async (dispatch: Dispatch<any>, getState: () => State, dataContext: DataContext) => {
-		const state = getState();
+const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (isSingleGame: boolean) => async (
+	dispatch: Dispatch<any>,
+	getState: () => State,
+	dataContext: DataContext) => {
+	const state = getState();
 
-		if (state.game.name.length === 0 || state.common.computerAccounts === null) {
+	if (state.game.name.length === 0 || state.common.computerAccounts === null) {
+		dispatch(gameCreationEnd(localization.gameNameMustBeSpecified));
+		return;
+	}
+
+	dispatch(gameCreationStart());
+
+	// TODO: single game requires `isPrivate` flag, not random password to be closed for everyone
+	// With `isRandom` flag game name could also be omitted
+
+	const game = isSingleGame ? {
+		...state.game,
+		password: getRandomValue().toString(), // protecting from anyone to join
+		isShowmanHuman: false,
+		humanPlayersCount: 0
+	} : state.game;
+
+	const { playersCount, humanPlayersCount, role } = game;
+	const me = { Name: state.user.login, IsHuman: true, IsMale: state.settings.sex === Sex.Male };
+
+	const showman: AccountSettings = role === Role.Showman ? me :
+		(game.isShowmanHuman ? { Name: Constants.ANY_NAME, IsHuman: true } : { Name: localization.defaultShowman });
+	const players: AccountSettings[] = [];
+	const viewers: AccountSettings[] = [];
+
+	if (role === Role.Viewer) {
+		viewers.push(me);
+	} else if (role === Role.Player) {
+		players.push(me);
+	}
+
+	const compPlayersCount = playersCount - humanPlayersCount - (role === Role.Player ? 1 : 0);
+
+	const compIndicies = [];
+	for (let i = 0; i < state.common.computerAccounts.length; i++) {
+		compIndicies.push(i);
+	}
+
+	for (let i = 0; i < humanPlayersCount; i++) {
+		players.push({ Name: Constants.ANY_NAME, IsHuman: true });
+	}
+
+	for (let i = 0; i < compPlayersCount; i++) {
+		const ind = Math.floor((Math.random() * compIndicies.length));
+		players.push({ Name: state.common.computerAccounts[compIndicies[ind]], IsHuman: false });
+		compIndicies.splice(ind, 1);
+	}
+
+	const timeSettings: TimeSettings = {
+		TimeForChoosingQuestion: 30,
+		TimeForThinkingOnQuestion: 5,
+		TimeForPrintingAnswer: 25,
+		TimeForGivingACat: 30,
+		TimeForMakingStake: 30,
+		TimeForThinkingOnSpecial: 25,
+		TimeOfRound: 660,
+		TimeForChoosingFinalTheme: 30,
+		TimeForFinalThinking: 45,
+		TimeForShowmanDecisions: 30,
+		TimeForRightAnswer: 2,
+		TimeForMediaDelay: 0
+	};
+
+	const gameMode = game.type;
+
+	const appSettings: ServerAppSettings = {
+		TimeSettings: timeSettings,
+		ReadingSpeed: 20,
+		FalseStart: state.settings.appSettings.falseStart,
+		HintShowman: state.settings.appSettings.hintShowman,
+		Oral: state.settings.appSettings.oral,
+		IgnoreWrong: false,
+		GameMode: gameMode.toString(),
+		RandomQuestionsBasePrice: gameMode === GameType.Simple ? 10 : 100,
+		RandomRoundsCount: gameMode === GameType.Simple ? 1 : 3,
+		RandomThemesCount: gameMode === GameType.Simple ? 5 : 6,
+		Culture: 'ru-RU'
+	};
+
+	const gameSettings: GameSettings = {
+		HumanPlayerName: state.user.login,
+		RandomSpecials: game.package.type === PackageType.Random,
+		NetworkGameName: game.name,
+		NetworkGamePassword: game.password,
+		AllowViewers: true,
+		Showman: showman,
+		Players: players,
+		Viewers: viewers,
+		AppSettings: appSettings
+	};
+
+	try {
+		const packageKey: PackageKey | null = game.package.type === PackageType.Random || !game.package.data ? {
+			name: '',
+			hash: null,
+			id: null
+		} : await checkAndUploadPackageAsync(dataContext.gameClient, dataContext.serverUri, game.package.data, dispatch);
+
+		if (!packageKey) {
+			dispatch(gameCreationEnd(localization.badPackage));
 			return;
 		}
 
-		dispatch(gameCreationStart());
+		const result = await dataContext.gameClient.createAndJoinGameAsync(gameSettings, packageKey, state.settings.sex === Sex.Male);
 
-		// TODO: single game requires `isPrivate` flag, not random password to be closed for everyone
-		// With `isRandom` flag game name could also be omitted
+		saveStateToStorage(state);
 
-		const game = isSingleGame ? {
-			...state.game,
-			password: getRandomValue().toString(), // protecting from anyone to join
-			isShowmanHuman: false,
-			humanPlayersCount: 0
-		} : state.game;
+		dispatch(gameCreationEnd());
+		if (result.code > 0) {
+			dispatch(gameCreationEnd(GameErrorsHelper.getMessage(result.code) + (result.errorMessage || '')));
+		} else {
+			dispatch(newGameCancel());
+			dispatch(gameSet(result.gameId, true, false, role));
 
-		const role = game.role;
-		const me = { Name: state.user.login, IsHuman: true, IsMale: state.settings.sex === Sex.Male };
-
-		const showman: AccountSettings = role === Role.Showman ? me :
-			(game.isShowmanHuman ? { Name: Constants.ANY_NAME, IsHuman: true } : { Name: localization.defaultShowman });
-		const players: AccountSettings[] = [];
-		const viewers: AccountSettings[] = [];
-
-		const playersCount = game.playersCount;
-		const humanPlayersCount = game.humanPlayersCount;
-		if (role === Role.Viewer) {
-			viewers.push(me);
-		} else if (role === Role.Player) {
-			players.push(me);
+			await gameInit(result.gameId, dataContext, role);
 		}
-
-		const compPlayersCount = playersCount - humanPlayersCount - (role === Role.Player ? 1 : 0);
-
-		const compIndicies = [];
-		for (let i = 0; i < state.common.computerAccounts.length; i++) {
-			compIndicies.push(i);
-		}
-
-		for (let i = 0; i < humanPlayersCount; i++) {
-			players.push({ Name: Constants.ANY_NAME, IsHuman: true });
-		}
-
-		for (let i = 0; i < compPlayersCount; i++) {
-			const ind = Math.floor((Math.random() * compIndicies.length));
-			players.push({ Name: state.common.computerAccounts[compIndicies[ind]], IsHuman: false });
-			compIndicies.splice(ind, 1);
-		}
-
-		const timeSettings: TimeSettings = {
-			TimeForChoosingQuestion: 30,
-			TimeForThinkingOnQuestion: 5,
-			TimeForPrintingAnswer: 25,
-			TimeForGivingACat: 30,
-			TimeForMakingStake: 30,
-			TimeForThinkingOnSpecial: 25,
-			TimeOfRound: 660,
-			TimeForChoosingFinalTheme: 30,
-			TimeForFinalThinking: 45,
-			TimeForShowmanDecisions: 30,
-			TimeForRightAnswer: 2,
-			TimeForMediaDelay: 0
-		};
-
-		const gameMode = game.type;
-
-		const appSettings: ServerAppSettings = {
-			TimeSettings: timeSettings,
-			ReadingSpeed: 20,
-			FalseStart: state.settings.appSettings.falseStart,
-			HintShowman: state.settings.appSettings.hintShowman,
-			Oral: state.settings.appSettings.oral,
-			IgnoreWrong: false,
-			GameMode: gameMode.toString(),
-			RandomQuestionsBasePrice: gameMode === GameType.Simple ? 10 : 100,
-			RandomRoundsCount: gameMode === GameType.Simple ? 1 : 3,
-			RandomThemesCount: gameMode === GameType.Simple ? 5 : 6,
-			Culture: 'ru-RU'
-		};
-
-		const gameSettings: GameSettings = {
-			HumanPlayerName: state.user.login,
-			RandomSpecials: game.package.type === PackageType.Random,
-			NetworkGameName: game.name,
-			NetworkGamePassword: game.password,
-			AllowViewers: true,
-			Showman: showman,
-			Players: players,
-			Viewers: viewers,
-			AppSettings: appSettings
-		};
-
-		try {
-			const packageKey: PackageKey | null = game.package.type === PackageType.Random || !game.package.data ? {
-				name: '',
-				hash: null,
-				id: null
-			} : await checkAndUploadPackageAsync(dataContext.gameClient, dataContext.serverUri, game.package.data, dispatch);
-
-			if (!packageKey) {
-				dispatch(gameCreationEnd(localization.badPackage));
-				return;
-			}
-
-			const result = await dataContext.gameClient.createAndJoinGameAsync(gameSettings, packageKey, state.settings.sex === Sex.Male);
-
-			saveStateToStorage(state);
-
-			dispatch(gameCreationEnd());
-			if (result.code > 0) {
-				dispatch(gameCreationEnd(GameErrorsHelper.getMessage(result.code) + (result.errorMessage || '')));
-			} else {
-				dispatch(newGameCancel());
-				dispatch(gameSet(result.gameId, true, false, role));
-
-				await gameInit(result.gameId, dataContext, role);
-			}
-		} catch (error) {
-			dispatch(gameCreationEnd(error.message));
-		}
-	};
+	} catch (error) {
+		dispatch(gameCreationEnd(error.message));
+	}
+};
 
 const createNewAutoGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () =>
 	async (dispatch: Dispatch<any>, getState: () => State, dataContext: DataContext) => {

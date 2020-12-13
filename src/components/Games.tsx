@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unused-prop-types */
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch, Action } from 'redux';
@@ -40,7 +41,7 @@ const mapStateToProps = (state: State) => {
 
 	filteredGames.sort((game1, game2) => game1.gameName.localeCompare(game2.gameName));
 
-	const selectedGameId = state.online.selectedGameId;
+	const { selectedGameId } = state.online;
 
 	return {
 		isConnected: state.common.isConnected,
@@ -75,49 +76,67 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	}
 });
 
-export class Games extends React.Component<GamesProps> {
-	constructor(props: GamesProps) {
-		super(props);
+function renderGameList(props: GamesProps): React.ReactNode {
+	if (props.error.length > 0) {
+		return <span className="loadError">{props.error}</span>;
 	}
 
-	render() {
-		return this.props.newGameShown
-			? (<NewGameDialog isSingleGame={false} onClose={this.props.closeNewGame} />)
-			: this.props.selectedGame ? (
-				<Dialog id="gameInfoDialog" title={this.props.selectedGame.gameName} onClose={() => this.props.unselectGame()}>
-					<GameInfoView game={this.props.selectedGame} showGameName={false} />
-				</Dialog>
-			) : (
-				<section className="games">
-					<button className="dialog_closeButton" onClick={this.props.onClose}>
-						<img src={closeSvg} alt={localization.close} />
-					</button>
-					<div className="games_main">
-						<h2>{localization.gamesTitle}</h2>
-						<div className="games_controls">
-							<input id="gamesSearch" className="gamesSearch" type="search" value={this.props.gamesSearch}
-								placeholder={localization.searchGames} autoFocus
-								onChange={e => this.props.onGamesSearchChanged(e.target.value)} />
-							<button id="newGame" disabled={!this.props.isConnected} onClick={this.props.onNewGame}>
-								{localization.newGame.toLocaleUpperCase()}
-							</button>
-						</div>
-						{this.props.error.length === 0 ?
-							this.props.gamesSearch.length > 1 ? (
-								<ul className="gamenames">
-									{this.props.filteredGames.map(game => (
-										<li key={game.gameID}
-											onClick={() => this.props.onSelectGame(game.gameID, false)}>
-											<div style={{ color: game.passwordRequired ? '#760000' : 'black' }}>{game.gameName}</div>
-										</li>
-									))}
-								</ul>
-							) : <span className="searchHint">{localization.searchHint}</span>
-							: <span className="loadError">{this.props.error}</span>}
-					</div>
-				</section>
-			);
+	if (props.gamesSearch.length <= 1) {
+		return <span className="searchHint">{localization.searchHint}</span>;
 	}
+
+	return (
+		<ul className="gamenames">
+			{props.filteredGames.map(game => (
+				<li
+					key={game.gameID}
+					onClick={() => props.onSelectGame(game.gameID, false)}
+				>
+					<div style={{ color: game.passwordRequired ? '#760000' : 'black' }}>{game.gameName}</div>
+				</li>
+			))}
+		</ul>
+	);
 }
+
+export function Games(props: GamesProps): JSX.Element {
+	if (props.newGameShown) {
+		return <NewGameDialog isSingleGame={false} onClose={props.closeNewGame} />;
+	}
+
+	return props.selectedGame ? (
+		<Dialog id="gameInfoDialog" title={props.selectedGame.gameName} onClose={() => props.unselectGame()}>
+			<GameInfoView game={props.selectedGame} showGameName={false} />
+		</Dialog>
+	) : (
+		<section className="games">
+			<button type="button" className="dialog_closeButton" onClick={props.onClose}>
+				<img src={closeSvg} alt={localization.close} />
+			</button>
+			<div className="games_main">
+				<h2>{localization.gamesTitle}</h2>
+				<div className="games_controls">
+					<input
+						id="gamesSearch"
+						className="gamesSearch"
+						type="search"
+						value={props.gamesSearch}
+						placeholder={localization.searchGames}
+						autoFocus
+						onChange={e => props.onGamesSearchChanged(e.target.value)}
+					/>
+					<button type="button" id="newGame" disabled={!props.isConnected} onClick={props.onNewGame}>
+						{localization.newGame.toLocaleUpperCase()}
+					</button>
+				</div>
+				{renderGameList(props)}
+			</div>
+		</section>
+	);
+}
+
+Games.defaultProps = {
+	selectedGame: undefined
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(Games);

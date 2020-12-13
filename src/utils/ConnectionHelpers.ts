@@ -5,15 +5,16 @@ import runActionCreators from '../state/run/runActionCreators';
 import actionCreators from '../state/actionCreators';
 import Message from '../model/Message';
 import messageProcessor from '../state/game/messageProcessor';
+import GameInfo from '../model/server/GameInfo';
 
 export const activeConnections: string[] = [];
 
-export function attachListeners(connection: signalR.HubConnection, dispatch: Dispatch<AnyAction>) {
+export function attachListeners(connection: signalR.HubConnection, dispatch: Dispatch<AnyAction>): void {
 	connection.on('Joined', (login: string) => dispatch(actionCreators.userJoined(login)));
 	connection.on('Leaved', (login: string) => dispatch(actionCreators.userLeaved(login)));
 	connection.on('Say', (name: string, text: string) => dispatch(actionCreators.receiveMessage(name, text)));
-	connection.on('GameCreated', (game: any) => dispatch(actionCreators.gameCreated(game)));
-	connection.on('GameChanged', (game: any) => dispatch(actionCreators.gameChanged(game)));
+	connection.on('GameCreated', (game: GameInfo) => dispatch(actionCreators.gameCreated(game)));
+	connection.on('GameChanged', (game: GameInfo) => dispatch(actionCreators.gameChanged(game)));
 	connection.on('GameDeleted', (id: number) => dispatch(actionCreators.gameDeleted(id)));
 
 	connection.on('Receive', (message: Message) => messageProcessor(dispatch, message));
@@ -48,7 +49,7 @@ export function attachListeners(connection: signalR.HubConnection, dispatch: Dis
 	});
 }
 
-export function detachListeners(connection: signalR.HubConnection) {
+export function detachListeners(connection: signalR.HubConnection): void {
 	connection.off('Joined');
 	connection.off('Leaved');
 	connection.off('Say');
@@ -58,7 +59,7 @@ export function detachListeners(connection: signalR.HubConnection) {
 	connection.off('Receive');
 	connection.off('Disconnect');
 
-	connection.onreconnecting((e) => { });
+	connection.onreconnecting(() => { });
 	connection.onreconnected(() => { });
-	connection.onclose((e) => { });
+	connection.onclose(() => { });
 }

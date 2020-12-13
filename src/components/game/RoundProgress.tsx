@@ -1,7 +1,6 @@
 import * as React from 'react';
-import State from '../../state/State';
 import { connect } from 'react-redux';
-import { Action } from 'redux';
+import State from '../../state/State';
 import ProgressBar from '../common/ProgressBar';
 import TimerInfo from '../../model/TimerInfo';
 import { isRunning } from '../../utils/TimerInfoHelpers';
@@ -15,16 +14,14 @@ const mapStateToProps = (state: State) => ({
 	roundTimer: state.run.timers.round
 });
 
-const mapDispatchToProps = (dispatch: React.Dispatch<Action>) => ({
-
-});
-
-export function RoundProgress(props: RoundProgressProps) {
+export function RoundProgress(props: RoundProgressProps): JSX.Element {
 	return (
-		<ProgressBar value={1 - props.roundTimer.value / props.roundTimer.maximum}
+		<ProgressBar
+			value={1 - props.roundTimer.value / props.roundTimer.maximum}
 			valueChangeDuration={isRunning(props.roundTimer) ? (props.roundTimer.maximum - props.roundTimer.value) / 10 : 0}
-			title={localization.roundTime} />
+			title={localization.roundTime}
+		/>
 	);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(RoundProgress);
+export default connect(mapStateToProps, {})(RoundProgress);

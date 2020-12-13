@@ -220,7 +220,7 @@
     }
 }
 
-@media screen and (min-height: 600px) {
+@media screen and (min-height: 600px), (max-width: 600px) {
     #playersPanel {
         flex: 0.3;
     }

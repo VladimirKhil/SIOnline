@@ -1,22 +1,19 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import State from '../../state/State';
 import { Dispatch, Action } from 'redux';
+import State from '../../state/State';
 import runActionCreators from '../../state/run/runActionCreators';
 import AutoSizedText from '../common/AutoSizedText';
 import PlayerInfo from '../../model/PlayerInfo';
 import Persons from '../../model/Persons';
 import PlayerStates from '../../model/enums/PlayerStates';
-import Sex from '../../model/enums/Sex';
 import NumericTextBox from '../common/NumericTextBox';
 import ProgressBar from '../common/ProgressBar';
 import TimerInfo from '../../model/TimerInfo';
 import { isRunning } from '../../utils/TimerInfoHelpers';
+import getAvatar from '../../utils/AccountHelpers';
 
 import './PlayersView.css';
-
-import avatarMPng from '../../../assets/images/avatar-m.png';
-import avatarFPng from '../../../assets/images/avatar-f.png';
 
 interface PlayersViewProps {
 	players: PlayerInfo[];
@@ -51,7 +48,7 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	}
 });
 
-export function PlayersView(props: PlayersViewProps) {
+export function PlayersView(props: PlayersViewProps): JSX.Element {
 	const playersCount = Object.keys(props.players).length;
 
 	const mainStyle: React.CSSProperties = {
@@ -76,22 +73,26 @@ export function PlayersView(props: PlayersViewProps) {
 			<ul className="gamePlayers" style={mainStyle}>
 				{props.players.map((player, index) => {
 					const account = props.all[player.name];
-					const avatar = account ? (account.avatar ? account.avatar : (account.sex === Sex.Male ? avatarMPng : avatarFPng)) : null;
+					const avatar = getAvatar(account);
 
 					return (
-						<li key={`${player.name}_${index}`}
+						<li
+							key={`${player.name}_${index}`}
 							className={buildPlayerClasses(player, player.name === props.login, player.canBeSelected)}
-							onClick={() => props.onPlayerSelected(index)}>
+							onClick={() => props.onPlayerSelected(index)}
+						>
 							<div className="playerCard">
 								{avatar ? <div className="playerAvatar" style={{ backgroundImage: `url(${avatar})` }} /> : null}
 								<div className="playerInfo">
 									<span className="name" title={player.name}>{player.name}</span>
 									<div className="sum">
-										{props.isSumEditable ?
-											<NumericTextBox value={player.sum} onValueChanged={value => onSumChanged(index, value)}
-												onCancel={props.onCancelSumChange} />
-											: <span>{player.sum}</span>
-										}
+										{props.isSumEditable ? (
+											<NumericTextBox
+												value={player.sum}
+												onValueChanged={value => onSumChanged(index, value)}
+												onCancel={props.onCancelSumChange}
+											/>
+										) : <span>{player.sum}</span>}
 										{player.stake > 0 ? <span className="stake">{player.stake}</span> : null}
 									</div>
 								</div>
@@ -100,13 +101,14 @@ export function PlayersView(props: PlayersViewProps) {
 								<AutoSizedText id={`playerReplic_${index}`} className="playerReplic" maxFontSize={48}>
 									{player.replic}
 								</AutoSizedText>
-							) : null
-							}
-							{player.isDeciding ?
-								<ProgressBar value={1 - props.decisionTimer.value / props.decisionTimer.maximum}
+							) : null}
+							{player.isDeciding ? (
+								<ProgressBar
+									value={1 - props.decisionTimer.value / props.decisionTimer.maximum}
 									valueChangeDuration={isRunning(props.decisionTimer)
-										? (props.decisionTimer.maximum - props.decisionTimer.value) / 10 : 0} />
-								: null}
+										? (props.decisionTimer.maximum - props.decisionTimer.value) / 10 : 0}
+								/>
+							) : null}
 						</li>
 					);
 				})}

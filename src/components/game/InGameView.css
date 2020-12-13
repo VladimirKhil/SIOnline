@@ -38,7 +38,7 @@
     overflow: hidden;
 }
 
-@media screen and (min-height: 600px) {
+@media screen and (min-height: 600px), (max-width: 600px) {
     .gameMainView {
         flex-direction: column;
     }

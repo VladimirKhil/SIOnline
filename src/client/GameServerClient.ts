@@ -41,11 +41,11 @@ export default class GameServerClient implements IGameServerClient {
 		return this.connection.invoke('Say', text);
 	}
 
-	hasPackageAsync(packageKey: PackageKey) {
-		return this.connection.invoke<boolean>('HasPackage', packageKey)
+	hasPackageAsync(packageKey: PackageKey): Promise<boolean> {
+		return this.connection.invoke<boolean>('HasPackage', packageKey);
 	}
 
-	createAndJoinGameAsync(gameSettings: GameSettings, packageKey: PackageKey, isMale: boolean) {
+	createAndJoinGameAsync(gameSettings: GameSettings, packageKey: PackageKey, isMale: boolean): Promise<GameCreationResult> {
 		return this.connection.invoke<GameCreationResult>(
 			'CreateAndJoinGameNew',
 			gameSettings,
@@ -70,7 +70,7 @@ export default class GameServerClient implements IGameServerClient {
 			role,
 			isMale,
 			password
-		)
+		);
 	}
 
 	sendMessageToServerAsync(message: string) {
@@ -98,7 +98,7 @@ export default class GameServerClient implements IGameServerClient {
 		return this.connection.invoke('LeaveGame');
 	}
 
-	logOutAsync() {
+	logOutAsync(): Promise<any> {
 		return this.connection.invoke('LogOut');
 	}
 }

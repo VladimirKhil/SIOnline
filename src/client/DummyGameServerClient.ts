@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable class-methods-use-this */
 import Role from '../model/enums/Role';
 import GameCreationResult from '../model/server/GameCreationResult';
 import GameInfo from '../model/server/GameInfo';

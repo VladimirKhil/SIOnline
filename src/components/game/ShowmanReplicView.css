@@ -7,9 +7,10 @@
     background-color: lightyellow;
 }
 
-#showmanReplic {
+.showmanReplic {
     width: 100%;
     margin: 0;
+    padding: 5px;
     text-align: center;
     display: flex;
     justify-content: center;

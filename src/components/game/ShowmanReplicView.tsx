@@ -1,19 +1,15 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import State from '../../state/State';
-import { Dispatch, Action } from 'redux';
 import AutoSizedText from '../common/AutoSizedText';
 import Account from '../../model/Account';
-import Sex from '../../model/enums/Sex';
 import ProgressBar from '../common/ProgressBar';
 import TimerInfo from '../../model/TimerInfo';
 import { isRunning } from '../../utils/TimerInfoHelpers';
 import StartGameButton from './StartGameButton';
+import getAvatar from '../../utils/AccountHelpers';
 
 import './ShowmanReplicView.css';
-
-import avatarMPng from '../../../assets/images/avatar-m.png';
-import avatarFPng from '../../../assets/images/avatar-f.png';
 
 interface ShowmanReplicViewProps {
 	replic: string | null;
@@ -31,27 +27,25 @@ const mapStateToProps = (state: State) => ({
 	decisionTimer: state.run.timers.decision
 });
 
-const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
-
-});
-
-export function ShowmanReplicView(props: ShowmanReplicViewProps) {
-	const avatar = props.account ? (props.account.avatar ? props.account.avatar : (props.account.sex === Sex.Male ? avatarMPng : avatarFPng)) : null;
+export function ShowmanReplicView(props: ShowmanReplicViewProps): JSX.Element {
+	const avatar = getAvatar(props.account);
 
 	return (
 		<div className={`showmanArea ${props.decisionNeeded ? 'highlighted' : ''}`}>
 			<div className="showmanInfo">
-				{avatar ? <div className="showmanAvatar"><img src={avatar} /></div> : null}
+				{avatar ? <div className="showmanAvatar"><img alt="avatar" src={avatar} /></div> : null}
 				<div className="showmanName">{props.account?.name}</div>
 			</div>
-			<AutoSizedText id="showmanReplic" maxFontSize={48}>{props.replic || ''}</AutoSizedText>
-			{props.isDeciding ?
-				<ProgressBar value={1 - props.decisionTimer.value / props.decisionTimer.maximum}
-					valueChangeDuration={isRunning(props.decisionTimer) ? (props.decisionTimer.maximum - props.decisionTimer.value) / 10 : 0} />
-				: null}
+			<AutoSizedText className="showmanReplic" maxFontSize={48}>{props.replic || ''}</AutoSizedText>
+			{props.isDeciding ? (
+				<ProgressBar
+					value={1 - props.decisionTimer.value / props.decisionTimer.maximum}
+					valueChangeDuration={isRunning(props.decisionTimer) ? (props.decisionTimer.maximum - props.decisionTimer.value) / 10 : 0}
+				/>
+			) : null}
 			<StartGameButton />
 		</div>
 	);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ShowmanReplicView);
+export default connect(mapStateToProps, {})(ShowmanReplicView);

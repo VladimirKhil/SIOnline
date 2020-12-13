@@ -84,26 +84,28 @@ const playerSelected: ActionCreator<ThunkAction<void, State, DataContext, Action
 	dispatch(clearDecisions());
 };
 
-const exitGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () =>
-	async (dispatch: Dispatch<RunActions.KnownRunAction>, getState: () => State, dataContext: DataContext) => {
-		try {
-			// TODO: show progress bar
-			await dataContext.gameClient.leaveGameAsync();
-		} catch (e) {
-			alert(localization.exitError);
-		}
+const exitGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
+	dispatch: Dispatch<RunActions.KnownRunAction>,
+	getState: () => State,
+	dataContext: DataContext) => {
+	try {
+		// TODO: show progress bar
+		await dataContext.gameClient.leaveGameAsync();
+	} catch (e) {
+		alert(localization.exitError);
+	}
 
-		if (timerRef) {
-			window.clearTimeout(timerRef);
-			timerRef = null;
-		}
+	if (timerRef) {
+		window.clearTimeout(timerRef);
+		timerRef = null;
+	}
 
-		if (getState().ui.previousMainView === MainView.Lobby) {
-			actionCreators.navigateToLobby(-1)(dispatch, getState, dataContext);
-		} else {
-			dispatch(actionCreators.navigateToWelcome() as any);
-		}
-	};
+	if (getState().ui.previousMainView === MainView.Lobby) {
+		actionCreators.navigateToLobby(-1)(dispatch, getState, dataContext);
+	} else {
+		dispatch(actionCreators.navigateToWelcome() as any);
+	}
+};
 
 const chatMessageAdded: ActionCreator<RunActions.ChatMessageAddedAction> = (chatMessage: ChatMessage) => ({
 	type: RunActions.RunActionTypes.ChatMessageAdded, chatMessage
@@ -325,24 +327,27 @@ const isGameButtonEnabledChanged: ActionCreator<RunActions.IsGameButtonEnabledCh
 	type: RunActions.RunActionTypes.IsGameButtonEnabledChanged, isGameButtonEnabled
 });
 
-const pressGameButton: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () =>
-	async (dispatch: Dispatch<any>, getState: () => State, dataContext: DataContext) => {
+const pressGameButton: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
+	dispatch: Dispatch<any>,
+	_getState: () => State,
+	dataContext: DataContext) => {
+	dataContext.gameClient.msgAsync('I');
 
-		dataContext.gameClient.msgAsync('I');
+	dispatch(isGameButtonEnabledChanged(false));
+	setTimeout(
+		() => {
+			dispatch(isGameButtonEnabledChanged(true));
+		},
+		3000
+	);
+};
 
-		dispatch(isGameButtonEnabledChanged(false));
-		setTimeout(
-			() => {
-				dispatch(isGameButtonEnabledChanged(true));
-			},
-			3000
-		);
-	};
-
-const apellate: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () =>
-	async (dispatch: Dispatch<any>, getState: () => State, dataContext: DataContext) => {
-		dataContext.gameClient.msgAsync('APELLATE', '+');
-	};
+const apellate: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
+	_dispatch: Dispatch<any>,
+	_getState: () => State,
+	dataContext: DataContext) => {
+	dataContext.gameClient.msgAsync('APELLATE', '+');
+};
 
 const isAnswering: ActionCreator<RunActions.IsAnsweringAction> = () => ({
 	type: RunActions.RunActionTypes.IsAnswering
@@ -352,11 +357,13 @@ const onAnswerChanged: ActionCreator<RunActions.AnswerChangedAction> = (answer: 
 	type: RunActions.RunActionTypes.AnswerChanged, answer
 });
 
-const sendAnswer: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () =>
-	async (dispatch: Dispatch<any>, getState: () => State, dataContext: DataContext) => {
-		dataContext.gameClient.msgAsync('ANSWER', getState().run.answer);
-		dispatch(clearDecisions());
-	};
+const sendAnswer: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
+	dispatch: Dispatch<any>,
+	getState: () => State,
+	dataContext: DataContext) => {
+	dataContext.gameClient.msgAsync('ANSWER', getState().run.answer);
+	dispatch(clearDecisions());
+};
 
 const validate: ActionCreator<RunActions.ValidateAction> = (
 	name: string,
@@ -416,17 +423,21 @@ const sendStake: ActionCreator<ThunkAction<void, State, DataContext, Action>> = 
 		dispatch(clearDecisions());
 	};
 
-const sendPass: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () =>
-	async (dispatch: Dispatch<any>, getState: () => State, dataContext: DataContext) => {
-		dataContext.gameClient.msgAsync('STAKE', 2);
-		dispatch(clearDecisions());
-	};
+const sendPass: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
+	dispatch: Dispatch<any>,
+	_getState: () => State,
+	dataContext: DataContext) => {
+	dataContext.gameClient.msgAsync('STAKE', 2);
+	dispatch(clearDecisions());
+};
 
-const sendAllIn: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () =>
-	async (dispatch: Dispatch<any>, getState: () => State, dataContext: DataContext) => {
-		dataContext.gameClient.msgAsync('STAKE', 3);
-		dispatch(clearDecisions());
-	};
+const sendAllIn: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
+	dispatch: Dispatch<any>,
+	_getState: () => State,
+	dataContext: DataContext) => {
+	dataContext.gameClient.msgAsync('STAKE', 3);
+	dispatch(clearDecisions());
+};
 
 const selectionEnabled: ActionCreator<RunActions.SelectionEnabledAction> = (allowedIndices: number[], message: string) => ({
 	type: RunActions.RunActionTypes.SelectionEnabled, allowedIndices, message
@@ -465,10 +476,15 @@ const areSumsEditableChanged: ActionCreator<RunActions.AreSumsEditableChangedAct
 	type: RunActions.RunActionTypes.AreSumsEditableChanged, areSumsEditable
 });
 
-const changePlayerSum: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (playerIndex: number, sum: number) =>
-	async (dispatch: Dispatch<any>, getState: () => State, dataContext: DataContext) => {
-		dataContext.gameClient.msgAsync('CHANGE', playerIndex + 1, sum); // playerIndex здесь почему-то начинается с 1
-	};
+const changePlayerSum: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (
+	playerIndex: number,
+	sum: number
+) => async (
+	dispatch: Dispatch<any>,
+	getState: () => State,
+	dataContext: DataContext) => {
+	dataContext.gameClient.msgAsync('CHANGE', playerIndex + 1, sum); // playerIndex здесь почему-то начинается с 1
+};
 
 const readingSpeedChanged: ActionCreator<RunActions.ReadingSpeedChangedAction> = (readingSpeed: number) => ({
 	type: RunActions.RunActionTypes.ReadingSpeedChanged, readingSpeed
