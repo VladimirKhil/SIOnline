@@ -128,6 +128,18 @@ const navigateToWelcome: ActionCreator<Actions.NavigateToWelcomeAction> = () => 
 	type: Actions.ActionTypes.NavigateToWelcome
 });
 
+const serverNameChanged: ActionCreator<Actions.ServerNameChangedAction> = (serverName: string) => ({
+	type: Actions.ActionTypes.ServerNameChanged, serverName
+});
+
+async function loadHostInfoAsync(dispatch: Dispatch<any>, dataContext: DataContext) {
+	const hostInfo = await dataContext.gameClient.getGameHostInfoAsync();
+	// eslint-disable-next-line no-param-reassign
+	dataContext.contentUris = hostInfo.contentPublicBaseUrls;
+
+	dispatch(serverNameChanged(hostInfo.name));
+}
+
 const login: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
 	dispatch: Dispatch<Actions.KnownAction>,
 	getState: () => State,
@@ -179,6 +191,8 @@ const login: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () =
 				dispatch(computerAccountsChanged(computerAccounts));
 
 				dispatch(loginEnd());
+
+				await loadHostInfoAsync(dispatch, dataContext);
 				dispatch(navigateToWelcome());
 			} catch (error) {
 				dispatch(loginEnd(`${localization.cannotConnectToServer}: ${error.message}`));
@@ -204,7 +218,6 @@ const friendsPlay: ActionCreator<ThunkAction<void, State, DataContext, Action>> 
 	async (dispatch: Dispatch<Actions.KnownAction>, getState: () => State, dataContext: DataContext) => {
 		dispatch(friendsPlayInternal());
 		try {
-			await loadHostInfoAsync(dataContext);
 			await loadGamesAsync(dispatch, dataContext.gameClient);
 
 			dispatch(onlineLoadFinish());
@@ -217,37 +230,38 @@ const navigateToLobbyInternal: ActionCreator<Actions.NavigateToLobbyAction> = ()
 	type: Actions.ActionTypes.NavigateToLobby
 });
 
-const navigateToLobby: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (gameId: number, showInfo?: boolean) =>
-	async (dispatch: Dispatch<Actions.KnownAction>, getState: () => State, dataContext: DataContext) => {
-		dispatch(navigateToLobbyInternal());
+const navigateToLobby: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (gameId: number, showInfo?: boolean) => async (
+	dispatch: Dispatch<Actions.KnownAction>,
+	getState: () => State,
+	dataContext: DataContext) => {
+	dispatch(navigateToLobbyInternal());
 
-		if (gameId > -1) {
-			dispatch(selectGame(gameId, showInfo));
-		} else if (dataContext.config.rewriteUrl) {
-			window.history.pushState({}, '', dataContext.config.rootUri);
+	if (gameId > -1) {
+		dispatch(selectGame(gameId, showInfo));
+	} else if (dataContext.config.rewriteUrl) {
+		window.history.pushState({}, '', dataContext.config.rootUri);
+	}
+
+	// Games filtering is performed on client
+	try {
+		await loadGamesAsync(dispatch, dataContext.gameClient);
+
+		const users = await dataContext.gameClient.getUsersAsync();
+		const sortedUsers = users.sort((user1: string, user2: string) => { return user1.localeCompare(user2); });
+
+		dispatch(receiveUsers(sortedUsers));
+
+		const news = await dataContext.gameClient.getNewsAsync();
+
+		if (news !== null) {
+			dispatch(receiveMessage(localization.news, news));
 		}
 
-		// Games filtering is performed on client
-		try {
-			await loadHostInfoAsync(dataContext);
-			await loadGamesAsync(dispatch, dataContext.gameClient);
-
-			const users = await dataContext.gameClient.getUsersAsync();
-			const sortedUsers = users.sort((user1: string, user2: string) => { return user1.localeCompare(user2); });
-
-			dispatch(receiveUsers(sortedUsers));
-
-			const news = await dataContext.gameClient.getNewsAsync();
-
-			if (news !== null) {
-				dispatch(receiveMessage(localization.news, news));
-			}
-
-			dispatch(onlineLoadFinish());
-		} catch (error) {
-			dispatch(onlineLoadError(error.message));
-		}
-	};
+		dispatch(onlineLoadFinish());
+	} catch (error) {
+		dispatch(onlineLoadError(error.message));
+	}
+};
 
 const clearGames: ActionCreator<Actions.ClearGamesAction> = () => ({
 	type: Actions.ActionTypes.ClearGames
@@ -473,11 +487,6 @@ const uploadPackageFinished: ActionCreator<Actions.UploadPackageFinishedAction> 
 const uploadPackageProgress: ActionCreator<Actions.UploadPackageProgressAction> = (progress: number) => ({
 	type: Actions.ActionTypes.UploadPackageProgress, progress
 });
-
-async function loadHostInfoAsync(dataContext: DataContext) {
-	const hostInfo = await dataContext.gameClient.getGameHostInfoAsync();
-	dataContext.contentUris = hostInfo.contentPublicBaseUrls;
-}
 
 async function loadGamesAsync(dispatch: Dispatch<Actions.KnownAction>, gameClient: IGameServerClient) {
 	dispatch(clearGames());
@@ -724,32 +733,34 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 	}
 };
 
-const createNewAutoGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () =>
-	async (dispatch: Dispatch<any>, getState: () => State, dataContext: DataContext) => {
-		const state = getState();
+const createNewAutoGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
+	dispatch: Dispatch<any>,
+	getState: () => State,
+	dataContext: DataContext) => {
+	const state = getState();
 
-		dispatch(gameCreationStart());
+	dispatch(gameCreationStart());
 
-		try {
-			const result = await dataContext.gameClient.createAutomaticGameAsync(
-				state.user.login,
-				state.settings.sex === Sex.Male
-			);
+	try {
+		const result = await dataContext.gameClient.createAutomaticGameAsync(
+			state.user.login,
+			state.settings.sex === Sex.Male
+		);
 
-			saveStateToStorage(state);
+		saveStateToStorage(state);
 
-			dispatch(gameCreationEnd());
-			if (result.code > 0) {
-				alert(GameErrorsHelper.getMessage(result.code) + (result.errorMessage || ''));
-			} else {
-				dispatch(gameSet(result.gameId, false, true, Role.Player));
+		dispatch(gameCreationEnd());
+		if (result.code > 0) {
+			alert(GameErrorsHelper.getMessage(result.code) + (result.errorMessage || ''));
+		} else {
+			dispatch(gameSet(result.gameId, false, true, Role.Player));
 
-				await gameInit(result.gameId, dataContext, Role.Player);
-			}
-		} catch (message) {
-			dispatch(gameCreationEnd(message));
+			await gameInit(result.gameId, dataContext, Role.Player);
 		}
-	};
+	} catch (message) {
+		dispatch(gameCreationEnd(message));
+	}
+};
 
 const gameSet: ActionCreator<Actions.GameSetAction> = (id: number, isHost: boolean, isAutomatic: boolean, role: Role) => ({
 	type: Actions.ActionTypes.GameSet, id, isHost, isAutomatic, role

@@ -3,24 +3,30 @@
 	display: flex;
 	flex-flow: column;
 	align-items: center;
-	justify-content: center;
 	color: #FFE682;
 	font-family: SI;
-	font-size: 60px;
-	margin-top: 30px;
+	overflow-y: auto;
 }
 
 .welcomeView header {
 	color: white;
+	text-align: center;
+}
+
+.welcomeView header h1 {
+	font-size: 24px;
+}
+
+.serverName {	
+	color: #FFE682;
 }
 
 .welcomeViewActions {
-	margin-top: 30px;
-	margin-bottom: 30px;
 	width: 100%;
-	height: 100%;
 	flex: 1;
-	font-size: 40px;
+	font-size: 30px;
+	display: flex;
+	flex-direction: column;
 }
 
 .welcomeViewActions li {
@@ -28,9 +34,13 @@
 	border-left-width: 0;
 	border-right-width: 0;
 	text-align: center;
-	padding: 15px 50px;
 	cursor: pointer;
 	margin-top: -1px;
+	flex: 1;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0 25px;
 }
 
 .welcomeViewActions.disconnected li {
@@ -54,3 +64,24 @@
 	}
 }
 
+@media screen and (min-height: 600px) {
+	.welcomeView {
+		height: calc(100% - 30px);
+		margin-top: 30px;
+		justify-content: center;
+	}
+
+	.welcomeView header h1 {
+		font-size: 36px;
+	}
+
+	.welcomeViewActions {
+		font-size: 40px;
+		margin-top: 30px;
+		margin-bottom: 30px;
+	}
+
+	.welcomeViewActions li {
+		padding: 15px 50px;
+	}
+}

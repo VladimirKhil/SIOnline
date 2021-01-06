@@ -146,6 +146,7 @@
 	selectStaker: 'Выберите ставящего',
 	selectThemeDeleter: 'Выберите убирающего тему',
 	sendingPackage: 'Отправка пакета на сервер…',
+	server: 'Сервер',
 	settings: 'Настройки',
 	settingsHint: 'Вы можете изменить пол в разделе "Настройки"',
 	sex: 'Пол',

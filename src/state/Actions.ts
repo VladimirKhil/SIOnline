@@ -60,7 +60,8 @@ export const enum ActionTypes {
 	UploadPackageStarted = 'UPLOAD_PACKAGE_STARTED',
 	UploadPackageFinished = 'UPLOAD_PACKAGE_FINISHED',
 	UploadPackageProgress = 'UPLOAD_PACKAGE_PROGRESS',
-	UnselectGame = 'UNSELECT_GAME'
+	UnselectGame = 'UNSELECT_GAME',
+	ServerNameChanged = 'SERVER_NAME_CHANGED'
 }
 
 export type IsConnectedChangedAction = { type: ActionTypes.IsConnectedChanged, isConnected: boolean };
@@ -117,6 +118,7 @@ export type UploadPackageStartedAction = { type: ActionTypes.UploadPackageStarte
 export type UploadPackageFinishedAction = { type: ActionTypes.UploadPackageFinished };
 export type UploadPackageProgressAction = { type: ActionTypes.UploadPackageProgress, progress: number };
 export type UnselectGameAction = { type: ActionTypes.UnselectGame };
+export type ServerNameChangedAction = { type: ActionTypes.ServerNameChanged, serverName: string };
 
 export type KnownAction =
 	IsConnectedChangedAction
@@ -173,4 +175,4 @@ export type KnownAction =
 	| UploadPackageFinishedAction
 	| UploadPackageProgressAction
 	| UnselectGameAction
-	;
+	| ServerNameChangedAction;

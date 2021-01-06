@@ -17,27 +17,27 @@ export default class GameServerClient implements IGameServerClient {
 
 	}
 
-	getComputerAccountsAsync() {
+	getComputerAccountsAsync(): Promise<string[]> {
 		return this.connection.invoke<string[]>('GetComputerAccounts');
 	}
 
-	getGameHostInfoAsync() {
+	getGameHostInfoAsync(): Promise<HostInfo> {
 		return this.connection.invoke<HostInfo>('GetGamesHostInfo');
 	}
 
-	getGamesSliceAsync(fromId: number) {
+	getGamesSliceAsync(fromId: number): Promise<Slice<GameInfo>> {
 		return this.connection.invoke<Slice<GameInfo>>('GetGamesSlice', fromId);
 	}
 
-	getUsersAsync() {
+	getUsersAsync(): Promise<string[]> {
 		return this.connection.invoke<string[]>('GetUsers');
 	}
 
-	getNewsAsync() {
+	getNewsAsync(): Promise<string | null> {
 		return this.connection.invoke<string | null>('GetNews');
 	}
 
-	sayInLobbyAsync(text: string) {
+	sayInLobbyAsync(text: string): Promise<any> {
 		return this.connection.invoke('Say', text);
 	}
 
@@ -55,7 +55,7 @@ export default class GameServerClient implements IGameServerClient {
 		);
 	}
 
-	createAutomaticGameAsync(login: string, isMale: boolean) {
+	createAutomaticGameAsync(login: string, isMale: boolean): Promise<GameCreationResult> {
 		return this.connection.invoke<GameCreationResult>(
 			'CreateAutomaticGameNew',
 			login,
@@ -63,7 +63,7 @@ export default class GameServerClient implements IGameServerClient {
 		);
 	}
 
-	joinGameAsync(gameId: number, role: Role, isMale: boolean, password: string) {
+	joinGameAsync(gameId: number, role: Role, isMale: boolean, password: string): Promise<GameCreationResult> {
 		return this.connection.invoke<GameCreationResult>(
 			'JoinGameNew',
 			gameId,
@@ -73,7 +73,7 @@ export default class GameServerClient implements IGameServerClient {
 		);
 	}
 
-	sendMessageToServerAsync(message: string) {
+	sendMessageToServerAsync(message: string): Promise<any> {
 		return this.connection.invoke('SendMessage', {
 			Text: message,
 			IsSystem: true,
@@ -81,11 +81,11 @@ export default class GameServerClient implements IGameServerClient {
 		});
 	}
 
-	msgAsync(...args: any[]) {
+	msgAsync(...args: any[]): Promise<any> {
 		return this.sendMessageToServerAsync(args.join('\n'));
 	}
 
-	sayAsync(message: string) {
+	sayAsync(message: string): Promise<any> {
 		return this.connection.invoke('SendMessage', {
 			Text: message,
 			IsSystem: false,
@@ -94,7 +94,7 @@ export default class GameServerClient implements IGameServerClient {
 	}
 
 	/** Leaves the game and returns to the lobby. */
-	leaveGameAsync() {
+	leaveGameAsync(): Promise<any> {
 		return this.connection.invoke('LeaveGame');
 	}
 

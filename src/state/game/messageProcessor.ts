@@ -680,7 +680,7 @@ const playerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 			}
 			break;
 
-		case 'VALIDATIION':
+		case 'VALIDATION':
 			startValidation(dispatch, localization.apellation, args);
 			break;
 
@@ -731,7 +731,7 @@ const showmanHandler = (dispatch: Dispatch<any>, state: State, dataContext: Data
 			dispatch(runActionCreators.hintChanged(null));
 			break;
 
-		case 'VALIDATIION':
+		case 'VALIDATION':
 			startValidation(dispatch, localization.answerChecking, args);
 			break;
 
@@ -749,6 +749,7 @@ function startValidation(dispatch: Dispatch<RunActions.KnownRunAction>, title: s
 
 	const name = args[1];
 	const answer = args[2];
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const isVoteForTheRightAnswer = args[3] === '+'; // Not used
 	const rightAnswersCount = Math.min(parseInt(args[4], 10), args.length - 5);
 

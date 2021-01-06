@@ -581,12 +581,23 @@ const reducer: Reducer<State> = (state: State = initialState, action: KnownActio
 					uploadPackagePercentage: action.progress
 				}
 			};
-	}
 
-	return {...state,
-		run: runReducer(state.run, action as KnownRunAction),
-		settings: settingsReducer(state.settings, action as KnownSettingsAction)
-	};
+		case ActionTypes.ServerNameChanged:
+			return {
+				...state,
+				common: {
+					...state.common,
+					serverName: action.serverName
+				}
+			};
+
+		default:
+			return {
+				...state,
+				run: runReducer(state.run, action as KnownRunAction),
+				settings: settingsReducer(state.settings, action as KnownSettingsAction)
+			};
+	}
 };
 
 export default reducer;
