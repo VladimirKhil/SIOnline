@@ -4,6 +4,7 @@ import localization from '../../model/resources/localization';
 
 export default interface TableState {
 	mode: TableMode;
+	caption: string;
 	text: string;
 	tail: string;
 	animateReading: boolean;
@@ -18,6 +19,7 @@ export default interface TableState {
 
 export const initialState: TableState = {
 	mode: TableMode.Text,
+	caption: '',
 	text: localization.tableHint,
 	tail: '',
 	animateReading: false,

@@ -27,6 +27,7 @@ export default interface RunState {
 		isAfterQuestion: boolean;
 		themeIndex: number;
 		currentPrice: number;
+		themeName: string;
 	};
 	timers: Timers;
 	showMainTimer: boolean;
@@ -94,7 +95,8 @@ export const initialState: RunState = {
 		isAnswering: false,
 		isAfterQuestion: false,
 		themeIndex: -1,
-		currentPrice: 0
+		currentPrice: 0,
+		themeName: ''
 	},
 	timers: {
 		round: {

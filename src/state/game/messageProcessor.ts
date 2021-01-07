@@ -151,6 +151,7 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 					const quest = themeInfo.questions[questIndex];
 					if (quest) {
 						dispatch(runActionCreators.currentPriceChanged(quest));
+						dispatch(tableActionCreators.captionChanged(`${themeInfo.name}, ${quest}`));
 						dispatch(tableActionCreators.blinkQuestion(themeIndex, questIndex));
 
 						setTimeout(
@@ -363,9 +364,18 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 			break;
 
 		case 'QUESTION':
-			dispatch(runActionCreators.playersStateCleared());
-			dispatch(tableActionCreators.showText(args[1], false));
-			dispatch(runActionCreators.afterQuestionStateChanged(false));
+			if (args.length > 1) {
+				dispatch(runActionCreators.playersStateCleared());
+				dispatch(tableActionCreators.showText(args[1], false));
+				dispatch(runActionCreators.afterQuestionStateChanged(false));
+				dispatch(runActionCreators.updateCaption(args[1]));
+			}
+			break;
+
+		case 'QUESTIONCAPTION':
+			if (args.length > 1) {
+				dispatch(tableActionCreators.captionChanged(args[1]));
+			}
 			break;
 
 		case 'READINGSPEED':
@@ -395,6 +405,7 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 		case 'RIGHTANSWER':
 			dispatch(tableActionCreators.showAnswer(args[2]));
 			dispatch(runActionCreators.afterQuestionStateChanged(true));
+			dispatch(tableActionCreators.captionChanged(''));
 			break;
 
 		case 'ROUNDTHEMES':
@@ -573,10 +584,13 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 			break;
 
 		case 'THEME':
-			dispatch(runActionCreators.playersStateCleared());
-			dispatch(runActionCreators.showmanReplicChanged(''));
-			dispatch(tableActionCreators.showText(`${localization.theme}: ${args[1]}`, false));
-			dispatch(runActionCreators.afterQuestionStateChanged(false));
+			if (args.length > 1) {
+				dispatch(runActionCreators.playersStateCleared());
+				dispatch(runActionCreators.showmanReplicChanged(''));
+				dispatch(tableActionCreators.showText(`${localization.theme}: ${args[1]}`, false));
+				dispatch(runActionCreators.afterQuestionStateChanged(false));
+				dispatch(runActionCreators.themeNameChanged(args[1]));
+			}
 			break;
 
 		case 'TRY':

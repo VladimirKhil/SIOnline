@@ -66,7 +66,8 @@ export const enum RunActionTypes {
 	ClearDecisionsAndMainTimer = 'CLEAR_DECISIONS_AND_MAIN_TIMER',
 	HintChanged = 'HINT_CHANGED',
 	OperationError = 'OPERATION_ERROR',
-	HostNameChanged = 'HOST_NAME_CHANGED'
+	HostNameChanged = 'HOST_NAME_CHANGED',
+	ThemeNameChanged = 'THEME_NAME_CHANGED'
 }
 
 export type RunChatModeChangedAction = { type: RunActionTypes.RunChatModeChanged, chatMode: ChatMode };
@@ -144,6 +145,7 @@ export type ClearDecisionsAndMainTimerAction = { type: RunActionTypes.ClearDecis
 export type HintChangedAction = { type: RunActionTypes.HintChanged, hint: string | null };
 export type OperationErrorAction = { type: RunActionTypes.OperationError, error: string };
 export type HostNameChangedAction = { type: RunActionTypes.HostNameChanged, hostName: string | null };
+export type ThemeNameChangedAction = { type: RunActionTypes.ThemeNameChanged, themeName: string };
 
 export type KnownRunAction =
 	RunChatModeChangedAction
@@ -203,4 +205,5 @@ export type KnownRunAction =
 	| ClearDecisionsAndMainTimerAction
 	| HintChangedAction
 	| OperationErrorAction
-	| HostNameChangedAction;
+	| HostNameChangedAction
+	| ThemeNameChangedAction;

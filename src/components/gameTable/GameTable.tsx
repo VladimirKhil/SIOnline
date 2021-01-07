@@ -1,7 +1,6 @@
 ﻿import * as React from 'react';
-import State from '../../state/State';
-import { Action, Dispatch } from 'redux';
 import { connect } from 'react-redux';
+import State from '../../state/State';
 
 import TableMode from '../../model/enums/TableMode';
 import { TableLogo } from './TableLogo';
@@ -30,6 +29,7 @@ interface GameTableProps {
 	isConnected: boolean;
 	showMainTimer: boolean;
 	decisionTimer: TimerInfo;
+	caption: string;
 }
 
 const mapStateToProps = (state: State) => ({
@@ -37,29 +37,9 @@ const mapStateToProps = (state: State) => ({
 	mode: state.run.table.mode,
 	isPaused: state.run.stage.isGamePaused,
 	showMainTimer: state.run.showMainTimer,
-	decisionTimer: state.run.timers.decision
+	decisionTimer: state.run.timers.decision,
+	caption: state.run.table.caption
 });
-
-const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
-
-});
-
-export function GameTable(props: GameTableProps) {
-	return (
-		<div id="table">
-			{getContent(props.mode)}
-			{props.showMainTimer ? (
-				<ProgressBar className="commonProgress" value={1 - props.decisionTimer.value / props.decisionTimer.maximum}
-					valueChangeDuration={isRunning(props.decisionTimer) ? (props.decisionTimer.maximum - props.decisionTimer.value) / 10 : 0} />
-			) : null}
-			{props.isPaused || !props.isConnected ?
-				<AutoSizedText maxFontSize={288} className={`pauseLogo tableText tableTextCenter ${props.isConnected ? '' : 'warning'}`}>
-					{props.isPaused ? localization.pause : localization.connectionClosed}
-				</AutoSizedText>
-				: null}
-		</div>
-	);
-}
 
 function getContent(mode: TableMode) {
 	switch (mode) {
@@ -98,9 +78,54 @@ function getContent(mode: TableMode) {
 
 		case TableMode.Final:
 			return <FinalTable />;
-	}
 
-	return null;
+		default:
+			return null;
+	}
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(GameTable);
+function showCaption(mode: TableMode): boolean {
+	switch (mode) {
+		case TableMode.Text:
+		case TableMode.PartialText:
+		case TableMode.Image:
+		case TableMode.Audio:
+		case TableMode.Video:
+			return true;
+
+		default:
+			return false;
+	}
+}
+
+export function GameTable(props: GameTableProps): JSX.Element {
+	return (
+		<div id="table">
+			{showCaption(props.mode) ? (
+				<div className="tableCaption">
+					{props.caption}
+				</div>
+			) : null}
+			<div className="tableContent">
+				{getContent(props.mode)}
+			</div>
+			{props.showMainTimer ? (
+				<ProgressBar
+					className="commonProgress"
+					value={1 - props.decisionTimer.value / props.decisionTimer.maximum}
+					valueChangeDuration={isRunning(props.decisionTimer) ? (props.decisionTimer.maximum - props.decisionTimer.value) / 10 : 0}
+				/>
+			) : null}
+			{props.isPaused || !props.isConnected ? (
+				<AutoSizedText
+					maxFontSize={288}
+					className={`pauseLogo tableText tableTextCenter ${props.isConnected ? '' : 'warning'}`}
+				>
+					{props.isPaused ? localization.pause : localization.connectionClosed}
+				</AutoSizedText>
+			) : null}
+		</div>
+	);
+}
+
+export default connect(mapStateToProps, {})(GameTable);

@@ -19,7 +19,8 @@ export const enum TableActionTypes {
 	ShowSpecial = 'SHOW_SPECIAL',
 	CanPressChanged = 'CAN_PRESS_CHANGED',
 	IsSelectableChanged = 'IS_SELECTABLE_CHANGED',
-	ResumeMedia = 'RESUME_MEDIA'
+	ResumeMedia = 'RESUME_MEDIA',
+	CaptionChanged = 'CAPTION_CHANGED'
 }
 
 export type ShowLogoAction = { type: TableActionTypes.ShowLogo };
@@ -46,6 +47,7 @@ export type ShowSpecialAction = { type: TableActionTypes.ShowSpecial, text: stri
 export type CanPressChangedAction = { type: TableActionTypes.CanPressChanged, canPress: boolean };
 export type IsSelectableChangedAction = { type: TableActionTypes.IsSelectableChanged, isSelectable: boolean };
 export type ResumeMediaAction = { type: TableActionTypes.ResumeMedia };
+export type CaptionChangedAction = { type: TableActionTypes.CaptionChanged, caption: string };
 
 export type KnownTableAction =
 	ShowLogoAction
@@ -67,4 +69,4 @@ export type KnownTableAction =
 	| CanPressChangedAction
 	| IsSelectableChangedAction
 	| ResumeMediaAction
-;
+	| CaptionChangedAction;

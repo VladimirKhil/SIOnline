@@ -147,9 +147,16 @@ const tableReducer: Reducer<TableState> = (state: TableState = initialState, any
 				...state,
 				isMediaStopped: false
 			};
-	}
 
-	return state;
+		case TableActionTypes.CaptionChanged:
+			return {
+				...state,
+				caption: action.caption
+			};
+
+		default:
+			return state;
+	}
 };
 
 export default tableReducer;

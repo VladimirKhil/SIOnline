@@ -542,6 +542,18 @@ const hostNameChanged: ActionCreator<RunActions.HostNameChangedAction> = (hostNa
 	type: RunActions.RunActionTypes.HostNameChanged, hostName
 });
 
+const themeNameChanged: ActionCreator<RunActions.ThemeNameChangedAction> = (themeName: string) => ({
+	type: RunActions.RunActionTypes.ThemeNameChanged, themeName
+});
+
+const updateCaption: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (questionCaption: string) => (
+	dispatch: Dispatch<any>,
+	getState: () => State
+) => {
+	const { themeName } = getState().run.stage;
+	dispatch(tableActionCreators.captionChanged(`${themeName}, ${questionCaption}`));
+};
+
 const runActionCreators = {
 	runChatModeChanged,
 	runChatMessageChanged,
@@ -623,7 +635,9 @@ const runActionCreators = {
 	hintChanged,
 	startGame,
 	operationError,
-	hostNameChanged
+	hostNameChanged,
+	themeNameChanged,
+	updateCaption
 };
 
 export default runActionCreators;

@@ -88,6 +88,10 @@ const resumeMedia: ActionCreator<TableActions.ResumeMediaAction> = () => ({
 	type: TableActions.TableActionTypes.ResumeMedia
 });
 
+const captionChanged: ActionCreator<TableActions.CaptionChangedAction> = (caption: string) => ({
+	type: TableActions.TableActionTypes.CaptionChanged, caption
+});
+
 const tableActionCreators = {
 	showLogo,
 	showGameThemes,
@@ -107,7 +111,8 @@ const tableActionCreators = {
 	showSpecial,
 	canPressChanged,
 	isSelectableChanged,
-	resumeMedia
+	resumeMedia,
+	captionChanged
 };
 
 export default tableActionCreators;

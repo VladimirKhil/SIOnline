@@ -219,7 +219,8 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 				},
 				table: { // ? -> tableReducer?
 					...state.table,
-					isSelectable: false
+					isSelectable: false,
+					caption: ''
 				}
 			};
 
@@ -237,7 +238,7 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 				...state,
 				stage: {
 					...state.stage,
-					isAfterQuestion: action.isAfterQuestion
+					isAfterQuestion: action.isAfterQuestion,
 				}
 			};
 
@@ -662,6 +663,15 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 				persons: {
 					...state.persons,
 					hostName: action.hostName
+				}
+			};
+
+		case RunActionTypes.ThemeNameChanged:
+			return {
+				...state,
+				stage: {
+					...state.stage,
+					themeName: action.themeName
 				}
 			};
 

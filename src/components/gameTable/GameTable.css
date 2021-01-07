@@ -4,8 +4,25 @@
     background-color: #000451;
     background: radial-gradient(#0009AD, #000451);
     display: flex;
-    overflow: hidden;
+    flex-direction: column;
+}
+
+.tableCaption {
+    flex: 0;
+    font-size: 20px;
+    font-family: SI;
+    background-color: rgba(0,0,0,.3);
+    color: #FFE682;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.tableContent {
+    flex: 1;
+    display: flex;
     position: relative;
+    overflow: hidden;
 }
 
 #table .pauseLogo {
@@ -246,5 +263,9 @@
 @media screen and (min-width: 1100px) {
     #table .tableText {
         padding: 40px;
+    }
+
+    .tableCaption {
+        font-size: 25px;
     }
 }
