@@ -27,3 +27,7 @@
 	background-size: contain;
     background-repeat: no-repeat;
 }
+
+.personItem_host {
+	margin-left: 5px;
+}

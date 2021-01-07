@@ -373,7 +373,7 @@ const joinGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (
 				return;
 			}
 
-			dispatch(gameSet(gameId, false, false, role));
+			dispatch(gameSet(gameId, false, role));
 
 			await gameInit(gameId, dataContext, role);
 
@@ -724,7 +724,7 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 			dispatch(gameCreationEnd(GameErrorsHelper.getMessage(result.code) + (result.errorMessage || '')));
 		} else {
 			dispatch(newGameCancel());
-			dispatch(gameSet(result.gameId, true, false, role));
+			dispatch(gameSet(result.gameId, false, role));
 
 			await gameInit(result.gameId, dataContext, role);
 		}
@@ -753,7 +753,7 @@ const createNewAutoGame: ActionCreator<ThunkAction<void, State, DataContext, Act
 		if (result.code > 0) {
 			alert(GameErrorsHelper.getMessage(result.code) + (result.errorMessage || ''));
 		} else {
-			dispatch(gameSet(result.gameId, false, true, Role.Player));
+			dispatch(gameSet(result.gameId, true, Role.Player));
 
 			await gameInit(result.gameId, dataContext, Role.Player);
 		}
@@ -762,8 +762,8 @@ const createNewAutoGame: ActionCreator<ThunkAction<void, State, DataContext, Act
 	}
 };
 
-const gameSet: ActionCreator<Actions.GameSetAction> = (id: number, isHost: boolean, isAutomatic: boolean, role: Role) => ({
-	type: Actions.ActionTypes.GameSet, id, isHost, isAutomatic, role
+const gameSet: ActionCreator<Actions.GameSetAction> = (id: number, isAutomatic: boolean, role: Role) => ({
+	type: Actions.ActionTypes.GameSet, id, isAutomatic, role
 });
 
 async function gameInit(gameId: number, dataContext: DataContext, role: Role) {

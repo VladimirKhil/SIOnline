@@ -13,6 +13,7 @@ export default interface RunState {
 		all: Persons;
 		showman: PersonInfo;
 		players: PlayerInfo[];
+		hostName: string | null;
 	};
 	role: Role;
 	answer: string | null;
@@ -79,7 +80,8 @@ export const initialState: RunState = {
 			isDeciding: false,
 			isHuman: true
 		},
-		players: []
+		players: [],
+		hostName: null
 	},
 	role: Role.Player,
 	answer: null,

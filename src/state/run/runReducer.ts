@@ -656,6 +656,15 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 				}
 			};
 
+		case RunActionTypes.HostNameChanged:
+			return {
+				...state,
+				persons: {
+					...state.persons,
+					hostName: action.hostName
+				}
+			};
+
 		default:
 			return {
 				...state,

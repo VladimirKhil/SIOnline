@@ -1,4 +1,4 @@
-#loadingGame {
+.loadingGame {
     font-family: SI;
     font-size: 30pt;
     color: #FFE682;
@@ -30,6 +30,6 @@
     animation: spin 0.75s linear infinite;
 }
 
-#loadingGame span {
+.loadingGame span {
     margin-left: 48px;
 }

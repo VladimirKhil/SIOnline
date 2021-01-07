@@ -1,9 +1,9 @@
 ﻿import * as React from 'react';
+import { Dispatch, Action } from 'redux';
+import { connect } from 'react-redux';
 import Constants from '../model/enums/Constants';
 import localization from '../model/resources/localization';
 import State from '../state/State';
-import { connect } from 'react-redux';
-import { Dispatch, Action } from 'redux';
 import actionCreators from '../state/actionCreators';
 import ProgressBar from './common/ProgressBar';
 
@@ -33,26 +33,22 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 		dispatch(actionCreators.onLoginChanged(newLogin));
 	},
 	onLogin: () => {
-		dispatch(actionCreators.login() as object as Action); // TODO: разобраться с типизацией
+		dispatch(actionCreators.login() as unknown as Action); // TODO: разобраться с типизацией
 	}
 });
 
 export class Login extends React.Component<LoginProps> {
-	constructor(props: LoginProps) {
-		super(props);
-	}
-
 	private onLoginChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
 		this.props.onLoginChanged(e.target.value);
-	}
+	};
 
 	private onLoginKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
 		if (e.charCode === Constants.KEY_ENTER) {
 			this.props.onLogin();
 		}
-	}
+	};
 
-	render() {
+	render(): JSX.Element {
 		return (
 			<div id="logon">
 				<div className="main">
@@ -60,8 +56,16 @@ export class Login extends React.Component<LoginProps> {
 					<header><h1>{localization.appName}</h1></header>
 					<div className="logonHost">
 						<p className="header">{localization.yourName}</p>
-						<input id="entername" name="name" autoFocus value={this.props.login} maxLength={30} disabled={this.props.inProgress}
-							onChange={this.onLoginChanged} onKeyPress={this.onLoginKeyPress} />
+						<input
+							id="entername"
+							name="name"
+							autoFocus
+							value={this.props.login}
+							maxLength={30}
+							disabled={this.props.inProgress}
+							onChange={this.onLoginChanged}
+							onKeyPress={this.onLoginKeyPress}
+						/>
 
 						<p>{localization.settingsHint}</p>
 
@@ -69,10 +73,20 @@ export class Login extends React.Component<LoginProps> {
 
 						{this.props.error ? <p id="logonerror">{this.props.error}</p> : null}
 						<div id="logonButtons">
-							<button id="howToPlay" disabled={this.props.inProgress} onClick={this.props.onHowToPlay}>
+							<button
+								id="howToPlay"
+								type="button"
+								disabled={this.props.inProgress}
+								onClick={this.props.onHowToPlay}
+							>
 								{localization.aboutTitle}
 							</button>
-							<button id="enter" disabled={this.props.inProgress || this.props.login.length === 0} onClick={this.props.onLogin}>
+							<button
+								id="enter"
+								type="button"
+								disabled={this.props.inProgress || this.props.login.length === 0}
+								onClick={this.props.onLogin}
+							>
 								{localization.enter}
 							</button>
 						</div>

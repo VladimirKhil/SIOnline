@@ -517,7 +517,6 @@ const reducer: Reducer<State> = (state: State = initialState, action: KnownActio
 				game: {
 					...state.game,
 					id: action.id,
-					isHost: action.isHost,
 					isAutomatic: action.isAutomatic
 				},
 				ui: {

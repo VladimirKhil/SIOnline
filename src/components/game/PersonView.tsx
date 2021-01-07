@@ -13,12 +13,14 @@ interface PersonViewProps {
 	account: Account;
 	selectedPersonName: string | null;
 	login: string;
+	hostName: string | null;
 	selectPerson: (name: string) => void;
 }
 
 const mapStateToProps = (state: State) => ({
 	selectedPersonName: state.run.chat.selectedPersonName,
 	login: state.user.login,
+	hostName: state.run.persons.hostName
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => ({
@@ -30,12 +32,15 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => ({
 export function PersonView(props: PersonViewProps): JSX.Element {
 	const isActive = props.account.name === props.selectedPersonName;
 	const isMe = props.account.name === props.login;
+	const isHost = props.account.name === props.hostName;
 
 	const humanImage = props.account.sex === Sex.Male ? '🧑' : '👩';
 
 	return (
-		<li className={`personItem ${isActive ? 'active ' : ''} ${isMe ? 'me' : ''}`}
-			onClick={() => props.selectPerson(props.account.name)}>
+		<li
+			className={`personItem ${isActive ? 'active ' : ''} ${isMe ? 'me' : ''}`}
+			onClick={() => props.selectPerson(props.account.name)}
+		>
 			<span title={props.account.isHuman ? localization.human : localization.computer}>
 				{props.account.isHuman ? humanImage : '🖥️'}
 			</span>
@@ -46,6 +51,7 @@ export function PersonView(props: PersonViewProps): JSX.Element {
 			<span>
 				{props.account.name}
 			</span>
+			{isHost ? (<span className="personItem_host" role="img" aria-label="star" title={localization.host}>⭐</span>) : null}
 		</li>
 	);
 }

@@ -60,7 +60,6 @@ export default interface State {
 		playersCount: number;
 		humanPlayersCount: number;
 		id: number;
-		isHost: boolean;
 		isAutomatic: boolean;
 	};
 	run: RunState;
@@ -124,7 +123,6 @@ export const initialState: State = {
 		playersCount: 3,
 		humanPlayersCount: 0,
 		id: -1,
-		isHost: false,
 		isAutomatic: false
 	},
 	run: runInitialState,

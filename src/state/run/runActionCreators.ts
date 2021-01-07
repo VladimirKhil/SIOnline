@@ -538,6 +538,10 @@ const startGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> = 
 	dataContext.gameClient.msgAsync('START');
 };
 
+const hostNameChanged: ActionCreator<RunActions.HostNameChangedAction> = (hostName: string | null) => ({
+	type: RunActions.RunActionTypes.HostNameChanged, hostName
+});
+
 const runActionCreators = {
 	runChatModeChanged,
 	runChatMessageChanged,
@@ -618,7 +622,8 @@ const runActionCreators = {
 	clearDecisionsAndMainTimer,
 	hintChanged,
 	startGame,
-	operationError
+	operationError,
+	hostNameChanged
 };
 
 export default runActionCreators;

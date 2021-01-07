@@ -11,6 +11,7 @@ import ChatInput from './ChatInput';
 import Role from '../../model/enums/Role';
 import RoundProgress from './RoundProgress';
 import TablesView from './TablesView';
+import isHost from '../../utils/StateHelpers';
 
 import './GameChatView.css';
 
@@ -32,7 +33,7 @@ const mapStateToProps = (state: State) => ({
 	personsCount: Object.values(state.run.persons.all).length,
 	role: state.run.role,
 	areSumsEditable: state.run.areSumsEditable,
-	isHost: state.game.isHost
+	isHost: isHost(state)
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({

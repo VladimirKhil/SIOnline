@@ -1,9 +1,10 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import State from '../../state/State';
 import { Dispatch, Action } from 'redux';
+import State from '../../state/State';
 import runActionCreators from '../../state/run/runActionCreators';
 import localization from '../../model/resources/localization';
+import isHost from '../../utils/StateHelpers';
 
 import './StartGameButton.css';
 
@@ -15,7 +16,7 @@ interface StartGameButtonProps {
 
 const mapStateToProps = (state: State) => ({
 	isConnected: state.common.isConnected,
-	canStart: !state.run.stage.isGameStarted && state.game.isHost
+	canStart: !state.run.stage.isGameStarted && isHost(state)
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import State from '../../state/State';
 import { Dispatch, Action } from 'redux';
+import State from '../../state/State';
 import runActionCreators from '../../state/run/runActionCreators';
 import localization from '../../model/resources/localization';
 import FlyoutButton, { FlyoutVerticalOrientation, FlyoutTheme } from '../common/FlyoutButton';
@@ -14,6 +14,7 @@ import StakeSumEditor from './stakes/StakeSumEditor';
 import SendPassButton from './stakes/SendPassButton';
 import SendStakeButton from './stakes/SendStakeButton';
 import SendAllInButton from './stakes/SendAllInButton';
+import isHost from '../../utils/StateHelpers';
 
 import './SideControlPanel.css';
 
@@ -41,7 +42,7 @@ const mapStateToProps = (state: State) => ({
 	role: state.run.role,
 	isChatVisible: state.run.chat.isVisible,
 	isChatActive: state.run.chat.isActive,
-	isHost: state.game.isHost,
+	isHost: isHost(state),
 	isPaused: state.run.stage.isGamePaused,
 	lastReplic: state.run.lastReplic,
 	areStakesVisible: state.run.stakes.areVisible,

@@ -4,5 +4,5 @@ export default interface GameCreationResult {
 	code: GameCreationResultCode;
 	errorMessage: string;
 	gameId: number;
-	isHost: boolean;
+	isHost: boolean; /* Obsolete */
 }

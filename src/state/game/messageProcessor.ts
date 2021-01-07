@@ -18,6 +18,7 @@ import Constants from '../../model/enums/Constants';
 import Role from '../../model/enums/Role';
 import localization from '../../model/resources/localization';
 import StakeTypes from '../../model/enums/StakeTypes';
+import stringFormat from '../../utils/StringHelpers';
 
 let lastReplicLock: number;
 
@@ -208,6 +209,20 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 				}
 
 				dispatch(tableActionCreators.showGameThemes(gameThemes));
+			}
+			break;
+
+		case 'HOSTNAME':
+			if (args.length > 1) {
+				dispatch(runActionCreators.hostNameChanged(args[1]));
+				if (args.length > 2) {
+					const changeSource = args[2].length > 0 ? args[2] : localization.byGame;
+
+					dispatch(runActionCreators.chatMessageAdded({
+						sender: '',
+						text: stringFormat(localization.hostNameChanged, changeSource, args[1])
+					}));
+				}
 			}
 			break;
 
@@ -497,8 +512,8 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 
 		case 'TIMER':
 			// Special case for automatic game
-			if (!state.run.stage.isGameStarted && state.game.isAutomatic && args.length === 5 &&
-				args[1] === '2' && args[2] === 'GO' && args[4] === '-2') {
+			if (!state.run.stage.isGameStarted && state.game.isAutomatic && args.length === 5
+				&& args[1] === '2' && args[2] === 'GO' && args[4] === '-2') {
 				const leftSeconds = parseInt(args[3], 10) / 10;
 
 				runActionCreators.showLeftSeconds(leftSeconds, dispatch);
@@ -575,7 +590,7 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 		case 'WRONGTRY':
 			{
 				const index = parseInt(args[1], 10);
-				const players = state.run.persons.players;
+				const { players } = state.run.persons;
 				if (index > -1 && index < players.length) {
 					const player = players[index];
 					if (player.state === PlayerStates.None) {
