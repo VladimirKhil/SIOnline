@@ -364,18 +364,6 @@ showman::after, player::after, viewer::after {
     content: ": "
 }
 
-#gameMessageHost {
-    flex: 2 0 0;
-    margin: 0;
-    position: relative;
-}
-
-#messageWrapper {
-    position: relative;
-    width: 100%;
-    height: 45px;
-}
-
 #showChat {
     position: absolute;
     height: 45px;
@@ -418,18 +406,6 @@ showman::after, player::after, viewer::after {
     left: 0;
     right: 0;
     background-color: lightyellow;
-}
-
-#buttons {
-    width: 100%;
-    margin: 0;
-    position: relative;
-    display: flex;
-    background-color: #5A95E2;
-}
-
-#buttons button {
-    height: 45px;
 }
 
 .playerButtonWrapper {
@@ -666,18 +642,6 @@ video, audio {
         flex: 0 0 45px;
     }
 
-    #gameMessageHost {
-        display: flex;
-    }
-
-    #messageWrapper {
-        width: 70%;
-    }
-
-    #buttons {
-        width: calc(60% + 1px);
-    }
-
     #gamesTitle, #chatHostTitle {
         padding-left: 0;
     }
@@ -713,24 +677,12 @@ video, audio {
         display: none;
     }
 
-    #messageWrapper {
-        display: none;
-    }
-
     #playerButtonHost {
         display: none;
     }
 
     .playerButtonWrapper {
         flex: 0 0 0;
-    }
-
-    #gameMessageHost {
-        flex: 1 0 0;
-    }
-
-    #buttons {
-        width: 100%;
     }
 
     #pauseButton {

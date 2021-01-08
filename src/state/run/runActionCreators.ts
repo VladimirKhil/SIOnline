@@ -554,6 +554,13 @@ const updateCaption: ActionCreator<ThunkAction<void, State, DataContext, Action>
 	dispatch(tableActionCreators.captionChanged(`${themeName}, ${questionCaption}`));
 };
 
+const moveNext: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
+	_dispatch: Dispatch<any>,
+	_getState: () => State,
+	dataContext: DataContext) => {
+	dataContext.gameClient.msgAsync('MOVE', '1');
+};
+
 const runActionCreators = {
 	runChatModeChanged,
 	runChatMessageChanged,
@@ -637,7 +644,8 @@ const runActionCreators = {
 	operationError,
 	hostNameChanged,
 	themeNameChanged,
-	updateCaption
+	updateCaption,
+	moveNext
 };
 
 export default runActionCreators;

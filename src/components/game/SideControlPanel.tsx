@@ -35,6 +35,7 @@ interface SideControlPanelProps {
 	onPause: () => void;
 	onExit: () => void;
 	onEditSums: (enable: boolean) => void;
+	onMoveNext: () => void;
 }
 
 const mapStateToProps = (state: State) => ({
@@ -70,6 +71,9 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	},
 	onEditSums: (enable: boolean) => {
 		dispatch(runActionCreators.areSumsEditableChanged(enable) as unknown as Action);
+	},
+	onMoveNext: () => {
+		dispatch(runActionCreators.moveNext() as unknown as Action);
 	}
 });
 
@@ -95,8 +99,8 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 					</div>
 				) : null}
 
-			<div id="gameMessageHost">
-				<div id="messageWrapper">
+			<div className="gameMessageHost">
+				<div className="messageWrapper">
 					<ChatInput />
 					<AnswerInput id="answerBox" />
 					<button
@@ -115,7 +119,7 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 					) : null}
 				</div>
 
-				<div id="buttons">
+				<div className="sidecontrol_buttons">
 					{canPause ? (
 						<button type="button" id="pauseButton" disabled={!props.isConnected} onClick={() => props.onPause()}>
 							{pauseTitle}
@@ -151,9 +155,12 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 							<span>…</span>
 						</FlyoutButton>
 					</div>
+					<button type="button" className="nextButton" title={localization.next} onClick={props.onMoveNext}>
+						<span role="img" aria-label="arrow right">➡️</span>
+					</button>
 					<FlyoutButton
 						className="exit"
-						title={localization.menu}
+						title={localization.exit}
 						flyout={(
 							<div id="exitMenu" className="exitMenu">
 								<div id="exitMenuPopup" className="gameMenuPopup">
@@ -168,7 +175,7 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 						alignWidth
 						verticalOrientation={FlyoutVerticalOrientation.Top}
 					>
-						{localization.exit}
+						<span role="img" aria-label="door">🚪</span>
 					</FlyoutButton>
 				</div>
 			</div>

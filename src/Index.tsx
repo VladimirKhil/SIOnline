@@ -16,9 +16,9 @@ import Constants from './model/enums/Constants';
 import runActionCreators from './state/run/runActionCreators';
 import localization from './model/resources/localization';
 import ServerInfo from './model/server/ServerInfo';
-import './utils/polyfills';
 import DummyGameServerClient from './client/DummyGameServerClient';
 
+import './utils/polyfills';
 import './style.css';
 
 declare const config: Config;
@@ -60,14 +60,13 @@ async function run() {
 		throw new Error('Config is undefined!');
 	}
 
-	// Временно до перехода на HTTPS
-	if (config.disableHttps && location.protocol !== 'http:') {
-		location.replace(`http:${location.href.substring(location.protocol.length)}`);
+	if (config.forceHttps && location.protocol !== 'https:') {
+		location.replace(`https:${location.href.substring(location.protocol.length)}`);
 	}
 
-	let serverUri = config.serverUri;
+	let { serverUri } = config;
 	if (!serverUri) {
-		const serverDiscoveryUri = config.serverDiscoveryUri;
+		const { serverDiscoveryUri } = config;
 		if (!serverDiscoveryUri) {
 			throw new Error('Server uri is undefined!');
 		}
