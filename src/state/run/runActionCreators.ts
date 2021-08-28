@@ -538,6 +538,14 @@ const startGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> = 
 	dataContext.gameClient.msgAsync('START');
 };
 
+const ready: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (isReady: boolean) => (
+	_dispatch: Dispatch<RunActions.KnownRunAction>,
+	_getState: () => State,
+	dataContext: DataContext
+) => {
+	dataContext.gameClient.msgAsync('READY', isReady ? '+' : '-');
+};
+
 const hostNameChanged: ActionCreator<RunActions.HostNameChangedAction> = (hostName: string | null) => ({
 	type: RunActions.RunActionTypes.HostNameChanged, hostName
 });
@@ -560,6 +568,10 @@ const moveNext: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (
 	dataContext: DataContext) => {
 	dataContext.gameClient.msgAsync('MOVE', '1');
 };
+
+const isReadyChanged: ActionCreator<RunActions.IsReadyChangedAction> = (personIndex: number, isReady: boolean) => ({
+	type: RunActions.RunActionTypes.IsReadyChanged, personIndex, isReady
+});
 
 const runActionCreators = {
 	runChatModeChanged,
@@ -645,7 +657,9 @@ const runActionCreators = {
 	hostNameChanged,
 	themeNameChanged,
 	updateCaption,
-	moveNext
+	moveNext,
+	isReadyChanged,
+	ready
 };
 
 export default runActionCreators;

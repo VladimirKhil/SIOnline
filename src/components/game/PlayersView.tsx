@@ -14,6 +14,8 @@ import { isRunning } from '../../utils/TimerInfoHelpers';
 import getAvatar from '../../utils/AccountHelpers';
 
 import './PlayersView.css';
+import Sex from '../../model/enums/Sex';
+import localization from '../../model/resources/localization';
 
 interface PlayersViewProps {
 	players: PlayerInfo[];
@@ -22,6 +24,7 @@ interface PlayersViewProps {
 	isSelectionEnabled: boolean;
 	isSumEditable: boolean;
 	decisionTimer: TimerInfo;
+	hasGameStarted: boolean;
 	onPlayerSelected: (playerIndex: number) => void;
 	onSumChanged: (playerIndex: number, sum: number) => void;
 	onCancelSumChange: () => void;
@@ -33,7 +36,8 @@ const mapStateToProps = (state: State) => ({
 	login: state.user.login,
 	isSelectionEnabled: state.run.selection.isEnabled,
 	isSumEditable: state.run.areSumsEditable,
-	decisionTimer: state.run.timers.decision
+	decisionTimer: state.run.timers.decision,
+	hasGameStarted: state.run.stage.isGameStarted
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
@@ -56,7 +60,6 @@ export function PlayersView(props: PlayersViewProps): JSX.Element {
 	};
 
 	const buildPlayerClasses = (player: PlayerInfo, isMe: boolean, canBeSelected: boolean) => {
-		const s = player.state;
 		const stateClass = `state_${PlayerStates[player.state].toLowerCase()}`;
 		const meClass = isMe ? 'me' : '';
 		const selectableClass = canBeSelected && props.isSelectionEnabled ? 'selectable' : '';
@@ -84,7 +87,18 @@ export function PlayersView(props: PlayersViewProps): JSX.Element {
 							<div className="playerCard">
 								{avatar ? <div className="playerAvatar" style={{ backgroundImage: `url(${avatar})` }} /> : null}
 								<div className="playerInfo">
-									<span className="name" title={player.name}>{player.name}</span>
+									<div className="name" title={player.name}>
+										{player.isReady && !props.hasGameStarted ? (
+											<span
+												role="img"
+												aria-label="checkmark"
+												title={account.sex === Sex.Female ? localization.readyFemale : localization.readyMale}
+											>
+												✔️
+											</span>
+										) : null}
+										<span>{player.name}</span>
+									</div>
 									<div className="sum">
 										{props.isSumEditable ? (
 											<NumericTextBox

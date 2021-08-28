@@ -97,6 +97,4 @@ export class Login extends React.Component<LoginProps> {
 	}
 }
 
-const loginHOC = connect(mapStateToProps, mapDispatchToProps)(Login);
-
-export default loginHOC;
+export default connect(mapStateToProps, mapDispatchToProps)(Login);

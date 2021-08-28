@@ -675,6 +675,31 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 				}
 			};
 
+		case RunActionTypes.IsReadyChanged:
+			if (action.personIndex === -1) {
+				return {
+					...state,
+					persons: {
+						...state.persons,
+						showman: {
+							...state.persons.showman,
+							isReady: action.isReady
+						}
+					}
+				};
+			}
+
+			return {
+				...state,
+				persons: {
+					...state.persons,
+					players: replace(state.persons.players, action.personIndex, {
+						...state.persons.players[action.personIndex],
+						isReady: action.isReady
+					})
+				}
+			};
+
 		default:
 			return {
 				...state,

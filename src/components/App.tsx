@@ -38,13 +38,13 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 declare const onLoad: () => void;
 
 export class App extends React.Component<AppProps> {
-	componentDidMount() {
+	componentDidMount(): void {
 		if (onLoad) {
 			onLoad();
 		}
 	}
 
-	getContent() {
+	getContent(): JSX.Element | null {
 		switch (this.props.mainView) {
 			case MainView.Loading:
 				return <Loading />;

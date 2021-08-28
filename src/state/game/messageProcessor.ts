@@ -71,6 +71,20 @@ const userMessageReceived: ActionCreator<ThunkAction<void, State, DataContext, A
 		}
 	};
 
+function onReady(personName: string, isReady: boolean, dispatch: Dispatch<any>, state: State): void {
+	let personIndex: number;
+	if (personName === state.run.persons.showman.name) {
+		personIndex = -1;
+	} else {
+		personIndex = state.run.persons.players.findIndex(p => p.name === personName);
+		if (personIndex === -1) {
+			return;
+		}
+	}
+
+	dispatch(runActionCreators.isReadyChanged(personIndex, isReady));
+}
+
 const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataContext, args: string[]) => {
 	switch (args[0]) {
 		case 'ADS':
@@ -387,7 +401,11 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 			break;
 
 		case 'READY':
-			// TODO: process
+			if (args.length < 2) {
+				break;
+			}
+
+			onReady(args[1], args.length < 3 || args[2] === '+', dispatch, state);
 			break;
 
 		case 'REPLIC':

@@ -673,10 +673,6 @@ video, audio {
         flex: 1 0 0;
     }
 
-    #gameMenuHost {
-        display: none;
-    }
-
     #playerButtonHost {
         display: none;
     }

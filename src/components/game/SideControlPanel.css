@@ -1,5 +1,4 @@
-#gameMenuHost {
-    flex: 2 0 0;
+.gameMenuHost {
     position: relative;
 }
 
@@ -91,6 +90,10 @@ ul.gameMenu, .exitMenu ul {
 }
 
 @media screen and (min-width: 1100px) {
+    .gameMenuHost {
+        display: none;
+    }
+
     .sidecontrol_buttons {
         width: 100%;
     }

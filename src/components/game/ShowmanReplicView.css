@@ -24,7 +24,7 @@
 .showmanInfo {
     display: none;
     flex-flow: column;
-    flex: 0 0 240px;
+    flex: 0 0 120px;
     padding: 10px;
     padding: 10px 7px 7px 7px;
 }
@@ -33,7 +33,6 @@
     overflow: hidden;
     flex: 1;
     display: flex;
-    width: 240px;
     justify-content: center;
 }
 
@@ -46,8 +45,11 @@
     text-overflow: ellipsis;
     white-space: nowrap;
     text-align: center;
-    width: 240px;
-    font-size: 18px;
+    font-size: 15px;
+}
+
+.showmanAvatar, .showmanName {
+    width: 120px;
 }
 
 @media screen and (min-width: 1100px) {
@@ -57,6 +59,15 @@
 
     .showmanInfo {
         display: flex;
+        flex: 0 0 240px;
+    }
+
+    .showmanName {
+        font-size: 18px;
+    }
+
+    .showmanAvatar, .showmanName {
+        width: 240px;
     }
 }
 

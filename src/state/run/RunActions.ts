@@ -67,7 +67,8 @@ export const enum RunActionTypes {
 	HintChanged = 'HINT_CHANGED',
 	OperationError = 'OPERATION_ERROR',
 	HostNameChanged = 'HOST_NAME_CHANGED',
-	ThemeNameChanged = 'THEME_NAME_CHANGED'
+	ThemeNameChanged = 'THEME_NAME_CHANGED',
+	IsReadyChanged = 'IS_READY_CHANGED'
 }
 
 export type RunChatModeChangedAction = { type: RunActionTypes.RunChatModeChanged, chatMode: ChatMode };
@@ -146,6 +147,7 @@ export type HintChangedAction = { type: RunActionTypes.HintChanged, hint: string
 export type OperationErrorAction = { type: RunActionTypes.OperationError, error: string };
 export type HostNameChangedAction = { type: RunActionTypes.HostNameChanged, hostName: string | null };
 export type ThemeNameChangedAction = { type: RunActionTypes.ThemeNameChanged, themeName: string };
+export type IsReadyChangedAction = { type: RunActionTypes.IsReadyChanged, personIndex: number, isReady: boolean };
 
 export type KnownRunAction =
 	RunChatModeChangedAction
@@ -206,4 +208,5 @@ export type KnownRunAction =
 	| HintChangedAction
 	| OperationErrorAction
 	| HostNameChangedAction
-	| ThemeNameChangedAction;
+	| ThemeNameChangedAction
+	| IsReadyChangedAction;

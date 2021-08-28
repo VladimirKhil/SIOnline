@@ -10,7 +10,7 @@ interface ProgressBarProps {
 	title?: string;
 }
 
-export default function ProgressBar(props: ProgressBarProps) {
+export default function ProgressBar(props: ProgressBarProps): JSX.Element {
 	let style: React.CSSProperties = props.isIndeterminate ? {} : {
 		width: props.value ? `calc(${100 * props.value}%)` : '0'
 	};
@@ -26,11 +26,19 @@ export default function ProgressBar(props: ProgressBarProps) {
 	}
 
 	return (
-		<div className={`progress progress-striped active ${props.isIndeterminate ? 'indeterminate' : ''} ${props.className}`}
-			title={props.title}>
-			<div className="progress-bar" style={style} role="progressbar"
-				aria-valuenow={props.isIndeterminate ? 100 : props.value} aria-valuemin={0} aria-valuemax={100}>
-			</div>
+		<div
+			className={`progress progress-striped active ${props.isIndeterminate ? 'indeterminate' : ''} ${props.className}`}
+			title={props.title}
+		>
+			<div
+				className="progress-bar"
+				style={style}
+				role="progressbar"
+				aria-label="progress"
+				aria-valuenow={props.isIndeterminate ? 100 : props.value}
+				aria-valuemin={0}
+				aria-valuemax={100}
+			/>
 		</div>
 	);
 }

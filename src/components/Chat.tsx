@@ -1,8 +1,8 @@
 ﻿import * as React from 'react';
 import { connect } from 'react-redux';
+import { Dispatch, Action } from 'redux';
 import State from '../state/State';
 import Constants from '../model/enums/Constants';
-import { Dispatch, Action } from 'redux';
 import actionCreators from '../state/actionCreators';
 import ChatMessage from '../model/ChatMessage';
 import ChatLog from './common/ChatLog';
@@ -39,7 +39,7 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	}
 });
 
-export function Chat(props: ChatProps) {
+export function Chat(props: ChatProps): JSX.Element {
 	const onMessageChanged = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
 		props.onMessageChanged(e.target.value);
 	};
@@ -58,8 +58,12 @@ export function Chat(props: ChatProps) {
 		<div className="chatBodyHost">
 			<ChatLog className="chat" messages={props.messages} />
 
-			<textarea className={`message ${props.isConnected ? '' : 'disconnected'}`} value={props.currentMessage}
-				onChange={onMessageChanged} onKeyPress={onMessageKeyPress}></textarea>
+			<textarea
+				className={`message ${props.isConnected ? '' : 'disconnected'}`}
+				value={props.currentMessage}
+				onChange={onMessageChanged}
+				onKeyPress={onMessageKeyPress}
+			/>
 		</div>
 	);
 }

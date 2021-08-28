@@ -191,6 +191,7 @@ const login: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () =
 				dispatch(computerAccountsChanged(computerAccounts));
 
 				dispatch(loginEnd());
+				dispatch(onLoginChanged(state.user.login.trim())); // Normalize login
 
 				await loadHostInfoAsync(dispatch, dataContext);
 				dispatch(navigateToWelcome());
@@ -538,7 +539,7 @@ function uploadPackageAsync(packageHash: string, packageData: File, serverUri: s
 		};
 		xhr.onerror = () => {
 			dispatch(uploadPackageFinished());
-			reject(new Error(xhr.statusText || localization.unknownError));
+			reject(new Error(xhr.statusText || xhr.responseText || localization.unknownError));
 		};
 		xhr.upload.onprogress = (e) => {
 			dispatch(uploadPackageProgress(e.loaded / e.total));

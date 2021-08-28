@@ -4,7 +4,7 @@ import { Dispatch, Action } from 'redux';
 import State from '../../state/State';
 import runActionCreators from '../../state/run/runActionCreators';
 import localization from '../../model/resources/localization';
-import FlyoutButton, { FlyoutVerticalOrientation, FlyoutTheme } from '../common/FlyoutButton';
+import FlyoutButton, { FlyoutVerticalOrientation, FlyoutTheme, FlyoutHorizontalOrientation } from '../common/FlyoutButton';
 import Role from '../../model/enums/Role';
 import ChatMessage from '../../model/ChatMessage';
 import GameButton from './GameButton';
@@ -82,6 +82,10 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 		backgroundColor: props.isChatActive ? 'lightyellow' : 'transparent'
 	};
 
+	const gameMenuHostStyle: React.CSSProperties = {
+		flex: props.isHost ? '2 0 0' : '1 0 0 '
+	};
+
 	const pauseTitle = props.isPaused ? localization.resume : localization.pause;
 	const canPause = props.isHost || props.role === Role.Showman;
 
@@ -125,7 +129,7 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 							{pauseTitle}
 						</button>
 					) : null}
-					<div id="gameMenuHost">
+					<div className="gameMenuHost" style={gameMenuHostStyle}>
 						<FlyoutButton
 							className="gameMenuButton"
 							title={localization.menu}
@@ -155,9 +159,11 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 							<span>…</span>
 						</FlyoutButton>
 					</div>
-					<button type="button" className="nextButton" title={localization.next} onClick={props.onMoveNext}>
-						<span role="img" aria-label="arrow right">➡️</span>
-					</button>
+					{props.isHost ? (
+						<button type="button" className="nextButton" title={localization.next} onClick={props.onMoveNext}>
+							<span role="img" aria-label="arrow right">➡️</span>
+						</button>
+					) : null}
 					<FlyoutButton
 						className="exit"
 						title={localization.exit}
@@ -172,8 +178,8 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 							</div>
 						)}
 						theme={FlyoutTheme.Light}
-						alignWidth
 						verticalOrientation={FlyoutVerticalOrientation.Top}
+						horizontalOrientation={FlyoutHorizontalOrientation.Left}
 					>
 						<span role="img" aria-label="door">🚪</span>
 					</FlyoutButton>

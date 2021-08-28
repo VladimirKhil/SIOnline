@@ -15,6 +15,6 @@ export function updateTimers(timers: Timers, timerIndex: number, updater: (timer
 	}
 }
 
-export function isRunning(timerInfo: TimerInfo) {
+export function isRunning(timerInfo: TimerInfo): boolean {
 	return !timerInfo.isPausedBySystem && !timerInfo.isPausedByUser;
 }

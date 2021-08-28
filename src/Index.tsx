@@ -71,7 +71,8 @@ async function run() {
 			throw new Error('Server uri is undefined!');
 		}
 
-		const serverUrisResponse = await fetch(serverDiscoveryUri);
+		// Using random number to prevent serverUri caching
+		const serverUrisResponse = await fetch(`${serverDiscoveryUri}?r=${Math.random()}`);
 		if (!serverUrisResponse.ok) {
 			throw new Error(`Server discovery is broken! ${serverUrisResponse.status} ${await serverUrisResponse.text()}`);
 		}

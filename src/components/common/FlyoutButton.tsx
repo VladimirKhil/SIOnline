@@ -41,10 +41,16 @@ interface FlyoutButtonState {
 
 export default class FlyoutButton extends React.Component<FlyoutButtonProps, FlyoutButtonState> {
 	private buttonRef: React.RefObject<HTMLButtonElement>;
+
 	private layout: HTMLDivElement;
 
 	private timerRef: number | null = null;
-	private isDisposed: boolean = false;
+
+	private isDisposed = false;
+
+	static defaultProps: Partial<FlyoutButtonProps> = {
+		hideOnClick: true
+	};
 
 	constructor(props: FlyoutButtonProps) {
 		super(props);
@@ -68,17 +74,13 @@ export default class FlyoutButton extends React.Component<FlyoutButtonProps, Fly
 		this.hideFlyout = this.hideFlyout.bind(this); // 'resize' почему-то не передаёт this
 	}
 
-	static defaultProps: Partial<FlyoutButtonProps> = {
-		hideOnClick: true
-	};
-
-	componentDidMount() {
+	componentDidMount(): void {
 		if (this.layout) {
 			document.body.appendChild(this.layout);
 		}
 	}
 
-	componentWillUnmount() {
+	componentWillUnmount(): void {
 		if (this.layout) {
 			document.body.removeChild(this.layout);
 		}
@@ -110,7 +112,7 @@ export default class FlyoutButton extends React.Component<FlyoutButtonProps, Fly
 			y: this.props.verticalOrientation === FlyoutVerticalOrientation.Top ? rect.top : rect.bottom,
 			width: this.props.alignWidth ? rect.width : undefined
 		});
-	}
+	};
 
 	private hideFlyout = (e: Event) => {
 		if (e.target instanceof Node && this.layout.contains(e.target as Node) && !this.props.hideOnClick) {
@@ -132,7 +134,7 @@ export default class FlyoutButton extends React.Component<FlyoutButtonProps, Fly
 			},
 			200 // Если поставить слишком маленькое значение, onClick для внутенних элементов может не успеть отработать
 		);
-	}
+	};
 
 	private onClick = (e: React.MouseEvent<HTMLButtonElement>) => {
 		if (this.state.isOpen) {
@@ -140,9 +142,9 @@ export default class FlyoutButton extends React.Component<FlyoutButtonProps, Fly
 		} else {
 			this.showFlyout();
 		}
-	}
+	};
 
-	render() {
+	render(): JSX.Element {
 		const horizontalPosition = this.props.horizontalOrientation === FlyoutHorizontalOrientation.Left ? {
 			right: window.innerWidth - this.state.x
 		} : {
@@ -165,13 +167,22 @@ export default class FlyoutButton extends React.Component<FlyoutButtonProps, Fly
 		};
 
 		return (
-			<button ref={this.buttonRef}
-				className={`flyoutButton ${this.props.className}`} title={this.props.title} onClick={this.onClick}>
+			<button
+				type="button"
+				ref={this.buttonRef}
+				className={`flyoutButton ${this.props.className}`}
+				title={this.props.title}
+				onClick={this.onClick}
+			>
 				{this.props.children}
 				{this.state.isOpen ?
 					ReactDOM.createPortal(
-						<section className={`flyoutButton_flyout ${this.props.theme === FlyoutTheme.Light ? 'light' : 'dark'}`}
-							style={flyoutStyle}>{this.props.flyout}</section>,
+						<section
+							className={`flyoutButton_flyout ${this.props.theme === FlyoutTheme.Light ? 'light' : 'dark'}`}
+							style={flyoutStyle}
+						>
+							{this.props.flyout}
+						</section>,
 						this.layout
 					) : null}
 			</button>

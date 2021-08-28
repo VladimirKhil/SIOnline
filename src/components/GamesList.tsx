@@ -108,6 +108,7 @@ export function GamesList(props: GamesListProps): JSX.Element {
 				id="gamesSearch"
 				className="gamesSearch"
 				type="search"
+				autoComplete="off"
 				value={props.gamesSearch}
 				placeholder={localization.searchGames}
 				onChange={e => props.onGamesSearchChanged(e.target.value)}
