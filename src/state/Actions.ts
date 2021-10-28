@@ -5,6 +5,8 @@ import GameType from '../model/enums/GameType';
 import Role from '../model/enums/Role';
 import GameInfo from '../model/server/GameInfo';
 import PackageType from '../model/enums/PackageType';
+import { SIPackageInfo } from '../model/SIPackageInfo';
+import { SearchEntity } from '../model/SearchEntity';
 
 export const enum ActionTypes {
 	IsConnectedChanged = 'IS_CONNECTED_CHANGED',
@@ -61,7 +63,15 @@ export const enum ActionTypes {
 	UploadPackageFinished = 'UPLOAD_PACKAGE_FINISHED',
 	UploadPackageProgress = 'UPLOAD_PACKAGE_PROGRESS',
 	UnselectGame = 'UNSELECT_GAME',
-	ServerNameChanged = 'SERVER_NAME_CHANGED'
+	ServerNameChanged = 'SERVER_NAME_CHANGED',
+	SearchPackages = 'SEARCH_PACKAGES',
+	SearchPackagesFinished = 'SEARCH_PACKAGES_FINISHED',
+	ReceiveAuthors = 'RECEIVE_AUTHORS',
+	ReceiveAuthorsFinished = 'RECEIVE_AUTHORS_FINISHED',
+	ReceiveTags = 'RECEIVE_TAGS',
+	ReceiveTagsFinished = 'RECEIVE_TAGS_FINISHED',
+	ReceivePublishers = 'RECEIVE_PUBLISHERS',
+	ReceivePublishersFinished = 'RECEIVE_PUBLISHERS_FINISHED',
 }
 
 export type IsConnectedChangedAction = { type: ActionTypes.IsConnectedChanged, isConnected: boolean };
@@ -119,6 +129,14 @@ export type UploadPackageFinishedAction = { type: ActionTypes.UploadPackageFinis
 export type UploadPackageProgressAction = { type: ActionTypes.UploadPackageProgress, progress: number };
 export type UnselectGameAction = { type: ActionTypes.UnselectGame };
 export type ServerNameChangedAction = { type: ActionTypes.ServerNameChanged, serverName: string };
+export type SearchPackages = { type: ActionTypes.SearchPackages };
+export type SearchPackagesFinished = { type: ActionTypes.SearchPackagesFinished, packages: SIPackageInfo[] };
+export type ReceiveAuthors = { type: ActionTypes.ReceiveAuthors };
+export type ReceiveAuthorsFinished = { type: ActionTypes.ReceiveAuthorsFinished, authors: SearchEntity[] };
+export type ReceiveTags = { type: ActionTypes.ReceiveTags };
+export type ReceiveTagsFinished = { type: ActionTypes.ReceiveTagsFinished, tags: SearchEntity[] };
+export type ReceivePublishers = { type: ActionTypes.ReceivePublishers };
+export type ReceivePublishersFinished = { type: ActionTypes.ReceivePublishersFinished, publishers: SearchEntity[] };
 
 export type KnownAction =
 	IsConnectedChangedAction
@@ -175,4 +193,12 @@ export type KnownAction =
 	| UploadPackageFinishedAction
 	| UploadPackageProgressAction
 	| UnselectGameAction
-	| ServerNameChangedAction;
+	| ServerNameChangedAction
+	| SearchPackages
+	| SearchPackagesFinished
+	| ReceiveAuthors
+	| ReceiveAuthorsFinished
+	| ReceiveTags
+	| ReceiveTagsFinished
+	| ReceivePublishers
+	| ReceivePublishersFinished;

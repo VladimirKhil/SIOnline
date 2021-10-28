@@ -1,8 +1,12 @@
 ﻿import { Action, Dispatch, ActionCreator } from 'redux';
+import { ThunkAction } from 'redux-thunk';
+import * as signalR from '@microsoft/signalr';
+import * as signalRMsgPack from '@microsoft/signalr-protocol-msgpack';
+import * as JSZip from 'jszip';
+import * as Rusha from 'rusha';
 import * as Actions from './Actions';
 import State from './State';
 import Sex from '../model/enums/Sex';
-import { ThunkAction } from 'redux-thunk';
 import Role from '../model/enums/Role';
 import DataContext from '../model/DataContext';
 
@@ -13,8 +17,6 @@ import GamesFilter from '../model/enums/GamesFilter';
 import localization from '../model/resources/localization';
 import ChatMode from '../model/enums/ChatMode';
 
-import * as signalR from '@microsoft/signalr';
-import * as signalRMsgPack from '@microsoft/signalr-protocol-msgpack';
 import GameType from '../model/enums/GameType';
 import * as GameErrorsHelper from '../utils/GameErrorsHelper';
 import GameInfo from '../model/server/GameInfo';
@@ -26,20 +28,23 @@ import PackageType from '../model/enums/PackageType';
 import PackageKey from '../model/server/PackageKey';
 import Constants from '../model/enums/Constants';
 
-import * as JSZip from 'jszip';
-import * as Rusha from 'rusha';
 import GameServerClient from '../client/GameServerClient';
 import TimeSettings from '../model/server/TimeSettings';
 import ServerAppSettings from '../model/server/ServerAppSettings';
 import AccountSettings from '../model/server/AccountSettings';
 import GameSettings from '../model/server/GameSettings';
 import IGameServerClient from '../client/IGameServerClient';
+import { PackageFilters } from '../model/PackageFilters';
+import { SIPackageInfo } from '../model/SIPackageInfo';
+import { SearchEntity } from '../model/SearchEntity';
 
 const isConnectedChanged: ActionCreator<Actions.IsConnectedChangedAction> = (isConnected: boolean) => ({
-	type: Actions.ActionTypes.IsConnectedChanged, isConnected
+	type: Actions.ActionTypes.IsConnectedChanged,
+	isConnected,
 });
 
-const onConnectionChanged: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (isConnected: boolean, message: string) =>
+const onConnectionChanged: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
+	(isConnected: boolean, message: string) =>
 	async (dispatch: Dispatch<any>, getState: () => State, dataContext: DataContext) => {
 		dispatch(isConnectedChanged(isConnected));
 
@@ -63,35 +68,39 @@ const onConnectionChanged: ActionCreator<ThunkAction<void, State, DataContext, A
 	};
 
 const computerAccountsChanged: ActionCreator<Actions.ComputerAccountsChangedAction> = (computerAccounts: string[]) => ({
-	type: Actions.ActionTypes.ComputerAccountsChanged, computerAccounts
+	type: Actions.ActionTypes.ComputerAccountsChanged,
+	computerAccounts,
 });
 
 const navigateToLogin: ActionCreator<Actions.NavigateToLoginAction> = () => ({
-	type: Actions.ActionTypes.NavigateToLogin
+	type: Actions.ActionTypes.NavigateToLogin,
 });
 
 const showSettings: ActionCreator<Actions.ShowSettingsAction> = (show: boolean) => ({
-	type: Actions.ActionTypes.ShowSettings, show
+	type: Actions.ActionTypes.ShowSettings,
+	show,
 });
 
 const navigateToHowToPlay: ActionCreator<Actions.NavigateToHowToPlayAction> = () => ({
-	type: Actions.ActionTypes.NavigateToHowToPlay
+	type: Actions.ActionTypes.NavigateToHowToPlay,
 });
 
 const navigateBack: ActionCreator<Actions.NavigateBackAction> = () => ({
-	type: Actions.ActionTypes.NavigateBack
+	type: Actions.ActionTypes.NavigateBack,
 });
 
 const onLoginChanged: ActionCreator<Actions.LoginChangedAction> = (newLogin: string) => ({
-	type: Actions.ActionTypes.LoginChanged, newLogin
+	type: Actions.ActionTypes.LoginChanged,
+	newLogin,
 });
 
 const loginStart: ActionCreator<Actions.LoginStartAction> = () => ({
-	type: Actions.ActionTypes.LoginStart
+	type: Actions.ActionTypes.LoginStart,
 });
 
 const loginEnd: ActionCreator<Actions.LoginEndAction> = (error: string | null = null) => ({
-	type: Actions.ActionTypes.LoginEnd, error
+	type: Actions.ActionTypes.LoginEnd,
+	error,
 });
 
 const saveStateToStorage = (state: State) => {
@@ -102,9 +111,9 @@ const saveStateToStorage = (state: State) => {
 			password: state.game.password,
 			role: state.game.role,
 			type: state.game.type,
-			playersCount: state.game.playersCount
+			playersCount: state.game.playersCount,
 		},
-		settings: state.settings
+		settings: state.settings,
 	});
 };
 
@@ -125,11 +134,12 @@ function getLoginErrorByCode(response: Response): string {
 }
 
 const navigateToWelcome: ActionCreator<Actions.NavigateToWelcomeAction> = () => ({
-	type: Actions.ActionTypes.NavigateToWelcome
+	type: Actions.ActionTypes.NavigateToWelcome,
 });
 
 const serverNameChanged: ActionCreator<Actions.ServerNameChangedAction> = (serverName: string) => ({
-	type: Actions.ActionTypes.ServerNameChanged, serverName
+	type: Actions.ActionTypes.ServerNameChanged,
+	serverName,
 });
 
 async function loadHostInfoAsync(dispatch: Dispatch<any>, dataContext: DataContext) {
@@ -140,83 +150,81 @@ async function loadHostInfoAsync(dispatch: Dispatch<any>, dataContext: DataConte
 	dispatch(serverNameChanged(hostInfo.name));
 }
 
-const login: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
-	dispatch: Dispatch<Actions.KnownAction>,
-	getState: () => State,
-	dataContext: DataContext) => {
-	dispatch(loginStart());
+const login: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
+	() => async (dispatch: Dispatch<Actions.KnownAction>, getState: () => State, dataContext: DataContext) => {
+		dispatch(loginStart());
 
-	const state = getState();
+		const state = getState();
 
-	try {
-		const response = await fetch(`${dataContext.serverUri}/api/Account/LogOn`, {
-			method: 'POST',
-			credentials: 'include',
-			body: `login=${state.user.login}&password=`,
-			headers: {
-				'Content-Type': 'application/x-www-form-urlencoded'
-			}
-		});
+		try {
+			const response = await fetch(`${dataContext.serverUri}/api/Account/LogOn`, {
+				method: 'POST',
+				credentials: 'include',
+				body: `login=${state.user.login}&password=`,
+				headers: {
+					'Content-Type': 'application/x-www-form-urlencoded',
+				},
+			});
 
-		if (response.ok) {
-			saveStateToStorage(state);
+			if (response.ok) {
+				saveStateToStorage(state);
 
-			const token = await response.text();
-			const queryString = `?token=${encodeURIComponent(token)}`;
+				const token = await response.text();
+				const queryString = `?token=${encodeURIComponent(token)}`;
 
-			let connectionBuilder = new signalR.HubConnectionBuilder()
-				.withAutomaticReconnect()
-				.withUrl(`${dataContext.serverUri}/sionline${queryString}`);
+				let connectionBuilder = new signalR.HubConnectionBuilder()
+					.withAutomaticReconnect()
+					.withUrl(`${dataContext.serverUri}/sionline${queryString}`);
 
-			if (dataContext.config.useMessagePackProtocol) {
-				connectionBuilder = connectionBuilder.withHubProtocol(new signalRMsgPack.MessagePackHubProtocol());
-			}
-
-			const connection = connectionBuilder.build();
-			// eslint-disable-next-line no-param-reassign
-			dataContext.connection = connection;
-			// eslint-disable-next-line no-param-reassign
-			dataContext.gameClient = new GameServerClient(connection);
-
-			try {
-				await dataContext.connection.start();
-
-				if (dataContext.connection.connectionId) {
-					activeConnections.push(dataContext.connection.connectionId);
+				if (dataContext.config.useMessagePackProtocol) {
+					connectionBuilder = connectionBuilder.withHubProtocol(new signalRMsgPack.MessagePackHubProtocol());
 				}
 
-				attachListeners(dataContext.connection, dispatch);
+				const connection = connectionBuilder.build();
+				// eslint-disable-next-line no-param-reassign
+				dataContext.connection = connection;
+				// eslint-disable-next-line no-param-reassign
+				dataContext.gameClient = new GameServerClient(connection);
 
-				const computerAccounts = await dataContext.gameClient.getComputerAccountsAsync();
-				dispatch(computerAccountsChanged(computerAccounts));
+				try {
+					await dataContext.connection.start();
 
-				dispatch(loginEnd());
-				dispatch(onLoginChanged(state.user.login.trim())); // Normalize login
+					if (dataContext.connection.connectionId) {
+						activeConnections.push(dataContext.connection.connectionId);
+					}
 
-				await loadHostInfoAsync(dispatch, dataContext);
-				dispatch(navigateToWelcome());
-			} catch (error) {
-				dispatch(loginEnd(`${localization.cannotConnectToServer}: ${error.message}`));
+					attachListeners(dataContext.connection, dispatch);
+
+					const computerAccounts = await dataContext.gameClient.getComputerAccountsAsync();
+					dispatch(computerAccountsChanged(computerAccounts));
+
+					dispatch(loginEnd());
+					dispatch(onLoginChanged(state.user.login.trim())); // Normalize login
+
+					await loadHostInfoAsync(dispatch, dataContext);
+					dispatch(navigateToWelcome());
+				} catch (error) {
+					dispatch(loginEnd(`${localization.cannotConnectToServer}: ${error.message}`));
+				}
+			} else {
+				const errorText = getLoginErrorByCode(response);
+				dispatch(loginEnd(errorText));
 			}
-		} else {
-			const errorText = getLoginErrorByCode(response);
-			dispatch(loginEnd(errorText));
+		} catch (err) {
+			dispatch(loginEnd(`${localization.cannotConnectToServer}: ${err.message}`));
 		}
-	} catch (err) {
-		dispatch(loginEnd(`${localization.cannotConnectToServer}: ${err.message}`));
-	}
-};
+	};
 
 const singlePlay: ActionCreator<Actions.NavigateToNewGameAction> = () => ({
-	type: Actions.ActionTypes.NavigateToNewGame
+	type: Actions.ActionTypes.NavigateToNewGame,
 });
 
 const friendsPlayInternal: ActionCreator<Actions.NavigateToGamesAction> = () => ({
-	type: Actions.ActionTypes.NavigateToGames
+	type: Actions.ActionTypes.NavigateToGames,
 });
 
-const friendsPlay: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () =>
-	async (dispatch: Dispatch<Actions.KnownAction>, getState: () => State, dataContext: DataContext) => {
+const friendsPlay: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
+	() => async (dispatch: Dispatch<Actions.KnownAction>, getState: () => State, dataContext: DataContext) => {
 		dispatch(friendsPlayInternal());
 		try {
 			await loadGamesAsync(dispatch, dataContext.gameClient);
@@ -228,79 +236,84 @@ const friendsPlay: ActionCreator<ThunkAction<void, State, DataContext, Action>> 
 	};
 
 const navigateToLobbyInternal: ActionCreator<Actions.NavigateToLobbyAction> = () => ({
-	type: Actions.ActionTypes.NavigateToLobby
+	type: Actions.ActionTypes.NavigateToLobby,
 });
 
-const navigateToLobby: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (gameId: number, showInfo?: boolean) => async (
-	dispatch: Dispatch<Actions.KnownAction>,
-	getState: () => State,
-	dataContext: DataContext) => {
-	dispatch(navigateToLobbyInternal());
+const navigateToLobby: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
+	(gameId: number, showInfo?: boolean) =>
+	async (dispatch: Dispatch<Actions.KnownAction>, getState: () => State, dataContext: DataContext) => {
+		dispatch(navigateToLobbyInternal());
 
-	if (gameId > -1) {
-		dispatch(selectGame(gameId, showInfo));
-	} else if (dataContext.config.rewriteUrl) {
-		window.history.pushState({}, '', dataContext.config.rootUri);
-	}
-
-	// Games filtering is performed on client
-	try {
-		await loadGamesAsync(dispatch, dataContext.gameClient);
-
-		const users = await dataContext.gameClient.getUsersAsync();
-		const sortedUsers = users.sort((user1: string, user2: string) => { return user1.localeCompare(user2); });
-
-		dispatch(receiveUsers(sortedUsers));
-
-		const news = await dataContext.gameClient.getNewsAsync();
-
-		if (news !== null) {
-			dispatch(receiveMessage(localization.news, news));
+		if (gameId > -1) {
+			dispatch(selectGame(gameId, showInfo));
+		} else if (dataContext.config.rewriteUrl) {
+			window.history.pushState({}, '', dataContext.config.rootUri);
 		}
 
-		dispatch(onlineLoadFinish());
-	} catch (error) {
-		dispatch(onlineLoadError(error.message));
-	}
-};
+		// Games filtering is performed on client
+		try {
+			await loadGamesAsync(dispatch, dataContext.gameClient);
+
+			const users = await dataContext.gameClient.getUsersAsync();
+			const sortedUsers = users.sort((user1: string, user2: string) => user1.localeCompare(user2));
+
+			dispatch(receiveUsers(sortedUsers));
+
+			const news = await dataContext.gameClient.getNewsAsync();
+
+			if (news !== null) {
+				dispatch(receiveMessage(localization.news, news));
+			}
+
+			dispatch(onlineLoadFinish());
+		} catch (error) {
+			dispatch(onlineLoadError(error.message));
+		}
+	};
 
 const clearGames: ActionCreator<Actions.ClearGamesAction> = () => ({
-	type: Actions.ActionTypes.ClearGames
+	type: Actions.ActionTypes.ClearGames,
 });
 
 const receiveGames: ActionCreator<Actions.ReceiveGamesAction> = (games: any[]) => ({
-	type: Actions.ActionTypes.ReceiveGames, games
+	type: Actions.ActionTypes.ReceiveGames,
+	games,
 });
 
 const receiveUsers: ActionCreator<Actions.ReceiveUsersAction> = (users: string[]) => ({
-	type: Actions.ActionTypes.ReceiveUsers, users
+	type: Actions.ActionTypes.ReceiveUsers,
+	users,
 });
 
 const receiveMessage: ActionCreator<Actions.ReceiveMessageAction> = (sender: string, message: string) => ({
-	type: Actions.ActionTypes.ReceiveMessage, sender, message
+	type: Actions.ActionTypes.ReceiveMessage,
+	sender,
+	message,
 });
 
 const onlineLoadFinish: ActionCreator<Actions.OnlineLoadFinishedAction> = () => ({
-	type: Actions.ActionTypes.OnlineLoadFinished
+	type: Actions.ActionTypes.OnlineLoadFinished,
 });
 
 const onlineLoadError: ActionCreator<Actions.OnlineLoadErrorAction> = (error: string) => ({
-	type: Actions.ActionTypes.OnlineLoadError, error
+	type: Actions.ActionTypes.OnlineLoadError,
+	error,
 });
 
 const onOnlineModeChanged: ActionCreator<Actions.OnlineModeChangedAction> = (mode: OnlineMode) => ({
-	type: Actions.ActionTypes.OnlineModeChanged, mode
+	type: Actions.ActionTypes.OnlineModeChanged,
+	mode,
 });
 
-const onExit: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () =>
-	async (dispatch: Dispatch<Actions.KnownAction>, getState: () => State, dataContext: DataContext) => {
+const onExit: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
+	() => async (dispatch: Dispatch<Actions.KnownAction>, getState: () => State, dataContext: DataContext) => {
 		const server = dataContext.connection;
 
 		if (!server) {
 			return;
 		}
 
-		try	{
+		try {
 			await dataContext.gameClient.logOutAsync();
 			if (server.connectionId) {
 				activeConnections.splice(activeConnections.indexOf(server.connectionId), 1);
@@ -316,47 +329,52 @@ const onExit: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () 
 	};
 
 const onGamesFilterToggle: ActionCreator<Actions.GamesFilterToggleAction> = (filter: GamesFilter) => ({
-	type: Actions.ActionTypes.GamesFilterToggle, filter
+	type: Actions.ActionTypes.GamesFilterToggle,
+	filter,
 });
 
 const onGamesSearchChanged: ActionCreator<Actions.GamesSearchChangedAction> = (search: string) => ({
-	type: Actions.ActionTypes.GamesSearchChanged, search
+	type: Actions.ActionTypes.GamesSearchChanged,
+	search,
 });
 
 const selectGame: ActionCreator<Actions.SelectGameAction> = (gameId: number, showInfo: boolean) => ({
-	type: Actions.ActionTypes.SelectGame, gameId, showInfo
+	type: Actions.ActionTypes.SelectGame,
+	gameId,
+	showInfo,
 });
 
 const closeGameInfo: ActionCreator<Actions.CloseGameInfoAction> = () => ({
-	type: Actions.ActionTypes.CloseGameInfo
+	type: Actions.ActionTypes.CloseGameInfo,
 });
 
 const unselectGame: ActionCreator<Actions.UnselectGameAction> = () => ({
-	type: Actions.ActionTypes.UnselectGame
+	type: Actions.ActionTypes.UnselectGame,
 });
 
 const newAutoGame: ActionCreator<Actions.NewAutoGameAction> = () => ({
-	type: Actions.ActionTypes.NewAutoGame
+	type: Actions.ActionTypes.NewAutoGame,
 });
 
 const newGame: ActionCreator<Actions.NewGameAction> = () => ({
-	type: Actions.ActionTypes.NewGame
+	type: Actions.ActionTypes.NewGame,
 });
 
 const newGameCancel: ActionCreator<Actions.NewGameCancelAction> = () => ({
-	type: Actions.ActionTypes.NewGameCancel
+	type: Actions.ActionTypes.NewGameCancel,
 });
 
 const joinGameStarted: ActionCreator<Actions.JoinGameStartedAction> = () => ({
-	type: Actions.ActionTypes.JoinGameStarted
+	type: Actions.ActionTypes.JoinGameStarted,
 });
 
 const joinGameFinished: ActionCreator<Actions.JoinGameFinishedAction> = (error: string | null) => ({
-	type: Actions.ActionTypes.JoinGameFinished, error
+	type: Actions.ActionTypes.JoinGameFinished,
+	error,
 });
 
-const joinGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (gameId: number, role: Role) =>
-	async (dispatch: Dispatch<any>, getState: () => State, dataContext: DataContext) => {
+const joinGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
+	(gameId: number, role: Role) => async (dispatch: Dispatch<any>, getState: () => State, dataContext: DataContext) => {
 		dispatch(joinGameStarted());
 
 		try {
@@ -386,39 +404,47 @@ const joinGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (
 	};
 
 const passwordChanged: ActionCreator<Actions.PasswordChangedAction> = (newPassword: string) => ({
-	type: Actions.ActionTypes.PasswordChanged, newPassword
+	type: Actions.ActionTypes.PasswordChanged,
+	newPassword,
 });
 
 const chatModeChanged: ActionCreator<Actions.ChatModeChangedAction> = (chatMode: ChatMode) => ({
-	type: Actions.ActionTypes.ChatModeChanged, chatMode
+	type: Actions.ActionTypes.ChatModeChanged,
+	chatMode,
 });
 
 const gameCreated: ActionCreator<Actions.GameCreatedAction> = (game: GameInfo) => ({
-	type: Actions.ActionTypes.GameCreated, game
+	type: Actions.ActionTypes.GameCreated,
+	game,
 });
 
 const gameChanged: ActionCreator<Actions.GameChangedAction> = (game: GameInfo) => ({
-	type: Actions.ActionTypes.GameChanged, game
+	type: Actions.ActionTypes.GameChanged,
+	game,
 });
 
 const gameDeleted: ActionCreator<Actions.GameDeletedAction> = (gameId: number) => ({
-	type: Actions.ActionTypes.GameDeleted, gameId
+	type: Actions.ActionTypes.GameDeleted,
+	gameId,
 });
 
 const userJoined: ActionCreator<Actions.UserJoinedAction> = (login: string) => ({
-	type: Actions.ActionTypes.UserJoined, login
+	type: Actions.ActionTypes.UserJoined,
+	login,
 });
 
 const userLeaved: ActionCreator<Actions.UserLeavedAction> = (login: string) => ({
-	type: Actions.ActionTypes.UserLeaved, login
+	type: Actions.ActionTypes.UserLeaved,
+	login,
 });
 
 const messageChanged: ActionCreator<Actions.MessageChangedAction> = (message: string) => ({
-	type: Actions.ActionTypes.MessageChanged, message
+	type: Actions.ActionTypes.MessageChanged,
+	message,
 });
 
-const sendMessage: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () =>
-	(dispatch: Dispatch<Actions.KnownAction>, getState: () => State, dataContext: DataContext) => {
+const sendMessage: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
+	() => (dispatch: Dispatch<Actions.KnownAction>, getState: () => State, dataContext: DataContext) => {
 		const state = getState();
 
 		const text = state.online.currentMessage.trim();
@@ -430,63 +456,81 @@ const sendMessage: ActionCreator<ThunkAction<void, State, DataContext, Action>> 
 	};
 
 const windowWidthChanged: ActionCreator<Actions.WindowWidthChangedAction> = (width: number) => ({
-	type: Actions.ActionTypes.WindowWidthChanged, width
+	type: Actions.ActionTypes.WindowWidthChanged,
+	width,
 });
 
 const gameNameChanged: ActionCreator<Actions.GameNameChangedAction> = (gameName: string) => ({
-	type: Actions.ActionTypes.GameNameChanged, gameName
+	type: Actions.ActionTypes.GameNameChanged,
+	gameName,
 });
 
 const gamePasswordChanged: ActionCreator<Actions.GamePasswordChangedAction> = (gamePassword: string) => ({
-	type: Actions.ActionTypes.GamePasswordChanged, gamePassword
+	type: Actions.ActionTypes.GamePasswordChanged,
+	gamePassword,
 });
 
 const gamePackageTypeChanged: ActionCreator<Actions.GamePackageTypeChangedAction> = (packageType: PackageType) => ({
-	type: Actions.ActionTypes.GamePackageTypeChanged, packageType
+	type: Actions.ActionTypes.GamePackageTypeChanged,
+	packageType,
 });
 
-const gamePackageDataChanged: ActionCreator<Actions.GamePackageDataChangedAction> = (packageName: string, packageData: File | null) => ({
-	type: Actions.ActionTypes.GamePackageDataChanged, packageName, packageData
+const gamePackageDataChanged: ActionCreator<Actions.GamePackageDataChangedAction> = (
+	packageName: string,
+	packageData: File | null
+) => ({
+	type: Actions.ActionTypes.GamePackageDataChanged,
+	packageName,
+	packageData,
 });
 
 const gameTypeChanged: ActionCreator<Actions.GameTypeChangedAction> = (gameType: GameType) => ({
-	type: Actions.ActionTypes.GameTypeChanged, gameType
+	type: Actions.ActionTypes.GameTypeChanged,
+	gameType,
 });
 
 const gameRoleChanged: ActionCreator<Actions.GameRoleChangedAction> = (gameRole: Role) => ({
-	type: Actions.ActionTypes.GameRoleChanged, gameRole
+	type: Actions.ActionTypes.GameRoleChanged,
+	gameRole,
 });
 
 const showmanTypeChanged: ActionCreator<Actions.ShowmanTypeChangedAction> = (isHuman: boolean) => ({
-	type: Actions.ActionTypes.ShowmanTypeChanged, isHuman
+	type: Actions.ActionTypes.ShowmanTypeChanged,
+	isHuman,
 });
 
 const playersCountChanged: ActionCreator<Actions.PlayersCountChangedAction> = (playersCount: number) => ({
-	type: Actions.ActionTypes.PlayersCountChanged, playersCount
+	type: Actions.ActionTypes.PlayersCountChanged,
+	playersCount,
 });
 
-const humanPlayersCountChanged: ActionCreator<Actions.HumanPlayersCountChangedAction> = (humanPlayersCount: number) => ({
-	type: Actions.ActionTypes.HumanPlayersCountChanged, humanPlayersCount
+const humanPlayersCountChanged: ActionCreator<Actions.HumanPlayersCountChangedAction> = (
+	humanPlayersCount: number
+) => ({
+	type: Actions.ActionTypes.HumanPlayersCountChanged,
+	humanPlayersCount,
 });
 
 const gameCreationStart: ActionCreator<Actions.GameCreationStartAction> = () => ({
-	type: Actions.ActionTypes.GameCreationStart
+	type: Actions.ActionTypes.GameCreationStart,
 });
 
 const gameCreationEnd: ActionCreator<Actions.GameCreationEndAction> = (error: string | null = null) => ({
-	type: Actions.ActionTypes.GameCreationEnd, error
+	type: Actions.ActionTypes.GameCreationEnd,
+	error,
 });
 
 const uploadPackageStarted: ActionCreator<Actions.UploadPackageStartedAction> = () => ({
-	type: Actions.ActionTypes.UploadPackageStarted
+	type: Actions.ActionTypes.UploadPackageStarted,
 });
 
 const uploadPackageFinished: ActionCreator<Actions.UploadPackageFinishedAction> = () => ({
-	type: Actions.ActionTypes.UploadPackageFinished
+	type: Actions.ActionTypes.UploadPackageFinished,
 });
 
 const uploadPackageProgress: ActionCreator<Actions.UploadPackageProgressAction> = (progress: number) => ({
-	type: Actions.ActionTypes.UploadPackageProgress, progress
+	type: Actions.ActionTypes.UploadPackageProgress,
+	progress,
 });
 
 async function loadGamesAsync(dispatch: Dispatch<Actions.KnownAction>, gameClient: IGameServerClient) {
@@ -505,7 +549,12 @@ async function loadGamesAsync(dispatch: Dispatch<Actions.KnownAction>, gameClien
 	} while (!gamesSlice.isLastSlice && whileGuard > 0);
 }
 
-function uploadPackageAsync(packageHash: string, packageData: File, serverUri: string, dispatch: Dispatch<any>): Promise<boolean> {
+function uploadPackageAsync(
+	packageHash: string,
+	packageData: File,
+	serverUri: string,
+	dispatch: Dispatch<any>
+): Promise<boolean> {
 	dispatch(uploadPackageStarted());
 
 	const formData = new FormData();
@@ -589,7 +638,7 @@ async function checkAndUploadPackageAsync(
 	const packageKey: PackageKey = {
 		name: packageData.name,
 		hash: hashArrayEncoded,
-		id
+		id,
 	};
 
 	const hasPackage = await gameClient.hasPackageAsync(packageKey);
@@ -607,164 +656,181 @@ function getRandomValue(): number {
 	return array[0];
 }
 
-const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (isSingleGame: boolean) => async (
-	dispatch: Dispatch<any>,
-	getState: () => State,
-	dataContext: DataContext) => {
-	const state = getState();
+const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
+	(isSingleGame: boolean) => async (dispatch: Dispatch<any>, getState: () => State, dataContext: DataContext) => {
+		const state = getState();
 
-	if (state.game.name.length === 0 || state.common.computerAccounts === null) {
-		dispatch(gameCreationEnd(localization.gameNameMustBeSpecified));
-		return;
-	}
-
-	dispatch(gameCreationStart());
-
-	// TODO: single game requires `isPrivate` flag, not random password to be closed for everyone
-	// With `isRandom` flag game name could also be omitted
-
-	const game = isSingleGame ? {
-		...state.game,
-		password: getRandomValue().toString(), // protecting from anyone to join
-		isShowmanHuman: false,
-		humanPlayersCount: 0
-	} : state.game;
-
-	const { playersCount, humanPlayersCount, role } = game;
-	const me = { Name: state.user.login, IsHuman: true, IsMale: state.settings.sex === Sex.Male };
-
-	const showman: AccountSettings = role === Role.Showman ? me :
-		(game.isShowmanHuman ? { Name: Constants.ANY_NAME, IsHuman: true } : { Name: localization.defaultShowman });
-	const players: AccountSettings[] = [];
-	const viewers: AccountSettings[] = [];
-
-	if (role === Role.Viewer) {
-		viewers.push(me);
-	} else if (role === Role.Player) {
-		players.push(me);
-	}
-
-	const compPlayersCount = playersCount - humanPlayersCount - (role === Role.Player ? 1 : 0);
-
-	const compIndicies = [];
-	for (let i = 0; i < state.common.computerAccounts.length; i++) {
-		compIndicies.push(i);
-	}
-
-	for (let i = 0; i < humanPlayersCount; i++) {
-		players.push({ Name: Constants.ANY_NAME, IsHuman: true });
-	}
-
-	for (let i = 0; i < compPlayersCount; i++) {
-		const ind = Math.floor((Math.random() * compIndicies.length));
-		players.push({ Name: state.common.computerAccounts[compIndicies[ind]], IsHuman: false });
-		compIndicies.splice(ind, 1);
-	}
-
-	const timeSettings: TimeSettings = {
-		TimeForChoosingQuestion: 30,
-		TimeForThinkingOnQuestion: 5,
-		TimeForPrintingAnswer: 25,
-		TimeForGivingACat: 30,
-		TimeForMakingStake: 30,
-		TimeForThinkingOnSpecial: 25,
-		TimeOfRound: 660,
-		TimeForChoosingFinalTheme: 30,
-		TimeForFinalThinking: 45,
-		TimeForShowmanDecisions: 30,
-		TimeForRightAnswer: 2,
-		TimeForMediaDelay: 0
-	};
-
-	const gameMode = game.type;
-
-	const appSettings: ServerAppSettings = {
-		TimeSettings: timeSettings,
-		ReadingSpeed: 20,
-		FalseStart: state.settings.appSettings.falseStart,
-		HintShowman: state.settings.appSettings.hintShowman,
-		Oral: state.settings.appSettings.oral,
-		IgnoreWrong: false,
-		GameMode: gameMode.toString(),
-		RandomQuestionsBasePrice: gameMode === GameType.Simple ? 10 : 100,
-		RandomRoundsCount: gameMode === GameType.Simple ? 1 : 3,
-		RandomThemesCount: gameMode === GameType.Simple ? 5 : 6,
-		Culture: 'ru-RU'
-	};
-
-	const gameSettings: GameSettings = {
-		HumanPlayerName: state.user.login,
-		RandomSpecials: game.package.type === PackageType.Random,
-		NetworkGameName: game.name,
-		NetworkGamePassword: game.password,
-		AllowViewers: true,
-		Showman: showman,
-		Players: players,
-		Viewers: viewers,
-		AppSettings: appSettings
-	};
-
-	try {
-		const packageKey: PackageKey | null = game.package.type === PackageType.Random || !game.package.data ? {
-			name: '',
-			hash: null,
-			id: null
-		} : await checkAndUploadPackageAsync(dataContext.gameClient, dataContext.serverUri, game.package.data, dispatch);
-
-		if (!packageKey) {
-			dispatch(gameCreationEnd(localization.badPackage));
+		if (state.game.name.length === 0 || state.common.computerAccounts === null) {
+			dispatch(gameCreationEnd(localization.gameNameMustBeSpecified));
 			return;
 		}
 
-		const result = await dataContext.gameClient.createAndJoinGameAsync(gameSettings, packageKey, state.settings.sex === Sex.Male);
+		dispatch(gameCreationStart());
 
-		saveStateToStorage(state);
+		// TODO: single game requires `isPrivate` flag, not random password to be closed for everyone
+		// With `isRandom` flag game name could also be omitted
 
-		dispatch(gameCreationEnd());
-		if (result.code > 0) {
-			dispatch(gameCreationEnd(GameErrorsHelper.getMessage(result.code) + (result.errorMessage || '')));
-		} else {
-			dispatch(newGameCancel());
-			dispatch(gameSet(result.gameId, false, role));
+		const game = isSingleGame
+			? {
+					...state.game,
+					password: getRandomValue().toString(), // protecting from anyone to join
+					isShowmanHuman: false,
+					humanPlayersCount: 0,
+			  }
+			: state.game;
 
-			await gameInit(result.gameId, dataContext, role);
+		const { playersCount, humanPlayersCount, role } = game;
+		const me = { Name: state.user.login, IsHuman: true, IsMale: state.settings.sex === Sex.Male };
+
+		const showman: AccountSettings =
+			role === Role.Showman
+				? me
+				: game.isShowmanHuman
+				? { Name: Constants.ANY_NAME, IsHuman: true }
+				: { Name: localization.defaultShowman };
+		const players: AccountSettings[] = [];
+		const viewers: AccountSettings[] = [];
+
+		if (role === Role.Viewer) {
+			viewers.push(me);
+		} else if (role === Role.Player) {
+			players.push(me);
 		}
-	} catch (error) {
-		dispatch(gameCreationEnd(error.message));
-	}
-};
 
-const createNewAutoGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
-	dispatch: Dispatch<any>,
-	getState: () => State,
-	dataContext: DataContext) => {
-	const state = getState();
+		const compPlayersCount = playersCount - humanPlayersCount - (role === Role.Player ? 1 : 0);
 
-	dispatch(gameCreationStart());
-
-	try {
-		const result = await dataContext.gameClient.createAutomaticGameAsync(
-			state.user.login,
-			state.settings.sex === Sex.Male
-		);
-
-		saveStateToStorage(state);
-
-		dispatch(gameCreationEnd());
-		if (result.code > 0) {
-			alert(GameErrorsHelper.getMessage(result.code) + (result.errorMessage || ''));
-		} else {
-			dispatch(gameSet(result.gameId, true, Role.Player));
-
-			await gameInit(result.gameId, dataContext, Role.Player);
+		const compIndicies = [];
+		for (let i = 0; i < state.common.computerAccounts.length; i++) {
+			compIndicies.push(i);
 		}
-	} catch (message) {
-		dispatch(gameCreationEnd(message));
-	}
-};
+
+		for (let i = 0; i < humanPlayersCount; i++) {
+			players.push({ Name: Constants.ANY_NAME, IsHuman: true });
+		}
+
+		for (let i = 0; i < compPlayersCount; i++) {
+			const ind = Math.floor(Math.random() * compIndicies.length);
+			players.push({ Name: state.common.computerAccounts[compIndicies[ind]], IsHuman: false });
+			compIndicies.splice(ind, 1);
+		}
+
+		const timeSettings: TimeSettings = {
+			TimeForChoosingQuestion: 30,
+			TimeForThinkingOnQuestion: 5,
+			TimeForPrintingAnswer: 25,
+			TimeForGivingACat: 30,
+			TimeForMakingStake: 30,
+			TimeForThinkingOnSpecial: 25,
+			TimeOfRound: 660,
+			TimeForChoosingFinalTheme: 30,
+			TimeForFinalThinking: 45,
+			TimeForShowmanDecisions: 30,
+			TimeForRightAnswer: 2,
+			TimeForMediaDelay: 0,
+		};
+
+		const gameMode = game.type;
+
+		const appSettings: ServerAppSettings = {
+			TimeSettings: timeSettings,
+			ReadingSpeed: 20,
+			FalseStart: state.settings.appSettings.falseStart,
+			HintShowman: state.settings.appSettings.hintShowman,
+			Oral: state.settings.appSettings.oral,
+			IgnoreWrong: false,
+			GameMode: gameMode.toString(),
+			RandomQuestionsBasePrice: gameMode === GameType.Simple ? 10 : 100,
+			RandomRoundsCount: gameMode === GameType.Simple ? 1 : 3,
+			RandomThemesCount: gameMode === GameType.Simple ? 5 : 6,
+			Culture: 'ru-RU',
+		};
+
+		const gameSettings: GameSettings = {
+			HumanPlayerName: state.user.login,
+			RandomSpecials: game.package.type === PackageType.Random,
+			NetworkGameName: game.name,
+			NetworkGamePassword: game.password,
+			AllowViewers: true,
+			Showman: showman,
+			Players: players,
+			Viewers: viewers,
+			AppSettings: appSettings,
+		};
+
+		try {
+			const packageKey: PackageKey | null =
+				game.package.type === PackageType.Random || !game.package.data
+					? {
+							name: '',
+							hash: null,
+							id: null,
+					  }
+					: await checkAndUploadPackageAsync(
+							dataContext.gameClient,
+							dataContext.serverUri,
+							game.package.data,
+							dispatch
+					  );
+
+			if (!packageKey) {
+				dispatch(gameCreationEnd(localization.badPackage));
+				return;
+			}
+
+			const result = await dataContext.gameClient.createAndJoinGameAsync(
+				gameSettings,
+				packageKey,
+				state.settings.sex === Sex.Male
+			);
+
+			saveStateToStorage(state);
+
+			dispatch(gameCreationEnd());
+			if (result.code > 0) {
+				dispatch(gameCreationEnd(GameErrorsHelper.getMessage(result.code) + (result.errorMessage || '')));
+			} else {
+				dispatch(newGameCancel());
+				dispatch(gameSet(result.gameId, false, role));
+
+				await gameInit(result.gameId, dataContext, role);
+			}
+		} catch (error) {
+			dispatch(gameCreationEnd(error.message));
+		}
+	};
+
+const createNewAutoGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
+	() => async (dispatch: Dispatch<any>, getState: () => State, dataContext: DataContext) => {
+		const state = getState();
+
+		dispatch(gameCreationStart());
+
+		try {
+			const result = await dataContext.gameClient.createAutomaticGameAsync(
+				state.user.login,
+				state.settings.sex === Sex.Male
+			);
+
+			saveStateToStorage(state);
+
+			dispatch(gameCreationEnd());
+			if (result.code > 0) {
+				alert(GameErrorsHelper.getMessage(result.code) + (result.errorMessage || ''));
+			} else {
+				dispatch(gameSet(result.gameId, true, Role.Player));
+
+				await gameInit(result.gameId, dataContext, Role.Player);
+			}
+		} catch (message) {
+			dispatch(gameCreationEnd(message));
+		}
+	};
 
 const gameSet: ActionCreator<Actions.GameSetAction> = (id: number, isAutomatic: boolean, role: Role) => ({
-	type: Actions.ActionTypes.GameSet, id, isAutomatic, role
+	type: Actions.ActionTypes.GameSet,
+	id,
+	isAutomatic,
+	role,
 });
 
 async function gameInit(gameId: number, dataContext: DataContext, role: Role) {
@@ -778,6 +844,108 @@ async function gameInit(gameId: number, dataContext: DataContext, role: Role) {
 		await dataContext.gameClient.sendMessageToServerAsync('READY');
 	}
 }
+
+const searchPackages: ActionCreator<Actions.SearchPackages> = () => ({ type: Actions.ActionTypes.SearchPackages });
+const searchPackagesFinished: ActionCreator<Actions.SearchPackagesFinished> = (packages: SIPackageInfo[]) => ({
+	type: Actions.ActionTypes.SearchPackagesFinished,
+	packages,
+});
+
+const receiveAuthors: ActionCreator<Actions.ReceiveAuthors> = () => ({ type: Actions.ActionTypes.ReceiveAuthors });
+const receiveAuthorsFinished: ActionCreator<Actions.ReceiveAuthorsFinished> = (authors: SearchEntity[]) => ({
+	type: Actions.ActionTypes.ReceiveAuthorsFinished,
+	authors,
+});
+
+const receiveTags: ActionCreator<Actions.ReceiveTags> = () => ({ type: Actions.ActionTypes.ReceiveTags });
+const receiveTagsFinished: ActionCreator<Actions.ReceiveTagsFinished> = (tags: SearchEntity[]) => ({
+	type: Actions.ActionTypes.ReceiveTagsFinished,
+	tags,
+});
+
+const receivePublishers: ActionCreator<Actions.ReceivePublishers> = () => ({
+	type: Actions.ActionTypes.ReceivePublishers,
+});
+const receivePublishersFinished: ActionCreator<Actions.ReceivePublishersFinished> = (publishers: SearchEntity[]) => ({
+	type: Actions.ActionTypes.ReceivePublishersFinished,
+	publishers,
+});
+
+const receiveAuthorsThunk: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
+	() => async (dispatch: Dispatch<any>, getState: () => State, dataContext: DataContext) => {
+		try {
+			dispatch(receiveAuthors());
+			const { apiUri } = dataContext.config;
+			const response = await fetch(`${apiUri}/Authors`);
+			const data = await response.json();
+			dispatch(receiveAuthorsFinished(data));
+		} catch (error) {
+			console.error(error);
+		}
+	};
+
+const receiveTagsThunk: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
+	() => async (dispatch: Dispatch<any>, getState: () => State, dataContext: DataContext) => {
+		try {
+			dispatch(receiveTags());
+			const { apiUri } = dataContext.config;
+			const response = await fetch(`${apiUri}/Tags`);
+			const data = await response.json();
+			dispatch(receiveTagsFinished(data));
+		} catch (error) {
+			console.error(error);
+		}
+	};
+
+const receivePublishersThunk: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
+	() => async (dispatch: Dispatch<any>, getState: () => State, dataContext: DataContext) => {
+		try {
+			dispatch(receivePublishers());
+			const { apiUri } = dataContext.config;
+			const response = await fetch(`${apiUri}/Publishers`);
+			const data = await response.json();
+			dispatch(receivePublishersFinished(data));
+		} catch (error) {
+			console.error(error);
+		}
+	};
+
+const searchPackagesThunk: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
+	(
+		filters: PackageFilters = {
+			difficultyRelation: 0,
+			difficulty: 1,
+			sortMode: 0,
+			sortAscending: true,
+			authorId: null,
+			publisherId: null,
+			tagId: null,
+			restriction: null,
+		}
+	) =>
+	async (dispatch: Dispatch<any>, getState: () => State, dataContext: DataContext) => {
+		try {
+			dispatch(searchPackages());
+			const { apiUri } = dataContext.config;
+			const response = await fetch(
+				`${apiUri}/FilteredPackages?${new URLSearchParams(
+					Object.entries(filters)
+						.filter(([, value]: [string, PackageFilters[keyof PackageFilters]]) => value ?? false)
+						.reduce(
+							(acc, [key, value]) => ({
+								...acc,
+								[key]: value,
+							}),
+							{}
+						)
+				)}`
+			);
+			const data = await response.json();
+			dispatch(searchPackagesFinished(data));
+		} catch (error) {
+			console.error(error);
+		}
+	};
 
 const actionCreators = {
 	saveStateToStorage,
@@ -825,7 +993,11 @@ const actionCreators = {
 	playersCountChanged,
 	humanPlayersCountChanged,
 	createNewGame,
-	createNewAutoGame
+	createNewAutoGame,
+	searchPackagesThunk,
+	receiveAuthorsThunk,
+	receiveTagsThunk,
+	receivePublishersThunk
 };
 
 export default actionCreators;

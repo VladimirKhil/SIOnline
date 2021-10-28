@@ -590,6 +590,52 @@ const reducer: Reducer<State> = (state: State = initialState, action: KnownActio
 				}
 			};
 
+		case ActionTypes.SearchPackages:
+			return {
+				...state,
+				siPackages: {
+					...state.siPackages,
+					isLoading: true
+				}
+			};
+
+		case ActionTypes.SearchPackagesFinished:
+			return {
+				...state,
+				siPackages: {
+					...state.siPackages,
+					packages: action.packages,
+					isLoading: false
+				}
+			};
+
+		case ActionTypes.ReceiveAuthorsFinished:
+			return {
+				...state,
+				siPackages: {
+					...state.siPackages,
+					authors: action.authors
+				}
+			};
+
+		case ActionTypes.ReceiveTagsFinished:
+			return {
+				...state,
+				siPackages: {
+					...state.siPackages,
+					tags: action.tags
+				}
+			};
+
+		case ActionTypes.ReceivePublishersFinished:
+			return {
+				...state,
+				siPackages: {
+					...state.siPackages,
+					publishers: action.publishers
+				}
+			};
+
 		default:
 			return {
 				...state,

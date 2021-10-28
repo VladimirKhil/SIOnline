@@ -10,6 +10,8 @@ import GameInfo from '../model/server/GameInfo';
 import localization from '../model/resources/localization';
 import SettingsState, { initialState as settingsInitialState } from './settings/SettingsState';
 import PackageType from '../model/enums/PackageType';
+import { SIPackageInfo } from '../model/SIPackageInfo';
+import { SearchEntity } from '../model/SearchEntity';
 
 export default interface State {
 	user: {
@@ -68,23 +70,30 @@ export default interface State {
 		isConnected: boolean;
 		serverName: string | null;
 	};
+	siPackages: {
+		packages: SIPackageInfo[];
+		authors: SearchEntity[];
+		tags: SearchEntity[];
+		publishers: SearchEntity[];
+		isLoading: boolean;
+	};
 	settings: SettingsState;
 }
 
 export const initialState: State = {
 	user: {
-		login: ''
+		login: '',
 	},
 	login: {
 		inProgress: false,
-		errorMessage: null
+		errorMessage: null,
 	},
 	ui: {
 		mainView: MainView.Loading,
 		previousMainView: MainView.Loading,
 		onlineView: OnlineMode.Games,
 		windowWidth: window.innerWidth,
-		areSettingsVisible: false
+		areSettingsVisible: false,
 	},
 	online: {
 		inProgress: false,
@@ -95,10 +104,12 @@ export const initialState: State = {
 		selectedGameId: -1,
 		users: [],
 		currentMessage: '',
-		messages: [{
-			sender: localization.appUser,
-			text: localization.greeting
-		}],
+		messages: [
+			{
+				sender: localization.appUser,
+				text: localization.greeting,
+			},
+		],
 		password: '',
 		chatMode: ChatMode.Chat,
 		newGameShown: false,
@@ -107,7 +118,7 @@ export const initialState: State = {
 		joinGameProgress: false,
 		joingGameError: null,
 		uploadPackageProgress: false,
-		uploadPackagePercentage: 0
+		uploadPackagePercentage: 0,
 	},
 	game: {
 		name: '',
@@ -115,7 +126,7 @@ export const initialState: State = {
 		package: {
 			type: PackageType.Random,
 			name: '',
-			data: null
+			data: null,
 		},
 		type: GameType.Simple,
 		role: Role.Player,
@@ -123,13 +134,20 @@ export const initialState: State = {
 		playersCount: 3,
 		humanPlayersCount: 0,
 		id: -1,
-		isAutomatic: false
+		isAutomatic: false,
+	},
+	siPackages: {
+		authors: [],
+		isLoading: false,
+		packages: [],
+		publishers: [],
+		tags: []
 	},
 	run: runInitialState,
 	common: {
 		computerAccounts: null,
 		isConnected: true,
-		serverName: null
+		serverName: null,
 	},
-	settings: settingsInitialState
+	settings: settingsInitialState,
 };

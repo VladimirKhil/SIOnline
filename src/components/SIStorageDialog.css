@@ -1,0 +1,98 @@
+#siStorageDialog {
+	background-color: #5a95e2;
+	overflow-y: hidden;
+	display: flex;
+	flex-flow: column;
+}
+
+#siStorageDialog .container {
+	padding-left: 13px;
+	overflow: auto;
+}
+
+#siStorageDialog li {
+	padding: 10px 10px 50px 10px;
+	background-color: #cdd;
+	margin: 3px;
+	width: 350px;
+	position: relative;
+}
+
+#siStorageDialog ul {
+	list-style-type: none;
+	padding: 0;
+	margin: 0;
+	display: flex;
+	flex-wrap: wrap;
+}
+
+#siStorageDialog .packageName {
+	font-weight: bold;
+}
+
+#siStorageDialog .breakable {
+	word-wrap: break-word;
+}
+
+#siStorageDialog .selectButton {
+	bottom: 10px;
+	position: absolute;
+}
+
+#siStorageDialog .selector {
+	width: 300px;
+	height: 25px;
+}
+
+#siStorageDialog .selectorName {
+	width: 130px;
+	font-size: 18px;
+	display: inline-block;
+	margin-top: 5px;
+}
+
+#siStorageDialog .selectorGroup {
+	white-space: nowrap;
+	display: inline-block;
+}
+
+#siStorageDialog .textFilter {
+	width: 300px;
+	height: 25px;
+}
+
+#siStorageDialog .selectorDifRel {
+	height: 25px;
+	width: 80%;
+}
+
+#siStorageDialog .selectorDif {
+	height: 25px;
+	width: calc(20% - 4px);
+	margin-left: 4px;
+}
+
+#siStorageDialog .selectorSortMode {
+	height: 25px;
+	width: 50%;
+}
+
+#siStorageDialog .selectorSortDir {
+	height: 25px;
+	width: calc(50% - 4px);
+	margin-left: 4px;
+}
+
+#siStorageDialog .selectorsGroup {
+	white-space: nowrap;
+	display: inline-block;
+	width: 300px;
+}
+
+#siStorageDialog .filters {
+	display: flex;
+	flex-wrap: wrap;
+}
+#siStorageDialog .filters > div:not(:last-child) {
+	margin-right: 10px;
+}

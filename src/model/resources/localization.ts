@@ -190,7 +190,27 @@
 	wrongGameSettings: 'Неверные настройки игры!',
 	yes: 'Да',
 	youAreKicked: 'Вас выгнали из игры!',
-	yourName: 'Ваше имя'
+	yourName: 'Ваше имя',
+	libraryTitle: 'Библиотека вопросов',
+	packages: 'Пакеты',
+	librarySelect: 'Выбрать',
+	libraryLoading: 'Загрузка…',
+	librarySearchAll: '(все)',
+	librarySearchNotSet: '(не задано)',
+	package: 'Выбрать',
+	packageSubject: 'Тематика',
+	packageDifficulty: 'Сложность',
+	packageAuthor: 'Автор',
+	packagePublisher: 'Издатель',
+	packageRestriction: 'Ограничение',
+	packagePublishedDate: 'Дата публикации',
+	filter: 'Фильтр',
+	sort: 'Сортировка',
+	name: 'Имя',
+	descending: 'по убыванию',
+	ascending: 'по возрастанию',
+	librarySearchMoreOrEqual: 'больше или равна',
+	librarySearchLessOrEqual: 'меньше или равна',
 };
 
 export default localization;
