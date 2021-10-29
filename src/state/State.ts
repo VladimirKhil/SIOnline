@@ -55,6 +55,7 @@ export default interface State {
 			type: PackageType;
 			name: string;
 			data: File | null;
+			id: string | null;
 		};
 		type: GameType;
 		role: Role;
@@ -82,18 +83,18 @@ export default interface State {
 
 export const initialState: State = {
 	user: {
-		login: '',
+		login: ''
 	},
 	login: {
 		inProgress: false,
-		errorMessage: null,
+		errorMessage: null
 	},
 	ui: {
 		mainView: MainView.Loading,
 		previousMainView: MainView.Loading,
 		onlineView: OnlineMode.Games,
 		windowWidth: window.innerWidth,
-		areSettingsVisible: false,
+		areSettingsVisible: false
 	},
 	online: {
 		inProgress: false,
@@ -107,8 +108,8 @@ export const initialState: State = {
 		messages: [
 			{
 				sender: localization.appUser,
-				text: localization.greeting,
-			},
+				text: localization.greeting
+			}
 		],
 		password: '',
 		chatMode: ChatMode.Chat,
@@ -118,7 +119,7 @@ export const initialState: State = {
 		joinGameProgress: false,
 		joingGameError: null,
 		uploadPackageProgress: false,
-		uploadPackagePercentage: 0,
+		uploadPackagePercentage: 0
 	},
 	game: {
 		name: '',
@@ -127,6 +128,7 @@ export const initialState: State = {
 			type: PackageType.Random,
 			name: '',
 			data: null,
+			id: null
 		},
 		type: GameType.Simple,
 		role: Role.Player,
@@ -134,7 +136,7 @@ export const initialState: State = {
 		playersCount: 3,
 		humanPlayersCount: 0,
 		id: -1,
-		isAutomatic: false,
+		isAutomatic: false
 	},
 	siPackages: {
 		authors: [],
@@ -147,7 +149,7 @@ export const initialState: State = {
 	common: {
 		computerAccounts: null,
 		isConnected: true,
-		serverName: null,
+		serverName: null
 	},
-	settings: settingsInitialState,
+	settings: settingsInitialState
 };

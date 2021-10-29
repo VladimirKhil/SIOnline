@@ -7,13 +7,10 @@ import State from '../state/State';
 import actionCreators from '../state/actionCreators';
 import { PackageFilters } from '../model/PackageFilters';
 import { SIPackageInfo } from '../model/SIPackageInfo';
-import Config from '../state/Config';
 
 import './SIStorageDialog.css';
 import { SearchEntity } from '../model/SearchEntity';
 import RestrictionType from '../model/enums/RestrictionType';
-
-declare const config: Config;
 
 interface DispatchProps {
 	searchPackages: (filters?: PackageFilters) => void;
@@ -32,7 +29,7 @@ interface StateProps {
 
 interface OwnProps {
 	onClose: () => void;
-	onSelect: (url: string, name: string) => void;
+	onSelect: (id: string, name: string) => void;
 }
 
 interface SIStorageDialogState extends PackageFilters {
@@ -49,7 +46,7 @@ const mapStateToProps = (state: State): StateProps => ({
 	isLoading: state.siPackages.isLoading,
 	authors: state.siPackages.authors,
 	publishers: state.siPackages.publishers,
-	tags: state.siPackages.tags,
+	tags: state.siPackages.tags
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>): DispatchProps => ({
@@ -64,7 +61,7 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>): DispatchProps => ({
 	},
 	receiveTags: () => {
 		dispatch(actionCreators.receiveTagsThunk() as unknown as Action);
-	},
+	}
 });
 
 export class SIStorageDialog extends React.Component<SIStorageDialogProps, SIStorageDialogState> {
@@ -83,7 +80,7 @@ export class SIStorageDialog extends React.Component<SIStorageDialogProps, SISto
 			searchValue: '',
 			prevSearchValue: '',
 			prevPropsPackages: [],
-			filteredPackages: [],
+			filteredPackages: []
 		};
 	}
 
@@ -97,7 +94,7 @@ export class SIStorageDialog extends React.Component<SIStorageDialogProps, SISto
 	static getDerivedStateFromProps(
 		props: SIStorageDialogProps,
 		state: SIStorageDialogState
-	): Partial<SIStorageDialogState> {
+	): Partial<SIStorageDialogState> | null {
 		if (state.searchValue !== state.prevSearchValue || state.prevPropsPackages !== props.packages) {
 			return {
 				prevSearchValue: state.searchValue,
@@ -107,16 +104,14 @@ export class SIStorageDialog extends React.Component<SIStorageDialogProps, SISto
 						? props.packages.filter(({ description }) =>
 								description.toLocaleLowerCase().includes(state.searchValue.toLocaleLowerCase())
 						  )
-						: props.packages,
+						: props.packages
 			};
 		}
 		return null;
 	}
 
-	private onSelectPackage = (id: number, name: string) => async () => {
-		const response = await fetch(`${config.apiUri}/Package?packageID=${id}`);
-		const url = await response.text();
-		this.props.onSelect(decodeURIComponent(url).replace(/"/g, ''), name);
+	private onSelectPackage = (id: string, name: string) => () => {
+		this.props.onSelect(id, name);
 	};
 
 	private onSelectorChange =
@@ -125,7 +120,7 @@ export class SIStorageDialog extends React.Component<SIStorageDialogProps, SISto
 			const { value } = event.target;
 			this.setState(
 				{
-					[filter]: value === 'null' ? null : +value,
+					[filter]: value === 'null' ? null : +value
 				} as Pick<PackageFilters, typeof filter>,
 				() => this.filterPackages()
 			);
@@ -135,7 +130,7 @@ export class SIStorageDialog extends React.Component<SIStorageDialogProps, SISto
 		const { value } = event.target;
 		this.setState(
 			{
-				restriction: value === 'null' ? null : value,
+				restriction: value === 'null' ? null : value
 			},
 			() => this.filterPackages()
 		);
@@ -144,7 +139,7 @@ export class SIStorageDialog extends React.Component<SIStorageDialogProps, SISto
 	private onSortChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
 		this.setState(
 			{
-				sortAscending: event.target.value === 'true',
+				sortAscending: event.target.value === 'true'
 			},
 			() => this.filterPackages()
 		);
@@ -152,7 +147,7 @@ export class SIStorageDialog extends React.Component<SIStorageDialogProps, SISto
 
 	private onSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		this.setState({
-			searchValue: event.target.value,
+			searchValue: event.target.value
 		});
 	};
 
@@ -245,7 +240,7 @@ export class SIStorageDialog extends React.Component<SIStorageDialogProps, SISto
 						</div>
 						<div>
 							<span className="selectorName">{localization.packageRestriction}</span>
-							<select className="selector" value={this.state.restriction} onChange={this.onRestrictionChange}>
+							<select className="selector" value={String(this.state.restriction)} onChange={this.onRestrictionChange}>
 								<option value="null">{localization.librarySearchNotSet}</option>
 								<option value={RestrictionType.Age12}>{RestrictionType.Age12}</option>
 								<option value={RestrictionType.Age18}>{RestrictionType.Age18}</option>
@@ -279,7 +274,7 @@ export class SIStorageDialog extends React.Component<SIStorageDialogProps, SISto
 					{this.props.isLoading && <p>{localization.libraryLoading}</p>}
 					<ul>
 						{this.state.filteredPackages.map(
-							({ authors, description, difficulty, id, publishedDate, publisher, restriction, tags }) => (
+							({ authors, description, difficulty, id, guid, publishedDate, publisher, restriction, tags }) => (
 								<li key={id}>
 									<span className="packageName">{description}</span>
 									<br />
@@ -302,7 +297,7 @@ export class SIStorageDialog extends React.Component<SIStorageDialogProps, SISto
 									<span>{new Date(publishedDate).toLocaleDateString()}</span>
 									<br />
 									<div className="selectButton">
-										<button type="button" onClick={this.onSelectPackage(id, description)}>
+										<button type="button" onClick={this.onSelectPackage(guid, description)}>
 											{localization.librarySelect}
 										</button>
 									</div>

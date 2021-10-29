@@ -1,5 +1,5 @@
 export default interface PackageKey {
-	name: string;
+	name: string | null;
 	hash: string | null;
 	id: string | null;
 }

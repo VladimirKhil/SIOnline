@@ -40,7 +40,7 @@ import { SearchEntity } from '../model/SearchEntity';
 
 const isConnectedChanged: ActionCreator<Actions.IsConnectedChangedAction> = (isConnected: boolean) => ({
 	type: Actions.ActionTypes.IsConnectedChanged,
-	isConnected,
+	isConnected
 });
 
 const onConnectionChanged: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
@@ -69,38 +69,38 @@ const onConnectionChanged: ActionCreator<ThunkAction<void, State, DataContext, A
 
 const computerAccountsChanged: ActionCreator<Actions.ComputerAccountsChangedAction> = (computerAccounts: string[]) => ({
 	type: Actions.ActionTypes.ComputerAccountsChanged,
-	computerAccounts,
+	computerAccounts
 });
 
 const navigateToLogin: ActionCreator<Actions.NavigateToLoginAction> = () => ({
-	type: Actions.ActionTypes.NavigateToLogin,
+	type: Actions.ActionTypes.NavigateToLogin
 });
 
 const showSettings: ActionCreator<Actions.ShowSettingsAction> = (show: boolean) => ({
 	type: Actions.ActionTypes.ShowSettings,
-	show,
+	show
 });
 
 const navigateToHowToPlay: ActionCreator<Actions.NavigateToHowToPlayAction> = () => ({
-	type: Actions.ActionTypes.NavigateToHowToPlay,
+	type: Actions.ActionTypes.NavigateToHowToPlay
 });
 
 const navigateBack: ActionCreator<Actions.NavigateBackAction> = () => ({
-	type: Actions.ActionTypes.NavigateBack,
+	type: Actions.ActionTypes.NavigateBack
 });
 
 const onLoginChanged: ActionCreator<Actions.LoginChangedAction> = (newLogin: string) => ({
 	type: Actions.ActionTypes.LoginChanged,
-	newLogin,
+	newLogin
 });
 
 const loginStart: ActionCreator<Actions.LoginStartAction> = () => ({
-	type: Actions.ActionTypes.LoginStart,
+	type: Actions.ActionTypes.LoginStart
 });
 
 const loginEnd: ActionCreator<Actions.LoginEndAction> = (error: string | null = null) => ({
 	type: Actions.ActionTypes.LoginEnd,
-	error,
+	error
 });
 
 const saveStateToStorage = (state: State) => {
@@ -111,9 +111,9 @@ const saveStateToStorage = (state: State) => {
 			password: state.game.password,
 			role: state.game.role,
 			type: state.game.type,
-			playersCount: state.game.playersCount,
+			playersCount: state.game.playersCount
 		},
-		settings: state.settings,
+		settings: state.settings
 	});
 };
 
@@ -134,12 +134,12 @@ function getLoginErrorByCode(response: Response): string {
 }
 
 const navigateToWelcome: ActionCreator<Actions.NavigateToWelcomeAction> = () => ({
-	type: Actions.ActionTypes.NavigateToWelcome,
+	type: Actions.ActionTypes.NavigateToWelcome
 });
 
 const serverNameChanged: ActionCreator<Actions.ServerNameChangedAction> = (serverName: string) => ({
 	type: Actions.ActionTypes.ServerNameChanged,
-	serverName,
+	serverName
 });
 
 async function loadHostInfoAsync(dispatch: Dispatch<any>, dataContext: DataContext) {
@@ -162,8 +162,8 @@ const login: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 				credentials: 'include',
 				body: `login=${state.user.login}&password=`,
 				headers: {
-					'Content-Type': 'application/x-www-form-urlencoded',
-				},
+					'Content-Type': 'application/x-www-form-urlencoded'
+				}
 			});
 
 			if (response.ok) {
@@ -216,11 +216,11 @@ const login: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 	};
 
 const singlePlay: ActionCreator<Actions.NavigateToNewGameAction> = () => ({
-	type: Actions.ActionTypes.NavigateToNewGame,
+	type: Actions.ActionTypes.NavigateToNewGame
 });
 
 const friendsPlayInternal: ActionCreator<Actions.NavigateToGamesAction> = () => ({
-	type: Actions.ActionTypes.NavigateToGames,
+	type: Actions.ActionTypes.NavigateToGames
 });
 
 const friendsPlay: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
@@ -236,7 +236,7 @@ const friendsPlay: ActionCreator<ThunkAction<void, State, DataContext, Action>> 
 	};
 
 const navigateToLobbyInternal: ActionCreator<Actions.NavigateToLobbyAction> = () => ({
-	type: Actions.ActionTypes.NavigateToLobby,
+	type: Actions.ActionTypes.NavigateToLobby
 });
 
 const navigateToLobby: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
@@ -272,37 +272,37 @@ const navigateToLobby: ActionCreator<ThunkAction<void, State, DataContext, Actio
 	};
 
 const clearGames: ActionCreator<Actions.ClearGamesAction> = () => ({
-	type: Actions.ActionTypes.ClearGames,
+	type: Actions.ActionTypes.ClearGames
 });
 
 const receiveGames: ActionCreator<Actions.ReceiveGamesAction> = (games: any[]) => ({
 	type: Actions.ActionTypes.ReceiveGames,
-	games,
+	games
 });
 
 const receiveUsers: ActionCreator<Actions.ReceiveUsersAction> = (users: string[]) => ({
 	type: Actions.ActionTypes.ReceiveUsers,
-	users,
+	users
 });
 
 const receiveMessage: ActionCreator<Actions.ReceiveMessageAction> = (sender: string, message: string) => ({
 	type: Actions.ActionTypes.ReceiveMessage,
 	sender,
-	message,
+	message
 });
 
 const onlineLoadFinish: ActionCreator<Actions.OnlineLoadFinishedAction> = () => ({
-	type: Actions.ActionTypes.OnlineLoadFinished,
+	type: Actions.ActionTypes.OnlineLoadFinished
 });
 
 const onlineLoadError: ActionCreator<Actions.OnlineLoadErrorAction> = (error: string) => ({
 	type: Actions.ActionTypes.OnlineLoadError,
-	error,
+	error
 });
 
 const onOnlineModeChanged: ActionCreator<Actions.OnlineModeChangedAction> = (mode: OnlineMode) => ({
 	type: Actions.ActionTypes.OnlineModeChanged,
-	mode,
+	mode
 });
 
 const onExit: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
@@ -330,47 +330,47 @@ const onExit: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 
 const onGamesFilterToggle: ActionCreator<Actions.GamesFilterToggleAction> = (filter: GamesFilter) => ({
 	type: Actions.ActionTypes.GamesFilterToggle,
-	filter,
+	filter
 });
 
 const onGamesSearchChanged: ActionCreator<Actions.GamesSearchChangedAction> = (search: string) => ({
 	type: Actions.ActionTypes.GamesSearchChanged,
-	search,
+	search
 });
 
 const selectGame: ActionCreator<Actions.SelectGameAction> = (gameId: number, showInfo: boolean) => ({
 	type: Actions.ActionTypes.SelectGame,
 	gameId,
-	showInfo,
+	showInfo
 });
 
 const closeGameInfo: ActionCreator<Actions.CloseGameInfoAction> = () => ({
-	type: Actions.ActionTypes.CloseGameInfo,
+	type: Actions.ActionTypes.CloseGameInfo
 });
 
 const unselectGame: ActionCreator<Actions.UnselectGameAction> = () => ({
-	type: Actions.ActionTypes.UnselectGame,
+	type: Actions.ActionTypes.UnselectGame
 });
 
 const newAutoGame: ActionCreator<Actions.NewAutoGameAction> = () => ({
-	type: Actions.ActionTypes.NewAutoGame,
+	type: Actions.ActionTypes.NewAutoGame
 });
 
 const newGame: ActionCreator<Actions.NewGameAction> = () => ({
-	type: Actions.ActionTypes.NewGame,
+	type: Actions.ActionTypes.NewGame
 });
 
 const newGameCancel: ActionCreator<Actions.NewGameCancelAction> = () => ({
-	type: Actions.ActionTypes.NewGameCancel,
+	type: Actions.ActionTypes.NewGameCancel
 });
 
 const joinGameStarted: ActionCreator<Actions.JoinGameStartedAction> = () => ({
-	type: Actions.ActionTypes.JoinGameStarted,
+	type: Actions.ActionTypes.JoinGameStarted
 });
 
 const joinGameFinished: ActionCreator<Actions.JoinGameFinishedAction> = (error: string | null) => ({
 	type: Actions.ActionTypes.JoinGameFinished,
-	error,
+	error
 });
 
 const joinGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
@@ -405,42 +405,42 @@ const joinGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 
 const passwordChanged: ActionCreator<Actions.PasswordChangedAction> = (newPassword: string) => ({
 	type: Actions.ActionTypes.PasswordChanged,
-	newPassword,
+	newPassword
 });
 
 const chatModeChanged: ActionCreator<Actions.ChatModeChangedAction> = (chatMode: ChatMode) => ({
 	type: Actions.ActionTypes.ChatModeChanged,
-	chatMode,
+	chatMode
 });
 
 const gameCreated: ActionCreator<Actions.GameCreatedAction> = (game: GameInfo) => ({
 	type: Actions.ActionTypes.GameCreated,
-	game,
+	game
 });
 
 const gameChanged: ActionCreator<Actions.GameChangedAction> = (game: GameInfo) => ({
 	type: Actions.ActionTypes.GameChanged,
-	game,
+	game
 });
 
 const gameDeleted: ActionCreator<Actions.GameDeletedAction> = (gameId: number) => ({
 	type: Actions.ActionTypes.GameDeleted,
-	gameId,
+	gameId
 });
 
 const userJoined: ActionCreator<Actions.UserJoinedAction> = (login: string) => ({
 	type: Actions.ActionTypes.UserJoined,
-	login,
+	login
 });
 
 const userLeaved: ActionCreator<Actions.UserLeavedAction> = (login: string) => ({
 	type: Actions.ActionTypes.UserLeaved,
-	login,
+	login
 });
 
 const messageChanged: ActionCreator<Actions.MessageChangedAction> = (message: string) => ({
 	type: Actions.ActionTypes.MessageChanged,
-	message,
+	message
 });
 
 const sendMessage: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
@@ -457,22 +457,22 @@ const sendMessage: ActionCreator<ThunkAction<void, State, DataContext, Action>> 
 
 const windowWidthChanged: ActionCreator<Actions.WindowWidthChangedAction> = (width: number) => ({
 	type: Actions.ActionTypes.WindowWidthChanged,
-	width,
+	width
 });
 
 const gameNameChanged: ActionCreator<Actions.GameNameChangedAction> = (gameName: string) => ({
 	type: Actions.ActionTypes.GameNameChanged,
-	gameName,
+	gameName
 });
 
 const gamePasswordChanged: ActionCreator<Actions.GamePasswordChangedAction> = (gamePassword: string) => ({
 	type: Actions.ActionTypes.GamePasswordChanged,
-	gamePassword,
+	gamePassword
 });
 
 const gamePackageTypeChanged: ActionCreator<Actions.GamePackageTypeChangedAction> = (packageType: PackageType) => ({
 	type: Actions.ActionTypes.GamePackageTypeChanged,
-	packageType,
+	packageType
 });
 
 const gamePackageDataChanged: ActionCreator<Actions.GamePackageDataChangedAction> = (
@@ -481,56 +481,65 @@ const gamePackageDataChanged: ActionCreator<Actions.GamePackageDataChangedAction
 ) => ({
 	type: Actions.ActionTypes.GamePackageDataChanged,
 	packageName,
-	packageData,
+	packageData
+});
+
+const gamePackageLibraryChanged: ActionCreator<Actions.GamePackageLibraryChangedAction> = (
+	id: string,
+	name: string
+) => ({
+	type: Actions.ActionTypes.GamePackageLibraryChanged,
+	name,
+	id
 });
 
 const gameTypeChanged: ActionCreator<Actions.GameTypeChangedAction> = (gameType: GameType) => ({
 	type: Actions.ActionTypes.GameTypeChanged,
-	gameType,
+	gameType
 });
 
 const gameRoleChanged: ActionCreator<Actions.GameRoleChangedAction> = (gameRole: Role) => ({
 	type: Actions.ActionTypes.GameRoleChanged,
-	gameRole,
+	gameRole
 });
 
 const showmanTypeChanged: ActionCreator<Actions.ShowmanTypeChangedAction> = (isHuman: boolean) => ({
 	type: Actions.ActionTypes.ShowmanTypeChanged,
-	isHuman,
+	isHuman
 });
 
 const playersCountChanged: ActionCreator<Actions.PlayersCountChangedAction> = (playersCount: number) => ({
 	type: Actions.ActionTypes.PlayersCountChanged,
-	playersCount,
+	playersCount
 });
 
 const humanPlayersCountChanged: ActionCreator<Actions.HumanPlayersCountChangedAction> = (
 	humanPlayersCount: number
 ) => ({
 	type: Actions.ActionTypes.HumanPlayersCountChanged,
-	humanPlayersCount,
+	humanPlayersCount
 });
 
 const gameCreationStart: ActionCreator<Actions.GameCreationStartAction> = () => ({
-	type: Actions.ActionTypes.GameCreationStart,
+	type: Actions.ActionTypes.GameCreationStart
 });
 
 const gameCreationEnd: ActionCreator<Actions.GameCreationEndAction> = (error: string | null = null) => ({
 	type: Actions.ActionTypes.GameCreationEnd,
-	error,
+	error
 });
 
 const uploadPackageStarted: ActionCreator<Actions.UploadPackageStartedAction> = () => ({
-	type: Actions.ActionTypes.UploadPackageStarted,
+	type: Actions.ActionTypes.UploadPackageStarted
 });
 
 const uploadPackageFinished: ActionCreator<Actions.UploadPackageFinishedAction> = () => ({
-	type: Actions.ActionTypes.UploadPackageFinished,
+	type: Actions.ActionTypes.UploadPackageFinished
 });
 
 const uploadPackageProgress: ActionCreator<Actions.UploadPackageProgressAction> = (progress: number) => ({
 	type: Actions.ActionTypes.UploadPackageProgress,
-	progress,
+	progress
 });
 
 async function loadGamesAsync(dispatch: Dispatch<Actions.KnownAction>, gameClient: IGameServerClient) {
@@ -638,7 +647,7 @@ async function checkAndUploadPackageAsync(
 	const packageKey: PackageKey = {
 		name: packageData.name,
 		hash: hashArrayEncoded,
-		id,
+		id
 	};
 
 	const hasPackage = await gameClient.hasPackageAsync(packageKey);
@@ -675,7 +684,7 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 					...state.game,
 					password: getRandomValue().toString(), // protecting from anyone to join
 					isShowmanHuman: false,
-					humanPlayersCount: 0,
+					humanPlayersCount: 0
 			  }
 			: state.game;
 
@@ -726,7 +735,7 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 			TimeForFinalThinking: 45,
 			TimeForShowmanDecisions: 30,
 			TimeForRightAnswer: 2,
-			TimeForMediaDelay: 0,
+			TimeForMediaDelay: 0
 		};
 
 		const gameMode = game.type;
@@ -742,7 +751,7 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 			RandomQuestionsBasePrice: gameMode === GameType.Simple ? 10 : 100,
 			RandomRoundsCount: gameMode === GameType.Simple ? 1 : 3,
 			RandomThemesCount: gameMode === GameType.Simple ? 5 : 6,
-			Culture: 'ru-RU',
+			Culture: 'ru-RU'
 		};
 
 		const gameSettings: GameSettings = {
@@ -754,23 +763,32 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 			Showman: showman,
 			Players: players,
 			Viewers: viewers,
-			AppSettings: appSettings,
+			AppSettings: appSettings
 		};
 
 		try {
-			const packageKey: PackageKey | null =
-				game.package.type === PackageType.Random || !game.package.data
-					? {
+			const packageKey: PackageKey | null = await (async (): Promise<PackageKey | null> => {
+				switch (game.package.type) {
+					case PackageType.Random:
+						return {
 							name: '',
 							hash: null,
-							id: null,
-					  }
-					: await checkAndUploadPackageAsync(
-							dataContext.gameClient,
-							dataContext.serverUri,
-							game.package.data,
-							dispatch
-					  );
+							id: null
+						};
+					case PackageType.File:
+						return game.package.data
+							? checkAndUploadPackageAsync(dataContext.gameClient, dataContext.serverUri, game.package.data, dispatch)
+							: null;
+					case PackageType.SIStorage:
+						return {
+							name: null,
+							hash: null,
+							id: game.package.id
+						};
+					default:
+						return null;
+				}
+			})();
 
 			if (!packageKey) {
 				dispatch(gameCreationEnd(localization.badPackage));
@@ -830,7 +848,7 @@ const gameSet: ActionCreator<Actions.GameSetAction> = (id: number, isAutomatic: 
 	type: Actions.ActionTypes.GameSet,
 	id,
 	isAutomatic,
-	role,
+	role
 });
 
 async function gameInit(gameId: number, dataContext: DataContext, role: Role) {
@@ -845,30 +863,36 @@ async function gameInit(gameId: number, dataContext: DataContext, role: Role) {
 	}
 }
 
-const searchPackages: ActionCreator<Actions.SearchPackages> = () => ({ type: Actions.ActionTypes.SearchPackages });
-const searchPackagesFinished: ActionCreator<Actions.SearchPackagesFinished> = (packages: SIPackageInfo[]) => ({
+const searchPackages: ActionCreator<Actions.SearchPackagesAction> = () => ({
+	type: Actions.ActionTypes.SearchPackages
+});
+const searchPackagesFinished: ActionCreator<Actions.SearchPackagesFinishedAction> = (packages: SIPackageInfo[]) => ({
 	type: Actions.ActionTypes.SearchPackagesFinished,
-	packages,
+	packages
 });
 
-const receiveAuthors: ActionCreator<Actions.ReceiveAuthors> = () => ({ type: Actions.ActionTypes.ReceiveAuthors });
-const receiveAuthorsFinished: ActionCreator<Actions.ReceiveAuthorsFinished> = (authors: SearchEntity[]) => ({
+const receiveAuthors: ActionCreator<Actions.ReceiveAuthorsAction> = () => ({
+	type: Actions.ActionTypes.ReceiveAuthors
+});
+const receiveAuthorsFinished: ActionCreator<Actions.ReceiveAuthorsFinishedAction> = (authors: SearchEntity[]) => ({
 	type: Actions.ActionTypes.ReceiveAuthorsFinished,
-	authors,
+	authors
 });
 
-const receiveTags: ActionCreator<Actions.ReceiveTags> = () => ({ type: Actions.ActionTypes.ReceiveTags });
-const receiveTagsFinished: ActionCreator<Actions.ReceiveTagsFinished> = (tags: SearchEntity[]) => ({
+const receiveTags: ActionCreator<Actions.ReceiveTagsAction> = () => ({ type: Actions.ActionTypes.ReceiveTags });
+const receiveTagsFinished: ActionCreator<Actions.ReceiveTagsFinishedAction> = (tags: SearchEntity[]) => ({
 	type: Actions.ActionTypes.ReceiveTagsFinished,
-	tags,
+	tags
 });
 
-const receivePublishers: ActionCreator<Actions.ReceivePublishers> = () => ({
-	type: Actions.ActionTypes.ReceivePublishers,
+const receivePublishers: ActionCreator<Actions.ReceivePublishersAction> = () => ({
+	type: Actions.ActionTypes.ReceivePublishers
 });
-const receivePublishersFinished: ActionCreator<Actions.ReceivePublishersFinished> = (publishers: SearchEntity[]) => ({
+const receivePublishersFinished: ActionCreator<Actions.ReceivePublishersFinishedAction> = (
+	publishers: SearchEntity[]
+) => ({
 	type: Actions.ActionTypes.ReceivePublishersFinished,
-	publishers,
+	publishers
 });
 
 const receiveAuthorsThunk: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
@@ -920,7 +944,7 @@ const searchPackagesThunk: ActionCreator<ThunkAction<void, State, DataContext, A
 			authorId: null,
 			publisherId: null,
 			tagId: null,
-			restriction: null,
+			restriction: null
 		}
 	) =>
 	async (dispatch: Dispatch<any>, getState: () => State, dataContext: DataContext) => {
@@ -934,7 +958,7 @@ const searchPackagesThunk: ActionCreator<ThunkAction<void, State, DataContext, A
 						.reduce(
 							(acc, [key, value]) => ({
 								...acc,
-								[key]: value,
+								[key]: value
 							}),
 							{}
 						)
@@ -997,7 +1021,8 @@ const actionCreators = {
 	searchPackagesThunk,
 	receiveAuthorsThunk,
 	receiveTagsThunk,
-	receivePublishersThunk
+	receivePublishersThunk,
+	gamePackageLibraryChanged
 };
 
 export default actionCreators;

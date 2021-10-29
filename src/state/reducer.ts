@@ -438,6 +438,20 @@ const reducer: Reducer<State> = (state: State = initialState, action: KnownActio
 			};
 		}
 
+		case ActionTypes.GamePackageLibraryChanged: {
+			return {
+				...state,
+				game: {
+					...state.game,
+					package: {
+						...state.game.package,
+						name: action.name,
+						id: action.id
+					}
+				}
+			};
+		}
+
 		case ActionTypes.GameTypeChanged: {
 			return {
 				...state,

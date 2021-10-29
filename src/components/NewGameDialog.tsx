@@ -36,6 +36,7 @@ interface NewGameDialogProps {
 	onGamePasswordChanged: (newGamePassword: string) => void;
 	onGamePackageTypeChanged: (type: PackageType) => void;
 	onGamePackageDataChanged: (name: string, data: File | null) => void;
+	onGamePackageLibraryChanged: (id: string, name: string) => void;
 	onGameTypeChanged: (newGameType: number) => void;
 	onGameRoleChanged: (newGameRole: Role) => void;
 	showmanTypeChanged: (isHuman: boolean) => void;
@@ -48,7 +49,6 @@ interface NewGameDialogProps {
 
 interface NewGameDialogState {
 	isSIStorageOpen: boolean;
-	isSIPackageLoading: boolean;
 }
 
 const mapStateToProps = (state: State) => ({
@@ -66,7 +66,7 @@ const mapStateToProps = (state: State) => ({
 	inProgress: state.online.gameCreationProgress,
 	error: state.online.gameCreationError,
 	uploadPackageProgress: state.online.uploadPackageProgress,
-	uploadPackagePercentage: state.online.uploadPackagePercentage,
+	uploadPackagePercentage: state.online.uploadPackagePercentage
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
@@ -81,6 +81,9 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	},
 	onGamePackageDataChanged: (name: string, data: File | null) => {
 		dispatch(actionCreators.gamePackageDataChanged(name, data));
+	},
+	onGamePackageLibraryChanged: (id: string, name: string) => {
+		dispatch(actionCreators.gamePackageLibraryChanged(id, name));
 	},
 	onGameTypeChanged: (newGameType: number) => {
 		dispatch(actionCreators.gameTypeChanged(newGameType));
@@ -102,7 +105,7 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	},
 	onCreate: (isSingleGame: boolean) => {
 		dispatch(actionCreators.createNewGame(isSingleGame) as unknown as Action);
-	},
+	}
 });
 
 export class NewGameDialog extends React.Component<NewGameDialogProps, NewGameDialogState> {
@@ -114,8 +117,7 @@ export class NewGameDialog extends React.Component<NewGameDialogProps, NewGameDi
 		this.fileRef = React.createRef<HTMLInputElement>();
 
 		this.state = {
-			isSIStorageOpen: false,
-			isSIPackageLoading: false,
+			isSIStorageOpen: false
 		};
 	}
 
@@ -136,7 +138,7 @@ export class NewGameDialog extends React.Component<NewGameDialogProps, NewGameDi
 	private onGamePackageTypeChanged = (e: React.ChangeEvent<HTMLSelectElement>) => {
 		if (parseInt(e.target.value, 10) === PackageType.SIStorage) {
 			this.setState({
-				isSIStorageOpen: true,
+				isSIStorageOpen: true
 			});
 		} else {
 			this.props.onGamePackageTypeChanged(parseInt(e.target.value, 10));
@@ -177,34 +179,22 @@ export class NewGameDialog extends React.Component<NewGameDialogProps, NewGameDi
 
 	private onSIPackageDialogClose = () => {
 		this.setState({
-			isSIStorageOpen: false,
+			isSIStorageOpen: false
 		});
 	};
 
-	private onSelectSIPackage = async (url: string, name: string) => {
-		try {
-			this.setState({
-				isSIStorageOpen: false,
-				isSIPackageLoading: true,
-			});
-			const response = await fetch(encodeURI(url), { keepalive: true });
-			const blob = await response.blob();
-			this.props.onGamePackageTypeChanged(PackageType.SIStorage);
-			this.props.onGamePackageDataChanged(name, new File([blob], url.split('/').pop()));
-		} finally {
-			this.setState({
-				isSIPackageLoading: false,
-			});
-		}
+	private onSelectSIPackage = async (id: string, name: string) => {
+		this.setState({
+			isSIStorageOpen: false
+		});
+		this.props.onGamePackageTypeChanged(PackageType.SIStorage);
+		this.props.onGamePackageLibraryChanged(id, name);
 	};
 
 	render(): JSX.Element {
 		const humanPlayersMaxCount = this.props.playersCount - (this.props.gameRole === Role.Player ? 1 : 0);
 		const botsCount = humanPlayersMaxCount - this.props.humanPlayersCount;
-		const siPackageName =
-			this.props.gamePackageType === PackageType.SIStorage && this.props.gamePackageData
-				? this.props.gamePackageData.name
-				: null;
+		const siPackageName = this.props.gamePackageType === PackageType.SIStorage ? this.props.gamePackageName : null;
 
 		return (
 			<>
@@ -324,14 +314,13 @@ export class NewGameDialog extends React.Component<NewGameDialogProps, NewGameDi
 						<button
 							type="button"
 							className="startGame"
-							disabled={!this.props.isConnected || this.props.inProgress || this.state.isSIPackageLoading}
+							disabled={!this.props.isConnected || this.props.inProgress}
 							onClick={() => this.props.onCreate(this.props.isSingleGame)}
 						>
 							{localization.startGame}
 						</button>
 					</div>
 					{this.props.inProgress ? <ProgressBar isIndeterminate /> : null}
-					{this.state.isSIPackageLoading ? <ProgressBar isIndeterminate /> : null}
 					{this.props.uploadPackageProgress ? (
 						<div className="uploadPackagePanel">
 							<span>{localization.sendingPackage}</span>
