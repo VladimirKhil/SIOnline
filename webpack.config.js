@@ -1,5 +1,4 @@
 const path = require('path');
-const CheckerPlugin = require('awesome-typescript-loader').CheckerPlugin;
 const HtmlWebPackPlugin = require("html-webpack-plugin");
 
 module.exports = (env) => {
@@ -17,7 +16,7 @@ module.exports = (env) => {
 		},
 		module: {
 			rules: [
-				{ test: /\.tsx?$/, use: 'awesome-typescript-loader?silent=true' },
+				{ test: /\.tsx?$/, use: 'ts-loader' },
 				{ test: /\.css$/, use: isDevBuild ? ['style-loader', 'css-loader'] : ['style-loader', 'css-loader', 'postcss-loader'] },
 				{ test: /\.(png|jpg|jpeg|gif)$/, use: 'url-loader?limit=25000' },
 				{
@@ -60,7 +59,6 @@ module.exports = (env) => {
 			}
 		},
 		plugins: [
-			new CheckerPlugin(),
 			new HtmlWebPackPlugin({
 				template: "./src/index-template.html",
 				filename: "./index.html",
