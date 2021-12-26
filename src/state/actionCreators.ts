@@ -205,7 +205,7 @@ const login: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 					await loadHostInfoAsync(dispatch, dataContext);
 					dispatch(navigateToWelcome());
 				} catch (error) {
-					dispatch(loginEnd(`${localization.cannotConnectToServer}: ${error.message}`));
+					dispatch(loginEnd(`${localization.cannotConnectToServer}: ${getErrorMessage(error)}`));
 				}
 			} else {
 				const errorText = getLoginErrorByCode(response);
@@ -814,7 +814,7 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 				await gameInit(result.gameId, dataContext, role);
 			}
 		} catch (error) {
-			dispatch(gameCreationEnd(error.message));
+			dispatch(gameCreationEnd(getErrorMessage(error)));
 		}
 	};
 
