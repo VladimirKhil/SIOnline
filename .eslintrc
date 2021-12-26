@@ -16,7 +16,7 @@
 	"rules": {
 		"linebreak-style": "off",
 		"no-tabs": "off",
-		"@typescript-eslint/indent": ["error", "tab"],
+		"@typescript-eslint/indent": "off",
 		"react/jsx-indent": "off",
 		"@typescript-eslint/comma-dangle": "off",		
 		"max-len": ["error", { "code": 150 }],

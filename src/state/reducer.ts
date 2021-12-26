@@ -438,6 +438,20 @@ const reducer: Reducer<State> = (state: State = initialState, action: KnownActio
 			};
 		}
 
+		case ActionTypes.GamePackageLibraryChanged: {
+			return {
+				...state,
+				game: {
+					...state.game,
+					package: {
+						...state.game.package,
+						name: action.name,
+						id: action.id
+					}
+				}
+			};
+		}
+
 		case ActionTypes.GameTypeChanged: {
 			return {
 				...state,
@@ -587,6 +601,52 @@ const reducer: Reducer<State> = (state: State = initialState, action: KnownActio
 				common: {
 					...state.common,
 					serverName: action.serverName
+				}
+			};
+
+		case ActionTypes.SearchPackages:
+			return {
+				...state,
+				siPackages: {
+					...state.siPackages,
+					isLoading: true
+				}
+			};
+
+		case ActionTypes.SearchPackagesFinished:
+			return {
+				...state,
+				siPackages: {
+					...state.siPackages,
+					packages: action.packages,
+					isLoading: false
+				}
+			};
+
+		case ActionTypes.ReceiveAuthorsFinished:
+			return {
+				...state,
+				siPackages: {
+					...state.siPackages,
+					authors: action.authors
+				}
+			};
+
+		case ActionTypes.ReceiveTagsFinished:
+			return {
+				...state,
+				siPackages: {
+					...state.siPackages,
+					tags: action.tags
+				}
+			};
+
+		case ActionTypes.ReceivePublishersFinished:
+			return {
+				...state,
+				siPackages: {
+					...state.siPackages,
+					publishers: action.publishers
 				}
 			};
 

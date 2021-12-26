@@ -10,6 +10,8 @@ import GameInfo from '../model/server/GameInfo';
 import localization from '../model/resources/localization';
 import SettingsState, { initialState as settingsInitialState } from './settings/SettingsState';
 import PackageType from '../model/enums/PackageType';
+import { SIPackageInfo } from '../model/SIPackageInfo';
+import { SearchEntity } from '../model/SearchEntity';
 
 export default interface State {
 	user: {
@@ -53,6 +55,7 @@ export default interface State {
 			type: PackageType;
 			name: string;
 			data: File | null;
+			id: string | null;
 		};
 		type: GameType;
 		role: Role;
@@ -67,6 +70,13 @@ export default interface State {
 		computerAccounts: string[] | null;
 		isConnected: boolean;
 		serverName: string | null;
+	};
+	siPackages: {
+		packages: SIPackageInfo[];
+		authors: SearchEntity[];
+		tags: SearchEntity[];
+		publishers: SearchEntity[];
+		isLoading: boolean;
 	};
 	settings: SettingsState;
 }
@@ -95,10 +105,12 @@ export const initialState: State = {
 		selectedGameId: -1,
 		users: [],
 		currentMessage: '',
-		messages: [{
-			sender: localization.appUser,
-			text: localization.greeting
-		}],
+		messages: [
+			{
+				sender: localization.appUser,
+				text: localization.greeting
+			}
+		],
 		password: '',
 		chatMode: ChatMode.Chat,
 		newGameShown: false,
@@ -115,7 +127,8 @@ export const initialState: State = {
 		package: {
 			type: PackageType.Random,
 			name: '',
-			data: null
+			data: null,
+			id: null
 		},
 		type: GameType.Simple,
 		role: Role.Player,
@@ -124,6 +137,13 @@ export const initialState: State = {
 		humanPlayersCount: 0,
 		id: -1,
 		isAutomatic: false
+	},
+	siPackages: {
+		authors: [],
+		isLoading: false,
+		packages: [],
+		publishers: [],
+		tags: []
 	},
 	run: runInitialState,
 	common: {

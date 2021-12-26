@@ -1,6 +1,7 @@
 const enum PackageType {
 	Random,
-	File
+	File,
+	SIStorage,
 }
 
 export default PackageType;

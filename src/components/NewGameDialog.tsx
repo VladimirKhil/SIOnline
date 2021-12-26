@@ -10,6 +10,7 @@ import Role from '../model/enums/Role';
 import GameType from '../model/enums/GameType';
 import Constants from '../model/enums/Constants';
 import PackageType from '../model/enums/PackageType';
+import SIStorageDialog from './SIStorageDialog';
 
 import './NewGameDialog.css';
 
@@ -35,6 +36,7 @@ interface NewGameDialogProps {
 	onGamePasswordChanged: (newGamePassword: string) => void;
 	onGamePackageTypeChanged: (type: PackageType) => void;
 	onGamePackageDataChanged: (name: string, data: File | null) => void;
+	onGamePackageLibraryChanged: (id: string, name: string) => void;
 	onGameTypeChanged: (newGameType: number) => void;
 	onGameRoleChanged: (newGameRole: Role) => void;
 	showmanTypeChanged: (isHuman: boolean) => void;
@@ -43,6 +45,10 @@ interface NewGameDialogProps {
 	onCreate: (isSingleGame: boolean) => void;
 	onShowSettings: () => void;
 	onClose: () => void;
+}
+
+interface NewGameDialogState {
+	isSIStorageOpen: boolean;
 }
 
 const mapStateToProps = (state: State) => ({
@@ -76,6 +82,9 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	onGamePackageDataChanged: (name: string, data: File | null) => {
 		dispatch(actionCreators.gamePackageDataChanged(name, data));
 	},
+	onGamePackageLibraryChanged: (id: string, name: string) => {
+		dispatch(actionCreators.gamePackageLibraryChanged(id, name));
+	},
 	onGameTypeChanged: (newGameType: number) => {
 		dispatch(actionCreators.gameTypeChanged(newGameType));
 	},
@@ -99,13 +108,17 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	}
 });
 
-export class NewGameDialog extends React.Component<NewGameDialogProps> {
+export class NewGameDialog extends React.Component<NewGameDialogProps, NewGameDialogState> {
 	private fileRef: React.RefObject<HTMLInputElement>;
 
 	constructor(props: NewGameDialogProps) {
 		super(props);
 
 		this.fileRef = React.createRef<HTMLInputElement>();
+
+		this.state = {
+			isSIStorageOpen: false
+		};
 	}
 
 	private onGameNameChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -123,7 +136,13 @@ export class NewGameDialog extends React.Component<NewGameDialogProps> {
 	};
 
 	private onGamePackageTypeChanged = (e: React.ChangeEvent<HTMLSelectElement>) => {
-		this.props.onGamePackageTypeChanged(parseInt(e.target.value, 10));
+		if (parseInt(e.target.value, 10) === PackageType.SIStorage) {
+			this.setState({
+				isSIStorageOpen: true
+			});
+		} else {
+			this.props.onGamePackageTypeChanged(parseInt(e.target.value, 10));
+		}
 	};
 
 	private onGamePackageDataChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -158,133 +177,161 @@ export class NewGameDialog extends React.Component<NewGameDialogProps> {
 		}
 	};
 
+	private onSIPackageDialogClose = () => {
+		this.setState({
+			isSIStorageOpen: false
+		});
+	};
+
+	private onSelectSIPackage = async (id: string, name: string) => {
+		this.setState({
+			isSIStorageOpen: false
+		});
+		this.props.onGamePackageTypeChanged(PackageType.SIStorage);
+		this.props.onGamePackageLibraryChanged(id, name);
+	};
+
 	render(): JSX.Element {
 		const humanPlayersMaxCount = this.props.playersCount - (this.props.gameRole === Role.Player ? 1 : 0);
 		const botsCount = humanPlayersMaxCount - this.props.humanPlayersCount;
+		const siPackageName = this.props.gamePackageType === PackageType.SIStorage ? this.props.gamePackageName : null;
 
 		return (
-			<Dialog id="newGameDialog" title={localization.newGame} onClose={this.props.onClose}>
-				<div className="settings">
-					<p>{localization.gameName}</p>
-					<input type="text" value={this.props.gameName} onChange={this.onGameNameChanged} onKeyPress={this.onKeyPress} />
-					{this.props.isSingleGame ? null : (
-						<>
-							<p>{localization.password}</p>
-							<input
-								type="password"
-								value={this.props.gamePassword}
-								onChange={this.onGamePasswordChanged}
-								onKeyPress={this.onKeyPress}
-							/>
-						</>
-					)}
-					<p>{localization.questionPackage}</p>
-					<select className="packageTypeSelector" value={this.props.gamePackageType} onChange={this.onGamePackageTypeChanged}>
-						<option value="0">{localization.randomThemes}</option>
-						<option value="1">{localization.file}</option>
-					</select>
-					{this.props.gamePackageType === PackageType.File
-						? (
+			<>
+				<Dialog id="newGameDialog" title={localization.newGame} onClose={this.props.onClose}>
+					<div className="settings">
+						<p>{localization.gameName}</p>
+						<input
+							type="text"
+							value={this.props.gameName}
+							onChange={this.onGameNameChanged}
+							onKeyPress={this.onKeyPress}
+						/>
+						{this.props.isSingleGame ? null : (
+							<>
+								<p>{localization.password}</p>
+								<input
+									type="password"
+									value={this.props.gamePassword}
+									onChange={this.onGamePasswordChanged}
+									onKeyPress={this.onKeyPress}
+								/>
+							</>
+						)}
+						<p>{localization.questionPackage}</p>
+						<select
+							className="packageTypeSelector"
+							value={siPackageName || this.props.gamePackageType}
+							onChange={this.onGamePackageTypeChanged}
+						>
+							<option value="0">{localization.randomThemes}</option>
+							<option value="1">{localization.file}</option>
+							<option value="2">{`${localization.libraryTitle}...`}</option>
+							{siPackageName && <option value={siPackageName}>{siPackageName}</option>}
+						</select>
+						{this.props.gamePackageType === PackageType.File ? (
 							<div className="packageFileBox">
 								<input ref={this.fileRef} type="file" accept=".siq" onChange={this.onGamePackageDataChanged} />
 								<input className="selector" type="button" value={localization.select} onClick={this.onSelectFile} />
 								{this.props.gamePackageData ? <span>{this.props.gamePackageData.name}</span> : null}
 							</div>
 						) : null}
-					<p>{localization.gameType}</p>
-					<select value={this.props.gameType} onChange={this.onGameTypeChanged}>
-						<option value="1">{localization.sport}</option>
-						<option value="0">{localization.tv}</option>
-					</select>
-					<p>{localization.role}</p>
-					<select value={this.props.gameRole} onChange={this.onGameRoleChanged}>
-						<option value="0">{localization.viewer}</option>
-						<option value="1">{localization.player}</option>
-						<option value="2">{localization.showman}</option>
-					</select>
-					{this.props.gameRole === Role.Showman || this.props.isSingleGame ? null : (
-						<>
-							<p>{localization.showman}</p>
-							<select className="showmanTypeSelector" value={this.props.isShowmanHuman ? 1 : 0} onChange={this.onShowmanTypeChanged}>
-								<option value="1">{localization.human}</option>
-								<option value="0">{localization.bot}</option>
-							</select>
-							{this.props.isShowmanHuman ? '👤' : '🖥️'}
-						</>
-					)}
-					<p>{localization.players}</p>
-					<div className="playersBlock">
-						<span className="playersCountTitle">
-							{`${localization.total} `}
-						</span>
-						<span className="playersCountValue">{this.props.playersCount}</span>
-						<input
-							type="range"
-							className="playersCount"
-							min={2}
-							max={12}
-							value={this.props.playersCount}
-							onChange={this.onPlayersCountChanged}
-						/>
+						<p>{localization.gameType}</p>
+						<select value={this.props.gameType} onChange={this.onGameTypeChanged}>
+							<option value="1">{localization.sport}</option>
+							<option value="0">{localization.tv}</option>
+						</select>
+						<p>{localization.role}</p>
+						<select value={this.props.gameRole} onChange={this.onGameRoleChanged}>
+							<option value="0">{localization.viewer}</option>
+							<option value="1">{localization.player}</option>
+							<option value="2">{localization.showman}</option>
+						</select>
+						{this.props.gameRole === Role.Showman || this.props.isSingleGame ? null : (
+							<>
+								<p>{localization.showman}</p>
+								<select
+									className="showmanTypeSelector"
+									value={this.props.isShowmanHuman ? 1 : 0}
+									onChange={this.onShowmanTypeChanged}
+								>
+									<option value="1">{localization.human}</option>
+									<option value="0">{localization.bot}</option>
+								</select>
+								{this.props.isShowmanHuman ? '👤' : '🖥️'}
+							</>
+						)}
+						<p>{localization.players}</p>
+						<div className="playersBlock">
+							<span className="playersCountTitle">{`${localization.total} `}</span>
+							<span className="playersCountValue">{this.props.playersCount}</span>
+							<input
+								type="range"
+								className="playersCount"
+								min={2}
+								max={12}
+								value={this.props.playersCount}
+								onChange={this.onPlayersCountChanged}
+							/>
+						</div>
+						{this.props.isSingleGame ? null : (
+							<>
+								<div className="playersBlock">
+									<span className="playersCountTitle">{`${localization.humanPlayers} `}</span>
+									<span className="playersCountValue">{this.props.humanPlayersCount}</span>
+									<input
+										type="range"
+										className="playersCount"
+										min={0}
+										max={humanPlayersMaxCount}
+										disabled={humanPlayersMaxCount === 0}
+										value={this.props.humanPlayersCount}
+										onChange={this.onHumanPlayersCountChanged}
+									/>
+								</div>
+								<div className="playersBlock">
+									<span className="playersCountTitle">{`${localization.computerPlayers} `}</span>
+									<span className="playersCountValue">{botsCount}</span>
+								</div>
+								<div className="playersBlock">
+									{this.props.gameRole === Role.Player ? '🧑' : null}
+									{Array.from(Array(this.props.humanPlayersCount).keys()).map(() => '👤')}
+									{Array.from(Array(botsCount).keys()).map(() => '🖥️')}
+								</div>
+							</>
+						)}
 					</div>
-					{this.props.isSingleGame ? null : (
-						<>
-							<div className="playersBlock">
-								<span className="playersCountTitle">
-									{`${localization.humanPlayers} `}
-								</span>
-								<span className="playersCountValue">{this.props.humanPlayersCount}</span>
-								<input
-									type="range"
-									className="playersCount"
-									min={0}
-									max={humanPlayersMaxCount}
-									disabled={humanPlayersMaxCount === 0}
-									value={this.props.humanPlayersCount}
-									onChange={this.onHumanPlayersCountChanged}
-								/>
-							</div>
-							<div className="playersBlock">
-								<span className="playersCountTitle">
-									{`${localization.computerPlayers} `}
-								</span>
-								<span className="playersCountValue">{botsCount}</span>
-							</div>
-							<div className="playersBlock">
-								{this.props.gameRole === Role.Player ? '🧑' : null}
-								{Array.from(Array(this.props.humanPlayersCount).keys()).map(() => '👤')}
-								{Array.from(Array(botsCount).keys()).map(() => '🖥️')}
-							</div>
-						</>
-					)}
-				</div>
-				<div className="gameCreationError">{this.props.error}</div>
-				<div className="buttonsArea">
-					<button
-						type="button"
-						className="showSettings"
-						disabled={!this.props.isConnected || this.props.inProgress}
-						onClick={() => this.props.onShowSettings()}
-					>
-						{`${localization.settings}…`}
-					</button>
-					<button
-						type="button"
-						className="startGame"
-						disabled={!this.props.isConnected || this.props.inProgress}
-						onClick={() => this.props.onCreate(this.props.isSingleGame)}
-					>
-						{localization.startGame}
-					</button>
-				</div>
-				{this.props.inProgress ? <ProgressBar isIndeterminate /> : null}
-				{this.props.uploadPackageProgress ? (
-					<div className="uploadPackagePanel">
-						<span>{localization.sendingPackage}</span>
-						<ProgressBar isIndeterminate={false} value={this.props.uploadPackagePercentage} />
+					<div className="gameCreationError">{this.props.error}</div>
+					<div className="buttonsArea">
+						<button
+							type="button"
+							className="showSettings"
+							disabled={!this.props.isConnected || this.props.inProgress}
+							onClick={() => this.props.onShowSettings()}
+						>
+							{`${localization.settings}…`}
+						</button>
+						<button
+							type="button"
+							className="startGame"
+							disabled={!this.props.isConnected || this.props.inProgress}
+							onClick={() => this.props.onCreate(this.props.isSingleGame)}
+						>
+							{localization.startGame}
+						</button>
 					</div>
-				) : null}
-			</Dialog>
+					{this.props.inProgress ? <ProgressBar isIndeterminate /> : null}
+					{this.props.uploadPackageProgress ? (
+						<div className="uploadPackagePanel">
+							<span>{localization.sendingPackage}</span>
+							<ProgressBar isIndeterminate={false} value={this.props.uploadPackagePercentage} />
+						</div>
+					) : null}
+				</Dialog>
+				{this.state.isSIStorageOpen && (
+					<SIStorageDialog onClose={this.onSIPackageDialogClose} onSelect={this.onSelectSIPackage} />
+				)}
+			</>
 		);
 	}
 }

@@ -5,6 +5,8 @@ import GameType from '../model/enums/GameType';
 import Role from '../model/enums/Role';
 import GameInfo from '../model/server/GameInfo';
 import PackageType from '../model/enums/PackageType';
+import { SIPackageInfo } from '../model/SIPackageInfo';
+import { SearchEntity } from '../model/SearchEntity';
 
 export const enum ActionTypes {
 	IsConnectedChanged = 'IS_CONNECTED_CHANGED',
@@ -47,6 +49,7 @@ export const enum ActionTypes {
 	GamePasswordChanged = 'GAME_PASSWORD_CHANGED',
 	GamePackageTypeChanged = 'GAME_PACKAGE_TYPE_CHANGED',
 	GamePackageDataChanged = 'GAME_PACKAGE_DATA_CHANGED',
+	GamePackageLibraryChanged = 'GAME_PACKAGE_LIBRARY_CHANGED',
 	GameTypeChanged = 'GAME_TYPE_CHANGED',
 	GameRoleChanged = 'GAME_ROLE_CHANGED',
 	ShowmanTypeChanged = 'SHOWMAN_TYPE_CHANGED',
@@ -61,7 +64,15 @@ export const enum ActionTypes {
 	UploadPackageFinished = 'UPLOAD_PACKAGE_FINISHED',
 	UploadPackageProgress = 'UPLOAD_PACKAGE_PROGRESS',
 	UnselectGame = 'UNSELECT_GAME',
-	ServerNameChanged = 'SERVER_NAME_CHANGED'
+	ServerNameChanged = 'SERVER_NAME_CHANGED',
+	SearchPackages = 'SEARCH_PACKAGES',
+	SearchPackagesFinished = 'SEARCH_PACKAGES_FINISHED',
+	ReceiveAuthors = 'RECEIVE_AUTHORS',
+	ReceiveAuthorsFinished = 'RECEIVE_AUTHORS_FINISHED',
+	ReceiveTags = 'RECEIVE_TAGS',
+	ReceiveTagsFinished = 'RECEIVE_TAGS_FINISHED',
+	ReceivePublishers = 'RECEIVE_PUBLISHERS',
+	ReceivePublishersFinished = 'RECEIVE_PUBLISHERS_FINISHED',
 }
 
 export type IsConnectedChangedAction = { type: ActionTypes.IsConnectedChanged, isConnected: boolean };
@@ -103,6 +114,7 @@ export type WindowWidthChangedAction = { type: ActionTypes.WindowWidthChanged, w
 export type GameNameChangedAction = { type: ActionTypes.GameNameChanged, gameName: string };
 export type GamePasswordChangedAction = { type: ActionTypes.GamePasswordChanged, gamePassword: string };
 export type GamePackageTypeChangedAction = { type: ActionTypes.GamePackageTypeChanged, packageType: PackageType };
+export type GamePackageLibraryChangedAction = { type: ActionTypes.GamePackageLibraryChanged, name: string, id: string };
 export type GamePackageDataChangedAction = { type: ActionTypes.GamePackageDataChanged, packageName: string, packageData: File | null };
 export type GameTypeChangedAction = { type: ActionTypes.GameTypeChanged, gameType: GameType };
 export type GameRoleChangedAction = { type: ActionTypes.GameRoleChanged, gameRole: Role };
@@ -119,6 +131,14 @@ export type UploadPackageFinishedAction = { type: ActionTypes.UploadPackageFinis
 export type UploadPackageProgressAction = { type: ActionTypes.UploadPackageProgress, progress: number };
 export type UnselectGameAction = { type: ActionTypes.UnselectGame };
 export type ServerNameChangedAction = { type: ActionTypes.ServerNameChanged, serverName: string };
+export type SearchPackagesAction = { type: ActionTypes.SearchPackages };
+export type SearchPackagesFinishedAction = { type: ActionTypes.SearchPackagesFinished, packages: SIPackageInfo[] };
+export type ReceiveAuthorsAction = { type: ActionTypes.ReceiveAuthors };
+export type ReceiveAuthorsFinishedAction = { type: ActionTypes.ReceiveAuthorsFinished, authors: SearchEntity[] };
+export type ReceiveTagsAction = { type: ActionTypes.ReceiveTags };
+export type ReceiveTagsFinishedAction = { type: ActionTypes.ReceiveTagsFinished, tags: SearchEntity[] };
+export type ReceivePublishersAction = { type: ActionTypes.ReceivePublishers };
+export type ReceivePublishersFinishedAction = { type: ActionTypes.ReceivePublishersFinished, publishers: SearchEntity[] };
 
 export type KnownAction =
 	IsConnectedChangedAction
@@ -175,4 +195,13 @@ export type KnownAction =
 	| UploadPackageFinishedAction
 	| UploadPackageProgressAction
 	| UnselectGameAction
-	| ServerNameChangedAction;
+	| ServerNameChangedAction
+	| SearchPackagesAction
+	| SearchPackagesFinishedAction
+	| ReceiveAuthorsAction
+	| ReceiveAuthorsFinishedAction
+	| ReceiveTagsAction
+	| ReceiveTagsFinishedAction
+	| ReceivePublishersAction
+	| ReceivePublishersFinishedAction
+	| GamePackageLibraryChangedAction;
