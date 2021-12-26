@@ -1,24 +1,23 @@
 const path = require('path');
 const HtmlWebPackPlugin = require("html-webpack-plugin");
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
-module.exports = (env) => {
-	const isDevBuild = !(env && env.prod);
+module.exports = (env, argv) => {
 	return {
-		mode: isDevBuild ? 'development' : 'production',
 		entry: {
 			config: './assets/config.js',
 			main: './src/Index.tsx'
 		},
-		devtool: isDevBuild ? 'inline-source-map' : undefined,
+		devtool: argv.mode === 'development' ? 'inline-source-map' : undefined,
 		devServer: {
-			contentBase: './wwwroot',
+			static: './wwwroot',
 			historyApiFallback: true
 		},
 		module: {
 			rules: [
 				{ test: /\.tsx?$/, use: 'ts-loader' },
-				{ test: /\.css$/, use: isDevBuild ? ['style-loader', 'css-loader'] : ['style-loader', 'css-loader', 'postcss-loader'] },
-				{ test: /\.(png|jpg|jpeg|gif)$/, use: 'url-loader?limit=25000' },
+				{ test: /\.css$/, use: argv.mode === 'development' ? ['style-loader', 'css-loader'] : ['style-loader', 'css-loader', 'postcss-loader'] },
+				{ test: /\.(png|jpg|jpeg|gif)$/, type: 'asset/resource' },
 				{
 					test: /\.svg$/,
 					use: ['@svgr/webpack', 'url-loader']
@@ -32,7 +31,7 @@ module.exports = (env) => {
 					  }
 					]
 				},
-				{ test: /\.(eot|ttf|woff|otf)$/, use: 'url-loader?limit=25000' }
+				{ test: /\.(eot|ttf|woff|otf)$/, type: 'asset/resource' }
 			]
 		},
 		resolve: {
@@ -40,11 +39,11 @@ module.exports = (env) => {
 		},
 		output: {
 			filename: (pathData) => {
-				return pathData.chunk.name === 'config' || isDevBuild ? '[name].js': '[name].[contenthash].js';
+				return pathData.chunk.name === 'config' || argv.mode === 'development' ? '[name].js': '[name].[contenthash].js';
 			},
 			chunkFilename: '[name].[contenthash].js',
 			path: path.resolve(__dirname, 'dist'),
-			publicPath: isDevBuild ? '' : '/si/online/'
+			publicPath: argv.mode === 'development' ? '' : '/si/online/'
 		},
 		optimization: {
 			splitChunks: {
@@ -59,6 +58,7 @@ module.exports = (env) => {
 			}
 		},
 		plugins: [
+			new CleanWebpackPlugin(),
 			new HtmlWebPackPlugin({
 				template: "./src/index-template.html",
 				filename: "./index.html",
