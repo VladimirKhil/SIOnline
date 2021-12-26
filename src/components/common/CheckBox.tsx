@@ -7,11 +7,12 @@ interface CheckBoxProps {
 	isChecked: boolean;
 }
 
-export default function CheckBox(props: CheckBoxProps) {
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+export default function CheckBox(props: CheckBoxProps): JSX.Element {
 	return (
-		<React.Fragment>
+		<>
 			<div className="checkmark">{props.isChecked ? '✔' : ''}</div>
 			{props.header}
-		</React.Fragment>
+		</>
 	);
 }

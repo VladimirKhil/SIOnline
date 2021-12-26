@@ -175,8 +175,8 @@ export default class FlyoutButton extends React.Component<FlyoutButtonProps, Fly
 				onClick={this.onClick}
 			>
 				{this.props.children}
-				{this.state.isOpen ?
-					ReactDOM.createPortal(
+				{this.state.isOpen
+					? ReactDOM.createPortal(
 						<section
 							className={`flyoutButton_flyout ${this.props.theme === FlyoutTheme.Light ? 'light' : 'dark'}`}
 							style={flyoutStyle}

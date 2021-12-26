@@ -5,7 +5,7 @@ import CheckBox from './common/CheckBox';
 import GamesFilter from '../model/enums/GamesFilter';
 import State from '../state/State';
 import localization from '../model/resources/localization';
-import { getFilterValue } from '../state/getFilterValue';
+import getFilterValue from '../state/getFilterValue';
 import actionCreators from '../state/actionCreators';
 import GameInfo from '../model/server/GameInfo';
 import LobbyMenu from './LobbyMenu';

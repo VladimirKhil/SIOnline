@@ -1,11 +1,11 @@
 import * as React from 'react';
-import State from '../../state/State';
 import { Action, Dispatch } from 'redux';
 import { connect } from 'react-redux';
-
-import './MuteButton.css';
+import State from '../../state/State';
 import settingsActionCreators from '../../state/settings/settingsActionCreators';
 import localization from '../../model/resources/localization';
+
+import './MuteButton.css';
 
 interface MuteButtonProps {
 	isSoundEnabled: boolean;
@@ -22,10 +22,14 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	}
 });
 
-export function MuteButton(props: MuteButtonProps) {
+export function MuteButton(props: MuteButtonProps): JSX.Element {
 	return (
-		<button onClick={() => props.onMute(!props.isSoundEnabled)} className="muteButton"
-			title={props.isSoundEnabled ? localization.disableSound : localization.enableSound}>
+		<button
+			type="button"
+			onClick={() => props.onMute(!props.isSoundEnabled)}
+			className="muteButton"
+			title={props.isSoundEnabled ? localization.disableSound : localization.enableSound}
+		>
 			{props.isSoundEnabled ? '🔈' : '🔇'}
 		</button>
 	);

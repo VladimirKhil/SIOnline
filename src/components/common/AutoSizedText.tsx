@@ -27,7 +27,6 @@ function fitElement(element: HTMLElement, maxFont: number) {
 	let innerWidth = 0;
 
 	let extraHeight = 0;
-	let extraWidth = 0;
 	const style = window.getComputedStyle(element);
 	if (style.paddingTop) {
 		extraHeight += parseInt(style.paddingTop, 10);
@@ -35,14 +34,6 @@ function fitElement(element: HTMLElement, maxFont: number) {
 
 	if (style.paddingBottom) {
 		extraHeight += parseInt(style.paddingBottom, 10);
-	}
-
-	if (style.paddingLeft) {
-		extraWidth += parseInt(style.paddingLeft, 10);
-	}
-
-	if (style.paddingRight) {
-		extraWidth += parseInt(style.paddingRight, 10);
 	}
 
 	const cacheKey = `${window.innerWidth} ${content.innerHTML} ${content.clientHeight + extraHeight} ${content.clientWidth + extraHeight}`;
@@ -74,35 +65,39 @@ export default class AutoSizedText extends React.Component<AutoSizedTextProps> {
 		this.myRef = React.createRef<HTMLDivElement>();
 	}
 
-	resizeText = () => {
-		if (this.myRef.current !== null) {
-			fitElement(this.myRef.current, this.props.maxFontSize);
-		}
-	}
-
-	componentDidMount() {
+	componentDidMount(): void {
 		this.resizeText();
 		window.addEventListener('resize', this.resizeText);
 	}
 
-	componentWillUnmount() {
-		window.removeEventListener('resize', this.resizeText);
-	}
-
-	componentDidUpdate() {
+	componentDidUpdate(): void {
 		this.resizeText();
 	}
 
-	onClick() {
+	componentWillUnmount(): void {
+		window.removeEventListener('resize', this.resizeText);
+	}
+
+	onClick(): void {
 		if (this.props.onClick) {
 			this.props.onClick();
 		}
 	}
 
-	render() {
+	resizeText = (): void => {
+		if (this.myRef.current !== null) {
+			fitElement(this.myRef.current, this.props.maxFontSize);
+		}
+	};
+
+	render(): JSX.Element {
 		return (
-			<div id={this.props.id} ref={this.myRef} className={`centeredBlock ${this.props.className}`}
-				onClick={e => this.onClick()}>
+			<div
+				id={this.props.id}
+				ref={this.myRef}
+				className={`centeredBlock ${this.props.className}`}
+				onClick={e => this.onClick()}
+			>
 				<span>{this.props.children}</span>
 			</div>
 		);

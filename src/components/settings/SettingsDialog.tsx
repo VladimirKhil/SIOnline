@@ -59,68 +59,100 @@ export class SettingsDialog extends React.Component<SettingsDialogProps> {
 		this.layout = React.createRef<HTMLDivElement>();
 	}
 
-	hide = (e: Event) => {
-		if (!this.layout.current || e.target instanceof Node && this.layout.current.contains(e.target as Node)) {
+	componentDidMount(): void {
+		window.addEventListener('mousedown', this.hide);
+	}
+
+	componentWillUnmount(): void {
+		window.removeEventListener('mousedown', this.hide);
+	}
+
+	hide = (e: Event): void => {
+		if (!this.layout.current || (e.target instanceof Node && this.layout.current.contains(e.target as Node))) {
 			return;
 		}
 
 		this.props.onClose();
-	}
-
-	componentWillUnmount() {
-		window.removeEventListener('mousedown', this.hide);
-	}
-
-	componentDidMount() {
-		window.addEventListener('mousedown', this.hide);
-	}
+	};
 
 	private onSexChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
 		this.props.onSexChanged(e.target.id === 'male' && e.target.checked ? Sex.Male : Sex.Female);
-	}
+	};
 
-	render() {
+	render(): JSX.Element {
 		return (
 			<Dialog id="settingsDialog" title={localization.settings} onClose={this.props.onClose}>
 				<div ref={this.layout} className="settingsDialogBody">
 					<div>
-						<input id="isSoundEnabled" type="checkbox" checked={this.props.settings.isSoundEnabled}
-							onChange={() => this.props.onMute(!this.props.settings.isSoundEnabled)} />
+						<input
+							id="isSoundEnabled"
+							type="checkbox"
+							checked={this.props.settings.isSoundEnabled}
+							onChange={() => this.props.onMute(!this.props.settings.isSoundEnabled)}
+						/>
 						<label htmlFor="isSoundEnabled">{localization.sound}</label>
 					</div>
 
 					<div>
-						<input id="showPersonsAtBottomOnWideScreen" type="checkbox" checked={this.props.settings.showPersonsAtBottomOnWideScreen}
+						<input
+							id="showPersonsAtBottomOnWideScreen"
+							type="checkbox"
+							checked={this.props.settings.showPersonsAtBottomOnWideScreen}
 							onChange={() => this.props.onShowPersonsAtBottomOnWideScreenChanged(
 								!this.props.settings.showPersonsAtBottomOnWideScreen
-							)} />
+							)}
+						/>
 						<label htmlFor="showPersonsAtBottomOnWideScreen">{localization.showPersonsAtBottomOnWideScreen}</label>
 					</div>
 
 					<p className="header">{localization.sex}</p>
 					<div className="sexLogin">
-						<input type="radio" id="male" name="sex"
-							checked={this.props.settings.sex === Sex.Male} onChange={this.onSexChanged} />
+						<input
+							type="radio"
+							id="male"
+							name="sex"
+							checked={this.props.settings.sex === Sex.Male}
+							onChange={this.onSexChanged}
+						/>
 						<label htmlFor="male">{localization.male}</label>
-						<input type="radio" id="female" name="sex"
-							checked={this.props.settings.sex === Sex.Female} onChange={this.onSexChanged} />
+						<input
+							type="radio"
+							id="female"
+							name="sex"
+							checked={this.props.settings.sex === Sex.Female}
+							onChange={this.onSexChanged}
+						/>
 						<label htmlFor="female">{localization.female}</label>
 					</div>
 
 					<h2>{localization.game}</h2>
 					<div className="settingItem">
-						<input id="oral" type="checkbox" checked={this.props.settings.appSettings.oral}
-							onChange={() => this.props.onOralChanged(!this.props.settings.appSettings.oral)} />
-						<label htmlFor="oral">{localization.oralGame}</label><span className="hint">{localization.oralGameHint}</span>
+						<input
+							id="oral"
+							type="checkbox"
+							checked={this.props.settings.appSettings.oral}
+							onChange={() => this.props.onOralChanged(!this.props.settings.appSettings.oral)}
+						/>
+						<label htmlFor="oral">{localization.oralGame}</label>
+						<span className="hint">{localization.oralGameHint}</span>
 					</div>
 					<div className="settingItem">
-						<input id="falseStarts" type="checkbox" checked={this.props.settings.appSettings.falseStart}
-							onChange={() => this.props.onFalseStartsChanged(!this.props.settings.appSettings.falseStart)} />
-						<label htmlFor="falseStarts">{localization.falseStarts}</label><span className="hint">{localization.falseStartsHint}</span>
+						<input
+							id="falseStarts"
+							type="checkbox"
+							checked={this.props.settings.appSettings.falseStart}
+							onChange={() => this.props.onFalseStartsChanged(!this.props.settings.appSettings.falseStart)}
+						/>
+						<label htmlFor="falseStarts">{localization.falseStarts}</label>
+						<span className="hint">{localization.falseStartsHint}</span>
 					</div>
 					<div className="settingItem">
-						<input id="hintShowman" type="checkbox" checked={this.props.settings.appSettings.hintShowman}
-							onChange={() => this.props.onHintShowmanChanged(!this.props.settings.appSettings.hintShowman)} />
+						<input
+							id="hintShowman"
+							type="checkbox"
+							checked={this.props.settings.appSettings.hintShowman}
+							onChange={() => this.props.onHintShowmanChanged(!this.props.settings.appSettings.hintShowman)}
+						/>
 						<label htmlFor="hintShowman">{localization.hintShowman}</label>
 					</div>
 				</div>

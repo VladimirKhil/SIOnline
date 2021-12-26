@@ -1,13 +1,13 @@
 ﻿import GamesFilter from '../model/enums/GamesFilter';
 import localization from '../model/resources/localization';
 
-export function getFilterValue(gamesFilter: GamesFilter) {
+export default function getFilterValue(gamesFilter: GamesFilter): string {
 	const onlyNew = (gamesFilter & GamesFilter.New) > 0;
 	const sport = (gamesFilter & GamesFilter.Sport) > 0;
 	const tv = (gamesFilter & GamesFilter.Tv) > 0;
 	const noPassword = (gamesFilter & GamesFilter.NoPassword) > 0;
 
-	if ((sport && tv || !sport && !tv) && !onlyNew && !noPassword) {
+	if (((sport && tv) || (!sport && !tv)) && !onlyNew && !noPassword) {
 		return localization.all;
 	}
 

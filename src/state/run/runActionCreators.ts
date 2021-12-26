@@ -17,6 +17,7 @@ import tableActionCreators from '../table/tableActionCreators';
 import StakeTypes from '../../model/enums/StakeTypes';
 import MainView from '../../model/enums/MainView';
 import Constants from '../../model/enums/Constants';
+import getErrorMessage from '../../utils/ErrorHelpers';
 
 let timerRef: number | null = null;
 
@@ -153,7 +154,7 @@ const addTable: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (
 	try {
 		dataContext.gameClient.msgAsync('CONFIG', 'ADDTABLE');
 	} catch (e) {
-		dispatch(operationError(e.message));
+		dispatch(operationError(getErrorMessage(e)));
 	}
 };
 
@@ -168,7 +169,7 @@ const deleteTable: ActionCreator<ThunkAction<void, State, DataContext, Action>> 
 	try {
 		dataContext.gameClient.msgAsync('CONFIG', 'DELETETABLE', tableIndex);
 	} catch (e) {
-		dispatch(operationError(e.message));
+		dispatch(operationError(getErrorMessage(e)));
 	}
 };
 
@@ -183,7 +184,7 @@ const kickPerson: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 	try {
 		dataContext.gameClient.msgAsync('KICK', personName);
 	} catch (e) {
-		dispatch(operationError(e.message));
+		dispatch(operationError(getErrorMessage(e)));
 	}
 };
 
@@ -198,7 +199,7 @@ const banPerson: ActionCreator<ThunkAction<void, State, DataContext, Action>> = 
 	try {
 		dataContext.gameClient.msgAsync('BAN', personName);
 	} catch (e) {
-		dispatch(operationError(e.message));
+		dispatch(operationError(getErrorMessage(e)));
 	}
 };
 

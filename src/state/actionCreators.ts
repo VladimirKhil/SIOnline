@@ -34,6 +34,7 @@ import ServerAppSettings from '../model/server/ServerAppSettings';
 import AccountSettings from '../model/server/AccountSettings';
 import GameSettings from '../model/server/GameSettings';
 import IGameServerClient from '../client/IGameServerClient';
+import getErrorMessage from '../utils/ErrorHelpers';
 
 const isConnectedChanged: ActionCreator<Actions.IsConnectedChangedAction> = (isConnected: boolean) => ({
 	type: Actions.ActionTypes.IsConnectedChanged, isConnected
@@ -196,14 +197,14 @@ const login: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () =
 				await loadHostInfoAsync(dispatch, dataContext);
 				dispatch(navigateToWelcome());
 			} catch (error) {
-				dispatch(loginEnd(`${localization.cannotConnectToServer}: ${error.message}`));
+				dispatch(loginEnd(`${localization.cannotConnectToServer}: ${error instanceof Error ? error.message : ''}`));
 			}
 		} else {
 			const errorText = getLoginErrorByCode(response);
 			dispatch(loginEnd(errorText));
 		}
 	} catch (err) {
-		dispatch(loginEnd(`${localization.cannotConnectToServer}: ${err.message}`));
+		dispatch(loginEnd(`${localization.cannotConnectToServer}: ${getErrorMessage(err)}`));
 	}
 };
 
@@ -223,7 +224,7 @@ const friendsPlay: ActionCreator<ThunkAction<void, State, DataContext, Action>> 
 
 			dispatch(onlineLoadFinish());
 		} catch (error) {
-			dispatch(onlineLoadError(error.message));
+			dispatch(onlineLoadError(getErrorMessage(error)));
 		}
 	};
 
@@ -260,7 +261,7 @@ const navigateToLobby: ActionCreator<ThunkAction<void, State, DataContext, Actio
 
 		dispatch(onlineLoadFinish());
 	} catch (error) {
-		dispatch(onlineLoadError(error.message));
+		dispatch(onlineLoadError(getErrorMessage(error)));
 	}
 };
 
@@ -311,7 +312,7 @@ const onExit: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () 
 
 			dispatch(navigateToLogin());
 		} catch (error) {
-			alert(error.message); // TODO: normal error message
+			alert(getErrorMessage(error)); // TODO: normal error message
 		}
 	};
 
@@ -381,7 +382,7 @@ const joinGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (
 			saveStateToStorage(state);
 			dispatch(joinGameFinished(null));
 		} catch (error) {
-			dispatch(joinGameFinished(error.message));
+			dispatch(joinGameFinished(getErrorMessage(error)));
 		}
 	};
 
@@ -730,7 +731,7 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 			await gameInit(result.gameId, dataContext, role);
 		}
 	} catch (error) {
-		dispatch(gameCreationEnd(error.message));
+		dispatch(gameCreationEnd(getErrorMessage(error)));
 	}
 };
 
