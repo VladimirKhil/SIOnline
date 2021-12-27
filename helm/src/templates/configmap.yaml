@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "sionline.fullname" . }}-config
+data:
+  config.js: |
+    config = {
+      serverDiscoveryUri: '{{ .Values.config.serverDiscoveryUri }}',
+      rootUri: '{{ .Values.config.rootUri }}',
+      ads: '{{ .Values.config.ads }}',
+      rewriteUrl: {{ .Values.config.rewriteUrl }},
+      apiUri: '{{ .Values.config.apiUri }}'
+    };
+
+    onLoad = function () {
+{{ .Values.config.onLoad | indent 6 }}
+    };

@@ -1,0 +1,28 @@
+replicaCount: 1
+
+image:
+  repository: vladimirkhil/sionline
+  tag: "1.0.0"
+  pullPolicy: IfNotPresent
+
+nameOverride: ""
+fullnameOverride: ""
+
+podAnnotations: {}
+
+podSecurityContext: {}
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 80
+
+resources: {}
+
+config:
+  serverDiscoveryUri: 'https://vladimirkhil.com/api/si/servers'
+  apiUri: 'https://vladimirkhil.com/api/si'
+  rootUri: '/'
+  ads: '<b>Test ad</b>'
+  onLoad: console.log('SI Online successfully loaded!');
+  rewriteUrl: true

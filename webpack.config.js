@@ -43,7 +43,7 @@ module.exports = (env, argv) => {
 			},
 			chunkFilename: '[name].[contenthash].js',
 			path: path.resolve(__dirname, 'dist'),
-			publicPath: argv.mode === 'development' ? '' : '/si/online/'
+			publicPath: ''
 		},
 		optimization: {
 			splitChunks: {

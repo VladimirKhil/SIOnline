@@ -1,0 +1,14 @@
+apiVersion: v1
+entries:
+  sionline:
+  - apiVersion: v2
+    appVersion: 1.0.0
+    created: "2021-12-27T22:44:08.2174115+03:00"
+    description: SIGame client web application
+    digest: 28537f2a0baf3b4db2918cab7a8e8c09eed0c7e5a83ae1fc729d11ff0d8f6485
+    name: sionline
+    type: application
+    urls:
+    - sionline-1.0.0.tgz
+    version: 1.0.0
+generated: "2021-12-27T22:44:08.2133691+03:00"
