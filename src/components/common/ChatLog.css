@@ -1,8 +1,9 @@
-#gameLog {
+.chatLog {
     overflow-y: auto;
+    user-select: text;
 }
 
-    #gameLog span {
+    .chatLog span {
         display: block;
         overflow: hidden;
     }

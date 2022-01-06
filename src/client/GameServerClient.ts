@@ -11,7 +11,7 @@ import IGameServerClient from './IGameServerClient';
 export default class GameServerClient implements IGameServerClient {
 	/**
 	 * Initializes a new instance of {@link GameServerClient}.
-	 * @param connection Underlying SignalrR connection.
+	 * @param connection Underlying SignalR connection.
 	 */
 	constructor(private connection: signalR.HubConnection) {
 

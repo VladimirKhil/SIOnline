@@ -20,6 +20,13 @@
             "problemMatcher": [],
             "label": "npm: build-prod",
             "detail": "webpack --env.prod -p"
+        },
+        {
+            "type": "npm",
+            "script": "lint",
+            "problemMatcher": [],
+            "label": "npm: lint",
+            "detail": "eslint . --ext .ts --ext .tsx"
         }
     ]
 }

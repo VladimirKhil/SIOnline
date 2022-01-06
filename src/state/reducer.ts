@@ -231,7 +231,6 @@ const reducer: Reducer<State> = (state: State = initialState, action: KnownActio
 
 		case ActionTypes.UserJoined:
 			if (state.online.users.indexOf(action.login) > -1) {
-				console.error(`User ${action.login} already exists in users list!`);
 				return state;
 			}
 
