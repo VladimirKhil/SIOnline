@@ -686,8 +686,7 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 					password: getRandomValue().toString(), // protecting from anyone to join
 					isShowmanHuman: false,
 					humanPlayersCount: 0
-			  }
-			: state.game;
+			} : state.game;
 
 		const { playersCount, humanPlayersCount, role } = game;
 		const me = { Name: state.user.login, IsHuman: true, IsMale: state.settings.sex === Sex.Male };
