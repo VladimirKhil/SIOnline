@@ -161,6 +161,20 @@ const reducer: Reducer<State> = (state: State = initialState, action: KnownActio
 				}
 			};
 
+		case ActionTypes.NavigateToError:
+			return {
+				...state,
+				ui: {
+					...state.ui,
+					mainView: MainView.Error,
+					previousMainView: state.ui.mainView
+				},
+				common: {
+					...state.common,
+					error: action.error
+				}
+			};
+
 		case ActionTypes.ClearGames:
 			return {
 				...state,

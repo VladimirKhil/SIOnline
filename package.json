@@ -21,6 +21,7 @@
     "@microsoft/signalr-protocol-msgpack": "^6.0.1",
     "@reduxjs/toolkit": "^1.7.1",
     "es6-promise": "^4.2.8",
+    "firebase": "^9.6.5",
     "jszip": "^3.7.0",
     "localized-strings": "^0.2.4",
     "react": "^17.0.2",

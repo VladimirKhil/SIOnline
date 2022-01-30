@@ -13,6 +13,7 @@ import SettingsDialog from './settings/SettingsDialog';
 import NewGameDialog from './NewGameDialog';
 import actionCreators from '../state/actionCreators';
 import Games from './Games';
+import ErrorView from './ErrorView';
 
 import './App.css';
 
@@ -20,13 +21,19 @@ interface AppProps {
 	ads?: string;
 	mainView: MainView;
 	areSettingsVisible: boolean;
+	commonError: string | null;
 
 	closeNewGame: () => void;
 }
 
+interface AppState {
+	error: string | null;
+}
+
 const mapStateToProps = (state: State) => ({
 	mainView: state.ui.mainView,
-	areSettingsVisible: state.ui.areSettingsVisible
+	areSettingsVisible: state.ui.areSettingsVisible,
+	commonError: state.common.error
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
@@ -37,11 +44,25 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 
 declare const onLoad: () => void;
 
-export class App extends React.Component<AppProps> {
+export class App extends React.Component<AppProps, AppState> {
+	constructor(props: AppProps) {
+		super(props);
+
+		this.state = { error: null };
+	}
+
 	componentDidMount(): void {
 		if (onLoad) {
 			onLoad();
 		}
+	}
+
+	componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+		console.error(`Component error: ${error} ${errorInfo}`);
+	}
+
+	public static getDerivedStateFromError(error: Error): AppState {
+		return { error: `${error.message}: ${error.stack}` };
 	}
 
 	getContent(): JSX.Element | null {
@@ -70,13 +91,16 @@ export class App extends React.Component<AppProps> {
 			case MainView.Game:
 				return <InGameView />;
 
+			case MainView.Error:
+				return <ErrorView error={this.props.commonError} />;
+
 			default:
 				return null;
 		}
 	}
 
 	render(): JSX.Element {
-		return (
+		return this.state.error ? <ErrorView error={this.state.error} /> : (
 			<div className="app">
 				{this.getContent()}
 				{this.props.areSettingsVisible ? <SettingsDialog /> : null}

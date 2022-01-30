@@ -7,6 +7,7 @@
 	Lobby = 5,
 	About = 6,
 	Game = 7,
+	Error = 8
 }
 
 export default MainView;

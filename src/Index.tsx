@@ -17,11 +17,17 @@ import runActionCreators from './state/run/runActionCreators';
 import localization from './model/resources/localization';
 import ServerInfo from './model/server/ServerInfo';
 import DummyGameServerClient from './client/DummyGameServerClient';
+import { FirebaseOptions, initializeApp, FirebaseApp } from 'firebase/app';
+import { Analytics, getAnalytics } from 'firebase/analytics';
 
 import './utils/polyfills';
 import './style.css';
 
-declare const config: Config;
+declare const config: Config | undefined;
+declare const firebaseConfig: FirebaseOptions | undefined;
+
+export let app: FirebaseApp | null = null;
+export let analytics: Analytics | null = null;
 
 function setState(state: State, savedState: SavedState | null, gameId: string | null): State {
 	if (!savedState) {
@@ -44,13 +50,46 @@ function setState(state: State, savedState: SavedState | null, gameId: string | 
 		} : state.game,
 		settings: savedState.settings ? {
 			...state.settings,
-			...savedState.settings
+			...savedState.settings,
+			appSettings: {
+				...savedState.settings.appSettings,
+				timeSettings: savedState.settings.appSettings.timeSettings || state.settings.appSettings.timeSettings
+			}
 		} : state.settings,
 		online: {
 			...state.online,
 			selectedGameId: gameId ? parseInt(gameId, 10) : -1
 		}
 	};
+}
+
+function subscribeToExternalEvents(store: Store<State, any>) {
+	window.onresize = () => store.dispatch(actionCreators.windowWidthChanged(window.innerWidth));
+	window.onpopstate = () => true;
+
+	window.onkeydown = (e: KeyboardEvent) => {
+		if (e.key === Constants.KEY_CTRL) {
+			store.dispatch(runActionCreators.pressGameButton());
+		}
+
+		return true;
+	};
+
+	window.oncontextmenu = (e: MouseEvent) => {
+		store.dispatch(runActionCreators.pressGameButton());
+		e.preventDefault();
+		return true;
+	};
+
+	window.addEventListener('error', (e: ErrorEvent) => {
+		store.dispatch(actionCreators.navigateToError(`${e.type} ${e.message} ${e.filename} ${e.lineno}:${e.colno}`));
+		return false;
+	});
+
+	window.addEventListener('unhandledrejection', (e: PromiseRejectionEvent) => {
+		store.dispatch(actionCreators.navigateToError(`${e.reason.message}: ${e.reason.stack}`));
+		return false;
+	});
 }
 
 async function run() {
@@ -62,6 +101,12 @@ async function run() {
 
 	if (config.forceHttps && location.protocol !== 'https:') {
 		location.replace(`https:${location.href.substring(location.protocol.length)}`);
+	}
+
+	if (firebaseConfig) {
+		// Initialize Firebase
+		app = initializeApp(firebaseConfig);
+		analytics = getAnalytics(app);
 	}
 
 	let { serverUri } = config;
@@ -129,25 +174,6 @@ async function run() {
 	);
 
 	store.dispatch(actionCreators.navigateToLogin());
-}
-
-function subscribeToExternalEvents(store: Store<State, any>) {
-	window.onresize = () => store.dispatch(actionCreators.windowWidthChanged(window.innerWidth));
-	window.onpopstate = () => true;
-
-	window.onkeydown = (e: KeyboardEvent) => {
-		if (e.key === Constants.KEY_CTRL) {
-			store.dispatch(runActionCreators.pressGameButton());
-		}
-
-		return true;
-	};
-
-	window.oncontextmenu = (e: MouseEvent) => {
-		store.dispatch(runActionCreators.pressGameButton());
-		e.preventDefault();
-		return true;
-	};
 }
 
 run();

@@ -50,9 +50,25 @@ const settingsReducer: Reducer<SettingsState> = (state: SettingsState = initialS
 					hintShowman: action.hintShowman
 				}
 			};
-	}
+		
+		case SettingsActionTypes.TimeSettingChanged:
+			return {
+				...state,
+				appSettings: {
+					...state.appSettings,
+					timeSettings: {
+						...state.appSettings.timeSettings,
+						[action.name]: action.value
+					}
+				}
+			};
 
-	return state;
+		case SettingsActionTypes.ResetSettings:
+			return initialState;
+
+		default:
+			return state;
+	}
 };
 
 export default settingsReducer;

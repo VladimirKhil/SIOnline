@@ -36,6 +36,12 @@
     display: block;
 }
 
+#settingsDialog .reset {
+    font-size: 25px;
+    margin: 20px 0 0 0;
+    padding: 5px 25px;
+}
+
 @media screen and (min-width: 800px) {
     #settingsDialog {
         width: 300px;

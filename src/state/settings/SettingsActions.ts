@@ -1,4 +1,5 @@
 import Sex from '../../model/enums/Sex';
+import TimeSettings from '../../model/server/TimeSettings';
 
 export const enum SettingsActionTypes {
 	IsSoundEnabledChanged = 'IS_SOUND_ENABLED_CHANGED',
@@ -6,7 +7,9 @@ export const enum SettingsActionTypes {
 	SexChanged = 'SEX_CHANGED',
 	OralChanged = 'ORAL_CHANGED',
 	FalseStartsChanged = 'FALSE_STARTS_CHANGED',
-	HintShowmanChanged = 'HINT_SHOWMAN_CHANGED'
+	HintShowmanChanged = 'HINT_SHOWMAN_CHANGED',
+	TimeSettingChanged = 'TIME_SETTING_CHANGED',
+	ResetSettings = 'RESET_SETTINGS',
 }
 
 export type IsSoundEnabledChangedAction = { type: SettingsActionTypes.IsSoundEnabledChanged, isSoundEnabled: boolean };
@@ -18,6 +21,8 @@ export type SexChangedAction = { type: SettingsActionTypes.SexChanged, newSex: S
 export type FalseStartsChangedAction = { type: SettingsActionTypes.FalseStartsChanged, falseStarts: boolean };
 export type OralChangedAction = { type: SettingsActionTypes.OralChanged, oral: boolean };
 export type HintShowmanChangedAction = { type: SettingsActionTypes.HintShowmanChanged, hintShowman: boolean };
+export type TimeSettingChangedAction = { type: SettingsActionTypes.TimeSettingChanged, name: keyof(TimeSettings), value: number };
+export type ResetSettingsAction = { type: SettingsActionTypes.ResetSettings };
 
 export type KnownSettingsAction =
 	IsSoundEnabledChangedAction
@@ -26,4 +31,5 @@ export type KnownSettingsAction =
 	| OralChangedAction
 	| FalseStartsChangedAction
 	| HintShowmanChangedAction
-;
+	| TimeSettingChangedAction
+	| ResetSettingsAction;

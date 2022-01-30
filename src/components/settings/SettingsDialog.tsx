@@ -8,6 +8,7 @@ import localization from '../../model/resources/localization';
 import SettingsState from '../../state/settings/SettingsState';
 import settingsActionCreators from '../../state/settings/settingsActionCreators';
 import Sex from '../../model/enums/Sex';
+import TimeSettingsView from './TimeSettingsView';
 
 import './SettingsDialog.css';
 
@@ -19,6 +20,7 @@ interface SettingsDialogProps {
 	onOralChanged: (oral: boolean) => void;
 	onFalseStartsChanged: (falseStarts: boolean) => void;
 	onHintShowmanChanged: (hintShowman: boolean) => void;
+	onReset: () => void;
 	onClose: () => void;
 }
 
@@ -44,6 +46,9 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	},
 	onHintShowmanChanged: (hintShowman: boolean) => {
 		dispatch(settingsActionCreators.onHintShowmanChanged(hintShowman));
+	},
+	onReset: () => {
+		dispatch(settingsActionCreators.resetSettings());
 	},
 	onClose: () => {
 		dispatch(actionCreators.showSettings(false));
@@ -155,6 +160,11 @@ export class SettingsDialog extends React.Component<SettingsDialogProps> {
 						/>
 						<label htmlFor="hintShowman">{localization.hintShowman}</label>
 					</div>
+
+					<TimeSettingsView />
+					<button className='reset' title={localization.resetToDefaultsHint} onClick={this.props.onReset}>
+						{localization.resetToDefaults}
+					</button>
 				</div>
 			</Dialog>
 		);

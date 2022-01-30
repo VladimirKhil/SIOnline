@@ -7,10 +7,10 @@ import State from '../state/State';
 import actionCreators from '../state/actionCreators';
 import { PackageFilters } from '../model/PackageFilters';
 import { SIPackageInfo } from '../model/SIPackageInfo';
-
-import './SIStorageDialog.css';
 import { SearchEntity } from '../model/SearchEntity';
 import RestrictionType from '../model/enums/RestrictionType';
+
+import './SIStorageDialog.css';
 
 interface DispatchProps {
 	searchPackages: (filters?: PackageFilters) => void;

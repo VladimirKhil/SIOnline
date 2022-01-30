@@ -1,0 +1,15 @@
+.errorView {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-flow: column;
+	background-color: #5A95E2;
+	color: darkred;
+	height: 100%;
+	padding: 20px;
+}
+
+.errorTitle {
+	font-size: 23px;
+	margin-bottom: 10px;;
+}

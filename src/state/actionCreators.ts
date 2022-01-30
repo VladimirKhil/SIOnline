@@ -272,6 +272,10 @@ const navigateToLobby: ActionCreator<ThunkAction<void, State, DataContext, Actio
 		}
 	};
 
+const navigateToError: ActionCreator<Actions.NavigateToErrorAction> = (error: string) => ({
+	type: Actions.ActionTypes.NavigateToError, error
+});
+
 const clearGames: ActionCreator<Actions.ClearGamesAction> = () => ({
 	type: Actions.ActionTypes.ClearGames
 });
@@ -723,25 +727,10 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 			compIndicies.splice(ind, 1);
 		}
 
-		const timeSettings: TimeSettings = {
-			TimeForChoosingQuestion: 30,
-			TimeForThinkingOnQuestion: 5,
-			TimeForPrintingAnswer: 25,
-			TimeForGivingACat: 30,
-			TimeForMakingStake: 30,
-			TimeForThinkingOnSpecial: 25,
-			TimeOfRound: 660,
-			TimeForChoosingFinalTheme: 30,
-			TimeForFinalThinking: 45,
-			TimeForShowmanDecisions: 30,
-			TimeForRightAnswer: 2,
-			TimeForMediaDelay: 0
-		};
-
 		const gameMode = game.type;
 
 		const appSettings: ServerAppSettings = {
-			TimeSettings: timeSettings,
+			TimeSettings: state.settings.appSettings.timeSettings,
 			ReadingSpeed: 20,
 			FalseStart: state.settings.appSettings.falseStart,
 			HintShowman: state.settings.appSettings.hintShowman,
@@ -985,6 +974,7 @@ const actionCreators = {
 	singlePlay,
 	friendsPlay,
 	navigateToLobby,
+	navigateToError,
 	onOnlineModeChanged,
 	onExit,
 	onGamesFilterToggle,

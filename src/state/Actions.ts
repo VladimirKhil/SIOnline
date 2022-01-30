@@ -22,6 +22,7 @@ export const enum ActionTypes {
 	NavigateToNewGame = 'NAVIGATE_TO_NEW_GAME',
 	NavigateToGames = 'NAVIGATE_TO_GAMES',
 	NavigateToLobby = 'NAVIGATE_TO_LOBBY',
+	NavigateToError = 'NAVIGATE_TO_ERROR',
 	ClearGames = 'CLEAR_GAMES',
 	ReceiveGames = 'RECEIVE_GAMES',
 	ReceiveUsers = 'RECEIVE_USERS',
@@ -88,6 +89,7 @@ export type NavigateToWelcomeAction = { type: ActionTypes.NavigateToWelcome };
 export type NavigateToNewGameAction = { type: ActionTypes.NavigateToNewGame };
 export type NavigateToGamesAction = { type: ActionTypes.NavigateToGames };
 export type NavigateToLobbyAction = { type: ActionTypes.NavigateToLobby };
+export type NavigateToErrorAction = { type: ActionTypes.NavigateToError, error: string };
 export type ClearGamesAction = { type: ActionTypes.ClearGames };
 export type ReceiveGamesAction = { type: ActionTypes.ReceiveGames, games: GameInfo[] };
 export type ReceiveUsersAction = { type: ActionTypes.ReceiveUsers, users: string[] };
@@ -154,6 +156,7 @@ export type KnownAction =
 	| NavigateToNewGameAction
 	| NavigateToGamesAction
 	| NavigateToLobbyAction
+	| NavigateToErrorAction
 	| ClearGamesAction
 	| ReceiveGamesAction
 	| ReceiveUsersAction

@@ -3,8 +3,12 @@ config = {
     rootUri: '/',
     ads: '<b>Test ad</b>',
     rewriteUrl: true,
-    apiUri: 'https://vladimirkhil.com/api/si'
+    apiUri: 'https://vladimirkhil.com/api/si',
+    forceHttps: false,
+    useMessagePackProtocol: false
 };
+
+firebaseConfig = null;
 
 onLoad = function () {
     console.log('SI Online successfully loaded!');

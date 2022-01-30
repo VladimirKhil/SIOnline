@@ -70,6 +70,7 @@ export default interface State {
 		computerAccounts: string[] | null;
 		isConnected: boolean;
 		serverName: string | null;
+		error: string | null;
 	};
 	siPackages: {
 		packages: SIPackageInfo[];
@@ -149,7 +150,8 @@ export const initialState: State = {
 	common: {
 		computerAccounts: null,
 		isConnected: true,
-		serverName: null
+		serverName: null,
+		error: null
 	},
 	settings: settingsInitialState
 };

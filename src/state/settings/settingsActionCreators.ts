@@ -1,14 +1,14 @@
 import * as SettingsActions from './SettingsActions';
 import { ActionCreator } from 'redux';
 import Sex from '../../model/enums/Sex';
+import TimeSettings from '../../model/server/TimeSettings';
 
 const isSoundEnabledChanged: ActionCreator<SettingsActions.IsSoundEnabledChangedAction> = (isSoundEnabled: boolean) => ({
 	type: SettingsActions.SettingsActionTypes.IsSoundEnabledChanged, isSoundEnabled
 });
 
-const showPersonsAtBottomOnWideScreenChanged: ActionCreator<SettingsActions.ShowPersonsAtBottomOnWideScreenChangedAction> = (
-	showPersonsAtBottomOnWideScreen: boolean
-) => ({
+const showPersonsAtBottomOnWideScreenChanged: ActionCreator<SettingsActions.ShowPersonsAtBottomOnWideScreenChangedAction> = 
+	(showPersonsAtBottomOnWideScreen: boolean) => ({
 	type: SettingsActions.SettingsActionTypes.ShowPersonsAtBottomOnWideScreenChanged, showPersonsAtBottomOnWideScreen
 });
 
@@ -28,13 +28,23 @@ const onHintShowmanChanged: ActionCreator<SettingsActions.HintShowmanChangedActi
 	type: SettingsActions.SettingsActionTypes.HintShowmanChanged, hintShowman
 });
 
+const onTimeSettingChanged: ActionCreator<SettingsActions.TimeSettingChangedAction> = (name: keyof(TimeSettings), value: number) => ({
+	type: SettingsActions.SettingsActionTypes.TimeSettingChanged, name, value
+});
+
+const resetSettings: ActionCreator<SettingsActions.ResetSettingsAction> = () => ({
+	type: SettingsActions.SettingsActionTypes.ResetSettings
+});
+
 const settingsActionCreators = {
 	isSoundEnabledChanged,
 	showPersonsAtBottomOnWideScreenChanged,
 	onSexChanged,
 	onOralChanged,
 	onFalseStartsChanged,
-	onHintShowmanChanged
+	onHintShowmanChanged,
+	onTimeSettingChanged,
+	resetSettings
 };
 
 export default settingsActionCreators;

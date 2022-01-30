@@ -34,8 +34,16 @@ export function StakeSumEditor(props: StakeSumEditorProps) {
 	const canSendStake = props.allowedStakeTypes[StakeTypes.Sum];
 
 	return (
-		<input type={props.type} className={props.className} disabled={!canSendStake} min={props.minimum} max={props.maximum}
-			step={props.step} value={props.stake} onChange={e => props.onStakeChanged(parseInt(e.target.value, 10))} />
+		<input
+			type={props.type}
+			className={props.className}
+			disabled={!canSendStake}
+			min={props.minimum}
+			max={props.maximum}
+			step={props.step}
+			value={props.stake}
+			onChange={e => props.onStakeChanged(parseInt(e.target.value, 10))}
+		/>
 	);
 }
 

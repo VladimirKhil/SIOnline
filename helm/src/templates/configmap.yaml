@@ -9,8 +9,22 @@ data:
       rootUri: '{{ .Values.config.rootUri }}',
       ads: '{{ .Values.config.ads }}',
       rewriteUrl: {{ .Values.config.rewriteUrl }},
-      apiUri: '{{ .Values.config.apiUri }}'
+      apiUri: '{{ .Values.config.apiUri }}',
+      forceHttps: {{ .Values.config.forceHttps }},
+      useMessagePackProtocol: {{ .Values.config.useMessagePackProtocol }}
     };
+
+{{ if .Values.firebase }}
+    firebaseConfig = {
+      apiKey: '{{ .Values.firebase.apiKey }}',
+      authDomain: '{{ .Values.firebase.authDomain }}',
+      projectId: '{{ .Values.firebase.projectId }}',
+      storageBucket: '{{ .Values.firebase.storageBucket }}',
+      messagingSenderId: '{{ .Values.firebase.messagingSenderId }}',
+      appId: '{{ .Values.firebase.appId }}',
+      measurementId: '{{ .Values.firebase.measurementId }}'
+    };
+{{ end }}
 
     onLoad = function () {
 {{ .Values.config.onLoad | indent 6 }}
