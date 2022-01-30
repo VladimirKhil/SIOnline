@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import State from '../../state/State';
 
 import TableMode from '../../model/enums/TableMode';
-import { TableLogo } from './TableLogo';
+import TableLogo from './TableLogo';
 import TableText from './TableText';
 import TablePartialText from './TablePartialText';
 import TableImage from './TableImage';

@@ -1,0 +1,6 @@
+.tableLogo {
+	background-image: url('../../../assets/images/logo.png');
+	background-size: contain;
+	background-repeat: no-repeat;
+	background-position: center;
+}

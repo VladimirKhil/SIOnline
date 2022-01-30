@@ -103,10 +103,14 @@ async function run() {
 		location.replace(`https:${location.href.substring(location.protocol.length)}`);
 	}
 
-	if (firebaseConfig) {
-		// Initialize Firebase
-		app = initializeApp(firebaseConfig);
-		analytics = getAnalytics(app);
+	try {
+		if (firebaseConfig) {
+			// Initialize Firebase
+			app = initializeApp(firebaseConfig);
+			analytics = getAnalytics(app);
+		}
+	} catch (e) {
+		console.error(e);
 	}
 
 	let { serverUri } = config;

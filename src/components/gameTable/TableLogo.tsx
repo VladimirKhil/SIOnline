@@ -1,16 +1,11 @@
 ﻿import * as React from 'react';
-import localization from '../../model/resources/localization';
 
-import logoPng from '../../../assets/images/logo.png';
+import './TableLogo.css';
 
-interface TableLogoProps {
-
-}
-
-export function TableLogo(props: TableLogoProps) {
+export default function TableLogo() {
 	return (
-		<div className="centerBlock logoBlock">
-			<img className="inGameImg" src={logoPng} alt={localization.logo} />
+		<div className="centerBlock logoBlock tableLogo">
+			
 		</div>
 	);
 }
