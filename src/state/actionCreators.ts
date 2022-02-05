@@ -731,12 +731,14 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 
 		const appSettings: ServerAppSettings = {
 			TimeSettings: state.settings.appSettings.timeSettings,
-			ReadingSpeed: 20,
+			ReadingSpeed: state.settings.appSettings.readingSpeed,
 			FalseStart: state.settings.appSettings.falseStart,
 			HintShowman: state.settings.appSettings.hintShowman,
 			Oral: state.settings.appSettings.oral,
-			IgnoreWrong: false,
+			IgnoreWrong: state.settings.appSettings.ignoreWrong,
+			Managed: state.settings.appSettings.managed,
 			GameMode: gameMode.toString(),
+			PartialText: state.settings.appSettings.partialText,
 			RandomQuestionsBasePrice: gameMode === GameType.Simple ? 10 : 100,
 			RandomRoundsCount: gameMode === GameType.Simple ? 1 : 3,
 			RandomThemesCount: gameMode === GameType.Simple ? 5 : 6,

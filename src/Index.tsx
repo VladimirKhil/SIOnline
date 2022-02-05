@@ -53,7 +53,8 @@ function setState(state: State, savedState: SavedState | null, gameId: string | 
 			...savedState.settings,
 			appSettings: {
 				...savedState.settings.appSettings,
-				timeSettings: savedState.settings.appSettings.timeSettings || state.settings.appSettings.timeSettings
+				timeSettings: savedState.settings.appSettings.timeSettings || state.settings.appSettings.timeSettings,
+				readingSpeed: savedState.settings.appSettings.readingSpeed || state.settings.appSettings.readingSpeed
 			}
 		} : state.settings,
 		online: {

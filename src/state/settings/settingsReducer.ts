@@ -50,6 +50,42 @@ const settingsReducer: Reducer<SettingsState> = (state: SettingsState = initialS
 					hintShowman: action.hintShowman
 				}
 			};
+
+		case SettingsActionTypes.PartialTextChanged:
+			return {
+				...state,
+				appSettings: {
+					...state.appSettings,
+					partialText: action.partialText
+				}
+			};
+
+		case SettingsActionTypes.ReadingSpeedChanged:
+			return {
+				...state,
+				appSettings: {
+					...state.appSettings,
+					readingSpeed: action.readingSpeed
+				}
+			};		
+
+		case SettingsActionTypes.ManagedChanged:
+			return {
+				...state,
+				appSettings: {
+					...state.appSettings,
+					managed: action.managed
+				}
+			};			
+
+		case SettingsActionTypes.IgnoreWrongChanged:
+			return {
+				...state,
+				appSettings: {
+					...state.appSettings,
+					ignoreWrong: action.ignoreWrong
+				}
+			};
 		
 		case SettingsActionTypes.TimeSettingChanged:
 			return {

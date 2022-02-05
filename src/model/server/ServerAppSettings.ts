@@ -5,7 +5,9 @@ export default interface ServerAppSettings {
 	ReadingSpeed: number;
 	FalseStart: boolean;
 	HintShowman: boolean;
+	PartialText: boolean;
 	Oral: boolean;
+	Managed: boolean;
 	IgnoreWrong: boolean;
 	GameMode: string;
 	RandomQuestionsBasePrice: number;

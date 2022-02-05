@@ -86,6 +86,11 @@ export function TimeSettingsView(props: TimeSettingsViewProps): JSX.Element {
 				value={props.settings.timeForMediaDelay}
 				maximum={10}
 				onValueChanged={value => props.onTimeSettingChanged('timeForMediaDelay', value)} />
+			<TimeSettingItem
+				label={localization.timeForBlockingButton}
+				value={props.settings.timeForBlockingButton}
+				maximum={10}
+				onValueChanged={value => props.onTimeSettingChanged('timeForBlockingButton', value)} />
 		</div>
 	);
 }

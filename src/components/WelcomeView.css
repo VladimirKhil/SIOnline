@@ -3,7 +3,7 @@
 	display: flex;
 	flex-flow: column;
 	align-items: center;
-	color: #FFE682;
+	color: #FFFFFF;
 	font-family: SI;
 	overflow-y: auto;
 }
@@ -18,7 +18,7 @@
 }
 
 .serverName {	
-	color: #FFE682;
+	color: #FFFFFF;
 }
 
 .welcomeViewActions {
@@ -30,7 +30,7 @@
 }
 
 .welcomeViewActions li {
-	border: 1px solid #FFE682;	
+	border: 1px solid #FFFFFF;	
 	border-left-width: 0;
 	border-right-width: 0;
 	text-align: center;

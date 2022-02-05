@@ -13,3 +13,12 @@
 	font-size: 23px;
 	margin-bottom: 10px;;
 }
+
+.errorBody {
+	font-size: 12px;
+	white-space: pre-wrap;
+	word-break: break-all;	
+	overflow-y: auto;
+	margin-right: 20px;	
+	user-select: text;
+}

@@ -162,9 +162,9 @@ button {
 }
 
 button {
-    color: #FFE682;
+    color: #FFFFFF;
     background-color: transparent;
-    border: 1px solid #FFE682;
+    border: 1px solid #FFFFFF;
     padding: 5px 10px 6px 7px; 
     font-family: SI;
     text-shadow: 1px 1px 0 #000;
@@ -251,9 +251,9 @@ button:disabled {
     font-family: SI;
     font-size: 26px;
     line-height: 24pt;
-    border-bottom: 2px solid #897831;
+    border-bottom: 2px solid #FFFFFF66;
     margin: 6px 0px 7px 5px;
-    color: #897831;
+    color: #FFFFFF66;
     text-shadow: 1px 1px 0 #000;
     cursor: pointer;
 }
@@ -264,13 +264,13 @@ button:disabled {
 }
 
 h1.activeTab {
-    color: #FFE682;
-    border-color: #FFE682;
+    color: #FFFFFF;
+    border-color: #FFFFFF;
 }
 
     .tabHeader h1:hover {
-        color: #FFF2BD;
-        border-color: #FFF2BD;
+        color: #FFFFFF99;
+        border-color: #FFFFFF99;
     }
 
 .chatBody {
@@ -370,7 +370,7 @@ showman::after, player::after, viewer::after {
     width: 45px;
     border: 0;
     font-size: 20px;
-    color: #FFE682;
+    color: #FFFFFF;
     right: 0;
     top: 0;
     bottom: 0;
@@ -497,7 +497,7 @@ video, audio {
     font-family: 'Clefs';
     font-weight: normal;
     font-style: normal;
-    color: #FFE682;
+    color: #FFFFFF;
     text-shadow: 1px 1px 0 #000;
     font-size: 120px;
 }

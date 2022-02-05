@@ -3,7 +3,6 @@ import localization from '../../model/resources/localization';
 import * as React from 'react';
 import Sex from '../../model/enums/Sex';
 import runActionCreators from '../../state/run/runActionCreators';
-import Role from '../../model/enums/Role';
 import State from '../../state/State';
 import { Dispatch, Action } from 'redux';
 
@@ -35,10 +34,18 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 export function GameButton(props: GameButtonProps) {
 	return (
 		<>
-			<button className="playerButton" title={localization.gameButton} disabled={!props.isConnected || !props.isGameButtonEnabled}
-				onClick={() => props.pressGameButton()}>&nbsp;</button>
+			<button
+				className="playerButton"
+				title={localization.gameButton}
+				disabled={!props.isConnected || !props.isGameButtonEnabled}
+				onClick={() => props.pressGameButton()}>
+				&nbsp;
+			</button>
 			{props.isAfterQuestion ? (
-				<button className="playerButton hoverButton" disabled={!props.isConnected} title={localization.apellateAnswer}
+				<button
+					className="playerButton hoverButton"
+					disabled={!props.isConnected}
+					title={localization.apellateAnswer}
 					onClick={() => props.apellate()}>
 					{props.sex === Sex.Female ? localization.iAmRightFemale : localization.iAmRightMale}
 				</button>

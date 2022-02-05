@@ -12,7 +12,7 @@
     font-size: 20px;
     font-family: SI;
     background-color: rgba(0,0,0,.3);
-    color: #FFE682;
+    color: #FFFFFF;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -67,7 +67,7 @@
         width: 100%;
         font-family: SI;
         font-size: 36px;
-        color: #FFE682;
+        color: #FFFFFF;
         text-shadow: 1px 1px 0 #000;
         padding: 15px;
         white-space: pre-line;
@@ -84,7 +84,7 @@
         width: 100%;
         text-align: center;
         font-family: SI;
-        color: #FFE682;
+        color: #FFFFFF;
         text-shadow: 1px 1px 0 #000;
         font-size: 36px;
         position: absolute;
@@ -100,7 +100,7 @@
     }
 
     #table .roundTable {
-        color: #FFE682;
+        color: #FFFFFF;
         text-shadow: 1px 1px 0 #000;
         font-family: SI;
         width: calc(100% + 1px);
@@ -139,7 +139,7 @@
             }
 
         #table .roundTable .roundTableCell {
-            border: 1px solid #FFE682;
+            border: 1px solid #FFFFFF;
             margin: -1px 0 0 -1px;
             height: 100%;
             display: flex;
@@ -179,7 +179,7 @@
 }
 
 #table .specialTable {
-    color: #FFE682;
+    color: #FFFFFF;
     text-shadow: 1px 1px 0 #000;
     font-family: SI;
     width: calc(100% + 1px);
@@ -199,7 +199,7 @@
 
 #table .specialTheme {
     flex: 1 0 0;
-    border: 1px solid #FFE682;
+    border: 1px solid #FFFFFF;
     margin: -1px 0 0 -1px;
     height: 100%;
     display: flex;
@@ -224,13 +224,13 @@
     flex-direction: column;
     height: calc(100% - 40px);
     width: 100%;
-    color: #FFE682;
+    color: #FFFFFF;
     text-shadow: 1px 1px 0 #000;
     font-family: SI;
 }
 
 #table .finalTableCell {
-    border: 1px solid #FFE682;
+    border: 1px solid #FFFFFF;
     margin: -1px 0 0 -1px;
     display: flex;
     justify-content: center;
@@ -257,7 +257,7 @@
 }
 
 .commonProgress .progress-bar {
-    background: #FFE682;
+    background: #FFFFFF;
 }
 
 @media screen and (min-width: 1100px) {

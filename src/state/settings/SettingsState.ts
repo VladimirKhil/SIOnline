@@ -16,6 +16,10 @@ export const initialState: SettingsState = {
 		oral: false,
 		falseStart: true,
 		hintShowman: false,
+		partialText: false,
+		readingSpeed: 20,
+		managed: false,
+		ignoreWrong: false,
 		timeSettings: {
 			timeForChoosingQuestion: 30,
 			timeForThinkingOnQuestion: 5,

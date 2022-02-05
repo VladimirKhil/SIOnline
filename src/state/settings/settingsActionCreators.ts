@@ -28,6 +28,22 @@ const onHintShowmanChanged: ActionCreator<SettingsActions.HintShowmanChangedActi
 	type: SettingsActions.SettingsActionTypes.HintShowmanChanged, hintShowman
 });
 
+const onPartialTextChanged: ActionCreator<SettingsActions.PartialTextChangedAction> = (partialText: boolean) => ({
+	type: SettingsActions.SettingsActionTypes.PartialTextChanged, partialText
+});
+
+const onReadingSpeedChanged: ActionCreator<SettingsActions.ReadingSpeedChangedAction> = (readingSpeed: number) => ({
+	type: SettingsActions.SettingsActionTypes.ReadingSpeedChanged, readingSpeed
+});
+
+const onManagedChanged: ActionCreator<SettingsActions.ManagedChangedAction> = (managed: boolean) => ({
+	type: SettingsActions.SettingsActionTypes.ManagedChanged, managed
+});
+
+const onIgnoreWrongChanged: ActionCreator<SettingsActions.IgnoreWrongChangedAction> = (ignoreWrong: boolean) => ({
+	type: SettingsActions.SettingsActionTypes.IgnoreWrongChanged, ignoreWrong
+});
+
 const onTimeSettingChanged: ActionCreator<SettingsActions.TimeSettingChangedAction> = (name: keyof(TimeSettings), value: number) => ({
 	type: SettingsActions.SettingsActionTypes.TimeSettingChanged, name, value
 });
@@ -43,6 +59,10 @@ const settingsActionCreators = {
 	onOralChanged,
 	onFalseStartsChanged,
 	onHintShowmanChanged,
+	onPartialTextChanged,
+	onReadingSpeedChanged,
+	onManagedChanged,
+	onIgnoreWrongChanged,
 	onTimeSettingChanged,
 	resetSettings
 };

@@ -92,7 +92,7 @@ export function PlayersView(props: PlayersViewProps): JSX.Element {
 											<span
 												role="img"
 												aria-label="checkmark"
-												title={account.sex === Sex.Female ? localization.readyFemale : localization.readyMale}
+												title={account?.sex === Sex.Female ? localization.readyFemale : localization.readyMale}
 											>
 												✔️
 											</span>

@@ -49,7 +49,7 @@ export function ShowmanReplicView(props: ShowmanReplicViewProps): JSX.Element {
 						<span
 							role="img"
 							aria-label="checkmark"
-							title={props.account.sex === Sex.Female ? localization.readyFemale : localization.readyMale}
+							title={props.account?.sex === Sex.Female ? localization.readyFemale : localization.readyMale}
 						>
 							✔️
 						</span>

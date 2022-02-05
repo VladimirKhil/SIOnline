@@ -20,6 +20,10 @@ interface SettingsDialogProps {
 	onOralChanged: (oral: boolean) => void;
 	onFalseStartsChanged: (falseStarts: boolean) => void;
 	onHintShowmanChanged: (hintShowman: boolean) => void;
+	onReadingSpeedChanged: (readingSpeed: number) => void;
+	onManagedChanged: (managed: boolean) => void;
+	onIgnoreWrongChanged: (ignoreWrong: boolean) => void;
+	onPartialTextChanged: (hintShowman: boolean) => void;
 	onReset: () => void;
 	onClose: () => void;
 }
@@ -46,6 +50,18 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	},
 	onHintShowmanChanged: (hintShowman: boolean) => {
 		dispatch(settingsActionCreators.onHintShowmanChanged(hintShowman));
+	},
+	onReadingSpeedChanged: (readingSpeed: number) => {
+		dispatch(settingsActionCreators.onReadingSpeedChanged(readingSpeed));
+	},
+	onManagedChanged: (managed: boolean) => {
+		dispatch(settingsActionCreators.onManagedChanged(managed));
+	},
+	onIgnoreWrongChanged: (ignoreWrong: boolean) => {
+		dispatch(settingsActionCreators.onIgnoreWrongChanged(ignoreWrong));
+	},
+	onPartialTextChanged: (partialText: boolean) => {
+		dispatch(settingsActionCreators.onPartialTextChanged(partialText));
 	},
 	onReset: () => {
 		dispatch(settingsActionCreators.resetSettings());
@@ -84,10 +100,17 @@ export class SettingsDialog extends React.Component<SettingsDialogProps> {
 		this.props.onSexChanged(e.target.id === 'male' && e.target.checked ? Sex.Male : Sex.Female);
 	};
 
+	private onReadingSpeedChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const value = parseInt(e.target.value, 10);
+		if (value > 0 && value <= 100) {
+			this.props.onReadingSpeedChanged(value);
+		}
+	};
+
 	render(): JSX.Element {
 		return (
-			<Dialog id="settingsDialog" title={localization.settings} onClose={this.props.onClose}>
-				<div ref={this.layout} className="settingsDialogBody">
+			<Dialog id="settingsDialog" ref={this.layout} title={localization.settings} onClose={this.props.onClose}>
+				<div className="settingsDialogBody">
 					<div>
 						<input
 							id="isSoundEnabled"
@@ -153,12 +176,62 @@ export class SettingsDialog extends React.Component<SettingsDialogProps> {
 					</div>
 					<div className="settingItem">
 						<input
+							id="partialText"
+							type="checkbox"
+							disabled={this.props.settings.appSettings.falseStart}
+							checked={this.props.settings.appSettings.partialText}
+							onChange={() => this.props.onPartialTextChanged(!this.props.settings.appSettings.partialText)}
+						/>
+						<label htmlFor="partialText">{localization.partialText}</label>
+						<span className="hint">{localization.partialTextHint}</span>
+					</div>
+					<div className="settingItem">
+						<input
 							id="hintShowman"
 							type="checkbox"
 							checked={this.props.settings.appSettings.hintShowman}
 							onChange={() => this.props.onHintShowmanChanged(!this.props.settings.appSettings.hintShowman)}
 						/>
 						<label htmlFor="hintShowman">{localization.hintShowman}</label>
+					</div>
+					<div className="settingItem">
+						<div>
+						<input
+							className='rangeEditor'
+							type="range"
+							value={this.props.settings.appSettings.readingSpeed}
+							min={1}
+							max={100}
+							onChange={this.onReadingSpeedChanged}
+						/>
+						<input
+							className='valueEditor'
+							type='number'
+							value={this.props.settings.appSettings.readingSpeed}
+							min={1}
+							max={100}
+							onChange={this.onReadingSpeedChanged}
+						/>
+						</div>
+					</div>
+					<div className="settingItem">
+						<input
+							id="managed"
+							type="checkbox"
+							checked={this.props.settings.appSettings.managed}
+							onChange={() => this.props.onManagedChanged(!this.props.settings.appSettings.managed)}
+						/>
+						<label htmlFor="managed">{localization.managed}</label>
+						<span className="hint">{localization.managedHint}</span>
+					</div>
+					<div className="settingItem">
+						<input
+							id="ignoreWrong"
+							type="checkbox"
+							checked={this.props.settings.appSettings.ignoreWrong}
+							onChange={() => this.props.onIgnoreWrongChanged(!this.props.settings.appSettings.ignoreWrong)}
+						/>
+						<label htmlFor="ignoreWrong">{localization.ignoreWrong}</label>
 					</div>
 
 					<TimeSettingsView />
