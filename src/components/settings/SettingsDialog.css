@@ -31,6 +31,10 @@
     margin-top: 10px;
 }
 
+.settingItem > input[type="range"] {
+   width: 200px;
+}
+
 #settingsDialog .hint {
     font-size: 15px;
     display: block;

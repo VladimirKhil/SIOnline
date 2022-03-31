@@ -2,14 +2,17 @@ import SettingsState, { initialState } from './SettingsState';
 import { AnyAction, Reducer } from 'redux';
 import { KnownSettingsAction, SettingsActionTypes } from './SettingsActions';
 
-const settingsReducer: Reducer<SettingsState> = (state: SettingsState = initialState, anyAction: AnyAction): SettingsState => {
+const settingsReducer: Reducer<SettingsState> = (
+	state: SettingsState = initialState,
+	anyAction: AnyAction
+): SettingsState => {
 	const action = anyAction as KnownSettingsAction;
 
 	switch (action.type) {
-		case SettingsActionTypes.IsSoundEnabledChanged:
+		case SettingsActionTypes.SoundVolumeChanged:
 			return {
 				...state,
-				isSoundEnabled: action.isSoundEnabled
+				soundVolume: action.volume
 			};
 
 		case SettingsActionTypes.ShowPersonsAtBottomOnWideScreenChanged:
@@ -67,7 +70,7 @@ const settingsReducer: Reducer<SettingsState> = (state: SettingsState = initialS
 					...state.appSettings,
 					readingSpeed: action.readingSpeed
 				}
-			};		
+			};
 
 		case SettingsActionTypes.ManagedChanged:
 			return {
@@ -76,7 +79,7 @@ const settingsReducer: Reducer<SettingsState> = (state: SettingsState = initialS
 					...state.appSettings,
 					managed: action.managed
 				}
-			};			
+			};
 
 		case SettingsActionTypes.IgnoreWrongChanged:
 			return {
@@ -86,7 +89,7 @@ const settingsReducer: Reducer<SettingsState> = (state: SettingsState = initialS
 					ignoreWrong: action.ignoreWrong
 				}
 			};
-		
+
 		case SettingsActionTypes.TimeSettingChanged:
 			return {
 				...state,

@@ -3,18 +3,20 @@ import State from '../../state/State';
 import { Dispatch, Action } from 'redux';
 import { connect } from 'react-redux';
 import runActionCreators from '../../state/run/runActionCreators';
-import MuteButton from '../common/MuteButton';
+import VolumeButton from '../common/VolumeButton';
 import TableBorder from './TableBorder';
+import settingsActionCreators from '../../state/settings/settingsActionCreators';
 
 interface TableAudioProps {
-	isSoundEnabled: boolean;
+	soundVolume: number;
 	text: string;
 	isMediaStopped: boolean;
 	onMediaEnded: () => void;
+	onSoundVolumeChange: (volume: number) => void;
 }
 
 const mapStateToProps = (state: State) => ({
-	isSoundEnabled: state.settings.isSoundEnabled,
+	soundVolume: state.settings.soundVolume,
 	text: state.run.table.text,
 	isMediaStopped: state.run.stage.isGamePaused || state.run.table.isMediaStopped
 });
@@ -22,6 +24,9 @@ const mapStateToProps = (state: State) => ({
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	onMediaEnded: () => {
 		dispatch(runActionCreators.onMediaEnded() as object as Action);
+	},
+	onSoundVolumeChange: (volume: number) => {
+		dispatch(settingsActionCreators.onSoundVolumeChanged(volume));
 	}
 });
 
@@ -34,26 +39,42 @@ export class TableAudio extends React.Component<TableAudioProps> {
 		this.audioRef = React.createRef();
 	}
 
+	componentDidMount() {
+		if (!this.audioRef.current) {
+			return;
+		}
+
+		this.audioRef.current.volume = this.props.soundVolume;
+	}
+
 	componentDidUpdate(prevProps: TableAudioProps) {
-		if (this.props.isMediaStopped !== prevProps.isMediaStopped && this.audioRef.current) {
+		if (!this.audioRef.current) {
+			return;
+		}
+
+		if (this.props.isMediaStopped !== prevProps.isMediaStopped) {
 			if (this.props.isMediaStopped) {
 				this.audioRef.current.pause();
 			} else {
 				this.audioRef.current.play();
 			}
 		}
+
+		this.audioRef.current.volume = this.props.soundVolume;
 	}
 
 	render() {
+		const { onMediaEnded, text } = this.props;
+
 		return (
 			<TableBorder>
-				<audio ref={this.audioRef} autoPlay muted={!this.props.isSoundEnabled} onEnded={e => this.props.onMediaEnded()}>
-					<source src={this.props.text} />
+				<audio ref={this.audioRef} autoPlay onEnded={onMediaEnded}>
+					<source src={text} />
 				</audio>
 				<div className="centerBlock">
 					<span className="clef rotate">&amp;</span>
 				</div>
-				<MuteButton />
+				<VolumeButton />
 			</TableBorder>
 		);
 	}
