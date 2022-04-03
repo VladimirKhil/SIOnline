@@ -15,32 +15,38 @@ interface StartGameAreaProps {
 	hasGameStarted: boolean;
 	isHost: boolean;
 	isReady: boolean;
-	sex: Sex;
+	sex: Sex;	
+	isAutomatic: boolean;
 	onReady: (isReady: boolean) => void;
 	onStart: () => void;
 }
 
-const mapStateToProps = (state: State) => {
+const getIsReady = (state: State) => {
 	const { role } = state.game;
 	const { persons } = state.run;
-	let isReady = false;
+
 	if (role === Role.Showman) {
-		isReady = persons.showman.isReady;
-	} else if (role === Role.Player) {
+		return persons.showman.isReady;
+	}
+	
+	if (role === Role.Player) {
 		const me = persons.players.find(p => p.name === state.user.login);
 		if (me) {
-			isReady = me.isReady;
+			return me.isReady;
 		}
 	}
 
-	return {
-		isConnected: state.common.isConnected,
-		hasGameStarted: state.run.stage.isGameStarted,
-		isHost: isHost(state),
-		sex: state.settings.sex,
-		isReady
-	};
+	return false;
 };
+
+const mapStateToProps = (state: State) => ({
+	isConnected: state.common.isConnected,
+	hasGameStarted: state.run.stage.isGameStarted,
+	isHost: isHost(state),
+	sex: state.settings.sex,
+	isReady: getIsReady(state),
+	isAutomatic: state.game.isAutomatic
+});
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	onStart: () => {
@@ -54,7 +60,7 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 export function StartGameArea(props: StartGameAreaProps): JSX.Element | null {
 	const enabledClass = props.isConnected ? '' : 'disabled';
 
-	return props.hasGameStarted ? null : (
+	return props.hasGameStarted || props.isAutomatic ? null : (
 		<div className="start_area">
 			<button
 				type="button"

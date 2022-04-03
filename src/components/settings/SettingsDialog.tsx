@@ -9,14 +9,20 @@ import SettingsState from '../../state/settings/SettingsState';
 import settingsActionCreators from '../../state/settings/settingsActionCreators';
 import Sex from '../../model/enums/Sex';
 import TimeSettingsView from './TimeSettingsView';
+import ProgressBar from '../common/ProgressBar';
 
 import './SettingsDialog.css';
 
 interface SettingsDialogProps {
 	settings: SettingsState;
+	avatar: string | null;
+	avatarLoadError: string | null;
+	avatarLoadProgress: boolean;
+
 	onMute: (isSoundEnabled: boolean) => void;
 	onShowPersonsAtBottomOnWideScreenChanged: (showPersonsAtBottomOnWideScreen: boolean) => void;
 	onSexChanged: (newSex: Sex) => void;
+	onAvatarSelected: (avatar: File) => void;
 	onOralChanged: (oral: boolean) => void;
 	onFalseStartsChanged: (falseStarts: boolean) => void;
 	onHintShowmanChanged: (hintShowman: boolean) => void;
@@ -29,7 +35,10 @@ interface SettingsDialogProps {
 }
 
 const mapStateToProps = (state: State) => ({
-	settings: state.settings
+	settings: state.settings,
+	avatar: state.user.avatar,
+	avatarLoadError: state.common.avatarLoadError,
+	avatarLoadProgress: state.common.avatarLoadProgress
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
@@ -41,6 +50,9 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	},
 	onSexChanged: (newSex: Sex) => {
 		dispatch(settingsActionCreators.onSexChanged(newSex));
+	},
+	onAvatarSelected: (avatar: File) => {
+		dispatch(actionCreators.onAvatarSelected(avatar) as any);
 	},
 	onOralChanged: (oral: boolean) => {
 		dispatch(settingsActionCreators.onOralChanged(oral));
@@ -107,6 +119,12 @@ export class SettingsDialog extends React.Component<SettingsDialogProps> {
 		}
 	};
 
+	private onAvatarChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
+		if (e.target.files && e.target.files.length > 0) {
+			this.props.onAvatarSelected(e.target.files[0]);
+		}
+	};
+
 	render(): JSX.Element {
 		return (
 			<Dialog id="settingsDialog" ref={this.layout} title={localization.settings} onClose={this.props.onClose}>
@@ -126,11 +144,28 @@ export class SettingsDialog extends React.Component<SettingsDialogProps> {
 							id="showPersonsAtBottomOnWideScreen"
 							type="checkbox"
 							checked={this.props.settings.showPersonsAtBottomOnWideScreen}
-							onChange={() => this.props.onShowPersonsAtBottomOnWideScreenChanged(
-								!this.props.settings.showPersonsAtBottomOnWideScreen
-							)}
+							onChange={() => this.props.onShowPersonsAtBottomOnWideScreenChanged(!this.props.settings.showPersonsAtBottomOnWideScreen)}
 						/>
 						<label htmlFor="showPersonsAtBottomOnWideScreen">{localization.showPersonsAtBottomOnWideScreen}</label>
+					</div>
+
+					<p className='header'>{localization.avatar}</p>
+					<div className="avatarBox">
+						{this.props.avatar ? <img className='avatarView' src={this.props.avatar} /> : <div className='emptyAvatar' />}
+						<input
+							type="file"
+							accept=".jpg;.jpeg;.png"
+							disabled={this.props.avatarLoadProgress}
+							onChange={this.onAvatarChanged}
+						/>
+						<div className='avatarLoadHelper'>
+							{this.props.avatarLoadProgress
+								? (<div className='avatarLoadingHost'>
+										<div className='avatarLoadingMessage'>{localization.loading}</div>
+										<ProgressBar isIndeterminate={true} />
+									</div>)
+								: <span className='avatarLoadError'>{this.props.avatarLoadError || ' '}</span>}
+						</div>
 					</div>
 
 					<p className="header">{localization.sex}</p>

@@ -271,7 +271,7 @@ export class SIStorageDialog extends React.Component<SIStorageDialogProps, SISto
 						</div>
 					</div>
 					<h2>{`${localization.packages} (${this.state.filteredPackages.length})`}</h2>
-					{this.props.isLoading && <p>{localization.libraryLoading}</p>}
+					{this.props.isLoading && <p>{localization.loading}</p>}
 					<ul>
 						{this.state.filteredPackages.map(
 							({ authors, description, difficulty, id, guid, publishedDate, publisher, restriction, tags }) => (

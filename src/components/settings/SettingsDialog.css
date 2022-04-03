@@ -54,6 +54,44 @@
 	font-size: 20px;
 }
 
+.avatarView {
+    max-width: 100%;
+    height: 150px;
+    display: block;
+}
+
+.emptyAvatar {
+    width: 150px;
+    height: 150px;
+    background-color: lightgray;
+}
+
+.avatarLoadHelper {
+    height: 40px;
+    margin-top: 10px;
+    position: relative;
+}
+
+.avatarLoadingHost {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.avatarLoadingMessage {
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+.avatarLoadError {
+    color: darkred;
+    display: block;
+    font-size: 12px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 @media screen and (min-width: 800px) {
     #settingsDialog {
         width: 300px;

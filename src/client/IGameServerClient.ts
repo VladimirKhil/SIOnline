@@ -1,4 +1,5 @@
 import Role from '../model/enums/Role';
+import FileKey from '../model/server/FileKey';
 import GameCreationResult from '../model/server/GameCreationResult';
 import GameInfo from '../model/server/GameInfo';
 import GameSettings from '../model/server/GameSettings';
@@ -31,6 +32,11 @@ export default interface IGameServerClient {
 	 * @param packageKey Package key to check.
 	 */
 	hasPackageAsync(packageKey: PackageKey): Promise<boolean>;
+	/**
+	 * Checks whether a specific image exists on a server.
+	 * @param fileKey File key to check.
+	 */
+	hasImageAsync(fileKey: FileKey): Promise<string | null>;
 	/**
 	 * Creates a new game and joins it as a host.
 	 * @param gameSettings Game settings.

@@ -29,7 +29,6 @@ import PackageKey from '../model/server/PackageKey';
 import Constants from '../model/enums/Constants';
 
 import GameServerClient from '../client/GameServerClient';
-import TimeSettings from '../model/server/TimeSettings';
 import ServerAppSettings from '../model/server/ServerAppSettings';
 import AccountSettings from '../model/server/AccountSettings';
 import GameSettings from '../model/server/GameSettings';
@@ -38,6 +37,7 @@ import { PackageFilters } from '../model/PackageFilters';
 import { SIPackageInfo } from '../model/SIPackageInfo';
 import { SearchEntity } from '../model/SearchEntity';
 import getErrorMessage from '../utils/ErrorHelpers';
+import FileKey from '../model/server/FileKey';
 
 const isConnectedChanged: ActionCreator<Actions.IsConnectedChangedAction> = (isConnected: boolean) => ({
 	type: Actions.ActionTypes.IsConnectedChanged,
@@ -94,6 +94,78 @@ const onLoginChanged: ActionCreator<Actions.LoginChangedAction> = (newLogin: str
 	type: Actions.ActionTypes.LoginChanged,
 	newLogin
 });
+
+const avatarLoadStart: ActionCreator<Actions.AvatarLoadStartAction> = () => ({
+	type: Actions.ActionTypes.AvatarLoadStart
+});
+
+const avatarLoadEnd: ActionCreator<Actions.AvatarLoadEndAction> = () => ({
+	type: Actions.ActionTypes.AvatarLoadEnd
+});
+
+const avatarChanged: ActionCreator<Actions.AvatarChangedAction> = (avatar: string) => ({
+	type: Actions.ActionTypes.AvatarChanged,
+	avatar
+});
+
+const avatarLoadError: ActionCreator<Actions.AvatarLoadErrorAction> = (error: string | null) => ({
+	type: Actions.ActionTypes.AvatarLoadError,
+	error
+});
+
+const onAvatarSelected: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
+	(avatar: File) => async (dispatch: Dispatch<Actions.KnownAction>, getState: () => State, dataContext: DataContext) => {
+		dispatch(avatarLoadStart(null));
+
+		try {
+			const buffer = await avatar.arrayBuffer();
+			const hash = await hashData(buffer);
+
+			const hashArray = new Uint8Array(hash);
+			const hashArrayEncoded = btoa(String.fromCharCode.apply(null, hashArray as any));
+
+			const imageKey: FileKey = {
+				name: avatar.name,
+				hash: hashArrayEncoded
+			};
+		
+			const { gameClient, serverUri } = dataContext;
+
+			let avatarUri = await gameClient.hasImageAsync(imageKey);
+			if (!avatarUri) {
+				const formData = new FormData();
+				formData.append('file', avatar, avatar.name);
+
+				const response = await fetch(`${serverUri}/api/upload/image`, {
+					method: 'POST',
+					credentials: 'include',
+					body: formData,
+					headers: {
+						'Content-MD5': hashArrayEncoded
+					}
+				});
+
+				if (!response.ok) {
+					dispatch(avatarLoadError(`${localization.uploadingImageError}: ${response.status} ${await response.text()}`));
+					return;
+				}
+
+				avatarUri = await response.text();
+			}
+			
+			const fullAvatarUri = (dataContext.contentUris ? dataContext.contentUris[0] : '') + avatarUri;
+
+			dispatch(avatarLoadEnd(null));
+			dispatch(avatarChanged(fullAvatarUri));
+		} catch (err) {
+			dispatch(avatarLoadError(getErrorMessage(err)));
+		}
+	};
+
+const sendAvatar: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
+	() => async (dispatch: Dispatch<Actions.KnownAction>, getState: () => State, dataContext: DataContext) => {
+	await dataContext.gameClient.msgAsync('PICTURE', getState().user.avatar);
+};
 
 const loginStart: ActionCreator<Actions.LoginStartAction> = () => ({
 	type: Actions.ActionTypes.LoginStart
@@ -971,6 +1043,10 @@ const actionCreators = {
 	navigateToHowToPlay,
 	navigateBack,
 	onLoginChanged,
+	onAvatarSelected,
+	avatarLoadStart,
+	avatarChanged,
+	sendAvatar,
 	login,
 	navigateToWelcome,
 	singlePlay,

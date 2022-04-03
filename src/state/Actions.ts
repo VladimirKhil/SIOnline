@@ -16,6 +16,10 @@ export const enum ActionTypes {
 	NavigateToHowToPlay = 'NAVIGATE_TO_HOW_TO_PLAY',
 	NavigateBack = 'NAVIGATE_BACK',
 	LoginChanged = 'LOGIN_CHANGED',
+	AvatarLoadStart = 'AVATAR_LOAD_START',
+	AvatarLoadEnd = 'AVATAR_LOAD_END',
+	AvatarChanged = 'AVATAR_CHANGED',
+	AvatarLoadError = 'AVATAR_LOAD_ERROR',
 	LoginStart = 'LOGIN_START',
 	LoginEnd = 'LOGIN_END',
 	NavigateToWelcome = 'NAVIGATE_TO_WELCOME',
@@ -83,6 +87,10 @@ export type ShowSettingsAction = { type: ActionTypes.ShowSettings, show: boolean
 export type NavigateToHowToPlayAction = { type: ActionTypes.NavigateToHowToPlay };
 export type NavigateBackAction = { type: ActionTypes.NavigateBack };
 export type LoginChangedAction = { type: ActionTypes.LoginChanged, newLogin: string };
+export type AvatarLoadStartAction = { type: ActionTypes.AvatarLoadStart };
+export type AvatarLoadEndAction = { type: ActionTypes.AvatarLoadEnd };
+export type AvatarChangedAction = { type: ActionTypes.AvatarChanged, avatar: string };
+export type AvatarLoadErrorAction = { type: ActionTypes.AvatarLoadError, error: string | null };
 export type LoginStartAction = { type: ActionTypes.LoginStart };
 export type LoginEndAction = { type: ActionTypes.LoginEnd, error: string | null };
 export type NavigateToWelcomeAction = { type: ActionTypes.NavigateToWelcome };
@@ -150,6 +158,10 @@ export type KnownAction =
 	| NavigateToHowToPlayAction
 	| NavigateBackAction
 	| LoginChangedAction
+	| AvatarLoadStartAction
+	| AvatarLoadEndAction
+	| AvatarChangedAction
+	| AvatarLoadErrorAction
 	| LoginStartAction
 	| LoginEndAction
 	| NavigateToWelcomeAction
