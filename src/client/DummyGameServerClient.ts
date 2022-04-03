@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable class-methods-use-this */
 import Role from '../model/enums/Role';
+import FileKey from '../model/server/FileKey';
 import GameCreationResult from '../model/server/GameCreationResult';
 import GameInfo from '../model/server/GameInfo';
 import GameSettings from '../model/server/GameSettings';
@@ -38,6 +39,10 @@ export default class DummyGameServerClient implements IGameServerClient {
 
 	async hasPackageAsync(packageKey: PackageKey): Promise<boolean> {
 		return false;
+	}
+
+	async hasImageAsync(fileKey: FileKey): Promise<string | null> {
+		return null;
 	}
 
 	async createAndJoinGameAsync(gameSettings: GameSettings, packageKey: PackageKey, isMale: boolean): Promise<GameCreationResult> {

@@ -1,5 +1,5 @@
-export default interface PackageKey {
-	name: string | null;
-	hash: string | null;
+import FileKey from './FileKey';
+
+export default interface PackageKey extends FileKey {
 	id: string | null;
 }

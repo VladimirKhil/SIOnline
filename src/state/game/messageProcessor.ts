@@ -19,6 +19,7 @@ import Role from '../../model/enums/Role';
 import localization from '../../model/resources/localization';
 import StakeTypes from '../../model/enums/StakeTypes';
 import stringFormat from '../../utils/StringHelpers';
+import actionCreators from '../actionCreators';
 
 let lastReplicLock: number;
 
@@ -31,10 +32,10 @@ export default function messageProcessor(dispatch: Dispatch<AnyAction>, message:
 	dispatch((userMessageReceived(message) as object) as AnyAction);
 }
 
-const processSystemMessage: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (dispatch: Dispatch<AnyAction>, message: Message)  =>
+const processSystemMessage: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (dispatch: Dispatch<AnyAction>, message: Message) =>
 	(dispatch: Dispatch<RunActions.KnownRunAction>, getState: () => State, dataContext: DataContext) => {
 		const state = getState();
-		const role = state.run.role;
+		const { role } = state.run;
 		const args = message.text.split('\n');
 
 		viewerHandler(dispatch, state, dataContext, args);
@@ -901,6 +902,7 @@ function info(dispatch: Dispatch<RunActions.KnownRunAction>, ...args: string[]) 
 	}
 
 	dispatch(runActionCreators.infoChanged(all, showman, players));
+	dispatch(actionCreators.sendAvatar() as any);
 }
 
 function onReplic(dispatch: Dispatch<RunActions.KnownRunAction>, state: State, args: string[]) {

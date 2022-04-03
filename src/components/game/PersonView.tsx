@@ -13,6 +13,7 @@ interface PersonViewProps {
 	account: Account;
 	selectedPersonName: string | null;
 	login: string;
+	avatar: string | null;
 	hostName: string | null;
 	selectPerson: (name: string) => void;
 }
@@ -20,6 +21,7 @@ interface PersonViewProps {
 const mapStateToProps = (state: State) => ({
 	selectedPersonName: state.run.chat.selectedPersonName,
 	login: state.user.login,
+	avatar: state.user.avatar,
 	hostName: state.run.persons.hostName
 });
 
@@ -36,6 +38,8 @@ export function PersonView(props: PersonViewProps): JSX.Element {
 
 	const humanImage = props.account.sex === Sex.Male ? '🧑' : '👩';
 
+	const avatar = isMe ? props.avatar : props.account.avatar;
+
 	return (
 		<li
 			className={`personItem ${isActive ? 'active ' : ''} ${isMe ? 'me' : ''}`}
@@ -46,7 +50,7 @@ export function PersonView(props: PersonViewProps): JSX.Element {
 			</span>
 			<div
 				className="personItem_avatar"
-				style={{ backgroundImage: props.account.avatar ? `url(${props.account.avatar})` : undefined }}
+				style={{ backgroundImage: avatar ? `url("${avatar}")` : undefined }}
 			/>
 			<span>
 				{props.account.name}

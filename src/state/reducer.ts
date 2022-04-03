@@ -80,6 +80,44 @@ const reducer: Reducer<State> = (state: State = initialState, action: KnownActio
 				}
 			};
 
+		case ActionTypes.AvatarLoadStart:
+			return {
+				...state,
+				common: {
+					...state.common,
+					avatarLoadProgress: true
+				}
+			};
+
+		case ActionTypes.AvatarLoadEnd:
+			return {
+				...state,
+				common: {
+					...state.common,
+					avatarLoadError: null,
+					avatarLoadProgress: false
+				}
+			};
+
+		case ActionTypes.AvatarChanged:
+			return {
+				...state,
+				user: {
+					...state.user,
+					avatar: action.avatar
+				}
+			};
+
+		case ActionTypes.AvatarLoadError:
+			return {
+				...state,
+				common: {
+					...state.common,
+					avatarLoadError: action.error,
+					avatarLoadProgress: false
+				}
+			};
+
 		case ActionTypes.LoginStart:
 			return {
 				...state,

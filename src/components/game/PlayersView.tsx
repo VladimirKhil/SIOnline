@@ -12,15 +12,16 @@ import ProgressBar from '../common/ProgressBar';
 import TimerInfo from '../../model/TimerInfo';
 import { isRunning } from '../../utils/TimerInfoHelpers';
 import getAvatar from '../../utils/AccountHelpers';
-
-import './PlayersView.css';
 import Sex from '../../model/enums/Sex';
 import localization from '../../model/resources/localization';
+
+import './PlayersView.css';
 
 interface PlayersViewProps {
 	players: PlayerInfo[];
 	all: Persons;
 	login: string;
+	avatar: string | null;
 	isSelectionEnabled: boolean;
 	isSumEditable: boolean;
 	decisionTimer: TimerInfo;
@@ -34,6 +35,7 @@ const mapStateToProps = (state: State) => ({
 	players: state.run.persons.players,
 	all: state.run.persons.all,
 	login: state.user.login,
+	avatar: state.user.avatar,
 	isSelectionEnabled: state.run.selection.isEnabled,
 	isSumEditable: state.run.areSumsEditable,
 	decisionTimer: state.run.timers.decision,
@@ -76,16 +78,17 @@ export function PlayersView(props: PlayersViewProps): JSX.Element {
 			<ul className="gamePlayers" style={mainStyle}>
 				{props.players.map((player, index) => {
 					const account = props.all[player.name];
-					const avatar = getAvatar(account);
+					const isMe = player.name === props.login;
+					const avatar = isMe ? props.avatar : getAvatar(account);
 
 					return (
 						<li
 							key={`${player.name}_${index}`}
-							className={buildPlayerClasses(player, player.name === props.login, player.canBeSelected)}
+							className={buildPlayerClasses(player, isMe, player.canBeSelected)}
 							onClick={() => props.onPlayerSelected(index)}
 						>
 							<div className="playerCard">
-								{avatar ? <div className="playerAvatar" style={{ backgroundImage: `url(${avatar})` }} /> : null}
+								{avatar ? <div className="playerAvatar" style={{ backgroundImage: `url("${avatar}")` }} /> : null}
 								<div className="playerInfo">
 									<div className="name" title={player.name}>
 										{player.isReady && !props.hasGameStarted ? (

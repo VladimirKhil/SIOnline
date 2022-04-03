@@ -1,4 +1,5 @@
 import Role from '../model/enums/Role';
+import FileKey from '../model/server/FileKey';
 import GameCreationResult from '../model/server/GameCreationResult';
 import GameInfo from '../model/server/GameInfo';
 import GameSettings from '../model/server/GameSettings';
@@ -43,6 +44,10 @@ export default class GameServerClient implements IGameServerClient {
 
 	hasPackageAsync(packageKey: PackageKey): Promise<boolean> {
 		return this.connection.invoke<boolean>('HasPackage', packageKey);
+	}
+
+	hasImageAsync(fileKey: FileKey): Promise<string | null> {
+		return this.connection.invoke<string | null>('HasPicture', fileKey);
 	}
 
 	createAndJoinGameAsync(gameSettings: GameSettings, packageKey: PackageKey, isMale: boolean): Promise<GameCreationResult> {

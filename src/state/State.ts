@@ -16,6 +16,7 @@ import { SearchEntity } from '../model/SearchEntity';
 export default interface State {
 	user: {
 		login: string;
+		avatar: string | null;
 	};
 	login: {
 		inProgress: boolean;
@@ -71,6 +72,8 @@ export default interface State {
 		isConnected: boolean;
 		serverName: string | null;
 		error: string | null;
+		avatarLoadProgress: boolean;
+		avatarLoadError: string | null;
 	};
 	siPackages: {
 		packages: SIPackageInfo[];
@@ -84,7 +87,8 @@ export default interface State {
 
 export const initialState: State = {
 	user: {
-		login: ''
+		login: '',
+		avatar: null
 	},
 	login: {
 		inProgress: false,
@@ -151,7 +155,9 @@ export const initialState: State = {
 		computerAccounts: null,
 		isConnected: true,
 		serverName: null,
-		error: null
+		error: null,
+		avatarLoadProgress: false,
+		avatarLoadError: null
 	},
 	settings: settingsInitialState
 };
