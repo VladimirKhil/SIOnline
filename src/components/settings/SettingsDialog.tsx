@@ -15,11 +15,10 @@ import './SettingsDialog.css';
 
 interface SettingsDialogProps {
 	settings: SettingsState;
+	onSoundVolumeChange: (volume: number) => void;
 	avatar: string | null;
 	avatarLoadError: string | null;
 	avatarLoadProgress: boolean;
-
-	onMute: (isSoundEnabled: boolean) => void;
 	onShowPersonsAtBottomOnWideScreenChanged: (showPersonsAtBottomOnWideScreen: boolean) => void;
 	onSexChanged: (newSex: Sex) => void;
 	onAvatarSelected: (avatar: File) => void;
@@ -42,8 +41,8 @@ const mapStateToProps = (state: State) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
-	onMute: (isSoundEnabled: boolean) => {
-		dispatch(settingsActionCreators.isSoundEnabledChanged(isSoundEnabled));
+	onSoundVolumeChange: (volume: number) => {
+		dispatch(settingsActionCreators.onSoundVolumeChanged(volume));
 	},
 	onShowPersonsAtBottomOnWideScreenChanged: (showPersonsAtBottomOnWideScreen: boolean) => {
 		dispatch(settingsActionCreators.showPersonsAtBottomOnWideScreenChanged(showPersonsAtBottomOnWideScreen));
@@ -129,14 +128,17 @@ export class SettingsDialog extends React.Component<SettingsDialogProps> {
 		return (
 			<Dialog id="settingsDialog" ref={this.layout} title={localization.settings} onClose={this.props.onClose}>
 				<div className="settingsDialogBody">
-					<div>
+					<div className="settingItem">
 						<input
-							id="isSoundEnabled"
-							type="checkbox"
-							checked={this.props.settings.isSoundEnabled}
-							onChange={() => this.props.onMute(!this.props.settings.isSoundEnabled)}
+							id="soundVolume"
+							type="range"
+							min={0}
+							max={1}
+							step={0.1}
+							value={this.props.settings.soundVolume}
+							onChange={(e) => this.props.onSoundVolumeChange(Number(e.target.value))}
 						/>
-						<label htmlFor="isSoundEnabled">{localization.sound}</label>
+						<label htmlFor="soundVolume">{localization.sound}</label>
 					</div>
 
 					<div>
@@ -231,22 +233,22 @@ export class SettingsDialog extends React.Component<SettingsDialogProps> {
 					</div>
 					<div className="settingItem">
 						<div>
-						<input
-							className='rangeEditor'
-							type="range"
-							value={this.props.settings.appSettings.readingSpeed}
-							min={1}
-							max={100}
-							onChange={this.onReadingSpeedChanged}
-						/>
-						<input
-							className='valueEditor'
-							type='number'
-							value={this.props.settings.appSettings.readingSpeed}
-							min={1}
-							max={100}
-							onChange={this.onReadingSpeedChanged}
-						/>
+							<input
+								className="rangeEditor"
+								type="range"
+								value={this.props.settings.appSettings.readingSpeed}
+								min={1}
+								max={100}
+								onChange={this.onReadingSpeedChanged}
+							/>
+							<input
+								className="valueEditor"
+								type="number"
+								value={this.props.settings.appSettings.readingSpeed}
+								min={1}
+								max={100}
+								onChange={this.onReadingSpeedChanged}
+							/>
 						</div>
 					</div>
 					<div className="settingItem">
@@ -270,7 +272,7 @@ export class SettingsDialog extends React.Component<SettingsDialogProps> {
 					</div>
 
 					<TimeSettingsView />
-					<button className='reset' title={localization.resetToDefaultsHint} onClick={this.props.onReset}>
+					<button className="reset" title={localization.resetToDefaultsHint} onClick={this.props.onReset}>
 						{localization.resetToDefaults}
 					</button>
 				</div>

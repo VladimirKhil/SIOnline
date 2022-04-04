@@ -3,18 +3,18 @@ import State from '../../state/State';
 import { Dispatch, Action } from 'redux';
 import { connect } from 'react-redux';
 import runActionCreators from '../../state/run/runActionCreators';
-import MuteButton from '../common/MuteButton';
+import VolumeButton from '../common/VolumeButton';
 import TableBorder from './TableBorder';
 
 interface TableVideoProps {
-	isSoundEnabled: boolean;
+	soundVolume: number;
 	text: string;
 	isMediaStopped: boolean;
 	onMediaEnded: () => void;
 }
 
 const mapStateToProps = (state: State) => ({
-	isSoundEnabled: state.settings.isSoundEnabled,
+	soundVolume: state.settings.soundVolume,
 	text: state.run.table.text,
 	isMediaStopped: state.run.stage.isGamePaused || state.run.table.isMediaStopped
 });
@@ -34,23 +34,39 @@ export class TableVideo extends React.Component<TableVideoProps> {
 		this.videoRef = React.createRef();
 	}
 
+	componentDidMount() {
+		if (!this.videoRef.current) {
+			return;
+		}
+
+		this.videoRef.current.volume = this.props.soundVolume;
+	}
+
 	componentDidUpdate(prevProps: TableVideoProps) {
-		if (this.props.isMediaStopped !== prevProps.isMediaStopped && this.videoRef.current) {
+		if (!this.videoRef.current) {
+			return;
+		}
+
+		if (this.props.isMediaStopped !== prevProps.isMediaStopped) {
 			if (this.props.isMediaStopped) {
 				this.videoRef.current.pause();
 			} else {
 				this.videoRef.current.play();
 			}
 		}
+
+		this.videoRef.current.volume = this.props.soundVolume;
 	}
 
 	render() {
+		const { onMediaEnded, text } = this.props;
+
 		return (
 			<TableBorder>
-				<video ref={this.videoRef} autoPlay muted={!this.props.isSoundEnabled} onEnded={e => this.props.onMediaEnded()}>
-					<source src={this.props.text} />
+				<video ref={this.videoRef} autoPlay onEnded={onMediaEnded}>
+					<source src={text} />
 				</video>
-				<MuteButton />
+				<VolumeButton />
 			</TableBorder>
 		);
 	}

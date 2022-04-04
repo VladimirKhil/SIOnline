@@ -3,14 +3,14 @@ import AppSettings from '../../model/AppSettings';
 import Sex from '../../model/enums/Sex';
 
 export interface SettingsState {
-	isSoundEnabled: boolean;
+	soundVolume: number;
 	showPersonsAtBottomOnWideScreen: boolean;
 	sex: Sex;
 	appSettings: AppSettings;
 }
 
 const initialState: SettingsState = {
-	isSoundEnabled: false,
+	soundVolume: 1,
 	showPersonsAtBottomOnWideScreen: true,
 	sex: Sex.Male,
 	appSettings: {
@@ -43,14 +43,12 @@ export const settingsSlice = createSlice({
 	name: 'settings',
 	initialState,
 	reducers: {
-		setIsSoundEnabled: (state: SettingsState, action: PayloadAction<boolean>) => {
-			state.isSoundEnabled = action.payload;
+		setSoundVolume: (state: SettingsState, action: PayloadAction<number>) => {
+			state.soundVolume = action.payload;
 		}
 	}
 });
 
-export const {
-	setIsSoundEnabled
-} = settingsSlice.actions;
+export const { setSoundVolume } = settingsSlice.actions;
 
 export default settingsSlice.reducer;

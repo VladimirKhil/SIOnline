@@ -2,14 +2,14 @@ import Sex from '../../model/enums/Sex';
 import AppSettings from '../../model/AppSettings';
 
 export default interface SettingsState {
-	isSoundEnabled: boolean;
+	soundVolume: number;
 	showPersonsAtBottomOnWideScreen: boolean;
 	sex: Sex;
 	appSettings: AppSettings;
 }
 
 export const initialState: SettingsState = {
-	isSoundEnabled: false,
+	soundVolume: 1,
 	showPersonsAtBottomOnWideScreen: true,
 	sex: Sex.Male,
 	appSettings: {
