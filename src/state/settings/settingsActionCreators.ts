@@ -68,6 +68,10 @@ const resetSettings: ActionCreator<SettingsActions.ResetSettingsAction> = () => 
 	type: SettingsActions.SettingsActionTypes.ResetSettings
 });
 
+const languageChanged: ActionCreator<SettingsActions.LanguageChangedAction> = (language: string | null) => ({
+	type: SettingsActions.SettingsActionTypes.LanguageChanged, language
+});
+
 const settingsActionCreators = {
 	onSoundVolumeChanged,
 	showPersonsAtBottomOnWideScreenChanged,
@@ -80,7 +84,8 @@ const settingsActionCreators = {
 	onManagedChanged,
 	onIgnoreWrongChanged,
 	onTimeSettingChanged,
-	resetSettings
+	resetSettings,
+	languageChanged,
 };
 
 export default settingsActionCreators;

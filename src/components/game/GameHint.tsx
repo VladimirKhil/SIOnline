@@ -14,7 +14,7 @@ const mapStateToProps = (state: State) => ({
 	hint: state.run.hint
 });
 
-const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
+const mapDispatchToProps = () => ({
 
 });
 

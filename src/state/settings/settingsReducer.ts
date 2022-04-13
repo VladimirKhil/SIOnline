@@ -102,6 +102,15 @@ const settingsReducer: Reducer<SettingsState> = (
 				}
 			};
 
+		case SettingsActionTypes.LanguageChanged:
+			return {
+				...state,
+				appSettings: {
+					...state.appSettings,
+					culture: action.language
+				}
+			};
+
 		case SettingsActionTypes.ResetSettings:
 			return initialState;
 

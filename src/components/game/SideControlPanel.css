@@ -39,6 +39,7 @@
     .gameMenu, .exitMenu {
         bottom: 45px;
         width: 100%;
+        min-width: 120px;
         background-color: rgb(192, 207, 244);
     }
 

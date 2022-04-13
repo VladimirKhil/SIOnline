@@ -1,6 +1,7 @@
 import TimeSettings from './server/TimeSettings';
 
 export default interface AppSettings {
+	culture: string | null;
 	oral: boolean;
 	falseStart: boolean;
 	hintShowman: boolean;

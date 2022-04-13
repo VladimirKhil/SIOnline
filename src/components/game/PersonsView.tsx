@@ -56,9 +56,7 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => ({
 });
 
 export function PersonsView(props: PersonsViewProps): JSX.Element {
-	const canKick = props.selectedPerson
-		&& props.selectedPerson.name !== props.login
-		&& props.selectedPerson.isHuman;
+	const canKick = props.selectedPerson && props.selectedPerson.name !== props.login && props.selectedPerson.isHuman;
 
 	return (
 		<>

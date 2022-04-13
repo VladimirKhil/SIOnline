@@ -102,8 +102,8 @@ export class SIStorageDialog extends React.Component<SIStorageDialogProps, SISto
 				filteredPackages:
 					state.searchValue.length > 0
 						? props.packages.filter(({ description }) =>
-								description.toLocaleLowerCase().includes(state.searchValue.toLocaleLowerCase())
-						  )
+							description.toLocaleLowerCase().includes(state.searchValue.toLocaleLowerCase())
+						)
 						: props.packages
 			};
 		}

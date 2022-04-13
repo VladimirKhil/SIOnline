@@ -22,7 +22,7 @@ const mapStateToProps = (state: State) => ({
 	areStakesVisible: state.run.stakes.areVisible
 });
 
-const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
+const mapDispatchToProps = () => ({
 
 });
 

@@ -1,7 +1,6 @@
 ﻿import * as React from 'react';
 import { connect } from 'react-redux';
 import GamesList from './GamesList';
-import GamesFilter from '../model/enums/GamesFilter';
 import State from '../state/State';
 import GameInfoView from './GameInfoView';
 import UsersView from './UsersView';

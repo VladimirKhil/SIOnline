@@ -46,7 +46,7 @@ export class FinalTable extends React.Component<FinalTableProps> {
 
 	render() {
 		return (
-			<div  className={`finalTable ${this.props.isSelectable ? 'selectable' : ''}`}>
+			<div className={`finalTable ${this.props.isSelectable ? 'selectable' : ''}`}>
 				{this.props.roundInfo.map((theme, themeIndex) => {
 					const isActive = theme.name.length > 0;
 					const isBlinking = this.props.activeThemeIndex === themeIndex;

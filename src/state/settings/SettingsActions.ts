@@ -13,7 +13,8 @@ export const enum SettingsActionTypes {
 	ManagedChanged = 'MANAGED_CHANGED',
 	IgnoreWrongChanged = 'IGNORE_WRONG_CHANGED',
 	TimeSettingChanged = 'TIME_SETTING_CHANGED',
-	ResetSettings = 'RESET_SETTINGS'
+	ResetSettings = 'RESET_SETTINGS',
+	LanguageChanged = 'LANGUAGE_CHANGED',
 }
 
 export type SoundVolumeChangeAction = { type: SettingsActionTypes.SoundVolumeChanged; volume: number };
@@ -35,6 +36,7 @@ export type TimeSettingChangedAction = {
 	value: number;
 };
 export type ResetSettingsAction = { type: SettingsActionTypes.ResetSettings };
+export type LanguageChangedAction = { type: SettingsActionTypes.LanguageChanged, language: string | null };
 
 export type KnownSettingsAction =
 	| SoundVolumeChangeAction
@@ -48,4 +50,5 @@ export type KnownSettingsAction =
 	| ManagedChangedAction
 	| IgnoreWrongChangedAction
 	| TimeSettingChangedAction
-	| ResetSettingsAction;
+	| ResetSettingsAction
+	| LanguageChangedAction;

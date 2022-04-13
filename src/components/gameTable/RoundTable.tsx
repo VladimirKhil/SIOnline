@@ -59,8 +59,8 @@ export class RoundTable extends React.Component<RoundTableProps> {
 						</AutoSizedText>
 						{themeInfo.questions.map((question, questionIndex) => {
 							const isActive = question > -1;
-							const isBlinking = themeIndex === this.props.activeThemeIndex
-								&& questionIndex === this.props.actionQuestionIndex;
+							const isBlinking = themeIndex === this.props.activeThemeIndex &&
+								questionIndex === this.props.actionQuestionIndex;
 
 							return (
 								<AutoSizedText key={questionIndex}

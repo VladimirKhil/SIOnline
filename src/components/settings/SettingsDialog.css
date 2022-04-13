@@ -96,6 +96,12 @@
     text-overflow: ellipsis;
 }
 
+.settings_language {
+    font-size: 16px;
+    width: 300px;
+    padding: 5px;
+}
+
 @media screen and (min-width: 800px) {
     #settingsDialog {
         width: 300px;

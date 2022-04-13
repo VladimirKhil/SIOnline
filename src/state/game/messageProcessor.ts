@@ -484,7 +484,7 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 			break;
 
 		case 'TABLO2':
-			const roundInfo = state.run.table.roundInfo;
+			const { roundInfo } = state.run.table;
 			const areQuestionsFilled = roundInfo.some(theme => theme.questions.length > 0);
 
 			if (areQuestionsFilled) {

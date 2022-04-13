@@ -801,6 +801,8 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 
 		const gameMode = game.type;
 
+		const { culture } = state.settings.appSettings;
+
 		const appSettings: ServerAppSettings = {
 			TimeSettings: state.settings.appSettings.timeSettings,
 			ReadingSpeed: state.settings.appSettings.readingSpeed,
@@ -814,7 +816,7 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 			RandomQuestionsBasePrice: gameMode === GameType.Simple ? 10 : 100,
 			RandomRoundsCount: gameMode === GameType.Simple ? 1 : 3,
 			RandomThemesCount: gameMode === GameType.Simple ? 5 : 6,
-			Culture: 'ru-RU'
+			Culture: culture == 'en' ? 'en-US' : 'ru-RU'
 		};
 
 		const gameSettings: GameSettings = {
@@ -1090,7 +1092,7 @@ const actionCreators = {
 	receiveAuthorsThunk,
 	receiveTagsThunk,
 	receivePublishersThunk,
-	gamePackageLibraryChanged
+	gamePackageLibraryChanged,
 };
 
 export default actionCreators;

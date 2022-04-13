@@ -47,6 +47,10 @@ export class TableVideo extends React.Component<TableVideoProps> {
 			return;
 		}
 
+		if (this.props.text !== this.videoRef.current.currentSrc) {
+			this.videoRef.current.load();
+		}
+
 		if (this.props.isMediaStopped !== prevProps.isMediaStopped) {
 			if (this.props.isMediaStopped) {
 				this.videoRef.current.pause();

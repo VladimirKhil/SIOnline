@@ -29,6 +29,7 @@ interface SettingsDialogProps {
 	onManagedChanged: (managed: boolean) => void;
 	onIgnoreWrongChanged: (ignoreWrong: boolean) => void;
 	onPartialTextChanged: (hintShowman: boolean) => void;
+	onLanguageChanged: (language: string | null) => void;
 	onReset: () => void;
 	onClose: () => void;
 }
@@ -74,12 +75,15 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	onPartialTextChanged: (partialText: boolean) => {
 		dispatch(settingsActionCreators.onPartialTextChanged(partialText));
 	},
+	onLanguageChanged: (language: string | null) => {
+		dispatch(settingsActionCreators.languageChanged(language));
+	},
 	onReset: () => {
 		dispatch(settingsActionCreators.resetSettings());
 	},
 	onClose: () => {
 		dispatch(actionCreators.showSettings(false));
-	}
+	},
 });
 
 export class SettingsDialog extends React.Component<SettingsDialogProps> {
@@ -124,10 +128,27 @@ export class SettingsDialog extends React.Component<SettingsDialogProps> {
 		}
 	};
 
+	private onLanguageChanged = (e: React.ChangeEvent<HTMLSelectElement>) => {
+		const language = e.target.value.length == 0 ? null : e.target.value;
+		this.props.onLanguageChanged(language);
+	};
+
 	render(): JSX.Element {
 		return (
 			<Dialog id="settingsDialog" ref={this.layout} title={localization.settings} onClose={this.props.onClose}>
 				<div className="settingsDialogBody">
+					<p className="header">{localization.language}</p>
+					<select
+						className='settings_language'
+						value={this.props.settings.appSettings.culture || ''}
+						onChange={this.onLanguageChanged}
+					>
+						<option value="">{localization.languageDefault}</option>
+						<option value="ru">{localization.languageRu}</option>
+						<option value="en">{localization.languageEn}</option>
+					</select>
+					
+					<p className="header">{localization.sound}</p>
 					<div className="settingItem">
 						<input
 							id="soundVolume"
@@ -138,10 +159,9 @@ export class SettingsDialog extends React.Component<SettingsDialogProps> {
 							value={this.props.settings.soundVolume}
 							onChange={(e) => this.props.onSoundVolumeChange(Number(e.target.value))}
 						/>
-						<label htmlFor="soundVolume">{localization.sound}</label>
 					</div>
 
-					<div>
+					<div className="settingItem">
 						<input
 							id="showPersonsAtBottomOnWideScreen"
 							type="checkbox"
@@ -156,7 +176,7 @@ export class SettingsDialog extends React.Component<SettingsDialogProps> {
 						{this.props.avatar ? <img className='avatarView' src={this.props.avatar} /> : <div className='emptyAvatar' />}
 						<input
 							type="file"
-							accept=".jpg;.jpeg;.png"
+							accept=".jpg,.jpeg,.png"
 							disabled={this.props.avatarLoadProgress}
 							onChange={this.onAvatarChanged}
 						/>

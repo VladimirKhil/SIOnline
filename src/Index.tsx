@@ -160,12 +160,20 @@ async function run() {
 		const newState = store.getState();
 		const newSettings = newState.settings;
 		if (newSettings !== currentSettings) {
+			if (newSettings.appSettings.culture !== currentSettings.appSettings.culture) {
+				localization.setLanguage(newSettings.appSettings.culture || '');
+			}
+
 			currentSettings = newSettings;
 			actionCreators.saveStateToStorage(newState);
 		}
 	});
 
 	subscribeToExternalEvents(store);
+
+	if (state.settings.appSettings.culture) {
+		localization.setLanguage(state.settings.appSettings.culture);
+	}
 
 	ReactDOM.render(
 		(
