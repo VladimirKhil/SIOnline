@@ -5,7 +5,7 @@ import MainView from '../model/enums/MainView';
 import { create, remove, set } from '../utils/RecordExtensions';
 import { removeFromArray } from '../utils/ArrayExtensions';
 import localization from '../model/resources/localization';
-import { KnownRunAction } from './run/runActions';
+import { KnownRunAction } from './run/RunActions';
 import runReducer from './run/runReducer';
 import OnlineMode from '../model/enums/OnlineMode';
 import * as runState from './run/RunState';

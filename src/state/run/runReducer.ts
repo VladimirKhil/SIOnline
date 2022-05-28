@@ -1,6 +1,6 @@
 import { Reducer, AnyAction } from 'redux';
 import RunState, { initialState } from './RunState';
-import { KnownRunAction, RunActionTypes } from './runActions';
+import { KnownRunAction, RunActionTypes } from './RunActions';
 import { replace, swap } from '../../utils/ArrayExtensions';
 import tableReducer from '../table/tableReducer';
 import { KnownTableAction } from '../table/TableActions';
