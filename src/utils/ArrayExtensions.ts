@@ -16,6 +16,10 @@ export function swap<T>(array: T[], index1: number, index2: number): T[] {
 	const item1 = array[lowIndex];
 	const item2 = array[highIndex];
 
-	return [...array.slice(0, lowIndex), item2, ...array.slice(lowIndex + 1, highIndex),
-		item1, ...array.slice(highIndex + 1)];
+	return [
+		...array.slice(0, lowIndex),
+		item2,
+		...array.slice(lowIndex + 1, highIndex),
+		item1,
+		...array.slice(highIndex + 1)];
 }
