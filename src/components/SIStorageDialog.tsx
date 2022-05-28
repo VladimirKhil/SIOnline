@@ -101,9 +101,7 @@ export class SIStorageDialog extends React.Component<SIStorageDialogProps, SISto
 				prevPropsPackages: props.packages,
 				filteredPackages:
 					state.searchValue.length > 0
-						? props.packages.filter(({ description }) =>
-							description.toLocaleLowerCase().includes(state.searchValue.toLocaleLowerCase())
-						)
+						? props.packages.filter(({ description }) => description.toLocaleLowerCase().includes(state.searchValue.toLocaleLowerCase()))
 						: props.packages
 			};
 		}
@@ -115,8 +113,7 @@ export class SIStorageDialog extends React.Component<SIStorageDialogProps, SISto
 	};
 
 	private onSelectorChange =
-		(filter: keyof Omit<PackageFilters, 'restriction' | 'sortAscending'>) =>
-		(event: React.ChangeEvent<HTMLSelectElement>) => {
+		(filter: keyof Omit<PackageFilters, 'restriction' | 'sortAscending'>) => (event: React.ChangeEvent<HTMLSelectElement>) => {
 			const { value } = event.target;
 			this.setState(
 				{
@@ -273,8 +270,15 @@ export class SIStorageDialog extends React.Component<SIStorageDialogProps, SISto
 					<h2>{`${localization.packages} (${this.state.filteredPackages.length})`}</h2>
 					{this.props.isLoading && <p>{localization.loading}</p>}
 					<ul>
-						{this.state.filteredPackages.map(
-							({ authors, description, difficulty, id, guid, publishedDate, publisher, restriction, tags }) => (
+						{this.state.filteredPackages.map(({ authors,
+							description,
+							difficulty,
+							id,
+							guid,
+							publishedDate,
+							publisher,
+							restriction,
+							tags }) => (
 								<li key={id}>
 									<span className="packageName">{description}</span>
 									<br />
@@ -302,8 +306,7 @@ export class SIStorageDialog extends React.Component<SIStorageDialogProps, SISto
 										</button>
 									</div>
 								</li>
-							)
-						)}
+							))}
 					</ul>
 				</div>
 			</Dialog>

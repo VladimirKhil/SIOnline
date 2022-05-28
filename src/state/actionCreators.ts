@@ -60,7 +60,7 @@ const onConnectionChanged: ActionCreator<ThunkAction<void, State, DataContext, A
 			return;
 		}
 
-		// Необходимо восстановить состояние, в котором находится лобби или игра
+		// Need to restore lobby/game previous state
 		if (state.ui.mainView === MainView.Game) {
 			await dataContext.gameClient.sendMessageToServerAsync('INFO');
 		} else if (state.ui.mainView === MainView.Lobby) {
@@ -322,7 +322,10 @@ const login: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 				// eslint-disable-next-line no-param-reassign
 				dataContext.connection = connection;
 				// eslint-disable-next-line no-param-reassign
-				dataContext.gameClient = new GameServerClient(connection);
+				dataContext.gameClient = new GameServerClient(
+					connection,
+					e => dispatch(runActionCreators.operationError(e) as object as Actions.KnownAction)
+				);
 
 				try {
 					await dataContext.connection.start();

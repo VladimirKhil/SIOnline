@@ -1,7 +1,6 @@
 import * as React from 'react';
 import State from '../../state/State';
 import { connect } from 'react-redux';
-import { Action, Dispatch } from 'redux';
 import AutoSizedText from '../common/AutoSizedText';
 
 import './GameHint.css';

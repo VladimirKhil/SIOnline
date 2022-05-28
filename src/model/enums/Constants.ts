@@ -4,5 +4,6 @@
 	KEY_ESCAPE: 27,
 
 	ANY_NAME: ' ',
-	MAX_PLAYERS_COUNT: 12
+	MIN_PLAYER_COUNT: 2, // there should be at least 2 players in the game
+	MAX_PLAYER_COUNT: 12
 };

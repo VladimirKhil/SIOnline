@@ -7,6 +7,7 @@ import MainView from '../../model/enums/MainView';
 import localization from '../../model/resources/localization';
 import { activeConnections, attachListeners } from '../../utils/ConnectionHelpers';
 import getErrorMessage from '../../utils/ErrorHelpers';
+import runActionCreators from '../run/runActionCreators';
 import { computerAccountsChanged, serverNameChanged } from './commonSlice';
 import { saveStateToStorage } from './StateHelpers';
 import { AppDispatch, RootState } from './store';
@@ -100,7 +101,10 @@ export const login = () => async (dispatch: AppDispatch, getState: () => RootSta
 			// eslint-disable-next-line no-param-reassign
 			dataContext.connection = connection;
 			// eslint-disable-next-line no-param-reassign
-			dataContext.gameClient = new GameServerClient(connection);
+			dataContext.gameClient = new GameServerClient(
+				connection,
+				e => dispatch(runActionCreators.operationError(e))
+			);
 
 			try {
 				await dataContext.connection.start();

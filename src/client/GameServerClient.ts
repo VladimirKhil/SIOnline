@@ -14,7 +14,7 @@ export default class GameServerClient implements IGameServerClient {
 	 * Initializes a new instance of {@link GameServerClient}.
 	 * @param connection Underlying SignalR connection.
 	 */
-	constructor(private connection: signalR.HubConnection) {
+	constructor(private connection: signalR.HubConnection, private errorHandler: (error : any) => void) {
 
 	}
 
@@ -78,15 +78,22 @@ export default class GameServerClient implements IGameServerClient {
 		);
 	}
 
-	sendMessageToServerAsync(message: string): Promise<any> {
-		return this.connection.invoke('SendMessage', {
-			Text: message,
-			IsSystem: true,
-			Receiver: '@'
-		});
+	async sendMessageToServerAsync(message: string): Promise<boolean> {
+		try {
+			await this.connection.invoke('SendMessage', {
+				Text: message,
+				IsSystem: true,
+				Receiver: '@'
+			});
+
+			return true;
+		} catch (e) {
+			this.errorHandler(e);
+			return false;
+		}
 	}
 
-	msgAsync(...args: any[]): Promise<any> {
+	msgAsync(...args: any[]): Promise<boolean> {
 		return this.sendMessageToServerAsync(args.join('\n'));
 	}
 

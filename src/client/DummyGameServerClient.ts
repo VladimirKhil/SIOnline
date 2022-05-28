@@ -57,12 +57,12 @@ export default class DummyGameServerClient implements IGameServerClient {
 		this.throwNotConnectedError();
 	}
 
-	async sendMessageToServerAsync(message: string): Promise<any> {
-
+	async sendMessageToServerAsync(message: string): Promise<boolean> {
+		return true;
 	}
 
-	async msgAsync(...args: any[]): Promise<any> {
-
+	async msgAsync(...args: any[]): Promise<boolean> {
+		return true;
 	}
 
 	async sayAsync(...args: any[]): Promise<any> {

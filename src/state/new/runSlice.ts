@@ -191,8 +191,9 @@ export const {
 } = runSlice.actions;
 
 export const sendStake = (stake: number) => async (dispatch: AppDispatch, _getState: () => RootState, dataContext: DataContext) : Promise<void> => {
-	await dataContext.gameClient.msgAsync('STAKE', stake);
-	dispatch(clearDecisions());
+	if (await dataContext.gameClient.msgAsync('STAKE', stake)) {
+		dispatch(clearDecisions());
+	}
 };
 
 export default runSlice.reducer;

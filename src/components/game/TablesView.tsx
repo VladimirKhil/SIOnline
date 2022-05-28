@@ -24,6 +24,7 @@ interface TablesViewProps {
 	selectTable: (tableIndex: number) => void;
 	addTable: () => void;
 	deleteTable: () => void;
+	freeTable: () => void;
 }
 
 const mapStateToProps = (state: State) => ({
@@ -44,16 +45,27 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => ({
 	},
 	deleteTable: () => {
 		dispatch(runActionCreators.deleteTable() as unknown as AnyAction);
+	},
+	freeTable: () => {
+		dispatch(runActionCreators.freeTable() as unknown as AnyAction);
 	}
 });
 
 export function TablesView(props: TablesViewProps): JSX.Element {
 	// You cannot add unlimited number of tables
-	const canAdd = props.players.length < Constants.MAX_PLAYERS_COUNT;
+	const canAdd = props.players.length < Constants.MAX_PLAYER_COUNT;
+
+	const isPlayerSelected = props.selectedIndex > 0 && props.selectedIndex <= props.players.length;
+
+	const selectedPlayer = isPlayerSelected ? props.persons[props.players[props.selectedIndex - 1].name] : null;
+	const selectedPerson = props.selectedIndex === 0 ? props.persons[props.showman.name] : selectedPlayer;
 
 	// You can delete occupied tables only before game start
-	const canDelete = props.selectedIndex > 0 && props.selectedIndex <= props.players.length
-		&& (!props.isGameStarted || !props.persons[props.players[props.selectedIndex - 1].name]);
+	const canDelete = props.players.length > Constants.MIN_PLAYER_COUNT &&
+		isPlayerSelected &&
+		(!props.isGameStarted || !selectedPlayer);
+
+	const canFree = !props.isGameStarted && selectedPerson && selectedPerson.isHuman;
 
 	return (
 		<>
@@ -86,6 +98,9 @@ export function TablesView(props: TablesViewProps): JSX.Element {
 				</ul>
 			</div>
 			<div className="buttonsPanel">
+				<button type="button" onClick={() => props.freeTable()} disabled={!props.isConnected || !canFree}>
+					{localization.freeTable}
+				</button>
 				<button type="button" onClick={() => props.deleteTable()} disabled={!props.isConnected || !canDelete}>
 					{localization.deleteTable}
 				</button>

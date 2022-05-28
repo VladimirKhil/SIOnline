@@ -59,15 +59,17 @@ export default interface IGameServerClient {
 	 */
 	joinGameAsync(gameId: number, role: Role, isMale: boolean, password: string): Promise<GameCreationResult>;
 	/**
-	 * Sends a message inside game.
+	 * Sends a message inside game. Method should be awaited.
 	 * @param message Message to send.
+	 * @returns The success status of sending operation.
 	 */
-	sendMessageToServerAsync(message: string): Promise<any>;
+	sendMessageToServerAsync(message: string): Promise<boolean>;
 	/**
 	 * Sends a message inside game.
 	 * @param args Arguments to construct a message.
+	 * @returns The success status of sending operation.
 	 */
-	msgAsync(...args: any[]): Promise<any>;
+	msgAsync(...args: any[]): Promise<boolean>;
 	/**
 	 * Sends a message in game chat.
 	 * @param message Message to send.

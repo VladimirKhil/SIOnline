@@ -47,14 +47,20 @@ const runChatMessageSend: ActionCreator<ThunkAction<void, State, DataContext, Ac
 		}
 	};
 
-const markQuestion: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () =>
-	(dispatch: Dispatch<RunActions.KnownRunAction>, getState: () => State, dataContext: DataContext) => {
-		dataContext.gameClient.msgAsync('MARK');
+const markQuestion: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
+	_dispatch: Dispatch<RunActions.KnownRunAction>,
+	_getState: () => State,
+	dataContext: DataContext
+	) => {
+		await dataContext.gameClient.msgAsync('MARK');
 	};
 
-const pause: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () =>
-	(dispatch: Dispatch<RunActions.KnownRunAction>, getState: () => State, dataContext: DataContext) => {
-		dataContext.gameClient.msgAsync('PAUSE', getState().run.stage.isGamePaused ? '-' : '+');
+const pause: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
+	_dispatch: Dispatch<RunActions.KnownRunAction>,
+	getState: () => State,
+	dataContext: DataContext
+	) => {
+		await dataContext.gameClient.msgAsync('PAUSE', getState().run.stage.isGamePaused ? '-' : '+');
 	};
 
 const runShowPersons: ActionCreator<RunActions.RunShowPersonsAction> = () => ({
@@ -77,12 +83,18 @@ const runChatVisibilityChanged: ActionCreator<RunActions.RunChatVisibilityChange
 	type: RunActions.RunActionTypes.RunChatVisibilityChanged, isOpen
 });
 
+const clearDecisions: ActionCreator<RunActions.ClearDecisionsAction> = () => ({
+	type: RunActions.RunActionTypes.ClearDecisions
+});
+
 const playerSelected: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (playerIndex: number) => async (
 	dispatch: Dispatch<RunActions.KnownRunAction>,
 	getState: () => State,
-	dataContext: DataContext) => {
-	dataContext.gameClient.msgAsync(getState().run.selection.message, playerIndex);
-	dispatch(clearDecisions());
+	dataContext: DataContext
+	) => {
+	if (await dataContext.gameClient.msgAsync(getState().run.selection.message, playerIndex)) {
+		dispatch(clearDecisions());
+	}
 };
 
 const exitGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
@@ -147,60 +159,65 @@ const operationError: ActionCreator<RunActions.OperationErrorAction> = (error: s
 const addTable: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
 	dispatch: Dispatch<RunActions.KnownRunAction>,
 	getState: () => State, dataContext: DataContext) => {
-	if (getState().run.persons.players.length >= Constants.MAX_PLAYERS_COUNT) {
+	if (getState().run.persons.players.length >= Constants.MAX_PLAYER_COUNT) {
 		return;
 	}
 
-	try {
-		dataContext.gameClient.msgAsync('CONFIG', 'ADDTABLE');
-	} catch (e) {
-		dispatch(operationError(getErrorMessage(e)));
-	}
+	await dataContext.gameClient.msgAsync('CONFIG', 'ADDTABLE');
 };
 
 const deleteTable: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
-	dispatch: Dispatch<RunActions.KnownRunAction>,
-	getState: () => State, dataContext: DataContext) => {
+	_dispatch: Dispatch<RunActions.KnownRunAction>,
+	getState: () => State,
+	dataContext: DataContext
+	) => {
 	const tableIndex = getState().run.selectedTableIndex - 1;
-	if (tableIndex <= 0 || tableIndex >= getState().run.persons.players.length) {
+	if (tableIndex < 0 || tableIndex >= getState().run.persons.players.length) {
 		return;
 	}
 
-	try {
-		dataContext.gameClient.msgAsync('CONFIG', 'DELETETABLE', tableIndex);
-	} catch (e) {
-		dispatch(operationError(getErrorMessage(e)));
+	await dataContext.gameClient.msgAsync('CONFIG', 'DELETETABLE', tableIndex);
+};
+
+const freeTable: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
+	_dispatch: Dispatch<RunActions.KnownRunAction>,
+	getState: () => State,
+	dataContext: DataContext
+	) => {
+	const tableIndex = getState().run.selectedTableIndex;
+	if (tableIndex < 0 || tableIndex >= getState().run.persons.players.length + 1) {
+		return;
 	}
+
+	const isShowman = tableIndex === 0;
+
+	await dataContext.gameClient.msgAsync('CONFIG', 'FREE', isShowman ? 'showman' : 'player', isShowman ? '' : tableIndex - 1);
 };
 
 const kickPerson: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
-	dispatch: Dispatch<RunActions.KnownRunAction>,
-	getState: () => State, dataContext: DataContext) => {
+	_dispatch: Dispatch<RunActions.KnownRunAction>,
+	getState: () => State,
+	dataContext: DataContext
+	) => {
 	const personName = getState().run.chat.selectedPersonName;
 	if (!personName) {
 		return;
 	}
 
-	try {
-		dataContext.gameClient.msgAsync('KICK', personName);
-	} catch (e) {
-		dispatch(operationError(getErrorMessage(e)));
-	}
+	await dataContext.gameClient.msgAsync('KICK', personName);
 };
 
 const banPerson: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
-	dispatch: Dispatch<RunActions.KnownRunAction>,
-	getState: () => State, dataContext: DataContext) => {
+	_dispatch: Dispatch<RunActions.KnownRunAction>,
+	getState: () => State,
+	dataContext: DataContext
+	) => {
 	const personName = getState().run.chat.selectedPersonName;
 	if (!personName) {
 		return;
 	}
 
-	try {
-		dataContext.gameClient.msgAsync('BAN', personName);
-	} catch (e) {
-		dispatch(operationError(getErrorMessage(e)));
-	}
+	await dataContext.gameClient.msgAsync('BAN', personName);
 };
 
 const personAvatarChanged: ActionCreator<RunActions.PersonAvatarChangedAction> = (personName: string, avatarUri: string) => ({
@@ -285,10 +302,6 @@ const decisionNeededChanged: ActionCreator<RunActions.DecisionNeededChangedActio
 	type: RunActions.RunActionTypes.DecisionNeededChanged, decisionNeeded
 });
 
-const clearDecisions: ActionCreator<RunActions.ClearDecisionsAction> = () => ({
-	type: RunActions.RunActionTypes.ClearDecisions
-});
-
 const selectQuestion: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (themeIndex: number, questionIndex: number) => async (
 	dispatch: Dispatch<Action>,
 	getState: () => State, dataContext: DataContext
@@ -301,9 +314,10 @@ const selectQuestion: ActionCreator<ThunkAction<void, State, DataContext, Action
 	if (theme) {
 		const question = theme.questions[questionIndex];
 		if (question > -1) {
-			dataContext.gameClient.msgAsync('CHOICE', themeIndex, questionIndex);
-			dispatch(tableActionCreators.isSelectableChanged(false));
-			dispatch(decisionNeededChanged(false));
+			if (await dataContext.gameClient.msgAsync('CHOICE', themeIndex, questionIndex)) {
+				dispatch(tableActionCreators.isSelectableChanged(false));
+				dispatch(decisionNeededChanged(false));
+			}
 		}
 	}
 };
@@ -318,9 +332,10 @@ const selectTheme: ActionCreator<ThunkAction<void, State, DataContext, Action>> 
 
 	const theme = getState().run.table.roundInfo[themeIndex];
 	if (theme) {
-		dataContext.gameClient.msgAsync('DELETE', themeIndex);
-		dispatch(tableActionCreators.isSelectableChanged(false));
-		dispatch(decisionNeededChanged(false));
+		if (await dataContext.gameClient.msgAsync('DELETE', themeIndex)) {
+			dispatch(tableActionCreators.isSelectableChanged(false));
+			dispatch(decisionNeededChanged(false));
+		}
 	}
 };
 
@@ -331,8 +346,11 @@ const isGameButtonEnabledChanged: ActionCreator<RunActions.IsGameButtonEnabledCh
 const pressGameButton: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
 	dispatch: Dispatch<any>,
 	_getState: () => State,
-	dataContext: DataContext) => {
-	dataContext.gameClient.msgAsync('I');
+	dataContext: DataContext
+	) => {
+	if (!await dataContext.gameClient.msgAsync('I')) {
+		return;
+	}
 
 	dispatch(isGameButtonEnabledChanged(false));
 	setTimeout(
@@ -346,8 +364,9 @@ const pressGameButton: ActionCreator<ThunkAction<void, State, DataContext, Actio
 const apellate: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
 	_dispatch: Dispatch<any>,
 	_getState: () => State,
-	dataContext: DataContext) => {
-	dataContext.gameClient.msgAsync('APELLATE', '+');
+	dataContext: DataContext
+	) => {
+	await dataContext.gameClient.msgAsync('APELLATE', '+');
 };
 
 const isAnswering: ActionCreator<RunActions.IsAnsweringAction> = () => ({
@@ -361,9 +380,11 @@ const onAnswerChanged: ActionCreator<RunActions.AnswerChangedAction> = (answer: 
 const sendAnswer: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
 	dispatch: Dispatch<any>,
 	getState: () => State,
-	dataContext: DataContext) => {
-	dataContext.gameClient.msgAsync('ANSWER', getState().run.answer);
-	dispatch(clearDecisions());
+	dataContext: DataContext
+	) => {
+	if (await dataContext.gameClient.msgAsync('ANSWER', getState().run.answer)) {
+		dispatch(clearDecisions());
+	}
 };
 
 const validate: ActionCreator<RunActions.ValidateAction> = (
@@ -377,16 +398,24 @@ const validate: ActionCreator<RunActions.ValidateAction> = (
 	type: RunActions.RunActionTypes.Validate, name, answer, rightAnswers, wrongAnswers, header, message
 });
 
-const approveAnswer: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () =>
-	async (dispatch: Dispatch<any>, getState: () => State, dataContext: DataContext) => {
-		dataContext.gameClient.msgAsync('ISRIGHT', '+');
-		dispatch(clearDecisions());
+const approveAnswer: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
+	dispatch: Dispatch<any>,
+	_getState: () => State,
+	dataContext: DataContext
+	) => {
+		if (await dataContext.gameClient.msgAsync('ISRIGHT', '+')) {
+			dispatch(clearDecisions());
+		}
 	};
 
-const rejectAnswer: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () =>
-	async (dispatch: Dispatch<any>, getState: () => State, dataContext: DataContext) => {
-		dataContext.gameClient.msgAsync('ISRIGHT', '-');
-		dispatch(clearDecisions());
+const rejectAnswer: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
+	dispatch: Dispatch<any>,
+	_getState: () => State,
+	dataContext: DataContext
+	) => {
+		if (await dataContext.gameClient.msgAsync('ISRIGHT', '-')) {
+			dispatch(clearDecisions());
+		}
 	};
 
 const setStakes: ActionCreator<RunActions.SetStakesAction> = (
@@ -405,39 +434,53 @@ const stakeChanged: ActionCreator<RunActions.StakeChangedAction> = (stake: numbe
 	type: RunActions.RunActionTypes.StakeChanged, stake
 });
 
-const sendNominal: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () =>
-	async (dispatch: Dispatch<any>, getState: () => State, dataContext: DataContext) => {
-		dataContext.gameClient.msgAsync('STAKE', 0);
-		dispatch(clearDecisions());
+const sendNominal: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
+	dispatch: Dispatch<any>,
+	_getState: () => State,
+	dataContext: DataContext
+	) => {
+		if (await dataContext.gameClient.msgAsync('STAKE', 0)) {
+			dispatch(clearDecisions());
+		}
 	};
 
-const sendStake: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () =>
-	async (dispatch: Dispatch<any>, getState: () => State, dataContext: DataContext) => {
+const sendStake: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
+	dispatch: Dispatch<any>,
+	getState: () => State,
+	dataContext: DataContext
+	) => {
 		const state = getState();
 
+		let result : boolean;
 		if (state.run.stakes.message === 'STAKE') { // Bad design
-			dataContext.gameClient.msgAsync('STAKE', 1, state.run.stakes.stake);
+			result = await dataContext.gameClient.msgAsync('STAKE', 1, state.run.stakes.stake);
 		} else {
-			dataContext.gameClient.msgAsync(state.run.stakes.message, state.run.stakes.stake);
+			result = await dataContext.gameClient.msgAsync(state.run.stakes.message, state.run.stakes.stake);
 		}
 
-		dispatch(clearDecisions());
+		if (result) {
+			dispatch(clearDecisions());
+		}
 	};
 
 const sendPass: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
 	dispatch: Dispatch<any>,
 	_getState: () => State,
-	dataContext: DataContext) => {
-	dataContext.gameClient.msgAsync('STAKE', 2);
-	dispatch(clearDecisions());
+	dataContext: DataContext
+	) => {
+	if (await dataContext.gameClient.msgAsync('STAKE', 2)) {
+		dispatch(clearDecisions());
+	}
 };
 
 const sendAllIn: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
 	dispatch: Dispatch<any>,
 	_getState: () => State,
-	dataContext: DataContext) => {
-	dataContext.gameClient.msgAsync('STAKE', 3);
-	dispatch(clearDecisions());
+	dataContext: DataContext
+	) => {
+	if (await dataContext.gameClient.msgAsync('STAKE', 3)) {
+		dispatch(clearDecisions());
+	}
 };
 
 const selectionEnabled: ActionCreator<RunActions.SelectionEnabledAction> = (allowedIndices: number[], message: string) => ({
@@ -470,7 +513,7 @@ const onMediaEnded: ActionCreator<ThunkAction<void, State, DataContext, Action>>
 	_getState: () => State,
 	dataContext: DataContext
 ) => {
-	dataContext.gameClient.msgAsync('ATOM');
+	await dataContext.gameClient.msgAsync('ATOM');
 };
 
 const areSumsEditableChanged: ActionCreator<RunActions.AreSumsEditableChangedAction> = (areSumsEditable: boolean) => ({
@@ -481,10 +524,11 @@ const changePlayerSum: ActionCreator<ThunkAction<void, State, DataContext, Actio
 	playerIndex: number,
 	sum: number
 ) => async (
-	dispatch: Dispatch<any>,
-	getState: () => State,
-	dataContext: DataContext) => {
-	dataContext.gameClient.msgAsync('CHANGE', playerIndex + 1, sum); // playerIndex здесь почему-то начинается с 1
+	_dispatch: Dispatch<any>,
+	_getState: () => State,
+	dataContext: DataContext
+	) => {
+	await dataContext.gameClient.msgAsync('CHANGE', playerIndex + 1, sum); // playerIndex here starts with 1
 };
 
 const readingSpeedChanged: ActionCreator<RunActions.ReadingSpeedChangedAction> = (readingSpeed: number) => ({
@@ -531,20 +575,20 @@ const hintChanged: ActionCreator<RunActions.HintChangedAction> = (hint: string |
 	type: RunActions.RunActionTypes.HintChanged, hint
 });
 
-const startGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => (
+const startGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
 	_dispatch: Dispatch<RunActions.KnownRunAction>,
 	_getState: () => State,
 	dataContext: DataContext
 ) => {
-	dataContext.gameClient.msgAsync('START');
+	await dataContext.gameClient.msgAsync('START');
 };
 
-const ready: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (isReady: boolean) => (
+const ready: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (isReady: boolean) => async (
 	_dispatch: Dispatch<RunActions.KnownRunAction>,
 	_getState: () => State,
 	dataContext: DataContext
 ) => {
-	dataContext.gameClient.msgAsync('READY', isReady ? '+' : '-');
+	await dataContext.gameClient.msgAsync('READY', isReady ? '+' : '-');
 };
 
 const hostNameChanged: ActionCreator<RunActions.HostNameChangedAction> = (hostName: string | null) => ({
@@ -567,7 +611,7 @@ const moveNext: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (
 	_dispatch: Dispatch<any>,
 	_getState: () => State,
 	dataContext: DataContext) => {
-	dataContext.gameClient.msgAsync('MOVE', '1');
+	await dataContext.gameClient.msgAsync('MOVE', '1');
 };
 
 const isReadyChanged: ActionCreator<RunActions.IsReadyChangedAction> = (personIndex: number, isReady: boolean) => ({
@@ -597,6 +641,7 @@ const runActionCreators = {
 	tableSelected,
 	addTable,
 	deleteTable,
+	freeTable,
 	kickPerson,
 	banPerson,
 	personAvatarChanged,

@@ -25,7 +25,8 @@
 	height: calc(100% - 4px);
 	display: inline-block;
 	background-size: contain;
-    background-repeat: no-repeat;
+	background-repeat: no-repeat;
+	background-position-y: center;
 }
 
 .personItem_host {
