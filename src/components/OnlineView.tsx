@@ -55,10 +55,6 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 });
 
 export class OnlineView extends React.Component<OnlineViewProps> {
-	constructor(props: OnlineViewProps) {
-		super(props);
-	}
-
 	render() {
 		const newGame = <div className="newGameArea"><NewGameDialog isSingleGame={false} onClose={this.props.closeNewGame} /></div>;
 
@@ -88,7 +84,10 @@ export class OnlineView extends React.Component<OnlineViewProps> {
 			<div className="onlineView">
 				{this.props.inProgress ? <ProgressBar isIndeterminate /> : null}
 				<GamesList games={this.props.filteredGames} selectedGameId={this.props.selectedGameId} showInfo={false} />
-				<GameInfoView game={this.props.selectedGame} showGameName />
+				<div className='gameInfoArea'>
+					<header />
+					<div className='gameInfoAreaConent'><GameInfoView game={this.props.selectedGame} showGameName /></div>
+				</div>
 				<UsersView />
 				{this.props.newGameShown ? newGame : null}
 			</div>

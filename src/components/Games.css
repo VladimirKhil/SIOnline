@@ -52,6 +52,17 @@
 	height: initial;
 }
 
+.gameInfoDialog2 {
+    background-color: #5A95E2;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.gameInfoDialog2 h1 {
+	margin-bottom: 6px;
+}
+
 @media screen and (min-width: 600px) {
 	.games {
 		width: 500px;

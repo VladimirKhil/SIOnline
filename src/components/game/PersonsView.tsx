@@ -55,6 +55,25 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => ({
 	}
 });
 
+const tooltipRef: React.RefObject<HTMLDivElement> = React.createRef();
+
+function inviteLink() {
+	navigator.clipboard.writeText(window.location.href + '&invite=true');
+
+	if (tooltipRef.current) {
+		tooltipRef.current.style.display = 'initial';
+
+		setTimeout(
+			() => {
+				if (tooltipRef.current) {
+					tooltipRef.current.style.display = 'none';
+				}
+			},
+			3000
+		);
+	}
+}
+
 export function PersonsView(props: PersonsViewProps): JSX.Element {
 	const canKick = props.selectedPerson && props.selectedPerson.name !== props.login && props.selectedPerson.isHuman;
 
@@ -77,6 +96,10 @@ export function PersonsView(props: PersonsViewProps): JSX.Element {
 				<ul>
 					{props.viewers.map(person => <PersonView key={person.name} account={person} />)}
 				</ul>
+			</div>
+			<div className="buttonsPanel inviteLinkHost">
+				<button type="button" onClick={() => inviteLink()}>{localization.inviteLink}</button>
+				<div ref={tooltipRef} className='inviteLinkTooltip'>{localization.inviteLinkCopied}</div>
 			</div>
 			<div className="buttonsPanel">
 				<button type="button" onClick={() => props.kick()} disabled={!props.isConnected || !canKick}>{localization.kick}</button>

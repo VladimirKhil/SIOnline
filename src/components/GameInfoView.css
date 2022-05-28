@@ -1,10 +1,5 @@
 .gameinfoHost {
-    overflow: hidden;
     height: 100%;
-}
-
-.gameinfoHost > header {
-    height: 0;
 }
 
 #gameinfo {
@@ -40,10 +35,19 @@
     margin: 5px 15px;
 }
 
+.joinGameError {
+    color: darkred;
+    height: 40px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .joinGameProgress {
     position: absolute;
     display: flex;
-    top: 0;
+    top: 6px;
     bottom: 0;
     right: 0;
     left: 0;
@@ -55,31 +59,7 @@
     position: static;
 }
 
-.joinGameError {
-    color: darkred;
-    height: 40px;
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
 @media screen and (min-width: 800px) {
-    .gameinfoHost {
-        position: relative;
-        height: 100%;
-        z-index: 0;
-        flex: 1;
-    }
-
-    .gameinfoHost > header {
-        height: 35pt;
-    }
-
-    #gameinfo {
-        height: calc(100% - 35pt);
-    }
-
     .gameInfo_close {
         display: none;
     }
@@ -98,5 +78,9 @@
         left: 300px;
         right: 300px;
         z-index: 0;
+    }
+
+    .joinGameProgress {
+        top: 0;
     }
 }

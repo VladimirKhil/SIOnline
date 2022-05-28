@@ -21,9 +21,32 @@
     right: 0;
 }
 
+.gameInfoArea {
+    overflow: hidden;
+    height: 100%;
+}
+
+.gameInfoArea > header {
+    height: 0;
+}
+
 @media screen and (min-width: 800px) {
     .newGameArea {
         right: 300px;
+    }
+
+    .gameInfoArea {
+        position: relative;
+        z-index: 0;
+        flex: 1;
+    }
+
+    .gameInfoArea > header {
+        height: 35pt;
+    }
+
+    .gameInfoAreaConent {
+        height: calc(100% - 35pt);
     }
 }
 

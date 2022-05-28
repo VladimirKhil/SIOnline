@@ -12,3 +12,16 @@
 	font-size: 18px;
 	color: #FFFFFF;
 }
+
+.inviteLinkHost {
+    position: relative;
+}
+
+.inviteLinkTooltip {
+    position: absolute;
+    bottom: 110%;
+    text-align: center;
+    width: 100%;
+    color: #101010;
+    display: none;
+}

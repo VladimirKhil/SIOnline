@@ -99,7 +99,6 @@ export function GameInfoView(props: GameInfoViewProps): JSX.Element {
 	if (!props.game) {
 		return (
 			<section className="gameinfoHost">
-				<header />
 				<div id="gameinfo" />
 			</section>
 		);
@@ -145,7 +144,6 @@ export function GameInfoView(props: GameInfoViewProps): JSX.Element {
 
 	return (
 		<section className="gameinfoHost">
-			<header />
 			<div id="gameinfo">
 				{game ? (
 					<div id="innerinfo">
@@ -191,8 +189,10 @@ export function GameInfoView(props: GameInfoViewProps): JSX.Element {
 									type="button"
 									className="join"
 									onClick={() => props.onJoin(game.gameID, Role.Showman)}
-									disabled={!props.isConnected || props.joinGameProgress || (game.passwordRequired
-									&& !props.password) || !canJoinAsShowman}
+									disabled={!props.isConnected ||
+										props.joinGameProgress ||
+										(game.passwordRequired && !props.password) ||
+										!canJoinAsShowman}
 								>
 									{localization.joinAsShowman}
 								</button>
@@ -200,8 +200,10 @@ export function GameInfoView(props: GameInfoViewProps): JSX.Element {
 									type="button"
 									className="join"
 									onClick={() => props.onJoin(game.gameID, Role.Player)}
-									disabled={!props.isConnected || props.joinGameProgress || (game.passwordRequired
-									&& !props.password) || !canJoinAsPlayer}
+									disabled={!props.isConnected ||
+										props.joinGameProgress ||
+										(game.passwordRequired && !props.password) ||
+										!canJoinAsPlayer}
 								>
 									{localization.joinAsPlayer}
 								</button>

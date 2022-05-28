@@ -223,6 +223,71 @@ async function loadHostInfoAsync(dispatch: Dispatch<any>, dataContext: DataConte
 	dispatch(serverNameChanged(hostInfo.name));
 }
 
+const friendsPlayInternal: ActionCreator<Actions.NavigateToGamesAction> = () => ({
+	type: Actions.ActionTypes.NavigateToGames
+});
+
+const selectGame: ActionCreator<Actions.SelectGameAction> = (gameId: number, showInfo: boolean) => ({
+	type: Actions.ActionTypes.SelectGame,
+	gameId,
+	showInfo
+});
+
+const clearGames: ActionCreator<Actions.ClearGamesAction> = () => ({
+	type: Actions.ActionTypes.ClearGames
+});
+
+const receiveGames: ActionCreator<Actions.ReceiveGamesAction> = (games: any[]) => ({
+	type: Actions.ActionTypes.ReceiveGames,
+	games
+});
+
+async function loadGamesAsync(dispatch: Dispatch<Actions.KnownAction>, gameClient: IGameServerClient) {
+	dispatch(clearGames());
+
+	let gamesSlice: Slice<GameInfo> = { data: [], isLastSlice: false };
+	let whileGuard = 100;
+	do {
+		const fromId = gamesSlice.data.length > 0 ? gamesSlice.data[gamesSlice.data.length - 1].gameID + 1 : 0;
+
+		gamesSlice = await gameClient.getGamesSliceAsync(fromId);
+
+		dispatch(receiveGames(gamesSlice.data));
+
+		whileGuard--;
+	} while (!gamesSlice.isLastSlice && whileGuard > 0);
+}
+
+const onlineLoadFinish: ActionCreator<Actions.OnlineLoadFinishedAction> = () => ({
+	type: Actions.ActionTypes.OnlineLoadFinished
+});
+
+const onlineLoadError: ActionCreator<Actions.OnlineLoadErrorAction> = (error: string) => ({
+	type: Actions.ActionTypes.OnlineLoadError,
+	error
+});
+
+const friendsPlay: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
+	() => async (dispatch: Dispatch<Actions.KnownAction>, getState: () => State, dataContext: DataContext) => {
+		const state = getState();
+		const { selectedGameId } = state.online;
+
+		dispatch(friendsPlayInternal());
+		try {
+			await loadGamesAsync(dispatch, dataContext.gameClient);
+
+			const state2 = getState();
+
+			if (selectedGameId && state2.online.games[selectedGameId]) {
+				dispatch(selectGame(selectedGameId, false));
+			}
+
+			dispatch(onlineLoadFinish());
+		} catch (error) {
+			dispatch(onlineLoadError(getErrorMessage(error)));
+		}
+	};
+
 const login: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 	() => async (dispatch: Dispatch<Actions.KnownAction>, getState: () => State, dataContext: DataContext) => {
 		dispatch(loginStart());
@@ -275,7 +340,15 @@ const login: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 					dispatch(onLoginChanged(state.user.login.trim())); // Normalize login
 
 					await loadHostInfoAsync(dispatch, dataContext);
-					dispatch(navigateToWelcome());
+
+					const urlParams = new URLSearchParams(window.location.search);
+					const invite = urlParams.get('invite');
+
+					if (state.online.selectedGameId && invite == 'true') {
+						friendsPlay()(dispatch, getState, dataContext);
+					} else {
+						dispatch(navigateToWelcome());
+					}
 				} catch (error) {
 					dispatch(loginEnd(`${localization.cannotConnectToServer}: ${getErrorMessage(error)}`));
 				}
@@ -291,22 +364,6 @@ const login: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 const singlePlay: ActionCreator<Actions.NavigateToNewGameAction> = () => ({
 	type: Actions.ActionTypes.NavigateToNewGame
 });
-
-const friendsPlayInternal: ActionCreator<Actions.NavigateToGamesAction> = () => ({
-	type: Actions.ActionTypes.NavigateToGames
-});
-
-const friendsPlay: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
-	() => async (dispatch: Dispatch<Actions.KnownAction>, getState: () => State, dataContext: DataContext) => {
-		dispatch(friendsPlayInternal());
-		try {
-			await loadGamesAsync(dispatch, dataContext.gameClient);
-
-			dispatch(onlineLoadFinish());
-		} catch (error) {
-			dispatch(onlineLoadError(getErrorMessage(error)));
-		}
-	};
 
 const navigateToLobbyInternal: ActionCreator<Actions.NavigateToLobbyAction> = () => ({
 	type: Actions.ActionTypes.NavigateToLobby
@@ -348,15 +405,6 @@ const navigateToError: ActionCreator<Actions.NavigateToErrorAction> = (error: st
 	type: Actions.ActionTypes.NavigateToError, error
 });
 
-const clearGames: ActionCreator<Actions.ClearGamesAction> = () => ({
-	type: Actions.ActionTypes.ClearGames
-});
-
-const receiveGames: ActionCreator<Actions.ReceiveGamesAction> = (games: any[]) => ({
-	type: Actions.ActionTypes.ReceiveGames,
-	games
-});
-
 const receiveUsers: ActionCreator<Actions.ReceiveUsersAction> = (users: string[]) => ({
 	type: Actions.ActionTypes.ReceiveUsers,
 	users
@@ -366,15 +414,6 @@ const receiveMessage: ActionCreator<Actions.ReceiveMessageAction> = (sender: str
 	type: Actions.ActionTypes.ReceiveMessage,
 	sender,
 	message
-});
-
-const onlineLoadFinish: ActionCreator<Actions.OnlineLoadFinishedAction> = () => ({
-	type: Actions.ActionTypes.OnlineLoadFinished
-});
-
-const onlineLoadError: ActionCreator<Actions.OnlineLoadErrorAction> = (error: string) => ({
-	type: Actions.ActionTypes.OnlineLoadError,
-	error
 });
 
 const onOnlineModeChanged: ActionCreator<Actions.OnlineModeChangedAction> = (mode: OnlineMode) => ({
@@ -413,12 +452,6 @@ const onGamesFilterToggle: ActionCreator<Actions.GamesFilterToggleAction> = (fil
 const onGamesSearchChanged: ActionCreator<Actions.GamesSearchChangedAction> = (search: string) => ({
 	type: Actions.ActionTypes.GamesSearchChanged,
 	search
-});
-
-const selectGame: ActionCreator<Actions.SelectGameAction> = (gameId: number, showInfo: boolean) => ({
-	type: Actions.ActionTypes.SelectGame,
-	gameId,
-	showInfo
 });
 
 const closeGameInfo: ActionCreator<Actions.CloseGameInfoAction> = () => ({
@@ -618,22 +651,6 @@ const uploadPackageProgress: ActionCreator<Actions.UploadPackageProgressAction> 
 	type: Actions.ActionTypes.UploadPackageProgress,
 	progress
 });
-
-async function loadGamesAsync(dispatch: Dispatch<Actions.KnownAction>, gameClient: IGameServerClient) {
-	dispatch(clearGames());
-
-	let gamesSlice: Slice<GameInfo> = { data: [], isLastSlice: false };
-	let whileGuard = 100;
-	do {
-		const fromId = gamesSlice.data.length > 0 ? gamesSlice.data[gamesSlice.data.length - 1].gameID + 1 : 0;
-
-		gamesSlice = await gameClient.getGamesSliceAsync(fromId);
-
-		dispatch(receiveGames(gamesSlice.data));
-
-		whileGuard--;
-	} while (!gamesSlice.isLastSlice && whileGuard > 0);
-}
 
 function uploadPackageAsync(
 	packageHash: string,

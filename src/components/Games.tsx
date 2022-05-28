@@ -105,7 +105,7 @@ export function Games(props: GamesProps): JSX.Element {
 	}
 
 	return props.selectedGame ? (
-		<Dialog id="gameInfoDialog" title={props.selectedGame.gameName} onClose={() => props.unselectGame()}>
+		<Dialog className="gameInfoDialog2" title={props.selectedGame.gameName} onClose={() => props.unselectGame()}>
 			<GameInfoView game={props.selectedGame} showGameName={false} />
 		</Dialog>
 	) : (
