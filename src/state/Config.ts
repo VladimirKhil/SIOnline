@@ -5,6 +5,5 @@ export default interface Config {
 	rootUri?: string;
 	useMessagePackProtocol?: boolean;
 	ads?: string;
-	forceHttps?: boolean;
 	rewriteUrl?: boolean;
 }

@@ -25,6 +25,8 @@ interface TablesViewProps {
 	addTable: () => void;
 	deleteTable: () => void;
 	freeTable: () => void;
+	changeType: () => void;
+	setTable: () => void;
 }
 
 const mapStateToProps = (state: State) => ({
@@ -48,6 +50,12 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => ({
 	},
 	freeTable: () => {
 		dispatch(runActionCreators.freeTable() as unknown as AnyAction);
+	},
+	changeType: () => {
+		dispatch(runActionCreators.changeType() as unknown as AnyAction);
+	},
+	setTable: () => {
+		dispatch(runActionCreators.setTable() as unknown as AnyAction);
 	}
 });
 
@@ -57,15 +65,18 @@ export function TablesView(props: TablesViewProps): JSX.Element {
 
 	const isPlayerSelected = props.selectedIndex > 0 && props.selectedIndex <= props.players.length;
 
-	const selectedPlayer = isPlayerSelected ? props.persons[props.players[props.selectedIndex - 1].name] : null;
-	const selectedPerson = props.selectedIndex === 0 ? props.persons[props.showman.name] : selectedPlayer;
+	const selectedPlayer = isPlayerSelected ? props.players[props.selectedIndex - 1] : null;
+	const selectedPerson = props.selectedIndex === 0 ? props.showman : selectedPlayer;
+	const selectedAccount = selectedPerson ? props.persons[selectedPerson.name] : null;
 
 	// You can delete occupied tables only before game start
 	const canDelete = props.players.length > Constants.MIN_PLAYER_COUNT &&
 		isPlayerSelected &&
 		(!props.isGameStarted || !selectedPlayer);
 
-	const canFree = !props.isGameStarted && selectedPerson && selectedPerson.isHuman;
+	const canFree = !props.isGameStarted && selectedAccount && selectedAccount.isHuman;
+
+	const canChangeType = !props.isGameStarted && selectedPerson;
 
 	return (
 		<>
@@ -96,6 +107,14 @@ export function TablesView(props: TablesViewProps): JSX.Element {
 						/>
 					))}
 				</ul>
+			</div>
+			<div className="buttonsPanel">
+				<button type="button" onClick={() => props.changeType()} disabled={!props.isConnected || !canChangeType}>
+					{selectedPerson && selectedPerson.isHuman ? localization.changeToBot : localization.changeToHuman}
+				</button>
+				{/*<button type="button" onClick={() => props.setTable()} disabled={!props.isConnected || !canDelete}>
+					{localization.replaceWith}
+				</button>*/}
 			</div>
 			<div className="buttonsPanel">
 				<button type="button" onClick={() => props.freeTable()} disabled={!props.isConnected || !canFree}>

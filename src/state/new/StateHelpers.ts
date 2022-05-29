@@ -9,7 +9,8 @@ export function saveStateToStorage(state: RootState): void {
 			password: state.game.password,
 			role: state.game.role,
 			type: state.game.type,
-			playersCount: state.game.playersCount
+			playersCount: state.game.playersCount,
+			humanPlayersCount: state.game.humanPlayersCount
 		},
 		settings: state.settings
 	});

@@ -46,7 +46,8 @@ function setState(state: State, savedState: SavedState | null, gameId: string | 
 			password: savedState.game.password,
 			role: savedState.game.role,
 			type: savedState.game.type,
-			playersCount: savedState.game.playersCount
+			playersCount: savedState.game.playersCount,
+			humanPlayersCount: savedState.game.humanPlayersCount
 		} : state.game,
 		settings: savedState.settings ? {
 			...state.settings,
@@ -98,10 +99,6 @@ async function run() {
 
 	if (!config) {
 		throw new Error('Config is undefined!');
-	}
-
-	if (config.forceHttps && location.protocol !== 'https:') {
-		location.replace(`https:${location.href.substring(location.protocol.length)}`);
 	}
 
 	try {

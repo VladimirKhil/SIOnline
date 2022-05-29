@@ -194,6 +194,36 @@ const freeTable: ActionCreator<ThunkAction<void, State, DataContext, Action>> = 
 	await dataContext.gameClient.msgAsync('CONFIG', 'FREE', isShowman ? 'showman' : 'player', isShowman ? '' : tableIndex - 1);
 };
 
+const setTable: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
+	_dispatch: Dispatch<RunActions.KnownRunAction>,
+	getState: () => State,
+	dataContext: DataContext
+	) => {
+	const tableIndex = getState().run.selectedTableIndex;
+	if (tableIndex < 0 || tableIndex >= getState().run.persons.players.length + 1) {
+		return;
+	}
+
+	const isShowman = tableIndex === 0;
+
+	await dataContext.gameClient.msgAsync('CONFIG', 'SET', isShowman ? 'showman' : 'player', isShowman ? '' : tableIndex - 1);
+};
+
+const changeType: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
+	_dispatch: Dispatch<RunActions.KnownRunAction>,
+	getState: () => State,
+	dataContext: DataContext
+	) => {
+	const tableIndex = getState().run.selectedTableIndex;
+	if (tableIndex < 0 || tableIndex >= getState().run.persons.players.length + 1) {
+		return;
+	}
+
+	const isShowman = tableIndex === 0;
+
+	await dataContext.gameClient.msgAsync('CONFIG', 'CHANGETYPE', isShowman ? 'showman' : 'player', isShowman ? '' : tableIndex - 1);
+};
+
 const kickPerson: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
 	_dispatch: Dispatch<RunActions.KnownRunAction>,
 	getState: () => State,
@@ -258,16 +288,16 @@ const personRemoved: ActionCreator<RunActions.PersonRemovedAction> = (name: stri
 	type: RunActions.RunActionTypes.PersonRemoved, name
 });
 
-const showmanChanged: ActionCreator<RunActions.ShowmanChangedAction> = (name: string) => ({
-	type: RunActions.RunActionTypes.ShowmanChanged, name
+const showmanChanged: ActionCreator<RunActions.ShowmanChangedAction> = (name: string, isHuman?: boolean) => ({
+	type: RunActions.RunActionTypes.ShowmanChanged, name, isHuman
 });
 
 const playerAdded: ActionCreator<RunActions.PlayerAddedAction> = () => ({
 	type: RunActions.RunActionTypes.PlayerAdded
 });
 
-const playerChanged: ActionCreator<RunActions.PlayerChangedAction> = (index: number, name: string) => ({
-	type: RunActions.RunActionTypes.PlayerChanged, index, name
+const playerChanged: ActionCreator<RunActions.PlayerChangedAction> = (index: number, name: string, isHuman?: boolean) => ({
+	type: RunActions.RunActionTypes.PlayerChanged, index, name, isHuman
 });
 
 const playerDeleted: ActionCreator<RunActions.PlayerDeletedAction> = (index: number) => ({
@@ -642,6 +672,8 @@ const runActionCreators = {
 	addTable,
 	deleteTable,
 	freeTable,
+	setTable,
+	changeType,
 	kickPerson,
 	banPerson,
 	personAvatarChanged,

@@ -970,11 +970,11 @@ function connected(dispatch: Dispatch<RunActions.KnownRunAction>, state: State, 
 
 	switch (role) {
 		case 'showman':
-			dispatch(runActionCreators.showmanChanged(name));
+			dispatch(runActionCreators.showmanChanged(name, true));
 			break;
 
 		case 'player':
-			dispatch(runActionCreators.playerChanged(index, name));
+			dispatch(runActionCreators.playerChanged(index, name, true));
 			break;
 
 		default:
@@ -1010,7 +1010,10 @@ function config(dispatch: Dispatch<RunActions.KnownRunAction>, state: State, ...
 			const index = parseInt(args[3], 10);
 
 			const isPlayer = personType === 'player';
-			dispatch(isPlayer ? runActionCreators.playerChanged(index, Constants.ANY_NAME) : runActionCreators.showmanChanged(Constants.ANY_NAME));
+			dispatch(isPlayer
+				? runActionCreators.playerChanged(index, Constants.ANY_NAME)
+				: runActionCreators.showmanChanged(Constants.ANY_NAME));
+			
 			const account = isPlayer ? state.run.persons.players[index] : state.run.persons.showman;
 
 			if (account.name === state.user.login) {
@@ -1077,12 +1080,12 @@ function config(dispatch: Dispatch<RunActions.KnownRunAction>, state: State, ...
 
 			for (let i = 0; i < state.run.persons.players.length; i++) {
 				if (state.run.persons.players[i].name === replacer) {
-
 					if (isPlayer) {
 						dispatch(runActionCreators.playersSwap(index, i));
 					} else {
 						dispatch(runActionCreators.playerChanged(i, account.name));
 						dispatch(runActionCreators.showmanChanged(replacer));
+
 						if (state.run.persons.showman.name === state.user.login) {
 							dispatch(runActionCreators.roleChanged(Role.Player));
 						} else if (replacer === state.user.login) {
@@ -1131,7 +1134,7 @@ function config(dispatch: Dispatch<RunActions.KnownRunAction>, state: State, ...
 				dispatch(runActionCreators.personAdded(newAccount));
 			}
 
-			dispatch(isPlayer ? runActionCreators.playerChanged(index, newName) : runActionCreators.showmanChanged(newName));
+			dispatch(isPlayer ? runActionCreators.playerChanged(index, newName, newType) : runActionCreators.showmanChanged(newName, newType));
 			if (newType) {
 				dispatch(runActionCreators.personRemoved(person.name));
 			}

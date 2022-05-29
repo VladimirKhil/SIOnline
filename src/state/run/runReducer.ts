@@ -281,7 +281,8 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 					showman: {
 						...state.persons.showman,
 						name: action.name,
-						isReady: false
+						isReady: false,
+						isHuman: action.isHuman ?? state.persons.showman.isHuman
 					}
 				}
 			};
@@ -318,6 +319,7 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 					players: replace(state.persons.players, action.index, {
 						...state.persons.players[action.index],
 						name: action.name,
+						isHuman: action.isHuman ?? state.persons.players[action.index].isHuman,
 						isReady: false
 					})
 				}

@@ -18,7 +18,7 @@ export default class GameServerClient implements IGameServerClient {
 
 	}
 
-	getComputerAccountsAsync(): Promise<string[]> {
+	getComputerAccountsAsync(culture: string): Promise<string[]> {
 		return this.connection.invoke<string[]>('GetComputerAccounts');
 	}
 

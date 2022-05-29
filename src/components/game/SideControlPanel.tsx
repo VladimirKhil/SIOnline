@@ -178,6 +178,7 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 							</div>
 						)}
 						theme={FlyoutTheme.Light}
+						alignWidth
 						verticalOrientation={FlyoutVerticalOrientation.Top}
 						horizontalOrientation={FlyoutHorizontalOrientation.Left}
 					>

@@ -184,7 +184,8 @@ const saveStateToStorage = (state: State) => {
 			password: state.game.password,
 			role: state.game.role,
 			type: state.game.type,
-			playersCount: state.game.playersCount
+			playersCount: state.game.playersCount,
+			humanPlayersCount: state.game.humanPlayersCount
 		},
 		settings: state.settings
 	});
@@ -336,7 +337,9 @@ const login: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 
 					attachListeners(dataContext.connection, dispatch);
 
-					const computerAccounts = await dataContext.gameClient.getComputerAccountsAsync();
+					const { culture } = state.settings.appSettings;
+
+					const computerAccounts = await dataContext.gameClient.getComputerAccountsAsync(culture ?? 'ru-RU');
 					dispatch(computerAccountsChanged(computerAccounts));
 
 					dispatch(loginEnd());
@@ -373,8 +376,7 @@ const navigateToLobbyInternal: ActionCreator<Actions.NavigateToLobbyAction> = ()
 });
 
 const navigateToLobby: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
-	(gameId: number, showInfo?: boolean) =>
-	async (dispatch: Dispatch<Actions.KnownAction>, getState: () => State, dataContext: DataContext) => {
+	(gameId: number, showInfo?: boolean) => async (dispatch: Dispatch<Actions.KnownAction>, getState: () => State, dataContext: DataContext) => {
 		dispatch(navigateToLobbyInternal());
 
 		if (gameId > -1) {
@@ -793,6 +795,7 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 				: game.isShowmanHuman
 				? { Name: Constants.ANY_NAME, IsHuman: true }
 				: { Name: localization.defaultShowman };
+		
 		const players: AccountSettings[] = [];
 		const viewers: AccountSettings[] = [];
 

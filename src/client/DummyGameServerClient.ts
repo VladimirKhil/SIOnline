@@ -13,7 +13,7 @@ import IGameServerClient from './IGameServerClient';
 
 /** Defines a disconnected version of IGameServerClient. */
 export default class DummyGameServerClient implements IGameServerClient {
-	async getComputerAccountsAsync(): Promise<string[]> {
+	async getComputerAccountsAsync(culture: string): Promise<string[]> {
 		return [];
 	}
 

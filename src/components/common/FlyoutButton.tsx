@@ -71,7 +71,7 @@ export default class FlyoutButton extends React.Component<FlyoutButtonProps, Fly
 			y: 0
 		};
 
-		this.hideFlyout = this.hideFlyout.bind(this); // 'resize' почему-то не передаёт this
+		this.hideFlyout = this.hideFlyout.bind(this); // 'resize' for some reason does not keep 'this'
 	}
 
 	componentDidMount(): void {
@@ -132,7 +132,7 @@ export default class FlyoutButton extends React.Component<FlyoutButtonProps, Fly
 					isOpen: false
 				});
 			},
-			200 // Если поставить слишком маленькое значение, onClick для внутенних элементов может не успеть отработать
+			200 // When small value is set, onClick for internal items could may not sometimes work
 		);
 	};
 

@@ -10,7 +10,7 @@ import Slice from '../model/server/Slice';
 /** Defines the SIGame Server client. */
 export default interface IGameServerClient {
 	/** Gets default computer accounts names. */
-	getComputerAccountsAsync(): Promise<string[]>;
+	getComputerAccountsAsync(culture: string): Promise<string[]>;
 	/** Gets server global info. */
 	getGameHostInfoAsync(): Promise<HostInfo>;
 	/**
