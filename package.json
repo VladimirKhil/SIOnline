@@ -32,6 +32,11 @@
     "redux-thunk": "^2.4.1",
     "rusha": "^0.8.14"
   },
+  "overrides": {
+    "@microsoft/signalr": {
+      "eventsource": "^2.0.2"
+    } 
+  },
   "devDependencies": {
     "@svgr/webpack": "^6.1.2",
     "@types/jest": "^23.3.14",

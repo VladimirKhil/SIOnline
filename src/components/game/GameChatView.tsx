@@ -8,7 +8,7 @@ import ChatMode from '../../model/enums/ChatMode';
 import runActionCreators from '../../state/run/runActionCreators';
 import localization from '../../model/resources/localization';
 import ChatInput from './ChatInput';
-import Role from '../../model/enums/Role';
+import Role from '../../client/contracts/Role';
 import RoundProgress from './RoundProgress';
 import TablesView from './TablesView';
 import isHost from '../../utils/StateHelpers';

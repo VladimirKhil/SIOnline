@@ -1,5 +1,5 @@
 import GamesFilter from '../model/enums/GamesFilter';
-import GameInfo from '../model/server/GameInfo';
+import GameInfo from '../client/contracts/GameInfo';
 
 export function filterGames(games: GameInfo[], filter: GamesFilter, search: string) {
 	const filteredGames: GameInfo[] = [];

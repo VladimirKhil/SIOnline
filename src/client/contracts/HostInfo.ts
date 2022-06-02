@@ -4,4 +4,5 @@ export default interface HostInfo {
 	port: number;
 	packagesPublicBaseUrl: string | null;
 	contentPublicBaseUrls: string[] | null;
+	license: string;
 }

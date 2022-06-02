@@ -11,7 +11,7 @@ import Account from '../../model/Account';
 import Persons from '../../model/Persons';
 import PersonInfo from '../../model/PersonInfo';
 import PlayerInfo from '../../model/PlayerInfo';
-import Role from '../../model/enums/Role';
+import Role from '../../client/contracts/Role';
 import PlayerStates from '../../model/enums/PlayerStates';
 import tableActionCreators from '../table/tableActionCreators';
 import StakeTypes from '../../model/enums/StakeTypes';
@@ -194,7 +194,7 @@ const freeTable: ActionCreator<ThunkAction<void, State, DataContext, Action>> = 
 	await dataContext.gameClient.msgAsync('CONFIG', 'FREE', isShowman ? 'showman' : 'player', isShowman ? '' : tableIndex - 1);
 };
 
-const setTable: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
+const setTable: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (name: string) => async (
 	_dispatch: Dispatch<RunActions.KnownRunAction>,
 	getState: () => State,
 	dataContext: DataContext
@@ -206,7 +206,7 @@ const setTable: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (
 
 	const isShowman = tableIndex === 0;
 
-	await dataContext.gameClient.msgAsync('CONFIG', 'SET', isShowman ? 'showman' : 'player', isShowman ? '' : tableIndex - 1);
+	await dataContext.gameClient.msgAsync('CONFIG', 'SET', isShowman ? 'showman' : 'player', isShowman ? '' : tableIndex - 1, name);
 };
 
 const changeType: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
@@ -288,16 +288,16 @@ const personRemoved: ActionCreator<RunActions.PersonRemovedAction> = (name: stri
 	type: RunActions.RunActionTypes.PersonRemoved, name
 });
 
-const showmanChanged: ActionCreator<RunActions.ShowmanChangedAction> = (name: string, isHuman?: boolean) => ({
-	type: RunActions.RunActionTypes.ShowmanChanged, name, isHuman
+const showmanChanged: ActionCreator<RunActions.ShowmanChangedAction> = (name: string, isHuman?: boolean, isReady?: boolean) => ({
+	type: RunActions.RunActionTypes.ShowmanChanged, name, isHuman, isReady
 });
 
 const playerAdded: ActionCreator<RunActions.PlayerAddedAction> = () => ({
 	type: RunActions.RunActionTypes.PlayerAdded
 });
 
-const playerChanged: ActionCreator<RunActions.PlayerChangedAction> = (index: number, name: string, isHuman?: boolean) => ({
-	type: RunActions.RunActionTypes.PlayerChanged, index, name, isHuman
+const playerChanged: ActionCreator<RunActions.PlayerChangedAction> = (index: number, name: string, isHuman?: boolean, isReady?: boolean) => ({
+	type: RunActions.RunActionTypes.PlayerChanged, index, name, isHuman, isReady
 });
 
 const playerDeleted: ActionCreator<RunActions.PlayerDeletedAction> = (index: number) => ({
@@ -621,6 +621,10 @@ const ready: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (isR
 	await dataContext.gameClient.msgAsync('READY', isReady ? '+' : '-');
 };
 
+const roundsNamesChanged: ActionCreator<RunActions.RoundsNamesChangedAction> = (roundsNames: string[]) => ({
+	type: RunActions.RunActionTypes.RoundsNamesChanged, roundsNames
+});
+
 const hostNameChanged: ActionCreator<RunActions.HostNameChangedAction> = (hostName: string | null) => ({
 	type: RunActions.RunActionTypes.HostNameChanged, hostName
 });
@@ -737,7 +741,8 @@ const runActionCreators = {
 	updateCaption,
 	moveNext,
 	isReadyChanged,
-	ready
+	ready,
+	roundsNamesChanged
 };
 
 export default runActionCreators;

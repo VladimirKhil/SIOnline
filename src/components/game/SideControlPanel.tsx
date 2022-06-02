@@ -5,7 +5,7 @@ import State from '../../state/State';
 import runActionCreators from '../../state/run/runActionCreators';
 import localization from '../../model/resources/localization';
 import FlyoutButton, { FlyoutVerticalOrientation, FlyoutTheme, FlyoutHorizontalOrientation } from '../common/FlyoutButton';
-import Role from '../../model/enums/Role';
+import Role from '../../client/contracts/Role';
 import ChatMessage from '../../model/ChatMessage';
 import GameButton from './GameButton';
 import ChatInput from './ChatInput';

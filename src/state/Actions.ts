@@ -1,9 +1,9 @@
 ﻿import OnlineMode from '../model/enums/OnlineMode';
 import GamesFilter from '../model/enums/GamesFilter';
 import ChatMode from '../model/enums/ChatMode';
-import GameType from '../model/enums/GameType';
-import Role from '../model/enums/Role';
-import GameInfo from '../model/server/GameInfo';
+import GameType from '../client/contracts/GameType';
+import Role from '../client/contracts/Role';
+import GameInfo from '../client/contracts/GameInfo';
 import PackageType from '../model/enums/PackageType';
 import { SIPackageInfo } from '../model/SIPackageInfo';
 import { SearchEntity } from '../model/SearchEntity';
@@ -69,7 +69,7 @@ export const enum ActionTypes {
 	UploadPackageFinished = 'UPLOAD_PACKAGE_FINISHED',
 	UploadPackageProgress = 'UPLOAD_PACKAGE_PROGRESS',
 	UnselectGame = 'UNSELECT_GAME',
-	ServerNameChanged = 'SERVER_NAME_CHANGED',
+	ServerInfoChanged = 'SERVER_INFO_CHANGED',
 	SearchPackages = 'SEARCH_PACKAGES',
 	SearchPackagesFinished = 'SEARCH_PACKAGES_FINISHED',
 	ReceiveAuthors = 'RECEIVE_AUTHORS',
@@ -140,7 +140,7 @@ export type UploadPackageStartedAction = { type: ActionTypes.UploadPackageStarte
 export type UploadPackageFinishedAction = { type: ActionTypes.UploadPackageFinished };
 export type UploadPackageProgressAction = { type: ActionTypes.UploadPackageProgress, progress: number };
 export type UnselectGameAction = { type: ActionTypes.UnselectGame };
-export type ServerNameChangedAction = { type: ActionTypes.ServerNameChanged, serverName: string };
+export type ServerInfoChangedAction = { type: ActionTypes.ServerInfoChanged, serverName: string, serverLicense: string };
 export type SearchPackagesAction = { type: ActionTypes.SearchPackages };
 export type SearchPackagesFinishedAction = { type: ActionTypes.SearchPackagesFinished, packages: SIPackageInfo[] };
 export type ReceiveAuthorsAction = { type: ActionTypes.ReceiveAuthors };
@@ -210,7 +210,7 @@ export type KnownAction =
 	| UploadPackageFinishedAction
 	| UploadPackageProgressAction
 	| UnselectGameAction
-	| ServerNameChangedAction
+	| ServerInfoChangedAction
 	| SearchPackagesAction
 	| SearchPackagesFinishedAction
 	| ReceiveAuthorsAction

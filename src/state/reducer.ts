@@ -11,7 +11,7 @@ import OnlineMode from '../model/enums/OnlineMode';
 import * as runState from './run/RunState';
 import settingsReducer from './settings/settingsReducer';
 import { KnownSettingsAction } from './settings/SettingsActions';
-import Role from '../model/enums/Role';
+import Role from '../client/contracts/Role';
 
 const reducer: Reducer<State> = (state: State = initialState, action: KnownAction | KnownRunAction | KnownSettingsAction): State => {
 	switch (action.type) {
@@ -646,12 +646,13 @@ const reducer: Reducer<State> = (state: State = initialState, action: KnownActio
 				}
 			};
 
-		case ActionTypes.ServerNameChanged:
+		case ActionTypes.ServerInfoChanged:
 			return {
 				...state,
 				common: {
 					...state.common,
-					serverName: action.serverName
+					serverName: action.serverName,
+					serverLicense: action.serverLicense
 				}
 			};
 

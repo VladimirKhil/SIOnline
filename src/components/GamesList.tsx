@@ -7,7 +7,7 @@ import State from '../state/State';
 import localization from '../model/resources/localization';
 import getFilterValue from '../state/getFilterValue';
 import actionCreators from '../state/actionCreators';
-import GameInfo from '../model/server/GameInfo';
+import GameInfo from '../client/contracts/GameInfo';
 import LobbyMenu from './LobbyMenu';
 
 import './GamesList.css';

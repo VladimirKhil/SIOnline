@@ -60,8 +60,8 @@ function getLoginErrorByCode(response: Response): string {
 	}
 }
 
-async function loadHostInfoAsync(dispatch: AppDispatch, dataContext: DataContext) {
-	const hostInfo = await dataContext.gameClient.getGameHostInfoAsync();
+async function loadHostInfoAsync(dispatch: AppDispatch, dataContext: DataContext, culture: string) {
+	const hostInfo = await dataContext.gameClient.getGameHostInfoAsync(culture);
 
 	dataContext.contentUris = hostInfo.contentPublicBaseUrls;
 
@@ -116,14 +116,15 @@ export const login = () => async (dispatch: AppDispatch, getState: () => RootSta
 				attachListeners(dataContext.connection, dispatch);
 
 				const { culture } = state.settings.appSettings;
+				const requestCulture = culture == 'en' ? 'en-US' : 'ru-RU';
 
-				const computerAccounts = await dataContext.gameClient.getComputerAccountsAsync(culture ?? 'ru-RU');
+				const computerAccounts = await dataContext.gameClient.getComputerAccountsAsync(requestCulture);
 				dispatch(computerAccountsChanged(computerAccounts));
 
 				dispatch(endLogin(''));
 				dispatch(changeLogin(state.user.login.trim())); // Normalize login
 
-				await loadHostInfoAsync(dispatch, dataContext);
+				await loadHostInfoAsync(dispatch, dataContext, requestCulture);
 				dispatch(navigate(MainView.Welcome));
 			} catch (error) {
 				dispatch(endLogin(`${localization.cannotConnectToServer}: ${getErrorMessage(error)}`));

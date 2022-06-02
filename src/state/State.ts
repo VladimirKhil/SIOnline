@@ -3,10 +3,10 @@ import GamesFilter from '../model/enums/GamesFilter';
 import OnlineMode from '../model/enums/OnlineMode';
 import ChatMessage from '../model/ChatMessage';
 import ChatMode from '../model/enums/ChatMode';
-import GameType from '../model/enums/GameType';
-import Role from '../model/enums/Role';
+import GameType from '../client/contracts/GameType';
+import Role from '../client/contracts/Role';
 import RunState, { initialState as runInitialState } from './run/RunState';
-import GameInfo from '../model/server/GameInfo';
+import GameInfo from '../client/contracts/GameInfo';
 import localization from '../model/resources/localization';
 import SettingsState, { initialState as settingsInitialState } from './settings/SettingsState';
 import PackageType from '../model/enums/PackageType';
@@ -71,6 +71,7 @@ export default interface State {
 		computerAccounts: string[] | null;
 		isConnected: boolean;
 		serverName: string | null;
+		serverLicense: string | null;
 		error: string | null;
 		avatarLoadProgress: boolean;
 		avatarLoadError: string | null;
@@ -155,6 +156,7 @@ export const initialState: State = {
 		computerAccounts: null,
 		isConnected: true,
 		serverName: null,
+		serverLicense: null,
 		error: null,
 		avatarLoadProgress: false,
 		avatarLoadError: null

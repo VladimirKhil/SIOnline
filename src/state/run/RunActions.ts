@@ -4,7 +4,7 @@ import Account from '../../model/Account';
 import Persons from '../../model/Persons';
 import PersonInfo from '../../model/PersonInfo';
 import PlayerInfo from '../../model/PlayerInfo';
-import Role from '../../model/enums/Role';
+import Role from '../../client/contracts/Role';
 import PlayerStates from '../../model/enums/PlayerStates';
 import StakeTypes from '../../model/enums/StakeTypes';
 
@@ -68,7 +68,8 @@ export const enum RunActionTypes {
 	OperationError = 'OPERATION_ERROR',
 	HostNameChanged = 'HOST_NAME_CHANGED',
 	ThemeNameChanged = 'THEME_NAME_CHANGED',
-	IsReadyChanged = 'IS_READY_CHANGED'
+	IsReadyChanged = 'IS_READY_CHANGED',
+	RoundsNamesChanged = 'ROUNDS_NAMES_CHANGED'
 }
 
 export type RunChatModeChangedAction = { type: RunActionTypes.RunChatModeChanged, chatMode: ChatMode };
@@ -96,9 +97,9 @@ export type AfterQuestionStateChangedAction = { type: RunActionTypes.AfterQuesti
 export type CurrentPriceChangedAction = { type: RunActionTypes.CurrentPriceChanged, currentPrice: number };
 export type PersonAddedAction = { type: RunActionTypes.PersonAdded, person: Account };
 export type PersonRemovedAction = { type: RunActionTypes.PersonRemoved, name: string };
-export type ShowmanChangedAction = { type: RunActionTypes.ShowmanChanged, name: string, isHuman?: boolean };
+export type ShowmanChangedAction = { type: RunActionTypes.ShowmanChanged, name: string, isHuman?: boolean, isReady?: boolean };
 export type PlayerAddedAction = { type: RunActionTypes.PlayerAdded };
-export type PlayerChangedAction = { type: RunActionTypes.PlayerChanged, index: number, name: string, isHuman?: boolean };
+export type PlayerChangedAction = { type: RunActionTypes.PlayerChanged, index: number, name: string, isHuman?: boolean, isReady?: boolean };
 export type PlayerDeletedAction = { type: RunActionTypes.PlayerDeleted, index: number };
 export type PlayersSwapAction = { type: RunActionTypes.PlayersSwap, index1: number, index2: number };
 export type RoleChangedAction = { type: RunActionTypes.RoleChanged, role: Role };
@@ -148,6 +149,7 @@ export type OperationErrorAction = { type: RunActionTypes.OperationError, error:
 export type HostNameChangedAction = { type: RunActionTypes.HostNameChanged, hostName: string | null };
 export type ThemeNameChangedAction = { type: RunActionTypes.ThemeNameChanged, themeName: string };
 export type IsReadyChangedAction = { type: RunActionTypes.IsReadyChanged, personIndex: number, isReady: boolean };
+export type RoundsNamesChangedAction = { type: RunActionTypes.RoundsNamesChanged, roundsNames: string[] };
 
 export type KnownRunAction =
 	RunChatModeChangedAction
@@ -209,4 +211,5 @@ export type KnownRunAction =
 	| OperationErrorAction
 	| HostNameChangedAction
 	| ThemeNameChangedAction
-	| IsReadyChangedAction;
+	| IsReadyChangedAction
+	| RoundsNamesChangedAction;

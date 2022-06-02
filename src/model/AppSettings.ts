@@ -1,4 +1,4 @@
-import TimeSettings from './server/TimeSettings';
+import TimeSettings from '../client/contracts/TimeSettings';
 
 export default interface AppSettings {
 	culture: string | null;

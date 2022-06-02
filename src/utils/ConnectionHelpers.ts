@@ -5,7 +5,7 @@ import runActionCreators from '../state/run/runActionCreators';
 import actionCreators from '../state/actionCreators';
 import Message from '../model/Message';
 import messageProcessor from '../state/game/messageProcessor';
-import GameInfo from '../model/server/GameInfo';
+import GameInfo from '../client/contracts/GameInfo';
 
 export const activeConnections: string[] = [];
 

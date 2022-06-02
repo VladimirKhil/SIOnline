@@ -1,14 +1,14 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable class-methods-use-this */
-import Role from '../model/enums/Role';
-import FileKey from '../model/server/FileKey';
-import GameCreationResult from '../model/server/GameCreationResult';
-import GameInfo from '../model/server/GameInfo';
-import GameSettings from '../model/server/GameSettings';
-import HostInfo from '../model/server/HostInfo';
-import PackageKey from '../model/server/PackageKey';
-import Slice from '../model/server/Slice';
+import Role from './contracts/Role';
+import FileKey from './contracts/FileKey';
+import GameCreationResult from './contracts/GameCreationResult';
+import GameInfo from './contracts/GameInfo';
+import GameSettings from './contracts/GameSettings';
+import HostInfo from './contracts/HostInfo';
+import PackageKey from './contracts/PackageKey';
+import Slice from './contracts/Slice';
 import IGameServerClient from './IGameServerClient';
 
 /** Defines a disconnected version of IGameServerClient. */
@@ -17,7 +17,7 @@ export default class DummyGameServerClient implements IGameServerClient {
 		return [];
 	}
 
-	async getGameHostInfoAsync(): Promise<HostInfo> {
+	async getGameHostInfoAsync(culture: string): Promise<HostInfo> {
 		this.throwNotConnectedError();
 	}
 

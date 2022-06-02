@@ -5,7 +5,7 @@ import { Dispatch, Action } from 'redux';
 import actionCreators from '../state/actionCreators';
 import localization from '../model/resources/localization';
 import State from '../state/State';
-import GameInfo from '../model/server/GameInfo';
+import GameInfo from '../client/contracts/GameInfo';
 import { filterGames } from '../utils/GamesHelpers';
 import GamesFilter from '../model/enums/GamesFilter';
 import NewGameDialog from './NewGameDialog';

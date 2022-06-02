@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import ChatMessage from '../../model/ChatMessage';
 import DataContext from '../../model/DataContext';
 import ChatMode from '../../model/enums/ChatMode';
-import Role from '../../model/enums/Role';
+import Role from '../../client/contracts/Role';
 import StakeTypes from '../../model/enums/StakeTypes';
 import PersonInfo from '../../model/PersonInfo';
 import Persons from '../../model/Persons';

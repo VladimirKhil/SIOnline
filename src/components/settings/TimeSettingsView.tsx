@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Dispatch, Action } from 'redux';
 import { connect } from 'react-redux';
 import State from '../../state/State';
-import TimeSettings from '../../model/server/TimeSettings';
+import TimeSettings from '../../client/contracts/TimeSettings';
 import localization from '../../model/resources/localization';
 import TimeSettingItem from './TimeSettingItem';
 import settingsActionCreators from '../../state/settings/settingsActionCreators';

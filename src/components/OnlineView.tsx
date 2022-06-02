@@ -6,7 +6,7 @@ import GameInfoView from './GameInfoView';
 import UsersView from './UsersView';
 import OnlineMode from '../model/enums/OnlineMode';
 import NewGameDialog from './NewGameDialog';
-import GameInfo from '../model/server/GameInfo';
+import GameInfo from '../client/contracts/GameInfo';
 import Dialog from './common/Dialog';
 import actionCreators from '../state/actionCreators';
 import { Dispatch, Action } from 'redux';

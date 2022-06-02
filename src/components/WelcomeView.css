@@ -21,6 +21,27 @@
 	color: #FFFFFF;
 }
 
+.serverLicense {
+	margin-left: 10px;
+	font-size: 22px;
+	cursor: pointer;
+	display: inline-flex;
+	align-items: center;
+	border: 0;
+}
+
+.licenseText {
+	display: block;
+	background-color: #98B9FF;
+	padding: 10px;
+}
+
+.licenseText header {
+	font-weight: bold;
+	font-size: 20px;
+	margin-bottom: 5px;
+}
+
 .welcomeViewActions {
 	width: 100%;
 	flex: 1;

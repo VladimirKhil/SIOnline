@@ -30,6 +30,7 @@ interface FlyoutButtonProps {
 	horizontalOrientation: FlyoutHorizontalOrientation;
 	verticalOrientation: FlyoutVerticalOrientation;
 	hideOnClick?: boolean;
+	disabled?: boolean;
 }
 
 interface FlyoutButtonState {
@@ -152,18 +153,21 @@ export default class FlyoutButton extends React.Component<FlyoutButtonProps, Fly
 		};
 
 		const verticalPosition = this.props.verticalOrientation === FlyoutVerticalOrientation.Top ? {
-			bottom: window.innerHeight - this.state.y
+			bottom: window.innerHeight - this.state.y,
+			maxHeight: this.state.y
 		} : {
-			top: this.state.y
+			top: this.state.y,
+			maxHeight: window.innerHeight - this.state.y
 		};
 
-		const widthStyle = this.state.width ? { width: this.state.width } : {};
+		const widthStyle = this.state.width ? { minWidth : this.state.width } : {};
 
 		const flyoutStyle: React.CSSProperties = {
 			...horizontalPosition,
 			...verticalPosition,
 			...widthStyle,
-			pointerEvents: 'initial'
+			pointerEvents: 'initial',
+			overflowY: 'auto'
 		};
 
 		return (
@@ -173,6 +177,7 @@ export default class FlyoutButton extends React.Component<FlyoutButtonProps, Fly
 				className={`flyoutButton ${this.props.className}`}
 				title={this.props.title}
 				onClick={this.onClick}
+				disabled={this.props.disabled}
 			>
 				{this.props.children}
 				{this.state.isOpen

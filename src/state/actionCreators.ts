@@ -7,7 +7,7 @@ import * as Rusha from 'rusha';
 import * as Actions from './Actions';
 import State from './State';
 import Sex from '../model/enums/Sex';
-import Role from '../model/enums/Role';
+import Role from '../client/contracts/Role';
 import DataContext from '../model/DataContext';
 
 import 'es6-promise/auto';
@@ -17,27 +17,27 @@ import GamesFilter from '../model/enums/GamesFilter';
 import localization from '../model/resources/localization';
 import ChatMode from '../model/enums/ChatMode';
 
-import GameType from '../model/enums/GameType';
+import GameType from '../client/contracts/GameType';
 import * as GameErrorsHelper from '../utils/GameErrorsHelper';
-import GameInfo from '../model/server/GameInfo';
+import GameInfo from '../client/contracts/GameInfo';
 import { attachListeners, detachListeners, activeConnections } from '../utils/ConnectionHelpers';
 import MainView from '../model/enums/MainView';
 import runActionCreators from './run/runActionCreators';
-import Slice from '../model/server/Slice';
+import Slice from '../client/contracts/Slice';
 import PackageType from '../model/enums/PackageType';
-import PackageKey from '../model/server/PackageKey';
+import PackageKey from '../client/contracts/PackageKey';
 import Constants from '../model/enums/Constants';
 
 import GameServerClient from '../client/GameServerClient';
-import ServerAppSettings from '../model/server/ServerAppSettings';
-import AccountSettings from '../model/server/AccountSettings';
-import GameSettings from '../model/server/GameSettings';
+import ServerAppSettings from '../client/contracts/ServerAppSettings';
+import AccountSettings from '../client/contracts/AccountSettings';
+import GameSettings from '../client/contracts/GameSettings';
 import IGameServerClient from '../client/IGameServerClient';
 import { PackageFilters } from '../model/PackageFilters';
 import { SIPackageInfo } from '../model/SIPackageInfo';
 import { SearchEntity } from '../model/SearchEntity';
 import getErrorMessage from '../utils/ErrorHelpers';
-import FileKey from '../model/server/FileKey';
+import FileKey from '../client/contracts/FileKey';
 
 const isConnectedChanged: ActionCreator<Actions.IsConnectedChangedAction> = (isConnected: boolean) => ({
 	type: Actions.ActionTypes.IsConnectedChanged,
@@ -211,17 +211,18 @@ const navigateToWelcome: ActionCreator<Actions.NavigateToWelcomeAction> = () => 
 	type: Actions.ActionTypes.NavigateToWelcome
 });
 
-const serverNameChanged: ActionCreator<Actions.ServerNameChangedAction> = (serverName: string) => ({
-	type: Actions.ActionTypes.ServerNameChanged,
-	serverName
+const serverInfoChanged: ActionCreator<Actions.ServerInfoChangedAction> = (serverName: string, serverLicense: string) => ({
+	type: Actions.ActionTypes.ServerInfoChanged,
+	serverName,
+	serverLicense
 });
 
-async function loadHostInfoAsync(dispatch: Dispatch<any>, dataContext: DataContext) {
-	const hostInfo = await dataContext.gameClient.getGameHostInfoAsync();
+async function loadHostInfoAsync(dispatch: Dispatch<any>, dataContext: DataContext, culture: string) {
+	const hostInfo = await dataContext.gameClient.getGameHostInfoAsync(culture);
 	// eslint-disable-next-line no-param-reassign
 	dataContext.contentUris = hostInfo.contentPublicBaseUrls;
 
-	dispatch(serverNameChanged(hostInfo.name));
+	dispatch(serverInfoChanged(hostInfo.name, hostInfo.license));
 }
 
 const friendsPlayInternal: ActionCreator<Actions.NavigateToGamesAction> = () => ({
@@ -338,14 +339,15 @@ const login: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 					attachListeners(dataContext.connection, dispatch);
 
 					const { culture } = state.settings.appSettings;
+					const requestCulture = culture == 'en' ? 'en-US' : 'ru-RU';
 
-					const computerAccounts = await dataContext.gameClient.getComputerAccountsAsync(culture ?? 'ru-RU');
+					const computerAccounts = await dataContext.gameClient.getComputerAccountsAsync(requestCulture);
 					dispatch(computerAccountsChanged(computerAccounts));
 
 					dispatch(loginEnd());
 					dispatch(onLoginChanged(state.user.login.trim())); // Normalize login
 
-					await loadHostInfoAsync(dispatch, dataContext);
+					await loadHostInfoAsync(dispatch, dataContext, requestCulture);
 
 					const urlParams = new URLSearchParams(window.location.search);
 					const invite = urlParams.get('invite');
@@ -787,14 +789,14 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 			} : state.game;
 
 		const { playersCount, humanPlayersCount, role } = game;
-		const me = { Name: state.user.login, IsHuman: true, IsMale: state.settings.sex === Sex.Male };
+		const me: AccountSettings = { name: state.user.login, isHuman: true, isMale: state.settings.sex === Sex.Male };
 
 		const showman: AccountSettings =
 			role === Role.Showman
 				? me
 				: game.isShowmanHuman
-				? { Name: Constants.ANY_NAME, IsHuman: true }
-				: { Name: localization.defaultShowman };
+				? { name: Constants.ANY_NAME, isHuman: true }
+				: { name: localization.defaultShowman };
 		
 		const players: AccountSettings[] = [];
 		const viewers: AccountSettings[] = [];
@@ -813,12 +815,12 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 		}
 
 		for (let i = 0; i < humanPlayersCount; i++) {
-			players.push({ Name: Constants.ANY_NAME, IsHuman: true });
+			players.push({ name: Constants.ANY_NAME, isHuman: true });
 		}
 
 		for (let i = 0; i < compPlayersCount; i++) {
 			const ind = Math.floor(Math.random() * compIndicies.length);
-			players.push({ Name: state.common.computerAccounts[compIndicies[ind]], IsHuman: false });
+			players.push({ name: state.common.computerAccounts[compIndicies[ind]], isHuman: false });
 			compIndicies.splice(ind, 1);
 		}
 
@@ -827,31 +829,31 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 		const { culture } = state.settings.appSettings;
 
 		const appSettings: ServerAppSettings = {
-			TimeSettings: state.settings.appSettings.timeSettings,
-			ReadingSpeed: state.settings.appSettings.readingSpeed,
-			FalseStart: state.settings.appSettings.falseStart,
-			HintShowman: state.settings.appSettings.hintShowman,
-			Oral: state.settings.appSettings.oral,
-			IgnoreWrong: state.settings.appSettings.ignoreWrong,
-			Managed: state.settings.appSettings.managed,
-			GameMode: gameMode.toString(),
-			PartialText: state.settings.appSettings.partialText,
-			RandomQuestionsBasePrice: gameMode === GameType.Simple ? 10 : 100,
-			RandomRoundsCount: gameMode === GameType.Simple ? 1 : 3,
-			RandomThemesCount: gameMode === GameType.Simple ? 5 : 6,
-			Culture: culture == 'en' ? 'en-US' : 'ru-RU'
+			timeSettings: state.settings.appSettings.timeSettings,
+			readingSpeed: state.settings.appSettings.readingSpeed,
+			falseStart: state.settings.appSettings.falseStart,
+			hintShowman: state.settings.appSettings.hintShowman,
+			oral: state.settings.appSettings.oral,
+			ignoreWrong: state.settings.appSettings.ignoreWrong,
+			managed: state.settings.appSettings.managed,
+			gameMode: gameMode.toString(),
+			partialText: state.settings.appSettings.partialText,
+			randomQuestionsBasePrice: gameMode === GameType.Simple ? 10 : 100,
+			randomRoundsCount: gameMode === GameType.Simple ? 1 : 3,
+			randomThemesCount: gameMode === GameType.Simple ? 5 : 6,
+			culture: culture == 'en' ? 'en-US' : 'ru-RU'
 		};
 
 		const gameSettings: GameSettings = {
-			HumanPlayerName: state.user.login,
-			RandomSpecials: game.package.type === PackageType.Random,
-			NetworkGameName: game.name,
-			NetworkGamePassword: game.password,
-			AllowViewers: true,
-			Showman: showman,
-			Players: players,
-			Viewers: viewers,
-			AppSettings: appSettings
+			humanPlayerName: state.user.login,
+			randomSpecials: game.package.type === PackageType.Random,
+			networkGameName: game.name,
+			networkGamePassword: game.password,
+			allowViewers: true,
+			showman: showman,
+			players: players,
+			viewers: viewers,
+			appSettings: appSettings
 		};
 
 		try {

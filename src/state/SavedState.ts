@@ -1,5 +1,5 @@
-﻿import Role from '../model/enums/Role';
-import GameType from '../model/enums/GameType';
+﻿import Role from '../client/contracts/Role';
+import GameType from '../client/contracts/GameType';
 import SettingsState from './settings/SettingsState';
 
 const STATE_KEY = 'SIOnline_State';

@@ -1,5 +1,7 @@
+import Role from './Role';
+
 export default interface PersonInfo {
 	isOnline: boolean;
 	name: string;
-	role: number;
+	role: Role;
 }

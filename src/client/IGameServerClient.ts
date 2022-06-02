@@ -1,18 +1,18 @@
-import Role from '../model/enums/Role';
-import FileKey from '../model/server/FileKey';
-import GameCreationResult from '../model/server/GameCreationResult';
-import GameInfo from '../model/server/GameInfo';
-import GameSettings from '../model/server/GameSettings';
-import HostInfo from '../model/server/HostInfo';
-import PackageKey from '../model/server/PackageKey';
-import Slice from '../model/server/Slice';
+import Role from './contracts/Role';
+import FileKey from './contracts/FileKey';
+import GameCreationResult from './contracts/GameCreationResult';
+import GameInfo from './contracts/GameInfo';
+import GameSettings from './contracts/GameSettings';
+import HostInfo from './contracts/HostInfo';
+import PackageKey from './contracts/PackageKey';
+import Slice from './contracts/Slice';
 
 /** Defines the SIGame Server client. */
 export default interface IGameServerClient {
 	/** Gets default computer accounts names. */
 	getComputerAccountsAsync(culture: string): Promise<string[]>;
 	/** Gets server global info. */
-	getGameHostInfoAsync(): Promise<HostInfo>;
+	getGameHostInfoAsync(culture: string): Promise<HostInfo>;
 	/**
 	 * Gets partial running games list starting from the first game after the game with id {@link fromId}.
 	 * To receive all games from the server, use 0 as {@link fromId} value;

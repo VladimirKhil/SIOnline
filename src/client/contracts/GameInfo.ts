@@ -1,4 +1,4 @@
-import GameType from '../enums/GameType';
+import GameType from './GameType';
 import PersonInfo from './PersonInfo';
 
 export default interface GameInfo {

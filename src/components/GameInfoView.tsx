@@ -1,11 +1,11 @@
 ﻿import * as React from 'react';
 import { connect } from 'react-redux';
 import localization from '../model/resources/localization';
-import Role from '../model/enums/Role';
+import Role from '../client/contracts/Role';
 import State from '../state/State';
 import actionCreators from '../state/actionCreators';
-import GameInfo from '../model/server/GameInfo';
-import GameType from '../model/enums/GameType';
+import GameInfo from '../client/contracts/GameInfo';
+import GameType from '../client/contracts/GameType';
 import ProgressBar from './common/ProgressBar';
 
 import './GameInfoView.css';

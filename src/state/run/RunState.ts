@@ -4,7 +4,7 @@ import ChatMessage from '../../model/ChatMessage';
 import PersonInfo from '../../model/PersonInfo';
 import PlayerInfo from '../../model/PlayerInfo';
 import Persons from '../../model/Persons';
-import Role from '../../model/enums/Role';
+import Role from '../../client/contracts/Role';
 import StakeTypes from '../../model/enums/StakeTypes';
 import Timers from '../../model/Timers';
 
@@ -69,6 +69,7 @@ export default interface RunState {
 	areSumsEditable: boolean;
 	readingSpeed: number;
 	hint: string | null;
+	roundsNames: string[] | null;
 }
 
 export const initialState: RunState = {
@@ -161,5 +162,6 @@ export const initialState: RunState = {
 	isGameButtonEnabled: true,
 	areSumsEditable: false,
 	readingSpeed: 20,
-	hint: null
+	hint: null,
+	roundsNames: null
 };

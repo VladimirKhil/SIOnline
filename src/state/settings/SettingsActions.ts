@@ -1,5 +1,5 @@
 import Sex from '../../model/enums/Sex';
-import TimeSettings from '../../model/server/TimeSettings';
+import TimeSettings from '../../client/contracts/TimeSettings';
 
 export const enum SettingsActionTypes {
 	SoundVolumeChanged = 'SOUND_VOLUME_CHANGED',

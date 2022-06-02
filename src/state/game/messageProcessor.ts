@@ -15,7 +15,7 @@ import PersonInfo from '../../model/PersonInfo';
 import Persons from '../../model/Persons';
 import PlayerInfo from '../../model/PlayerInfo';
 import Constants from '../../model/enums/Constants';
-import Role from '../../model/enums/Role';
+import Role from '../../client/contracts/Role';
 import localization from '../../model/resources/localization';
 import StakeTypes from '../../model/enums/StakeTypes';
 import stringFormat from '../../utils/StringHelpers';
@@ -425,6 +425,10 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 			dispatch(tableActionCreators.showAnswer(args[2]));
 			dispatch(runActionCreators.afterQuestionStateChanged(true));
 			dispatch(tableActionCreators.captionChanged(''));
+			break;
+
+		case 'ROUNDSNAMES':
+			dispatch(runActionCreators.roundsNamesChanged(args.slice(1)));
 			break;
 
 		case 'ROUNDTHEMES':
@@ -970,11 +974,11 @@ function connected(dispatch: Dispatch<RunActions.KnownRunAction>, state: State, 
 
 	switch (role) {
 		case 'showman':
-			dispatch(runActionCreators.showmanChanged(name, true));
+			dispatch(runActionCreators.showmanChanged(name, true, false));
 			break;
 
 		case 'player':
-			dispatch(runActionCreators.playerChanged(index, name, true));
+			dispatch(runActionCreators.playerChanged(index, name, true, false));
 			break;
 
 		default:
@@ -988,11 +992,11 @@ function disconnected(dispatch: Dispatch<RunActions.KnownRunAction>, state: Stat
 	dispatch(runActionCreators.personRemoved(name));
 
 	if (state.run.persons.showman.name === name) {
-		dispatch(runActionCreators.showmanChanged(Constants.ANY_NAME));
+		dispatch(runActionCreators.showmanChanged(Constants.ANY_NAME, null, false));
 	} else {
 		for (let i = 0; i < state.run.persons.players.length; i++) {
 			if (state.run.persons.players[i].name === name) {
-				dispatch(runActionCreators.playerChanged(i, Constants.ANY_NAME));
+				dispatch(runActionCreators.playerChanged(i, Constants.ANY_NAME, null, false));
 				break;
 			}
 		}
@@ -1011,8 +1015,8 @@ function config(dispatch: Dispatch<RunActions.KnownRunAction>, state: State, ...
 
 			const isPlayer = personType === 'player';
 			dispatch(isPlayer
-				? runActionCreators.playerChanged(index, Constants.ANY_NAME)
-				: runActionCreators.showmanChanged(Constants.ANY_NAME));
+				? runActionCreators.playerChanged(index, Constants.ANY_NAME, null, false)
+				: runActionCreators.showmanChanged(Constants.ANY_NAME, null, false));
 			
 			const account = isPlayer ? state.run.persons.players[index] : state.run.persons.showman;
 
@@ -1050,8 +1054,10 @@ function config(dispatch: Dispatch<RunActions.KnownRunAction>, state: State, ...
 			const person = state.run.persons.all[account.name];
 
 			if (person && !person.isHuman) {
-				dispatch(isPlayer ? runActionCreators.playerChanged(index, replacer) : runActionCreators.showmanChanged(replacer));
-
+				dispatch(isPlayer
+					? runActionCreators.playerChanged(index, replacer, null, false)
+					: runActionCreators.showmanChanged(replacer, null, false));
+				
 				dispatch(runActionCreators.personRemoved(person.name));
 
 				const newAccount: Account = {
@@ -1066,8 +1072,8 @@ function config(dispatch: Dispatch<RunActions.KnownRunAction>, state: State, ...
 			}
 
 			if (state.run.persons.showman.name === replacer) { // isPlayer
-				dispatch(runActionCreators.showmanChanged(account.name));
-				dispatch(runActionCreators.playerChanged(index, replacer));
+				dispatch(runActionCreators.showmanChanged(account.name, true, account.isReady));
+				dispatch(runActionCreators.playerChanged(index, replacer, true, state.run.persons.showman.isReady));
 
 				if (account.name === state.user.login) {
 					dispatch(runActionCreators.roleChanged(Role.Showman));
@@ -1083,8 +1089,10 @@ function config(dispatch: Dispatch<RunActions.KnownRunAction>, state: State, ...
 					if (isPlayer) {
 						dispatch(runActionCreators.playersSwap(index, i));
 					} else {
-						dispatch(runActionCreators.playerChanged(i, account.name));
-						dispatch(runActionCreators.showmanChanged(replacer));
+						const { isReady } = state.run.persons.players[i];
+
+						dispatch(runActionCreators.playerChanged(i, account.name, null, account.isReady));
+						dispatch(runActionCreators.showmanChanged(replacer, null, isReady));
 
 						if (state.run.persons.showman.name === state.user.login) {
 							dispatch(runActionCreators.roleChanged(Role.Player));
@@ -1097,7 +1105,9 @@ function config(dispatch: Dispatch<RunActions.KnownRunAction>, state: State, ...
 				}
 			}
 
-			dispatch(isPlayer ? runActionCreators.playerChanged(index, replacer) : runActionCreators.showmanChanged(replacer));
+			dispatch(isPlayer
+				? runActionCreators.playerChanged(index, replacer, null, false)
+				: runActionCreators.showmanChanged(replacer, null, false));
 
 			if (account.name === state.user.login) {
 				dispatch(runActionCreators.roleChanged(Role.Viewer));
@@ -1134,7 +1144,10 @@ function config(dispatch: Dispatch<RunActions.KnownRunAction>, state: State, ...
 				dispatch(runActionCreators.personAdded(newAccount));
 			}
 
-			dispatch(isPlayer ? runActionCreators.playerChanged(index, newName, newType) : runActionCreators.showmanChanged(newName, newType));
+			dispatch(isPlayer
+				? runActionCreators.playerChanged(index, newName, newType, false)
+				: runActionCreators.showmanChanged(newName, newType, false));
+			
 			if (newType) {
 				dispatch(runActionCreators.personRemoved(person.name));
 			}

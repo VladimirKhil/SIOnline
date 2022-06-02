@@ -1,11 +1,11 @@
-import Role from '../model/enums/Role';
-import FileKey from '../model/server/FileKey';
-import GameCreationResult from '../model/server/GameCreationResult';
-import GameInfo from '../model/server/GameInfo';
-import GameSettings from '../model/server/GameSettings';
-import HostInfo from '../model/server/HostInfo';
-import PackageKey from '../model/server/PackageKey';
-import Slice from '../model/server/Slice';
+import Role from './contracts/Role';
+import FileKey from './contracts/FileKey';
+import GameCreationResult from './contracts/GameCreationResult';
+import GameInfo from './contracts/GameInfo';
+import GameSettings from './contracts/GameSettings';
+import HostInfo from './contracts/HostInfo';
+import PackageKey from './contracts/PackageKey';
+import Slice from './contracts/Slice';
 import IGameServerClient from './IGameServerClient';
 
 /** Represents a connection to a SIGame Server. */
@@ -19,11 +19,11 @@ export default class GameServerClient implements IGameServerClient {
 	}
 
 	getComputerAccountsAsync(culture: string): Promise<string[]> {
-		return this.connection.invoke<string[]>('GetComputerAccounts');
+		return this.connection.invoke<string[]>('GetComputerAccountsNew', culture);
 	}
 
-	getGameHostInfoAsync(): Promise<HostInfo> {
-		return this.connection.invoke<HostInfo>('GetGamesHostInfo');
+	getGameHostInfoAsync(culture: string): Promise<HostInfo> {
+		return this.connection.invoke<HostInfo>('GetGamesHostInfoNew', culture);
 	}
 
 	getGamesSliceAsync(fromId: number): Promise<Slice<GameInfo>> {
