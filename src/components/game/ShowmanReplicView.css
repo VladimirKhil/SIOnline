@@ -15,6 +15,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    overflow: hidden;
 }
 
 .showmanArea.highlighted {
@@ -55,7 +56,8 @@
 
 @media screen and (min-width: 1100px) {
     .showmanArea {
-        flex: 0 0 150px;
+        flex: 0 0 250px;
+        flex-direction: column;
     }
 
     .showmanInfo {
@@ -65,15 +67,35 @@
 
     .showmanName {
         font-size: 18px;
+        width: initial;
+        margin-top: 2px;
     }
 
-    .showmanAvatar, .showmanName {
-        width: 240px;
+    .showmanAvatar {
+        padding: 0 45px;
+        width: initial;
+    }
+
+    .showmanAvatar img {
+        width: 100%;
+        max-height: 190px;
+    }
+
+    .showmanReplic {
+        height: 100%;
     }
 }
 
 @media screen and (min-width: 1600px) {
     .showmanArea {
-        flex: 0 0 175px;
+        flex: 0 0 330px;
+    }
+
+    .showmanInfo {
+        flex: 0 0 340px;
+    }
+
+    .showmanAvatar img {
+        max-height: 290px;
     }
 }

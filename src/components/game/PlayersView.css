@@ -166,7 +166,7 @@
 @media screen and (min-width: 1100px) and (min-height: 700px) {
     .gamePlayers {
         flex-flow: initial;
-        height: 125px;
+        height: 175px;
     }
 
     #playersPanel {
@@ -174,7 +174,7 @@
     }
 
     .gamePlayers li {
-        height: 125px;
+        height: 175px;
         flex: 1;
         flex-flow: column;
     }
@@ -190,14 +190,14 @@
     }
 
     .gamePlayers .playerReplic {
-        top: 124px;
+        top: 175px;
         height: 145px;
         padding: 15px;
     }
 
     .gameMainView.reversed .gamePlayers .playerReplic {
         top: initial;
-        bottom: 124px !important;
+        bottom: 175px !important;
     }
 
     .gameMainView.reversed .gamePlayers .replicLink {
@@ -229,11 +229,11 @@
 
 @media screen and (min-width: 1600px) and (min-height: 700px) {
     .gamePlayers {
-        height: 150px;
+        height: 250px;
     }
 
     .gamePlayers li {
-        height: 150px;
+        height: 250px;
     }
 
     .gamePlayers .playerCard {
@@ -241,13 +241,13 @@
     }
 
     .gamePlayers .playerReplic {
-        top: 149px;
+        top: 250px !important;
         height: 169px;
     }
 
     .gameMainView.reversed .gamePlayers .playerReplic {
-        top: initial;
-        bottom: 149px !important;
+        top: initial !important;
+        bottom: 250px !important;
     }
 
     .gamePlayers .playerInfo {
