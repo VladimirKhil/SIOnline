@@ -404,12 +404,13 @@ const reducer: Reducer<State> = (state: State = initialState, action: KnownActio
 			};
 		}
 
-		case ActionTypes.WindowWidthChanged: {
+		case ActionTypes.WindowSizeChanged: {
 			return {
 				...state,
 				ui: {
 					...state.ui,
-					windowWidth: action.width
+					windowWidth: action.width,
+					windowHeight: action.height
 				}
 			};
 		}

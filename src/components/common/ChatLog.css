@@ -6,4 +6,6 @@
     .chatLog span {
         display: block;
         overflow: hidden;
+        margin-top: 4px;
+        margin-bottom: 4px;
     }

@@ -40,11 +40,14 @@
 }
 
 .searchHint {
-	background-color: #C0CFF4;
+	background-color: rgba(0, 0, 0, 0.2);
+	color: white;
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	height: 100%;
+	font-size: 20px;
+	text-shadow: 1px 1px 0 black;
 }
 
 .games_main .gamenames {

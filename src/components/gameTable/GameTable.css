@@ -157,7 +157,7 @@
         }
 
 #table .roundTable.selectable .questHeader.active:hover {
-    background: radial-gradient(circle, rgba(229, 232, 205, 0.66) 0%, transparent 110%);
+    background: radial-gradient(circle, lightyellow 0%, transparent 140%);
     cursor: pointer;
 }
 
@@ -166,15 +166,13 @@
         background: transparent;
     }
     to {
-        background: radial-gradient(circle, cyan 0%, transparent 110%);
+        background: lightyellow;
     }
 }
 
 #table .roundTable .questHeader.blink {
     animation: blink;
-    animation-iteration-count: infinite;
-    animation-direction: alternate;
-    animation-duration: 0.1s;
+    animation-duration: 1s;
     color: darkblue;
 }
 
@@ -209,7 +207,7 @@
 }
 
     #table .specialTheme.active {
-        background: radial-gradient(circle, cyan 0%, transparent 110%);
+        background: lightyellow;
         color: darkblue;
     }
 

@@ -6,7 +6,6 @@
 }
 
 #gameInfoDialog {
-    background-color: #5A95E2;
     overflow: hidden;
     display: flex;
     flex-direction: column;

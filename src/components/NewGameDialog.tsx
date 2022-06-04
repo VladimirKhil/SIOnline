@@ -305,7 +305,7 @@ export class NewGameDialog extends React.Component<NewGameDialogProps, NewGameDi
 					<div className="buttonsArea">
 						<button
 							type="button"
-							className="showSettings"
+							className="showSettings standard"
 							disabled={!this.props.isConnected || this.props.inProgress}
 							onClick={() => this.props.onShowSettings()}
 						>
@@ -313,7 +313,7 @@ export class NewGameDialog extends React.Component<NewGameDialogProps, NewGameDi
 						</button>
 						<button
 							type="button"
-							className="startGame"
+							className="startGame standard"
 							disabled={!this.props.isConnected || this.props.inProgress}
 							onClick={() => this.props.onCreate(this.props.isSingleGame)}
 						>

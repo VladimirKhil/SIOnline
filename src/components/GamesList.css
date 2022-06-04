@@ -43,23 +43,26 @@
     font-size: 17px;
     line-height: 45px;
     padding: 4px 10px;
+    border: 0;
 }
 
 .gamesSearch::placeholder {
-    color: lightgray;
+    color: rgb(153, 153, 153);
 }
 
 .gamenames {
     overflow: auto;
     width: 100%;
     height: calc(100% - 135px);
-    background-color: #C0CFF4;
+    background-color: rgba(0,0,0,0.2);
     margin: 0;
 }
 
 .gamenames li {
     padding-left: 15px;
     cursor: pointer;
+    transition: background-color 0.5s;
+    position: relative;
 }
 
 .gamenames li:hover {
@@ -70,13 +73,30 @@
     background-color: #5A95E2;
 }
 
-.gamenames li div {
+.gamenames li div.gameName {
     height: 45px;
     line-height: 45px;
     vertical-align: middle;
     overflow-x: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    color: white;
+    font-size: 20px;
+}
+
+.gamenames li div.gameName.password {
+    padding-right: 40px;
+}
+
+.gamenames li div.locked {
+    position: absolute;
+    right: 20px;
+    top: 0;
+    height: 45px;
+    line-height: 45px;
+    vertical-align: middle;
+    z-index: 1;
+    font-size: 15px !important;
 }
 
 .commandButtonsPanel {
@@ -90,6 +110,8 @@
     height: 45px;
     font-size: 19px;
     line-height: 19px;
+    border-left: 0;
+    border-right: 0;
 }
 
 #newGame {
@@ -98,6 +120,7 @@
 
 #newAutoGame {
     bottom: 44px;
+    margin-bottom: 1px;
 }
 
 .flyoutButton_flyout.dark > ul.gamesFilter > li {

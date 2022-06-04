@@ -1,21 +1,44 @@
 import localization from '../model/resources/localization';
 
-const messagesMap: Record<number, string> = {
-	1: localization.errorPackageNotFound,
-	2: localization.errorTooManyGames,
-	3: localization.errorServerUnderMaintainance,
-	4: localization.errorBadPackage,
-	5: localization.errorDuplicateGameName,
-	6: localization.errorInternalServerError,
-	7: localization.errorServerNotReady,
-	8: localization.errorObsoleteVersion, // Неактуально для веб-версии,
-	9: localization.errorUnknownError,
-	10: localization.joinError,
-	11: localization.wrongGameSettings,
-	12: localization.tooManyGamesByIp
-};
-
 export function getMessage(code: number): string {
-	const message = messagesMap[code];
-	return message || localization.errorUnknownError;
+	switch (code) {
+		case 1:
+			return localization.errorPackageNotFound;
+
+		case 2:
+			return localization.errorTooManyGames;
+
+		case 3:
+			return localization.errorServerUnderMaintainance;
+
+		case 4:
+			return localization.errorBadPackage;
+
+		case 5:
+			return localization.errorDuplicateGameName;
+
+		case 6:
+			return localization.errorInternalServerError;
+
+		case 7:
+			return localization.errorServerNotReady;
+
+		case 8:
+			return localization.errorObsoleteVersion;
+
+		case 9:
+			return localization.errorUnknownError;
+
+		case 10:
+			return localization.joinError;
+
+		case 11:
+			return localization.wrongGameSettings;
+
+		case 12:
+			return localization.tooManyGamesByIp;
+
+		default:
+			return localization.errorUnknownError;
+	}
 }

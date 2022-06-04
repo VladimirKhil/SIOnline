@@ -27,6 +27,7 @@ export default interface State {
 		previousMainView: MainView;
 		onlineView: OnlineMode;
 		windowWidth: number;
+		windowHeight: number;
 		areSettingsVisible: boolean;
 	};
 	online: {
@@ -100,6 +101,7 @@ export const initialState: State = {
 		previousMainView: MainView.Loading,
 		onlineView: OnlineMode.Games,
 		windowWidth: window.innerWidth,
+		windowHeight: window.innerHeight,
 		areSettingsVisible: false
 	},
 	online: {

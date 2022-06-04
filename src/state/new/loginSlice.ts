@@ -116,7 +116,7 @@ export const login = () => async (dispatch: AppDispatch, getState: () => RootSta
 				attachListeners(dataContext.connection, dispatch);
 
 				const { culture } = state.settings.appSettings;
-				const requestCulture = culture == 'en' ? 'en-US' : 'ru-RU';
+				const requestCulture = culture == 'ru' ? 'ru-RU' : 'en-US';
 
 				const computerAccounts = await dataContext.gameClient.getComputerAccountsAsync(requestCulture);
 				dispatch(computerAccountsChanged(computerAccounts));

@@ -12,6 +12,7 @@ import './GameInfoView.css';
 
 interface GameInfoViewOwnProps {
 	isConnected: boolean;
+	culture: string | null;
 	onPasswordChanged: (password: string) => void;
 	onJoin: (gameId: number, role: Role) => void;
 }
@@ -29,6 +30,7 @@ interface GameInfoViewProps extends GameInfoViewOwnProps, GameInfoViewStateProps
 
 const mapStateToProps = (state: State) => ({
 	isConnected: state.common.isConnected,
+	culture: state.settings.appSettings.culture,
 	password: state.online.password,
 	joinGameProgress: state.online.joinGameProgress,
 	joinGameError: state.online.joingGameError
@@ -58,38 +60,24 @@ const buildStage = (stage: number, stageName: string) => {
 	}
 };
 
-const buildRules = (rules: number, isSimple: boolean) => {
-	let result = '';
+const buildRules = (rules: number, isSimple: boolean): string[] => {
+	const result : string[] = [];
 	if (isSimple) {
-		if (result.length > 0) {
-			result += ', ';
-		}
-
-		result += localization.sport;
+		result.push(localization.sport.toLowerCase());
+	} else {
+		result.push(localization.tv.toLowerCase());
 	}
 
 	if ((rules & 1) === 0) {
-		if (result.length > 0) {
-			result += ', ';
-		}
-
-		result += localization.nofalsestart;
+		result.push(localization.nofalsestart);
 	}
 
 	if ((rules & 2) > 0) {
-		if (result.length > 0) {
-			result += ', ';
-		}
-
-		result += localization.oral;
+		result.push(localization.oral);
 	}
 
 	if ((rules & 4) > 0) {
-		if (result.length > 0) {
-			result += ', ';
-		}
-
-		result += localization.errorTolerant;
+		result.push(localization.errorTolerant);
 	}
 
 	return result;
@@ -104,16 +92,16 @@ export function GameInfoView(props: GameInfoViewProps): JSX.Element {
 		);
 	}
 
-	const createdTime = new Date(props.game.startTime).toLocaleString();
+	const createdTime = new Date(props.game.startTime).toLocaleString(props.culture || 'en');
 
 	const realStart = new Date(props.game.realStartTime);
-	const startedTime = realStart.getFullYear() !== 1 ? realStart.toLocaleString() : '';
+	const startedTime = realStart.getFullYear() !== 1 ? realStart.toLocaleString(props.culture || 'en') : '';
 
 	const free = [true, false, false];
 
 	let showman = '';
-	let players = '';
-	let viewers = '';
+	const players : string[] = [];
+	const viewers : string[] = [];
 
 	const { persons } = props.game;
 	for (let i = 0; i < persons.length; i++) {
@@ -123,17 +111,9 @@ export function GameInfoView(props: GameInfoViewProps): JSX.Element {
 		} else if (person.role === Role.Showman) {
 			showman = person.name;
 		} else if (person.role === Role.Player) {
-			if (players.length > 0) {
-				players += ', ';
-			}
-
-			players += person.name;
+			players.push(person.name);
 		} else {
-			if (viewers.length > 0) {
-				viewers += ', ';
-			}
-
-			viewers += person.name;
+			viewers.push(person.name);
 		}
 	}
 
@@ -141,6 +121,8 @@ export function GameInfoView(props: GameInfoViewProps): JSX.Element {
 	const canJoinAsShowman = free[Role.Showman];
 
 	const { game } = props;
+
+	const rules = buildRules(game.rules, game.mode === GameType.Simple);
 
 	return (
 		<section className="gameinfoHost">
@@ -155,19 +137,19 @@ export function GameInfoView(props: GameInfoViewProps): JSX.Element {
 								<dt>{localization.questionPackage}</dt>
 								<dd>{game.packageName}</dd>
 								<dt>{localization.rules}</dt>
-								<dd>{buildRules(game.rules, game.mode === GameType.Simple)}</dd>
+								<dd>{rules.map(name => <div className='personName' key={name}>{name}</div>)}</dd>
+								<dt>{localization.showman}</dt>
+								<dd><div className='personName'>{showman ?? ' '}</div></dd>
+								<dt>{localization.players}</dt>
+								<dd>{players.map(name => <div className='personName' key={name}>{name}</div>)}</dd>
+								<dt>{localization.viewers}</dt>
+								<dd>{viewers.map(name => <div className='personName' key={name}>{name}</div>)}</dd>
+								<dt>{localization.status}</dt>
+								<dd>{buildStage(game.stage, game.stageName)}</dd>
 								<dt>{localization.created}</dt>
 								<dd>{createdTime}</dd>
 								<dt>{localization.started}</dt>
 								<dd>{startedTime}</dd>
-								<dt>{localization.status}</dt>
-								<dd>{buildStage(game.stage, game.stageName)}</dd>
-								<dt>{localization.showman}</dt>
-								<dd>{showman}</dd>
-								<dt>{localization.players}</dt>
-								<dd>{players}</dd>
-								<dt>{localization.viewers}</dt>
-								<dd>{viewers}</dd>
 							</dl>
 						</div>
 						{game.passwordRequired ? (
@@ -187,7 +169,7 @@ export function GameInfoView(props: GameInfoViewProps): JSX.Element {
 							<div id="actionsHost">
 								<button
 									type="button"
-									className="join"
+									className="join standard"
 									onClick={() => props.onJoin(game.gameID, Role.Showman)}
 									disabled={!props.isConnected ||
 										props.joinGameProgress ||
@@ -198,7 +180,7 @@ export function GameInfoView(props: GameInfoViewProps): JSX.Element {
 								</button>
 								<button
 									type="button"
-									className="join"
+									className="join standard"
 									onClick={() => props.onJoin(game.gameID, Role.Player)}
 									disabled={!props.isConnected ||
 										props.joinGameProgress ||
@@ -209,7 +191,7 @@ export function GameInfoView(props: GameInfoViewProps): JSX.Element {
 								</button>
 								<button
 									type="button"
-									className="join"
+									className="join standard"
 									onClick={() => props.onJoin(game.gameID, Role.Viewer)}
 									disabled={!props.isConnected || props.joinGameProgress || (game.passwordRequired && !props.password)}
 								>

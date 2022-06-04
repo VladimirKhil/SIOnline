@@ -3,5 +3,5 @@
 }
 
 @keyframes color-change {
-	100% { color: cyan; }
+	100% { color: rgb(255, 255, 180); }
 }

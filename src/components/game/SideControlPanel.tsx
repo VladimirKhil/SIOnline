@@ -125,13 +125,13 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 
 				<div className="sidecontrol_buttons">
 					{canPause ? (
-						<button type="button" id="pauseButton" disabled={!props.isConnected} onClick={() => props.onPause()}>
+						<button type="button" id="pauseButton" className='standard' disabled={!props.isConnected} onClick={() => props.onPause()}>
 							{pauseTitle}
 						</button>
 					) : null}
 					<div className="gameMenuHost" style={gameMenuHostStyle}>
 						<FlyoutButton
-							className="gameMenuButton"
+							className="gameMenuButton standard"
 							title={localization.menu}
 							flyout={(
 								<ul className="gameMenu">
@@ -160,12 +160,12 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 						</FlyoutButton>
 					</div>
 					{props.isHost ? (
-						<button type="button" className="nextButton" title={localization.next} onClick={props.onMoveNext}>
+						<button type="button" className="nextButton standard" title={localization.next} onClick={props.onMoveNext}>
 							<span role="img" aria-label="arrow right">➡️</span>
 						</button>
 					) : null}
 					<FlyoutButton
-						className="exit"
+						className="exit standard"
 						title={localization.exit}
 						flyout={(
 							<div id="exitMenu" className="exitMenu">

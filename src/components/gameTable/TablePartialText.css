@@ -1,6 +1,6 @@
 #table .tableText.nonAligned {
     align-items: flex-start;
-    color: cyan;
+    color: rgb(255, 255, 180);
 }
 
 .animatablePartialCharacter {

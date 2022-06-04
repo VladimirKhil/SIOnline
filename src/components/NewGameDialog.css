@@ -19,10 +19,8 @@
     font-size: 16px;
     max-width: 95%;
     width: 95%;
-}
-
-#newGameDialog select {
-    height: 29px;
+    padding: 5px 6px;
+    background-color: white;
 }
 
 #newGameDialog .buttonsArea {

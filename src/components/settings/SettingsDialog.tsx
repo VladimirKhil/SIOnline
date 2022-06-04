@@ -292,7 +292,7 @@ export class SettingsDialog extends React.Component<SettingsDialogProps> {
 					</div>
 
 					<TimeSettingsView />
-					<button className="reset" title={localization.resetToDefaultsHint} onClick={this.props.onReset}>
+					<button className="reset standard" title={localization.resetToDefaultsHint} onClick={this.props.onReset}>
 						{localization.resetToDefaults}
 					</button>
 				</div>

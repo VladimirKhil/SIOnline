@@ -75,6 +75,19 @@ textarea {
     line-height: inherit;
 }
 
+textarea {
+    resize: none;
+}
+
+input:focus, textarea:focus, button:focus {    
+    outline: none;
+}
+
+input[type='password'], input[type='search'], input[type='text'] {
+    background: #d9e3f9;
+    border-width: 1px;
+}
+
 h1 {
     font-weight: 500;
     font-size: 36px;
@@ -95,8 +108,23 @@ ul {
     list-style-type: none;
 }
 
-button {
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #a8acfd;
     cursor: pointer;
+    transition: background-color 1s;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #d2e1ff;
+    background: linear-gradient(0deg, #a8acfd 0%, #d2e1ff 50%, #a8acfd 100%);
 }
 
 .gameHost {
@@ -106,15 +134,6 @@ button {
 #entermain {
     margin-left: 16pt;
     text-align: center;
-}
-
-#entername {
-    display: block;
-    font-size: 17pt;
-    height: 33px;
-    margin: 0 22px;
-    width: calc(100% - 44px);
-    max-width: calc(100% - 44px);
 }
 
 #logonButtons {
@@ -164,18 +183,24 @@ button {
 button {
     color: #FFFFFF;
     background-color: transparent;
-    border: 1px solid #FFFFFF;
+    border: 0;
     padding: 5px 10px 6px 7px; 
     font-family: SI;
     text-shadow: 1px 1px 0 #000;
     font-size: inherit;
+    cursor: pointer;
+    transition: all 1s;
 }
 
-button:hover {
+button.standard {
+    background-color: #2c7be1;
+}
+
+button:hover, button.standard:hover {
     background-color: #98B9FF;
 }
 
-button:disabled {
+button:disabled, button.standard:disabled {
     color: darkgray;
     border-color: darkgray;
     background-color: transparent;
@@ -205,13 +230,6 @@ button:disabled {
     white-space: nowrap;
     text-overflow: ellipsis;
     margin-right: 50px;
-}
-
-.maininfo {
-    overflow-y: auto;
-    overflow-x: hidden;
-    padding-left: 20px;
-    flex: 1;
 }
 
 #actionsHost {
@@ -275,7 +293,6 @@ h1.activeTab {
 
 .chatBody {
     height: calc(100% - 35pt);
-    /*margin-left: 5px;*/
     position: relative;
 }
 
@@ -440,14 +457,6 @@ showman::after, player::after, viewer::after {
     position: absolute;
     top: 0;
     left: 0;
-}
-
-#pauseButton {
-    display: none;
-    flex: 1 0 0;
-    font-size: 19pt;
-    padding: 0;
-    margin-right: -1px;
 }
 
 #managedPersons {
@@ -679,10 +688,6 @@ video, audio {
 
     .playerButtonWrapper {
         flex: 0 0 0;
-    }
-
-    #pauseButton {
-        display: initial;
     }
 
     .answerForWide {

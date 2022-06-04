@@ -66,7 +66,7 @@ function setState(state: State, savedState: SavedState | null, gameId: string | 
 }
 
 function subscribeToExternalEvents(store: Store<State, any>) {
-	window.onresize = () => store.dispatch(actionCreators.windowWidthChanged(window.innerWidth));
+	window.onresize = () => store.dispatch(actionCreators.windowSizeChanged(window.innerWidth, window.innerHeight));
 	window.onpopstate = () => true;
 
 	window.onkeydown = (e: KeyboardEvent) => {

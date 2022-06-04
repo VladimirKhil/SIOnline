@@ -136,14 +136,16 @@ export function TablesView(props: TablesViewProps): JSX.Element {
 			</div>
 			<div className="buttonsPanel">
 				<button
-					className='replacePersonButton'
+					className='replacePersonButton standard'
 					type="button"
 					onClick={() => props.changeType()}
 					disabled={!props.isConnected || !canChangeType}>
 					{selectedPerson && selectedPerson.isHuman ? localization.changeToBot : localization.changeToHuman}
 				</button>
 				<FlyoutButton
+					className='standard'
 					disabled={!props.isConnected || !canSet}
+					alignWidth
 					flyout={(
 						<ul className='replacers'>
 							{replacementList.map(person => <li key={person} onClick={() => props.setTable(person)}>{person}</li>)}
@@ -156,10 +158,10 @@ export function TablesView(props: TablesViewProps): JSX.Element {
 				</FlyoutButton>
 			</div>
 			<div className="buttonsPanel">
-				<button type="button" onClick={() => props.freeTable()} disabled={!props.isConnected || !canFree}>
+				<button type="button" className='standard' onClick={() => props.freeTable()} disabled={!props.isConnected || !canFree}>
 					{localization.freeTable}
 				</button>
-				<button type="button" onClick={() => props.deleteTable()} disabled={!props.isConnected || !canDelete}>
+				<button type="button" className='standard' onClick={() => props.deleteTable()} disabled={!props.isConnected || !canDelete}>
 					{localization.deleteTable}
 				</button>
 			</div>

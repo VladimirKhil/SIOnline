@@ -57,8 +57,9 @@ export class Login extends React.Component<LoginProps> {
 					<div className="logonHost">
 						<p className="header">{localization.yourName}</p>
 						<input
-							id="entername"
+							className='login_name'
 							name="name"
+							type='text'
 							autoFocus
 							value={this.props.login}
 							maxLength={30}
@@ -75,6 +76,7 @@ export class Login extends React.Component<LoginProps> {
 						<div id="logonButtons">
 							<button
 								id="howToPlay"
+								className='standard'
 								type="button"
 								disabled={this.props.inProgress}
 								onClick={this.props.onHowToPlay}
@@ -83,6 +85,7 @@ export class Login extends React.Component<LoginProps> {
 							</button>
 							<button
 								id="enter"
+								className='standard'
 								type="button"
 								disabled={this.props.inProgress || this.props.login.length === 0}
 								onClick={this.props.onLogin}

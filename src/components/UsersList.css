@@ -1,5 +1,5 @@
 .playersList {
-    background-color: #C0CFF4;
+    background-color: rgba(0,0,0,0.2);
     position: absolute;
     left: 0;
     top: 0;
@@ -7,8 +7,9 @@
     bottom: 0;
     overflow-y: scroll;
     padding: 0;
+    color: white;
 }
 
 .playersList li {
-    padding: 6px 8px;
+    padding: 6px 12px;
 }

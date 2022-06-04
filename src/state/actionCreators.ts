@@ -38,6 +38,7 @@ import { SIPackageInfo } from '../model/SIPackageInfo';
 import { SearchEntity } from '../model/SearchEntity';
 import getErrorMessage from '../utils/ErrorHelpers';
 import FileKey from '../client/contracts/FileKey';
+import tableActionCreators from './table/tableActionCreators';
 
 const isConnectedChanged: ActionCreator<Actions.IsConnectedChangedAction> = (isConnected: boolean) => ({
 	type: Actions.ActionTypes.IsConnectedChanged,
@@ -339,7 +340,7 @@ const login: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 					attachListeners(dataContext.connection, dispatch);
 
 					const { culture } = state.settings.appSettings;
-					const requestCulture = culture == 'en' ? 'en-US' : 'ru-RU';
+					const requestCulture = culture == 'ru' ? 'ru-RU' : 'en-US';
 
 					const computerAccounts = await dataContext.gameClient.getComputerAccountsAsync(requestCulture);
 					dispatch(computerAccountsChanged(computerAccounts));
@@ -510,6 +511,7 @@ const joinGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 			}
 
 			dispatch(gameSet(gameId, false, role));
+			dispatch(tableActionCreators.showText(localization.tableHint, false));
 
 			await gameInit(gameId, dataContext, role);
 
@@ -572,9 +574,10 @@ const sendMessage: ActionCreator<ThunkAction<void, State, DataContext, Action>> 
 		dispatch(messageChanged(''));
 	};
 
-const windowWidthChanged: ActionCreator<Actions.WindowWidthChangedAction> = (width: number) => ({
-	type: Actions.ActionTypes.WindowWidthChanged,
-	width
+const windowSizeChanged: ActionCreator<Actions.WindowSizeChangedAction> = (width: number, height: number) => ({
+	type: Actions.ActionTypes.WindowSizeChanged,
+	width,
+	height
 });
 
 const gameNameChanged: ActionCreator<Actions.GameNameChangedAction> = (gameName: string) => ({
@@ -841,7 +844,7 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 			randomQuestionsBasePrice: gameMode === GameType.Simple ? 10 : 100,
 			randomRoundsCount: gameMode === GameType.Simple ? 1 : 3,
 			randomThemesCount: gameMode === GameType.Simple ? 5 : 6,
-			culture: culture == 'en' ? 'en-US' : 'ru-RU'
+			culture: culture == 'ru' ? 'ru-RU' : 'en-US'
 		};
 
 		const gameSettings: GameSettings = {
@@ -865,16 +868,19 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 							hash: null,
 							id: null
 						};
+
 					case PackageType.File:
 						return game.package.data
 							? checkAndUploadPackageAsync(dataContext.gameClient, dataContext.serverUri, game.package.data, dispatch)
 							: null;
+
 					case PackageType.SIStorage:
 						return {
 							name: null,
 							hash: null,
 							id: game.package.id
 						};
+
 					default:
 						return null;
 				}
@@ -899,6 +905,7 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 			} else {
 				dispatch(newGameCancel());
 				dispatch(gameSet(result.gameId, false, role));
+				dispatch(tableActionCreators.showText(localization.tableHint, false));
 
 				await gameInit(result.gameId, dataContext, role);
 			}
@@ -926,6 +933,7 @@ const createNewAutoGame: ActionCreator<ThunkAction<void, State, DataContext, Act
 				alert(GameErrorsHelper.getMessage(result.code) + (result.errorMessage || ''));
 			} else {
 				dispatch(gameSet(result.gameId, true, Role.Player));
+				dispatch(tableActionCreators.showText(localization.tableHint, false));
 
 				await gameInit(result.gameId, dataContext, Role.Player);
 			}
@@ -1101,7 +1109,7 @@ const actionCreators = {
 	messageChanged,
 	sendMessage,
 	receiveMessage,
-	windowWidthChanged,
+	windowSizeChanged,
 	gameNameChanged,
 	gamePasswordChanged,
 	gamePackageTypeChanged,

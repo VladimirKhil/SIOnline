@@ -92,7 +92,8 @@ function renderGameList(props: GamesProps): React.ReactNode {
 					key={game.gameID}
 					onClick={() => props.onSelectGame(game.gameID, false)}
 				>
-					<div style={{ color: game.passwordRequired ? '#760000' : 'black' }}>{game.gameName}</div>
+					<div>{game.gameName}</div>
+					{game.passwordRequired ? <div className='locked' title={localization.passwordRequired}>🔓</div> : null}
 				</li>
 			))}
 		</ul>
@@ -125,7 +126,7 @@ export function Games(props: GamesProps): JSX.Element {
 						autoFocus
 						onChange={e => props.onGamesSearchChanged(e.target.value)}
 					/>
-					<button type="button" id="newGame" disabled={!props.isConnected} onClick={props.onNewGame}>
+					<button type="button" className='standard' id="newGame" disabled={!props.isConnected} onClick={props.onNewGame}>
 						{localization.newGame.toLocaleUpperCase()}
 					</button>
 				</div>

@@ -98,12 +98,20 @@ export function PersonsView(props: PersonsViewProps): JSX.Element {
 				</ul>
 			</div>
 			<div className="buttonsPanel inviteLinkHost">
-				<button type="button" onClick={() => inviteLink()}>{localization.inviteLink}</button>
+				<button type="button" className='standard' onClick={() => inviteLink()}>{localization.inviteLink}</button>
 				<div ref={tooltipRef} className='inviteLinkTooltip'>{localization.inviteLinkCopied}</div>
 			</div>
 			<div className="buttonsPanel">
-				<button type="button" onClick={() => props.kick()} disabled={!props.isConnected || !canKick}>{localization.kick}</button>
-				<button type="button" onClick={() => props.ban()} disabled={!props.isConnected || !canKick}>{localization.ban}</button>
+				<button
+					type="button"
+					className='standard'
+					onClick={() => props.kick()}
+					disabled={!props.isConnected || !canKick}>
+						{localization.kick}
+				</button>
+				<button type="button" className='standard' onClick={() => props.ban()} disabled={!props.isConnected || !canKick}>
+					{localization.ban}
+				</button>
 			</div>
 		</>
 	);

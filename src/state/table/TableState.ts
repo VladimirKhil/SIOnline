@@ -18,9 +18,9 @@ export default interface TableState {
 }
 
 export const initialState: TableState = {
-	mode: TableMode.Text,
+	mode: TableMode.Logo,
 	caption: '',
-	text: localization.tableHint,
+	text: '',
 	tail: '',
 	animateReading: false,
 	canPress: false,

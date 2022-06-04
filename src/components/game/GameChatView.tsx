@@ -109,7 +109,7 @@ export function GameChatView(props: GameChatViewProps): JSX.Element {
 				{props.role === Role.Showman ? (
 					<button
 						type="button"
-						className={`wide commandButton bottomButton ${props.areSumsEditable ? 'active' : ''}`}
+						className={`standard wide commandButton bottomButton ${props.areSumsEditable ? 'active' : ''}`}
 						disabled={!props.isConnected}
 						onClick={() => props.onEditSums(!props.areSumsEditable)}
 					>
@@ -118,7 +118,7 @@ export function GameChatView(props: GameChatViewProps): JSX.Element {
 				) : null}
 				<button
 					type="button"
-					className="wide commandButton bottomButton"
+					className="standard wide commandButton bottomButton"
 					disabled={!props.isConnected}
 					onClick={() => props.onMarkQuestion()}
 					title={localization.complainHint}

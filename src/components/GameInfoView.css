@@ -1,12 +1,14 @@
 .gameinfoHost {
-    height: 100%;
+    height: calc(100% - 49px);
 }
 
 #gameinfo {
-    background-color: #5A95E2;
+    background-color: #000061;
     height: 100%;
     padding: 20px 0 0 0;
     position: relative;
+    color: white;
+    text-shadow: 1px 1px 2px black;
 }
 
 #gameinfo h1 {
@@ -14,6 +16,31 @@
     font-size: 36px;
     margin-bottom: 10px;
     padding-left: 20px;
+}
+
+.maininfo {
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-left: 20px;
+    flex: 1;
+}
+
+.gameinfoHost dt {
+    font-size: 15px;
+    font-weight: normal;
+}
+
+.gameinfoHost dd {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.personName {
+    display: inline-block;
+    background-color: rgba(0,0,0,0.15);
+    margin-right: 7px;
+    margin-top: 2px;
+    padding: 4px 10px;
 }
 
 #innerinfo dt {
@@ -52,7 +79,12 @@
     right: 0;
     left: 0;
     justify-content: center;
-    background-color: #00000055;
+    animation: fadein 2s;
+}
+
+@keyframes fadein {
+    from { background-color: transparent; }
+    to   { background-color: #00000055; }
 }
 
 .joinGameProgress .progress {
@@ -60,6 +92,10 @@
 }
 
 @media screen and (min-width: 800px) {
+    .gameinfoHost {
+        height: 100%;
+    }
+
     .gameInfo_close {
         display: none;
     }
