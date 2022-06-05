@@ -79,6 +79,14 @@ const runHideTables: ActionCreator<RunActions.RunHideTablesAction> = () => ({
 	type: RunActions.RunActionTypes.RunHideTables
 });
 
+const runShowManageGame: ActionCreator<RunActions.RunShowManageGameAction> = () => ({
+	type: RunActions.RunActionTypes.RunShowManageGame
+});
+
+const runHideManageGame: ActionCreator<RunActions.RunHideManageGameAction> = () => ({
+	type: RunActions.RunActionTypes.RunHideManageGame
+});
+
 const runChatVisibilityChanged: ActionCreator<RunActions.RunChatVisibilityChangedAction> = (isOpen: boolean) => ({
 	type: RunActions.RunActionTypes.RunChatVisibilityChanged, isOpen
 });
@@ -256,8 +264,8 @@ const personAvatarChanged: ActionCreator<RunActions.PersonAvatarChangedAction> =
 
 const gameStarted: ActionCreator<RunActions.GameStartedAction> = () => ({ type: RunActions.RunActionTypes.GameStarted });
 
-const stageChanged: ActionCreator<RunActions.StageChangedAction> = (stageName: string) => ({
-	type: RunActions.RunActionTypes.StageChanged, stageName
+const stageChanged: ActionCreator<RunActions.StageChangedAction> = (stageName: string, roundIndex: number) => ({
+	type: RunActions.RunActionTypes.StageChanged, stageName, roundIndex
 });
 
 const playersStateCleared: ActionCreator<RunActions.PlayersStateClearedAction> = () => ({
@@ -397,6 +405,14 @@ const apellate: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (
 	dataContext: DataContext
 	) => {
 	await dataContext.gameClient.msgAsync('APELLATE', '+');
+};
+
+const disagree: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
+	_dispatch: Dispatch<any>,
+	_getState: () => State,
+	dataContext: DataContext
+	) => {
+	await dataContext.gameClient.msgAsync('APELLATE', '-');
 };
 
 const isAnswering: ActionCreator<RunActions.IsAnsweringAction> = () => ({
@@ -648,6 +664,13 @@ const moveNext: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (
 	await dataContext.gameClient.msgAsync('MOVE', '1');
 };
 
+const navigateToRound: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (roundIndex: number) => async (
+	_dispatch: Dispatch<any>,
+	_getState: () => State,
+	dataContext: DataContext) => {
+	await dataContext.gameClient.msgAsync('MOVE', '3', roundIndex);
+};
+
 const isReadyChanged: ActionCreator<RunActions.IsReadyChangedAction> = (personIndex: number, isReady: boolean) => ({
 	type: RunActions.RunActionTypes.IsReadyChanged, personIndex, isReady
 });
@@ -662,6 +685,8 @@ const runActionCreators = {
 	runHidePersons,
 	runShowTables,
 	runHideTables,
+	runShowManageGame,
+	runHideManageGame,
 	runChatVisibilityChanged,
 	playerSelected,
 	exitGame,
@@ -706,6 +731,7 @@ const runActionCreators = {
 	selectTheme,
 	pressGameButton,
 	apellate,
+	disagree,
 	isAnswering,
 	onAnswerChanged,
 	sendAnswer,
@@ -740,6 +766,7 @@ const runActionCreators = {
 	themeNameChanged,
 	updateCaption,
 	moveNext,
+	navigateToRound,
 	isReadyChanged,
 	ready,
 	roundsNamesChanged

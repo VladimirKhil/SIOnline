@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import State from '../../state/State';
-import { Dispatch, Action } from 'redux';
 import Role from '../../client/contracts/Role';
 import GameButton from './GameButton';
 import AnswerInput from './AnswerInput';

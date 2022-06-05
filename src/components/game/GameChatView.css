@@ -14,3 +14,12 @@
 .sideButtonHost button:not(:last-child) {
 	margin-right: -1px;
 }
+
+.activeRound {
+	background-color: #5A95E2;
+	cursor: default !important;
+}
+
+.activeRound:hover {
+	background-color: #5A95E2 !important;
+}

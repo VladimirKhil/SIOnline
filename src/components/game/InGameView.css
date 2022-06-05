@@ -38,6 +38,11 @@
     overflow: hidden;
 }
 
+.manageGameDialog {
+    background-color: #5A95E2;
+    z-index: 5;
+}
+
 @media screen and (min-height: 600px), (max-width: 600px) {
     .gameMainView {
         flex-direction: column;

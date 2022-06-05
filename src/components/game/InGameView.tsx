@@ -17,6 +17,8 @@ import localization from '../../model/resources/localization';
 import runActionCreators from '../../state/run/runActionCreators';
 import PersonsView from './PersonsView';
 import TablesView from './TablesView';
+import Dialog from '../common/Dialog';
+import ManageGameView from './ManageGameView';
 
 import './InGameView.css';
 
@@ -28,9 +30,11 @@ interface InGameViewProps {
 	isPersonsDialogVisible: boolean;
 	isTablesDialogVisible: boolean;
 	isAnswerValidationDialogVisible: boolean;
+	isManageGameDialogVisible: boolean;
 
 	onPersonsDialogClose: () => void;
 	onTablesDialogClose: () => void;
+	onManageGameDialogClose: () => void;
 }
 
 const mapStateToProps = (state: State) => ({
@@ -39,6 +43,7 @@ const mapStateToProps = (state: State) => ({
 	showPersonsAtBottomOnWideScreen: state.settings.showPersonsAtBottomOnWideScreen,
 	isPersonsDialogVisible: state.run.personsVisible,
 	isTablesDialogVisible: state.run.tablesVisible,
+	isManageGameDialogVisible: state.run.manageGameVisible,
 	isAnswerValidationDialogVisible: state.run.validation.isVisible
 });
 
@@ -48,6 +53,9 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	},
 	onTablesDialogClose: () => {
 		dispatch(runActionCreators.runHideTables());
+	},
+	onManageGameDialogClose: () => {
+		dispatch(runActionCreators.runHideManageGame());
 	}
 });
 
@@ -99,6 +107,11 @@ export function InGameView(props: InGameViewProps) : JSX.Element {
 				<PersonsDialog title={localization.tables} onClose={props.onTablesDialogClose}>
 					<TablesView />
 				</PersonsDialog>
+			) : null}
+			{props.isManageGameDialogVisible && !isScreenWide ? (
+				<Dialog className='manageGameDialog' title={localization.game} onClose={props.onManageGameDialogClose}>
+					<ManageGameView onClose={props.onManageGameDialogClose} />
+				</Dialog>
 			) : null}
 			{props.isAnswerValidationDialogVisible ? <AnswerValidationDialog /> : null}
 		</section>

@@ -12,6 +12,7 @@ import Role from '../../client/contracts/Role';
 import RoundProgress from './RoundProgress';
 import TablesView from './TablesView';
 import isHost from '../../utils/StateHelpers';
+import FlyoutButton, { FlyoutVerticalOrientation } from '../common/FlyoutButton';
 
 import './GameChatView.css';
 
@@ -21,10 +22,13 @@ interface GameChatViewProps {
 	personsCount: number;
 	role: Role;
 	areSumsEditable: boolean;
+	roundsNames: string[] | null;
+	roundIndex: number;
 	isHost: boolean;
 	onChatModeChanged: (chatMode: ChatMode) => void;
 	onMarkQuestion: () => void;
 	onEditSums: (enable: boolean) => void;
+	navigateToRound: (roundIndex: number) => void;
 }
 
 const mapStateToProps = (state: State) => ({
@@ -33,6 +37,8 @@ const mapStateToProps = (state: State) => ({
 	personsCount: Object.values(state.run.persons.all).length,
 	role: state.run.role,
 	areSumsEditable: state.run.areSumsEditable,
+	roundsNames: state.run.roundsNames,
+	roundIndex: state.run.stage.roundIndex,
 	isHost: isHost(state)
 });
 
@@ -45,6 +51,9 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	},
 	onEditSums: (enable: boolean) => {
 		dispatch(runActionCreators.areSumsEditableChanged(enable) as unknown as Action);
+	},
+	navigateToRound: (roundIndex: number) => {
+		dispatch(runActionCreators.navigateToRound(roundIndex) as unknown as Action);
 	}
 });
 
@@ -105,8 +114,9 @@ export function GameChatView(props: GameChatViewProps): JSX.Element {
 			<div className="sideArea">
 				{getSideArea(props)}
 			</div>
-			<div className="sideButtonHost">
-				{props.role === Role.Showman ? (
+			
+			{props.role === Role.Showman ? (
+				<div className="sideButtonHost">
 					<button
 						type="button"
 						className={`standard wide commandButton bottomButton ${props.areSumsEditable ? 'active' : ''}`}
@@ -115,17 +125,28 @@ export function GameChatView(props: GameChatViewProps): JSX.Element {
 					>
 						{localization.changeSums}
 					</button>
-				) : null}
-				<button
-					type="button"
-					className="standard wide commandButton bottomButton"
-					disabled={!props.isConnected}
-					onClick={() => props.onMarkQuestion()}
-					title={localization.complainHint}
-				>
-					{localization.complain}
-				</button>
-			</div>
+					<FlyoutButton
+						className="standard wide commandButton bottomButton"
+						disabled={!props.isConnected || !props.roundsNames || props.roundsNames.length < 2}
+						flyout={
+							<ul>
+								{props.roundsNames?.map((name, index) => (
+									<li
+										key={index}
+										className={index === props.roundIndex ? 'activeRound' : ''}
+										onClick={() => props.navigateToRound(index)}
+									>
+										{name}
+									</li>))}
+							</ul>
+						}
+						verticalOrientation={FlyoutVerticalOrientation.Top}
+						alignWidth
+						title={localization.gameManageHint}
+					>
+						{localization.game}
+					</FlyoutButton>
+				</div>) : null}
 			<RoundProgress />
 		</div>
 	);

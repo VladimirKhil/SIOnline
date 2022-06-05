@@ -79,7 +79,7 @@ export class PlayersView extends React.Component<PlayersViewProps> {
 	}
 
 	moveReplic = (): void => {
-		if (this.props.windowHeight < 600) {
+		if (this.props.windowHeight < 600 && this.props.windowWidth > 600) {
 			return;
 		}
 

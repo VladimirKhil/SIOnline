@@ -37,10 +37,11 @@
 
 .personName {
     display: inline-block;
-    background-color: rgba(0,0,0,0.15);
+    background-color: rgba(255,255,255,0.15);
     margin-right: 7px;
     margin-top: 2px;
     padding: 4px 10px;
+    min-height: 32px;
 }
 
 #innerinfo dt {

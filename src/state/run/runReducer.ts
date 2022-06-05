@@ -65,6 +65,18 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 				tablesVisible: false
 			};
 
+		case RunActionTypes.RunShowManageGame:
+			return {
+				...state,
+				manageGameVisible: true
+			};
+
+		case RunActionTypes.RunHideManageGame:
+			return {
+				...state,
+				manageGameVisible: false
+			};
+
 		case RunActionTypes.ChatMessageAdded:
 			return {
 				...state,
@@ -175,7 +187,8 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 				...state,
 				stage: {
 					...state.stage,
-					name: action.stageName
+					name: action.stageName,
+					roundIndex: action.roundIndex
 				}
 			};
 

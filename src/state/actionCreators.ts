@@ -327,7 +327,7 @@ const login: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 				// eslint-disable-next-line no-param-reassign
 				dataContext.gameClient = new GameServerClient(
 					connection,
-					e => dispatch(runActionCreators.operationError(e) as object as Actions.KnownAction)
+					e => dispatch(runActionCreators.operationError(getErrorMessage(e)) as object as Actions.KnownAction)
 				);
 
 				try {

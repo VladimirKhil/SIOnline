@@ -1,0 +1,15 @@
+.manageGameView {
+	z-index: 20;
+	font-size: 26px;
+	display: flex;
+	flex-direction: column;
+}
+
+.activeRound {
+	background-color: #000451;
+	cursor: default !important;
+}
+
+.activeRound:hover {
+	background-color: #000451 !important;
+}

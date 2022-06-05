@@ -16,6 +16,8 @@ export const enum RunActionTypes {
 	RunHidePersons = 'RUN_HIDE_PERSONS',
 	RunShowTables = 'RUN_SHOW_TABLES',
 	RunHideTables = 'RUN_HIDE_TABLES',
+	RunShowManageGame = 'RUN_SHOW_MANAGE_GAME',
+	RunHideManageGame = 'RUN_HIDE_MANAGE_GAME',
 	ChatMessageAdded = 'CHAT_MESSAGE_ADDED',
 	LastReplicChanged = 'LAST_REPLIC_CHANGED',
 	ActivateChat = 'ACTIVATE_CHAT',
@@ -79,6 +81,8 @@ export type RunShowPersonsAction = { type: RunActionTypes.RunShowPersons };
 export type RunHidePersonsAction = { type: RunActionTypes.RunHidePersons };
 export type RunShowTablesAction = { type: RunActionTypes.RunShowTables };
 export type RunHideTablesAction = { type: RunActionTypes.RunHideTables };
+export type RunShowManageGameAction = { type: RunActionTypes.RunShowManageGame };
+export type RunHideManageGameAction = { type: RunActionTypes.RunHideManageGame };
 export type ChatMessageAddedAction = { type: RunActionTypes.ChatMessageAdded, chatMessage: ChatMessage };
 export type LastReplicChangedAction = { type: RunActionTypes.LastReplicChanged, chatMessage: ChatMessage | null };
 export type ActivateChatAction = { type: RunActionTypes.ActivateChat };
@@ -89,7 +93,7 @@ export type ChatPersonSelectedAction = { type: RunActionTypes.ChatPersonSelected
 export type TableSelectedAction = { type: RunActionTypes.TableSelected, tableIndex: number };
 export type PersonAvatarChangedAction = { type: RunActionTypes.PersonAvatarChanged, personName: string, avatarUri: string };
 export type GameStartedAction = { type: RunActionTypes.GameStarted };
-export type StageChangedAction = { type: RunActionTypes.StageChanged, stageName: string };
+export type StageChangedAction = { type: RunActionTypes.StageChanged, stageName: string, roundIndex: number };
 export type PlayersStateClearedAction = { type: RunActionTypes.PlayersStateCleared };
 export type GameStateClearedAction = { type: RunActionTypes.GameStateCleared };
 export type SumsChangedAction = { type: RunActionTypes.SumsChanged, sums: number[] };
@@ -159,6 +163,8 @@ export type KnownRunAction =
 	| RunHidePersonsAction
 	| RunShowTablesAction
 	| RunHideTablesAction
+	| RunShowManageGameAction
+	| RunHideManageGameAction
 	| ChatMessageAddedAction
 	| LastReplicChangedAction
 	| ActivateChatAction

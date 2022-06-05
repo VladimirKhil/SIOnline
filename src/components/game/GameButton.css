@@ -1,0 +1,43 @@
+.playerButton {
+    font-size: 19pt;
+    line-height: 19pt;
+    margin: 0;
+    padding: 7pt 0pt;
+    border-width: 1px;
+    background: #690000;
+    width: 100%;
+    height: 100%;
+}
+
+.playerButton:hover {
+    background: #FF0000;
+}
+
+.playerButton:active {
+    background: #f2daa0;
+}
+
+.playerButton:disabled {
+    background: gray;
+}
+
+.reactions {
+    position: absolute;
+    top: 0;
+    left: 0;
+	width: 100%;
+	height: 100%;
+}
+
+.reactions_panel {
+	display: flex;
+	flex-direction: row;
+}
+
+.reactions_panel button {
+	flex: 1;
+}
+
+.reactions_list li {
+	text-align: center;
+}

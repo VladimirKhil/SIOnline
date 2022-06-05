@@ -28,6 +28,7 @@ interface SideControlPanelProps {
 	lastReplic: ChatMessage | null;
 	areStakesVisible: boolean;
 	areSumsEditable: boolean;
+	roundsNames: string[] | null;
 	onChatVisibilityChanged: (isOpen: boolean) => void;
 	onMarkQuestion: () => void;
 	onShowPersons: () => void;
@@ -36,6 +37,7 @@ interface SideControlPanelProps {
 	onExit: () => void;
 	onEditSums: (enable: boolean) => void;
 	onMoveNext: () => void;
+	showGameManageDialog: () => void;
 }
 
 const mapStateToProps = (state: State) => ({
@@ -47,7 +49,8 @@ const mapStateToProps = (state: State) => ({
 	isPaused: state.run.stage.isGamePaused,
 	lastReplic: state.run.lastReplic,
 	areStakesVisible: state.run.stakes.areVisible,
-	areSumsEditable: state.run.areSumsEditable
+	areSumsEditable: state.run.areSumsEditable,
+	roundsNames: state.run.roundsNames
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
@@ -74,6 +77,9 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	},
 	onMoveNext: () => {
 		dispatch(runActionCreators.moveNext() as unknown as Action);
+	},
+	showGameManageDialog: () => {
+		dispatch(runActionCreators.runShowManageGame());
 	}
 });
 
@@ -90,6 +96,7 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 	const canPause = props.isHost || props.role === Role.Showman;
 
 	const enabledClass = props.isConnected ? '' : 'disabled';
+	const enabledManagementClass = props.isConnected && props.roundsNames && props.roundsNames.length >= 2 ? '' : 'disabled';
 
 	return (
 		<div className="game__utilsArea">
@@ -137,16 +144,21 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 								<ul className="gameMenu">
 									{props.role === Role.Showman
 										? (
-											<li
-												className={`${enabledClass} ${props.areSumsEditable ? 'active' : ''}`}
-												onClick={() => props.onEditSums(!props.areSumsEditable)}
-											>
-												{localization.changeSums}
-											</li>
+											<>
+												<li
+													className={`${enabledClass} ${props.areSumsEditable ? 'active' : ''}`}
+													onClick={() => props.onEditSums(!props.areSumsEditable)}
+												>
+													{localization.changeSums}
+												</li>
+												<li
+													className={enabledManagementClass}
+													title={localization.gameManageHint}
+													onClick={() => props.showGameManageDialog()}>
+													{localization.game}
+												</li>
+											</>
 										) : null}
-									<li className={enabledClass} onClick={() => props.onMarkQuestion()} title={localization.complainHint}>
-										{localization.complain}
-									</li>
 									<li onClick={() => props.onShowPersons()}>{localization.members}</li>
 									<li onClick={() => props.onShowTables()}>{localization.tables}</li>
 									{canPause ? <li className={enabledClass} onClick={() => props.onPause()}>{pauseTitle}</li> : null}

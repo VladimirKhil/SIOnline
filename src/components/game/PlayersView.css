@@ -242,7 +242,7 @@
 
     .gamePlayers .playerReplic {
         top: 250px !important;
-        height: 169px;
+        height: 169px !important;
     }
 
     .gameMainView.reversed .gamePlayers .playerReplic {

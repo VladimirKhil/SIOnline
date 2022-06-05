@@ -10,7 +10,7 @@
     margin: auto;
     background-color: #5A95E2;
     height: 100%;
-    width: 470px;
+    width: 100%;
     max-width: 100%;
     padding: 0;
     text-align: center;
@@ -19,6 +19,12 @@
     flex-direction: column;
     position: relative;
     border-left-width: 0.5px;
+}
+
+.logonHost {
+    display: flex;
+    flex-direction: column;
+    flex: 1 0 0;
 }
 
     .main .header {
@@ -68,6 +74,7 @@
     }
 
     .main {
+        width: 470px;
         height: 560px;
         padding: 10px 0 0 0;
         border: 1px solid #111111;

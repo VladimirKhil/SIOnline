@@ -174,7 +174,7 @@ export default class FlyoutButton extends React.Component<FlyoutButtonProps, Fly
 			<button
 				type="button"
 				ref={this.buttonRef}
-				className={`flyoutButton ${this.props.className}`}
+				className={`flyoutButton ${this.props.className || ''}`}
 				title={this.props.title}
 				onClick={this.onClick}
 				disabled={this.props.disabled}

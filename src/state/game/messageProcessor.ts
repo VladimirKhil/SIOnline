@@ -452,7 +452,8 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 
 		case 'STAGE':
 			const stage = args[1];
-			dispatch(runActionCreators.stageChanged(stage));
+			const roundIndex = args.length > 3 ? parseInt(args[3], 10) : -1;
+			dispatch(runActionCreators.stageChanged(stage, roundIndex));
 
 			if (stage !== 'Before') {
 				dispatch(runActionCreators.gameStarted());

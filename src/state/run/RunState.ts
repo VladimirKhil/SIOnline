@@ -20,6 +20,7 @@ export default interface RunState {
 	lastReplic: ChatMessage | null;
 	stage: {
 		name: string;
+		roundIndex: number;
 		isGamePaused: boolean;
 		isGameStarted: boolean;
 		isDecisionNeeded: boolean;
@@ -65,6 +66,7 @@ export default interface RunState {
 	selectedTableIndex: number; // 0 for showman; {N} for player {N - 1}
 	personsVisible: boolean;
 	tablesVisible: boolean;
+	manageGameVisible: boolean;
 	isGameButtonEnabled: boolean;
 	areSumsEditable: boolean;
 	readingSpeed: number;
@@ -90,6 +92,7 @@ export const initialState: RunState = {
 	lastReplic: null,
 	stage: {
 		name: '',
+		roundIndex: -1,
 		isGamePaused: false,
 		isGameStarted: false,
 		isDecisionNeeded: false,
@@ -159,6 +162,7 @@ export const initialState: RunState = {
 	selectedTableIndex: -1,
 	personsVisible: false,
 	tablesVisible: false,
+	manageGameVisible: false,
 	isGameButtonEnabled: true,
 	areSumsEditable: false,
 	readingSpeed: 20,

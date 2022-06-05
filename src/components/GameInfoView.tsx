@@ -129,7 +129,7 @@ export function GameInfoView(props: GameInfoViewProps): JSX.Element {
 			<div id="gameinfo">
 				{game ? (
 					<div id="innerinfo">
-						{props.showGameName ? <h1 id="gameName">{game.gameName}</h1> : null}
+						{props.showGameName ? <h1 id="gameName" title={game.gameName}>{game.gameName}</h1> : null}
 						<div className="maininfo">
 							<dl>
 								<dt>{localization.host}</dt>

@@ -121,7 +121,7 @@ export function GamesList(props: GamesListProps): JSX.Element {
 							className={game.gameID === props.selectedGameId ? 'active' : ''}
 							onClick={() => props.onSelectGame(game.gameID, props.showInfo)}
 						>
-							<div className={`gameName ${game.passwordRequired ? 'password' : ''}`}>{game.gameName}</div>
+							<div className={`gameName ${game.passwordRequired ? 'password' : ''}`} title={game.gameName}>{game.gameName}</div>
 							{game.passwordRequired ? <div className='locked' title={localization.passwordRequired}>🔓</div> : null}
 						</li>
 					))}
