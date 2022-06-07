@@ -85,12 +85,11 @@
 
 .playersCount {
     vertical-align: bottom;
-    margin-left: 10px;
-    margin-right: 10px;
 }
 
 .playersCountTitle {
     width: 70px;
+    height: 30px;
     display: inline-block;
 }
 

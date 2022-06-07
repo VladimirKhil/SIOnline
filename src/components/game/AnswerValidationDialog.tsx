@@ -55,8 +55,8 @@ export function AnswerValidationDialog(props: AnswerValidationDialogProps): JSX.
 				</div>
 			</div>
 			<div className="buttonsPanel">
-				<button type="button" disabled={!props.isConnected} onClick={() => props.onApprove()}>{localization.yes}</button>
-				<button type="button" disabled={!props.isConnected} onClick={() => props.onReject()}>{localization.no}</button>
+				<button type="button" className='standard' disabled={!props.isConnected} onClick={() => props.onApprove()}>{localization.yes}</button>
+				<button type="button" className='standard' disabled={!props.isConnected} onClick={() => props.onReject()}>{localization.no}</button>
 			</div>
 		</Dialog>
 	);

@@ -5,11 +5,11 @@
 	flex-direction: column;
 }
 
-.activeRound {
+.manageGameView .activeRound {
 	background-color: #000451;
 	cursor: default !important;
 }
 
-.activeRound:hover {
+.manageGameView .activeRound:hover {
 	background-color: #000451 !important;
 }

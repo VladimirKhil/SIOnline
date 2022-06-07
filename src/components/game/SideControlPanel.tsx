@@ -14,7 +14,7 @@ import StakeSumEditor from './stakes/StakeSumEditor';
 import SendPassButton from './stakes/SendPassButton';
 import SendStakeButton from './stakes/SendStakeButton';
 import SendAllInButton from './stakes/SendAllInButton';
-import isHost from '../../utils/StateHelpers';
+import { isHost } from '../../utils/StateHelpers';
 
 import './SideControlPanel.css';
 

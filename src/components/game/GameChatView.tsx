@@ -11,7 +11,7 @@ import ChatInput from './ChatInput';
 import Role from '../../client/contracts/Role';
 import RoundProgress from './RoundProgress';
 import TablesView from './TablesView';
-import isHost from '../../utils/StateHelpers';
+import { isHost } from '../../utils/StateHelpers';
 import FlyoutButton, { FlyoutVerticalOrientation } from '../common/FlyoutButton';
 
 import './GameChatView.css';

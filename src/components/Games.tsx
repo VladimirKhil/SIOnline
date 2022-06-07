@@ -92,7 +92,7 @@ function renderGameList(props: GamesProps): React.ReactNode {
 					key={game.gameID}
 					onClick={() => props.onSelectGame(game.gameID, false)}
 				>
-					<div>{game.gameName}</div>
+					<div className='gameName'>{game.gameName}</div>
 					{game.passwordRequired ? <div className='locked' title={localization.passwordRequired}>🔓</div> : null}
 				</li>
 			))}

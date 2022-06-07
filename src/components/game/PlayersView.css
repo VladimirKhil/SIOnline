@@ -190,14 +190,14 @@
     }
 
     .gamePlayers .playerReplic {
-        top: 175px;
+        top: 55px !important;
         height: 145px;
         padding: 15px;
     }
 
     .gameMainView.reversed .gamePlayers .playerReplic {
-        top: initial;
-        bottom: 175px !important;
+        top: 55px !important;
+        bottom: initial !important;
     }
 
     .gameMainView.reversed .gamePlayers .replicLink {
@@ -241,13 +241,13 @@
     }
 
     .gamePlayers .playerReplic {
-        top: 250px !important;
+        top: 80px !important;
         height: 169px !important;
     }
 
     .gameMainView.reversed .gamePlayers .playerReplic {
-        top: initial !important;
-        bottom: 250px !important;
+        top: 80px !important;
+        bottom: initial !important;
     }
 
     .gamePlayers .playerInfo {
@@ -288,9 +288,11 @@
     }
 
     .gameMainView.reversed .gamePlayers .replicLink {
-        top: initial;
-        bottom: -10px;
-        transform: rotate(45deg);
+        top: -10px;
+        left: initial;
+        width: 20px;
+        height: 20px;
+        transform: rotate(225deg);
     }
 
     .playerAvatar {

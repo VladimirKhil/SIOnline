@@ -37,6 +37,11 @@
 #siStorageDialog .selectButton {
 	bottom: 10px;
 	position: absolute;
+	font-size: 20px;
+}
+
+#siStorageDialog .selectButton button {
+	padding: 5px 20px;
 }
 
 #siStorageDialog .selector {

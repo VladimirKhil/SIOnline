@@ -35,7 +35,7 @@
   "overrides": {
     "@microsoft/signalr": {
       "eventsource": "^2.0.2"
-    } 
+    }
   },
   "devDependencies": {
     "@svgr/webpack": "^6.1.2",

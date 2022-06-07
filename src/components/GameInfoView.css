@@ -1,5 +1,6 @@
 .gameinfoHost {
-    height: calc(100% - 49px);
+    flex: 1;
+    overflow: hidden;
 }
 
 #gameinfo {
@@ -93,10 +94,6 @@
 }
 
 @media screen and (min-width: 800px) {
-    .gameinfoHost {
-        height: 100%;
-    }
-
     .gameInfo_close {
         display: none;
     }

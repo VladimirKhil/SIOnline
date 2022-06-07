@@ -92,10 +92,11 @@ export function GameInfoView(props: GameInfoViewProps): JSX.Element {
 		);
 	}
 
-	const createdTime = new Date(props.game.startTime).toLocaleString(props.culture || 'en');
+	const language = localization.getLanguage();
+	const createdTime = new Date(props.game.startTime).toLocaleString(language);
 
 	const realStart = new Date(props.game.realStartTime);
-	const startedTime = realStart.getFullYear() !== 1 ? realStart.toLocaleString(props.culture || 'en') : '';
+	const startedTime = realStart.getFullYear() !== 1 ? realStart.toLocaleString(language) : '';
 
 	const free = [true, false, false];
 

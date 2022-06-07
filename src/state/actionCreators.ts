@@ -39,6 +39,7 @@ import { SearchEntity } from '../model/SearchEntity';
 import getErrorMessage from '../utils/ErrorHelpers';
 import FileKey from '../client/contracts/FileKey';
 import tableActionCreators from './table/tableActionCreators';
+import { getFullCulture } from '../utils/StateHelpers';
 
 const isConnectedChanged: ActionCreator<Actions.IsConnectedChangedAction> = (isConnected: boolean) => ({
 	type: Actions.ActionTypes.IsConnectedChanged,
@@ -176,6 +177,16 @@ const loginEnd: ActionCreator<Actions.LoginEndAction> = (error: string | null = 
 	type: Actions.ActionTypes.LoginEnd,
 	error
 });
+
+const reloadComputerAccounts: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
+	() => async (dispatch: Dispatch<Actions.KnownAction>, getState: () => State, dataContext: DataContext) => {
+		const state = getState();
+
+		const requestCulture = getFullCulture(state);
+
+		const computerAccounts = await dataContext.gameClient.getComputerAccountsAsync(requestCulture);
+		dispatch(computerAccountsChanged(computerAccounts));
+};
 
 const saveStateToStorage = (state: State) => {
 	saveState({
@@ -339,8 +350,7 @@ const login: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 
 					attachListeners(dataContext.connection, dispatch);
 
-					const { culture } = state.settings.appSettings;
-					const requestCulture = culture == 'ru' ? 'ru-RU' : 'en-US';
+					const requestCulture = getFullCulture(state);
 
 					const computerAccounts = await dataContext.gameClient.getComputerAccountsAsync(requestCulture);
 					dispatch(computerAccountsChanged(computerAccounts));
@@ -844,7 +854,7 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 			randomQuestionsBasePrice: gameMode === GameType.Simple ? 10 : 100,
 			randomRoundsCount: gameMode === GameType.Simple ? 1 : 3,
 			randomThemesCount: gameMode === GameType.Simple ? 5 : 6,
-			culture: culture == 'ru' ? 'ru-RU' : 'en-US'
+			culture: getFullCulture(state)
 		};
 
 		const gameSettings: GameSettings = {
@@ -1070,6 +1080,7 @@ const searchPackagesThunk: ActionCreator<ThunkAction<void, State, DataContext, A
 	};
 
 const actionCreators = {
+	reloadComputerAccounts,
 	saveStateToStorage,
 	onConnectionChanged,
 	computerAccountsChanged,

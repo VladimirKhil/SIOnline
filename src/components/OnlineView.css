@@ -44,8 +44,9 @@
         height: 35pt;
     }
 
-    .gameInfoAreaConent {
+    .gameInfoAreaContent {
         height: calc(100% - 35pt);
+        display: flex;
     }
 }
 

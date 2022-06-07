@@ -97,8 +97,28 @@
 	}
 
 	.welcomeViewActions {
-		font-size: 40px;
+		font-size: 35px;
 		margin-top: 30px;
+	}
+
+	.welcomeViewActions li {
+		padding: 10px 40px;
+	}
+}
+
+@media screen and (min-height: 800px) {
+	.welcomeView {
+		height: calc(100% - 40px);
+		margin-top: 40px;
+	}
+
+	.welcomeView header h1 {
+		font-size: 40px;
+	}
+
+	.welcomeViewActions {
+		font-size: 40px;
+		margin-top: 40px;
 	}
 
 	.welcomeViewActions li {

@@ -251,9 +251,11 @@ export class SettingsDialog extends React.Component<SettingsDialogProps> {
 						/>
 						<label htmlFor="hintShowman">{localization.hintShowman}</label>
 					</div>
+					<p className="readingSpeed">{localization.questionReadingSpeed}</p>
 					<div className="settingItem">
 						<div>
 							<input
+								id='readingSpeed'
 								className="rangeEditor"
 								type="range"
 								value={this.props.settings.appSettings.readingSpeed}

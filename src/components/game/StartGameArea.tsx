@@ -4,7 +4,7 @@ import { Dispatch, Action } from 'redux';
 import State from '../../state/State';
 import runActionCreators from '../../state/run/runActionCreators';
 import localization from '../../model/resources/localization';
-import isHost from '../../utils/StateHelpers';
+import { isHost } from '../../utils/StateHelpers';
 import Sex from '../../model/enums/Sex';
 import Role from '../../client/contracts/Role';
 

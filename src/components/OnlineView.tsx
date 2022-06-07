@@ -86,7 +86,7 @@ export class OnlineView extends React.Component<OnlineViewProps> {
 				<GamesList games={this.props.filteredGames} selectedGameId={this.props.selectedGameId} showInfo={false} />
 				<div className='gameInfoArea'>
 					<header />
-					<div className='gameInfoAreaConent'><GameInfoView game={this.props.selectedGame} showGameName /></div>
+					<div className='gameInfoAreaContent'><GameInfoView game={this.props.selectedGame} showGameName /></div>
 				</div>
 				<UsersView />
 				{this.props.newGameShown ? newGame : null}

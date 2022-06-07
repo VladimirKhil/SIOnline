@@ -15,11 +15,11 @@
 	margin-right: -1px;
 }
 
-.activeRound {
+.sideButtonHost .activeRound {
 	background-color: #5A95E2;
 	cursor: default !important;
 }
 
-.activeRound:hover {
+.sideButtonHost .activeRound:hover {
 	background-color: #5A95E2 !important;
 }

@@ -301,7 +301,7 @@ export class SIStorageDialog extends React.Component<SIStorageDialogProps, SISto
 									<span>{new Date(publishedDate).toLocaleDateString()}</span>
 									<br />
 									<div className="selectButton">
-										<button type="button" onClick={this.onSelectPackage(guid, description)}>
+										<button type="button" className='standard' onClick={this.onSelectPackage(guid, description)}>
 											{localization.librarySelect}
 										</button>
 									</div>

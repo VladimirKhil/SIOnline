@@ -47,7 +47,7 @@ function setState(state: State, savedState: SavedState | null, gameId: string | 
 			role: savedState.game.role,
 			type: savedState.game.type,
 			playersCount: savedState.game.playersCount,
-			humanPlayersCount: savedState.game.humanPlayersCount
+			humanPlayersCount: savedState.game.humanPlayersCount || 0
 		} : state.game,
 		settings: savedState.settings ? {
 			...state.settings,
@@ -158,7 +158,8 @@ async function run() {
 		const newSettings = newState.settings;
 		if (newSettings !== currentSettings) {
 			if (newSettings.appSettings.culture !== currentSettings.appSettings.culture) {
-				localization.setLanguage(newSettings.appSettings.culture || '');
+				localization.setLanguage(newSettings.appSettings.culture || localization.getInterfaceLanguage());
+				store.dispatch(actionCreators.reloadComputerAccounts() as any);
 			}
 
 			currentSettings = newSettings;
