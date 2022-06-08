@@ -173,7 +173,7 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 							() => {
 								dispatch(tableActionCreators.removeQuestion(themeIndex, questIndex));
 							},
-							1000
+							5000
 						);
 					}
 				}

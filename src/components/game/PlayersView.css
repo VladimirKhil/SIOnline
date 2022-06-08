@@ -210,7 +210,7 @@
     }
 
     .gamePlayers .playerInfo {
-        font-size: 15px;
+        font-size: 20px;
         padding: 2px;
         width: initial;
     }
@@ -251,7 +251,7 @@
     }
 
     .gamePlayers .playerInfo {
-        font-size: 18px;
+        font-size: 30px;
         padding: 3px;
     }
 }
@@ -275,8 +275,8 @@
     }
 
     .gameMainView.reversed .gamePlayers .playerReplic {
-        top: initial;
-        bottom: 70px;
+        bottom: initial;
+        top: 27px;
     }
 
     .gamePlayers .replicLink {

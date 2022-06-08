@@ -132,7 +132,7 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 
 				<div className="sidecontrol_buttons">
 					{canPause ? (
-						<button type="button" id="pauseButton" className='standard' disabled={!props.isConnected} onClick={() => props.onPause()}>
+						<button type="button" className='pauseButton standard' disabled={!props.isConnected} onClick={() => props.onPause()}>
 							{pauseTitle}
 						</button>
 					) : null}

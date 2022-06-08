@@ -17,16 +17,16 @@
 }
 
 #gameMenuButton, .gameMenuButton {
-    font-size: 26px;
-    line-height: 26px;
+    font-size: 22px;
+    line-height: 22px;
     margin: 0;
     width: 100%;
 }
 
-#pauseButton {
+.pauseButton {
     display: none;
     flex: 1 0 0;
-    font-size: 19pt;
+    font-size: 20px;
     padding: 0;
     margin-right: -1px;
 }
@@ -115,7 +115,19 @@ ul.gameMenu, .exitMenu ul {
         display: none;
     }
 
-    #pauseButton {
+    .pauseButton {
         display: initial;
+        font-size: 19px;
+    }
+
+    #gameMenuButton, .gameMenuButton {
+        font-size: 26px;
+        line-height: 26px;
+    }
+}
+
+@media screen and (min-width: 1600px) {
+    .pauseButton {
+        font-size: 25px;
     }
 }
