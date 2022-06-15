@@ -29,10 +29,6 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 });
 
 export class RoundTable extends React.Component<RoundTableProps> {
-	constructor(props: RoundTableProps) {
-		super(props);
-	}
-
 	onSelectQuestion(themeIndex: number, questionIndex: number) {
 		if (!this.props.isSelectable) {
 			return;

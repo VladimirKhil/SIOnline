@@ -743,7 +743,7 @@ async function checkAndUploadPackageAsync(
 	const contentFile = zip.file('content.xml');
 
 	if (!contentFile) {
-		throw new Error(localization.corruptedPackage);
+		throw new Error(localization.corruptedPackage + ' (!contentFile)');
 	}
 
 	const content = await contentFile.async('text');
@@ -751,7 +751,13 @@ async function checkAndUploadPackageAsync(
 	const parser = new DOMParser();
 	const xmlDoc = parser.parseFromString(content.substring(39), 'application/xml');
 
-	const id = xmlDoc.getElementsByTagName('package')[0].getAttribute('id');
+	const packageElements = xmlDoc.getElementsByTagName('package');
+
+	if (packageElements.length === 0) {
+		throw new Error(localization.corruptedPackage + ' (packageElements.length === 0)');
+	}
+
+	const id = packageElements[0].getAttribute('id');
 
 	const hash = await hashData(await packageData.arrayBuffer());
 
@@ -839,8 +845,6 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 
 		const gameMode = game.type;
 
-		const { culture } = state.settings.appSettings;
-
 		const appSettings: ServerAppSettings = {
 			timeSettings: state.settings.appSettings.timeSettings,
 			readingSpeed: state.settings.appSettings.readingSpeed,
@@ -860,7 +864,7 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 		const gameSettings: GameSettings = {
 			humanPlayerName: state.user.login,
 			randomSpecials: game.package.type === PackageType.Random,
-			networkGameName: game.name,
+			networkGameName: game.name.trim(),
 			networkGamePassword: game.password,
 			allowViewers: true,
 			showman: showman,
@@ -974,6 +978,7 @@ async function gameInit(gameId: number, dataContext: DataContext, role: Role) {
 const searchPackages: ActionCreator<Actions.SearchPackagesAction> = () => ({
 	type: Actions.ActionTypes.SearchPackages
 });
+
 const searchPackagesFinished: ActionCreator<Actions.SearchPackagesFinishedAction> = (packages: SIPackageInfo[]) => ({
 	type: Actions.ActionTypes.SearchPackagesFinished,
 	packages
@@ -982,12 +987,14 @@ const searchPackagesFinished: ActionCreator<Actions.SearchPackagesFinishedAction
 const receiveAuthors: ActionCreator<Actions.ReceiveAuthorsAction> = () => ({
 	type: Actions.ActionTypes.ReceiveAuthors
 });
+
 const receiveAuthorsFinished: ActionCreator<Actions.ReceiveAuthorsFinishedAction> = (authors: SearchEntity[]) => ({
 	type: Actions.ActionTypes.ReceiveAuthorsFinished,
 	authors
 });
 
 const receiveTags: ActionCreator<Actions.ReceiveTagsAction> = () => ({ type: Actions.ActionTypes.ReceiveTags });
+
 const receiveTagsFinished: ActionCreator<Actions.ReceiveTagsFinishedAction> = (tags: SearchEntity[]) => ({
 	type: Actions.ActionTypes.ReceiveTagsFinished,
 	tags
@@ -996,6 +1003,7 @@ const receiveTagsFinished: ActionCreator<Actions.ReceiveTagsFinishedAction> = (t
 const receivePublishers: ActionCreator<Actions.ReceivePublishersAction> = () => ({
 	type: Actions.ActionTypes.ReceivePublishers
 });
+
 const receivePublishersFinished: ActionCreator<Actions.ReceivePublishersFinishedAction> = (
 	publishers: SearchEntity[]
 ) => ({
@@ -1079,6 +1087,10 @@ const searchPackagesThunk: ActionCreator<ThunkAction<void, State, DataContext, A
 		}
 	};
 
+const isSettingGameButtonKeyChanged: ActionCreator<Actions.IsSettingGameButtonKeyChangedAction> = (isSettingGameButtonKey: boolean) => ({
+	type: Actions.ActionTypes.IsSettingGameButtonKeyChanged, isSettingGameButtonKey
+});
+
 const actionCreators = {
 	reloadComputerAccounts,
 	saveStateToStorage,
@@ -1137,6 +1149,7 @@ const actionCreators = {
 	receiveTagsThunk,
 	receivePublishersThunk,
 	gamePackageLibraryChanged,
+	isSettingGameButtonKeyChanged,
 };
 
 export default actionCreators;

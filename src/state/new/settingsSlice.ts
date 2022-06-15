@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import AppSettings from '../../model/AppSettings';
+import Constants from '../../model/enums/Constants';
 import Sex from '../../model/enums/Sex';
 
 export interface SettingsState {
@@ -7,6 +8,8 @@ export interface SettingsState {
 	showPersonsAtBottomOnWideScreen: boolean;
 	sex: Sex;
 	appSettings: AppSettings;
+	gameButtonKey: string | null;
+	isLobbyChatHidden: boolean;
 }
 
 const initialState: SettingsState = {
@@ -37,7 +40,9 @@ const initialState: SettingsState = {
 			timeForMediaDelay: 0,
 			timeForBlockingButton: 3
 		}
-	}
+	},
+	gameButtonKey: Constants.KEY_CTRL,
+	isLobbyChatHidden: false
 };
 
 export const settingsSlice = createSlice({

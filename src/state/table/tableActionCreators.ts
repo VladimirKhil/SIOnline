@@ -10,6 +10,10 @@ const showGameThemes: ActionCreator<TableActions.ShowGameThemesAction> = (gameTh
 	type: TableActions.TableActionTypes.ShowGameThemes, gameThemes
 });
 
+const showRound: ActionCreator<TableActions.ShowRoundAction> = (roundName: string) => ({
+	type: TableActions.TableActionTypes.ShowRound, roundName
+});
+
 const showRoundThemes: ActionCreator<TableActions.ShowRoundThemesAction> = (
 	roundThemes: ThemeInfo[],
 	isFinal: boolean,
@@ -95,6 +99,7 @@ const captionChanged: ActionCreator<TableActions.CaptionChangedAction> = (captio
 const tableActionCreators = {
 	showLogo,
 	showGameThemes,
+	showRound,
 	showRoundThemes,
 	showText,
 	showAnswer,

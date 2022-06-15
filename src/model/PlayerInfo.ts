@@ -6,4 +6,5 @@ export default interface PlayerInfo extends PersonInfo {
 	stake: number;
 	state: PlayerStates;
 	canBeSelected: boolean;
+	isChooser: boolean;
 }

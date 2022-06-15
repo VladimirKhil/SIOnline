@@ -93,10 +93,23 @@ export class PlayersView extends React.Component<PlayersViewProps> {
 		const replicRect = replic.getBoundingClientRect();
 		const listRect = list.getBoundingClientRect();
 
+		let transformX: string | null = null;
+		let transformY: string | null = null;
+
 		if (replicRect.left < listRect.left) {
-			replic.style.transform = `translate(calc(-50% + ${listRect.left - replicRect.left + 1}px),0)`;
+			transformX = `calc(-50% + ${listRect.left - replicRect.left + 1}px)`;
 		} else if (replicRect.right > listRect.right) {
-			replic.style.transform = `translate(calc(-50% - ${replicRect.right - listRect.right + 1}px),0)`;
+			transformX = `calc(-50% - ${replicRect.right - listRect.right + 1}px)`;
+		}
+
+		if (replicRect.top < listRect.top) {
+			transformY = `calc(${listRect.top - replicRect.top + 1}px)`;
+		} else if (replicRect.bottom > listRect.bottom) {
+			transformY = `calc(${listRect.bottom - replicRect.bottom - 1}px)`;
+		}
+
+		if (transformX || transformY) {
+			replic.style.transform = `translate(${transformX ?? '-50%'},${transformY ?? 0})`;
 		}
 	};
 
@@ -148,7 +161,7 @@ export class PlayersView extends React.Component<PlayersViewProps> {
 											) : null}
 											<span>{player.name}</span>
 										</div>
-										<div className="sum">
+										<div className="sum" title={player.sum.toString()}>
 											{this.props.isSumEditable ? (
 												<NumericTextBox
 													value={player.sum}
@@ -174,6 +187,9 @@ export class PlayersView extends React.Component<PlayersViewProps> {
 										valueChangeDuration={isRunning(this.props.decisionTimer)
 											? (this.props.decisionTimer.maximum - this.props.decisionTimer.value) / 10 : 0}
 									/>
+								) : null}
+								{player.isChooser ? (
+									<div className='chooserMark' title={localization.chooserMark} />
 								) : null}
 							</li>
 						);

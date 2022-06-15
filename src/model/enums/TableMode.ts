@@ -7,6 +7,7 @@
 	Video,
 	Answer,
 	GameThemes,
+	Round,
 	RoundThemes,
 	RoundTable,
 	Special,

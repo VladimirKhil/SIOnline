@@ -8,13 +8,29 @@ interface ErrorViewProps {
 	error: string | null;
 }
 
+function copyTextToClipboard(error: string | null) {
+	if (error) {
+		navigator.clipboard.writeText(error);
+	}
+}
+
 // TODO: provide a button to send error to the server
 
 export function ErrorView(props: ErrorViewProps): JSX.Element {
 	return (
 		<div className='errorView'>
-			<div className="errorTitle">{localization.errorHappened}</div>
-			<div className='errorBody'>{props.error}</div>
+			<div className='errorBox'>
+				<div className="errorTitle">{localization.errorHappened}</div>
+				<div className='errorBody'>{props.error}</div>
+				<div className='buttons'>
+					<button
+						className='standard'
+						disabled={!props.error}
+						onClick={() => copyTextToClipboard(props.error)}>
+							{localization.copyText}
+						</button>
+				</div>
+			</div>
 		</div>
 	);
 }

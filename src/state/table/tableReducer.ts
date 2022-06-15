@@ -21,6 +21,14 @@ const tableReducer: Reducer<TableState> = (state: TableState = initialState, any
 				gameThemes: action.gameThemes
 			};
 
+		case TableActionTypes.ShowRound:
+			return {
+				...state,
+				mode: TableMode.Round,
+				text: action.roundName,
+				animateReading: false
+			};
+
 		case TableActionTypes.ShowRoundThemes:
 			return {
 				...state,

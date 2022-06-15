@@ -15,6 +15,8 @@ export const enum SettingsActionTypes {
 	TimeSettingChanged = 'TIME_SETTING_CHANGED',
 	ResetSettings = 'RESET_SETTINGS',
 	LanguageChanged = 'LANGUAGE_CHANGED',
+	GameButtonKeyChanged = 'GAME_BUTTON_KEY_CHANGED',	
+	LobbyChatVisibilityChanged = 'LOBBY_CHAT_VISIBILITY_CHANGED',
 }
 
 export type SoundVolumeChangeAction = { type: SettingsActionTypes.SoundVolumeChanged; volume: number };
@@ -37,6 +39,8 @@ export type TimeSettingChangedAction = {
 };
 export type ResetSettingsAction = { type: SettingsActionTypes.ResetSettings };
 export type LanguageChangedAction = { type: SettingsActionTypes.LanguageChanged, language: string | null };
+export type GameButtonKeyChangedAction = { type: SettingsActionTypes.GameButtonKeyChanged, gameButtonKey: string | null };
+export type LobbyChatVisibilityChangedAction = { type: SettingsActionTypes.LobbyChatVisibilityChanged, isLobbyChatVisible: boolean };
 
 export type KnownSettingsAction =
 	| SoundVolumeChangeAction
@@ -51,4 +55,6 @@ export type KnownSettingsAction =
 	| IgnoreWrongChangedAction
 	| TimeSettingChangedAction
 	| ResetSettingsAction
-	| LanguageChangedAction;
+	| LanguageChangedAction
+	| GameButtonKeyChangedAction
+	| LobbyChatVisibilityChangedAction;

@@ -19,7 +19,8 @@
     right: 0;
     max-width: none !important;
     background-color: #C0CFF4;
-    font-size: 12pt;
+    font-size: 20px;
+    padding-left: 5px;
 }
 
 .chatHost .message.disconnected {

@@ -32,6 +32,8 @@ body {
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+    scrollbar-width: thin;
+    scrollbar-color: #a8acfd transparent;
 }
 
 #reactHost {
@@ -264,12 +266,14 @@ button:disabled, button.standard:disabled {
     }
 
 .tabHeader h1 {
-    display: inline-block;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
     font-family: SI;
     font-size: 26px;
-    line-height: 24pt;
-    border-bottom: 2px solid #FFFFFF66;
-    margin: 6px 0px 7px 5px;
+    height: 100%;
+    margin: 0;
+    padding: 0 12px;
     color: #FFFFFF66;
     text-shadow: 1px 1px 0 #000;
     cursor: pointer;
@@ -282,12 +286,12 @@ button:disabled, button.standard:disabled {
 
 h1.activeTab {
     color: #FFFFFF;
-    border-color: #FFFFFF;
+    background-color: #98B9FF;
 }
 
     .tabHeader h1:hover {
         color: #FFFFFF99;
-        border-color: #FFFFFF99;
+        background-color: white;
     }
 
 .chatBody {
@@ -612,7 +616,6 @@ video, audio {
 }
 
 .gameHeader {
-    padding-left: 10px;
     height: 50px;
 }
 

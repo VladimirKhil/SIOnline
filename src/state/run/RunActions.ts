@@ -71,7 +71,8 @@ export const enum RunActionTypes {
 	HostNameChanged = 'HOST_NAME_CHANGED',
 	ThemeNameChanged = 'THEME_NAME_CHANGED',
 	IsReadyChanged = 'IS_READY_CHANGED',
-	RoundsNamesChanged = 'ROUNDS_NAMES_CHANGED'
+	RoundsNamesChanged = 'ROUNDS_NAMES_CHANGED',
+	ChooserChanged = 'CHOOSER_CHANGED'
 }
 
 export type RunChatModeChangedAction = { type: RunActionTypes.RunChatModeChanged, chatMode: ChatMode };
@@ -154,6 +155,7 @@ export type HostNameChangedAction = { type: RunActionTypes.HostNameChanged, host
 export type ThemeNameChangedAction = { type: RunActionTypes.ThemeNameChanged, themeName: string };
 export type IsReadyChangedAction = { type: RunActionTypes.IsReadyChanged, personIndex: number, isReady: boolean };
 export type RoundsNamesChangedAction = { type: RunActionTypes.RoundsNamesChanged, roundsNames: string[] };
+export type ChooserChangedAction = { type: RunActionTypes.ChooserChanged, chooserIndex: number };
 
 export type KnownRunAction =
 	RunChatModeChangedAction
@@ -218,4 +220,5 @@ export type KnownRunAction =
 	| HostNameChangedAction
 	| ThemeNameChangedAction
 	| IsReadyChangedAction
-	| RoundsNamesChangedAction;
+	| RoundsNamesChangedAction
+	| ChooserChangedAction;

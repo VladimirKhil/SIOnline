@@ -19,6 +19,7 @@ interface SettingsDialogProps {
 	avatar: string | null;
 	avatarLoadError: string | null;
 	avatarLoadProgress: boolean;
+	isSettingGameButtonKey: boolean;
 	onShowPersonsAtBottomOnWideScreenChanged: (showPersonsAtBottomOnWideScreen: boolean) => void;
 	onSexChanged: (newSex: Sex) => void;
 	onAvatarSelected: (avatar: File) => void;
@@ -30,6 +31,7 @@ interface SettingsDialogProps {
 	onIgnoreWrongChanged: (ignoreWrong: boolean) => void;
 	onPartialTextChanged: (hintShowman: boolean) => void;
 	onLanguageChanged: (language: string | null) => void;
+	isSettingGameButtonKeyChanged: (isSettingGameButtonKey: boolean) => void;
 	onReset: () => void;
 	onClose: () => void;
 }
@@ -38,7 +40,8 @@ const mapStateToProps = (state: State) => ({
 	settings: state.settings,
 	avatar: state.user.avatar,
 	avatarLoadError: state.common.avatarLoadError,
-	avatarLoadProgress: state.common.avatarLoadProgress
+	avatarLoadProgress: state.common.avatarLoadProgress,
+	isSettingGameButtonKey: state.ui.isSettingGameButtonKey
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
@@ -77,6 +80,9 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	},
 	onLanguageChanged: (language: string | null) => {
 		dispatch(settingsActionCreators.languageChanged(language));
+	},
+	isSettingGameButtonKeyChanged: (isSettingGameButtonKey: boolean) => {
+		dispatch(actionCreators.isSettingGameButtonKeyChanged(isSettingGameButtonKey));
 	},
 	onReset: () => {
 		dispatch(settingsActionCreators.resetSettings());
@@ -209,6 +215,16 @@ export class SettingsDialog extends React.Component<SettingsDialogProps> {
 						/>
 						<label htmlFor="female">{localization.female}</label>
 					</div>
+
+					<p className="header">{localization.gameButtonKey}</p>
+					<button
+						className={`gameButtonKey standard ${this.props.isSettingGameButtonKey ? 'active' : ''}`}
+						title={localization.set}
+						disabled={this.props.isSettingGameButtonKey}
+						onClick={() => this.props.isSettingGameButtonKeyChanged(true)}
+					>
+						{this.props.settings.gameButtonKey ?? localization.notSet}
+					</button>
 
 					<h2>{localization.game}</h2>
 					<div className="settingItem">

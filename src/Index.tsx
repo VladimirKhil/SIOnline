@@ -12,13 +12,15 @@ import { KnownAction } from './state/Actions';
 import actionCreators from './state/actionCreators';
 import DataContext from './model/DataContext';
 import Config from './state/Config';
-import Constants from './model/enums/Constants';
 import runActionCreators from './state/run/runActionCreators';
 import localization from './model/resources/localization';
 import ServerInfo from './model/server/ServerInfo';
 import DummyGameServerClient from './client/DummyGameServerClient';
 import { FirebaseOptions, initializeApp, FirebaseApp } from 'firebase/app';
 import { Analytics, getAnalytics } from 'firebase/analytics';
+import { ErrorView } from './components/ErrorView';
+import Constants from './model/enums/Constants';
+import settingsActionCreators from './state/settings/settingsActionCreators';
 
 import './utils/polyfills';
 import './style.css';
@@ -56,7 +58,8 @@ function setState(state: State, savedState: SavedState | null, gameId: string | 
 				...savedState.settings.appSettings,
 				timeSettings: savedState.settings.appSettings.timeSettings || state.settings.appSettings.timeSettings,
 				readingSpeed: savedState.settings.appSettings.readingSpeed || state.settings.appSettings.readingSpeed
-			}
+			},
+			gameButtonKey: savedState.settings.gameButtonKey || Constants.KEY_CTRL
 		} : state.settings,
 		online: {
 			...state.online,
@@ -70,7 +73,12 @@ function subscribeToExternalEvents(store: Store<State, any>) {
 	window.onpopstate = () => true;
 
 	window.onkeydown = (e: KeyboardEvent) => {
-		if (e.key === Constants.KEY_CTRL) {
+		const state = store.getState();
+
+		if (state.ui.isSettingGameButtonKey) {
+			store.dispatch(settingsActionCreators.gameButtonKeyChanged(e.key));
+			store.dispatch(actionCreators.isSettingGameButtonKeyChanged(false));
+		} else if (e.key === state.settings.gameButtonKey) {
 			store.dispatch(runActionCreators.pressGameButton());
 		}
 
@@ -94,12 +102,29 @@ function subscribeToExternalEvents(store: Store<State, any>) {
 	});
 }
 
-async function run() {
-	document.title = localization.appTitle;
+function validateBrowser() : boolean {
+	if (!navigator.clipboard) {
+		ReactDOM.render(
+			<ErrorView error={localization.unsupportedBrowser} />,
+			document.getElementById('reactHost')
+		);
 
+		return false;
+	}
+
+	return true;
+}
+
+async function run() {
 	if (!config) {
 		throw new Error('Config is undefined!');
 	}
+
+	if (!validateBrowser()) {
+		return;
+	}
+
+	document.title = localization.appTitle;
 
 	try {
 		if (firebaseConfig) {
@@ -153,12 +178,14 @@ async function run() {
 	);
 
 	let currentSettings = state.settings;
+
 	store.subscribe(() => {
 		const newState = store.getState();
 		const newSettings = newState.settings;
 		if (newSettings !== currentSettings) {
 			if (newSettings.appSettings.culture !== currentSettings.appSettings.culture) {
 				localization.setLanguage(newSettings.appSettings.culture || localization.getInterfaceLanguage());
+				document.title = localization.appTitle;
 				store.dispatch(actionCreators.reloadComputerAccounts() as any);
 			}
 
@@ -171,6 +198,7 @@ async function run() {
 
 	if (state.settings.appSettings.culture) {
 		localization.setLanguage(state.settings.appSettings.culture);
+		document.title = localization.appTitle;
 	}
 
 	ReactDOM.render(

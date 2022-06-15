@@ -314,7 +314,8 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 						isReady: false,
 						replic: null,
 						isDeciding: false,
-						isHuman: true
+						isHuman: true,
+						isChooser: false
 					}]
 				}
 			};
@@ -725,6 +726,18 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 			return {
 				...state,
 				roundsNames: action.roundsNames
+			};
+
+		case RunActionTypes.ChooserChanged:
+			return {
+				...state,
+				persons: {
+					...state.persons,
+					players: state.persons.players.map((player, index) => ({
+						...player,
+						isChooser: index === action.chooserIndex
+					}))
+				}
 			};
 
 		default:

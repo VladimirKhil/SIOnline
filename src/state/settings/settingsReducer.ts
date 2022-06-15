@@ -111,6 +111,18 @@ const settingsReducer: Reducer<SettingsState> = (
 				}
 			};
 
+		case SettingsActionTypes.GameButtonKeyChanged:
+			return {
+				...state,
+				gameButtonKey: action.gameButtonKey
+			};
+
+		case SettingsActionTypes.LobbyChatVisibilityChanged:
+			return {
+				...state,
+				isLobbyChatHidden: !action.isLobbyChatVisible
+			};
+
 		case SettingsActionTypes.ResetSettings:
 			return initialState;
 

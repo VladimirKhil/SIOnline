@@ -48,7 +48,8 @@ const reducer: Reducer<State> = (state: State = initialState, action: KnownActio
 				...state,
 				ui: {
 					...state.ui,
-					areSettingsVisible: action.show
+					areSettingsVisible: action.show,
+					isSettingGameButtonKey: state.ui.isSettingGameButtonKey && action.show
 				}
 			};
 
@@ -700,6 +701,15 @@ const reducer: Reducer<State> = (state: State = initialState, action: KnownActio
 				siPackages: {
 					...state.siPackages,
 					publishers: action.publishers
+				}
+			};		
+
+		case ActionTypes.IsSettingGameButtonKeyChanged:
+			return {
+				...state,
+				ui: {
+					...state.ui,
+					isSettingGameButtonKey: action.isSettingGameButtonKey
 				}
 			};
 

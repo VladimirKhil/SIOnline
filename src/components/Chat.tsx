@@ -40,12 +40,12 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 });
 
 export function Chat(props: ChatProps): JSX.Element {
-	const onMessageChanged = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+	const onMessageChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
 		props.onMessageChanged(e.target.value);
 	};
 
-	const onMessageKeyPress = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-		if (e.charCode === Constants.KEY_ENTER) {
+	const onMessageKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+		if (e.key === Constants.KEY_ENTER_NEW) {
 			if (props.isConnected) {
 				props.onSendMessage();
 			}
@@ -58,7 +58,8 @@ export function Chat(props: ChatProps): JSX.Element {
 		<div className="chatBodyHost">
 			<ChatLog className="chat" messages={props.messages} />
 
-			<textarea
+			<input
+				type='text'
 				className={`message ${props.isConnected ? '' : 'disconnected'}`}
 				value={props.currentMessage}
 				onChange={onMessageChanged}

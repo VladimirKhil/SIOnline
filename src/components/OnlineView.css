@@ -34,6 +34,10 @@
         right: 300px;
     }
 
+    .newGameArea.newWide {
+        right: 0;
+    }
+
     .gameInfoArea {
         position: relative;
         z-index: 0;

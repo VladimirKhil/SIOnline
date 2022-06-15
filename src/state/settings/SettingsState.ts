@@ -1,11 +1,14 @@
 import Sex from '../../model/enums/Sex';
 import AppSettings from '../../model/AppSettings';
+import Constants from '../../model/enums/Constants';
 
 export default interface SettingsState {
 	soundVolume: number;
 	showPersonsAtBottomOnWideScreen: boolean;
 	sex: Sex;
 	appSettings: AppSettings;
+	gameButtonKey: string | null;
+	isLobbyChatHidden: boolean;
 }
 
 export const initialState: SettingsState = {
@@ -36,5 +39,7 @@ export const initialState: SettingsState = {
 			timeForMediaDelay: 0,
 			timeForBlockingButton: 3
 		}
-	}
+	},
+	gameButtonKey: Constants.KEY_CTRL,
+	isLobbyChatHidden: false
 };

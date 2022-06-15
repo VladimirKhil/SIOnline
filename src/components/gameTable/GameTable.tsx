@@ -20,6 +20,7 @@ import localization from '../../model/resources/localization';
 import TimerInfo from '../../model/TimerInfo';
 import ProgressBar from '../common/ProgressBar';
 import { isRunning } from '../../utils/TimerInfoHelpers';
+import TableRound from './TableRound';
 
 import './GameTable.css';
 
@@ -45,6 +46,9 @@ function getContent(mode: TableMode) {
 	switch (mode) {
 		case TableMode.Logo:
 			return <TableLogo />;
+
+		case TableMode.Round:
+			return <TableRound />;
 
 		case TableMode.Text:
 			return <TableText />;

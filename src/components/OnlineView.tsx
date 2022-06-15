@@ -12,6 +12,8 @@ import actionCreators from '../state/actionCreators';
 import { Dispatch, Action } from 'redux';
 import ProgressBar from './common/ProgressBar';
 import { filterGames } from '../utils/GamesHelpers';
+import SettingsButton from './SettingsButton';
+import LobbyChatVisibilityButton from './LobbyChatVisibilityButton';
 
 import './OnlineView.css';
 
@@ -23,6 +25,7 @@ interface OnlineViewProps {
 	windowWidth: number;
 	mode: OnlineMode;
 	newGameShown: boolean;
+	isLobbyChatHidden: boolean;
 
 	closeGameInfo: () => void;
 	closeNewGame: () => void;
@@ -41,7 +44,8 @@ const mapStateToProps = (state: State) => {
 		selectedGame: state.online.games[selectedGameId],
 		windowWidth: state.ui.windowWidth,
 		mode: state.ui.onlineView,
-		newGameShown: state.online.newGameShown
+		newGameShown: state.online.newGameShown,
+		isLobbyChatHidden: state.settings.isLobbyChatHidden
 	};
 };
 
@@ -56,7 +60,11 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 
 export class OnlineView extends React.Component<OnlineViewProps> {
 	render() {
-		const newGame = <div className="newGameArea"><NewGameDialog isSingleGame={false} onClose={this.props.closeNewGame} /></div>;
+		const newGame = (
+			<div className={`newGameArea ${this.props.isLobbyChatHidden ? 'newWide' : null}`}>
+				<NewGameDialog isSingleGame={false} onClose={this.props.closeNewGame} />
+			</div>
+		);
 
 		if (this.props.windowWidth < 800) {
 			if (this.props.mode === OnlineMode.GameInfo && this.props.selectedGame) {
@@ -89,6 +97,8 @@ export class OnlineView extends React.Component<OnlineViewProps> {
 					<div className='gameInfoAreaContent'><GameInfoView game={this.props.selectedGame} showGameName /></div>
 				</div>
 				<UsersView />
+				<SettingsButton />
+				<LobbyChatVisibilityButton />
 				{this.props.newGameShown ? newGame : null}
 			</div>
 		);

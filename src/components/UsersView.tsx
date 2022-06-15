@@ -6,7 +6,6 @@ import Chat from './Chat';
 import UsersList from './UsersList';
 import State from '../state/State';
 import localization from '../model/resources/localization';
-import FlyoutButton, { FlyoutHorizontalOrientation, FlyoutVerticalOrientation } from './common/FlyoutButton';
 import actionCreators from '../state/actionCreators';
 import LobbyMenu from './LobbyMenu';
 
@@ -15,13 +14,11 @@ import './UsersView.css';
 interface UsersViewStateProps {
 	chatMode: ChatMode;
 	usersCount: number;
+	isLobbyChatHidden: boolean;
 }
 
 interface UsersViewOwnProps {
 	onChatModeChanged: (chatMode: ChatMode) => void;
-	onShowSettings: () => void;
-	onHowToPlay: () => void;
-	onExit: () => void;
 }
 
 interface UsersViewProps extends UsersViewOwnProps, UsersViewStateProps {
@@ -30,32 +27,24 @@ interface UsersViewProps extends UsersViewOwnProps, UsersViewStateProps {
 
 const mapStateToProps = (state: State) => ({
 	chatMode: state.online.chatMode,
-	usersCount: state.online.users.length
+	usersCount: state.online.users.length,
+	isLobbyChatHidden: state.settings.isLobbyChatHidden
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	onChatModeChanged: (chatMode: ChatMode) => {
 		dispatch(actionCreators.chatModeChanged(chatMode));
 	},
-	onShowSettings: () => {
-		dispatch(actionCreators.showSettings(true));
-	},
-	onHowToPlay: () => {
-		dispatch(actionCreators.navigateToHowToPlay());
-	},
-	onExit: () => {
-		dispatch(actionCreators.onExit() as unknown as Action);
-	}
 });
 
-export function UsersView(props: UsersViewProps): JSX.Element {
+export function UsersView(props: UsersViewProps): JSX.Element | null {
 	function chatModeChanged(chatMode: ChatMode) {
 		if (props.chatMode !== chatMode) {
 			props.onChatModeChanged(chatMode);
 		}
 	}
 
-	return (
+	return props.isLobbyChatHidden ? null : (
 		<section className="chatHost gamesblock">
 			<header>
 				<LobbyMenu />
@@ -70,26 +59,14 @@ export function UsersView(props: UsersViewProps): JSX.Element {
 						className={`playersTitle ${props.chatMode === ChatMode.Users ? 'activeTab' : ''}`}
 						onClick={() => chatModeChanged(ChatMode.Users)}
 					>
-						<span>{localization.users}</span>
-						<span> (</span>
-						<span>{props.usersCount}</span>
-						<span>)</span>
+						<div>
+							<span>{localization.users}</span>
+							<span> (</span>
+							<span>{props.usersCount}</span>
+							<span>)</span>
+						</div>
 					</h1>
 				</div>
-				<FlyoutButton
-					className="logOffButton"
-					flyout={(
-						<ul>
-							<li onClick={props.onShowSettings}>{localization.settings}</li>
-							<li onClick={props.onHowToPlay}>{localization.aboutTitle}</li>
-							<li onClick={props.onExit}>{localization.exit}</li>
-						</ul>
-					)}
-					horizontalOrientation={FlyoutHorizontalOrientation.Left}
-					verticalOrientation={FlyoutVerticalOrientation.Bottom}
-				>
-					<span>⚙</span>
-				</FlyoutButton>
 			</header>
 
 			<div className="chatBody">

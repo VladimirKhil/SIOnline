@@ -29,6 +29,7 @@ export default interface State {
 		windowWidth: number;
 		windowHeight: number;
 		areSettingsVisible: boolean;
+		isSettingGameButtonKey: boolean;
 	};
 	online: {
 		inProgress: boolean;
@@ -102,7 +103,8 @@ export const initialState: State = {
 		onlineView: OnlineMode.Games,
 		windowWidth: window.innerWidth,
 		windowHeight: window.innerHeight,
-		areSettingsVisible: false
+		areSettingsVisible: false,
+		isSettingGameButtonKey: false
 	},
 	online: {
 		inProgress: false,

@@ -97,10 +97,12 @@ export function GameChatView(props: GameChatViewProps): JSX.Element {
 					className={props.chatMode === ChatMode.Users ? 'activeTab' : ''}
 					onClick={() => props.onChatModeChanged(ChatMode.Users)}
 				>
-					<span>{localization.members}</span>
-					<span> (</span>
-					<span>{props.personsCount}</span>
-					<span>)</span>
+					<div>
+						<span>{localization.members}</span>
+						<span> (</span>
+						<span>{props.personsCount}</span>
+						<span>)</span>
+					</div>
 				</h1>
 				{props.isHost ? (
 					<h1
@@ -133,7 +135,7 @@ export function GameChatView(props: GameChatViewProps): JSX.Element {
 								{props.roundsNames?.map((name, index) => (
 									<li
 										key={index}
-										className={index === props.roundIndex ? 'activeRound' : ''}
+										className={index === props.roundIndex ? 'sideButtonActiveRound' : ''}
 										onClick={() => props.navigateToRound(index)}
 									>
 										{name}

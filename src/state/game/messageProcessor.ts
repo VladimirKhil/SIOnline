@@ -443,7 +443,11 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 			break;
 
 		case 'SETCHOOSER':
-			// TODO: process
+			const chooserIndex = parseInt(args[1], 10);
+			dispatch(runActionCreators.chooserChanged(chooserIndex));
+			if (args.length > 2) {
+				dispatch(runActionCreators.playerStateChanged(chooserIndex, PlayerStates.Press));
+			}
 			break;
 
 		case 'SHOWTABLO':
@@ -460,7 +464,7 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 			}
 
 			if (stage === 'Round' || stage === 'Final') {
-				dispatch(tableActionCreators.showText(args[2], false));
+				dispatch(tableActionCreators.showRound(args[2]));
 				dispatch(runActionCreators.playersStateCleared());
 			} else if (stage === 'After') {
 				dispatch(tableActionCreators.showLogo());
@@ -878,7 +882,8 @@ function info(dispatch: Dispatch<RunActions.KnownRunAction>, ...args: string[]) 
 			canBeSelected: false,
 			replic: null,
 			isDeciding: false,
-			isHuman
+			isHuman,
+			isChooser: false
 		});
 
 		if (isConnected) {

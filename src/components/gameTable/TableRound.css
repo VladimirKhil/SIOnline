@@ -1,0 +1,25 @@
+.tableRound {
+	animation: round-appear 3s forwards, round-background 3s linear 1s forwards;
+	opacity: 0;
+}
+
+@keyframes round-appear {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes round-background {
+    0% {
+        background-color: transparent;
+    }
+    50% {
+        background-color: lightyellow;
+    }
+    100% {
+        background-color: transparent;
+    }
+}

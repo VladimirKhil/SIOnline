@@ -78,6 +78,7 @@ export const enum ActionTypes {
 	ReceiveTagsFinished = 'RECEIVE_TAGS_FINISHED',
 	ReceivePublishers = 'RECEIVE_PUBLISHERS',
 	ReceivePublishersFinished = 'RECEIVE_PUBLISHERS_FINISHED',
+	IsSettingGameButtonKeyChanged = 'IS_SETTING_GAME_BUTTON_KEY_CHANGED',
 }
 
 export type IsConnectedChangedAction = { type: ActionTypes.IsConnectedChanged, isConnected: boolean };
@@ -149,6 +150,7 @@ export type ReceiveTagsAction = { type: ActionTypes.ReceiveTags };
 export type ReceiveTagsFinishedAction = { type: ActionTypes.ReceiveTagsFinished, tags: SearchEntity[] };
 export type ReceivePublishersAction = { type: ActionTypes.ReceivePublishers };
 export type ReceivePublishersFinishedAction = { type: ActionTypes.ReceivePublishersFinished, publishers: SearchEntity[] };
+export type IsSettingGameButtonKeyChangedAction = { type: ActionTypes.IsSettingGameButtonKeyChanged, isSettingGameButtonKey: boolean };
 
 export type KnownAction =
 	IsConnectedChangedAction
@@ -219,4 +221,5 @@ export type KnownAction =
 	| ReceiveTagsFinishedAction
 	| ReceivePublishersAction
 	| ReceivePublishersFinishedAction
-	| GamePackageLibraryChangedAction;
+	| GamePackageLibraryChangedAction
+	| IsSettingGameButtonKeyChangedAction;

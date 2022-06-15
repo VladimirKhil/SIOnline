@@ -675,6 +675,10 @@ const isReadyChanged: ActionCreator<RunActions.IsReadyChangedAction> = (personIn
 	type: RunActions.RunActionTypes.IsReadyChanged, personIndex, isReady
 });
 
+const chooserChanged: ActionCreator<RunActions.ChooserChangedAction> = (chooserIndex: number) => ({
+	type: RunActions.RunActionTypes.ChooserChanged, chooserIndex
+});
+
 const runActionCreators = {
 	runChatModeChanged,
 	runChatMessageChanged,
@@ -769,7 +773,8 @@ const runActionCreators = {
 	navigateToRound,
 	isReadyChanged,
 	ready,
-	roundsNamesChanged
+	roundsNamesChanged,
+	chooserChanged,
 };
 
 export default runActionCreators;

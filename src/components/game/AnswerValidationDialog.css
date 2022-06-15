@@ -10,7 +10,7 @@
 
 .answerValidationDialog #answersPanel {
     margin: 13px;
-    height: calc(100% - 173px);
+    height: calc(100% - 182px);
 }
 
 .answerValidationDialog .answers {

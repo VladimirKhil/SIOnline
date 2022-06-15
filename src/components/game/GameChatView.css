@@ -4,6 +4,7 @@
 
 .sideButtonHost button {
 	flex: 1;
+	font-size: 22px;
 }
 
 .sideButtonHost button.active {
@@ -15,11 +16,11 @@
 	margin-right: -1px;
 }
 
-.sideButtonHost .activeRound {
+.sideButtonActiveRound {
 	background-color: #5A95E2;
 	cursor: default !important;
 }
 
-.sideButtonHost .activeRound:hover {
+.sideButtonActiveRound:hover {
 	background-color: #5A95E2 !important;
 }

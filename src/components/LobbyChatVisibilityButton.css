@@ -1,0 +1,16 @@
+.lobbyChatVisibilityButton {
+    display: none;
+    position: absolute;
+    right: 42px;
+    top: 0;
+    height: 35pt;
+    font-size: 26px;
+    padding: 0 10px;
+    border: 0;
+}
+
+@media screen and (min-width: 800px) {
+    .lobbyChatVisibilityButton {
+        display: inline-block;
+    }
+}

@@ -3,15 +3,23 @@
 	align-items: center;
 	justify-content: center;
 	flex-flow: column;
-	background-color: #5A95E2;
+	background-color: transparent;
 	color: darkred;
+	text-shadow: 0.5px 0.5px 0 rgb(71, 71, 71);
 	height: 100%;
-	padding: 20px;
+}
+
+.errorBox {
+	display: flex;
+	flex-flow: column;
+	align-items: center;
+	justify-content: center;
+	background-color: #5A95E2;
 }
 
 .errorTitle {
 	font-size: 23px;
-	margin-bottom: 10px;;
+	margin: 40px 40px 10px 40px;
 }
 
 .errorBody {
@@ -21,4 +29,19 @@
 	overflow-y: auto;
 	margin-right: 20px;	
 	user-select: text;
+	margin: 0 40px 0 40px;
+}
+
+.buttons {
+	width: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin-top: 20px;
+}
+
+.buttons button {
+	flex: 1;
+	height: 40px;
+	font-size: 20px;
 }

@@ -102,6 +102,17 @@
     padding: 5px;
 }
 
+.gameButtonKey {
+    font-size: 24px;
+    padding: 5px 20px;
+    min-height: 40px;
+    min-width: 100px;
+}
+
+.gameButtonKey.active {
+    background-color: lightyellow;
+}
+
 @media screen and (min-width: 800px) {
     #settingsDialog {
         width: 300px;

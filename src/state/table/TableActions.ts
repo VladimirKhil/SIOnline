@@ -3,6 +3,7 @@ import ThemeInfo from '../../model/ThemeInfo';
 export const enum TableActionTypes {
 	ShowLogo = 'SHOW_LOGO',
 	ShowGameThemes = 'SHOW_GAME_THEMES',
+	ShowRound = 'SHOW_ROUND',
 	ShowRoundThemes = 'SHOW_ROUND_THEMES',
 	ShowText = 'SHOW_TEXT',
 	ShowAnswer = 'SHOW_ANSWER',
@@ -25,6 +26,7 @@ export const enum TableActionTypes {
 
 export type ShowLogoAction = { type: TableActionTypes.ShowLogo };
 export type ShowGameThemesAction = { type: TableActionTypes.ShowGameThemes, gameThemes: string[] };
+export type ShowRoundAction = { type: TableActionTypes.ShowRound, roundName: string };
 export type ShowRoundThemesAction = {
 	type: TableActionTypes.ShowRoundThemes,
 	roundThemes: ThemeInfo[],
@@ -52,6 +54,7 @@ export type CaptionChangedAction = { type: TableActionTypes.CaptionChanged, capt
 export type KnownTableAction =
 	ShowLogoAction
 	| ShowGameThemesAction
+	| ShowRoundAction
 	| ShowRoundThemesAction
 	| ShowTextAction
 	| ShowAnswerAction

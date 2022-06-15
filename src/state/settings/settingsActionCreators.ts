@@ -72,6 +72,14 @@ const languageChanged: ActionCreator<SettingsActions.LanguageChangedAction> = (l
 	type: SettingsActions.SettingsActionTypes.LanguageChanged, language
 });
 
+const gameButtonKeyChanged: ActionCreator<SettingsActions.GameButtonKeyChangedAction> = (gameButtonKey: string | null) => ({
+	type: SettingsActions.SettingsActionTypes.GameButtonKeyChanged, gameButtonKey
+});
+
+const onLobbyChatVisibilityChanged: ActionCreator<SettingsActions.LobbyChatVisibilityChangedAction> = (isLobbyChatVisible: boolean) => ({
+	type: SettingsActions.SettingsActionTypes.LobbyChatVisibilityChanged, isLobbyChatVisible
+});
+
 const settingsActionCreators = {
 	onSoundVolumeChanged,
 	showPersonsAtBottomOnWideScreenChanged,
@@ -86,6 +94,8 @@ const settingsActionCreators = {
 	onTimeSettingChanged,
 	resetSettings,
 	languageChanged,
+	gameButtonKeyChanged,
+	onLobbyChatVisibilityChanged,
 };
 
 export default settingsActionCreators;

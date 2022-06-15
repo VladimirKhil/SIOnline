@@ -24,6 +24,7 @@
     font-family: SI;
     color: #FFFFFF;
     text-shadow: 1px 1px 0 #000;
+    min-height: 49px;
 }
 
 .dialog h1 {

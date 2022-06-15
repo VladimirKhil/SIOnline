@@ -4,19 +4,9 @@
     position: relative;
 }
 
-.logOffButton {
-    display: none;
-    position: absolute;
-    right: 0;
-    top: 0;
-    height: 35pt;
-    font-size: 26px;
-    padding: 0 10px;
-    border: 0;
-}
-
 .playersTitle {
     margin-left: 8px;
+    width: 125px;
 }
 
     .playersTitle:hover {
@@ -29,10 +19,6 @@
         display: block;
         flex: 0 0 300px;
         width: 300px;
-    }
-
-    .logOffButton {
-        display: inline-block;
     }
 }
 

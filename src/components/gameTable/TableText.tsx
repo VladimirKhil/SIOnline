@@ -19,7 +19,7 @@ const mapStateToProps = (state: State) => ({
 	readingSpeed: state.run.readingSpeed
 });
 
-const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
+const mapDispatchToProps = () => ({
 
 });
 
