@@ -1,6 +1,26 @@
+.logoBlock {
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+}
+
 .tableLogo {
 	background-image: url('../../../assets/images/logo.png');
 	background-size: contain;
 	background-repeat: no-repeat;
 	background-position: center;
+	flex: 1 0 0;
+	width: 100%;
+}
+
+.tableLogoAuthor {
+	color: white;
+	font-family: SI;
+	font-size: 40px;
+	text-shadow: 1px 1px 0 black;
+	text-align: right;
+	width: 100%;
+	flex: 0 0 50px;
+	margin-right: 50px;
+	margin-bottom: 20px;
 }

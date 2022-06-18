@@ -48,23 +48,25 @@ export class TableAudio extends React.Component<TableAudioProps> {
 	}
 
 	componentDidUpdate(prevProps: TableAudioProps) {
-		if (!this.audioRef.current) {
+		const audio = this.audioRef.current;
+
+		if (!audio) {
 			return;
 		}
 
-		if (this.props.text !== this.audioRef.current.currentSrc) {
-			this.audioRef.current.load();
+		if (this.props.text !== audio.currentSrc) {
+			audio.load();
 		}
 
 		if (this.props.isMediaStopped !== prevProps.isMediaStopped) {
 			if (this.props.isMediaStopped) {
-				this.audioRef.current.pause();
+				audio.pause();
 			} else {
-				this.audioRef.current.play();
+				audio.play().catch(e => console.error(e));
 			}
 		}
 
-		this.audioRef.current.volume = this.props.soundVolume;
+		audio.volume = this.props.soundVolume;
 	}
 
 	render() {

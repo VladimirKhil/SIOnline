@@ -1,8 +1,9 @@
 import * as React from 'react';
 import State from '../../state/State';
-import { Dispatch, Action } from 'redux';
 import { connect } from 'react-redux';
 import TableBorder from './TableBorder';
+
+import spinnerSvg from '../../../assets/images/spinner.svg';
 
 interface TableImageProps {
 	text: string;
@@ -12,16 +13,31 @@ const mapStateToProps = (state: State) => ({
 	text: state.run.table.text
 });
 
-const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
+export class TableImage extends React.Component<TableImageProps> {
+	private spinnerRef: React.RefObject<HTMLImageElement>;
 
-});
+	constructor(props: TableImageProps) {
+		super(props);
 
-export function TableImage(props: TableImageProps) {
-	return (
-		<TableBorder>
-			<img className="inGameImg" src={props.text} />
-		</TableBorder>
-	);
+		this.spinnerRef = React.createRef();
+	}
+
+	onImageLoad = () => {
+		if (!this.spinnerRef.current) {
+			return;
+		}
+
+		this.spinnerRef.current.style.display = 'none';
+	};
+
+	render() {
+		return (
+			<TableBorder>
+				<img ref={this.spinnerRef} src={spinnerSvg} />
+				<img className="inGameImg" src={this.props.text} onLoad={() => this.onImageLoad()} />
+			</TableBorder>
+		);
+	}
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(TableImage);
+export default connect(mapStateToProps)(TableImage);

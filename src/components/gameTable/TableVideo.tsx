@@ -43,23 +43,25 @@ export class TableVideo extends React.Component<TableVideoProps> {
 	}
 
 	componentDidUpdate(prevProps: TableVideoProps) {
-		if (!this.videoRef.current) {
+		const video = this.videoRef.current;
+
+		if (!video) {
 			return;
 		}
 
-		if (this.props.text !== this.videoRef.current.currentSrc) {
-			this.videoRef.current.load();
+		if (this.props.text !== video.currentSrc) {
+			video.load();
 		}
 
 		if (this.props.isMediaStopped !== prevProps.isMediaStopped) {
 			if (this.props.isMediaStopped) {
-				this.videoRef.current.pause();
+				video.pause();
 			} else {
-				this.videoRef.current.play();
+				video.play().catch(e => console.error(e));
 			}
 		}
 
-		this.videoRef.current.volume = this.props.soundVolume;
+		video.volume = this.props.soundVolume;
 	}
 
 	render() {

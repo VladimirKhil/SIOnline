@@ -58,7 +58,13 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => ({
 const tooltipRef: React.RefObject<HTMLDivElement> = React.createRef();
 
 function inviteLink() {
-	navigator.clipboard.writeText(window.location.href + '&invite=true');
+	const link = window.location.href + '&invite=true';
+
+	if (navigator.clipboard) {
+		navigator.clipboard.writeText(link);
+	} else {
+		alert(link);
+	}
 
 	if (tooltipRef.current) {
 		tooltipRef.current.style.display = 'initial';

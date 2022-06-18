@@ -2,7 +2,6 @@
 import State from '../../state/State';
 import { connect } from 'react-redux';
 import AutoSizedText from '../common/AutoSizedText';
-import TableBorder from './TableBorder';
 
 import './TableRound.css';
 

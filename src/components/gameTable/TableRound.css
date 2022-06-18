@@ -1,5 +1,5 @@
 .tableRound {
-	animation: round-appear 3s forwards, round-background 3s linear 1s forwards;
+	animation: round-appear 3s forwards, round-background 4s linear 1s forwards;
 	opacity: 0;
 }
 
@@ -17,7 +17,7 @@
         background-color: transparent;
     }
     50% {
-        background-color: lightyellow;
+        background-color: rgb(158, 158, 105);
     }
     100% {
         background-color: transparent;

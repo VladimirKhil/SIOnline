@@ -103,7 +103,7 @@ function subscribeToExternalEvents(store: Store<State, any>) {
 }
 
 function validateBrowser() : boolean {
-	if (!navigator.clipboard) {
+	if (!navigator.clipboard && window.isSecureContext) {
 		ReactDOM.render(
 			<ErrorView error={localization.unsupportedBrowser} />,
 			document.getElementById('reactHost')

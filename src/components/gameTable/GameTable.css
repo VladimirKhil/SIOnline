@@ -46,10 +46,6 @@
         align-items: center;
     }
 
-    #table .logoBlock {
-        width: 100%;
-    }
-
     #table .answerBlock {
         text-align: center;
         display: flex;

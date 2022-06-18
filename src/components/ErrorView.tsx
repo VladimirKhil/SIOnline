@@ -23,12 +23,15 @@ export function ErrorView(props: ErrorViewProps): JSX.Element {
 				<div className="errorTitle">{localization.errorHappened}</div>
 				<div className='errorBody'>{props.error}</div>
 				<div className='buttons'>
-					<button
-						className='standard'
-						disabled={!props.error}
-						onClick={() => copyTextToClipboard(props.error)}>
+					{navigator.clipboard ? (
+						<button
+							className='standard'
+							disabled={!props.error}
+							onClick={() => copyTextToClipboard(props.error)}
+						>
 							{localization.copyText}
 						</button>
+					) : null}
 				</div>
 			</div>
 		</div>
