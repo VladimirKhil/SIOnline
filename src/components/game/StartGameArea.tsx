@@ -73,11 +73,6 @@ export function StartGameArea(props: StartGameAreaProps): JSX.Element | null {
 					<span>{props.sex === Sex.Female ? localization.readyFemale : localization.readyMale}</span>
 				</button>
 			) : null}
-			{props.isHost ? (
-				<button type="button" className={`start_button ${enabledClass}`} onClick={props.onStart} title={localization.startGameHint}>
-					{localization.startGame.toUpperCase()}
-				</button>
-			) : null}
 		</div>
 	);
 }

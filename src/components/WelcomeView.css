@@ -6,6 +6,7 @@
 	color: #FFFFFF;
 	font-family: SI;
 	overflow-y: auto;
+	scrollbar-width: thin;
 }
 
 .welcomeView header {

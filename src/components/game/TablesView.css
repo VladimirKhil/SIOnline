@@ -1,5 +1,6 @@
 .tablesList {
     overflow: auto;
+    scrollbar-width: thin;
     width: 100%;
     flex: 1 0 0;
     background-color: #C0CFF4;
@@ -31,4 +32,5 @@
 
 .replacers {
     overflow-y: auto;
+    scrollbar-width: thin;
 }

@@ -37,6 +37,12 @@
     flex: 1 0 0;
 }
 
+.nextButton.startButton {
+    background-color: lightyellow;
+    color: darkblue;
+    font-size: 27px;
+}
+
 #exit, .exit {
     margin: 0;
     border-width: 1px;

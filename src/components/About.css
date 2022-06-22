@@ -9,6 +9,7 @@
     margin: 13px 0 13px 13px;
     padding-right: 13px;
     overflow-y: auto;
+    scrollbar-width: thin;
 }
 
 .dialog section header {

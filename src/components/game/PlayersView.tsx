@@ -11,7 +11,7 @@ import NumericTextBox from '../common/NumericTextBox';
 import ProgressBar from '../common/ProgressBar';
 import TimerInfo from '../../model/TimerInfo';
 import { isRunning } from '../../utils/TimerInfoHelpers';
-import getAvatar from '../../utils/AccountHelpers';
+import getAvatarClass from '../../utils/AccountHelpers';
 import Sex from '../../model/enums/Sex';
 import localization from '../../model/resources/localization';
 
@@ -138,7 +138,14 @@ export class PlayersView extends React.Component<PlayersViewProps> {
 					{this.props.players.map((player, index) => {
 						const account = this.props.all[player.name];
 						const isMe = player.name === this.props.login;
-						const avatar = isMe ? this.props.avatar : getAvatar(account);
+						
+						const avatar = isMe && this.props.avatar ? this.props.avatar : account?.avatar;
+	
+						const avatarStyle : React.CSSProperties = avatar
+							? { backgroundImage: `url("${avatar}")` }
+							: {};
+						
+						const avatarClass = getAvatarClass(account);
 
 						return (
 							<li
@@ -147,7 +154,7 @@ export class PlayersView extends React.Component<PlayersViewProps> {
 								onClick={() => this.props.onPlayerSelected(index)}
 							>
 								<div className="playerCard">
-									{avatar ? <div className="playerAvatar" style={{ backgroundImage: `url("${avatar}")` }} /> : null}
+									<div className={`playerAvatar ${avatarClass}`} style={avatarStyle} />
 									<div className="playerInfo">
 										<div className="name" title={player.name}>
 											{player.isReady && !this.props.hasGameStarted ? (

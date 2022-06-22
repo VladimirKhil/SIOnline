@@ -7,7 +7,7 @@ import ProgressBar from '../common/ProgressBar';
 import TimerInfo from '../../model/TimerInfo';
 import { isRunning } from '../../utils/TimerInfoHelpers';
 import StartGameArea from './StartGameArea';
-import getAvatar from '../../utils/AccountHelpers';
+import getAvatarClass from '../../utils/AccountHelpers';
 import Sex from '../../model/enums/Sex';
 import localization from '../../model/resources/localization';
 
@@ -39,7 +39,13 @@ const mapStateToProps = (state: State) => ({
 
 export function ShowmanReplicView(props: ShowmanReplicViewProps): JSX.Element {
 	const isMe = props.account?.name === props.login;
-	const avatar = isMe ? props.avatar : getAvatar(props.account);
+
+	const avatar = isMe && props.avatar ? props.avatar : props.account?.avatar;
+	const avatarStyle : React.CSSProperties = avatar
+		? { backgroundImage: `url("${avatar}")` }
+		: {};
+
+	const avatarClass = getAvatarClass(props.account);
 
 	const showmanInfoStyle: React.CSSProperties = props.hasGameStarted ? {} : {
 		display: 'flex'
@@ -48,7 +54,7 @@ export function ShowmanReplicView(props: ShowmanReplicViewProps): JSX.Element {
 	return (
 		<div className={`showmanArea ${props.decisionNeeded ? 'highlighted' : ''}`}>
 			<div className="showmanInfo" style={showmanInfoStyle}>
-				{avatar ? <div className="showmanAvatar"><img alt="avatar" src={avatar} /></div> : null}
+				<div className={`showmanAvatar ${avatarClass}`} style={avatarStyle} />
 				<div className="showmanName">
 					{props.isReady && !props.hasGameStarted ? (
 						<span

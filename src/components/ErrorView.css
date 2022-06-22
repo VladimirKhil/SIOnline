@@ -27,6 +27,7 @@
 	white-space: pre-wrap;
 	word-break: break-all;	
 	overflow-y: auto;
+	scrollbar-width: thin;
 	margin-right: 20px;	
 	user-select: text;
 	margin: 0 40px 0 40px;

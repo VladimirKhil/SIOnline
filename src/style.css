@@ -129,6 +129,20 @@ ul {
     background: linear-gradient(0deg, #a8acfd 0%, #d2e1ff 50%, #a8acfd 100%);
 }
 
+.avatarMale, .avatarFemale {
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    background-size: contain;
+}
+
+.avatarMale {
+    background-image: url('../assets/images/avatar-m.png');
+}
+
+.avatarFemale {
+    background-image: url('../assets/images/avatar-f.png');
+}
+
 .gameHost {
     height: 100%;
 }
@@ -356,6 +370,7 @@ h1.activeTab {
 
 .game__log {
     overflow-y: auto;
+    scrollbar-width: thin;
     height: 100%;
     flex: 1 0 0;
     border-top: 1px solid lightyellow;

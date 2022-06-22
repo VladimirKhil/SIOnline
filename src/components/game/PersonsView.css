@@ -1,5 +1,6 @@
 .personsList {
     overflow: auto;
+    scrollbar-width: thin;
     width: 100%;
     flex: 1 0 0;
     background-color: #C0CFF4;
@@ -25,7 +26,8 @@
     bottom: 110%;
     text-align: center;
     width: 100%;
-    color: #101010;
+    color: black;
     display: none;
-    background-color: rgba(0,0,0,0.2);
+    padding: 5px;
+    background-color: rgba(44, 123, 225, 0.95);
 }

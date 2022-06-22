@@ -144,6 +144,7 @@
             background-color: transparent;
             margin-left: 5px;
             transition: background-color 1s, transform 0.2s;
+            overflow: hidden;
         }
 
         #table .roundTable .themeHeader {

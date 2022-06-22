@@ -6,6 +6,7 @@
     right: 0;
     bottom: 0;
     overflow-y: scroll;
+    scrollbar-width: thin;
     padding: 0;
     color: white;
 }

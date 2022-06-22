@@ -4,7 +4,6 @@
     flex: 0 0 90px;
     display: flex;
     overflow: hidden;
-    background-color: lightyellow;
 }
 
 .showmanReplic {
@@ -16,9 +15,10 @@
     justify-content: center;
     align-items: center;
     overflow: hidden;
+    background-color: lightyellow;
 }
 
-.showmanArea.highlighted {
+.showmanArea.highlighted .showmanReplic {
     background-color: rgb(255, 188, 62);
 }
 
@@ -29,6 +29,7 @@
     padding: 10px;
     padding: 10px 7px 7px 7px;
     justify-content: center;
+    background-color: #ebf0fc;
 }
 
 .showmanAvatar {

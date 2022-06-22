@@ -37,6 +37,7 @@
     height: calc(100% - 70px);
     overflow-y: auto;
     overflow-x: hidden;
+    scrollbar-width: thin;
 }
 
 .answerValidationDialog .answers li {

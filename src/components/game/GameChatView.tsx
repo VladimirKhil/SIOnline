@@ -12,7 +12,7 @@ import Role from '../../client/contracts/Role';
 import RoundProgress from './RoundProgress';
 import TablesView from './TablesView';
 import { isHost } from '../../utils/StateHelpers';
-import FlyoutButton, { FlyoutVerticalOrientation } from '../common/FlyoutButton';
+import FlyoutButton, { FlyoutHorizontalOrientation, FlyoutVerticalOrientation } from '../common/FlyoutButton';
 
 import './GameChatView.css';
 
@@ -142,6 +142,7 @@ export function GameChatView(props: GameChatViewProps): JSX.Element {
 									</li>))}
 							</ul>
 						}
+						horizontalOrientation={FlyoutHorizontalOrientation.Left}
 						verticalOrientation={FlyoutVerticalOrientation.Top}
 						alignWidth
 						title={localization.gameManageHint}

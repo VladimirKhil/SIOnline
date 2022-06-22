@@ -1,11 +1,15 @@
 #settingsDialog {
     background-color: #5A95E2;
     z-index: 2;
+    overflow-y: hidden;
 }
 
 .settingsDialogBody {
 	padding: 20px;
 	font-size: 20px;
+    height: calc(100% - 49px);
+    overflow-y: auto;
+    scrollbar-width: thin;
 }
 
 .settingsDialogBody input[type=checkbox] {

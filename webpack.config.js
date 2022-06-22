@@ -17,7 +17,7 @@ module.exports = (env, argv) => {
 			rules: [
 				{ test: /\.tsx?$/, use: 'ts-loader' },
 				{ test: /\.css$/, use: argv.mode === 'development' ? ['style-loader', 'css-loader'] : ['style-loader', 'css-loader', 'postcss-loader'] },
-				{ test: /\.(png|jpg|jpeg|gif)$/, type: 'asset/resource' },
+				{ test: /\.(png|jpg|jpeg|gif)$/i, type: 'asset/resource' },
 				{
 					test: /\.svg$/,
 					use: ['@svgr/webpack', 'url-loader']

@@ -39,7 +39,7 @@
 }
 
 .gamesSearch {
-    height: 45px;
+    height: 46px;
     font-size: 17px;
     line-height: 45px;
     padding: 4px 10px;
@@ -52,6 +52,7 @@
 
 .gamenames {
     overflow: auto;
+    scrollbar-width: thin;
     width: 100%;
     height: calc(100% - 135px);
     background-color: rgba(0,0,0,0.2);

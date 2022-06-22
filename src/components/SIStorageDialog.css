@@ -8,6 +8,7 @@
 #siStorageDialog .container {
 	padding-left: 13px;
 	overflow: auto;
+	scrollbar-width: thin;
 }
 
 #siStorageDialog li {

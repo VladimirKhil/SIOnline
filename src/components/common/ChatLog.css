@@ -1,6 +1,7 @@
 .chatLog {
     overflow-y: auto;
     user-select: text;
+    scrollbar-width: thin;
 }
 
     .chatLog span {

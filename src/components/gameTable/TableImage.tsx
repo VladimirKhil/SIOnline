@@ -3,6 +3,7 @@ import State from '../../state/State';
 import { connect } from 'react-redux';
 import TableBorder from './TableBorder';
 
+import './TableImage.css';
 import spinnerSvg from '../../../assets/images/spinner.svg';
 
 interface TableImageProps {
@@ -33,7 +34,7 @@ export class TableImage extends React.Component<TableImageProps> {
 	render() {
 		return (
 			<TableBorder>
-				<img ref={this.spinnerRef} src={spinnerSvg} />
+				<img className="spinnerImg" ref={this.spinnerRef} src={spinnerSvg} />
 				<img className="inGameImg" src={this.props.text} onLoad={() => this.onImageLoad()} />
 			</TableBorder>
 		);

@@ -8,6 +8,7 @@
 #newGameDialog .settings {
     padding-left: 13px;
     overflow-y: auto;
+    scrollbar-width: thin;
 }
 
 #newGameDialog p {

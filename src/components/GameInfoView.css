@@ -22,6 +22,7 @@
 .maininfo {
     overflow-y: auto;
     overflow-x: hidden;
+    scrollbar-width: thin;
     padding-left: 20px;
     flex: 1;
 }
@@ -62,6 +63,7 @@
     max-width: initial;
     display: block;
     margin: 5px 15px;
+    padding: 2px 5px;
 }
 
 .joinGameError {

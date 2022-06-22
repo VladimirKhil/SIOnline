@@ -24,6 +24,7 @@ interface SideControlPanelProps {
 	isChatVisible: boolean;
 	isChatActive: boolean;
 	isHost: boolean;
+	hasGameStarted: boolean;
 	isPaused: boolean;
 	lastReplic: ChatMessage | null;
 	areStakesVisible: boolean;
@@ -38,6 +39,7 @@ interface SideControlPanelProps {
 	onEditSums: (enable: boolean) => void;
 	onMoveNext: () => void;
 	showGameManageDialog: () => void;
+	onStart: () => void;
 }
 
 const mapStateToProps = (state: State) => ({
@@ -46,6 +48,7 @@ const mapStateToProps = (state: State) => ({
 	isChatVisible: state.run.chat.isVisible,
 	isChatActive: state.run.chat.isActive,
 	isHost: isHost(state),
+	hasGameStarted: state.run.stage.isGameStarted,
 	isPaused: state.run.stage.isGamePaused,
 	lastReplic: state.run.lastReplic,
 	areStakesVisible: state.run.stakes.areVisible,
@@ -80,7 +83,10 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	},
 	showGameManageDialog: () => {
 		dispatch(runActionCreators.runShowManageGame());
-	}
+	},
+	onStart: () => {
+		dispatch(runActionCreators.startGame() as unknown as Action);
+	},
 });
 
 export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
@@ -97,6 +103,8 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 
 	const enabledClass = props.isConnected ? '' : 'disabled';
 	const enabledManagementClass = props.isConnected && props.roundsNames && props.roundsNames.length >= 2 ? '' : 'disabled';
+
+	const canStart = !props.hasGameStarted && props.isHost;
 
 	return (
 		<div className="game__utilsArea">
@@ -136,7 +144,7 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 							type="button"
 							className='pauseButton standard'
 							title={pauseTitle}
-							disabled={!props.isConnected}
+							disabled={!props.isConnected || !props.hasGameStarted}
 							onClick={() => props.onPause()}
 						>
 							{props.isPaused ? '▶' : '⏸'}
@@ -178,8 +186,12 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 						</FlyoutButton>
 					</div>
 					{props.isHost ? (
-						<button type="button" className="nextButton standard" title={localization.next} onClick={props.onMoveNext}>
-							<span role="img" aria-label="arrow right">➡️</span>
+						<button
+							type="button"
+							className={`nextButton standard ${canStart ? 'startButton' : ''}`}
+							title={canStart ? localization.startGameHint : localization.next}
+							onClick={canStart ? props.onStart : props.onMoveNext}>
+							<span role="img" aria-label="arrow right">{canStart ? '🢂' : '➡️'}</span>
 						</button>
 					) : null}
 					<FlyoutButton
