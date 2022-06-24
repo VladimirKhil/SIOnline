@@ -2,16 +2,26 @@
 	margin: 5px 0;
 	font-size: 20px;
 	font-weight: normal;
+	height: 55px;
+	display: flex;
+	align-items: center;
+}
+
+.timeSettingEditor {
+	display: flex;
+	justify-content: space-between;
 }
 
 .timeSettingEditor .timeRange {
 	vertical-align: middle;
 	margin-right: 10px;
-	width: 200px;
+	flex: 1;
 }
 
 .timeSettingEditor .timeValue {
 	vertical-align: middle;
-	margin-right: 5px;
+	margin-left: 10px;
+	margin-right: 10px;
 	font-size: 20px;
+	width: 100px;
 }

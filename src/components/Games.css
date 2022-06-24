@@ -26,6 +26,10 @@
 	display: flex;
 }
 
+.games_controls .gamesSearch {
+	height: 45px;
+}
+
 .games_controls input {
 	flex: 1;
 }
@@ -64,6 +68,10 @@
 
 .gameInfoDialog2 h1 {
 	margin-bottom: 6px;
+}
+
+.gameName.password {
+	padding-right: 40px;
 }
 
 @media screen and (min-width: 600px) {

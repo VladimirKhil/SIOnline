@@ -15,6 +15,7 @@
 	align-items: center;
 	justify-content: center;
 	background-color: #5A95E2;
+	overflow: hidden;
 }
 
 .errorTitle {
@@ -30,7 +31,7 @@
 	scrollbar-width: thin;
 	margin-right: 20px;	
 	user-select: text;
-	margin: 0 40px 0 40px;
+	padding: 0 40px 0 40px;
 }
 
 .buttons {

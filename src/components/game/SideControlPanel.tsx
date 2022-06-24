@@ -191,7 +191,7 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 							className={`nextButton standard ${canStart ? 'startButton' : ''}`}
 							title={canStart ? localization.startGameHint : localization.next}
 							onClick={canStart ? props.onStart : props.onMoveNext}>
-							<span role="img" aria-label="arrow right">{canStart ? '🢂' : '➡️'}</span>
+							<span role="img" aria-label="arrow right">{canStart ? '➔' : '➡️'}</span>
 						</button>
 					) : null}
 					<FlyoutButton

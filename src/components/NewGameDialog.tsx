@@ -193,7 +193,7 @@ export class NewGameDialog extends React.Component<NewGameDialogProps, NewGameDi
 
 	render(): JSX.Element {
 		const humanPlayersMaxCount = this.props.playersCount - (this.props.gameRole === Role.Player ? 1 : 0);
-		const botsCount = humanPlayersMaxCount - this.props.humanPlayersCount;
+		const botsCount = Math.max(0, humanPlayersMaxCount - this.props.humanPlayersCount);
 		const siPackageName = this.props.gamePackageType === PackageType.SIStorage ? this.props.gamePackageName : null;
 
 		return (

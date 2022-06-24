@@ -44,12 +44,8 @@
         flex: 1;
     }
 
-    .gameInfoArea > header {
-        height: 35pt;
-    }
-
     .gameInfoAreaContent {
-        height: calc(100% - 35pt);
+        height: 100%;
         display: flex;
     }
 }

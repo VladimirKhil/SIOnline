@@ -32,6 +32,13 @@ export function ErrorView(props: ErrorViewProps): JSX.Element {
 							{localization.copyText}
 						</button>
 					) : null}
+					<button
+						className='standard'
+						disabled={!props.error}
+						onClick={() => window.location.reload()}
+					>
+						{localization.reloadPage}
+					</button>
 				</div>
 			</div>
 		</div>

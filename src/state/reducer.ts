@@ -520,7 +520,8 @@ const reducer: Reducer<State> = (state: State = initialState, action: KnownActio
 				...state,
 				game: {
 					...state.game,
-					role: action.gameRole
+					role: action.gameRole,
+					humanPlayersCount: Math.min(state.game.playersCount - (action.gameRole === Role.Player ? 1 : 0), state.game.humanPlayersCount)
 				}
 			};
 		}
