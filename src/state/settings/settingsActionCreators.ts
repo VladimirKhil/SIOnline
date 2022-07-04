@@ -55,6 +55,16 @@ const onIgnoreWrongChanged: ActionCreator<SettingsActions.IgnoreWrongChangedActi
 	ignoreWrong
 });
 
+const onUsePingPenaltyChanged: ActionCreator<SettingsActions.UsePingPenaltyChangedAction> = (usePingPenalty: boolean) => ({
+	type: SettingsActions.SettingsActionTypes.UsePingPenaltyChanged,
+	usePingPenalty
+});
+
+const onPreloadRoundContentChanged: ActionCreator<SettingsActions.PreloadRoundContentChangedAction> = (preloadRoundContent: boolean) => ({
+	type: SettingsActions.SettingsActionTypes.PreloadRoundContentChanged,
+	preloadRoundContent
+});
+
 const onTimeSettingChanged: ActionCreator<SettingsActions.TimeSettingChangedAction> = (
 	name: keyof TimeSettings,
 	value: number
@@ -91,6 +101,8 @@ const settingsActionCreators = {
 	onReadingSpeedChanged,
 	onManagedChanged,
 	onIgnoreWrongChanged,
+	onUsePingPenaltyChanged,
+	onPreloadRoundContentChanged,
 	onTimeSettingChanged,
 	resetSettings,
 	languageChanged,

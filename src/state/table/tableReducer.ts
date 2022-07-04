@@ -117,7 +117,14 @@ const tableReducer: Reducer<TableState> = (state: TableState = initialState, any
 			return {
 				...state,
 				mode: TableMode.Audio,
-				text: action.uri,
+				audio: action.uri,
+				isMediaStopped: false
+			};
+
+		case TableActionTypes.ShowBackgroundAudio:
+			return {
+				...state,
+				audio: action.uri,
 				isMediaStopped: false
 			};
 

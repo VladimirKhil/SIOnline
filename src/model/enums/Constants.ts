@@ -6,5 +6,7 @@
 
 	ANY_NAME: ' ',
 	MIN_PLAYER_COUNT: 2, // there should be at least 2 players in the game
-	MAX_PLAYER_COUNT: 12
+	MAX_PLAYER_COUNT: 12,
+
+	HIDDEN_STAKE: -4,
 };

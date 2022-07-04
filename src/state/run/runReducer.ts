@@ -315,7 +315,8 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 						replic: null,
 						isDeciding: false,
 						isHuman: true,
-						isChooser: false
+						isChooser: false,
+						inGame: true
 					}]
 				}
 			};
@@ -737,6 +738,18 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 						...player,
 						isChooser: index === action.chooserIndex
 					}))
+				}
+			};
+
+		case RunActionTypes.PlayerInGameChanged:
+			return {
+				...state,
+				persons: {
+					...state.persons,
+					players: replace(state.persons.players, action.playerIndex, {
+						...state.persons.players[action.playerIndex],
+						inGame: action.inGame
+					})
 				}
 			};
 

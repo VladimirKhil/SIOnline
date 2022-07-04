@@ -57,7 +57,8 @@ function setState(state: State, savedState: SavedState | null, gameId: string | 
 			appSettings: {
 				...savedState.settings.appSettings,
 				timeSettings: savedState.settings.appSettings.timeSettings || state.settings.appSettings.timeSettings,
-				readingSpeed: savedState.settings.appSettings.readingSpeed || state.settings.appSettings.readingSpeed
+				readingSpeed: savedState.settings.appSettings.readingSpeed || state.settings.appSettings.readingSpeed,
+				preloadRoundContent: savedState.settings.appSettings.preloadRoundContent ?? true,
 			},
 			gameButtonKey: savedState.settings.gameButtonKey || Constants.KEY_CTRL
 		} : state.settings,

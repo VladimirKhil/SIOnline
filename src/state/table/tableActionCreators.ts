@@ -72,11 +72,15 @@ const showAudio: ActionCreator<TableActions.ShowAudioAction> = (uri: string) => 
 	type: TableActions.TableActionTypes.ShowAudio, uri
 });
 
+const showBackgroundAudio: ActionCreator<TableActions.ShowBackgroundAudioAction> = (uri: string) => ({
+	type: TableActions.TableActionTypes.ShowBackgroundAudio, uri
+});
+
 const showVideo: ActionCreator<TableActions.ShowVideoAction> = (uri: string) => ({
 	type: TableActions.TableActionTypes.ShowVideo, uri
 });
 
-const showSpecial: ActionCreator<TableActions.ShowSpecialAction> = (text: string, activeThemeIndex: number = -1) => ({
+const showSpecial: ActionCreator<TableActions.ShowSpecialAction> = (text: string, activeThemeIndex = -1) => ({
 	type: TableActions.TableActionTypes.ShowSpecial, text, activeThemeIndex
 });
 
@@ -112,6 +116,7 @@ const tableActionCreators = {
 	appendPartialText,
 	showImage,
 	showAudio,
+	showBackgroundAudio,
 	showVideo,
 	showSpecial,
 	canPressChanged,

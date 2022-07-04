@@ -7,4 +7,5 @@ export default interface PlayerInfo extends PersonInfo {
 	state: PlayerStates;
 	canBeSelected: boolean;
 	isChooser: boolean;
+	inGame: boolean;
 }

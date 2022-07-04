@@ -53,12 +53,13 @@
 
 .login_name {
     display: block;
-    font-size: 17pt;
+    font-size: 20px;
     height: 33px;
     margin: 0 22px;
     width: calc(100% - 44px);
     max-width: calc(100% - 44px);
-    border-width: 1px;
+    border: 0;
+    padding: 3px 5px;
 }
 
 #logonerror {

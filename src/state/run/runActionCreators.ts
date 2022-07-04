@@ -17,7 +17,6 @@ import tableActionCreators from '../table/tableActionCreators';
 import StakeTypes from '../../model/enums/StakeTypes';
 import MainView from '../../model/enums/MainView';
 import Constants from '../../model/enums/Constants';
-import getErrorMessage from '../../utils/ErrorHelpers';
 
 let timerRef: number | null = null;
 
@@ -679,6 +678,10 @@ const chooserChanged: ActionCreator<RunActions.ChooserChangedAction> = (chooserI
 	type: RunActions.RunActionTypes.ChooserChanged, chooserIndex
 });
 
+const playerInGameChanged: ActionCreator<RunActions.PlayerInGameChangedAction> = (playerIndex: number, inGame: boolean) => ({
+	type: RunActions.RunActionTypes.PlayerInGameChanged, playerIndex, inGame
+});
+
 const runActionCreators = {
 	runChatModeChanged,
 	runChatMessageChanged,
@@ -775,6 +778,7 @@ const runActionCreators = {
 	ready,
 	roundsNamesChanged,
 	chooserChanged,
+	playerInGameChanged,
 };
 
 export default runActionCreators;

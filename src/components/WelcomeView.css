@@ -51,26 +51,13 @@
 	flex-direction: column;
 }
 
-.welcomeViewActions li {
-	border: 1px solid #FFFFFF;	
-	border-left-width: 0;
-	border-right-width: 0;
-	text-align: center;
-	cursor: pointer;
-	margin-top: -1px;
+.welcomeViewActions button {
+	margin: 1.5px 0;
 	flex: 1;
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	padding: 0 25px;
-}
-
-.welcomeViewActions.disconnected li {
-	color: gray;
-}
-
-.welcomeViewActions li:hover {
-	background-color: #98B9FF;
+	padding: 0 15px;
 }
 
 @media screen and (min-width: 800px) {
@@ -78,11 +65,6 @@
 		width: initial;
 		height: initial;
 		flex: initial;
-	}
-
-	.welcomeViewActions li {	
-		border-left-width: 1px;
-		border-right-width: 1px;
 	}
 }
 
@@ -102,7 +84,7 @@
 		margin-top: 30px;
 	}
 
-	.welcomeViewActions li {
+	.welcomeViewActions button {
 		padding: 10px 40px;
 	}
 }
@@ -122,7 +104,7 @@
 		margin-top: 40px;
 	}
 
-	.welcomeViewActions li {
-		padding: 15px 50px;
+	.welcomeViewActions button {
+		padding: 17px 50px;
 	}
 }

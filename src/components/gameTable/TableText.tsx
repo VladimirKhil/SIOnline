@@ -1,20 +1,22 @@
 ﻿import * as React from 'react';
 import State from '../../state/State';
-import { Dispatch, Action } from 'redux';
 import { connect } from 'react-redux';
 import AutoSizedText from '../common/AutoSizedText';
 import TableBorder from './TableBorder';
+import TableAudio from './TableAudio';
 
 import './TableText.css';
 
 interface TableTextProps {
 	text: string;
+	audio: string;
 	animateReading: boolean;
 	readingSpeed: number;
 }
 
 const mapStateToProps = (state: State) => ({
 	text: state.run.table.text,
+	audio: state.run.table.audio,
 	animateReading: state.run.table.animateReading,
 	readingSpeed: state.run.readingSpeed
 });
@@ -25,6 +27,7 @@ const mapDispatchToProps = () => ({
 
 export function TableText(props: TableTextProps) {
 	let textElem: JSX.Element;
+
 	if (props.animateReading) {
 		// Each letter is wrapped into its own span with animation-delay.
 		// If there is a better way for performing this karaoke-style multiline animation, feel free to implement it
@@ -51,6 +54,7 @@ export function TableText(props: TableTextProps) {
 	return (
 		<TableBorder>
 			{textElem}
+			{props.audio ? <TableAudio source={props.audio} /> : null}
 		</TableBorder>
 	);
 }

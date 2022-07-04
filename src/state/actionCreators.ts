@@ -709,10 +709,12 @@ function uploadPackageAsync(
 				reject(new Error(xhr.response));
 			}
 		};
+		
 		xhr.onerror = () => {
 			dispatch(uploadPackageFinished());
-			reject(new Error(xhr.statusText || xhr.responseText || localization.unknownError));
+			reject(new Error(xhr.statusText || xhr.responseText || `${localization.unknownError}: ${xhr.status}`));
 		};
+
 		xhr.upload.onprogress = (e) => {
 			dispatch(uploadPackageProgress(e.loaded / e.total));
 		};
@@ -858,7 +860,9 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 			randomQuestionsBasePrice: gameMode === GameType.Simple ? 10 : 100,
 			randomRoundsCount: gameMode === GameType.Simple ? 1 : 3,
 			randomThemesCount: gameMode === GameType.Simple ? 5 : 6,
-			culture: getFullCulture(state)
+			culture: getFullCulture(state),
+			usePingPenalty: state.settings.appSettings.usePingPenalty,
+			preloadRoundContent: state.settings.appSettings.preloadRoundContent,
 		};
 
 		const gameSettings: GameSettings = {

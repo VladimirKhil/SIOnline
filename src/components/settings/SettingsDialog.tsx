@@ -29,6 +29,8 @@ interface SettingsDialogProps {
 	onReadingSpeedChanged: (readingSpeed: number) => void;
 	onManagedChanged: (managed: boolean) => void;
 	onIgnoreWrongChanged: (ignoreWrong: boolean) => void;
+	onPreloadRoundContentChanged: (preloadRoundContent: boolean) => void;
+	onUsePingPenaltyChanged: (usePingPenalty: boolean) => void;
 	onPartialTextChanged: (hintShowman: boolean) => void;
 	onLanguageChanged: (language: string | null) => void;
 	isSettingGameButtonKeyChanged: (isSettingGameButtonKey: boolean) => void;
@@ -74,6 +76,12 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	},
 	onIgnoreWrongChanged: (ignoreWrong: boolean) => {
 		dispatch(settingsActionCreators.onIgnoreWrongChanged(ignoreWrong));
+	},
+	onUsePingPenaltyChanged: (usePingPenalty: boolean) => {
+		dispatch(settingsActionCreators.onUsePingPenaltyChanged(usePingPenalty));
+	},
+	onPreloadRoundContentChanged: (preloadRoundContent: boolean) => {
+		dispatch(settingsActionCreators.onPreloadRoundContentChanged(preloadRoundContent));
 	},
 	onPartialTextChanged: (partialText: boolean) => {
 		dispatch(settingsActionCreators.onPartialTextChanged(partialText));
@@ -205,7 +213,9 @@ export class SettingsDialog extends React.Component<SettingsDialogProps> {
 							checked={this.props.settings.sex === Sex.Male}
 							onChange={this.onSexChanged}
 						/>
+
 						<label htmlFor="male">{localization.male}</label>
+
 						<input
 							type="radio"
 							id="female"
@@ -227,6 +237,7 @@ export class SettingsDialog extends React.Component<SettingsDialogProps> {
 					</button>
 
 					<h2>{localization.game}</h2>
+
 					<div className="settingItem">
 						<input
 							id="oral"
@@ -237,6 +248,7 @@ export class SettingsDialog extends React.Component<SettingsDialogProps> {
 						<label htmlFor="oral">{localization.oralGame}</label>
 						<span className="hint">{localization.oralGameHint}</span>
 					</div>
+
 					<div className="settingItem">
 						<input
 							id="falseStarts"
@@ -247,6 +259,7 @@ export class SettingsDialog extends React.Component<SettingsDialogProps> {
 						<label htmlFor="falseStarts">{localization.falseStarts}</label>
 						<span className="hint">{localization.falseStartsHint}</span>
 					</div>
+
 					<div className="settingItem">
 						<input
 							id="partialText"
@@ -258,6 +271,7 @@ export class SettingsDialog extends React.Component<SettingsDialogProps> {
 						<label htmlFor="partialText">{localization.partialText}</label>
 						<span className="hint">{localization.partialTextHint}</span>
 					</div>
+
 					<div className="settingItem">
 						<input
 							id="hintShowman"
@@ -267,7 +281,9 @@ export class SettingsDialog extends React.Component<SettingsDialogProps> {
 						/>
 						<label htmlFor="hintShowman">{localization.hintShowman}</label>
 					</div>
+
 					<p className="readingSpeed">{localization.questionReadingSpeed}</p>
+
 					<div className="settingItem">
 						<div>
 							<input
@@ -289,6 +305,7 @@ export class SettingsDialog extends React.Component<SettingsDialogProps> {
 							/>
 						</div>
 					</div>
+
 					<div className="settingItem">
 						<input
 							id="managed"
@@ -299,6 +316,7 @@ export class SettingsDialog extends React.Component<SettingsDialogProps> {
 						<label htmlFor="managed">{localization.managed}</label>
 						<span className="hint">{localization.managedHint}</span>
 					</div>
+
 					<div className="settingItem">
 						<input
 							id="ignoreWrong"
@@ -309,7 +327,28 @@ export class SettingsDialog extends React.Component<SettingsDialogProps> {
 						<label htmlFor="ignoreWrong">{localization.ignoreWrong}</label>
 					</div>
 
+					<div className="settingItem">
+						<input
+							id="usePingPenalty"
+							type="checkbox"
+							checked={this.props.settings.appSettings.usePingPenalty}
+							onChange={() => this.props.onUsePingPenaltyChanged(!this.props.settings.appSettings.usePingPenalty)}
+						/>
+						<label htmlFor="usePingPenalty">{localization.usePingPenalty}</label>
+					</div>
+
+					<div className="settingItem">
+						<input
+							id="preloadRoundContent"
+							type="checkbox"
+							checked={this.props.settings.appSettings.preloadRoundContent}
+							onChange={() => this.props.onPreloadRoundContentChanged(!this.props.settings.appSettings.preloadRoundContent)}
+						/>
+						<label htmlFor="preloadRoundContent">{localization.preloadRoundContent}</label>
+					</div>
+
 					<TimeSettingsView />
+
 					<button className="reset standard" title={localization.resetToDefaultsHint} onClick={this.props.onReset}>
 						{localization.resetToDefaults}
 					</button>

@@ -14,4 +14,6 @@ export default interface ServerAppSettings {
 	randomRoundsCount: number;
 	randomThemesCount: number;
 	culture: string;
+	usePingPenalty: boolean;
+	preloadRoundContent: boolean;
 }

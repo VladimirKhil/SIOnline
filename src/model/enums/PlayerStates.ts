@@ -3,7 +3,9 @@ enum PlayerStates {
 	Press,
 	Lost,
 	Right,
-	Wrong
+	Wrong,
+	HasAnswered,
+	Pass,
 }
 
 export default PlayerStates;

@@ -7,7 +7,6 @@ import TableLogo from './TableLogo';
 import TableText from './TableText';
 import TablePartialText from './TablePartialText';
 import TableImage from './TableImage';
-import TableAudio from './TableAudio';
 import TableVideo from './TableVideo';
 import TableAnswer from './TableAnswer';
 import TableGameThemes from './TableGameThemes';
@@ -21,6 +20,7 @@ import TimerInfo from '../../model/TimerInfo';
 import ProgressBar from '../common/ProgressBar';
 import { isRunning } from '../../utils/TimerInfoHelpers';
 import TableRound from './TableRound';
+import TableAudioFrame from './TableAudioFrame';
 
 import './GameTable.css';
 
@@ -39,7 +39,7 @@ const mapStateToProps = (state: State) => ({
 	isPaused: state.run.stage.isGamePaused,
 	showMainTimer: state.run.showMainTimer,
 	decisionTimer: state.run.timers.decision,
-	caption: state.run.table.caption
+	caption: state.run.table.caption,
 });
 
 function getContent(mode: TableMode) {
@@ -60,7 +60,7 @@ function getContent(mode: TableMode) {
 			return <TableImage />;
 
 		case TableMode.Audio:
-			return <TableAudio />;
+			return <TableAudioFrame />;
 
 		case TableMode.Video:
 			return <TableVideo />;

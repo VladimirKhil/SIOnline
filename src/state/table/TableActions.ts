@@ -16,6 +16,7 @@ export const enum TableActionTypes {
 	AppendPartialText = 'APPEND_PARTIAL_TEXT',
 	ShowImage = 'SHOW_IMAGE',
 	ShowAudio = 'SHOW_AUDIO',
+	ShowBackgroundAudio = 'SHOW_BACKGROUND_AUDIO',
 	ShowVideo = 'SHOW_VIDEO',
 	ShowSpecial = 'SHOW_SPECIAL',
 	CanPressChanged = 'CAN_PRESS_CHANGED',
@@ -44,6 +45,7 @@ export type ShowPartialTextAction = { type: TableActionTypes.ShowPartialText, te
 export type AppendPartialTextAction = { type: TableActionTypes.AppendPartialText, text: string };
 export type ShowImageAction = { type: TableActionTypes.ShowImage, uri: string };
 export type ShowAudioAction = { type: TableActionTypes.ShowAudio, uri: string };
+export type ShowBackgroundAudioAction = { type: TableActionTypes.ShowBackgroundAudio, uri: string };
 export type ShowVideoAction = { type: TableActionTypes.ShowVideo, uri: string };
 export type ShowSpecialAction = { type: TableActionTypes.ShowSpecial, text: string, activeThemeIndex: number };
 export type CanPressChangedAction = { type: TableActionTypes.CanPressChanged, canPress: boolean };
@@ -67,6 +69,7 @@ export type KnownTableAction =
 	| AppendPartialTextAction
 	| ShowImageAction
 	| ShowAudioAction
+	| ShowBackgroundAudioAction
 	| ShowVideoAction
 	| ShowSpecialAction
 	| CanPressChangedAction

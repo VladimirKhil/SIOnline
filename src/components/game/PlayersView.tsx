@@ -14,6 +14,7 @@ import { isRunning } from '../../utils/TimerInfoHelpers';
 import getAvatarClass from '../../utils/AccountHelpers';
 import Sex from '../../model/enums/Sex';
 import localization from '../../model/resources/localization';
+import Constants from '../../model/enums/Constants';
 
 import './PlayersView.css';
 
@@ -123,8 +124,9 @@ export class PlayersView extends React.Component<PlayersViewProps> {
 		const buildPlayerClasses = (player: PlayerInfo, isMe: boolean, canBeSelected: boolean) => {
 			const stateClass = `state_${PlayerStates[player.state].toLowerCase()}`;
 			const meClass = isMe ? 'me' : '';
+			const inGameClass = player.inGame ? '' : 'out_of_game';
 			const selectableClass = canBeSelected && this.props.isSelectionEnabled ? 'selectable' : '';
-			return `gamePlayer ${stateClass} ${meClass} ${selectableClass}`;
+			return `gamePlayer ${stateClass} ${meClass} ${inGameClass} ${selectableClass}`;
 		};
 
 		const onSumChanged = (index: number, value: number) => {
@@ -146,6 +148,10 @@ export class PlayersView extends React.Component<PlayersViewProps> {
 							: {};
 						
 						const avatarClass = getAvatarClass(account);
+
+						const displayedStake = player.stake > 0
+							? player.stake.toString()
+							: player.stake === Constants.HIDDEN_STAKE ? '######' : null;
 
 						return (
 							<li
@@ -176,7 +182,7 @@ export class PlayersView extends React.Component<PlayersViewProps> {
 													onCancel={this.props.onCancelSumChange}
 												/>
 											) : <span>{player.sum}</span>}
-											{player.stake > 0 ? <span className="stake">{player.stake}</span> : null}
+											{displayedStake ? <span className="stake">{displayedStake}</span> : null}
 										</div>
 									</div>
 								</div>

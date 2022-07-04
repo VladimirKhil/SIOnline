@@ -2,16 +2,19 @@ import * as React from 'react';
 import State from '../../state/State';
 import { connect } from 'react-redux';
 import TableBorder from './TableBorder';
+import TableAudio from './TableAudio';
 
 import './TableImage.css';
 import spinnerSvg from '../../../assets/images/spinner.svg';
 
 interface TableImageProps {
 	text: string;
+	audio: string;
 }
 
 const mapStateToProps = (state: State) => ({
-	text: state.run.table.text
+	text: state.run.table.text,
+	audio: state.run.table.audio
 });
 
 export class TableImage extends React.Component<TableImageProps> {
@@ -36,6 +39,7 @@ export class TableImage extends React.Component<TableImageProps> {
 			<TableBorder>
 				<img className="spinnerImg" ref={this.spinnerRef} src={spinnerSvg} />
 				<img className="inGameImg" src={this.props.text} onLoad={() => this.onImageLoad()} />
+				{this.props.audio ? <TableAudio source={this.props.audio} /> : null}
 			</TableBorder>
 		);
 	}

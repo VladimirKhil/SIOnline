@@ -75,6 +75,7 @@ input,
 select,
 textarea {
     line-height: inherit;
+    outline: none;
 }
 
 textarea {
@@ -320,7 +321,6 @@ h1.activeTab {
 }
 
 #chatHostTitle {
-    padding-top: 2px;
     display: flex;
 }
 

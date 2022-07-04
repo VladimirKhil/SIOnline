@@ -4,12 +4,11 @@ import { Dispatch, Action } from 'redux';
 import { connect } from 'react-redux';
 import runActionCreators from '../../state/run/runActionCreators';
 import VolumeButton from '../common/VolumeButton';
-import TableBorder from './TableBorder';
 import settingsActionCreators from '../../state/settings/settingsActionCreators';
 
 interface TableAudioProps {
 	soundVolume: number;
-	text: string;
+	source: string;
 	isMediaStopped: boolean;
 	onMediaEnded: () => void;
 	onSoundVolumeChange: (volume: number) => void;
@@ -17,7 +16,6 @@ interface TableAudioProps {
 
 const mapStateToProps = (state: State) => ({
 	soundVolume: state.settings.soundVolume,
-	text: state.run.table.text,
 	isMediaStopped: state.run.stage.isGamePaused || state.run.table.isMediaStopped
 });
 
@@ -54,7 +52,7 @@ export class TableAudio extends React.Component<TableAudioProps> {
 			return;
 		}
 
-		if (this.props.text !== audio.currentSrc) {
+		if (this.props.source !== audio.currentSrc) {
 			audio.load();
 		}
 
@@ -70,18 +68,15 @@ export class TableAudio extends React.Component<TableAudioProps> {
 	}
 
 	render() {
-		const { onMediaEnded, text } = this.props;
+		const { onMediaEnded, source } = this.props;
 
 		return (
-			<TableBorder>
+			<>
 				<audio ref={this.audioRef} autoPlay onEnded={onMediaEnded}>
-					<source src={text} />
+					<source src={source} />
 				</audio>
-				<div className="centerBlock">
-					<span className="clef rotate">&amp;</span>
-				</div>
 				<VolumeButton />
-			</TableBorder>
+			</>
 		);
 	}
 }

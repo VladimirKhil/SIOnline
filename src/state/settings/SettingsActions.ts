@@ -12,6 +12,8 @@ export const enum SettingsActionTypes {
 	ReadingSpeedChanged = 'READING_SPEED_CHANGED',
 	ManagedChanged = 'MANAGED_CHANGED',
 	IgnoreWrongChanged = 'IGNORE_WRONG_CHANGED',
+	UsePingPenaltyChanged = 'USE_PING_PENALTY_CHANGED',
+	PreloadRoundContentChanged = 'PRELOAD_DOUND_CONTENT_CHANGED',
 	TimeSettingChanged = 'TIME_SETTING_CHANGED',
 	ResetSettings = 'RESET_SETTINGS',
 	LanguageChanged = 'LANGUAGE_CHANGED',
@@ -32,6 +34,8 @@ export type PartialTextChangedAction = { type: SettingsActionTypes.PartialTextCh
 export type ReadingSpeedChangedAction = { type: SettingsActionTypes.ReadingSpeedChanged; readingSpeed: number };
 export type ManagedChangedAction = { type: SettingsActionTypes.ManagedChanged; managed: boolean };
 export type IgnoreWrongChangedAction = { type: SettingsActionTypes.IgnoreWrongChanged; ignoreWrong: boolean };
+export type UsePingPenaltyChangedAction = { type: SettingsActionTypes.UsePingPenaltyChanged; usePingPenalty: boolean };
+export type PreloadRoundContentChangedAction = { type: SettingsActionTypes.PreloadRoundContentChanged; preloadRoundContent: boolean };
 export type TimeSettingChangedAction = {
 	type: SettingsActionTypes.TimeSettingChanged;
 	name: keyof TimeSettings;
@@ -53,6 +57,8 @@ export type KnownSettingsAction =
 	| HintShowmanChangedAction
 	| ManagedChangedAction
 	| IgnoreWrongChangedAction
+	| UsePingPenaltyChangedAction
+	| PreloadRoundContentChangedAction
 	| TimeSettingChangedAction
 	| ResetSettingsAction
 	| LanguageChangedAction

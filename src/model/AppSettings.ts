@@ -10,4 +10,6 @@ export default interface AppSettings {
 	ignoreWrong: boolean;
 	managed: boolean;
 	timeSettings: TimeSettings;
+	usePingPenalty: boolean;
+	preloadRoundContent: boolean;
 }

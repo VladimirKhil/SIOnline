@@ -1,12 +1,12 @@
 ﻿import TableMode from '../../model/enums/TableMode';
 import ThemeInfo from '../../model/ThemeInfo';
-import localization from '../../model/resources/localization';
 
 export default interface TableState {
 	mode: TableMode;
 	caption: string;
 	text: string;
 	tail: string;
+	audio: string;
 	animateReading: boolean;
 	canPress: boolean;
 	gameThemes: string[];
@@ -22,6 +22,7 @@ export const initialState: TableState = {
 	caption: '',
 	text: '',
 	tail: '',
+	audio: '',
 	animateReading: false,
 	canPress: false,
 	gameThemes: [],

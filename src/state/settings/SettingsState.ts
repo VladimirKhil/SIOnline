@@ -38,7 +38,9 @@ export const initialState: SettingsState = {
 			timeForRightAnswer: 2,
 			timeForMediaDelay: 0,
 			timeForBlockingButton: 3
-		}
+		},
+		usePingPenalty: false,
+		preloadRoundContent: true,
 	},
 	gameButtonKey: Constants.KEY_CTRL,
 	isLobbyChatHidden: false

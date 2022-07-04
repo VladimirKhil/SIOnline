@@ -63,12 +63,12 @@ export function WelcomeView(props: WelcomeViewProps): JSX.Element {
 				</h1>
 				<h1>{localization.welcomeTitle}</h1>
 			</header>
-			<ul className={`welcomeViewActions ${props.isConnected ? '' : 'disconnected'}`}>
-				<li onClick={() => (props.isConnected ? props.singlePlay() : null)}>{localization.singlePlay}</li>
-				<li onClick={() => (props.isConnected ? props.friendsPlay() : null)}>{localization.friendsPlay}</li>
-				<li onClick={() => (props.isConnected ? props.anyonePlay() : null)}>{localization.anyonePlay}</li>
-				<li onClick={() => (props.isConnected ? props.joinLobby() : null)}>{localization.joinLobby}</li>
-			</ul>
+			<div className={`welcomeViewActions ${props.isConnected ? '' : 'disconnected'}`}>
+				<button className='standard' disabled={!props.isConnected} onClick={() => props.singlePlay()}>{localization.singlePlay}</button>
+				<button className='standard' disabled={!props.isConnected} onClick={() => props.friendsPlay()}>{localization.friendsPlay}</button>
+				<button className='standard' disabled={!props.isConnected} onClick={() => props.anyonePlay()}>{localization.anyonePlay}</button>
+				<button className='standard' disabled={!props.isConnected} onClick={() => props.joinLobby()}>{localization.joinLobby}</button>
+			</div>
 		</section>
 	);
 }

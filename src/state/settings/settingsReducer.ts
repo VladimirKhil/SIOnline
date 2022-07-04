@@ -90,6 +90,24 @@ const settingsReducer: Reducer<SettingsState> = (
 				}
 			};
 
+		case SettingsActionTypes.UsePingPenaltyChanged:
+			return {
+				...state,
+				appSettings: {
+					...state.appSettings,
+					usePingPenalty: action.usePingPenalty
+				}
+			};
+
+		case SettingsActionTypes.PreloadRoundContentChanged:
+			return {
+				...state,
+				appSettings: {
+					...state.appSettings,
+					preloadRoundContent: action.preloadRoundContent
+				}
+			};
+
 		case SettingsActionTypes.TimeSettingChanged:
 			return {
 				...state,

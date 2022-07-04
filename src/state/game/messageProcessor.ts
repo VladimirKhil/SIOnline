@@ -86,6 +86,21 @@ function onReady(personName: string, isReady: boolean, dispatch: Dispatch<any>, 
 	dispatch(runActionCreators.isReadyChanged(personIndex, isReady));
 }
 
+function preprocessServerUri(uri: string, dataContext: DataContext) {
+	const result = uri.replace(
+		'<SERVERHOST>',
+		dataContext.contentUris && dataContext.contentUris.length > 0
+			? dataContext.contentUris[0]
+			: dataContext.serverUri
+	);
+
+	if (location.protocol === 'https:') {
+		return result.replace('http://', 'https://');
+	}
+
+	return result;
+}
+
 const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataContext, args: string[]) => {
 	switch (args[0]) {
 		case 'ADS':
@@ -146,7 +161,17 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 			break;
 
 		case 'ATOM_SECOND':
-			// TODO: process
+			switch (args[1]) {
+				case 'voice': // only audio is supported as a second atom
+					{
+						const uri = preprocessServerUri(args[3], dataContext);
+						dispatch(tableActionCreators.showBackgroundAudio(uri));
+					}
+					break;
+
+				default:
+					break;
+			}
 			break;
 
 		case 'BUTTON_BLOCKING_TIME':
@@ -206,15 +231,18 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 			break;
 
 		case 'FALSESTART':
-			// TODO: process
+			// Not used - game button is always available
 			break;
 
 		case 'FINALROUND':
-			// TODO: process
+			const playersLength = state.run.persons.players.length;
+			for (let i = 1; i < Math.min(args.length, playersLength + 1); i++) {
+				dispatch(runActionCreators.playerInGameChanged(i - 1, args[i] === '+'));
+			}
 			break;
 
 		case 'FINALTHINK':
-			// TODO: process
+			// Not used - finalthink sound could be played here
 			break;
 
 		case 'GAMETHEMES':
@@ -265,11 +293,18 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 			break;
 
 		case 'PACKAGELOGO':
-			// TODO: process
+			const uri = preprocessServerUri(args[1], dataContext);
+			dispatch(tableActionCreators.showImage(uri));
 			break;
 
 		case 'PASS':
-			// TODO: process
+			{
+				const playerIndex = parseInt(args[1], 10);
+
+				if (playerIndex > -1 && playerIndex < state.run.persons.players.length) {
+					dispatch(runActionCreators.playerStateChanged(playerIndex, PlayerStates.Pass));
+				}
+			}
 			break;
 
 		case 'PAUSE':
@@ -301,15 +336,35 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 			break;
 
 		case 'PERSONAPELLATED':
-			// TODO: process
+			{
+				const playerIndex = parseInt(args[1], 10);
+
+				if (playerIndex > -1 && playerIndex < state.run.persons.players.length) {
+					dispatch(runActionCreators.playerStateChanged(playerIndex, PlayerStates.HasAnswered));
+				}
+			}
 			break;
 
 		case 'PERSONFINALANSWER':
-			// TODO: process
+			{
+				const playerIndex = parseInt(args[1], 10);
+
+				if (playerIndex > -1 && playerIndex < state.run.persons.players.length) {
+					dispatch(runActionCreators.playerStateChanged(playerIndex, PlayerStates.HasAnswered));
+				}
+			}
 			break;
 
 		case 'PERSONFINALSTAKE':
-			// TODO: process
+			{
+				const playerIndex = parseInt(args[1], 10);
+				const player = state.run.persons.players[playerIndex];
+				if (!player) {
+					break;
+				}
+
+				dispatch(runActionCreators.playerStakeChanged(playerIndex, Constants.HIDDEN_STAKE));
+			}
 			break;
 
 		case 'PERSONSTAKE':
@@ -320,22 +375,22 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 					break;
 				}
 
-				const stakeType = parseInt(args[2], 10);
-				let stake: number = 0;
+				const stakeType = parseInt(args[2], 10) as StakeTypes;
+				let stake = 0;
 				switch (stakeType) {
-					case 0:
+					case StakeTypes.Nominal:
 						stake = state.run.stage.currentPrice;
 						break;
 
-					case 1:
+					case StakeTypes.Sum:
 						stake = parseInt(args[3], 10);
 						break;
 
-					case 2:
+					case StakeTypes.Pass:
 						stake = 0;
 						break;
 
-					case 3:
+					case StakeTypes.AllIn:
 						stake = player.sum;
 						break;
 
@@ -427,6 +482,33 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 			dispatch(tableActionCreators.captionChanged(''));
 			break;
 
+		case 'ROUNDCONTENT':
+			// Clearing old preloads
+			// for (let i = 0; i < document.head.children.length; i++) {
+			// 	const child = document.head.children[i];
+			// 	if (child.tagName.toLowerCase() === 'link') {
+			// 		if (child.attributes.getNamedItem('rel')?.value === 'preload') {
+			// 			document.head.removeChild(child);
+			// 			i = i - 1;
+			// 		}
+			// 	}
+			// }
+
+			args.slice(1).forEach(url => {
+				const uri = preprocessServerUri(url, dataContext);
+				fetch(uri); // Straight but working method
+				
+				// Chrome does not support audio and video preload
+				// We can return to this method later
+				// const link = document.createElement('link');
+				// link.setAttribute('rel', 'preload');
+				// link.setAttribute('as', 'image');
+				// link.setAttribute('href', uri);
+
+				// document.head.appendChild(link);
+			});
+			break;
+
 		case 'ROUNDSNAMES':
 			dispatch(runActionCreators.roundsNamesChanged(args.slice(1)));
 			break;
@@ -466,6 +548,11 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 			if (stage === 'Round' || stage === 'Final') {
 				dispatch(tableActionCreators.showRound(args[2]));
 				dispatch(runActionCreators.playersStateCleared());
+				if (stage === 'Round') {
+					for	(let i = 0; i < state.run.persons.players.length; i++) {
+						dispatch(runActionCreators.playerInGameChanged(i, true));
+					}
+				}
 			} else if (stage === 'After') {
 				dispatch(tableActionCreators.showLogo());
 			}
@@ -546,7 +633,7 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 			break;
 
 		case 'TIMEOUT':
-			// TODO: process
+			// Not used - timeout sound could be played here
 			break;
 
 		case 'TIMER':
@@ -626,7 +713,7 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 			break;
 
 		case 'WINNER':
-			// TODO: process
+			// Not used - applause sound could be played here
 			break;
 
 		case 'WRONGTRY':
@@ -641,7 +728,7 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 							() => {
 								dispatch(runActionCreators.playerLostStateDropped(index));
 							},
-							200
+							800
 						);
 					}
 				}
@@ -831,6 +918,7 @@ function getIndices(args: string[]): number[] {
 			indices.push(i);
 		}
 	}
+
 	return indices;
 }
 
@@ -883,7 +971,8 @@ function info(dispatch: Dispatch<RunActions.KnownRunAction>, ...args: string[]) 
 			replic: null,
 			isDeciding: false,
 			isHuman,
-			isChooser: false
+			isChooser: false,
+			inGame: true
 		});
 
 		if (isConnected) {
@@ -943,20 +1032,6 @@ function onReplic(dispatch: Dispatch<RunActions.KnownRunAction>, state: State, a
 	}
 
 	dispatch(runActionCreators.chatMessageAdded({ sender: null, text }));
-}
-
-function preprocessServerUri(uri: string, dataContext: DataContext) {
-	const result = uri.replace(
-		'<SERVERHOST>',
-		dataContext.contentUris && dataContext.contentUris.length > 0 ? dataContext.contentUris[0]
-			: dataContext.serverUri
-	);
-
-	if (location.protocol === 'https:') {
-		return result.replace('http://', 'https://');
-	}
-
-	return result;
 }
 
 function connected(dispatch: Dispatch<RunActions.KnownRunAction>, state: State, ...args: string[]) {
