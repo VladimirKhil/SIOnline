@@ -43,7 +43,8 @@ module.exports = (env, argv) => {
 			},
 			chunkFilename: '[name].[contenthash].js',
 			path: path.resolve(__dirname, 'dist'),
-			publicPath: ''
+			publicPath: '',
+			crossOriginLoading: 'anonymous'
 		},
 		optimization: {
 			splitChunks: {

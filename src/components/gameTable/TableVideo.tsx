@@ -57,6 +57,7 @@ export class TableVideo extends React.Component<TableVideoProps> {
 			if (this.props.isMediaStopped) {
 				video.pause();
 			} else {
+				// TODO: await, send error to chat
 				video.play().catch(e => console.error(e));
 			}
 		}

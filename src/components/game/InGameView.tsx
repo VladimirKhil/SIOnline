@@ -19,6 +19,7 @@ import PersonsView from './PersonsView';
 import TablesView from './TablesView';
 import Dialog from '../common/Dialog';
 import ManageGameView from './ManageGameView';
+import Constants from '../../model/enums/Constants';
 
 import './InGameView.css';
 
@@ -60,7 +61,7 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 });
 
 function getMainAreaContent(props: InGameViewProps): React.ReactNode {
-	if (props.windowWidth >= 1100) {
+	if (props.windowWidth >= Constants.WIDE_WINDOW_WIDTH) {
 		return <GameChatView />;
 	}
 
@@ -77,7 +78,7 @@ function getMainAreaContent(props: InGameViewProps): React.ReactNode {
 }
 
 export function InGameView(props: InGameViewProps) : JSX.Element {
-	const isScreenWide = props.windowWidth >= 1100;
+	const isScreenWide = props.windowWidth >= Constants.WIDE_WINDOW_WIDTH;
 
 	return (
 		<section className="gameMain">

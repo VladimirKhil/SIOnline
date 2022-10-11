@@ -112,6 +112,14 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 			// TODO: show ad on screen
 			break;
 
+		case 'APELLATION_ENABLES':
+			if (args.length === 1) {
+				break;
+			}
+
+			dispatch(runActionCreators.areApellationsEnabledChanged(args[1] === '+'));
+			break;
+
 		case 'ATOM':
 			switch (args[1]) {
 				case 'text':
@@ -155,6 +163,13 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 					}
 					break;
 
+				case 'html':
+					{
+						const uri = preprocessServerUri(args[3], dataContext);
+						dispatch(tableActionCreators.showHtml(uri));
+					}
+					break;
+
 				default:
 					break;
 			}
@@ -175,7 +190,11 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 			break;
 
 		case 'BUTTON_BLOCKING_TIME':
-			// TODO: process
+			if (args.length === 1) {
+				break;
+			}
+
+			dispatch(runActionCreators.buttonBlockingTimeChanged(parseInt(args[1], 10)));
 			break;
 
 		case 'CHOICE':
@@ -495,8 +514,19 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 			// }
 
 			args.slice(1).forEach(url => {
-				const uri = preprocessServerUri(url, dataContext);
-				fetch(uri); // Straight but working method
+				const contentUri = preprocessServerUri(url, dataContext);
+
+				// Straight but working method
+				// TODO: await
+				fetch(contentUri)
+					.then(response => {
+						if (!response.ok) {
+							dispatch(runActionCreators.chatMessageAdded({ sender: '', text: response.statusText }));
+						}
+					})
+					.catch((e : TypeError) => {
+						dispatch(runActionCreators.chatMessageAdded({ sender: '', text: e.message }));
+					}); 
 				
 				// Chrome does not support audio and video preload
 				// We can return to this method later

@@ -80,6 +80,10 @@ const showVideo: ActionCreator<TableActions.ShowVideoAction> = (uri: string) => 
 	type: TableActions.TableActionTypes.ShowVideo, uri
 });
 
+const showHtml: ActionCreator<TableActions.ShowHtmlAction> = (uri: string) => ({
+	type: TableActions.TableActionTypes.ShowHtml, uri
+});
+
 const showSpecial: ActionCreator<TableActions.ShowSpecialAction> = (text: string, activeThemeIndex = -1) => ({
 	type: TableActions.TableActionTypes.ShowSpecial, text, activeThemeIndex
 });
@@ -118,6 +122,7 @@ const tableActionCreators = {
 	showAudio,
 	showBackgroundAudio,
 	showVideo,
+	showHtml,
 	showSpecial,
 	canPressChanged,
 	isSelectableChanged,

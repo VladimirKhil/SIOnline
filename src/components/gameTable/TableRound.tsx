@@ -11,8 +11,6 @@ interface TableRoundProps {
 
 const mapStateToProps = (state: State) => ({
 	text: state.run.table.text,
-	animateReading: state.run.table.animateReading,
-	readingSpeed: state.run.readingSpeed
 });
 
 export function TableRound(props: TableRoundProps) {

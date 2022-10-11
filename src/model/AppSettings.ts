@@ -12,4 +12,5 @@ export default interface AppSettings {
 	timeSettings: TimeSettings;
 	usePingPenalty: boolean;
 	preloadRoundContent: boolean;
+	useApellations: boolean;
 }

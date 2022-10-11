@@ -231,15 +231,14 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 				</div>
 			) : null}
 
-			<div id="stakeButtonsHost">
-				{props.areStakesVisible ? (
-					<div id="stakeButtons">
+			{props.areStakesVisible ? (
+				<div className='stakeButtonsHost'>
+					<div className="stakeButtons">
 						<SendPassButton />
 						<SendStakeButton />
 						<SendAllInButton />
 					</div>
-				) : null}
-			</div>
+				</div>) : null}
 		</div>
 	);
 }

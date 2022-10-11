@@ -94,7 +94,7 @@ export function TablesView(props: TablesViewProps): JSX.Element {
 	// You can delete occupied tables only before game start
 	const canDelete = props.players.length > Constants.MIN_PLAYER_COUNT &&
 		isPlayerSelected &&
-		(!props.isGameStarted || !selectedAccount);
+		(!props.isGameStarted || !selectedAccount || !selectedAccount.isHuman);
 
 	const canFree = !props.isGameStarted && selectedAccount && selectedAccount.isHuman;
 

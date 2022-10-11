@@ -60,6 +60,26 @@
 	padding: 0 15px;
 }
 
+@keyframes welcomeRows {
+	to {
+		transform: translate(0);
+	}
+}
+
+.welcomeRow {
+	animation: welcomeRows;
+	animation-duration: .5s;
+	animation-fill-mode: forwards;
+}
+
+.welcomeRow.left {
+	transform: translate(-100%);
+}
+
+.welcomeRow.right {
+	transform: translate(100%);
+}
+
 @media screen and (min-width: 800px) {
 	.welcomeViewActions {
 		width: initial;

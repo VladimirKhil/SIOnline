@@ -59,6 +59,7 @@ function setState(state: State, savedState: SavedState | null, gameId: string | 
 				timeSettings: savedState.settings.appSettings.timeSettings || state.settings.appSettings.timeSettings,
 				readingSpeed: savedState.settings.appSettings.readingSpeed || state.settings.appSettings.readingSpeed,
 				preloadRoundContent: savedState.settings.appSettings.preloadRoundContent ?? true,
+				useApellations: savedState.settings.appSettings.useApellations ?? true
 			},
 			gameButtonKey: savedState.settings.gameButtonKey || Constants.KEY_CTRL
 		} : state.settings,
@@ -145,7 +146,7 @@ async function run() {
 		}
 
 		// Using random number to prevent serverUri caching
-		const serverUrisResponse = await fetch(`${serverDiscoveryUri}?r=${Math.random()}`);
+		const serverUrisResponse = await fetch(`${serverDiscoveryUri}?r=${Math.random()}`); // throwing TypeError here is ok
 		if (!serverUrisResponse.ok) {
 			throw new Error(`Server discovery is broken! ${serverUrisResponse.status} ${await serverUrisResponse.text()}`);
 		}

@@ -21,6 +21,7 @@ import ProgressBar from '../common/ProgressBar';
 import { isRunning } from '../../utils/TimerInfoHelpers';
 import TableRound from './TableRound';
 import TableAudioFrame from './TableAudioFrame';
+import TableHtml from './TableHtml';
 
 import './GameTable.css';
 
@@ -64,6 +65,9 @@ function getContent(mode: TableMode) {
 
 		case TableMode.Video:
 			return <TableVideo />;
+
+		case TableMode.Html:
+			return <TableHtml />;
 
 		case TableMode.Answer:
 			return <TableAnswer />;

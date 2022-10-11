@@ -1,5 +1,6 @@
 import Timers from '../model/Timers';
 import TimerInfo from '../model/TimerInfo';
+import TimerStates from '../model/enums/TimeStates';
 
 export function updateTimers(timers: Timers, timerIndex: number, updater: (timerInfo: TimerInfo) => TimerInfo): Timers {
 	switch (timerIndex) {
@@ -16,5 +17,5 @@ export function updateTimers(timers: Timers, timerIndex: number, updater: (timer
 }
 
 export function isRunning(timerInfo: TimerInfo): boolean {
-	return !timerInfo.isPausedBySystem && !timerInfo.isPausedByUser;
+	return timerInfo.state === TimerStates.Running && !timerInfo.isPausedBySystem && !timerInfo.isPausedByUser;
 }

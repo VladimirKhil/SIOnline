@@ -166,7 +166,7 @@ ul.gamesFilter > li.disabled {
 
 @media screen and (min-width: 1600px) {
     .gameslistHost {
-        flex: 0 0 600px;
+        flex: 0 0 550px;
     }
 }
 

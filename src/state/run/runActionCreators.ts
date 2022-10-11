@@ -382,7 +382,7 @@ const isGameButtonEnabledChanged: ActionCreator<RunActions.IsGameButtonEnabledCh
 
 const pressGameButton: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
 	dispatch: Dispatch<any>,
-	_getState: () => State,
+	getState: () => State,
 	dataContext: DataContext
 	) => {
 	if (!await dataContext.gameClient.msgAsync('I')) {
@@ -390,11 +390,12 @@ const pressGameButton: ActionCreator<ThunkAction<void, State, DataContext, Actio
 	}
 
 	dispatch(isGameButtonEnabledChanged(false));
+	
 	setTimeout(
 		() => {
 			dispatch(isGameButtonEnabledChanged(true));
 		},
-		3000
+		getState().run.buttonBlockingTimeSeconds * 1000
 	);
 };
 
@@ -682,6 +683,14 @@ const playerInGameChanged: ActionCreator<RunActions.PlayerInGameChangedAction> =
 	type: RunActions.RunActionTypes.PlayerInGameChanged, playerIndex, inGame
 });
 
+const areApellationsEnabledChanged: ActionCreator<RunActions.AreApellationsEnabledChangedAction> = (areApellationsEnabled: boolean) => ({
+	type: RunActions.RunActionTypes.AreApellationsEnabledChanged, areApellationsEnabled
+});
+
+const buttonBlockingTimeChanged: ActionCreator<RunActions.ButtonBlockingChangedAction> = (buttonBlockingTime: number) => ({
+	type: RunActions.RunActionTypes.ButtonBlockingTimeChanged, buttonBlockingTime
+});
+
 const runActionCreators = {
 	runChatModeChanged,
 	runChatMessageChanged,
@@ -779,6 +788,8 @@ const runActionCreators = {
 	roundsNamesChanged,
 	chooserChanged,
 	playerInGameChanged,
+	areApellationsEnabledChanged,
+	buttonBlockingTimeChanged,
 };
 
 export default runActionCreators;

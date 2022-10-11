@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 import ChatMessage from '../../model/ChatMessage';
 import DataContext from '../../model/DataContext';
 import ChatMode from '../../model/enums/ChatMode';
@@ -10,6 +10,7 @@ import PlayerInfo from '../../model/PlayerInfo';
 import Timers from '../../model/Timers';
 import { AppDispatch, RootState } from './store';
 import TableState, { initialState as tableInitialState } from '../table/TableState';
+import TimerStates from '../../model/enums/TimeStates';
 
 interface RunState {
 	persons: {
@@ -103,18 +104,21 @@ const initialState: RunState = {
 	},
 	timers: {
 		round: {
+			state: TimerStates.Stopped,
 			isPausedBySystem: true,
 			isPausedByUser: false,
 			value: 0,
 			maximum: 0
 		},
 		press: {
+			state: TimerStates.Stopped,
 			isPausedBySystem: true,
 			isPausedByUser: false,
 			value: 0,
 			maximum: 0
 		},
 		decision: {
+			state: TimerStates.Stopped,
 			isPausedBySystem: true,
 			isPausedByUser: false,
 			value: 0,

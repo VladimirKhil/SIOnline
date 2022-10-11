@@ -9,6 +9,7 @@ export default interface SettingsState {
 	appSettings: AppSettings;
 	gameButtonKey: string | null;
 	isLobbyChatHidden: boolean;
+	areValidationAnswersHidden: boolean;
 }
 
 export const initialState: SettingsState = {
@@ -41,7 +42,9 @@ export const initialState: SettingsState = {
 		},
 		usePingPenalty: false,
 		preloadRoundContent: true,
+		useApellations: true,
 	},
 	gameButtonKey: Constants.KEY_CTRL,
-	isLobbyChatHidden: false
+	isLobbyChatHidden: false,
+	areValidationAnswersHidden: false,
 };

@@ -6,6 +6,7 @@ import runActionCreators from '../../state/run/runActionCreators';
 import State from '../../state/State';
 import { Dispatch, Action } from 'redux';
 import FlyoutButton, { FlyoutVerticalOrientation } from '../common/FlyoutButton';
+import Constants from '../../model/enums/Constants';
 
 import './GameButton.css';
 
@@ -15,6 +16,7 @@ interface GameButtonProps {
 	isAfterQuestion: boolean;
 	sex: Sex;
 	windowWidth: number;
+	areApellationsEnabled: boolean;
 	pressGameButton: () => void;
 	apellate: () => void;
 	disagree: () => void;
@@ -26,7 +28,8 @@ const mapStateToProps = (state: State) => ({
 	isGameButtonEnabled: state.run.isGameButtonEnabled,
 	isAfterQuestion: state.run.stage.isAfterQuestion,
 	sex: state.settings.sex,
-	windowWidth: state.ui.windowWidth
+	windowWidth: state.ui.windowWidth,
+	areApellationsEnabled: state.run.areApellationsEnabled,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
@@ -46,22 +49,27 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 
 function renderReactions(props: GameButtonProps) : JSX.Element {
 	const rightString = props.sex === Sex.Female ? localization.iAmRightFemale : localization.iAmRightMale;
-	return props.windowWidth > 1100 ? (
+	
+	return props.windowWidth > Constants.WIDE_WINDOW_WIDTH ? (
 		<div className='reactions reactions_panel'>
-			<button
-				className="playerButton"
-				disabled={!props.isConnected}
-				title={localization.apellateAnswer}
-				onClick={() => props.apellate()}>
-				{rightString}
-			</button>
-			<button
-				className="playerButton"
-				disabled={!props.isConnected}
-				title={localization.iDisagreeHint}
-				onClick={() => props.disagree()}>
-				{localization.iDisagree}
-			</button>
+			{props.areApellationsEnabled
+			? (<>
+				<button
+					className="playerButton"
+					disabled={!props.isConnected}
+					title={localization.apellateAnswer}
+					onClick={() => props.apellate()}>
+					{rightString}
+				</button>
+				<button
+					className="playerButton"
+					disabled={!props.isConnected}
+					title={localization.iDisagreeHint}
+					onClick={() => props.disagree()}>
+					{localization.iDisagree}
+				</button>
+			</> )
+			: null}
 			<button
 				className="playerButton"
 				disabled={!props.isConnected}
@@ -76,8 +84,11 @@ function renderReactions(props: GameButtonProps) : JSX.Element {
 			disabled={!props.isConnected}
 			flyout={
 				<ul className='reactions_list'>
-					<li title={localization.apellateAnswer} onClick={() => props.apellate()}>{rightString}</li>
-					<li title={localization.iDisagreeHint} onClick={() => props.disagree()}>{localization.iDisagree}</li>
+					{props.areApellationsEnabled ? (
+					<>
+						<li title={localization.apellateAnswer} onClick={() => props.apellate()}>{rightString}</li>
+						<li title={localization.iDisagreeHint} onClick={() => props.disagree()}>{localization.iDisagree}</li>
+					</>) : null}
 					<li title={localization.complainHint} onClick={() => props.onMarkQuestion()}>{localization.complain}</li>
 				</ul>
 			}

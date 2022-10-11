@@ -18,6 +18,7 @@ export const enum TableActionTypes {
 	ShowAudio = 'SHOW_AUDIO',
 	ShowBackgroundAudio = 'SHOW_BACKGROUND_AUDIO',
 	ShowVideo = 'SHOW_VIDEO',
+	ShowHtml = 'SHOW_HTML',
 	ShowSpecial = 'SHOW_SPECIAL',
 	CanPressChanged = 'CAN_PRESS_CHANGED',
 	IsSelectableChanged = 'IS_SELECTABLE_CHANGED',
@@ -47,6 +48,7 @@ export type ShowImageAction = { type: TableActionTypes.ShowImage, uri: string };
 export type ShowAudioAction = { type: TableActionTypes.ShowAudio, uri: string };
 export type ShowBackgroundAudioAction = { type: TableActionTypes.ShowBackgroundAudio, uri: string };
 export type ShowVideoAction = { type: TableActionTypes.ShowVideo, uri: string };
+export type ShowHtmlAction = { type: TableActionTypes.ShowHtml, uri: string };
 export type ShowSpecialAction = { type: TableActionTypes.ShowSpecial, text: string, activeThemeIndex: number };
 export type CanPressChangedAction = { type: TableActionTypes.CanPressChanged, canPress: boolean };
 export type IsSelectableChangedAction = { type: TableActionTypes.IsSelectableChanged, isSelectable: boolean };
@@ -71,6 +73,7 @@ export type KnownTableAction =
 	| ShowAudioAction
 	| ShowBackgroundAudioAction
 	| ShowVideoAction
+	| ShowHtmlAction
 	| ShowSpecialAction
 	| CanPressChangedAction
 	| IsSelectableChangedAction

@@ -223,10 +223,14 @@ const navigateToWelcome: ActionCreator<Actions.NavigateToWelcomeAction> = () => 
 	type: Actions.ActionTypes.NavigateToWelcome
 });
 
-const serverInfoChanged: ActionCreator<Actions.ServerInfoChangedAction> = (serverName: string, serverLicense: string) => ({
+const serverInfoChanged: ActionCreator<Actions.ServerInfoChangedAction> = (
+	serverName: string,
+	serverLicense: string,
+	maxPackageSizeMb: number) => ({
 	type: Actions.ActionTypes.ServerInfoChanged,
 	serverName,
-	serverLicense
+	serverLicense,
+	maxPackageSizeMb,
 });
 
 async function loadHostInfoAsync(dispatch: Dispatch<any>, dataContext: DataContext, culture: string) {
@@ -234,7 +238,7 @@ async function loadHostInfoAsync(dispatch: Dispatch<any>, dataContext: DataConte
 	// eslint-disable-next-line no-param-reassign
 	dataContext.contentUris = hostInfo.contentPublicBaseUrls;
 
-	dispatch(serverInfoChanged(hostInfo.name, hostInfo.license));
+	dispatch(serverInfoChanged(hostInfo.name, hostInfo.license, hostInfo.maxPackageSizeMb));
 }
 
 const friendsPlayInternal: ActionCreator<Actions.NavigateToGamesAction> = () => ({
@@ -389,7 +393,7 @@ const navigateToLobbyInternal: ActionCreator<Actions.NavigateToLobbyAction> = ()
 });
 
 const navigateToLobby: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
-	(gameId: number, showInfo?: boolean) => async (dispatch: Dispatch<Actions.KnownAction>, getState: () => State, dataContext: DataContext) => {
+	(gameId: number, showInfo?: boolean) => async (dispatch: Dispatch<Actions.KnownAction>, _: () => State, dataContext: DataContext) => {
 		dispatch(navigateToLobbyInternal());
 
 		if (gameId > -1) {
@@ -613,6 +617,20 @@ const gamePackageDataChanged: ActionCreator<Actions.GamePackageDataChangedAction
 	packageName,
 	packageData
 });
+
+const gamePackageDataChangedRequest: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (
+	packageName: string,
+	packageData: File | null) => (dispatch: Dispatch<Actions.KnownAction>, getState: () => State, dataContext: DataContext) => {
+		const state = getState();
+		const { maxPackageSizeMb } = state.common;
+
+		if (packageData && packageData.size > maxPackageSizeMb * 1024 * 1024) {
+			alert(`${localization.packageIsTooBig} (${maxPackageSizeMb} MB)`);
+			return;
+		}
+
+		dispatch(gamePackageDataChanged(packageName, packageData));
+	};
 
 const gamePackageLibraryChanged: ActionCreator<Actions.GamePackageLibraryChangedAction> = (
 	id: string,
@@ -863,6 +881,7 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 			culture: getFullCulture(state),
 			usePingPenalty: state.settings.appSettings.usePingPenalty,
 			preloadRoundContent: state.settings.appSettings.preloadRoundContent,
+			useApellations: state.settings.appSettings.useApellations,
 		};
 
 		const gameSettings: GameSettings = {
@@ -1021,6 +1040,12 @@ const receiveAuthorsThunk: ActionCreator<ThunkAction<void, State, DataContext, A
 			dispatch(receiveAuthors());
 			const { apiUri } = dataContext.config;
 			const response = await fetch(`${apiUri}/Authors`);
+
+			if (!response.ok) {
+				console.error(response.statusText);
+				return;
+			}
+
 			const data = await response.json();
 			dispatch(receiveAuthorsFinished(data));
 		} catch (error) {
@@ -1034,6 +1059,12 @@ const receiveTagsThunk: ActionCreator<ThunkAction<void, State, DataContext, Acti
 			dispatch(receiveTags());
 			const { apiUri } = dataContext.config;
 			const response = await fetch(`${apiUri}/Tags`);
+
+			if (!response.ok) {
+				console.error(response.statusText);
+				return;
+			}
+
 			const data = await response.json();
 			dispatch(receiveTagsFinished(data));
 		} catch (error) {
@@ -1047,6 +1078,12 @@ const receivePublishersThunk: ActionCreator<ThunkAction<void, State, DataContext
 			dispatch(receivePublishers());
 			const { apiUri } = dataContext.config;
 			const response = await fetch(`${apiUri}/Publishers`);
+
+			if (!response.ok) {
+				console.error(response.statusText);
+				return;
+			}
+
 			const data = await response.json();
 			dispatch(receivePublishersFinished(data));
 		} catch (error) {
@@ -1054,8 +1091,7 @@ const receivePublishersThunk: ActionCreator<ThunkAction<void, State, DataContext
 		}
 	};
 
-const searchPackagesThunk: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
-	(
+const searchPackagesThunk: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (
 		filters: PackageFilters = {
 			difficultyRelation: 0,
 			difficulty: 1,
@@ -1065,12 +1101,11 @@ const searchPackagesThunk: ActionCreator<ThunkAction<void, State, DataContext, A
 			publisherId: null,
 			tagId: null,
 			restriction: null
-		}
-	) =>
-	async (dispatch: Dispatch<any>, getState: () => State, dataContext: DataContext) => {
+		}) => async (dispatch: Dispatch<any>, _: () => State, dataContext: DataContext) => {
 		try {
 			dispatch(searchPackages());
 			const { apiUri } = dataContext.config;
+
 			const response = await fetch(
 				`${apiUri}/FilteredPackages?${new URLSearchParams(
 					Object.entries(filters)
@@ -1081,9 +1116,13 @@ const searchPackagesThunk: ActionCreator<ThunkAction<void, State, DataContext, A
 								[key]: value
 							}),
 							{}
-						)
-				)}`
-			);
+						))}`);
+
+			if (!response.ok) {
+				console.error(response.statusText);
+				return;
+			}
+
 			const data = await response.json();
 			dispatch(searchPackagesFinished(data));
 		} catch (error) {
@@ -1140,7 +1179,7 @@ const actionCreators = {
 	gameNameChanged,
 	gamePasswordChanged,
 	gamePackageTypeChanged,
-	gamePackageDataChanged,
+	gamePackageDataChangedRequest,
 	gameTypeChanged,
 	gameRoleChanged,
 	showmanTypeChanged,

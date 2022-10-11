@@ -5,4 +5,5 @@ export default interface HostInfo {
 	packagesPublicBaseUrl: string | null;
 	contentPublicBaseUrls: string[] | null;
 	license: string;
+	maxPackageSizeMb: number;
 }

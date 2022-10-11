@@ -81,6 +81,15 @@ const settingsReducer: Reducer<SettingsState> = (
 				}
 			};
 
+		case SettingsActionTypes.UseApellationsChanged:
+			return {
+				...state,
+				appSettings: {
+					...state.appSettings,
+					useApellations: action.useApellations
+				}
+			};
+
 		case SettingsActionTypes.IgnoreWrongChanged:
 			return {
 				...state,
@@ -139,6 +148,12 @@ const settingsReducer: Reducer<SettingsState> = (
 			return {
 				...state,
 				isLobbyChatHidden: !action.isLobbyChatVisible
+			};
+
+		case SettingsActionTypes.ValidationAnswersVisibilityChanged:
+			return {
+				...state,
+				areValidationAnswersHidden: !action.validationAnswersVisible
 			};
 
 		case SettingsActionTypes.ResetSettings:

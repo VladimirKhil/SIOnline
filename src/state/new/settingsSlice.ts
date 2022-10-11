@@ -10,6 +10,7 @@ export interface SettingsState {
 	appSettings: AppSettings;
 	gameButtonKey: string | null;
 	isLobbyChatHidden: boolean;
+	areValidationAnswersHidden: boolean;
 }
 
 const initialState: SettingsState = {
@@ -41,10 +42,12 @@ const initialState: SettingsState = {
 			timeForBlockingButton: 3
 		},
 		usePingPenalty: false,
-		preloadRoundContent: true
+		preloadRoundContent: true,
+		useApellations: true
 	},
 	gameButtonKey: Constants.KEY_CTRL,
-	isLobbyChatHidden: false
+	isLobbyChatHidden: false,
+	areValidationAnswersHidden: false,
 };
 
 export const settingsSlice = createSlice({

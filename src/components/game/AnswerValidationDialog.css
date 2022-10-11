@@ -3,14 +3,24 @@
     z-index: 5;
 }
 
-.answerValidationDialog p {
+.answerValidationDialog .validationHeader {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
     margin: 13px;
+}
+
+.answerValidationDialog p {
+    margin: 0;
     height: 40px;
+    display: flex;
+    align-items: center;
 }
 
 .answerValidationDialog #answersPanel {
     margin: 13px;
-    height: calc(100% - 182px);
+    height: calc(100% - 183px);
 }
 
 .answerValidationDialog .answers {
@@ -19,10 +29,6 @@
     margin: 0 2px;
     vertical-align: top;
     height: 100%;
-}
-
-.answerValidationDialog > p {
-    margin: 13px;
 }
 
 .answerValidationDialog .answers p {
@@ -58,6 +64,11 @@
     .answerValidationDialog .answers li.active {
         background-color: #5A95E2;
     }
+
+.answerValidationDialog .buttonsPanel {
+    position: absolute;
+    bottom: 0;
+}
     
 @media screen and (min-width: 800px) {
     .answerValidationDialog {
@@ -70,5 +81,10 @@
         border: 1px solid black;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
         overflow: hidden;
+    }
+
+    .answerValidationDialog.short {
+        height: 171px;
+        top: initial;
     }
 }

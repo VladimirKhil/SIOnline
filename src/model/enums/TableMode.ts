@@ -5,6 +5,7 @@
 	Image,
 	Audio,
 	Video,
+	Html,
 	Answer,
 	GameThemes,
 	Round,

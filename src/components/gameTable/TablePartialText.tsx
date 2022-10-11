@@ -25,6 +25,7 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 
 export class TablePartialText extends React.Component<TablePartialTextProps> {
 	private textRef: React.RefObject<HTMLSpanElement>;
+
 	private tailRef: React.RefObject<HTMLSpanElement>;
 
 	constructor(props: TablePartialTextProps) {
@@ -37,8 +38,9 @@ export class TablePartialText extends React.Component<TablePartialTextProps> {
 	convertToAnimatable(text: string): string {
 		let animatedText = '';
 
-		const animationStep = 1 / this.props.readingSpeed;
+		const animationStep = this.props.readingSpeed === 0 ? 0 : 1 / this.props.readingSpeed;
 		let animation = 0;
+
 		for (let i = 0; i < text.length; i++) {
 			animation += animationStep;
 			const style = `animation-delay: ${animation}s`;
@@ -55,6 +57,7 @@ export class TablePartialText extends React.Component<TablePartialTextProps> {
 		// We update component manually so we always return false
 		if (nextProps.text !== this.props.text && this.textRef.current && this.tailRef.current) {
 			let lastChild: ChildNode = this.textRef.current;
+
 			while (lastChild.lastChild) {
 				lastChild = lastChild.lastChild;
 			}

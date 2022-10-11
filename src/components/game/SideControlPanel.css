@@ -98,6 +98,25 @@ ul.gameMenu, .exitMenu ul {
     height: 45px;
 }
 
+.stakeButtonsHost {
+    position: absolute;
+    top: -44px;
+    height: 45px;
+    width: 100%;
+}
+
+.stakeButtons {
+    height: 100%;
+    display: flex;
+    background-color: #5a95e2;
+    width: 100%;
+    font-size: 25px;
+}
+
+    .stakeButtons button {
+        flex: 1 0 0;
+    }
+
 @media screen and (min-width: 800px) {
     .gameMessageHost {
         display: flex;
@@ -130,6 +149,10 @@ ul.gameMenu, .exitMenu ul {
     #gameMenuButton, .gameMenuButton {
         font-size: 26px;
         line-height: 26px;
+    }
+
+    .stakeButtonsHost {
+        display: none;
     }
 }
 

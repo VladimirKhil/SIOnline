@@ -16,4 +16,5 @@ export default interface ServerAppSettings {
 	culture: string;
 	usePingPenalty: boolean;
 	preloadRoundContent: boolean;
+	useApellations: boolean;
 }

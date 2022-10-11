@@ -80,7 +80,7 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 		dispatch(actionCreators.gamePackageTypeChanged(type));
 	},
 	onGamePackageDataChanged: (name: string, data: File | null) => {
-		dispatch(actionCreators.gamePackageDataChanged(name, data));
+		dispatch(actionCreators.gamePackageDataChangedRequest(name, data) as unknown as Action);
 	},
 	onGamePackageLibraryChanged: (id: string, name: string) => {
 		dispatch(actionCreators.gamePackageLibraryChanged(id, name));
@@ -187,6 +187,7 @@ export class NewGameDialog extends React.Component<NewGameDialogProps, NewGameDi
 		this.setState({
 			isSIStorageOpen: false
 		});
+
 		this.props.onGamePackageTypeChanged(PackageType.SIStorage);
 		this.props.onGamePackageLibraryChanged(id, name);
 	};
@@ -207,6 +208,7 @@ export class NewGameDialog extends React.Component<NewGameDialogProps, NewGameDi
 							onChange={this.onGameNameChanged}
 							onKeyPress={this.onKeyPress}
 						/>
+
 						{this.props.isSingleGame ? null : (
 							<>
 								<p>{localization.password}</p>
@@ -218,7 +220,9 @@ export class NewGameDialog extends React.Component<NewGameDialogProps, NewGameDi
 								/>
 							</>
 						)}
+
 						<p>{localization.questionPackage}</p>
+
 						<select
 							className="packageTypeSelector"
 							value={siPackageName || this.props.gamePackageType}
@@ -229,6 +233,7 @@ export class NewGameDialog extends React.Component<NewGameDialogProps, NewGameDi
 							<option value="2">{`${localization.libraryTitle}...`}</option>
 							{siPackageName && <option value={siPackageName}>{siPackageName}</option>}
 						</select>
+
 						{this.props.gamePackageType === PackageType.File ? (
 							<div className="packageFileBox">
 								<input ref={this.fileRef} type="file" accept=".siq" onChange={this.onGamePackageDataChanged} />
@@ -236,6 +241,7 @@ export class NewGameDialog extends React.Component<NewGameDialogProps, NewGameDi
 								{this.props.gamePackageData ? <span>{this.props.gamePackageData.name}</span> : null}
 							</div>
 						) : null}
+
 						<p>{localization.gameType}</p>
 						<select value={this.props.gameType} onChange={this.onGameTypeChanged}>
 							<option value="1">{localization.sport}</option>

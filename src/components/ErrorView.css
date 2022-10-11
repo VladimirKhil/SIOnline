@@ -45,5 +45,11 @@
 .buttons button {
 	flex: 1;
 	height: 40px;
-	font-size: 20px;
+	font-size: 15px;
+}
+
+@media screen and (min-width: 800px) {
+	.buttons button {
+		font-size: 20px;
+	}
 }

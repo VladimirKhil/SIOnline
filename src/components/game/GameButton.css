@@ -19,6 +19,7 @@
 
 .playerButton:disabled {
     background: gray;
+    cursor: initial;
 }
 
 .reactions {

@@ -41,6 +41,7 @@ const tableReducer: Reducer<TableState> = (state: TableState = initialState, any
 				...state,
 				mode: TableMode.Text,
 				text: action.text,
+				audio: '',
 				animateReading: action.animateReading
 			};
 
@@ -110,7 +111,8 @@ const tableReducer: Reducer<TableState> = (state: TableState = initialState, any
 			return {
 				...state,
 				mode: TableMode.Image,
-				text: action.uri
+				text: action.uri,
+				audio: '',
 			};
 
 		case TableActionTypes.ShowAudio:
@@ -134,6 +136,13 @@ const tableReducer: Reducer<TableState> = (state: TableState = initialState, any
 				mode: TableMode.Video,
 				text: action.uri,
 				isMediaStopped: false
+			};
+
+		case TableActionTypes.ShowHtml:
+			return {
+				...state,
+				mode: TableMode.Html,
+				text: action.uri,
 			};
 
 		case TableActionTypes.ShowSpecial:

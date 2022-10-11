@@ -8,6 +8,7 @@ import { set, removeS } from '../../utils/RecordExtensions';
 import PlayerStates from '../../model/enums/PlayerStates';
 import Constants from '../../model/enums/Constants';
 import { updateTimers } from '../../utils/TimerInfoHelpers';
+import TimerStates from '../../model/enums/TimeStates';
 
 const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction: AnyAction): RunState => {
 	const action = anyAction as KnownRunAction;
@@ -570,6 +571,7 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 			return {
 				...state,
 				timers: updateTimers(state.timers, action.timerIndex, timer => ({
+					state: TimerStates.Running,
 					isPausedByUser: action.runByUser ? false : timer.isPausedByUser,
 					isPausedBySystem: !action.runByUser ? false : timer.isPausedBySystem,
 					maximum: action.maximumTime,
@@ -582,9 +584,10 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 				...state,
 				timers: updateTimers(state.timers, action.timerIndex, timer => ({
 					...timer,
+					state: timer.state === TimerStates.Running ? TimerStates.Paused : timer.state,
 					isPausedByUser: action.pausedByUser ? true : timer.isPausedByUser,
 					isPausedBySystem: !action.pausedByUser ? true : timer.isPausedBySystem,
-					value: action.currentTime
+					value: timer.state === TimerStates.Running ? action.currentTime : timer.value
 				}))
 			};
 
@@ -593,6 +596,7 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 				...state,
 				timers: updateTimers(state.timers, action.timerIndex, timer => ({
 					...timer,
+					state: TimerStates.Running,
 					isPausedByUser: action.runByUser ? false : timer.isPausedByUser,
 					isPausedBySystem: !action.runByUser ? false : timer.isPausedBySystem
 				}))
@@ -603,6 +607,7 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 				...state,
 				timers: updateTimers(state.timers, action.timerIndex, timer => ({
 					...timer,
+					state: TimerStates.Stopped,
 					isPausedByUser: false,
 					isPausedBySystem: true,
 					value: 0
@@ -751,6 +756,18 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 						inGame: action.inGame
 					})
 				}
+			};
+
+		case RunActionTypes.AreApellationsEnabledChanged:
+			return {
+				...state,
+				areApellationsEnabled: action.areApellationsEnabled
+			};
+
+		case RunActionTypes.ButtonBlockingTimeChanged:
+			return {
+				...state,
+				buttonBlockingTimeSeconds: action.buttonBlockingTime
 			};
 
 		default:

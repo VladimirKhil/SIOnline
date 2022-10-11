@@ -655,7 +655,8 @@ const reducer: Reducer<State> = (state: State = initialState, action: KnownActio
 				common: {
 					...state.common,
 					serverName: action.serverName,
-					serverLicense: action.serverLicense
+					serverLicense: action.serverLicense,
+					maxPackageSizeMb: action.maxPackageSizeMb,
 				}
 			};
 

@@ -17,6 +17,7 @@ interface WelcomeViewProps {
 	friendsPlay: () => void;
 	anyonePlay: () => void;
 	joinLobby: () => void;
+	exit: () => void;
 }
 
 const mapStateToProps = (state: State) => ({
@@ -38,6 +39,9 @@ const mapDispatchToProps = (dispatch: any) => ({
 	},
 	joinLobby: () => {
 		dispatch(actionCreators.navigateToLobby(-1));
+	},
+	exit: () => {
+		dispatch(actionCreators.onExit());
 	}
 });
 
@@ -64,10 +68,25 @@ export function WelcomeView(props: WelcomeViewProps): JSX.Element {
 				<h1>{localization.welcomeTitle}</h1>
 			</header>
 			<div className={`welcomeViewActions ${props.isConnected ? '' : 'disconnected'}`}>
-				<button className='standard' disabled={!props.isConnected} onClick={() => props.singlePlay()}>{localization.singlePlay}</button>
-				<button className='standard' disabled={!props.isConnected} onClick={() => props.friendsPlay()}>{localization.friendsPlay}</button>
-				<button className='standard' disabled={!props.isConnected} onClick={() => props.anyonePlay()}>{localization.anyonePlay}</button>
-				<button className='standard' disabled={!props.isConnected} onClick={() => props.joinLobby()}>{localization.joinLobby}</button>
+				<button className='standard welcomeRow right' disabled={!props.isConnected} onClick={() => props.singlePlay()}>
+					{localization.singlePlay}
+				</button>
+
+				<button className='standard welcomeRow left' disabled={!props.isConnected} onClick={() => props.friendsPlay()}>
+					{localization.friendsPlay}
+				</button>
+				
+				<button className='standard welcomeRow right' disabled={!props.isConnected} onClick={() => props.anyonePlay()}>
+					{localization.anyonePlay}
+				</button>
+				
+				<button className='standard welcomeRow left' disabled={!props.isConnected} onClick={() => props.joinLobby()}>
+					{localization.joinLobby}
+				</button>
+				
+				<button className='standard welcomeRow right' disabled={!props.isConnected} onClick={() => props.exit()}>
+					{localization.exitFromGame}
+				</button>
 			</div>
 		</section>
 	);

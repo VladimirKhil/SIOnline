@@ -8,7 +8,7 @@ import settingsActionCreators from '../../state/settings/settingsActionCreators'
 
 interface TableAudioProps {
 	soundVolume: number;
-	source: string;
+	audio: string;
 	isMediaStopped: boolean;
 	onMediaEnded: () => void;
 	onSoundVolumeChange: (volume: number) => void;
@@ -16,6 +16,7 @@ interface TableAudioProps {
 
 const mapStateToProps = (state: State) => ({
 	soundVolume: state.settings.soundVolume,
+	audio: state.run.table.audio,
 	isMediaStopped: state.run.stage.isGamePaused || state.run.table.isMediaStopped
 });
 
@@ -52,7 +53,7 @@ export class TableAudio extends React.Component<TableAudioProps> {
 			return;
 		}
 
-		if (this.props.source !== audio.currentSrc) {
+		if (this.props.audio !== audio.currentSrc) {
 			audio.load();
 		}
 
@@ -60,6 +61,7 @@ export class TableAudio extends React.Component<TableAudioProps> {
 			if (this.props.isMediaStopped) {
 				audio.pause();
 			} else {
+				// TODO: await, send error to chat
 				audio.play().catch(e => console.error(e));
 			}
 		}
@@ -68,12 +70,12 @@ export class TableAudio extends React.Component<TableAudioProps> {
 	}
 
 	render() {
-		const { onMediaEnded, source } = this.props;
+		const { onMediaEnded, audio } = this.props;
 
-		return (
+		return audio.length === 0 ? null : (
 			<>
 				<audio ref={this.audioRef} autoPlay onEnded={onMediaEnded}>
-					<source src={source} />
+					<source src={audio} />
 				</audio>
 				<VolumeButton />
 			</>

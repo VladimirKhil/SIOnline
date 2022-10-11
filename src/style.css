@@ -354,6 +354,10 @@ h1.activeTab {
     position: relative;
 }
 
+#gameLogHost .tabHeader h1 {
+    font-size: 24px;
+}
+
 #playerButtonHost {
     height: 100%;
 }
@@ -559,25 +563,6 @@ video, audio {
     max-width: 100%;
 }
 
-#stakeButtonsHost {
-    position: absolute;
-    top: -44px;
-    height: 45px;
-    width: 100%;
-}
-
-#stakeButtons {
-    height: 100%;
-    display: flex;
-    background-color: #5a95e2;
-    width: 100%;
-    font-size: 25px;
-}
-
-    #stakeButtons button, .wideStakeHost button {
-        flex: 1 0 0;
-    }
-
 .wideStakeHost {
     position: absolute;
     background-color: #5a95e2;
@@ -685,9 +670,5 @@ video, audio {
 
     .wide {
         display: initial;
-    }
-
-    #stakeButtonsHost {
-        display: none;
     }
 }

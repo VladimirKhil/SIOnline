@@ -50,6 +50,11 @@ const onManagedChanged: ActionCreator<SettingsActions.ManagedChangedAction> = (m
 	managed
 });
 
+const onUseApellationsChanged: ActionCreator<SettingsActions.UseApellationsChangedAction> = (useApellations: boolean) => ({
+	type: SettingsActions.SettingsActionTypes.UseApellationsChanged,
+	useApellations
+});
+
 const onIgnoreWrongChanged: ActionCreator<SettingsActions.IgnoreWrongChangedAction> = (ignoreWrong: boolean) => ({
 	type: SettingsActions.SettingsActionTypes.IgnoreWrongChanged,
 	ignoreWrong
@@ -90,6 +95,11 @@ const onLobbyChatVisibilityChanged: ActionCreator<SettingsActions.LobbyChatVisib
 	type: SettingsActions.SettingsActionTypes.LobbyChatVisibilityChanged, isLobbyChatVisible
 });
 
+const onValidationAnswersVisibilityChanged: ActionCreator<SettingsActions.ValidationAnswersVisibilityChangedAction> = (
+	validationAnswersVisible: boolean) => ({
+	type: SettingsActions.SettingsActionTypes.ValidationAnswersVisibilityChanged, validationAnswersVisible
+});
+
 const settingsActionCreators = {
 	onSoundVolumeChanged,
 	showPersonsAtBottomOnWideScreenChanged,
@@ -100,6 +110,7 @@ const settingsActionCreators = {
 	onPartialTextChanged,
 	onReadingSpeedChanged,
 	onManagedChanged,
+	onUseApellationsChanged,
 	onIgnoreWrongChanged,
 	onUsePingPenaltyChanged,
 	onPreloadRoundContentChanged,
@@ -108,6 +119,7 @@ const settingsActionCreators = {
 	languageChanged,
 	gameButtonKeyChanged,
 	onLobbyChatVisibilityChanged,
+	onValidationAnswersVisibilityChanged,
 };
 
 export default settingsActionCreators;

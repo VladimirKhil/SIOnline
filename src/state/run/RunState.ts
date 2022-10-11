@@ -7,6 +7,7 @@ import Persons from '../../model/Persons';
 import Role from '../../client/contracts/Role';
 import StakeTypes from '../../model/enums/StakeTypes';
 import Timers from '../../model/Timers';
+import TimerStates from '../../model/enums/TimeStates';
 
 export default interface RunState {
 	persons: {
@@ -70,8 +71,10 @@ export default interface RunState {
 	isGameButtonEnabled: boolean;
 	areSumsEditable: boolean;
 	readingSpeed: number;
+	areApellationsEnabled: boolean;
 	hint: string | null;
 	roundsNames: string[] | null;
+	buttonBlockingTimeSeconds: number;
 }
 
 export const initialState: RunState = {
@@ -104,18 +107,21 @@ export const initialState: RunState = {
 	},
 	timers: {
 		round: {
+			state: TimerStates.Stopped,
 			isPausedBySystem: true,
 			isPausedByUser: false,
 			value: 0,
-			maximum: 0
+			maximum: 0,
 		},
 		press: {
+			state: TimerStates.Stopped,
 			isPausedBySystem: true,
 			isPausedByUser: false,
 			value: 0,
 			maximum: 0
 		},
 		decision: {
+			state: TimerStates.Stopped,
 			isPausedBySystem: true,
 			isPausedByUser: false,
 			value: 0,
@@ -166,6 +172,8 @@ export const initialState: RunState = {
 	isGameButtonEnabled: true,
 	areSumsEditable: false,
 	readingSpeed: 20,
+	areApellationsEnabled: true,
 	hint: null,
-	roundsNames: null
+	roundsNames: null,
+	buttonBlockingTimeSeconds: 3
 };

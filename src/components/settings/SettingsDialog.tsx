@@ -28,6 +28,7 @@ interface SettingsDialogProps {
 	onHintShowmanChanged: (hintShowman: boolean) => void;
 	onReadingSpeedChanged: (readingSpeed: number) => void;
 	onManagedChanged: (managed: boolean) => void;
+	onUseApellationsChanged: (useApellations: boolean) => void;
 	onIgnoreWrongChanged: (ignoreWrong: boolean) => void;
 	onPreloadRoundContentChanged: (preloadRoundContent: boolean) => void;
 	onUsePingPenaltyChanged: (usePingPenalty: boolean) => void;
@@ -74,6 +75,9 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	onManagedChanged: (managed: boolean) => {
 		dispatch(settingsActionCreators.onManagedChanged(managed));
 	},
+	onUseApellationsChanged: (useApellations: boolean) => {
+		dispatch(settingsActionCreators.onUseApellationsChanged(useApellations));
+	},
 	onIgnoreWrongChanged: (ignoreWrong: boolean) => {
 		dispatch(settingsActionCreators.onIgnoreWrongChanged(ignoreWrong));
 	},
@@ -99,6 +103,8 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 		dispatch(actionCreators.showSettings(false));
 	},
 });
+
+const MaxAvatarSizeMb = 2;
 
 export class SettingsDialog extends React.Component<SettingsDialogProps> {
 	private layout: React.RefObject<HTMLDivElement>;
@@ -138,7 +144,15 @@ export class SettingsDialog extends React.Component<SettingsDialogProps> {
 
 	private onAvatarChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
 		if (e.target.files && e.target.files.length > 0) {
-			this.props.onAvatarSelected(e.target.files[0]);
+			// eslint-disable-next-line prefer-destructuring
+			const targetFile = e.target.files[0];
+
+			if (targetFile.size > MaxAvatarSizeMb * 1024 * 1024) {
+				alert(`${localization.avatarIsTooBig} (${MaxAvatarSizeMb} MB)`);
+				return;
+			}
+
+			this.props.onAvatarSelected(targetFile);
 		}
 	};
 
@@ -186,14 +200,17 @@ export class SettingsDialog extends React.Component<SettingsDialogProps> {
 					</div>
 
 					<p className='header'>{localization.avatar}</p>
+					
 					<div className="avatarBox">
 						{this.props.avatar ? <img className='avatarView' src={this.props.avatar} /> : <div className='emptyAvatar' />}
+						
 						<input
 							type="file"
 							accept=".jpg,.jpeg,.png"
 							disabled={this.props.avatarLoadProgress}
 							onChange={this.onAvatarChanged}
 						/>
+
 						<div className='avatarLoadHelper'>
 							{this.props.avatarLoadProgress
 								? (<div className='avatarLoadingHost'>
@@ -205,6 +222,7 @@ export class SettingsDialog extends React.Component<SettingsDialogProps> {
 					</div>
 
 					<p className="header">{localization.sex}</p>
+
 					<div className="sexLogin">
 						<input
 							type="radio"
@@ -223,10 +241,12 @@ export class SettingsDialog extends React.Component<SettingsDialogProps> {
 							checked={this.props.settings.sex === Sex.Female}
 							onChange={this.onSexChanged}
 						/>
+
 						<label htmlFor="female">{localization.female}</label>
 					</div>
 
 					<p className="header">{localization.gameButtonKey}</p>
+					
 					<button
 						className={`gameButtonKey standard ${this.props.isSettingGameButtonKey ? 'active' : ''}`}
 						title={localization.set}
@@ -245,6 +265,7 @@ export class SettingsDialog extends React.Component<SettingsDialogProps> {
 							checked={this.props.settings.appSettings.oral}
 							onChange={() => this.props.onOralChanged(!this.props.settings.appSettings.oral)}
 						/>
+
 						<label htmlFor="oral">{localization.oralGame}</label>
 						<span className="hint">{localization.oralGameHint}</span>
 					</div>
@@ -256,6 +277,7 @@ export class SettingsDialog extends React.Component<SettingsDialogProps> {
 							checked={this.props.settings.appSettings.falseStart}
 							onChange={() => this.props.onFalseStartsChanged(!this.props.settings.appSettings.falseStart)}
 						/>
+
 						<label htmlFor="falseStarts">{localization.falseStarts}</label>
 						<span className="hint">{localization.falseStartsHint}</span>
 					</div>
@@ -268,6 +290,7 @@ export class SettingsDialog extends React.Component<SettingsDialogProps> {
 							checked={this.props.settings.appSettings.partialText}
 							onChange={() => this.props.onPartialTextChanged(!this.props.settings.appSettings.partialText)}
 						/>
+
 						<label htmlFor="partialText">{localization.partialText}</label>
 						<span className="hint">{localization.partialTextHint}</span>
 					</div>
@@ -279,6 +302,7 @@ export class SettingsDialog extends React.Component<SettingsDialogProps> {
 							checked={this.props.settings.appSettings.hintShowman}
 							onChange={() => this.props.onHintShowmanChanged(!this.props.settings.appSettings.hintShowman)}
 						/>
+
 						<label htmlFor="hintShowman">{localization.hintShowman}</label>
 					</div>
 
@@ -295,6 +319,7 @@ export class SettingsDialog extends React.Component<SettingsDialogProps> {
 								max={100}
 								onChange={this.onReadingSpeedChanged}
 							/>
+
 							<input
 								className="valueEditor"
 								type="number"
@@ -313,8 +338,21 @@ export class SettingsDialog extends React.Component<SettingsDialogProps> {
 							checked={this.props.settings.appSettings.managed}
 							onChange={() => this.props.onManagedChanged(!this.props.settings.appSettings.managed)}
 						/>
+
 						<label htmlFor="managed">{localization.managed}</label>
 						<span className="hint">{localization.managedHint}</span>
+					</div>
+
+					<div className="settingItem">
+						<input
+							id="useApellations"
+							type="checkbox"
+							checked={this.props.settings.appSettings.useApellations}
+							onChange={() => this.props.onUseApellationsChanged(!this.props.settings.appSettings.useApellations)}
+						/>
+						
+						<label htmlFor="useApellations">{localization.useApellations}</label>
+						<span className="hint">{localization.useApellationsHint}</span>
 					</div>
 
 					<div className="settingItem">

@@ -74,6 +74,8 @@ export const enum RunActionTypes {
 	RoundsNamesChanged = 'ROUNDS_NAMES_CHANGED',
 	ChooserChanged = 'CHOOSER_CHANGED',
 	PlayerInGameChanged = 'PLAYER_IN_GAME_CHANGED',
+	AreApellationsEnabledChanged = 'ARE_APELLATIONS_ENABLED_CHANGED',
+	ButtonBlockingTimeChanged = 'BUTTON_BLOCKING_TIME_CHANGED',
 }
 
 export type RunChatModeChangedAction = { type: RunActionTypes.RunChatModeChanged, chatMode: ChatMode };
@@ -158,6 +160,8 @@ export type IsReadyChangedAction = { type: RunActionTypes.IsReadyChanged, person
 export type RoundsNamesChangedAction = { type: RunActionTypes.RoundsNamesChanged, roundsNames: string[] };
 export type ChooserChangedAction = { type: RunActionTypes.ChooserChanged, chooserIndex: number };
 export type PlayerInGameChangedAction = { type: RunActionTypes.PlayerInGameChanged, playerIndex: number, inGame: boolean };
+export type AreApellationsEnabledChangedAction = { type: RunActionTypes.AreApellationsEnabledChanged, areApellationsEnabled: boolean };
+export type ButtonBlockingChangedAction = { type: RunActionTypes.ButtonBlockingTimeChanged, buttonBlockingTime: number };
 
 export type KnownRunAction =
 	RunChatModeChangedAction
@@ -224,4 +228,6 @@ export type KnownRunAction =
 	| IsReadyChangedAction
 	| RoundsNamesChangedAction
 	| ChooserChangedAction
-	| PlayerInGameChangedAction;
+	| PlayerInGameChangedAction
+	| AreApellationsEnabledChangedAction
+	| ButtonBlockingChangedAction;

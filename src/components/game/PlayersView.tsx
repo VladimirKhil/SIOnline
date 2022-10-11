@@ -157,7 +157,7 @@ export class PlayersView extends React.Component<PlayersViewProps> {
 							<li
 								key={`${player.name}_${index}`}
 								className={buildPlayerClasses(player, isMe, player.canBeSelected)}
-								onClick={() => this.props.onPlayerSelected(index)}
+								onClick={() => player.canBeSelected ? this.props.onPlayerSelected(index) : null}
 							>
 								<div className="playerCard">
 									<div className={`playerAvatar ${avatarClass}`} style={avatarStyle} />
