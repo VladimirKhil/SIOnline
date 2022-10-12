@@ -99,6 +99,7 @@ function showCaption(mode: TableMode): boolean {
 		case TableMode.Image:
 		case TableMode.Audio:
 		case TableMode.Video:
+		case TableMode.Html:
 			return true;
 
 		default:

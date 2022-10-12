@@ -1040,7 +1040,7 @@ function onReplic(dispatch: Dispatch<RunActions.KnownRunAction>, state: State, a
 	let text = '';
 	for (let i = 2; i < args.length; i++) {
 		if (text.length > 0) {
-			text += '<br>';
+			text += ' ';
 		}
 
 		text += args[i];

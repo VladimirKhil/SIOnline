@@ -16,7 +16,7 @@ const mapStateToProps = (state: State) => ({
 export function TableHtml(props: TableHtmlProps) {
 	return (
 		<TableBorder>
-			<embed className='frame' src={props.text} />
+			<iframe className='frame' src={props.text} allow='autoplay' />
 		</TableBorder>
 	);
 }
