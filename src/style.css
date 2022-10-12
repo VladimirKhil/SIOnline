@@ -382,12 +382,6 @@ h1.activeTab {
     flex: 1 0 0;
 }
 
-#game__playerButton {
-    height: 45px;
-    margin-right: -1px;
-    position: relative;
-}
-
 .game__persons {
     height: 100%;
     display: flex;
@@ -563,20 +557,6 @@ video, audio {
     max-width: 100%;
 }
 
-.wideStakeHost {
-    position: absolute;
-    background-color: #5a95e2;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    display: flex;
-}
-
-    .wideStakeHost button {
-        font-size: 25px;
-    }
-
 .wideStakeHost__number {
     flex: 0 0 80px;
     font-size: 24px;
@@ -587,20 +567,6 @@ video, audio {
     flex: 3 0 0;
     margin: 0 10px;
     max-width: 100%;
-}
-
-.answerForWide {
-    display: none;
-    height: 100%;
-    width: 100%;
-    position: absolute;
-    left: 0;
-    top: 0;
-    pointer-events: none;
-}
-
-.answerForWide input {
-    background-color: lightyellow;
 }
 
 .wide {
@@ -662,10 +628,6 @@ video, audio {
 
     .playerButtonWrapper {
         flex: 0 0 0;
-    }
-
-    .answerForWide {
-        display: initial;
     }
 
     .wide {

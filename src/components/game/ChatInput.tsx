@@ -44,8 +44,11 @@ export function ChatInput(props: ChatInputProps) {
 	};
 
 	return (
-		<input className={`gameInputBox gameMessage ${props.isConnected ? '' : 'disconnected'}`} value={props.message}
-			onChange={onMessageChanged} onKeyPress={onMessageKeyPress} />
+		<input
+			className={`gameInputBox gameMessage ${props.isConnected ? '' : 'disconnected'}`}
+			value={props.message}
+			onChange={onMessageChanged}
+			onKeyPress={onMessageKeyPress} />
 	);
 }
 

@@ -21,32 +21,30 @@ const mapStateToProps = (state: State) => ({
 	areStakesVisible: state.run.stakes.areVisible
 });
 
-const mapDispatchToProps = () => ({
-
-});
-
 export function BottomControlPanel(props: BottomControlPanelProps) {
 	return (
-		<div className="game__button wide">
-			{props.role === Role.Player ?
-				(<div id="game__playerButton">
+		<div className="bottomPanel wide">
+			{props.role === Role.Player ? (
+				<div className="game__playerButton">
 					<GameButton />
+
 					<div className="answerForWide">
 						<AnswerInput id="answerBoxWide" />
 					</div>
-					{props.areStakesVisible ? (
-						<div className="wideStakeHost">
-							<SendPassButton />
-							<StakeSumEditor type="number" className="wideStakeHost__number checkSum" />
-							<StakeSumEditor type="range" className="wideStakeHost__range" />
-							<SendStakeButton />
-							<SendAllInButton />
-						</div>
-					) : null}
 				</div>) : null
 			}
+
+			{props.areStakesVisible ? (
+				<div className="wideStakeHost">
+					<SendPassButton />
+					<StakeSumEditor type="number" className="wideStakeHost__number checkSum" />
+					<StakeSumEditor type="range" className="wideStakeHost__range" />
+					<SendStakeButton />
+					<SendAllInButton />
+				</div>
+			) : null}
 		</div>
 	);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(BottomControlPanel);
+export default connect(mapStateToProps)(BottomControlPanel);

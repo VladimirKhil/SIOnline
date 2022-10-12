@@ -620,6 +620,7 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 			let index = 1;
 			const newRoundInfo: ThemeInfo[] = [];
 			let maxQuestionsInTheme = 0;
+
 			for (let i = 0; i < roundInfo.length; i++) {
 				if (index === args.length) {
 					break;
@@ -638,7 +639,7 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 				index++;
 			}
 
-			// Выровняем число вопросов
+			// Align number of questions in each theme
 			newRoundInfo.forEach((themeInfo) => {
 				const questionsCount = themeInfo.questions.length;
 				for (let i = 0; i < maxQuestionsInTheme - questionsCount; i++) {
@@ -770,6 +771,48 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 	}
 };
 
+function onCat(dispatch: Dispatch<any>, args: string[]) {
+	const indices = getIndices(args);
+	dispatch(runActionCreators.selectionEnabled(indices, 'CAT'));
+}
+
+function onCatCost(dispatch: Dispatch<any>, args: string[]) {
+	const allowedStakeTypes = {
+		[StakeTypes.Nominal]: false,
+		[StakeTypes.Sum]: true,
+		[StakeTypes.Pass]: false,
+		[StakeTypes.AllIn]: false
+	};
+
+	const minimum = parseInt(args[1], 10);
+	const maximum = parseInt(args[2], 10);
+	const step = parseInt(args[3], 10);
+
+	dispatch(runActionCreators.setStakes(allowedStakeTypes, minimum, maximum, minimum, step, 'CATCOST', true));
+	dispatch(runActionCreators.decisionNeededChanged(true));
+}
+
+function onChoose(dispatch: Dispatch<any>) {	
+	dispatch(runActionCreators.decisionNeededChanged(true));
+	dispatch(tableActionCreators.isSelectableChanged(true));
+}
+
+function onStake(dispatch: Dispatch<any>, state: State, args: string[], maximum: number) {
+	{
+		const allowedStakeTypes = {
+			[StakeTypes.Nominal]: args[1] === '+',
+			[StakeTypes.Sum]: args[2] === '+',
+			[StakeTypes.Pass]: args[3] === '+',
+			[StakeTypes.AllIn]: args[4] === '+'
+		};
+
+		const minimum = parseInt(args[5], 10);
+
+		dispatch(runActionCreators.setStakes(allowedStakeTypes, minimum, maximum, minimum, 100, 'STAKE', false));
+		dispatch(runActionCreators.decisionNeededChanged(true));
+	}
+}
+
 const playerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataContext, args: string[]) => {
 	switch (args[0]) {
 		case 'ANSWER':
@@ -781,31 +824,15 @@ const playerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 			break;
 
 		case 'CAT':
-			const indices = getIndices(args);
-			dispatch(runActionCreators.selectionEnabled(indices, 'CAT'));
+			onCat(dispatch, args);
 			break;
 
 		case 'CATCOST':
-			{
-				const allowedStakeTypes = {
-					[StakeTypes.Nominal]: false,
-					[StakeTypes.Sum]: true,
-					[StakeTypes.Pass]: false,
-					[StakeTypes.AllIn]: false
-				};
-
-				const minimum = parseInt(args[1], 10);
-				const maximum = parseInt(args[2], 10);
-				const step = parseInt(args[3], 10);
-
-				dispatch(runActionCreators.setStakes(allowedStakeTypes, minimum, maximum, minimum, step, 'CATCOST', true));
-				dispatch(runActionCreators.decisionNeededChanged(true));
-			}
+			onCatCost(dispatch, args);
 			break;
 
 		case 'CHOOSE':
-			dispatch(runActionCreators.decisionNeededChanged(true));
-			dispatch(tableActionCreators.isSelectableChanged(true));
+			onChoose(dispatch);
 			break;
 
 		case 'FINALSTAKE':
@@ -833,25 +860,13 @@ const playerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 			break;
 
 		case 'STAKE':
-			{
-				const allowedStakeTypes = {
-					[StakeTypes.Nominal]: args[1] === '+',
-					[StakeTypes.Sum]: args[2] === '+',
-					[StakeTypes.Pass]: args[3] === '+',
-					[StakeTypes.AllIn]: args[4] === '+'
-				};
+			const me = getMe(state);
 
-				const minimum = parseInt(args[5], 10);
-
-				const me = getMe(state);
-
-				if (!me) {
-					return;
-				}
-
-				dispatch(runActionCreators.setStakes(allowedStakeTypes, minimum, me.sum, minimum, 100, 'STAKE', false));
-				dispatch(runActionCreators.decisionNeededChanged(true));
+			if (!me) {
+				return;
 			}
+
+			onStake(dispatch, state, args, me.sum);
 			break;
 
 		case 'VALIDATION':
@@ -909,10 +924,31 @@ const showmanHandler = (dispatch: Dispatch<any>, state: State, dataContext: Data
 			startValidation(dispatch, localization.answerChecking, args);
 			break;
 
-		default:
+		// Player commands for oral game
+		case 'CAT':
+			onCat(dispatch, args);
 			break;
 
-		// TODO: implement player messages support for oral game
+		case 'CATCOST':
+			onCatCost(dispatch, args);
+			break;
+
+		case 'CHOOSE':
+			onChoose(dispatch);
+			break;
+
+		case 'STAKE':
+			if (args.length < 6) {
+				break;
+			}
+
+			const maximum = args.length > 6 ? args[6] : args[5];
+
+			onStake(dispatch, state, args, parseInt(maximum, 10));
+			break;
+
+		default:
+			break;
 	}
 };
 
