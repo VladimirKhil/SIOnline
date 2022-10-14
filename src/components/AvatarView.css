@@ -1,0 +1,32 @@
+.avatarArea {
+    cursor: pointer;
+    margin: 0 10px 0 0;
+    border: 2px solid transparent;
+	display: flex;
+	justify-content: center;
+	background-color: rgba(0, 0, 0, 0.1);
+}
+
+.avatarArea:hover {
+    border: 2px solid gray;
+}
+
+.avatarArea .emptyAvatar {
+    width: 100px;
+    height: 100px;
+	background-color: lightgray;
+}
+
+.avatarArea:hover .emptyAvatar {
+    background-color: white;
+}
+
+.avatarView {
+    object-fit: contain;
+    display: block;
+	margin: 3px;
+}
+
+.avatarSelector {
+	display: none;
+}

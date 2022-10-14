@@ -40,6 +40,7 @@ import getErrorMessage from '../utils/ErrorHelpers';
 import FileKey from '../client/contracts/FileKey';
 import tableActionCreators from './table/tableActionCreators';
 import { getFullCulture } from '../utils/StateHelpers';
+import settingsActionCreators from './settings/settingsActionCreators';
 
 const isConnectedChanged: ActionCreator<Actions.IsConnectedChangedAction> = (isConnected: boolean) => ({
 	type: Actions.ActionTypes.IsConnectedChanged,
@@ -115,54 +116,93 @@ const avatarLoadError: ActionCreator<Actions.AvatarLoadErrorAction> = (error: st
 	error
 });
 
-const onAvatarSelected: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
-	(avatar: File) => async (dispatch: Dispatch<Actions.KnownAction>, getState: () => State, dataContext: DataContext) => {
-		dispatch(avatarLoadStart(null));
+const loginEnd: ActionCreator<Actions.LoginEndAction> = (error: string | null = null) => ({
+	type: Actions.ActionTypes.LoginEnd,
+	error
+});
 
+const onAvatarSelectedLocal: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
+	(avatar: File) => async (dispatch: Dispatch<Actions.KnownAction>) => {
 		try {
 			const buffer = await avatar.arrayBuffer();
-			const hash = await hashData(buffer);
+			const base64 = btoa(new Uint8Array(buffer).reduce((data, byte) => data + String.fromCharCode(byte), ''));
 
-			const hashArray = new Uint8Array(hash);
-			const hashArrayEncoded = btoa(String.fromCharCode.apply(null, hashArray as any));
-
-			const imageKey: FileKey = {
-				name: avatar.name,
-				hash: hashArrayEncoded
-			};
-		
-			const { gameClient, serverUri } = dataContext;
-
-			let avatarUri = await gameClient.hasImageAsync(imageKey);
-			if (!avatarUri) {
-				const formData = new FormData();
-				formData.append('file', avatar, avatar.name);
-
-				const response = await fetch(`${serverUri}/api/upload/image`, {
-					method: 'POST',
-					credentials: 'include',
-					body: formData,
-					headers: {
-						'Content-MD5': hashArrayEncoded
-					}
-				});
-
-				if (!response.ok) {
-					dispatch(avatarLoadError(`${localization.uploadingImageError}: ${response.status} ${await response.text()}`));
-					return;
-				}
-
-				avatarUri = await response.text();
-			}
+			const key = crypto.randomUUID();
 			
-			const fullAvatarUri = (dataContext.contentUris ? dataContext.contentUris[0] : '') + avatarUri;
+			localStorage.setItem(Constants.AVATAR_KEY, base64);
+			localStorage.setItem(Constants.AVATAR_NAME_KEY, avatar.name);
 
-			dispatch(avatarLoadEnd(null));
-			dispatch(avatarChanged(fullAvatarUri));
-		} catch (err) {
-			dispatch(avatarLoadError(getErrorMessage(err)));
+			dispatch(settingsActionCreators.onAvatarKeyChanged(key) as any);
+		} catch (error) {
+			dispatch(loginEnd(error));
 		}
 	};
+
+async function hashData(data: ArrayBuffer): Promise<ArrayBuffer> {
+	if (location.protocol === 'https:') {
+		await crypto.subtle.digest('SHA-1', data); // It works only under HTTPS protocol
+	}
+
+	return Rusha.createHash().update(data).digest();
+}
+
+async function uploadAvatarAsync(dispatch: Dispatch<Actions.KnownAction>, dataContext: DataContext) {
+	dispatch(avatarLoadStart(null));
+
+	try {
+		const base64 = localStorage.getItem(Constants.AVATAR_KEY);
+		const fileName = localStorage.getItem(Constants.AVATAR_NAME_KEY);
+
+		if (!base64 || !fileName) {
+			return;
+		}
+
+		const data = Uint8Array.from(atob(base64), c => c.charCodeAt(0));
+
+		const { buffer } = data;
+		const hash = await hashData(buffer);
+
+		const hashArray = new Uint8Array(hash);
+		const hashArrayEncoded = btoa(String.fromCharCode.apply(null, hashArray as any));
+
+		const imageKey: FileKey = {
+			name: fileName,
+			hash: hashArrayEncoded
+		};
+	
+		const { gameClient, serverUri } = dataContext;
+		
+		let avatarUri = await gameClient.hasImageAsync(imageKey);
+
+		if (!avatarUri) {
+			const formData = new FormData();
+			formData.append('file', new Blob([buffer]), fileName);
+
+			const response = await fetch(`${serverUri}/api/upload/image`, {
+				method: 'POST',
+				credentials: 'include',
+				body: formData,
+				headers: {
+					'Content-MD5': hashArrayEncoded
+				}
+			});
+
+			if (!response.ok) {
+				dispatch(avatarLoadError(`${localization.uploadingImageError}: ${response.status} ${await response.text()}`));
+				return;
+			}
+
+			avatarUri = await response.text();
+		}
+		
+		const fullAvatarUri = (dataContext.contentUris ? dataContext.contentUris[0] : '') + avatarUri;
+
+		dispatch(avatarLoadEnd(null));
+		dispatch(avatarChanged(fullAvatarUri));
+	} catch (err) {
+		dispatch(avatarLoadError(getErrorMessage(err)));
+	}
+}
 
 const sendAvatar: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 	() => async (dispatch: Dispatch<Actions.KnownAction>, getState: () => State, dataContext: DataContext) => {
@@ -171,11 +211,6 @@ const sendAvatar: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 
 const loginStart: ActionCreator<Actions.LoginStartAction> = () => ({
 	type: Actions.ActionTypes.LoginStart
-});
-
-const loginEnd: ActionCreator<Actions.LoginEndAction> = (error: string | null = null) => ({
-	type: Actions.ActionTypes.LoginEnd,
-	error
 });
 
 const reloadComputerAccounts: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
@@ -363,6 +398,7 @@ const login: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 					dispatch(onLoginChanged(state.user.login.trim())); // Normalize login
 
 					await loadHostInfoAsync(dispatch, dataContext, requestCulture);
+					await uploadAvatarAsync(dispatch, dataContext);
 
 					const urlParams = new URLSearchParams(window.location.search);
 					const invite = urlParams.get('invite');
@@ -742,14 +778,6 @@ function uploadPackageAsync(
 		xhr.withCredentials = true;
 		xhr.send(formData);
 	});
-}
-
-async function hashData(data: ArrayBuffer): Promise<ArrayBuffer> {
-	if (location.protocol === 'https:') {
-		await crypto.subtle.digest('SHA-1', data); // It works only under HTTPS protocol
-	}
-
-	return Rusha.createHash().update(data).digest();
 }
 
 async function checkAndUploadPackageAsync(
@@ -1144,7 +1172,7 @@ const actionCreators = {
 	navigateToHowToPlay,
 	navigateBack,
 	onLoginChanged,
-	onAvatarSelected,
+	onAvatarSelectedLocal,
 	avatarLoadStart,
 	avatarChanged,
 	sendAvatar,

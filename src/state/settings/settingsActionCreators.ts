@@ -20,6 +20,11 @@ const onSexChanged: ActionCreator<SettingsActions.SexChangedAction> = (newSex: S
 	newSex
 });
 
+const onAvatarKeyChanged: ActionCreator<SettingsActions.AvatarKeyChangedAction> = (avatarKey: string | null) => ({
+	type: SettingsActions.SettingsActionTypes.AvatarKeyChanged,
+	avatarKey
+});
+
 const onOralChanged: ActionCreator<SettingsActions.OralChangedAction> = (oral: boolean) => ({
 	type: SettingsActions.SettingsActionTypes.OralChanged,
 	oral
@@ -104,6 +109,7 @@ const settingsActionCreators = {
 	onSoundVolumeChanged,
 	showPersonsAtBottomOnWideScreenChanged,
 	onSexChanged,
+	onAvatarKeyChanged,
 	onOralChanged,
 	onFalseStartsChanged,
 	onHintShowmanChanged,

@@ -130,7 +130,7 @@ export class NewGameDialog extends React.Component<NewGameDialogProps, NewGameDi
 	};
 
 	private onKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-		if (e.charCode === Constants.KEY_ENTER) {
+		if (e.key === Constants.KEY_ENTER_NEW) {
 			this.props.onCreate(this.props.isSingleGame);
 		}
 	};

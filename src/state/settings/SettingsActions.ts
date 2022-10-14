@@ -5,6 +5,7 @@ export const enum SettingsActionTypes {
 	SoundVolumeChanged = 'SOUND_VOLUME_CHANGED',
 	ShowPersonsAtBottomOnWideScreenChanged = 'SHOW_PERSONS_AT_BOTTOM_ON_WIDE_SCREEN',
 	SexChanged = 'SEX_CHANGED',
+	AvatarKeyChanged = 'AVATAR_KEY_CHANGED',
 	OralChanged = 'ORAL_CHANGED',
 	FalseStartsChanged = 'FALSE_STARTS_CHANGED',
 	HintShowmanChanged = 'HINT_SHOWMAN_CHANGED',
@@ -31,6 +32,7 @@ export type ShowPersonsAtBottomOnWideScreenChangedAction = {
 };
 
 export type SexChangedAction = { type: SettingsActionTypes.SexChanged; newSex: Sex };
+export type AvatarKeyChangedAction = { type: SettingsActionTypes.AvatarKeyChanged; avatarKey: string | null };
 export type FalseStartsChangedAction = { type: SettingsActionTypes.FalseStartsChanged; falseStarts: boolean };
 export type OralChangedAction = { type: SettingsActionTypes.OralChanged; oral: boolean };
 export type HintShowmanChangedAction = { type: SettingsActionTypes.HintShowmanChanged; hintShowman: boolean };
@@ -62,6 +64,7 @@ export type KnownSettingsAction =
 	| SoundVolumeChangeAction
 	| ShowPersonsAtBottomOnWideScreenChangedAction
 	| SexChangedAction
+	| AvatarKeyChangedAction
 	| OralChangedAction
 	| FalseStartsChangedAction
 	| PartialTextChangedAction

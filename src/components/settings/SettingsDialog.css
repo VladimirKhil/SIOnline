@@ -62,16 +62,9 @@
 	font-size: 20px;
 }
 
-.avatarView {
+#settingsDialog .avatarView {
     max-width: 100%;
     height: 150px;
-    display: block;
-}
-
-.emptyAvatar {
-    width: 150px;
-    height: 150px;
-    background-color: lightgray;
 }
 
 .avatarLoadHelper {

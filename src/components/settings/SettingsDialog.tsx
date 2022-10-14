@@ -9,20 +9,14 @@ import SettingsState from '../../state/settings/SettingsState';
 import settingsActionCreators from '../../state/settings/settingsActionCreators';
 import Sex from '../../model/enums/Sex';
 import TimeSettingsView from './TimeSettingsView';
-import ProgressBar from '../common/ProgressBar';
 
 import './SettingsDialog.css';
 
 interface SettingsDialogProps {
 	settings: SettingsState;
 	onSoundVolumeChange: (volume: number) => void;
-	avatar: string | null;
-	avatarLoadError: string | null;
-	avatarLoadProgress: boolean;
 	isSettingGameButtonKey: boolean;
 	onShowPersonsAtBottomOnWideScreenChanged: (showPersonsAtBottomOnWideScreen: boolean) => void;
-	onSexChanged: (newSex: Sex) => void;
-	onAvatarSelected: (avatar: File) => void;
 	onOralChanged: (oral: boolean) => void;
 	onFalseStartsChanged: (falseStarts: boolean) => void;
 	onHintShowmanChanged: (hintShowman: boolean) => void;
@@ -41,10 +35,7 @@ interface SettingsDialogProps {
 
 const mapStateToProps = (state: State) => ({
 	settings: state.settings,
-	avatar: state.user.avatar,
-	avatarLoadError: state.common.avatarLoadError,
-	avatarLoadProgress: state.common.avatarLoadProgress,
-	isSettingGameButtonKey: state.ui.isSettingGameButtonKey
+	isSettingGameButtonKey: state.ui.isSettingGameButtonKey,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
@@ -53,12 +44,6 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	},
 	onShowPersonsAtBottomOnWideScreenChanged: (showPersonsAtBottomOnWideScreen: boolean) => {
 		dispatch(settingsActionCreators.showPersonsAtBottomOnWideScreenChanged(showPersonsAtBottomOnWideScreen));
-	},
-	onSexChanged: (newSex: Sex) => {
-		dispatch(settingsActionCreators.onSexChanged(newSex));
-	},
-	onAvatarSelected: (avatar: File) => {
-		dispatch(actionCreators.onAvatarSelected(avatar) as any);
 	},
 	onOralChanged: (oral: boolean) => {
 		dispatch(settingsActionCreators.onOralChanged(oral));
@@ -104,8 +89,6 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	},
 });
 
-const MaxAvatarSizeMb = 2;
-
 export class SettingsDialog extends React.Component<SettingsDialogProps> {
 	private layout: React.RefObject<HTMLDivElement>;
 
@@ -131,28 +114,10 @@ export class SettingsDialog extends React.Component<SettingsDialogProps> {
 		this.props.onClose();
 	};
 
-	private onSexChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
-		this.props.onSexChanged(e.target.id === 'male' && e.target.checked ? Sex.Male : Sex.Female);
-	};
-
 	private onReadingSpeedChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const value = parseInt(e.target.value, 10);
 		if (value > 0 && value <= 100) {
 			this.props.onReadingSpeedChanged(value);
-		}
-	};
-
-	private onAvatarChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
-		if (e.target.files && e.target.files.length > 0) {
-			// eslint-disable-next-line prefer-destructuring
-			const targetFile = e.target.files[0];
-
-			if (targetFile.size > MaxAvatarSizeMb * 1024 * 1024) {
-				alert(`${localization.avatarIsTooBig} (${MaxAvatarSizeMb} MB)`);
-				return;
-			}
-
-			this.props.onAvatarSelected(targetFile);
 		}
 	};
 
@@ -166,6 +131,7 @@ export class SettingsDialog extends React.Component<SettingsDialogProps> {
 			<Dialog id="settingsDialog" ref={this.layout} title={localization.settings} onClose={this.props.onClose}>
 				<div className="settingsDialogBody">
 					<p className="header">{localization.language}</p>
+
 					<select
 						className='settings_language'
 						value={this.props.settings.appSettings.culture || ''}
@@ -177,6 +143,7 @@ export class SettingsDialog extends React.Component<SettingsDialogProps> {
 					</select>
 					
 					<p className="header">{localization.sound}</p>
+
 					<div className="settingItem">
 						<input
 							id="soundVolume"
@@ -196,53 +163,8 @@ export class SettingsDialog extends React.Component<SettingsDialogProps> {
 							checked={this.props.settings.showPersonsAtBottomOnWideScreen}
 							onChange={() => this.props.onShowPersonsAtBottomOnWideScreenChanged(!this.props.settings.showPersonsAtBottomOnWideScreen)}
 						/>
-						<label htmlFor="showPersonsAtBottomOnWideScreen">{localization.showPersonsAtBottomOnWideScreen}</label>
-					</div>
-
-					<p className='header'>{localization.avatar}</p>
-					
-					<div className="avatarBox">
-						{this.props.avatar ? <img className='avatarView' src={this.props.avatar} /> : <div className='emptyAvatar' />}
 						
-						<input
-							type="file"
-							accept=".jpg,.jpeg,.png"
-							disabled={this.props.avatarLoadProgress}
-							onChange={this.onAvatarChanged}
-						/>
-
-						<div className='avatarLoadHelper'>
-							{this.props.avatarLoadProgress
-								? (<div className='avatarLoadingHost'>
-										<div className='avatarLoadingMessage'>{localization.loading}</div>
-										<ProgressBar isIndeterminate={true} />
-									</div>)
-								: <span className='avatarLoadError'>{this.props.avatarLoadError || ' '}</span>}
-						</div>
-					</div>
-
-					<p className="header">{localization.sex}</p>
-
-					<div className="sexLogin">
-						<input
-							type="radio"
-							id="male"
-							name="sex"
-							checked={this.props.settings.sex === Sex.Male}
-							onChange={this.onSexChanged}
-						/>
-
-						<label htmlFor="male">{localization.male}</label>
-
-						<input
-							type="radio"
-							id="female"
-							name="sex"
-							checked={this.props.settings.sex === Sex.Female}
-							onChange={this.onSexChanged}
-						/>
-
-						<label htmlFor="female">{localization.female}</label>
+						<label htmlFor="showPersonsAtBottomOnWideScreen">{localization.showPersonsAtBottomOnWideScreen}</label>
 					</div>
 
 					<p className="header">{localization.gameButtonKey}</p>

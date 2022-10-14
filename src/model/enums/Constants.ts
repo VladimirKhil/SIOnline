@@ -10,5 +10,8 @@
 
 	HIDDEN_STAKE: -4,
 
-	WIDE_WINDOW_WIDTH: 1100
+	WIDE_WINDOW_WIDTH: 1100,
+
+	AVATAR_KEY: 'avatar',
+	AVATAR_NAME_KEY: 'avatarName',
 };

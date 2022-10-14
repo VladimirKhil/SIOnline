@@ -6,6 +6,8 @@ import localization from '../model/resources/localization';
 import State from '../state/State';
 import actionCreators from '../state/actionCreators';
 import ProgressBar from './common/ProgressBar';
+import AvatarView from './AvatarView';
+import SexView from './SexView';
 
 import './Login.css';
 
@@ -34,7 +36,7 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	},
 	onLogin: () => {
 		dispatch(actionCreators.login() as unknown as Action); // TODO: разобраться с типизацией
-	}
+	},
 });
 
 export class Login extends React.Component<LoginProps> {
@@ -43,7 +45,7 @@ export class Login extends React.Component<LoginProps> {
 	};
 
 	private onLoginKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-		if (e.charCode === Constants.KEY_ENTER) {
+		if (e.key === Constants.KEY_ENTER_NEW) {
 			this.props.onLogin();
 		}
 	};
@@ -55,20 +57,27 @@ export class Login extends React.Component<LoginProps> {
 					{this.props.inProgress ? <ProgressBar isIndeterminate /> : null}
 					<header><h1>{localization.appName}</h1></header>
 					<div className="logonHost">
-						<p className="header">{localization.yourName}</p>
-						<input
-							className='login_name'
-							name="name"
-							type='text'
-							autoFocus
-							value={this.props.login}
-							maxLength={30}
-							disabled={this.props.inProgress}
-							onChange={this.onLoginChanged}
-							onKeyPress={this.onLoginKeyPress}
-						/>
+						<div className='loginUser'>
+							<AvatarView />
 
-						<p>{localization.settingsHint}</p>
+							<div className='userArea'>
+								<input
+									className='login_name'
+									name="name"
+									type='text'
+									placeholder={localization.yourName}
+									title={localization.yourName}
+									autoFocus
+									value={this.props.login}
+									maxLength={30}
+									disabled={this.props.inProgress}
+									onChange={this.onLoginChanged}
+									onKeyPress={this.onLoginKeyPress}
+								/>
+
+								<SexView />
+							</div>
+						</div>
 
 						<div className="siAdHost" dangerouslySetInnerHTML={{ __html: this.props.ads ? this.props.ads : '' }} />
 

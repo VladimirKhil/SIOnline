@@ -35,7 +35,7 @@ export function AnswerInput(props: AnswerInputProps): JSX.Element | null {
 	};
 
 	const onAnswerKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-		if (e.charCode === Constants.KEY_ENTER) {
+		if (e.key === Constants.KEY_ENTER_NEW) {
 			if (props.isConnected) {
 				props.sendAnswer();
 			}

@@ -27,6 +27,12 @@ const settingsReducer: Reducer<SettingsState> = (
 				sex: action.newSex
 			};
 
+		case SettingsActionTypes.AvatarKeyChanged:
+			return {
+				...state,
+				avatarKey: action.avatarKey
+			};
+
 		case SettingsActionTypes.OralChanged:
 			return {
 				...state,

@@ -34,7 +34,7 @@ export function ChatInput(props: ChatInputProps) {
 	};
 
 	const onMessageKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-		if (e.charCode === Constants.KEY_ENTER) {
+		if (e.key === Constants.KEY_ENTER_NEW) {
 			if (props.isConnected) {
 				props.onChatMessageSend();
 			}

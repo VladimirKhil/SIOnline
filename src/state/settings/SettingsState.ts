@@ -6,6 +6,7 @@ export default interface SettingsState {
 	soundVolume: number;
 	showPersonsAtBottomOnWideScreen: boolean;
 	sex: Sex;
+	avatarKey: string | null;
 	appSettings: AppSettings;
 	gameButtonKey: string | null;
 	isLobbyChatHidden: boolean;
@@ -16,6 +17,7 @@ export const initialState: SettingsState = {
 	soundVolume: 1,
 	showPersonsAtBottomOnWideScreen: true,
 	sex: Sex.Male,
+	avatarKey: null,
 	appSettings: {
 		culture: null,
 		oral: false,

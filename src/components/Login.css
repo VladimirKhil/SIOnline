@@ -27,6 +27,32 @@
     flex: 1 0 0;
 }
 
+.loginUser {
+    margin: 10px 10px 5px 10px;
+    padding: 5px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.loginUser .avatarView {
+    width: 120px;
+    height: 120px;
+}
+
+.userArea {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.userArea .sexArea {
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+    margin: 10px 0 0 0;
+}
+
     .main .header {
         font-size: 18px;
         text-align: left;
@@ -55,9 +81,9 @@
     display: block;
     font-size: 20px;
     height: 33px;
-    margin: 0 22px;
-    width: calc(100% - 44px);
-    max-width: calc(100% - 44px);
+    margin: 2px 0 0 0;
+    width: 100%;
+    max-width: 100;
     border: 0;
     padding: 3px 5px;
 }
@@ -68,12 +94,6 @@
 }
 
 @media screen and (min-width: 470px) and (min-height: 600px) {
-    .login_name {
-        margin: 0 22px;
-        width: calc(100% - 44px);
-        max-width: calc(100% - 44px);
-    }
-
     .main {
         width: 470px;
         height: 560px;
