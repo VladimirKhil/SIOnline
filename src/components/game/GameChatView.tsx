@@ -29,6 +29,7 @@ interface GameChatViewProps {
 	onMarkQuestion: () => void;
 	onEditSums: (enable: boolean) => void;
 	navigateToRound: (roundIndex: number) => void;
+	onPass: () => void;
 }
 
 const mapStateToProps = (state: State) => ({
@@ -54,7 +55,10 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	},
 	navigateToRound: (roundIndex: number) => {
 		dispatch(runActionCreators.navigateToRound(roundIndex) as unknown as Action);
-	}
+	},
+	onPass: () => {
+		dispatch(runActionCreators.onPass() as unknown as Action);
+	},
 });
 
 function getSideArea(props: GameChatViewProps): React.ReactNode {
@@ -116,6 +120,18 @@ export function GameChatView(props: GameChatViewProps): JSX.Element {
 			<div className="sideArea">
 				{getSideArea(props)}
 			</div>
+
+			{props.role === Role.Player ? (
+				<div className="sideButtonHost">
+					<button
+						type="button"
+						className='standard wide commandButton bottomButton'
+						disabled={!props.isConnected}
+						onClick={() => props.onPass()}
+					>
+						{localization.pass}
+					</button>
+				</div>) : null}
 			
 			{props.role === Role.Showman ? (
 				<div className="sideButtonHost">
@@ -127,6 +143,7 @@ export function GameChatView(props: GameChatViewProps): JSX.Element {
 					>
 						{localization.changeSums}
 					</button>
+
 					<FlyoutButton
 						className="standard wide commandButton bottomButton"
 						disabled={!props.isConnected || !props.roundsNames || props.roundsNames.length < 2}

@@ -54,6 +54,14 @@ const markQuestion: ActionCreator<ThunkAction<void, State, DataContext, Action>>
 		await dataContext.gameClient.msgAsync('MARK');
 	};
 
+const onPass: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
+	_dispatch: Dispatch<RunActions.KnownRunAction>,
+	_getState: () => State,
+	dataContext: DataContext
+	) => {
+		await dataContext.gameClient.msgAsync('PASS');
+	};
+
 const pause: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
 	_dispatch: Dispatch<RunActions.KnownRunAction>,
 	getState: () => State,
@@ -696,6 +704,7 @@ const runActionCreators = {
 	runChatMessageChanged,
 	runChatMessageSend,
 	markQuestion,
+	onPass,
 	pause,
 	runShowPersons,
 	runHidePersons,

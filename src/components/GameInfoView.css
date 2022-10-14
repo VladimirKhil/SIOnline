@@ -95,6 +95,15 @@
     position: static;
 }
 
+.join {
+    font-size: 24px;
+    line-height: 24px;
+    height: 45px;
+    padding: 7pt 2px;
+    margin: 0;
+    margin-left: -1px;
+}
+
 @media screen and (min-width: 800px) {
     .gameInfo_close {
         display: none;
@@ -119,6 +128,18 @@
     .joinGameProgress {
         top: 0;
     }
+
+    .join {
+        font-size: 15px;
+        line-height: 15px;
+    }
+}
+
+@media screen and (min-width: 1100px) {
+    .join {
+        font-size: 20px;
+        line-height: 20px;
+    }
 }
 
 @media screen and (min-width: 1600px) {
@@ -132,5 +153,10 @@
 
     #innerinfo dt {
         margin-top: 20px;
+    }
+
+    .join {
+        font-size: 24px;
+        line-height: 24px;
     }
 }

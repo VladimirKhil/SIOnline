@@ -40,6 +40,7 @@ interface SideControlPanelProps {
 	onMoveNext: () => void;
 	showGameManageDialog: () => void;
 	onStart: () => void;
+	onPass: () => void;
 }
 
 const mapStateToProps = (state: State) => ({
@@ -86,6 +87,9 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	},
 	onStart: () => {
 		dispatch(runActionCreators.startGame() as unknown as Action);
+	},
+	onPass: () => {
+		dispatch(runActionCreators.onPass() as unknown as Action);
 	},
 });
 
@@ -156,6 +160,18 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 							title={localization.menu}
 							flyout={(
 								<ul className="gameMenu">
+									{props.role === Role.Player
+										? (
+											<>
+												<li
+													className={enabledClass}
+													onClick={() => props.onPass()}
+												>
+													{localization.pass}
+												</li>
+											</>
+										) : null}
+
 									{props.role === Role.Showman
 										? (
 											<>

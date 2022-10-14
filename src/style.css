@@ -258,15 +258,6 @@ button:disabled, button.standard:disabled {
     flex: 1 0 0;
 }
 
-.join {
-    font-size: 18pt;
-    line-height: 18pt;
-    height: 45px;
-    padding: 7pt 2px;
-    margin: 0;
-    margin-left: -1px;
-}
-
 .cannotConnect {
     color: darkred;
     text-align: center;
