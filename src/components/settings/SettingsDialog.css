@@ -12,6 +12,10 @@
     scrollbar-width: thin;
 }
 
+.tabHost {
+    display: flex;
+}
+
 .settingsDialogBody input[type=checkbox] {
     transform: scale(1.5);
 }
@@ -60,11 +64,6 @@
 	vertical-align: middle;
 	margin-right: 5px;
 	font-size: 20px;
-}
-
-#settingsDialog .avatarView {
-    max-width: 100%;
-    height: 150px;
 }
 
 .avatarLoadHelper {

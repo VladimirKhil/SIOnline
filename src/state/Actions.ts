@@ -72,6 +72,7 @@ export const enum ActionTypes {
 	ServerInfoChanged = 'SERVER_INFO_CHANGED',
 	SearchPackages = 'SEARCH_PACKAGES',
 	SearchPackagesFinished = 'SEARCH_PACKAGES_FINISHED',
+	SearchPackagesError = 'SEARCH_PACKAGES_ERROR',
 	ReceiveAuthors = 'RECEIVE_AUTHORS',
 	ReceiveAuthorsFinished = 'RECEIVE_AUTHORS_FINISHED',
 	ReceiveTags = 'RECEIVE_TAGS',
@@ -144,6 +145,7 @@ export type UnselectGameAction = { type: ActionTypes.UnselectGame };
 export type ServerInfoChangedAction = { type: ActionTypes.ServerInfoChanged, serverName: string, serverLicense: string, maxPackageSizeMb: number };
 export type SearchPackagesAction = { type: ActionTypes.SearchPackages };
 export type SearchPackagesFinishedAction = { type: ActionTypes.SearchPackagesFinished, packages: SIPackageInfo[] };
+export type SearchPackagesErrorAction = { type: ActionTypes.SearchPackagesError, error: string | null };
 export type ReceiveAuthorsAction = { type: ActionTypes.ReceiveAuthors };
 export type ReceiveAuthorsFinishedAction = { type: ActionTypes.ReceiveAuthorsFinished, authors: SearchEntity[] };
 export type ReceiveTagsAction = { type: ActionTypes.ReceiveTags };
@@ -215,6 +217,7 @@ export type KnownAction =
 	| ServerInfoChangedAction
 	| SearchPackagesAction
 	| SearchPackagesFinishedAction
+	| SearchPackagesErrorAction
 	| ReceiveAuthorsAction
 	| ReceiveAuthorsFinishedAction
 	| ReceiveTagsAction

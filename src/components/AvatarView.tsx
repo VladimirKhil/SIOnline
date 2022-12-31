@@ -5,13 +5,17 @@ import Constants from '../model/enums/Constants';
 import localization from '../model/resources/localization';
 import actionCreators from '../state/actionCreators';
 import State from '../state/State';
+import FlyoutButton from './common/FlyoutButton';
 
 import './AvatarView.css';
 
 interface AvatarViewProps {
 	avatarKey: string | null;
 	avatarLoadProgress: boolean;
+	disabled: boolean | undefined;
+
 	onAvatarSelected: (avatar: File) => void;
+	onAvatarDeleted: () => void;
 }
 
 const mapStateToProps = (state: State) => ({
@@ -39,6 +43,9 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	onAvatarSelected: (avatar: File) => {
 		dispatch(actionCreators.onAvatarSelectedLocal(avatar) as any);
 	},
+	onAvatarDeleted: () => {
+		dispatch(actionCreators.onAvatarDeleted() as any);
+	},
 });
 
 function renderEmpty() {
@@ -59,6 +66,10 @@ export function AvatarView(props: AvatarViewProps): JSX.Element {
 	const inputRef = React.useRef<HTMLInputElement>(null);
 
 	function onAreaClick() {
+		if (props.disabled) {
+			return;
+		}
+
 		const selector = inputRef.current;
 	
 		if (selector) {
@@ -67,9 +78,24 @@ export function AvatarView(props: AvatarViewProps): JSX.Element {
 	}
 
 	return (
-		<div className='avatarArea' title={localization.avatar} onClick={onAreaClick}>
-			{props.avatarKey ? renderAvatar() : renderEmpty()}
-
+		<>
+			{props.avatarKey ? (
+				<FlyoutButton
+					className={`avatarArea ${props.disabled ? 'unselectable' : ''}`}
+					title={localization.selectAvatar}
+					flyout={
+						<ul>
+							<li onClick={onAreaClick}>{localization.selectAvatar}</li>
+							<li onClick={props.onAvatarDeleted}>{localization.deleteAvatar}</li>
+						</ul>
+					}>
+					{renderAvatar()}
+				</FlyoutButton>) : (
+				<div className={`avatarArea ${props.disabled ? 'unselectable' : ''}`} title={localization.selectAvatar} onClick={onAreaClick}>
+					{renderEmpty()}
+				</div>
+			)}
+		
 			<input
 				ref={inputRef}
 				className='avatarSelector'
@@ -78,7 +104,7 @@ export function AvatarView(props: AvatarViewProps): JSX.Element {
 				disabled={props.avatarLoadProgress}
 				onChange={e => onAvatarChanged(e, props)}
 			/>
-		</div>
+		</>
 	);
 }
 

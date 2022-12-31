@@ -8,6 +8,7 @@ import actionCreators from '../state/actionCreators';
 import ProgressBar from './common/ProgressBar';
 import AvatarView from './AvatarView';
 import SexView from './SexView';
+import LanguageView from './LanguageView';
 
 import './Login.css';
 
@@ -55,10 +56,10 @@ export class Login extends React.Component<LoginProps> {
 			<div id="logon">
 				<div className="main">
 					{this.props.inProgress ? <ProgressBar isIndeterminate /> : null}
-					<header><h1>{localization.appName}</h1></header>
+					<div className='logo' />
 					<div className="logonHost">
 						<div className='loginUser'>
-							<AvatarView />
+							<AvatarView disabled={this.props.inProgress} />
 
 							<div className='userArea'>
 								<input
@@ -75,13 +76,17 @@ export class Login extends React.Component<LoginProps> {
 									onKeyPress={this.onLoginKeyPress}
 								/>
 
-								<SexView />
+								<div className='loginOptions'>
+									<LanguageView disabled={this.props.inProgress} />
+									<SexView disabled={this.props.inProgress} />
+								</div>
 							</div>
 						</div>
 
 						<div className="siAdHost" dangerouslySetInnerHTML={{ __html: this.props.ads ? this.props.ads : '' }} />
 
 						{this.props.error ? <p id="logonerror">{this.props.error}</p> : null}
+
 						<div id="logonButtons">
 							<button
 								id="howToPlay"
@@ -92,6 +97,7 @@ export class Login extends React.Component<LoginProps> {
 							>
 								{localization.aboutTitle}
 							</button>
+
 							<button
 								id="enter"
 								className='standard'

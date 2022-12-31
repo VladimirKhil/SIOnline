@@ -13,6 +13,7 @@ import RoundProgress from './RoundProgress';
 import TablesView from './TablesView';
 import { isHost } from '../../utils/StateHelpers';
 import FlyoutButton, { FlyoutHorizontalOrientation, FlyoutVerticalOrientation } from '../common/FlyoutButton';
+import actionCreators from '../../state/actionCreators';
 
 import './GameChatView.css';
 
@@ -30,6 +31,7 @@ interface GameChatViewProps {
 	onEditSums: (enable: boolean) => void;
 	navigateToRound: (roundIndex: number) => void;
 	onPass: () => void;
+	onShowSettings: () => void;
 }
 
 const mapStateToProps = (state: State) => ({
@@ -59,6 +61,9 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	onPass: () => {
 		dispatch(runActionCreators.onPass() as unknown as Action);
 	},
+	onShowSettings: () => {
+		dispatch(actionCreators.showSettings(true));
+	},
 });
 
 function getSideArea(props: GameChatViewProps): React.ReactNode {
@@ -78,6 +83,7 @@ function getSideArea(props: GameChatViewProps): React.ReactNode {
 				</div>
 			);
 
+		case ChatMode.Tables:
 		default:
 			return (
 				<div className="game__persons">
@@ -94,29 +100,44 @@ export function GameChatView(props: GameChatViewProps): JSX.Element {
 				<h1
 					className={props.chatMode === ChatMode.Chat ? 'activeTab' : ''}
 					onClick={() => props.onChatModeChanged(ChatMode.Chat)}
+					title={localization.chat}
 				>
-					{localization.chat}
+					💬
 				</h1>
+
 				<h1
 					className={props.chatMode === ChatMode.Users ? 'activeTab' : ''}
 					onClick={() => props.onChatModeChanged(ChatMode.Users)}
+					title={localization.members}
 				>
 					<div>
-						<span>{localization.members}</span>
-						<span> (</span>
-						<span>{props.personsCount}</span>
-						<span>)</span>
+						<span>👤{props.personsCount}</span>
 					</div>
 				</h1>
+
 				{props.isHost ? (
 					<h1
 						className={props.chatMode === ChatMode.Tables ? 'activeTab' : ''}
 						onClick={() => props.onChatModeChanged(ChatMode.Tables)}
+						title={localization.tables}
 					>
-						{localization.tables}
+						🎓
 					</h1>
 				) : null}
+
+				{/* <h1>
+					🚫
+				</h1>
+
+				<h1>
+					ℹ
+				</h1> */}
+
+				<button className='settingsOpener' onClick={props.onShowSettings} title={localization.settings}>
+					<span>⚙</span>
+				</button>
 			</div>
+
 			<div className="sideArea">
 				{getSideArea(props)}
 			</div>

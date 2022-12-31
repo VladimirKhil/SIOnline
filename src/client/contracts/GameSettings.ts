@@ -6,6 +6,7 @@ export default interface GameSettings {
 	randomSpecials: boolean;
 	networkGameName: string;
 	networkGamePassword: string;
+	isPrivate: boolean;
 	allowViewers: boolean;
 	showman: AccountSettings;
 	players: AccountSettings[];

@@ -25,6 +25,14 @@
     background-color: white;
 }
 
+.gameType {
+    margin-right: 10px;
+}
+
+.gameTypeHint {
+    font-size: 14px;
+}
+
 #newGameDialog .buttonsArea {
     display: flex;
 }

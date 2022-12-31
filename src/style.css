@@ -220,6 +220,7 @@ button:disabled, button.standard:disabled {
     color: darkgray;
     border-color: darkgray;
     background-color: transparent;
+    cursor: initial;
 }
 
 .closeButton {
@@ -343,10 +344,6 @@ h1.activeTab {
     display: flex;
     flex-direction: column;
     position: relative;
-}
-
-#gameLogHost .tabHeader h1 {
-    font-size: 24px;
 }
 
 #playerButtonHost {
@@ -571,10 +568,6 @@ video, audio {
 
 .bottomButton {
     margin-bottom: -1px;
-}
-
-.gameHeader {
-    height: 50px;
 }
 
 @media screen and (min-width: 800px) {

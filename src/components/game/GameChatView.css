@@ -24,3 +24,31 @@
 .sideButtonActiveRound:hover {
 	background-color: #5A95E2 !important;
 }
+
+.gameHeader {
+	height: 50px;
+}
+
+#gameLogHost .tabHeader h1 {
+	font-size: 17px;
+	width: 35px;
+	height: 50px;
+	overflow: hidden;
+	white-space: nowrap;
+}
+
+.settingsOpener {
+	position: absolute;
+	right: 0;
+	padding: 7px 12px;
+	font-size: 24px;
+	top: 4px;
+}
+
+@media screen and (min-width: 1400px) {
+	#gameLogHost .tabHeader h1 {
+		font-size: 19px;
+		width: 45px;
+		padding: 6px 0 0 0;
+	}
+}

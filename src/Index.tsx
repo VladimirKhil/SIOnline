@@ -21,6 +21,7 @@ import { Analytics, getAnalytics } from 'firebase/analytics';
 import { ErrorView } from './components/ErrorView';
 import Constants from './model/enums/Constants';
 import settingsActionCreators from './state/settings/settingsActionCreators';
+import MainView from './model/enums/MainView';
 
 import './utils/polyfills';
 import './style.css';
@@ -188,7 +189,12 @@ async function run() {
 			if (newSettings.appSettings.culture !== currentSettings.appSettings.culture) {
 				localization.setLanguage(newSettings.appSettings.culture || localization.getInterfaceLanguage());
 				document.title = localization.appTitle;
-				store.dispatch(actionCreators.reloadComputerAccounts() as any);
+				
+				if (newState.ui.mainView === MainView.Login) {
+					window.location.reload();
+				} else {
+					store.dispatch(actionCreators.reloadComputerAccounts() as any);
+				}
 			}
 
 			currentSettings = newSettings;

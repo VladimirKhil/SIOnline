@@ -5,16 +5,27 @@
 	display: flex;
 	justify-content: center;
 	background-color: rgba(0, 0, 0, 0.1);
+    width: 124px;
+    height: 124px;
+    padding: 0;
 }
 
 .avatarArea:hover {
     border: 2px solid gray;
 }
 
+.avatarArea.unselectable:hover {
+    border: 2px solid transparent;
+    cursor: initial;
+}
+
 .avatarArea .emptyAvatar {
-    width: 100px;
-    height: 100px;
-	background-color: lightgray;
+    width: 120px;
+    height: 120px;
+    background-image: url('../../assets/images/avatar-m.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
 }
 
 .avatarArea:hover .emptyAvatar {
@@ -24,7 +35,8 @@
 .avatarView {
     object-fit: contain;
     display: block;
-	margin: 3px;
+    width: 120px;
+    height: 120px;
 }
 
 .avatarSelector {

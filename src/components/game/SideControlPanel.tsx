@@ -15,6 +15,7 @@ import SendPassButton from './stakes/SendPassButton';
 import SendStakeButton from './stakes/SendStakeButton';
 import SendAllInButton from './stakes/SendAllInButton';
 import { isHost } from '../../utils/StateHelpers';
+import actionCreators from '../../state/actionCreators';
 
 import './SideControlPanel.css';
 
@@ -41,6 +42,7 @@ interface SideControlPanelProps {
 	showGameManageDialog: () => void;
 	onStart: () => void;
 	onPass: () => void;
+	onShowSettings: () => void;
 }
 
 const mapStateToProps = (state: State) => ({
@@ -90,6 +92,9 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	},
 	onPass: () => {
 		dispatch(runActionCreators.onPass() as unknown as Action);
+	},
+	onShowSettings: () => {
+		dispatch(actionCreators.showSettings(true));
 	},
 });
 
@@ -192,6 +197,7 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 									<li onClick={() => props.onShowPersons()}>{localization.members}</li>
 									<li onClick={() => props.onShowTables()}>{localization.tables}</li>
 									{canPause ? <li className={enabledClass} onClick={() => props.onPause()}>{pauseTitle}</li> : null}
+									<li onClick={() => props.onShowSettings()}>{localization.settings}</li>
 								</ul>
 							)}
 							theme={FlyoutTheme.Light}

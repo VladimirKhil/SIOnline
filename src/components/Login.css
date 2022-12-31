@@ -21,6 +21,15 @@
     border-left-width: 0.5px;
 }
 
+.logo {
+    width: 100px;
+    height: 100px;
+    background-image: url('../../assets/images/sionline.jpg');
+    background-size: contain;
+    margin: auto;
+    margin-top: 10px;
+}
+
 .logonHost {
     display: flex;
     flex-direction: column;
@@ -35,15 +44,23 @@
     align-items: center;
 }
 
-.loginUser .avatarView {
-    width: 120px;
-    height: 120px;
-}
-
 .userArea {
     display: flex;
     flex-direction: column;
     flex: 1;
+}
+
+.loginOptions {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.userArea .languageArea {
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+    margin: 10px 0 0 0;
 }
 
 .userArea .sexArea {

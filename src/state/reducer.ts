@@ -665,7 +665,8 @@ const reducer: Reducer<State> = (state: State = initialState, action: KnownActio
 				...state,
 				siPackages: {
 					...state.siPackages,
-					isLoading: true
+					isLoading: true,
+					error: null
 				}
 			};
 
@@ -676,6 +677,16 @@ const reducer: Reducer<State> = (state: State = initialState, action: KnownActio
 					...state.siPackages,
 					packages: action.packages,
 					isLoading: false
+				}
+			};
+
+		case ActionTypes.SearchPackagesError:
+			return {
+				...state,
+				siPackages: {
+					...state.siPackages,
+					isLoading: false,
+					error: action.error,
 				}
 			};
 

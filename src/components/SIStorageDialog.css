@@ -102,3 +102,8 @@
 #siStorageDialog .filters > div:not(:last-child) {
 	margin-right: 10px;
 }
+
+#siStorageDialog .sistorage_error {
+	color: darkred;
+	text-align: center;
+}

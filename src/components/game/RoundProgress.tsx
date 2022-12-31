@@ -6,6 +6,8 @@ import TimerInfo from '../../model/TimerInfo';
 import { isRunning } from '../../utils/TimerInfoHelpers';
 import localization from '../../model/resources/localization';
 
+import './RoundProgress.css';
+
 interface RoundProgressProps {
 	roundTimer: TimerInfo;
 }
@@ -17,6 +19,7 @@ const mapStateToProps = (state: State) => ({
 export function RoundProgress(props: RoundProgressProps): JSX.Element {
 	return (
 		<ProgressBar
+			className='round_progress'
 			value={1 - props.roundTimer.value / props.roundTimer.maximum}
 			valueChangeDuration={isRunning(props.roundTimer) ? (props.roundTimer.maximum - props.roundTimer.value) / 10 : 0}
 			title={localization.roundTime}

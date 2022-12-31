@@ -3,14 +3,13 @@ import { connect } from 'react-redux';
 import { Dispatch, Action } from 'redux';
 import Sex from '../model/enums/Sex';
 import localization from '../model/resources/localization';
-import actionCreators from '../state/actionCreators';
 import settingsActionCreators from '../state/settings/settingsActionCreators';
 import State from '../state/State';
-
-import './SexView.css';
+import Selector from './common/Selector';
 
 interface SexViewProps {
 	sex: Sex;
+	disabled: boolean | undefined;
 	onSexChanged: (newSex: Sex) => void;
 }
 
@@ -26,10 +25,21 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 
 export function SexView(props: SexViewProps): JSX.Element {
 	return (
-		<div className='sexArea'>
-			<button disabled={props.sex === Sex.Male} title={localization.male} onClick={() => props.onSexChanged(Sex.Male)}>🧑</button>
-			<button disabled={props.sex === Sex.Female} title={localization.female} onClick={() => props.onSexChanged(Sex.Female)}>👩</button>
-		</div>
+		<Selector
+			className='sexArea'
+			data={[{
+				value: Sex.Male,
+				name: '🧑',
+				tooltip: localization.male
+			}, {
+				value: Sex.Female,
+				name: '👩',
+				tooltip: localization.female
+			}]}
+			value={props.sex}
+			disabled={props.disabled}
+			onValueChanged={props.onSexChanged}
+		/>
 	);
 }
 

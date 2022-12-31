@@ -25,6 +25,7 @@ interface StateProps {
 	publishers: SearchEntity[];
 	authors: SearchEntity[];
 	isLoading: boolean;
+	error: string | null;
 }
 
 interface OwnProps {
@@ -46,7 +47,8 @@ const mapStateToProps = (state: State): StateProps => ({
 	isLoading: state.siPackages.isLoading,
 	authors: state.siPackages.authors,
 	publishers: state.siPackages.publishers,
-	tags: state.siPackages.tags
+	tags: state.siPackages.tags,
+	error: state.siPackages.error,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>): DispatchProps => ({
@@ -268,6 +270,7 @@ export class SIStorageDialog extends React.Component<SIStorageDialogProps, SISto
 						</div>
 					</div>
 					<h2>{`${localization.packages} (${this.state.filteredPackages.length})`}</h2>
+					{this.props.error != null ? <div className='sistorage_error'>{this.props.error}</div> : null}
 					{this.props.isLoading && <p>{localization.loading}</p>}
 					<ul>
 						{this.state.filteredPackages.map(({ authors,

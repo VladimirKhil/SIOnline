@@ -201,17 +201,20 @@ export class NewGameDialog extends React.Component<NewGameDialogProps, NewGameDi
 			<>
 				<Dialog id="newGameDialog" title={localization.newGame} onClose={this.props.onClose}>
 					<div className="settings">
-						<p>{localization.gameName}</p>
-						<input
-							type="text"
-							value={this.props.gameName}
-							onChange={this.onGameNameChanged}
-							onKeyPress={this.onKeyPress}
-						/>
 
 						{this.props.isSingleGame ? null : (
 							<>
+								<p>{localization.gameName}</p>
+
+								<input
+									type="text"
+									value={this.props.gameName}
+									onChange={this.onGameNameChanged}
+									onKeyPress={this.onKeyPress}
+								/>
+
 								<p>{localization.password}</p>
+
 								<input
 									type="password"
 									value={this.props.gamePassword}
@@ -243,16 +246,24 @@ export class NewGameDialog extends React.Component<NewGameDialogProps, NewGameDi
 						) : null}
 
 						<p>{localization.gameType}</p>
-						<select value={this.props.gameType} onChange={this.onGameTypeChanged}>
+
+						<select className='gameType' value={this.props.gameType} onChange={this.onGameTypeChanged}>
 							<option value="1">{localization.sport}</option>
 							<option value="0">{localization.tv}</option>
 						</select>
+
+						<span className='gameTypeHint'>
+							{this.props.gameType === GameType.Classic ? localization.gameTypeClassicHint : localization.gameTypeSimpleHint}
+						</span>
+
 						<p>{localization.role}</p>
+
 						<select value={this.props.gameRole} onChange={this.onGameRoleChanged}>
 							<option value="0">{localization.viewer}</option>
 							<option value="1">{localization.player}</option>
 							<option value="2">{localization.showman}</option>
 						</select>
+
 						{this.props.gameRole === Role.Showman || this.props.isSingleGame ? null : (
 							<>
 								<p>{localization.showman}</p>

@@ -17,6 +17,13 @@ service:
   port: 80
   targetPort: 80
 
+ingress:
+  enabled: false
+  className: nginx
+  path: /
+  pathType: Prefix
+  annotations: []
+
 resources: {}
 
 config:

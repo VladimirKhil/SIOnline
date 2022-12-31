@@ -25,7 +25,6 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 export function TimeSettingsView(props: TimeSettingsViewProps): JSX.Element {
 	return (
 		<div className="timeSettingsView">
-			<h2>{localization.time}</h2>
 			<TimeSettingItem
 				label={localization.timeForChoosingQuestion}
 				value={props.settings.timeForChoosingQuestion}

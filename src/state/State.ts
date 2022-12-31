@@ -85,6 +85,7 @@ export default interface State {
 		tags: SearchEntity[];
 		publishers: SearchEntity[];
 		isLoading: boolean;
+		error: string | null;
 	};
 	settings: SettingsState;
 }
@@ -154,7 +155,8 @@ export const initialState: State = {
 		isLoading: false,
 		packages: [],
 		publishers: [],
-		tags: []
+		tags: [],
+		error: '',
 	},
 	run: runInitialState,
 	common: {

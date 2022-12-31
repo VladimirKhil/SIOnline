@@ -138,6 +138,14 @@ const onAvatarSelectedLocal: ActionCreator<ThunkAction<void, State, DataContext,
 		}
 	};
 
+const onAvatarDeleted: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
+	() => async (dispatch: Dispatch<Actions.KnownAction>) => {
+		localStorage.removeItem(Constants.AVATAR_KEY);
+		localStorage.removeItem(Constants.AVATAR_NAME_KEY);
+
+		dispatch(settingsActionCreators.onAvatarKeyChanged('') as any);
+	};
+
 async function hashData(data: ArrayBuffer): Promise<ArrayBuffer> {
 	if (location.protocol === 'https:') {
 		await crypto.subtle.digest('SHA-1', data); // It works only under HTTPS protocol
@@ -394,11 +402,11 @@ const login: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 					const computerAccounts = await dataContext.gameClient.getComputerAccountsAsync(requestCulture);
 					dispatch(computerAccountsChanged(computerAccounts));
 
-					dispatch(loginEnd());
-					dispatch(onLoginChanged(state.user.login.trim())); // Normalize login
-
 					await loadHostInfoAsync(dispatch, dataContext, requestCulture);
 					await uploadAvatarAsync(dispatch, dataContext);
+
+					dispatch(loginEnd());
+					dispatch(onLoginChanged(state.user.login.trim())); // Normalize login
 
 					const urlParams = new URLSearchParams(window.location.search);
 					const invite = urlParams.get('invite');
@@ -850,6 +858,7 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 		const game = isSingleGame
 			? {
 					...state.game,
+					name: getRandomValue().toString(),
 					password: getRandomValue().toString(), // protecting from anyone to join
 					isShowmanHuman: false,
 					humanPlayersCount: 0
@@ -917,6 +926,7 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 			randomSpecials: game.package.type === PackageType.Random,
 			networkGameName: game.name.trim(),
 			networkGamePassword: game.password,
+			isPrivate: isSingleGame,
 			allowViewers: true,
 			showman: showman,
 			players: players,
@@ -1035,6 +1045,11 @@ const searchPackagesFinished: ActionCreator<Actions.SearchPackagesFinishedAction
 	packages
 });
 
+const searchPackagesError: ActionCreator<Actions.SearchPackagesErrorAction> = (error: string | null) => ({
+	type: Actions.ActionTypes.SearchPackagesError,
+	error
+});
+
 const receiveAuthors: ActionCreator<Actions.ReceiveAuthorsAction> = () => ({
 	type: Actions.ActionTypes.ReceiveAuthors
 });
@@ -1077,7 +1092,7 @@ const receiveAuthorsThunk: ActionCreator<ThunkAction<void, State, DataContext, A
 			const data = await response.json();
 			dispatch(receiveAuthorsFinished(data));
 		} catch (error) {
-			console.error(error);
+			dispatch(searchPackagesError(getErrorMessage(error)));
 		}
 	};
 
@@ -1096,7 +1111,7 @@ const receiveTagsThunk: ActionCreator<ThunkAction<void, State, DataContext, Acti
 			const data = await response.json();
 			dispatch(receiveTagsFinished(data));
 		} catch (error) {
-			console.error(error);
+			dispatch(searchPackagesError(getErrorMessage(error)));
 		}
 	};
 
@@ -1115,48 +1130,48 @@ const receivePublishersThunk: ActionCreator<ThunkAction<void, State, DataContext
 			const data = await response.json();
 			dispatch(receivePublishersFinished(data));
 		} catch (error) {
-			console.error(error);
+			dispatch(searchPackagesError(getErrorMessage(error)));
 		}
 	};
 
-const searchPackagesThunk: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (
-		filters: PackageFilters = {
-			difficultyRelation: 0,
-			difficulty: 1,
-			sortMode: 0,
-			sortAscending: true,
-			authorId: null,
-			publisherId: null,
-			tagId: null,
-			restriction: null
-		}) => async (dispatch: Dispatch<any>, _: () => State, dataContext: DataContext) => {
-		try {
-			dispatch(searchPackages());
-			const { apiUri } = dataContext.config;
+const searchPackagesThunk: ActionCreator<ThunkAction<void, State, DataContext, Action>> = 
+	(filters: PackageFilters = {
+		difficultyRelation: 0,
+		difficulty: 1,
+		sortMode: 0,
+		sortAscending: true,
+		authorId: null,
+		publisherId: null,
+		tagId: null,
+		restriction: null
+	}) => async (dispatch: Dispatch<any>, _: () => State, dataContext: DataContext) => {
+	try {
+		dispatch(searchPackages());
+		const { apiUri } = dataContext.config;
 
-			const response = await fetch(
-				`${apiUri}/FilteredPackages?${new URLSearchParams(
-					Object.entries(filters)
-						.filter(([, value]: [string, PackageFilters[keyof PackageFilters]]) => value ?? false)
-						.reduce(
-							(acc, [key, value]) => ({
-								...acc,
-								[key]: value
-							}),
-							{}
-						))}`);
+		const response = await fetch(
+			`${apiUri}/FilteredPackages?${new URLSearchParams(
+				Object.entries(filters)
+					.filter(([, value]: [string, PackageFilters[keyof PackageFilters]]) => value ?? false)
+					.reduce(
+						(acc, [key, value]) => ({
+							...acc,
+							[key]: value
+						}),
+						{}
+					))}`);
 
-			if (!response.ok) {
-				console.error(response.statusText);
-				return;
-			}
-
-			const data = await response.json();
-			dispatch(searchPackagesFinished(data));
-		} catch (error) {
-			console.error(error);
+		if (!response.ok) {
+			console.error(response.statusText);
+			return;
 		}
-	};
+
+		const data = await response.json();
+		dispatch(searchPackagesFinished(data));
+	} catch (error) {
+		dispatch(searchPackagesError(getErrorMessage(error)));
+	}
+};
 
 const isSettingGameButtonKeyChanged: ActionCreator<Actions.IsSettingGameButtonKeyChangedAction> = (isSettingGameButtonKey: boolean) => ({
 	type: Actions.ActionTypes.IsSettingGameButtonKeyChanged, isSettingGameButtonKey
@@ -1173,6 +1188,7 @@ const actionCreators = {
 	navigateBack,
 	onLoginChanged,
 	onAvatarSelectedLocal,
+	onAvatarDeleted,
 	avatarLoadStart,
 	avatarChanged,
 	sendAvatar,
