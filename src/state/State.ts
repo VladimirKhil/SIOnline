@@ -12,6 +12,7 @@ import SettingsState, { initialState as settingsInitialState } from './settings/
 import PackageType from '../model/enums/PackageType';
 import { SIPackageInfo } from '../model/SIPackageInfo';
 import { SearchEntity } from '../model/SearchEntity';
+import MessageLevel from '../model/enums/MessageLevel';
 
 export default interface State {
 	user: {
@@ -120,7 +121,8 @@ export const initialState: State = {
 		messages: [
 			{
 				sender: localization.appUser,
-				text: localization.greeting
+				text: localization.greeting,
+				level: MessageLevel.System,
 			}
 		],
 		password: '',

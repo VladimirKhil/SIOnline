@@ -10,3 +10,11 @@
         margin-top: 4px;
         margin-bottom: 4px;
     }
+
+    .chatLog span.system {
+        font-weight: bold;
+    }
+
+    .chatLog span.warning {
+        color: darkred;
+    }

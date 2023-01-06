@@ -226,24 +226,26 @@ export class NewGameDialog extends React.Component<NewGameDialogProps, NewGameDi
 
 						<p>{localization.questionPackage}</p>
 
-						<select
-							className="packageTypeSelector"
-							value={siPackageName || this.props.gamePackageType}
-							onChange={this.onGamePackageTypeChanged}
-						>
-							<option value="0">{localization.randomThemes}</option>
-							<option value="1">{localization.file}</option>
-							<option value="2">{`${localization.libraryTitle}...`}</option>
-							{siPackageName && <option value={siPackageName}>{siPackageName}</option>}
-						</select>
+						<div className='packageSelector'>
+							<select
+								className="packageTypeSelector"
+								value={siPackageName || this.props.gamePackageType}
+								onChange={this.onGamePackageTypeChanged}
+							>
+								<option value="0">{localization.randomThemes}</option>
+								<option value="1">{localization.file}</option>
+								<option value="2">{`${localization.libraryTitle}...`}</option>
+								{siPackageName && <option value={siPackageName}>{siPackageName}</option>}
+							</select>
 
-						{this.props.gamePackageType === PackageType.File ? (
-							<div className="packageFileBox">
-								<input ref={this.fileRef} type="file" accept=".siq" onChange={this.onGamePackageDataChanged} />
-								<input className="selector" type="button" value={localization.select} onClick={this.onSelectFile} />
-								{this.props.gamePackageData ? <span>{this.props.gamePackageData.name}</span> : null}
-							</div>
-						) : null}
+							{this.props.gamePackageType === PackageType.File ? (
+								<div className="packageFileBox">
+									<input ref={this.fileRef} type="file" accept=".siq" onChange={this.onGamePackageDataChanged} />
+									<input className="selector" type="button" value={localization.select} onClick={this.onSelectFile} />
+									{this.props.gamePackageData ? <span>{this.props.gamePackageData.name}</span> : null}
+								</div>
+							) : null}
+						</div>
 
 						<p>{localization.gameType}</p>
 

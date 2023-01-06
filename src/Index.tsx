@@ -22,6 +22,7 @@ import { ErrorView } from './components/ErrorView';
 import Constants from './model/enums/Constants';
 import settingsActionCreators from './state/settings/settingsActionCreators';
 import MainView from './model/enums/MainView';
+import NoSleep from 'nosleep.js';
 
 import './utils/polyfills';
 import './style.css';
@@ -224,3 +225,21 @@ async function run() {
 }
 
 run();
+
+// I have not found a way to make it work normally
+// 'new NoSleep()' throws an error 'default is not a constructor'
+
+let noSleep: NoSleep;
+
+try {
+	noSleep = new NoSleep();
+} catch {
+	// it is not working
+}
+
+noSleep = eval('new nosleep_js_1()');
+
+document.addEventListener('click', function enableNoSleep() {
+	document.removeEventListener('click', enableNoSleep, false);
+	noSleep.enable();
+}, false);

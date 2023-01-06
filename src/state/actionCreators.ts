@@ -20,7 +20,7 @@ import ChatMode from '../model/enums/ChatMode';
 import GameType from '../client/contracts/GameType';
 import * as GameErrorsHelper from '../utils/GameErrorsHelper';
 import GameInfo from '../client/contracts/GameInfo';
-import { attachListeners, detachListeners, activeConnections } from '../utils/ConnectionHelpers';
+import { attachListeners, detachListeners, activeConnections, removeConnection } from '../utils/ConnectionHelpers';
 import MainView from '../model/enums/MainView';
 import runActionCreators from './run/runActionCreators';
 import Slice from '../client/contracts/Slice';
@@ -48,11 +48,11 @@ const isConnectedChanged: ActionCreator<Actions.IsConnectedChangedAction> = (isC
 });
 
 const onConnectionChanged: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
-	(isConnected: boolean, message: string) =>
-	async (dispatch: Dispatch<any>, getState: () => State, dataContext: DataContext) => {
+	(isConnected: boolean, message: string) => async (dispatch: Dispatch<any>, getState: () => State, dataContext: DataContext) => {
 		dispatch(isConnectedChanged(isConnected));
 
 		const state = getState();
+
 		if (state.ui.mainView === MainView.Game) {
 			dispatch(runActionCreators.chatMessageAdded({ sender: '', text: message }));
 		} else {
@@ -69,6 +69,14 @@ const onConnectionChanged: ActionCreator<ThunkAction<void, State, DataContext, A
 		} else if (state.ui.mainView === MainView.Lobby) {
 			navigateToLobby(-1)(dispatch, getState, dataContext);
 		}
+	};
+
+const onConnectionClosed: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
+	(message: string) => async (dispatch: Dispatch<any>, getState: () => State, dataContext: DataContext) => {
+		dispatch(isConnectedChanged(false));
+
+		alert(message);
+		window.location.reload();
 	};
 
 const computerAccountsChanged: ActionCreator<Actions.ComputerAccountsChangedAction> = (computerAccounts: string[]) => ({
@@ -127,7 +135,7 @@ const onAvatarSelectedLocal: ActionCreator<ThunkAction<void, State, DataContext,
 			const buffer = await avatar.arrayBuffer();
 			const base64 = btoa(new Uint8Array(buffer).reduce((data, byte) => data + String.fromCharCode(byte), ''));
 
-			const key = crypto.randomUUID();
+			const key = crypto.randomUUID ? crypto.randomUUID() : Math.random().toString();
 			
 			localStorage.setItem(Constants.AVATAR_KEY, base64);
 			localStorage.setItem(Constants.AVATAR_NAME_KEY, avatar.name);
@@ -372,7 +380,9 @@ const login: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 				const queryString = `?token=${encodeURIComponent(token)}`;
 
 				let connectionBuilder = new signalR.HubConnectionBuilder()
-					.withAutomaticReconnect()
+					.withAutomaticReconnect({
+    					nextRetryDelayInMilliseconds: (retryContext: signalR.RetryContext) => 1000 * (retryContext.previousRetryCount + 1)
+					})
 					.withUrl(`${dataContext.serverUri}/sionline${queryString}`);
 
 				if (dataContext.config.useMessagePackProtocol) {
@@ -497,12 +507,14 @@ const onExit: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 
 		try {
 			await dataContext.gameClient.logOutAsync();
+			
 			if (server.connectionId) {
 				activeConnections.splice(activeConnections.indexOf(server.connectionId), 1);
 			}
 
 			detachListeners(server);
 			await server.stop();
+			removeConnection(server);
 
 			dispatch(navigateToLogin());
 		} catch (error) {
@@ -1181,6 +1193,7 @@ const actionCreators = {
 	reloadComputerAccounts,
 	saveStateToStorage,
 	onConnectionChanged,
+	onConnectionClosed,
 	computerAccountsChanged,
 	navigateToLogin,
 	showSettings,

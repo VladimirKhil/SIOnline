@@ -24,6 +24,7 @@
     "firebase": "^9.8.2",
     "jszip": "^3.10.0",
     "localized-strings": "^0.2.4",
+    "nosleep.js": "^0.12.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-redux": "^7.2.6",

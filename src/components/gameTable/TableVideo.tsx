@@ -5,12 +5,16 @@ import { connect } from 'react-redux';
 import runActionCreators from '../../state/run/runActionCreators';
 import VolumeButton from '../common/VolumeButton';
 import TableBorder from './TableBorder';
+import getErrorMessage from '../../utils/ErrorHelpers';
+import localization from '../../model/resources/localization';
+import getExtension from '../../utils/FileHelper';
 
 interface TableVideoProps {
 	soundVolume: number;
 	text: string;
 	isMediaStopped: boolean;
 	onMediaEnded: () => void;
+	operationError: (error: string) => void;
 }
 
 const mapStateToProps = (state: State) => ({
@@ -22,7 +26,10 @@ const mapStateToProps = (state: State) => ({
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	onMediaEnded: () => {
 		dispatch(runActionCreators.onMediaEnded() as object as Action);
-	}
+	},
+	operationError: (error: string) => {
+		dispatch(runActionCreators.operationError(error) as object as Action);
+	},
 });
 
 export class TableVideo extends React.Component<TableVideoProps> {
@@ -40,6 +47,13 @@ export class TableVideo extends React.Component<TableVideoProps> {
 		}
 
 		this.videoRef.current.volume = this.props.soundVolume;
+		
+		const ext = getExtension(this.props.text);
+		const canPlay = ext !== null && this.videoRef.current.canPlayType(ext);
+
+		if (canPlay === '') {
+			this.props.operationError(`${localization.unsupportedMediaType}: ${ext}`);
+		}
 	}
 
 	componentDidUpdate(prevProps: TableVideoProps) {
@@ -57,8 +71,7 @@ export class TableVideo extends React.Component<TableVideoProps> {
 			if (this.props.isMediaStopped) {
 				video.pause();
 			} else {
-				// TODO: await, send error to chat
-				video.play().catch(e => console.error(e));
+				video.play().catch(e => this.props.operationError(getErrorMessage(e)));
 			}
 		}
 

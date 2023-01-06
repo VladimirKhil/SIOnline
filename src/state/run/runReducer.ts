@@ -9,6 +9,7 @@ import PlayerStates from '../../model/enums/PlayerStates';
 import Constants from '../../model/enums/Constants';
 import { updateTimers } from '../../utils/TimerInfoHelpers';
 import TimerStates from '../../model/enums/TimeStates';
+import MessageLevel from '../../model/enums/MessageLevel';
 
 const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction: AnyAction): RunState => {
 	const action = anyAction as KnownRunAction;
@@ -681,7 +682,11 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 				...state,
 				chat: {
 					...state.chat,
-					messages: [...state.chat.messages, { sender: '', text: action.error }]
+					messages: [...state.chat.messages, {
+						sender: '',
+						text: action.error,
+						level: MessageLevel.Warning,
+					}]
 				}
 			};
 

@@ -4,6 +4,7 @@ import ChatMode from '../../model/enums/ChatMode';
 import GamesFilter from '../../model/enums/GamesFilter';
 import localization from '../../model/resources/localization';
 import GameInfo from '../../client/contracts/GameInfo';
+import MessageLevel from '../../model/enums/MessageLevel';
 
 interface OnlineState {
 	inProgress: boolean;
@@ -38,7 +39,8 @@ const initialState: OnlineState = {
 	messages: [
 		{
 			sender: localization.appUser,
-			text: localization.greeting
+			text: localization.greeting,
+			level: MessageLevel.System
 		}
 	],
 	password: '',

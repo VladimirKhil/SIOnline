@@ -1,5 +1,6 @@
 import * as React from 'react';
 import ChatMessage from '../../model/ChatMessage';
+import MessageLevel from '../../model/enums/MessageLevel';
 
 import './ChatLog.css';
 
@@ -27,8 +28,8 @@ export default class ChatLog extends React.Component<ChatLogProps> {
 		return (
 			<div ref={this.myRef} className={`chatLog ${this.props.className}`}>
 				{this.props.messages.map((message, index) => message.sender
-					? <span key={index}><b>{message.sender}</b>{`: ${message.text}`}</span>
-					: <span key={index}>{message.text}</span>)}
+					? <span key={index} className={MessageLevel[message.level].toLowerCase()}><b>{message.sender}</b>{`: ${message.text}`}</span>
+					: <span key={index} className={MessageLevel[message.level].toLowerCase()}>{message.text}</span>)}
 			</div>
 		);
 	}

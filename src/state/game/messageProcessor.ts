@@ -20,6 +20,7 @@ import localization from '../../model/resources/localization';
 import StakeTypes from '../../model/enums/StakeTypes';
 import stringFormat from '../../utils/StringHelpers';
 import actionCreators from '../actionCreators';
+import MessageLevel from '../../model/enums/MessageLevel';
 
 let lastReplicLock: number;
 
@@ -53,7 +54,12 @@ const userMessageReceived: ActionCreator<ThunkAction<void, State, DataContext, A
 			return;
 		}
 
-		const replic: ChatMessage = { sender: message.sender, text: message.text };
+		const replic: ChatMessage = {
+			sender: message.sender,
+			text: message.text,
+			level: MessageLevel.Information,
+		};
+
 		dispatch(runActionCreators.chatMessageAdded(replic));
 
 		if (!getState().run.chat.isVisible && getState().ui.windowWidth < 800) {
@@ -1097,7 +1103,7 @@ function onReplic(dispatch: Dispatch<RunActions.KnownRunAction>, state: State, a
 		return;
 	}
 
-	dispatch(runActionCreators.chatMessageAdded({ sender: null, text }));
+	dispatch(runActionCreators.chatMessageAdded({ sender: null, text, level: MessageLevel.System }));
 }
 
 function connected(dispatch: Dispatch<RunActions.KnownRunAction>, state: State, ...args: string[]) {

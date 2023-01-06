@@ -1,8 +1,12 @@
-#helpDialog {
+.helpDialog {
     background-color: #5A95E2;
     display: flex;
     flex-flow: column;
     overflow-y: hidden;
+}
+
+.helpDialog > header {
+	background-color: #000451;
 }
 
 .helpText {
@@ -10,6 +14,7 @@
     padding-right: 13px;
     overflow-y: auto;
     scrollbar-width: thin;
+	user-select: text;
 }
 
 .dialog section header {
@@ -26,4 +31,13 @@
     list-style-type: circle;
     list-style-position: inside;
     margin-left: 2px;
+}
+
+@media screen and (min-width: 800px) {
+	.helpDialog {
+		top: 100px;
+		bottom: 100px;
+		left: 100px;
+		right: 100px;
+	}
 }

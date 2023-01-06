@@ -9,6 +9,8 @@ import GameInfo from '../client/contracts/GameInfo';
 
 export const activeConnections: string[] = [];
 
+const detachedConnections: signalR.HubConnection[] = [];
+
 export function attachListeners(connection: signalR.HubConnection, dispatch: Dispatch<AnyAction>): void {
 	connection.on('Joined', (login: string) => dispatch(actionCreators.userJoined(login)));
 	connection.on('Leaved', (login: string) => dispatch(actionCreators.userLeaved(login)));
@@ -24,7 +26,7 @@ export function attachListeners(connection: signalR.HubConnection, dispatch: Dis
 	});
 
 	connection.onreconnecting((e) => {
-		if (!connection.connectionId || !activeConnections.includes(connection.connectionId)) {
+		if (detachedConnections.includes(connection)) {
 			return;
 		}
 
@@ -33,7 +35,7 @@ export function attachListeners(connection: signalR.HubConnection, dispatch: Dis
 	});
 
 	connection.onreconnected(() => {
-		if (!connection.connectionId || !activeConnections.includes(connection.connectionId)) {
+		if (detachedConnections.includes(connection)) {
 			return;
 		}
 
@@ -41,11 +43,11 @@ export function attachListeners(connection: signalR.HubConnection, dispatch: Dis
 	});
 
 	connection.onclose((e) => {
-		if (!connection.connectionId || !activeConnections.includes(connection.connectionId)) {
+		if (detachedConnections.includes(connection)) {
 			return;
 		}
 
-		dispatch(actionCreators.onConnectionChanged(false, `${localization.connectionClosed} ${e?.message || ''}`) as object as AnyAction);
+		dispatch(actionCreators.onConnectionClosed(`${localization.connectionClosed} ${e?.message || ''}`) as object as AnyAction);
 	});
 }
 
@@ -59,7 +61,9 @@ export function detachListeners(connection: signalR.HubConnection): void {
 	connection.off('Receive');
 	connection.off('Disconnect');
 
-	connection.onreconnecting(() => { });
-	connection.onreconnected(() => { });
-	connection.onclose(() => { });
+	detachedConnections.push(connection);
+}
+
+export function removeConnection(connection: signalR.HubConnection): void {
+	detachedConnections.splice(detachedConnections.indexOf(connection), 1);
 }

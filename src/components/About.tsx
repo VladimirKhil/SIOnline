@@ -20,7 +20,7 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export function About(props: AboutProps): JSX.Element {
 	return (
-		<Dialog id="helpDialog" title={localization.aboutTitle} onClose={props.onClose}>
+		<Dialog className="helpDialog" title={localization.aboutTitle} onClose={props.onClose}>
 			<div className="helpText">
 				<section>
 					{localization.about.map(text => (<p key={text}>{text}</p>))}
@@ -50,6 +50,7 @@ export function About(props: AboutProps): JSX.Element {
 								Microsoft SignalR, Microsoft SignalR MessagePack (Apache 2.0)
 							</a>
 						</li>
+						<li><a href="https://github.com/richtr/NoSleep.js/blob/master/LICENSE">NoSleep.JS (MIT)</a></li>
 					</ul>
 				</section>
 			</div>

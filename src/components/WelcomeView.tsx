@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import localization from '../model/resources/localization';
 import actionCreators from '../state/actionCreators';
 import State from '../state/State';
+import Dialog from './common/Dialog';
 import FlyoutButton, { FlyoutHorizontalOrientation } from './common/FlyoutButton';
 
 import './WelcomeView.css';
@@ -18,6 +19,10 @@ interface WelcomeViewProps {
 	anyonePlay: () => void;
 	joinLobby: () => void;
 	exit: () => void;
+}
+
+interface WelcomeViewState {
+	showLicense: boolean;
 }
 
 const mapStateToProps = (state: State) => ({
@@ -46,6 +51,8 @@ const mapDispatchToProps = (dispatch: any) => ({
 });
 
 export function WelcomeView(props: WelcomeViewProps): JSX.Element {
+	const [showLicense, setShowLicense] = React.useState(false);
+
 	return (
 		<section className="welcomeView">
 			<header>
@@ -53,20 +60,19 @@ export function WelcomeView(props: WelcomeViewProps): JSX.Element {
 					<span>{localization.server}</span>
 					<span>: </span>
 					<span className="serverName">{props.serverName || localization.appUser}</span>
-					<FlyoutButton
+
+					<button
 						className='serverLicense'
 						title={localization.serverLicense}
-						flyout={<span className='licenseText'>
-							<header>{localization.serverLicense}</header>
-							{props.serverLicense?.split('\n').map((text, index) => <p key={index}>{text}</p>)}
-							</span>}
-						horizontalOrientation={props.windowWidth < 800 ? FlyoutHorizontalOrientation.Left : FlyoutHorizontalOrientation.Right}
+						onClick={() => setShowLicense(true)}
 					>
 						ⓘ
-					</FlyoutButton>
+					</button>
 				</h1>
+
 				<h1>{localization.welcomeTitle}</h1>
 			</header>
+
 			<div className={`welcomeViewActions ${props.isConnected ? '' : 'disconnected'}`}>
 				<button className='standard welcomeRow right' disabled={!props.isConnected} onClick={() => props.singlePlay()}>
 					{localization.singlePlay}
@@ -88,6 +94,15 @@ export function WelcomeView(props: WelcomeViewProps): JSX.Element {
 					{localization.exitFromGame}
 				</button>
 			</div>
+
+			{showLicense ? (
+				<Dialog className='licenseDialog' title={localization.serverLicense} onClose={() => setShowLicense(false)}>
+					<div className='licenseText'>
+						{props.serverLicense?.split('\n').map((text, index) => <p key={index}>{text}</p>)}
+					</div>
+				</Dialog>
+			)
+			: null}
 		</section>
 	);
 }

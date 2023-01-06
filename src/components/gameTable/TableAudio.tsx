@@ -5,6 +5,9 @@ import { connect } from 'react-redux';
 import runActionCreators from '../../state/run/runActionCreators';
 import VolumeButton from '../common/VolumeButton';
 import settingsActionCreators from '../../state/settings/settingsActionCreators';
+import getErrorMessage from '../../utils/ErrorHelpers';
+import getExtension from '../../utils/FileHelper';
+import localization from '../../model/resources/localization';
 
 interface TableAudioProps {
 	soundVolume: number;
@@ -12,6 +15,7 @@ interface TableAudioProps {
 	isMediaStopped: boolean;
 	onMediaEnded: () => void;
 	onSoundVolumeChange: (volume: number) => void;
+	operationError: (error: string) => void;
 }
 
 const mapStateToProps = (state: State) => ({
@@ -26,7 +30,10 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	},
 	onSoundVolumeChange: (volume: number) => {
 		dispatch(settingsActionCreators.onSoundVolumeChanged(volume));
-	}
+	},
+	operationError: (error: string) => {
+		dispatch(runActionCreators.operationError(error) as object as Action);
+	},
 });
 
 export class TableAudio extends React.Component<TableAudioProps> {
@@ -44,6 +51,13 @@ export class TableAudio extends React.Component<TableAudioProps> {
 		}
 
 		this.audioRef.current.volume = this.props.soundVolume;
+		
+		const ext = getExtension(this.props.audio);
+		const canPlay = ext !== null && this.audioRef.current.canPlayType(ext);
+
+		if (canPlay === '') {
+			this.props.operationError(`${localization.unsupportedMediaType}: ${ext}`);
+		}
 	}
 
 	componentDidUpdate(prevProps: TableAudioProps) {
@@ -61,8 +75,7 @@ export class TableAudio extends React.Component<TableAudioProps> {
 			if (this.props.isMediaStopped) {
 				audio.pause();
 			} else {
-				// TODO: await, send error to chat
-				audio.play().catch(e => console.error(e));
+				audio.play().catch(e => this.props.operationError(getErrorMessage(e)));
 			}
 		}
 

@@ -16,11 +16,12 @@ interface SelectorProps<T> {
 	onValueChanged: (newValue: T) => void;
 }
 
-export default function Selector<T>(props: SelectorProps<T>): JSX.Element {
+export default function Selector<T extends (string | number)>(props: SelectorProps<T>): JSX.Element {
 	return (
 		<div className={`selector ${props.className}`}>
 			{props.data.map(item => (
 				<button
+					key={item.value.toString()}
 					className={props.value === item.value ? 'unselectable' : ''}
 					disabled={props.value === item.value || props.disabled}
 					title={item.tooltip}

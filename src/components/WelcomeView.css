@@ -31,10 +31,22 @@
 	border: 0;
 }
 
+.licenseDialog {
+	background-color: #000451;
+	overflow-y: hidden;
+	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
 .licenseText {
 	display: block;
-	background-color: #98B9FF;
 	padding: 10px;
+	height: 100%;
+	color: black;
+	background-color: #98B9FF;
+	font-weight: normal;
+	font-size: 18px;
+	overflow-y: auto;
+	user-select: text;
 }
 
 .licenseText header {
@@ -85,6 +97,13 @@
 		width: initial;
 		height: initial;
 		flex: initial;
+	}
+
+	.licenseDialog {
+		top: 100px;
+		bottom: 100px;
+		left: 100px;
+		right: 100px;
 	}
 }
 

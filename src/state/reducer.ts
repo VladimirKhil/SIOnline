@@ -12,6 +12,7 @@ import * as runState from './run/RunState';
 import settingsReducer from './settings/settingsReducer';
 import { KnownSettingsAction } from './settings/SettingsActions';
 import Role from '../client/contracts/Role';
+import MessageLevel from '../model/enums/MessageLevel';
 
 const reducer: Reducer<State> = (state: State = initialState, action: KnownAction | KnownRunAction | KnownSettingsAction): State => {
 	switch (action.type) {
@@ -249,7 +250,8 @@ const reducer: Reducer<State> = (state: State = initialState, action: KnownActio
 					messages: [
 						...state.online.messages, {
 							sender: action.sender,
-							text: action.message
+							text: action.message,
+							level: MessageLevel.Information,
 						}]
 				}
 			};
