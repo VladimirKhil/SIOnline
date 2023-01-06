@@ -14,6 +14,7 @@ import NewGameDialog from './NewGameDialog';
 import actionCreators from '../state/actionCreators';
 import Games from './Games';
 import ErrorView from './ErrorView';
+import CookiesWarning from './CookiesWarning';
 
 import './App.css';
 
@@ -104,6 +105,7 @@ export class App extends React.Component<AppProps, AppState> {
 			<div className="app">
 				{this.getContent()}
 				{this.props.areSettingsVisible ? <SettingsDialog /> : null}
+				<CookiesWarning />
 			</div>
 		);
 	}

@@ -1,0 +1,32 @@
+.cookies__warning {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	height: 60px;
+	text-align: center;
+	background-color: #5A95E2;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	box-shadow: 0 0 15px rgba(0, 0, 0, 1.0);
+	overflow: hidden;
+}
+
+.cookies__warning span {
+	margin: 0 20px;
+}
+
+.cookies__warning button {
+	width: 100px;
+	height: 40px;
+	margin: 0 20px;
+	font-size: 20px;
+}
+
+@media screen and (min-width: 470px) and (min-height: 600px) {
+    .cookies__warning {
+		left: 100px;
+		right: 100px;
+	}
+}

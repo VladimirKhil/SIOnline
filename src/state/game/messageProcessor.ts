@@ -21,6 +21,7 @@ import StakeTypes from '../../model/enums/StakeTypes';
 import stringFormat from '../../utils/StringHelpers';
 import actionCreators from '../actionCreators';
 import MessageLevel from '../../model/enums/MessageLevel';
+import GameStage from '../../model/enums/GameStage';
 
 let lastReplicLock: number;
 
@@ -586,19 +587,19 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 			const roundIndex = args.length > 3 ? parseInt(args[3], 10) : -1;
 			dispatch(runActionCreators.stageChanged(stage, roundIndex));
 
-			if (stage !== 'Before') {
+			if (stage !== GameStage.Before) {
 				dispatch(runActionCreators.gameStarted());
 			}
 
-			if (stage === 'Round' || stage === 'Final') {
+			if (stage === GameStage.Round || stage === GameStage.Final) {
 				dispatch(tableActionCreators.showRound(args[2]));
 				dispatch(runActionCreators.playersStateCleared());
-				if (stage === 'Round') {
+				if (stage === GameStage.Round) {
 					for	(let i = 0; i < state.run.persons.players.length; i++) {
 						dispatch(runActionCreators.playerInGameChanged(i, true));
 					}
 				}
-			} else if (stage === 'After') {
+			} else if (stage === GameStage.After) {
 				dispatch(tableActionCreators.showLogo());
 			}
 

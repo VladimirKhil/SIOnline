@@ -5,6 +5,7 @@ import ProgressBar from '../common/ProgressBar';
 import TimerInfo from '../../model/TimerInfo';
 import { isRunning } from '../../utils/TimerInfoHelpers';
 import localization from '../../model/resources/localization';
+import GameStage from '../../model/enums/GameStage';
 
 import './RoundProgress.css';
 
@@ -24,10 +25,10 @@ const mapStateToProps = (state: State) => ({
 
 function getLocalizedStageName(stageName: string): string {
 	switch (stageName) {
-		case 'Begin':
+		case GameStage.Begin:
 			return localization.gameStarted;
 			
-		case 'After':
+		case GameStage.After:
 			return localization.gameFinished;
 
 		default:
