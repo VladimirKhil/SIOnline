@@ -7,7 +7,8 @@ interface ProgressBarProps {
 	isIndeterminate?: boolean;
 	value?: number;
 	valueChangeDuration?: number;
-	title?: string;
+	title?: string;	
+	children?: any;
 }
 
 export default function ProgressBar(props: ProgressBarProps): JSX.Element {
@@ -39,6 +40,8 @@ export default function ProgressBar(props: ProgressBarProps): JSX.Element {
 				aria-valuemin={0}
 				aria-valuemax={100}
 			/>
+			
+			{props.children}
 		</div>
 	);
 }

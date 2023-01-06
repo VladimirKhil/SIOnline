@@ -72,6 +72,7 @@ function getMainAreaContent(props: InGameViewProps): React.ReactNode {
 					<GameLogView />
 				</div>
 			</div>
+			
 			<RoundProgress />
 		</div>
 	) : null;

@@ -115,9 +115,11 @@ export function GameTable(props: GameTableProps): JSX.Element {
 					{props.caption}
 				</div>
 			) : null}
+
 			<div className="tableContent">
 				{getContent(props.mode)}
 			</div>
+
 			{props.showMainTimer ? (
 				<ProgressBar
 					className="commonProgress"
@@ -125,6 +127,7 @@ export function GameTable(props: GameTableProps): JSX.Element {
 					valueChangeDuration={isRunning(props.decisionTimer) ? (props.decisionTimer.maximum - props.decisionTimer.value) / 10 : 0}
 				/>
 			) : null}
+			
 			{props.isPaused || !props.isConnected ? (
 				<AutoSizedText
 					maxFontSize={288}

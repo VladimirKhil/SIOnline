@@ -41,6 +41,7 @@ import FileKey from '../client/contracts/FileKey';
 import tableActionCreators from './table/tableActionCreators';
 import { getFullCulture } from '../utils/StateHelpers';
 import settingsActionCreators from './settings/settingsActionCreators';
+import MessageLevel from '../model/enums/MessageLevel';
 
 const isConnectedChanged: ActionCreator<Actions.IsConnectedChangedAction> = (isConnected: boolean) => ({
 	type: Actions.ActionTypes.IsConnectedChanged,
@@ -54,7 +55,7 @@ const onConnectionChanged: ActionCreator<ThunkAction<void, State, DataContext, A
 		const state = getState();
 
 		if (state.ui.mainView === MainView.Game) {
-			dispatch(runActionCreators.chatMessageAdded({ sender: '', text: message }));
+			dispatch(runActionCreators.chatMessageAdded({ sender: '', text: message, level: MessageLevel.System }));
 		} else {
 			dispatch(receiveMessage('', message));
 		}

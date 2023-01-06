@@ -96,6 +96,8 @@ function getSideArea(props: GameChatViewProps): React.ReactNode {
 export function GameChatView(props: GameChatViewProps): JSX.Element {
 	return (
 		<div id="gameLogHost">
+			<RoundProgress />
+			
 			<div className="wide tabHeader gameHeader">
 				<h1
 					className={props.chatMode === ChatMode.Chat ? 'activeTab' : ''}
@@ -188,7 +190,6 @@ export function GameChatView(props: GameChatViewProps): JSX.Element {
 						{localization.game}
 					</FlyoutButton>
 				</div>) : null}
-			<RoundProgress />
 		</div>
 	);
 }

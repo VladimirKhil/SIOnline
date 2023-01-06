@@ -1,3 +1,21 @@
+.round_progress {
+	position: relative;
+}
+
 .round_progress, .round_progress .progress-bar {
-	height: 10px;
+	height: 30px;
+}
+
+.round_header {
+	position: absolute;
+    top: 2px;
+    left: 10px;
+    right: 10px;
+    bottom: 0;
+    text-align: center;
+    color: #FFFFFF;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    text-shadow: 1px 1px 2px black;
 }

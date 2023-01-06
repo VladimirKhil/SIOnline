@@ -6,16 +6,16 @@ import { Action, Dispatch } from 'redux';
 
 import './ManageGameView.css';
 
-interface ManageGameViewProps {	
+interface ManageGameViewProps {
 	roundsNames: string[] | null;
 	roundIndex: number;
 	navigateToRound: (roundIndex: number) => void;
 	onClose: () => void;
 }
 
-const mapStateToProps = (state: State) => ({	
+const mapStateToProps = (state: State) => ({
 	roundsNames: state.run.roundsNames,
-	roundIndex: state.run.stage.roundIndex
+	roundIndex: state.run.stage.roundIndex,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({

@@ -10,20 +10,44 @@ import './RoundProgress.css';
 
 interface RoundProgressProps {
 	roundTimer: TimerInfo;
+	roundsNames: string[] | null;
+	roundIndex: number;
+	stageName: string;
 }
 
 const mapStateToProps = (state: State) => ({
-	roundTimer: state.run.timers.round
+	roundTimer: state.run.timers.round,
+	roundsNames: state.run.roundsNames,
+	roundIndex: state.run.stage.roundIndex,
+	stageName: state.run.stage.name,
 });
 
+function getLocalizedStageName(stageName: string): string {
+	switch (stageName) {
+		case 'Begin':
+			return localization.gameStarted;
+			
+		case 'After':
+			return localization.gameFinished;
+
+		default:
+			return '';
+	}
+}
+
 export function RoundProgress(props: RoundProgressProps): JSX.Element {
+	const roundName = props.roundsNames && props.roundIndex > -1 && props.roundIndex < props.roundsNames.length
+		? props.roundsNames[props.roundIndex]
+		: getLocalizedStageName(props.stageName);
+
 	return (
 		<ProgressBar
 			className='round_progress'
-			value={1 - props.roundTimer.value / props.roundTimer.maximum}
+			value={1 - (props.roundTimer.value / props.roundTimer.maximum)}
 			valueChangeDuration={isRunning(props.roundTimer) ? (props.roundTimer.maximum - props.roundTimer.value) / 10 : 0}
-			title={localization.roundTime}
-		/>
+			title={localization.timeOfRound}>
+			<div className='round_header'>{roundName}</div>
+		</ProgressBar>
 	);
 }
 

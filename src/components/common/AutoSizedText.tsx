@@ -95,8 +95,8 @@ export default class AutoSizedText extends React.Component<AutoSizedTextProps> {
 			<div
 				id={this.props.id}
 				ref={this.myRef}
-				className={`centeredBlock ${this.props.className}`}
-				onClick={e => this.onClick()}
+				className={this.props.className}
+				onClick={() => this.onClick()}
 			>
 				<span>{this.props.children}</span>
 			</div>

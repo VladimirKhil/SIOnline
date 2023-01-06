@@ -289,7 +289,8 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 
 					dispatch(runActionCreators.chatMessageAdded({
 						sender: '',
-						text: stringFormat(localization.hostNameChanged, changeSource, args[1])
+						text: stringFormat(localization.hostNameChanged, changeSource, args[1]),
+						level: MessageLevel.System,
 					}));
 				}
 			}
@@ -527,11 +528,19 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 				fetch(contentUri)
 					.then(response => {
 						if (!response.ok) {
-							dispatch(runActionCreators.chatMessageAdded({ sender: '', text: response.statusText }));
+							dispatch(runActionCreators.chatMessageAdded({
+								sender: '',
+								text: response.statusText,
+								level: MessageLevel.System,
+							}));
 						}
 					})
 					.catch((e : TypeError) => {
-						dispatch(runActionCreators.chatMessageAdded({ sender: '', text: e.message }));
+						dispatch(runActionCreators.chatMessageAdded({
+							sender: '',
+							text: e.message,
+							level: MessageLevel.System,
+						}));
 					}); 
 				
 				// Chrome does not support audio and video preload

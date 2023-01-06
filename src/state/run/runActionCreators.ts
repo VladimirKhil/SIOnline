@@ -17,6 +17,7 @@ import tableActionCreators from '../table/tableActionCreators';
 import StakeTypes from '../../model/enums/StakeTypes';
 import MainView from '../../model/enums/MainView';
 import Constants from '../../model/enums/Constants';
+import MessageLevel from '../../model/enums/MessageLevel';
 
 let timerRef: number | null = null;
 
@@ -39,8 +40,9 @@ const runChatMessageSend: ActionCreator<ThunkAction<void, State, DataContext, Ac
 
 		dispatch(runChatMessageChanged(''));
 
-		// Временно
-		dispatch(chatMessageAdded({ sender: state.user.login, text }));
+		// Temporary
+		dispatch(chatMessageAdded({ sender: state.user.login, text, level: MessageLevel.Information }));
+
 		if (!state.run.chat.isVisible) {
 			dispatch(activateChat());
 		}
