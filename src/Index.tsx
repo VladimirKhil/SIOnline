@@ -23,6 +23,7 @@ import Constants from './model/enums/Constants';
 import settingsActionCreators from './state/settings/settingsActionCreators';
 import MainView from './model/enums/MainView';
 import NoSleep from 'nosleep.js';
+import getErrorMessage from './utils/ErrorHelpers';
 
 import './utils/polyfills';
 import './style.css';
@@ -119,6 +120,15 @@ function validateBrowser() : boolean {
 	return true;
 }
 
+async function registerServiceWorker2() {
+	try {
+		const registration = await navigator.serviceWorker.register('/service-worker.js');
+		console.log('Service worker registered: ', registration);
+	} catch (error) {
+		console.log('Service worker Registration Failed: ' + getErrorMessage(error));
+	}
+}
+
 async function run() {
 	if (!config) {
 		throw new Error('Config is undefined!');
@@ -141,19 +151,23 @@ async function run() {
 	}
 
 	let { serverUri } = config;
+
 	if (!serverUri) {
 		const { serverDiscoveryUri } = config;
+
 		if (!serverDiscoveryUri) {
 			throw new Error('Server uri is undefined!');
 		}
 
 		// Using random number to prevent serverUri caching
 		const serverUrisResponse = await fetch(`${serverDiscoveryUri}?r=${Math.random()}`); // throwing TypeError here is ok
+
 		if (!serverUrisResponse.ok) {
 			throw new Error(`Server discovery is broken! ${serverUrisResponse.status} ${await serverUrisResponse.text()}`);
 		}
 
 		const serverUris = (await serverUrisResponse.json()) as ServerInfo[];
+
 		if (!serverUris || serverUris.length === 0) {
 			throw new Error('Server uris object is broken!');
 		}
@@ -243,3 +257,7 @@ document.addEventListener('click', function enableNoSleep() {
 	document.removeEventListener('click', enableNoSleep, false);
 	noSleep.enable();
 }, false);
+
+if ('serviceWorker' in navigator && config && config.registerServiceWorker) {
+	window.addEventListener('load', registerServiceWorker2);
+}

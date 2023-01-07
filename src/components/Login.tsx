@@ -57,6 +57,7 @@ export class Login extends React.Component<LoginProps> {
 				<div className="main">
 					{this.props.inProgress ? <ProgressBar isIndeterminate /> : null}
 					<div className='logo' />
+
 					<div className="logonHost">
 						<div className='loginUser'>
 							<AvatarView disabled={this.props.inProgress} />

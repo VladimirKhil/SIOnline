@@ -5,7 +5,8 @@ config = {
     rewriteUrl: true,
     apiUri: 'https://vladimirkhil.com/api/si',
     forceHttps: false,
-    useMessagePackProtocol: false
+    useMessagePackProtocol: false,
+    registerServiceWorker: false,
 };
 
 firebaseConfig = null;

@@ -6,4 +6,5 @@ export default interface Config {
 	useMessagePackProtocol?: boolean;
 	ads?: string;
 	rewriteUrl?: boolean;
+	registerServiceWorker?: boolean;
 }

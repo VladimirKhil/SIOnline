@@ -1,12 +1,14 @@
 const path = require('path');
 const HtmlWebPackPlugin = require("html-webpack-plugin");
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+var WebpackPwaManifest = require('webpack-pwa-manifest');
+const WorkboxPlugin = require('workbox-webpack-plugin');
 
 module.exports = (env, argv) => {
 	return {
 		entry: {
 			config: './assets/config.js',
-			main: './src/Index.tsx'
+			main: './src/Index.tsx',
 		},
 		devtool: argv.mode === 'development' ? 'inline-source-map' : undefined,
 		devServer: {
@@ -64,7 +66,32 @@ module.exports = (env, argv) => {
 				template: "./src/index-template.html",
 				filename: "./index.html",
 				favicon: './assets/images/favicon.ico'
-			})
-		]
+			}),
+			new WebpackPwaManifest({
+				id: "sionline",
+				name: "SIOnline",
+				short_name: "SIOnline",
+				decription: "SIGame web application",
+				start_url: ".",
+				theme_color: "#FFFFFF",
+				background_color: "#010450",
+				display: "standalone",
+				crossorigin: 'use-credentials', //can be null, use-credentials or anonymous
+				icons: [
+				{
+					src: path.resolve('assets/images/sionline.png'),
+					sizes: [96, 128, 192, 256, 512] // multiple sizes
+				}
+				]
+			})].concat(
+				argv.mode === 'development'
+					? []
+					: [new WorkboxPlugin.GenerateSW({
+							// these options encourage the ServiceWorkers to get in there fast
+							// and not allow any straggling "old" SWs to hang around
+							clientsClaim: true,
+							skipWaiting: true,
+							maximumFileSizeToCacheInBytes: 6291456
+					})])
 	}
 };
