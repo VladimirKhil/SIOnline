@@ -11,6 +11,7 @@ import settingsReducer from './settingsSlice';
 import DataContext from '../../model/DataContext';
 import DummyGameServerClient from '../../client/DummyGameServerClient';
 import Config from '../Config';
+import GameClient from '../../client/game/GameClient';
 
 /* New version of store. Not used yet */
 
@@ -22,11 +23,14 @@ if (!serverUri) {
 	serverUri = '';
 }
 
+const gameClient = new DummyGameServerClient();
+
 const dataContext : DataContext = {
 	config,
 	serverUri,
 	connection: null,
-	gameClient: new DummyGameServerClient(),
+	gameClient,
+	game: new GameClient(gameClient),
 	contentUris: null
 };
 

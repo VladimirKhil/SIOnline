@@ -67,6 +67,8 @@ export default interface RunState {
 	selectedTableIndex: number; // 0 for showman; {N} for player {N - 1}
 	personsVisible: boolean;
 	tablesVisible: boolean;
+	bannedVisible: boolean;
+	gameInfoVisible: boolean;
 	manageGameVisible: boolean;
 	isGameButtonEnabled: boolean;
 	areSumsEditable: boolean;
@@ -75,6 +77,15 @@ export default interface RunState {
 	hint: string | null;
 	roundsNames: string[] | null;
 	buttonBlockingTimeSeconds: number;
+	metadata: {
+		gameName: string | null;
+		packageName: string | null;
+		contactUri: string | null;
+	},
+	banned: {
+		entries: Record<string, string>;
+		selectedIp: string | null;
+	}
 }
 
 export const initialState: RunState = {
@@ -168,6 +179,8 @@ export const initialState: RunState = {
 	selectedTableIndex: -1,
 	personsVisible: false,
 	tablesVisible: false,
+	bannedVisible: false,
+	gameInfoVisible: false,
 	manageGameVisible: false,
 	isGameButtonEnabled: true,
 	areSumsEditable: false,
@@ -175,5 +188,14 @@ export const initialState: RunState = {
 	areApellationsEnabled: true,
 	hint: null,
 	roundsNames: null,
-	buttonBlockingTimeSeconds: 3
+	buttonBlockingTimeSeconds: 3,
+	metadata: {
+		gameName: null,
+		packageName: null,
+		contactUri: null,
+	},
+	banned: {
+		entries: {},
+		selectedIp: null,
+	}
 };

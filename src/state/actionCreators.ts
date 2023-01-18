@@ -42,6 +42,7 @@ import tableActionCreators from './table/tableActionCreators';
 import { getFullCulture } from '../utils/StateHelpers';
 import settingsActionCreators from './settings/settingsActionCreators';
 import MessageLevel from '../model/enums/MessageLevel';
+import GameClient from '../client/game/GameClient';
 
 const isConnectedChanged: ActionCreator<Actions.IsConnectedChangedAction> = (isConnected: boolean) => ({
 	type: Actions.ActionTypes.IsConnectedChanged,
@@ -398,6 +399,8 @@ const login: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 					connection,
 					e => dispatch(runActionCreators.operationError(getErrorMessage(e)) as object as Actions.KnownAction)
 				);
+
+				dataContext.game = new GameClient(dataContext.gameClient);
 
 				try {
 					await dataContext.connection.start();

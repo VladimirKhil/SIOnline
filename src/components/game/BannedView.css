@@ -1,0 +1,27 @@
+.bannedView {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+}
+
+.bannedList {
+	flex: 1;
+	background-color: #C0CFF4;
+}
+
+.bannedItem {
+	padding-left: 15px;
+	cursor: pointer;
+	height: 40px;
+	line-height: 40px;
+	vertical-align: middle;
+	display: flex;
+}
+
+	.bannedItem:hover {
+		background-color: #98B9FF;
+	}
+
+	.bannedItem.selected {
+		background-color: #5A95E2;
+	}

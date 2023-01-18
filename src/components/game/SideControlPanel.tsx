@@ -35,6 +35,8 @@ interface SideControlPanelProps {
 	onMarkQuestion: () => void;
 	onShowPersons: () => void;
 	onShowTables: () => void;
+	onShowBanned: () => void;
+	onShowGameInfo: () => void;
 	onPause: () => void;
 	onExit: () => void;
 	onEditSums: (enable: boolean) => void;
@@ -71,6 +73,12 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	},
 	onShowTables: () => {
 		dispatch(runActionCreators.runShowTables());
+	},
+	onShowBanned: () => {
+		dispatch(runActionCreators.runShowBanned());
+	},
+	onShowGameInfo: () => {
+		dispatch(runActionCreators.runShowGameInfo());
 	},
 	onPause: () => {
 		dispatch(runActionCreators.pause() as unknown as Action);
@@ -131,6 +139,7 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 				<div className="messageWrapper">
 					<ChatInput />
 					<AnswerInput id="answerBox" />
+
 					<button
 						type="button"
 						id="showChat"
@@ -140,6 +149,7 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 					>
 						<span>{props.isChatVisible ? '▼' : '▲'}</span>
 					</button>
+
 					{props.areStakesVisible ? (
 						<div className="stakeRangeHost">
 							<StakeSumEditor type="range" className="stakeRange" />
@@ -159,6 +169,7 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 							{props.isPaused ? '▶' : '⏸'}
 						</button>
 					) : null}
+
 					<div className="gameMenuHost" style={gameMenuHostStyle}>
 						<FlyoutButton
 							className="gameMenuButton standard"
@@ -194,8 +205,11 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 												</li>
 											</>
 										) : null}
+										
 									<li onClick={() => props.onShowPersons()}>{localization.members}</li>
 									<li onClick={() => props.onShowTables()}>{localization.tables}</li>
+									<li onClick={() => props.onShowBanned()}>{localization.bannedList}</li>
+									<li onClick={() => props.onShowGameInfo()}>{localization.gameInfo}</li>
 									{canPause ? <li className={enabledClass} onClick={() => props.onPause()}>{pauseTitle}</li> : null}
 									<li onClick={() => props.onShowSettings()}>{localization.settings}</li>
 								</ul>

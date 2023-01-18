@@ -20,6 +20,8 @@ import TablesView from './TablesView';
 import Dialog from '../common/Dialog';
 import ManageGameView from './ManageGameView';
 import Constants from '../../model/enums/Constants';
+import GameMetadataView from './GameMetadataView';
+import BannedView from './BannedView';
 
 import './InGameView.css';
 
@@ -30,11 +32,15 @@ interface InGameViewProps {
 	showPersonsAtBottomOnWideScreen: boolean;
 	isPersonsDialogVisible: boolean;
 	isTablesDialogVisible: boolean;
+	isBannedDialogVisible: boolean;
+	isGameInfoDialogVisible: boolean;
 	isAnswerValidationDialogVisible: boolean;
 	isManageGameDialogVisible: boolean;
 
 	onPersonsDialogClose: () => void;
 	onTablesDialogClose: () => void;
+	onBannedDialogClose: () => void;
+	onGameInfoDialogClose: () => void;
 	onManageGameDialogClose: () => void;
 }
 
@@ -44,6 +50,8 @@ const mapStateToProps = (state: State) => ({
 	showPersonsAtBottomOnWideScreen: state.settings.showPersonsAtBottomOnWideScreen,
 	isPersonsDialogVisible: state.run.personsVisible,
 	isTablesDialogVisible: state.run.tablesVisible,
+	isBannedDialogVisible: state.run.bannedVisible,
+	isGameInfoDialogVisible: state.run.gameInfoVisible,
 	isManageGameDialogVisible: state.run.manageGameVisible,
 	isAnswerValidationDialogVisible: state.run.validation.isVisible
 });
@@ -54,6 +62,12 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	},
 	onTablesDialogClose: () => {
 		dispatch(runActionCreators.runHideTables());
+	},
+	onBannedDialogClose: () => {
+		dispatch(runActionCreators.runHideBanned());
+	},
+	onGameInfoDialogClose: () => {
+		dispatch(runActionCreators.runHideGameInfo());
 	},
 	onManageGameDialogClose: () => {
 		dispatch(runActionCreators.runHideManageGame());
@@ -86,35 +100,55 @@ export function InGameView(props: InGameViewProps) : JSX.Element {
 			<div className="game__tableArea">
 				<div className={`gameMainView ${props.showPersonsAtBottomOnWideScreen && isScreenWide ? 'reversed' : ''}`}>
 					<PlayersView />
+
 					<div className="showmanTableArea">
 						<ShowmanReplicView />
+
 						<div className="tableArea">
 							<GameTable />
 							<GameHint />
 						</div>
 					</div>
 				</div>
+
 				<BottomControlPanel />
 			</div>
+
 			<div className="game__mainArea">
 				{getMainAreaContent(props)}
 				<SideControlPanel />
 			</div>
+
 			{props.isPersonsDialogVisible && !isScreenWide ? (
 				<PersonsDialog title={localization.members} onClose={props.onPersonsDialogClose}>
 					<PersonsView />
 				</PersonsDialog>
 			) : null}
+
 			{props.isTablesDialogVisible && !isScreenWide ? (
 				<PersonsDialog title={localization.tables} onClose={props.onTablesDialogClose}>
 					<TablesView />
 				</PersonsDialog>
 			) : null}
+
+			{props.isBannedDialogVisible && !isScreenWide ? (
+				<PersonsDialog title={localization.bannedList} onClose={props.onBannedDialogClose}>
+					<BannedView />
+				</PersonsDialog>
+			) : null}
+
+			{props.isGameInfoDialogVisible && !isScreenWide ? (
+				<Dialog className='gameInfoDialog' title={localization.gameInfo} onClose={props.onGameInfoDialogClose}>
+					<GameMetadataView />
+				</Dialog>
+			) : null}
+
 			{props.isManageGameDialogVisible && !isScreenWide ? (
 				<Dialog className='manageGameDialog' title={localization.game} onClose={props.onManageGameDialogClose}>
 					<ManageGameView onClose={props.onManageGameDialogClose} />
 				</Dialog>
 			) : null}
+
 			{props.isAnswerValidationDialogVisible ? <AnswerValidationDialog /> : null}
 		</section>
 	);

@@ -108,11 +108,13 @@ export class SettingsDialog extends React.Component<SettingsDialogProps, Setting
 						</h1>
 					</div>
 
-					{this.renderTab()}
+					<div className='settingsBody'>
+						{this.renderTab()}
 
-					<button className="reset standard" title={localization.resetToDefaultsHint} onClick={this.props.onReset}>
-						{localization.resetToDefaults}
-					</button>
+						<button className="reset standard" title={localization.resetToDefaultsHint} onClick={this.props.onReset}>
+							{localization.resetToDefaults}
+						</button>
+					</div>
 				</div>
 			</Dialog>
 		);

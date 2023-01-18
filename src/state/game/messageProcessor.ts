@@ -22,6 +22,7 @@ import stringFormat from '../../utils/StringHelpers';
 import actionCreators from '../actionCreators';
 import MessageLevel from '../../model/enums/MessageLevel';
 import GameStage from '../../model/enums/GameStage';
+import GameMessages from '../../client/game/GameMessages';
 
 let lastReplicLock: number;
 
@@ -196,6 +197,24 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 			}
 			break;
 
+		case GameMessages.Banned:
+			if (args.length < 3) {
+				break;
+			}
+
+			dispatch(runActionCreators.banned(args[1], args[2]));
+			break;
+
+		case GameMessages.BannedList:
+			const bannedList: Record<string, string> = {};
+				
+			for (let i = 1; i < args.length - 1; i += 2) {
+				bannedList[args[i]] = args[i + 1];
+			}
+
+			dispatch(runActionCreators.bannedListChanged(bannedList));
+			break;
+
 		case 'BUTTON_BLOCKING_TIME':
 			if (args.length === 1) {
 				break;
@@ -271,9 +290,20 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 			// Not used - finalthink sound could be played here
 			break;
 
+		case 'GAMEMETADATA':
+			{
+				if (args.length < 4) {
+					break;
+				}
+
+				dispatch(runActionCreators.gameMetadataChanged(args[1], args[2], args[3]));
+			}
+			break;
+
 		case 'GAMETHEMES':
 			{
 				const gameThemes = [];
+
 				for (let i = 1; i < args.length; i++) {
 					gameThemes.push(args[i]);
 				}
@@ -285,6 +315,7 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 		case 'HOSTNAME':
 			if (args.length > 1) {
 				dispatch(runActionCreators.hostNameChanged(args[1]));
+
 				if (args.length > 2) {
 					const changeSource = args[2].length > 0 ? args[2] : localization.byGame;
 
@@ -757,6 +788,21 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 
 		case 'TRY':
 			dispatch(tableActionCreators.canPressChanged(true));
+			break;
+
+		case GameMessages.Unbanned:
+			if (args.length < 2) {
+				break;
+			}
+
+			dispatch(runActionCreators.unbanned(args[1]));
+
+			dispatch(runActionCreators.chatMessageAdded({
+				sender: '',
+				text: stringFormat(localization.userUnbanned, args[1]),
+				level: MessageLevel.System,
+			}));
+
 			break;
 
 		case 'WINNER':

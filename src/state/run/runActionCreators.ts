@@ -88,6 +88,22 @@ const runHideTables: ActionCreator<RunActions.RunHideTablesAction> = () => ({
 	type: RunActions.RunActionTypes.RunHideTables
 });
 
+const runShowBanned: ActionCreator<RunActions.RunShowBannedAction> = () => ({
+	type: RunActions.RunActionTypes.RunShowBanned
+});
+
+const runHideBanned: ActionCreator<RunActions.RunHideBannedAction> = () => ({
+	type: RunActions.RunActionTypes.RunHideBanned
+});
+
+const runShowGameInfo: ActionCreator<RunActions.RunShowGameInfoAction> = () => ({
+	type: RunActions.RunActionTypes.RunShowGameInfo
+});
+
+const runHideGameInfo: ActionCreator<RunActions.RunHideGameInfoAction> = () => ({
+	type: RunActions.RunActionTypes.RunHideGameInfo
+});
+
 const runShowManageGame: ActionCreator<RunActions.RunShowManageGameAction> = () => ({
 	type: RunActions.RunActionTypes.RunShowManageGame
 });
@@ -701,6 +717,34 @@ const buttonBlockingTimeChanged: ActionCreator<RunActions.ButtonBlockingChangedA
 	type: RunActions.RunActionTypes.ButtonBlockingTimeChanged, buttonBlockingTime
 });
 
+const gameMetadataChanged: ActionCreator<RunActions.GameMetadataChangedAction> = (gameName: string, packageName: string, contactUri: string) => ({
+	type: RunActions.RunActionTypes.GameMetadataChanged, gameName, packageName, contactUri
+});
+
+const bannedListChanged: ActionCreator<RunActions.BannedListChangedAction> = (bannedList: Record<string, string>) => ({
+	type: RunActions.RunActionTypes.BannedListChanged, bannedList
+});
+
+const banned: ActionCreator<RunActions.BannedAction> = (ip: string, name: string) => ({
+	type: RunActions.RunActionTypes.Banned, ip, name
+});
+
+const unbanned: ActionCreator<RunActions.UnbannedAction> = (ip: string) => ({
+	type: RunActions.RunActionTypes.Unbanned, ip
+});
+
+const selectBannedItem: ActionCreator<RunActions.SelectBannedItemAction> = (ip: string) => ({
+	type: RunActions.RunActionTypes.SelectBannedItem, ip
+});
+
+const unban: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (ip: string) => async (
+	_dispatch: Dispatch<any>,
+	_getState: () => State,
+	dataContext: DataContext
+) => {
+	await dataContext.game.unban(ip);
+};
+
 const runActionCreators = {
 	runChatModeChanged,
 	runChatMessageChanged,
@@ -712,6 +756,10 @@ const runActionCreators = {
 	runHidePersons,
 	runShowTables,
 	runHideTables,
+	runShowBanned,
+	runHideBanned,
+	runShowGameInfo,
+	runHideGameInfo,
 	runShowManageGame,
 	runHideManageGame,
 	runChatVisibilityChanged,
@@ -801,6 +849,12 @@ const runActionCreators = {
 	playerInGameChanged,
 	areApellationsEnabledChanged,
 	buttonBlockingTimeChanged,
+	gameMetadataChanged,
+	bannedListChanged,
+	banned,
+	unbanned,
+	selectBannedItem,
+	unban,
 };
 
 export default runActionCreators;

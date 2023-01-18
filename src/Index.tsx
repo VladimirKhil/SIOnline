@@ -16,6 +16,7 @@ import runActionCreators from './state/run/runActionCreators';
 import localization from './model/resources/localization';
 import ServerInfo from './model/server/ServerInfo';
 import DummyGameServerClient from './client/DummyGameServerClient';
+import GameClient from './client/game/GameClient';
 import { FirebaseOptions, initializeApp, FirebaseApp } from 'firebase/app';
 import { Analytics, getAnalytics } from 'firebase/analytics';
 import { ErrorView } from './components/ErrorView';
@@ -181,11 +182,14 @@ async function run() {
 	const savedState = loadState();
 	const state = setState(initialState, savedState, gameId);
 
+	const gameClient = new DummyGameServerClient();
+
 	const dataContext: DataContext = {
 		config,
 		serverUri,
 		connection: null,
-		gameClient: new DummyGameServerClient(),
+		gameClient,
+		game: new GameClient(gameClient),
 		contentUris: null
 	};
 

@@ -25,6 +25,7 @@
     scrollbar-width: thin;
     padding-left: 20px;
     flex: 1;
+    margin-bottom: 20px;
 }
 
 .gameinfoHost dt {
@@ -67,7 +68,7 @@
 }
 
 .joinGameError {
-    color: darkred;
+    color: red;
     height: 40px;
     overflow: hidden;
     display: flex;

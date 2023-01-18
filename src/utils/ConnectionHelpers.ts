@@ -20,6 +20,7 @@ export function attachListeners(connection: signalR.HubConnection, dispatch: Dis
 	connection.on('GameDeleted', (id: number) => dispatch(actionCreators.gameDeleted(id)));
 
 	connection.on('Receive', (message: Message) => messageProcessor(dispatch, message));
+	
 	connection.on('Disconnect', () => {
 		alert(localization.youAreKicked);
 		dispatch((runActionCreators.exitGame() as object) as AnyAction);

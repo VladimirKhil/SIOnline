@@ -1,7 +1,9 @@
 ﻿const enum ChatMode {
 	Chat,
 	Users,
-	Tables
+	Tables,
+	Banned,
+	Info,
 }
 
 export default ChatMode;

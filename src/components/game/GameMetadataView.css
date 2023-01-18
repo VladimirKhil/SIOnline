@@ -1,0 +1,6 @@
+.gameMetadataView {
+	overflow-y: auto;
+	scrollbar-width: thin;
+	flex: 1 0 0;
+	padding: 10px;
+}

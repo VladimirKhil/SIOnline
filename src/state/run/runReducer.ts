@@ -67,6 +67,30 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 				tablesVisible: false
 			};
 
+		case RunActionTypes.RunShowBanned:
+			return {
+				...state,
+				bannedVisible: true
+			};
+
+		case RunActionTypes.RunHideBanned:
+			return {
+				...state,
+				bannedVisible: false
+			};
+
+		case RunActionTypes.RunShowGameInfo:
+			return {
+				...state,
+				gameInfoVisible: true
+			};
+
+		case RunActionTypes.RunHideGameInfo:
+			return {
+				...state,
+				gameInfoVisible: false
+			};
+
 		case RunActionTypes.RunShowManageGame:
 			return {
 				...state,
@@ -773,6 +797,55 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 			return {
 				...state,
 				buttonBlockingTimeSeconds: action.buttonBlockingTime
+			};
+
+		case RunActionTypes.GameMetadataChanged:
+			return {
+				...state,
+				metadata: {
+					gameName: action.gameName,
+					packageName: action.packageName,
+					contactUri: action.contactUri,
+				}
+			};
+
+		case RunActionTypes.BannedListChanged:
+			return {
+				...state,
+				banned: {
+					entries: action.bannedList,
+					selectedIp: null,
+				}
+			};
+
+		case RunActionTypes.Banned:
+			return {
+				...state,
+				banned: {
+					...state.banned,
+					entries: {
+						...state.banned.entries,
+						[action.ip]: action.name
+					}
+				},
+			};
+
+		case RunActionTypes.Unbanned:
+			return {
+				...state,
+				banned: {
+					...state.banned,
+					entries: removeS(state.banned.entries, action.ip)
+				},
+			};
+
+		case RunActionTypes.SelectBannedItem:
+			return {
+				...state,
+				banned: {
+					...state.banned,
+					selectedIp: action.ip
+				},
 			};
 
 		default:

@@ -87,34 +87,42 @@ export function PersonsView(props: PersonsViewProps): JSX.Element {
 		<>
 			<div className="personsList">
 				<div className="personsHeader">{localization.showman}</div>
+
 				{props.showman ? (
 					<ul>
 						<PersonView account={props.showman} />
 					</ul>
 				) : null}
+
 				<div className="personsHeader">{localization.players}</div>
+
 				<ul>
 					{props.players.map((person, index) => (
 						<PersonView key={person ? person.name : index} account={person} />
 					))}
 				</ul>
+
 				<div className="personsHeader">{localization.viewers}</div>
+
 				<ul>
 					{props.viewers.map(person => <PersonView key={person.name} account={person} />)}
 				</ul>
 			</div>
+
 			<div className="buttonsPanel inviteLinkHost">
 				<button type="button" className='standard' onClick={() => inviteLink()}>{localization.inviteLink}</button>
 				<div ref={tooltipRef} className='inviteLinkTooltip'>{localization.inviteLinkCopied}</div>
 			</div>
+
 			<div className="buttonsPanel">
 				<button
 					type="button"
 					className='standard'
 					onClick={() => props.kick()}
 					disabled={!props.isConnected || !canKick}>
-						{localization.kick}
+					{localization.kick}
 				</button>
+
 				<button type="button" className='standard' onClick={() => props.ban()} disabled={!props.isConnected || !canKick}>
 					{localization.ban}
 				</button>

@@ -16,6 +16,10 @@ export const enum RunActionTypes {
 	RunHidePersons = 'RUN_HIDE_PERSONS',
 	RunShowTables = 'RUN_SHOW_TABLES',
 	RunHideTables = 'RUN_HIDE_TABLES',
+	RunShowBanned = 'RUN_SHOW_BANNED',
+	RunHideBanned = 'RUN_HIDE_BANNED',
+	RunShowGameInfo = 'RUN_SHOW_GAMEINFO',
+	RunHideGameInfo = 'RUN_HIDE_GAMEINFO',
 	RunShowManageGame = 'RUN_SHOW_MANAGE_GAME',
 	RunHideManageGame = 'RUN_HIDE_MANAGE_GAME',
 	ChatMessageAdded = 'CHAT_MESSAGE_ADDED',
@@ -76,6 +80,11 @@ export const enum RunActionTypes {
 	PlayerInGameChanged = 'PLAYER_IN_GAME_CHANGED',
 	AreApellationsEnabledChanged = 'ARE_APELLATIONS_ENABLED_CHANGED',
 	ButtonBlockingTimeChanged = 'BUTTON_BLOCKING_TIME_CHANGED',
+	GameMetadataChanged = 'GAME_METADATA_CHANGED',
+	BannedListChanged = 'BANNED_LIST_CHANGED',
+	Banned = 'BANNED',
+	Unbanned = 'UNBANNED',
+	SelectBannedItem = 'SELECT_BANNED_ITEM',
 }
 
 export type RunChatModeChangedAction = { type: RunActionTypes.RunChatModeChanged, chatMode: ChatMode };
@@ -85,6 +94,10 @@ export type RunShowPersonsAction = { type: RunActionTypes.RunShowPersons };
 export type RunHidePersonsAction = { type: RunActionTypes.RunHidePersons };
 export type RunShowTablesAction = { type: RunActionTypes.RunShowTables };
 export type RunHideTablesAction = { type: RunActionTypes.RunHideTables };
+export type RunShowBannedAction = { type: RunActionTypes.RunShowBanned };
+export type RunHideBannedAction = { type: RunActionTypes.RunHideBanned };
+export type RunShowGameInfoAction = { type: RunActionTypes.RunShowGameInfo };
+export type RunHideGameInfoAction = { type: RunActionTypes.RunHideGameInfo };
 export type RunShowManageGameAction = { type: RunActionTypes.RunShowManageGame };
 export type RunHideManageGameAction = { type: RunActionTypes.RunHideManageGame };
 export type ChatMessageAddedAction = { type: RunActionTypes.ChatMessageAdded, chatMessage: ChatMessage };
@@ -162,6 +175,11 @@ export type ChooserChangedAction = { type: RunActionTypes.ChooserChanged, choose
 export type PlayerInGameChangedAction = { type: RunActionTypes.PlayerInGameChanged, playerIndex: number, inGame: boolean };
 export type AreApellationsEnabledChangedAction = { type: RunActionTypes.AreApellationsEnabledChanged, areApellationsEnabled: boolean };
 export type ButtonBlockingChangedAction = { type: RunActionTypes.ButtonBlockingTimeChanged, buttonBlockingTime: number };
+export type GameMetadataChangedAction = { type: RunActionTypes.GameMetadataChanged, gameName: string, packageName: string, contactUri: string };
+export type BannedListChangedAction = { type: RunActionTypes.BannedListChanged, bannedList: Record<string, string> };
+export type BannedAction = { type: RunActionTypes.Banned, ip: string, name: string };
+export type UnbannedAction = { type: RunActionTypes.Unbanned, ip: string };
+export type SelectBannedItemAction = { type: RunActionTypes.SelectBannedItem, ip: string };
 
 export type KnownRunAction =
 	RunChatModeChangedAction
@@ -171,6 +189,10 @@ export type KnownRunAction =
 	| RunHidePersonsAction
 	| RunShowTablesAction
 	| RunHideTablesAction
+	| RunShowBannedAction
+	| RunHideBannedAction
+	| RunShowGameInfoAction
+	| RunHideGameInfoAction
 	| RunShowManageGameAction
 	| RunHideManageGameAction
 	| ChatMessageAddedAction
@@ -230,4 +252,9 @@ export type KnownRunAction =
 	| ChooserChangedAction
 	| PlayerInGameChangedAction
 	| AreApellationsEnabledChangedAction
-	| ButtonBlockingChangedAction;
+	| ButtonBlockingChangedAction
+	| GameMetadataChangedAction
+	| BannedListChangedAction
+	| BannedAction
+	| UnbannedAction
+	| SelectBannedItemAction;

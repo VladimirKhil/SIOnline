@@ -14,6 +14,8 @@ import TablesView from './TablesView';
 import { isHost } from '../../utils/StateHelpers';
 import FlyoutButton, { FlyoutHorizontalOrientation, FlyoutVerticalOrientation } from '../common/FlyoutButton';
 import actionCreators from '../../state/actionCreators';
+import GameMetadataView from './GameMetadataView';
+import BannedView from './BannedView';
 
 import './GameChatView.css';
 
@@ -84,10 +86,24 @@ function getSideArea(props: GameChatViewProps): React.ReactNode {
 			);
 
 		case ChatMode.Tables:
-		default:
 			return (
 				<div className="game__persons">
 					<TablesView />
+				</div>
+			);
+
+		case ChatMode.Banned:
+			return (
+				<div className="tabBody">
+					<BannedView />
+				</div>
+			);
+
+		case ChatMode.Info:			
+		default:
+			return (
+				<div className="tabBody">
+					<GameMetadataView />
 				</div>
 			);
 	}
@@ -121,19 +137,27 @@ export function GameChatView(props: GameChatViewProps): JSX.Element {
 					<h1
 						className={props.chatMode === ChatMode.Tables ? 'activeTab' : ''}
 						onClick={() => props.onChatModeChanged(ChatMode.Tables)}
-						title={localization.tables}
+						title={localization.gameInfo}
 					>
 						🎓
 					</h1>
 				) : null}
 
-				{/* <h1>
+				<h1
+					className={props.chatMode === ChatMode.Banned ? 'activeTab' : ''}
+					onClick={() => props.onChatModeChanged(ChatMode.Banned)}
+					title={localization.bannedList}
+				>
 					🚫
 				</h1>
 
-				<h1>
+				<h1
+					className={props.chatMode === ChatMode.Info ? 'activeTab' : ''}
+					onClick={() => props.onChatModeChanged(ChatMode.Info)}
+					title={localization.gameInfo}
+				>
 					ℹ
-				</h1> */}
+				</h1>
 
 				<button className='settingsOpener' onClick={props.onShowSettings} title={localization.settings}>
 					<span>⚙</span>

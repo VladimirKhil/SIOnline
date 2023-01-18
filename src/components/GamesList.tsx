@@ -70,12 +70,14 @@ export function GamesList(props: GamesListProps): JSX.Element {
 		<section className="gameslistHost gamesblock">
 			<header>
 				<LobbyMenu />
+
 				<h1 id="gamesTitle">
 					<span>{localization.games}</span>
 					<span> (</span>
 					<span>{props.games.length}</span>
 					<span>)</span>
 				</h1>
+
 				<FlyoutButton
 					className="gamesFilterButton"
 					hideOnClick={false}
@@ -104,6 +106,7 @@ export function GamesList(props: GamesListProps): JSX.Element {
 					</span>
 				</FlyoutButton>
 			</header>
+
 			<input
 				id="gamesSearch"
 				className="gamesSearch"
@@ -113,6 +116,7 @@ export function GamesList(props: GamesListProps): JSX.Element {
 				placeholder={localization.searchGames}
 				onChange={e => props.onGamesSearchChanged(e.target.value)}
 			/>
+
 			{props.error.length === 0 ? (
 				<ul className="gamenames">
 					{sortedGames.map(game => (
@@ -127,6 +131,7 @@ export function GamesList(props: GamesListProps): JSX.Element {
 					))}
 				</ul>
 			) : <span className="loadError">{props.error}</span>}
+
 			<div className="commandButtonsPanel">
 				<button
 					id="newAutoGame"
@@ -138,6 +143,7 @@ export function GamesList(props: GamesListProps): JSX.Element {
 				>
 					{localization.autoSearch}
 				</button>
+				
 				<button
 					id="newGame"
 					className='standard'

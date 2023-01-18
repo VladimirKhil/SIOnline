@@ -1,19 +1,26 @@
 #settingsDialog {
     background-color: #5A95E2;
-    z-index: 2;
+    z-index: 4;
     overflow-y: hidden;
 }
 
 .settingsDialogBody {
-	padding: 15px;
+	padding: 15px 0 0 15px;
 	font-size: 20px;
     height: calc(100% - 59px);
-    overflow-y: auto;
-    scrollbar-width: thin;
+    display: flex;
+    flex-direction: column;
 }
 
 .tabHost {
     display: flex;
+    padding-right: 15px;
+}
+
+.settingsBody {
+    overflow-y: auto;
+    scrollbar-width: thin;
+	padding: 0 15px 15px 0;
 }
 
 .settingsDialogBody input[type=checkbox] {
