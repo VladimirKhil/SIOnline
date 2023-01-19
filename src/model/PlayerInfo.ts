@@ -8,4 +8,5 @@ export default interface PlayerInfo extends PersonInfo {
 	canBeSelected: boolean;
 	isChooser: boolean;
 	inGame: boolean;
+	mediaLoaded: boolean;
 }

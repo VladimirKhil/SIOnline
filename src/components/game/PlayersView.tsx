@@ -122,7 +122,7 @@ export class PlayersView extends React.Component<PlayersViewProps> {
 		};
 
 		const buildPlayerClasses = (player: PlayerInfo, isMe: boolean, canBeSelected: boolean) => {
-			const stateClass = `state_${PlayerStates[player.state].toLowerCase()}`;
+			const stateClass = `state_${(PlayerStates[player.state] ?? '').toLowerCase()}`;
 			const meClass = isMe ? 'me' : '';
 			const inGameClass = player.inGame ? '' : 'out_of_game';
 			const selectableClass = canBeSelected && this.props.isSelectionEnabled ? 'selectable' : '';
@@ -174,6 +174,7 @@ export class PlayersView extends React.Component<PlayersViewProps> {
 											) : null}
 											<span>{player.name}</span>
 										</div>
+
 										<div className="sum" title={player.sum.toString()}>
 											{this.props.isSumEditable ? (
 												<NumericTextBox
@@ -186,6 +187,7 @@ export class PlayersView extends React.Component<PlayersViewProps> {
 										</div>
 									</div>
 								</div>
+
 								{player.replic && player.replic.length > 0 ? (
 									<div ref={this.replicRef} className="playerReplic">
 										<AutoSizedText id={`playerReplic_${index}`} className="playerReplicText" maxFontSize={48}>
@@ -194,6 +196,7 @@ export class PlayersView extends React.Component<PlayersViewProps> {
 										<div className='replicLink' />
 									</div>
 								) : null}
+
 								{player.isDeciding ? (
 									<ProgressBar
 										value={1 - this.props.decisionTimer.value / this.props.decisionTimer.maximum}
@@ -201,8 +204,13 @@ export class PlayersView extends React.Component<PlayersViewProps> {
 											? (this.props.decisionTimer.maximum - this.props.decisionTimer.value) / 10 : 0}
 									/>
 								) : null}
+
 								{player.isChooser ? (
 									<div className='chooserMark' title={localization.chooserMark} />
+								) : null}
+
+								{player.mediaLoaded ? (
+									<div className='mediaLoadedMark' title={localization.mediaLoadedMark} />
 								) : null}
 							</li>
 						);

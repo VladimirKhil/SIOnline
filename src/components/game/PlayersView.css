@@ -175,6 +175,18 @@
     border-style: solid;
 }
 
+.mediaLoadedMark {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: green;
+    bottom: 0;
+    left: 0;
+    border-width: 1px 1px 0 0;
+    border-color: lightgray;
+    border-style: solid;
+}
+
 @media screen and (min-width: 800px) {
     .playerAvatar {
         min-width: 26px;

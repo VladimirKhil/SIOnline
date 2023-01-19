@@ -745,6 +745,10 @@ const unban: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (ip:
 	await dataContext.game.unban(ip);
 };
 
+const playerMediaLoaded: ActionCreator<RunActions.PlayerMediaLoadedction> = (playerIndex: number) => ({
+	type: RunActions.RunActionTypes.PlayerMediaLoaded, playerIndex
+});
+
 const runActionCreators = {
 	runChatModeChanged,
 	runChatMessageChanged,
@@ -855,6 +859,7 @@ const runActionCreators = {
 	unbanned,
 	selectBannedItem,
 	unban,
+	playerMediaLoaded,
 };
 
 export default runActionCreators;

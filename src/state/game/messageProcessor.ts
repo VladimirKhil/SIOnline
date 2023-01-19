@@ -332,6 +332,22 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 			info(dispatch, ...args);
 			break;
 
+		case GameMessages.MediaLoaded:
+			if (args.length < 2) {
+				break;
+			}
+
+			const { players } = state.run.persons;
+
+			for (let i = 0; i < players.length; i++) {
+				if (players[i].name === args[1]) {
+					dispatch(runActionCreators.playerMediaLoaded(i));
+					break;
+				}
+			}
+			
+			break;
+
 		case 'OUT':
 			{
 				const themeIndex = parseInt(args[1], 10);
@@ -1100,7 +1116,8 @@ function info(dispatch: Dispatch<RunActions.KnownRunAction>, ...args: string[]) 
 			isDeciding: false,
 			isHuman,
 			isChooser: false,
-			inGame: true
+			inGame: true,
+			mediaLoaded: false,
 		});
 
 		if (isConnected) {

@@ -226,7 +226,8 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 					players: state.persons.players.map(p => ({
 						...p,
 						state: PlayerStates.None,
-						stake: 0
+						stake: 0,
+						mediaLoaded: false,
 					}))
 				}
 			};
@@ -244,7 +245,8 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 					...state.persons,
 					players: state.persons.players.map(p => ({
 						...p,
-						canBeSelected: false
+						canBeSelected: false,
+						mediaLoaded: false,
 					}))
 				},
 				validation: {
@@ -342,7 +344,8 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 						isDeciding: false,
 						isHuman: true,
 						isChooser: false,
-						inGame: true
+						inGame: true,
+						mediaLoaded: false,
 					}]
 				}
 			};
@@ -846,6 +849,18 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 					...state.banned,
 					selectedIp: action.ip
 				},
+			};
+
+		case RunActionTypes.PlayerMediaLoaded:
+			return {
+				...state,
+				persons: {
+					...state.persons,
+					players: replace(state.persons.players, action.playerIndex, {
+						...state.persons.players[action.playerIndex],
+						mediaLoaded: true
+					})
+				}
 			};
 
 		default:

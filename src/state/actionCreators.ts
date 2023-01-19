@@ -868,9 +868,6 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 
 		dispatch(gameCreationStart());
 
-		// TODO: single game requires `isPrivate` flag, not random password to be closed for everyone
-		// With `isRandom` flag game name could also be omitted
-
 		const game = isSingleGame
 			? {
 					...state.game,

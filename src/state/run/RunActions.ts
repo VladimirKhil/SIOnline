@@ -85,6 +85,7 @@ export const enum RunActionTypes {
 	Banned = 'BANNED',
 	Unbanned = 'UNBANNED',
 	SelectBannedItem = 'SELECT_BANNED_ITEM',
+	PlayerMediaLoaded = 'PLAYER_MEDIA_LOADED',
 }
 
 export type RunChatModeChangedAction = { type: RunActionTypes.RunChatModeChanged, chatMode: ChatMode };
@@ -180,6 +181,7 @@ export type BannedListChangedAction = { type: RunActionTypes.BannedListChanged, 
 export type BannedAction = { type: RunActionTypes.Banned, ip: string, name: string };
 export type UnbannedAction = { type: RunActionTypes.Unbanned, ip: string };
 export type SelectBannedItemAction = { type: RunActionTypes.SelectBannedItem, ip: string };
+export type PlayerMediaLoadedction = { type: RunActionTypes.PlayerMediaLoaded, playerIndex: number };
 
 export type KnownRunAction =
 	RunChatModeChangedAction
@@ -257,4 +259,5 @@ export type KnownRunAction =
 	| BannedListChangedAction
 	| BannedAction
 	| UnbannedAction
-	| SelectBannedItemAction;
+	| SelectBannedItemAction
+	| PlayerMediaLoadedction;

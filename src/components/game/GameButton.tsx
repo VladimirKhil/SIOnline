@@ -17,6 +17,7 @@ interface GameButtonProps {
 	sex: Sex;
 	windowWidth: number;
 	areApellationsEnabled: boolean;
+	playersCount: number;
 	pressGameButton: () => void;
 	apellate: () => void;
 	disagree: () => void;
@@ -30,6 +31,7 @@ const mapStateToProps = (state: State) => ({
 	sex: state.settings.sex,
 	windowWidth: state.ui.windowWidth,
 	areApellationsEnabled: state.run.areApellationsEnabled,
+	playersCount: state.run.persons.players.length,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
@@ -61,15 +63,17 @@ function renderReactions(props: GameButtonProps) : JSX.Element {
 					onClick={() => props.apellate()}>
 					{rightString}
 				</button>
+
 				<button
 					className="playerButton"
-					disabled={!props.isConnected}
+					disabled={!props.isConnected || props.playersCount < 4} // 2 players cannot overvote third player + showman
 					title={localization.iDisagreeHint}
 					onClick={() => props.disagree()}>
 					{localization.iDisagree}
 				</button>
 			</> )
 			: null}
+
 			<button
 				className="playerButton"
 				disabled={!props.isConnected}
