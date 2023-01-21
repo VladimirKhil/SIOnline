@@ -11,6 +11,7 @@ import GameType from '../client/contracts/GameType';
 import Constants from '../model/enums/Constants';
 import PackageType from '../model/enums/PackageType';
 import SIStorageDialog from './SIStorageDialog';
+import FlyoutButton from './common/FlyoutButton';
 
 import './NewGameDialog.css';
 
@@ -108,6 +109,19 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	}
 });
 
+function getPackageName(packageType: PackageType, packageName: string, packageData: File | null): string {
+	switch (packageType) {
+		case PackageType.Random:
+			return localization.randomThemes;
+
+		case PackageType.File:
+			return packageData?.name ?? packageName;
+
+		default:
+			return packageName;
+	}
+}
+
 export class NewGameDialog extends React.Component<NewGameDialogProps, NewGameDialogState> {
 	private fileRef: React.RefObject<HTMLInputElement>;
 
@@ -145,9 +159,26 @@ export class NewGameDialog extends React.Component<NewGameDialogProps, NewGameDi
 		}
 	};
 
+	private onRandomThemesSelected = () => {
+		this.props.onGamePackageTypeChanged(PackageType.Random);
+	};
+
+	private onFilePackageSelected = () => {
+		if (this.fileRef.current) {
+			this.fileRef.current.click();
+		}		
+	};
+
+	private onSIStorageSelected = () => {
+		this.setState({
+			isSIStorageOpen: true
+		});
+	};
+
 	private onGamePackageDataChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
 		if (e.target.files && e.target.files.length > 0) {
 			this.props.onGamePackageDataChanged(e.target.value, e.target.files[0]);
+			this.props.onGamePackageTypeChanged(PackageType.File);
 		}
 	};
 
@@ -171,12 +202,6 @@ export class NewGameDialog extends React.Component<NewGameDialogProps, NewGameDi
 		this.props.onHumanPlayersCountChanged(parseInt(e.target.value, 10));
 	};
 
-	private onSelectFile = () => {
-		if (this.fileRef.current) {
-			this.fileRef.current.click();
-		}
-	};
-
 	private onSIPackageDialogClose = () => {
 		this.setState({
 			isSIStorageOpen: false
@@ -195,13 +220,11 @@ export class NewGameDialog extends React.Component<NewGameDialogProps, NewGameDi
 	render(): JSX.Element {
 		const humanPlayersMaxCount = this.props.playersCount - (this.props.gameRole === Role.Player ? 1 : 0);
 		const botsCount = Math.max(0, humanPlayersMaxCount - this.props.humanPlayersCount);
-		const siPackageName = this.props.gamePackageType === PackageType.SIStorage ? this.props.gamePackageName : null;
 
 		return (
 			<>
 				<Dialog id="newGameDialog" title={localization.newGame} onClose={this.props.onClose}>
 					<div className="settings">
-
 						{this.props.isSingleGame ? null : (
 							<>
 								<p>{localization.gameName}</p>
@@ -224,30 +247,30 @@ export class NewGameDialog extends React.Component<NewGameDialogProps, NewGameDi
 							</>
 						)}
 
-						<p>{localization.questionPackage}</p>
+						<p className='newGameHeader'>{localization.questionPackage}</p>
 
 						<div className='packageSelector'>
-							<select
-								className="packageTypeSelector"
-								value={siPackageName || this.props.gamePackageType}
-								onChange={this.onGamePackageTypeChanged}
+							<FlyoutButton
+								flyout={
+									<ul>
+										<li onClick={this.onRandomThemesSelected}>{localization.randomThemes}</li>
+										<li onClick={this.onFilePackageSelected}>{`${localization.file}…`}</li>
+										<li onClick={this.onSIStorageSelected}>{`${localization.libraryTitle}…`}</li>
+									</ul>
+								}
+								title={localization.select}
 							>
-								<option value="0">{localization.randomThemes}</option>
-								<option value="1">{localization.file}</option>
-								<option value="2">{`${localization.libraryTitle}...`}</option>
-								{siPackageName && <option value={siPackageName}>{siPackageName}</option>}
-							</select>
+								📂
+							</FlyoutButton>
 
-							{this.props.gamePackageType === PackageType.File ? (
-								<div className="packageFileBox">
-									<input ref={this.fileRef} type="file" accept=".siq" onChange={this.onGamePackageDataChanged} />
-									<input className="selector" type="button" value={localization.select} onClick={this.onSelectFile} />
-									{this.props.gamePackageData ? <span>{this.props.gamePackageData.name}</span> : null}
-								</div>
-							) : null}
+							<span className='packageName'>
+								{getPackageName(this.props.gamePackageType, this.props.gamePackageName, this.props.gamePackageData)}
+							</span>
+
+							<input ref={this.fileRef} type="file" accept=".siq" onChange={this.onGamePackageDataChanged} />
 						</div>
 
-						<p>{localization.gameType}</p>
+						<p className='newGameHeader'>{localization.gameType}</p>
 
 						<select className='gameType' value={this.props.gameType} onChange={this.onGameTypeChanged}>
 							<option value="1">{localization.sport}</option>
@@ -258,7 +281,7 @@ export class NewGameDialog extends React.Component<NewGameDialogProps, NewGameDi
 							{this.props.gameType === GameType.Classic ? localization.gameTypeClassicHint : localization.gameTypeSimpleHint}
 						</span>
 
-						<p>{localization.role}</p>
+						<p className='newGameHeader'>{localization.role}</p>
 
 						<select value={this.props.gameRole} onChange={this.onGameRoleChanged}>
 							<option value="0">{localization.viewer}</option>
@@ -280,10 +303,13 @@ export class NewGameDialog extends React.Component<NewGameDialogProps, NewGameDi
 								{this.props.isShowmanHuman ? '👤' : '🖥️'}
 							</>
 						)}
-						<p>{localization.players}</p>
+
+						<p className='newGameHeader'>{localization.players}</p>
+
 						<div className="playersBlock">
 							<span className="playersCountTitle">{`${localization.total} `}</span>
 							<span className="playersCountValue">{this.props.playersCount}</span>
+
 							<input
 								type="range"
 								className="playersCount"
@@ -293,11 +319,13 @@ export class NewGameDialog extends React.Component<NewGameDialogProps, NewGameDi
 								onChange={this.onPlayersCountChanged}
 							/>
 						</div>
+
 						{this.props.isSingleGame ? null : (
 							<>
 								<div className="playersBlock">
 									<span className="playersCountTitle">{`${localization.humanPlayers} `}</span>
 									<span className="playersCountValue">{this.props.humanPlayersCount}</span>
+									
 									<input
 										type="range"
 										className="playersCount"
@@ -308,10 +336,12 @@ export class NewGameDialog extends React.Component<NewGameDialogProps, NewGameDi
 										onChange={this.onHumanPlayersCountChanged}
 									/>
 								</div>
+
 								<div className="playersBlock">
 									<span className="playersCountTitle">{`${localization.computerPlayers} `}</span>
 									<span className="playersCountValue">{botsCount}</span>
 								</div>
+
 								<div className="playersBlock">
 									{this.props.gameRole === Role.Player ? '🧑' : null}
 									{Array.from(Array(this.props.humanPlayersCount).keys()).map(() => '👤')}
@@ -320,7 +350,9 @@ export class NewGameDialog extends React.Component<NewGameDialogProps, NewGameDi
 							</>
 						)}
 					</div>
+
 					<div className="gameCreationError">{this.props.error}</div>
+
 					<div className="buttonsArea">
 						<button
 							type="button"
@@ -330,6 +362,7 @@ export class NewGameDialog extends React.Component<NewGameDialogProps, NewGameDi
 						>
 							{`${localization.settings}…`}
 						</button>
+
 						<button
 							type="button"
 							className="startGame standard"
@@ -339,7 +372,9 @@ export class NewGameDialog extends React.Component<NewGameDialogProps, NewGameDi
 							{localization.startGame}
 						</button>
 					</div>
+
 					{this.props.inProgress ? <ProgressBar isIndeterminate /> : null}
+
 					{this.props.uploadPackageProgress ? (
 						<div className="uploadPackagePanel">
 							<span>{localization.sendingPackage}</span>
@@ -347,6 +382,7 @@ export class NewGameDialog extends React.Component<NewGameDialogProps, NewGameDi
 						</div>
 					) : null}
 				</Dialog>
+
 				{this.state.isSIStorageOpen && (
 					<SIStorageDialog onClose={this.onSIPackageDialogClose} onSelect={this.onSelectSIPackage} />
 				)}

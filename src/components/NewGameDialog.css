@@ -53,6 +53,10 @@
     max-height: 100px;
 }
 
+.newGameHeader {
+    font-weight: bold;
+}
+
 .packageTypeSelector {
     margin-right: 10px;
 }
@@ -61,13 +65,20 @@
     margin-left: 10px;
 }
 
-.packageFileBox input[type='file'] {
+.packageSelector input[type='file'] {
     display: none;
 }
 
 .packageSelector {
     display: flex;
     flex-direction: row;
+    align-items: center;
+}
+
+.packageName {
+    vertical-align: middle;
+    margin: 3px 0 0 5px;
+    font-size: 18px
 }
 
 #newGameDialog .packageFileBox input.selector {

@@ -10,7 +10,7 @@ export const enum TableActionTypes {
 	ShowRoundTable = 'SHOW_ROUND_TABLE',
 	BlinkQuestion = 'BLINK_QUESTION',
 	BlinkTheme = 'BLINK_THEME',
-	RemoveQuestion = 'REMOVE_QUESTION',
+	UpdateQuestion = 'UPDATE_QUESTION',
 	RemoveTheme = 'REMOVE_THEME',
 	ShowPartialText = 'SHOW_PARTIAL_TEXT',
 	AppendPartialText = 'APPEND_PARTIAL_TEXT',
@@ -40,7 +40,7 @@ export type ShowAnswerAction = { type: TableActionTypes.ShowAnswer, text: string
 export type ShowRoundTableAction = { type: TableActionTypes.ShowRoundTable };
 export type BlinkQuestionAction = { type: TableActionTypes.BlinkQuestion, themeIndex: number, questionIndex: number };
 export type BlinkThemeAction = { type: TableActionTypes.BlinkTheme, themeIndex: number };
-export type RemoveQuestionAction = { type: TableActionTypes.RemoveQuestion, themeIndex: number, questionIndex: number };
+export type UpdateQuestionAction = { type: TableActionTypes.UpdateQuestion, themeIndex: number, questionIndex: number, price: number };
 export type RemoveThemeAction = { type: TableActionTypes.RemoveTheme, themeIndex: number };
 export type ShowPartialTextAction = { type: TableActionTypes.ShowPartialText, textShape: string };
 export type AppendPartialTextAction = { type: TableActionTypes.AppendPartialText, text: string };
@@ -65,7 +65,7 @@ export type KnownTableAction =
 	| ShowRoundTableAction
 	| BlinkQuestionAction
 	| BlinkThemeAction
-	| RemoveQuestionAction
+	| UpdateQuestionAction
 	| RemoveThemeAction
 	| ShowPartialTextAction
 	| AppendPartialTextAction

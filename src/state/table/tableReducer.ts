@@ -73,12 +73,12 @@ const tableReducer: Reducer<TableState> = (state: TableState = initialState, any
 				activeThemeIndex: action.themeIndex
 			};
 
-		case TableActionTypes.RemoveQuestion:
+		case TableActionTypes.UpdateQuestion:
 			return {
 				...state,
 				roundInfo: replace(state.roundInfo, action.themeIndex, {
 					name: state.roundInfo[action.themeIndex].name,
-					questions: replace(state.roundInfo[action.themeIndex].questions, action.questionIndex, -1)
+					questions: replace(state.roundInfo[action.themeIndex].questions, action.questionIndex, action.price)
 				})
 			};
 

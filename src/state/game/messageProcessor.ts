@@ -232,16 +232,18 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 				dispatch(runActionCreators.afterQuestionStateChanged(false));
 
 				const themeInfo = state.run.table.roundInfo[themeIndex];
+
 				if (themeInfo) {
-					const quest = themeInfo.questions[questIndex];
-					if (quest) {
-						dispatch(runActionCreators.currentPriceChanged(quest));
-						dispatch(tableActionCreators.captionChanged(`${themeInfo.name}, ${quest}`));
+					const price = themeInfo.questions[questIndex];
+
+					if (price) {
+						dispatch(runActionCreators.currentPriceChanged(price));
+						dispatch(tableActionCreators.captionChanged(`${themeInfo.name}, ${price}`));
 						dispatch(tableActionCreators.blinkQuestion(themeIndex, questIndex));
 
 						setTimeout(
 							() => {
-								dispatch(tableActionCreators.removeQuestion(themeIndex, questIndex));
+								dispatch(tableActionCreators.updateQuestion(themeIndex, questIndex, -1));
 							},
 							5000
 						);
@@ -799,6 +801,24 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 				dispatch(tableActionCreators.showText(`${localization.theme}: ${args[1]}`, false));
 				dispatch(runActionCreators.afterQuestionStateChanged(false));
 				dispatch(runActionCreators.themeNameChanged(args[1]));
+			}
+			break;
+
+		case GameMessages.Toggle:
+			if (args.length > 3) {
+				const themeIndex = parseInt(args[1], 10);
+				const questionIndex = parseInt(args[2], 10);
+				const price = parseInt(args[3], 10);
+
+				const themeInfo = state.run.table.roundInfo[themeIndex];
+
+				if (themeInfo) {
+					const existingPrice = themeInfo.questions[questionIndex];
+
+					if (existingPrice) {
+						dispatch(tableActionCreators.updateQuestion(themeIndex, questionIndex, price));
+					}
+				}
 			}
 			break;
 

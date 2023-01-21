@@ -45,11 +45,12 @@ const blinkTheme: ActionCreator<TableActions.BlinkThemeAction> = (themeIndex: nu
 	type: TableActions.TableActionTypes.BlinkTheme, themeIndex
 });
 
-const removeQuestion: ActionCreator<TableActions.RemoveQuestionAction> = (
+const updateQuestion: ActionCreator<TableActions.UpdateQuestionAction> = (
 	themeIndex: number,
-	questionIndex: number
+	questionIndex: number,
+	price: number,
 ) => ({
-	type: TableActions.TableActionTypes.RemoveQuestion, themeIndex, questionIndex
+	type: TableActions.TableActionTypes.UpdateQuestion, themeIndex, questionIndex, price
 });
 
 const removeTheme: ActionCreator<TableActions.RemoveThemeAction> = (themeIndex: number) => ({
@@ -114,7 +115,7 @@ const tableActionCreators = {
 	showRoundTable,
 	blinkQuestion,
 	blinkTheme,
-	removeQuestion,
+	updateQuestion,
 	removeTheme,
 	showPartialText,
 	appendPartialText,
