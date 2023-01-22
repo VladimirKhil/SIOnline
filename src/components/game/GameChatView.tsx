@@ -28,12 +28,15 @@ interface GameChatViewProps {
 	roundsNames: string[] | null;
 	roundIndex: number;
 	isHost: boolean;
+	isPaused: boolean;
+	isEditEnabled: boolean;
 	onChatModeChanged: (chatMode: ChatMode) => void;
 	onMarkQuestion: () => void;
 	onEditSums: (enable: boolean) => void;
 	navigateToRound: (roundIndex: number) => void;
 	onPass: () => void;
 	onShowSettings: () => void;
+	onEditTable: () => void;
 }
 
 const mapStateToProps = (state: State) => ({
@@ -44,7 +47,9 @@ const mapStateToProps = (state: State) => ({
 	areSumsEditable: state.run.areSumsEditable,
 	roundsNames: state.run.roundsNames,
 	roundIndex: state.run.stage.roundIndex,
-	isHost: isHost(state)
+	isHost: isHost(state),
+	isPaused: state.run.stage.isGamePaused,
+	isEditEnabled: state.run.stage.isEditEnabled,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
@@ -65,6 +70,9 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	},
 	onShowSettings: () => {
 		dispatch(actionCreators.showSettings(true));
+	},
+	onEditTable: () => {
+		dispatch(runActionCreators.editTable());
 	},
 });
 
@@ -213,6 +221,15 @@ export function GameChatView(props: GameChatViewProps): JSX.Element {
 					>
 						{localization.game}
 					</FlyoutButton>
+
+					<button
+						type="button"
+						className={`standard wide commandButton bottomButton ${props.isEditEnabled ? 'active' : ''}`}
+						disabled={!props.isConnected || !props.isPaused}
+						onClick={() => props.onEditTable()}
+					>
+						{localization.editTable}
+					</button>
 				</div>) : null}
 		</div>
 	);

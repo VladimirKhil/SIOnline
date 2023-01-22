@@ -27,6 +27,7 @@ interface SideControlPanelProps {
 	isHost: boolean;
 	hasGameStarted: boolean;
 	isPaused: boolean;
+	isEditEnabled: boolean;
 	lastReplic: ChatMessage | null;
 	areStakesVisible: boolean;
 	areSumsEditable: boolean;
@@ -38,6 +39,7 @@ interface SideControlPanelProps {
 	onShowBanned: () => void;
 	onShowGameInfo: () => void;
 	onPause: () => void;
+	onEditTable: () => void;
 	onExit: () => void;
 	onEditSums: (enable: boolean) => void;
 	onMoveNext: () => void;
@@ -55,6 +57,7 @@ const mapStateToProps = (state: State) => ({
 	isHost: isHost(state),
 	hasGameStarted: state.run.stage.isGameStarted,
 	isPaused: state.run.stage.isGamePaused,
+	isEditEnabled: state.run.stage.isEditEnabled,
 	lastReplic: state.run.lastReplic,
 	areStakesVisible: state.run.stakes.areVisible,
 	areSumsEditable: state.run.areSumsEditable,
@@ -82,6 +85,9 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	},
 	onPause: () => {
 		dispatch(runActionCreators.pause() as unknown as Action);
+	},
+	onEditTable: () => {
+		dispatch(runActionCreators.editTable());
 	},
 	onExit: () => {
 		dispatch(runActionCreators.exitGame() as unknown as Action);
@@ -120,6 +126,7 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 
 	const enabledClass = props.isConnected ? '' : 'disabled';
 	const enabledManagementClass = props.isConnected && props.roundsNames && props.roundsNames.length >= 2 ? '' : 'disabled';
+	const enabledEditClass = props.isConnected && props.isPaused ? '' : 'disabled';
 
 	const canStart = !props.hasGameStarted && props.isHost;
 
@@ -211,6 +218,11 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 									<li onClick={() => props.onShowBanned()}>{localization.bannedList}</li>
 									<li onClick={() => props.onShowGameInfo()}>{localization.gameInfo}</li>
 									{canPause ? <li className={enabledClass} onClick={() => props.onPause()}>{pauseTitle}</li> : null}
+									
+									{props.role === Role.Showman ? (
+										<li className={enabledEditClass} onClick={() => props.onEditTable()}>{localization.editTable}</li>
+									) : null}
+
 									<li onClick={() => props.onShowSettings()}>{localization.settings}</li>
 								</ul>
 							)}
@@ -221,6 +233,7 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 							<span>…</span>
 						</FlyoutButton>
 					</div>
+
 					{props.isHost ? (
 						<button
 							type="button"
@@ -230,6 +243,7 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 							<span role="img" aria-label="arrow right">{canStart ? '➔' : '➡️'}</span>
 						</button>
 					) : null}
+
 					<FlyoutButton
 						className="exit standard"
 						title={localization.exit}

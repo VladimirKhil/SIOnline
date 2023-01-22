@@ -72,6 +72,10 @@ const pause: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () =
 		await dataContext.gameClient.msgAsync('PAUSE', getState().run.stage.isGamePaused ? '-' : '+');
 	};
 
+const editTable: ActionCreator<RunActions.EditTableAction> = () => ({
+	type: RunActions.RunActionTypes.EditTable
+});
+
 const runShowPersons: ActionCreator<RunActions.RunShowPersonsAction> = () => ({
 	type: RunActions.RunActionTypes.RunShowPersons
 });
@@ -382,6 +386,17 @@ const selectQuestion: ActionCreator<ThunkAction<void, State, DataContext, Action
 				dispatch(decisionNeededChanged(false));
 			}
 		}
+	}
+};
+
+const toggleQuestion: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (themeIndex: number, questionIndex: number) => async (
+	_dispatch: Dispatch<Action>,
+	getState: () => State, dataContext: DataContext
+) => {
+	const theme = getState().run.table.roundInfo[themeIndex];
+
+	if (theme && theme.questions[questionIndex]) {
+		await dataContext.game.toggle(themeIndex, questionIndex);
 	}
 };
 
@@ -745,7 +760,7 @@ const unban: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (ip:
 	await dataContext.game.unban(ip);
 };
 
-const playerMediaLoaded: ActionCreator<RunActions.PlayerMediaLoadedction> = (playerIndex: number) => ({
+const playerMediaLoaded: ActionCreator<RunActions.PlayerMediaLoadedAction> = (playerIndex: number) => ({
 	type: RunActions.RunActionTypes.PlayerMediaLoaded, playerIndex
 });
 
@@ -756,6 +771,7 @@ const runActionCreators = {
 	markQuestion,
 	onPass,
 	pause,
+	editTable,
 	runShowPersons,
 	runHidePersons,
 	runShowTables,
@@ -807,6 +823,7 @@ const runActionCreators = {
 	decisionNeededChanged,
 	clearDecisions,
 	selectQuestion,
+	toggleQuestion,
 	selectTheme,
 	pressGameButton,
 	apellate,

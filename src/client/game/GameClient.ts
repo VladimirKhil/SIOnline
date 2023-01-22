@@ -11,6 +11,10 @@ export default class GameClient implements IGameClient {
 
 	}
 
+	toggle(themeIndex: number, questionIndex: number): Promise<boolean> {
+		return this.gameServerClient.msgAsync(Messages.Toggle, themeIndex, questionIndex);
+	}
+
 	unban(ip: string): Promise<boolean> {
 		return this.gameServerClient.msgAsync(Messages.Unban, ip);
 	}

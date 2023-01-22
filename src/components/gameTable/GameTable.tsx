@@ -28,6 +28,7 @@ import './GameTable.css';
 interface GameTableProps {
 	mode: TableMode;
 	isPaused: boolean;
+	isEditEnabled: boolean;
 	isConnected: boolean;
 	showMainTimer: boolean;
 	decisionTimer: TimerInfo;
@@ -38,6 +39,7 @@ const mapStateToProps = (state: State) => ({
 	isConnected: state.common.isConnected,
 	mode: state.run.table.mode,
 	isPaused: state.run.stage.isGamePaused,
+	isEditEnabled: state.run.stage.isEditEnabled,
 	showMainTimer: state.run.showMainTimer,
 	decisionTimer: state.run.timers.decision,
 	caption: state.run.table.caption,
@@ -128,7 +130,7 @@ export function GameTable(props: GameTableProps): JSX.Element {
 				/>
 			) : null}
 			
-			{props.isPaused || !props.isConnected ? (
+			{(props.isPaused && !props.isEditEnabled) || !props.isConnected ? (
 				<AutoSizedText
 					maxFontSize={288}
 					className={`pauseLogo tableText tableTextCenter ${props.isConnected ? '' : 'warning'}`}

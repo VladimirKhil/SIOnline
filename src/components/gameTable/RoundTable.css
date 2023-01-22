@@ -1,0 +1,90 @@
+#table .roundTable {
+	color: #FFFFFF;
+	text-shadow: 1px 1px 0 #000;
+	font-family: SI;
+	width: calc(100% + 1px);
+	height: calc(100% + 2px);
+	display: flex;
+	flex-direction: column;
+	margin: 0 -1px -1px 0;
+	text-align: center;
+	overflow: hidden;
+}
+
+@keyframes roundRows {
+	to {
+		transform: translate(0);
+	}
+}
+
+#table .roundTable .roundTableRow {
+	flex: 1 0 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	overflow: hidden;
+	margin-top: 5px;
+
+	animation: roundRows;
+	animation-duration: .5s;
+	animation-fill-mode: forwards;
+}
+
+#table .roundTable .roundTableRow.left {
+	transform: translate(-100%);
+}
+
+	#table .roundTable .roundTableRow.right {
+		transform: translate(100%);
+	}
+
+#table .roundTable .roundTableCell {
+	height: 100%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding: 4px;
+	background-color: transparent;
+	margin-left: 5px;
+	transition: background-color 1s, transform 0.2s;
+	overflow: hidden;
+}
+
+#table .roundTable .themeHeader {
+	flex: 0 0 40%;
+	background-color: rgba(0,0,0,0.05);
+	background: linear-gradient(90deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.1) 100%);
+}
+
+#table .roundTable .questHeader {
+	flex: 1 0 0;
+}
+
+#table .roundTable .questHeader.active {
+	background-color: rgba(0,0,0,0.2);
+}
+
+#table .roundTable.selectable .questHeader.active {
+	cursor: pointer;
+}
+
+#table .roundTable.selectable .questHeader.active:hover {
+	background: rgb(189, 189, 166);
+}
+
+#table .roundTable.selectable .questHeader.active:active {
+	transform: scale(0.9,0.9);
+}
+
+#table .roundTable .questHeader.editable {
+	background-color: rgba(255,255,255,0.5);
+	cursor: pointer;
+}
+
+#table .roundTable .questHeader.editable:hover {
+	background-color: rgba(0,255,0,0.8);
+}
+
+#table .roundTable .questHeader.editable.active:hover {
+	background-color: rgba(255,0,0,0.8);
+}

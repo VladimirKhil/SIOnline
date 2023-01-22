@@ -21,6 +21,7 @@
     overflow-y: auto;
     scrollbar-width: thin;
 	padding: 0 15px 15px 0;
+    margin-top: 5px;
 }
 
 .settingsDialogBody input[type=checkbox] {
@@ -43,7 +44,7 @@
 }
 
 .settingItem {
-    margin-top: 10px;
+    margin-top: 20px;
 }
 
 .settingItem > input[type="range"] {
@@ -51,6 +52,7 @@
 }
 
 #settingsDialog .hint {
+    margin-top: 5px;
     font-size: 15px;
     display: block;
 }

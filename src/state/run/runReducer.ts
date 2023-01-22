@@ -440,7 +440,8 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 				...state,
 				stage: {
 					...state.stage,
-					isGamePaused: action.isPaused
+					isGamePaused: action.isPaused,
+					isEditEnabled: action.isPaused && state.stage.isEditEnabled,
 				}
 			};
 
@@ -860,6 +861,15 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 						...state.persons.players[action.playerIndex],
 						mediaLoaded: true
 					})
+				}
+			};
+
+		case RunActionTypes.EditTable:
+			return {
+				...state,
+				stage: {
+					...state.stage,
+					isEditEnabled: !state.stage.isEditEnabled,
 				}
 			};
 

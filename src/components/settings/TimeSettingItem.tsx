@@ -13,6 +13,7 @@ interface TimeSettingItemProps {
 export default function TimeSettingItem(props: TimeSettingItemProps): JSX.Element {
 	const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const value = parseInt(e.target.value, 10);
+
 		if (value > 0 && value <= props.maximum) {
 			props.onValueChanged(value);
 		}
@@ -21,6 +22,7 @@ export default function TimeSettingItem(props: TimeSettingItemProps): JSX.Elemen
 	return (
 		<div className="timeSettingItem">
 			<h3>{props.label}</h3>
+
 			<div className='timeSettingEditor'>
 				<input
 					className='timeRange'
@@ -30,6 +32,7 @@ export default function TimeSettingItem(props: TimeSettingItemProps): JSX.Elemen
 					max={props.maximum}
 					onChange={onChange}
 				/>
+
 				<input
 					className='timeValue'
 					type='number'
@@ -38,6 +41,7 @@ export default function TimeSettingItem(props: TimeSettingItemProps): JSX.Elemen
 					max={props.maximum}
 					onChange={onChange}
 				/>
+				
 				<span>{localization.sec}</span>
 			</div>
 		</div>

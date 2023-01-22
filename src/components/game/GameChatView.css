@@ -12,10 +12,6 @@
 	background-color: lightyellow;
 }
 
-.sideButtonHost button:not(:last-child) {
-	margin-right: -1px;
-}
-
 .sideButtonActiveRound {
 	background-color: #5A95E2;
 	cursor: default !important;

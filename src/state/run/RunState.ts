@@ -23,6 +23,7 @@ export default interface RunState {
 		name: string;
 		roundIndex: number;
 		isGamePaused: boolean;
+		isEditEnabled: boolean;
 		isGameStarted: boolean;
 		isDecisionNeeded: boolean;
 		isAnswering: boolean;
@@ -108,6 +109,7 @@ export const initialState: RunState = {
 		name: '',
 		roundIndex: -1,
 		isGamePaused: false,
+		isEditEnabled: false,
 		isGameStarted: false,
 		isDecisionNeeded: false,
 		isAnswering: false,

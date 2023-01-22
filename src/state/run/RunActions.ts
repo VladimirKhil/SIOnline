@@ -86,6 +86,7 @@ export const enum RunActionTypes {
 	Unbanned = 'UNBANNED',
 	SelectBannedItem = 'SELECT_BANNED_ITEM',
 	PlayerMediaLoaded = 'PLAYER_MEDIA_LOADED',
+	EditTable = 'EDIT_TABLE',
 }
 
 export type RunChatModeChangedAction = { type: RunActionTypes.RunChatModeChanged, chatMode: ChatMode };
@@ -134,6 +135,7 @@ export type ClearDecisionsAction = { type: RunActionTypes.ClearDecisions };
 export type IsGameButtonEnabledChangedAction = { type: RunActionTypes.IsGameButtonEnabledChanged, isGameButtonEnabled: boolean };
 export type IsAnsweringAction = { type: RunActionTypes.IsAnswering };
 export type AnswerChangedAction = { type: RunActionTypes.AnswerChanged, answer: string };
+
 export type ValidateAction = {
 	type: RunActionTypes.Validate,
 	name: string,
@@ -143,6 +145,7 @@ export type ValidateAction = {
 	header: string,
 	message: string
 };
+
 export type SetStakesAction = {
 	type: RunActionTypes.SetStakes,
 	allowedStakeTypes: Record<StakeTypes, boolean>,
@@ -153,6 +156,7 @@ export type SetStakesAction = {
 	message: string,
 	areSimple: boolean
 };
+
 export type StakeChangedAction = { type: RunActionTypes.StakeChanged, stake: number };
 export type SelectionEnabledAction = { type: RunActionTypes.SelectionEnabled, allowedIndices: number[], message: string };
 export type AreSumsEditableChangedAction = { type: RunActionTypes.AreSumsEditableChanged, areSumsEditable: boolean };
@@ -181,7 +185,8 @@ export type BannedListChangedAction = { type: RunActionTypes.BannedListChanged, 
 export type BannedAction = { type: RunActionTypes.Banned, ip: string, name: string };
 export type UnbannedAction = { type: RunActionTypes.Unbanned, ip: string };
 export type SelectBannedItemAction = { type: RunActionTypes.SelectBannedItem, ip: string };
-export type PlayerMediaLoadedction = { type: RunActionTypes.PlayerMediaLoaded, playerIndex: number };
+export type PlayerMediaLoadedAction = { type: RunActionTypes.PlayerMediaLoaded, playerIndex: number };
+export type EditTableAction = { type: RunActionTypes.EditTable };
 
 export type KnownRunAction =
 	RunChatModeChangedAction
@@ -260,4 +265,5 @@ export type KnownRunAction =
 	| BannedAction
 	| UnbannedAction
 	| SelectBannedItemAction
-	| PlayerMediaLoadedction;
+	| PlayerMediaLoadedAction
+	| EditTableAction;
