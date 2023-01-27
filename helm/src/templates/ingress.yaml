@@ -9,6 +9,9 @@ metadata:
     {{- toYaml .Values.ingress.annotations | nindent 4 }}
 spec:
   ingressClassName: {{ .Values.ingress.className }}
+  tls:
+  - hosts: {{ .Values.ingress.hosts }}
+    secretName: {{ .Values.ingress.secretName }}
   rules:
   - http:
       paths:
