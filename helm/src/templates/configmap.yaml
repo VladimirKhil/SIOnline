@@ -11,7 +11,8 @@ data:
       rewriteUrl: {{ .Values.config.rewriteUrl }},
       apiUri: '{{ .Values.config.apiUri }}',
       forceHttps: {{ .Values.config.forceHttps }},
-      useMessagePackProtocol: {{ .Values.config.useMessagePackProtocol }}
+      useMessagePackProtocol: {{ .Values.config.useMessagePackProtocol }},
+      registerServiceWorker: {{ .Values.config.registerServiceWorker }}
     };
 
 {{ if .Values.firebase }}
