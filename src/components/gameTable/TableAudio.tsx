@@ -13,6 +13,8 @@ interface TableAudioProps {
 	soundVolume: number;
 	audio: string;
 	isMediaStopped: boolean;
+
+	mediaLoaded: () => void;
 	onMediaEnded: () => void;
 	onSoundVolumeChange: (volume: number) => void;
 	operationError: (error: string) => void;
@@ -34,6 +36,9 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	operationError: (error: string) => {
 		dispatch(runActionCreators.operationError(error) as object as Action);
 	},
+	mediaLoaded: () => {
+		dispatch(runActionCreators.mediaLoaded() as unknown as Action);
+	},
 });
 
 export class TableAudio extends React.Component<TableAudioProps> {
@@ -53,7 +58,7 @@ export class TableAudio extends React.Component<TableAudioProps> {
 		this.audioRef.current.volume = this.props.soundVolume;
 		
 		const ext = getExtension(this.props.audio);
-		const canPlay = ext !== null && this.audioRef.current.canPlayType(ext);
+		const canPlay = ext !== null && this.audioRef.current.canPlayType('audio/' + ext);
 
 		if (canPlay === '') {
 			this.props.operationError(`${localization.unsupportedMediaType}: ${ext}`);
@@ -87,7 +92,7 @@ export class TableAudio extends React.Component<TableAudioProps> {
 
 		return audio.length === 0 ? null : (
 			<>
-				<audio ref={this.audioRef} autoPlay onEnded={onMediaEnded}>
+				<audio ref={this.audioRef} autoPlay onEnded={onMediaEnded} onLoadedData={() => this.props.mediaLoaded()}>
 					<source src={audio} />
 				</audio>
 				<VolumeButton />

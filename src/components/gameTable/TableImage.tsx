@@ -3,16 +3,26 @@ import State from '../../state/State';
 import { connect } from 'react-redux';
 import TableBorder from './TableBorder';
 import TableAudio from './TableAudio';
+import { Dispatch, Action } from 'redux';
+import runActionCreators from '../../state/run/runActionCreators';
 
 import './TableImage.css';
 import spinnerSvg from '../../../assets/images/spinner.svg';
 
 interface TableImageProps {
 	text: string;
+
+	mediaLoaded: () => void;
 }
 
 const mapStateToProps = (state: State) => ({
 	text: state.run.table.text
+});
+
+const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
+	mediaLoaded: () => {
+		dispatch(runActionCreators.mediaLoaded() as unknown as Action);
+	},
 });
 
 export class TableImage extends React.Component<TableImageProps> {
@@ -25,6 +35,8 @@ export class TableImage extends React.Component<TableImageProps> {
 	}
 
 	onImageLoad = () => {
+		this.props.mediaLoaded();
+
 		if (!this.spinnerRef.current) {
 			return;
 		}
@@ -43,4 +55,4 @@ export class TableImage extends React.Component<TableImageProps> {
 	}
 }
 
-export default connect(mapStateToProps)(TableImage);
+export default connect(mapStateToProps, mapDispatchToProps)(TableImage);

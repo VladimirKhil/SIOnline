@@ -13,6 +13,8 @@ interface TableVideoProps {
 	soundVolume: number;
 	text: string;
 	isMediaStopped: boolean;
+
+	mediaLoaded: () => void;
 	onMediaEnded: () => void;
 	operationError: (error: string) => void;
 }
@@ -29,6 +31,9 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	},
 	operationError: (error: string) => {
 		dispatch(runActionCreators.operationError(error) as object as Action);
+	},
+	mediaLoaded: () => {
+		dispatch(runActionCreators.mediaLoaded() as unknown as Action);
 	},
 });
 
@@ -49,7 +54,7 @@ export class TableVideo extends React.Component<TableVideoProps> {
 		this.videoRef.current.volume = this.props.soundVolume;
 		
 		const ext = getExtension(this.props.text);
-		const canPlay = ext !== null && this.videoRef.current.canPlayType(ext);
+		const canPlay = ext !== null && this.videoRef.current.canPlayType('video/' + ext);
 
 		if (canPlay === '') {
 			this.props.operationError(`${localization.unsupportedMediaType}: ${ext}`);
@@ -83,7 +88,7 @@ export class TableVideo extends React.Component<TableVideoProps> {
 
 		return (
 			<TableBorder>
-				<video ref={this.videoRef} autoPlay onEnded={onMediaEnded}>
+				<video ref={this.videoRef} autoPlay onEnded={onMediaEnded} onLoadedData={() => this.props.mediaLoaded()}>
 					<source src={text} />
 				</video>
 				<VolumeButton />

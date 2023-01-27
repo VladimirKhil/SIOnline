@@ -764,6 +764,14 @@ const playerMediaLoaded: ActionCreator<RunActions.PlayerMediaLoadedAction> = (pl
 	type: RunActions.RunActionTypes.PlayerMediaLoaded, playerIndex
 });
 
+const mediaLoaded: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
+	_dispatch: Dispatch<any>,
+	_getState: () => State,
+	dataContext: DataContext
+) => {
+	await dataContext.game.mediaLoaded();
+};
+
 const runActionCreators = {
 	runChatModeChanged,
 	runChatMessageChanged,
@@ -877,6 +885,7 @@ const runActionCreators = {
 	selectBannedItem,
 	unban,
 	playerMediaLoaded,
+	mediaLoaded,
 };
 
 export default runActionCreators;
