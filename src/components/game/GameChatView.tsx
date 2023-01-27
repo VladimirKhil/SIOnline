@@ -195,8 +195,9 @@ export function GameChatView(props: GameChatViewProps): JSX.Element {
 						className={`standard wide commandButton bottomButton ${props.areSumsEditable ? 'active' : ''}`}
 						disabled={!props.isConnected}
 						onClick={() => props.onEditSums(!props.areSumsEditable)}
+						title={localization.changeSums}
 					>
-						{localization.changeSums}
+						💰
 					</button>
 
 					<FlyoutButton
@@ -219,7 +220,7 @@ export function GameChatView(props: GameChatViewProps): JSX.Element {
 						alignWidth
 						title={localization.gameManageHint}
 					>
-						{localization.game}
+						⚙️
 					</FlyoutButton>
 
 					<button
@@ -227,8 +228,9 @@ export function GameChatView(props: GameChatViewProps): JSX.Element {
 						className={`standard wide commandButton bottomButton ${props.isEditEnabled ? 'active' : ''}`}
 						disabled={!props.isConnected || !props.isPaused}
 						onClick={() => props.onEditTable()}
+						title={localization.editTable}
 					>
-						{localization.editTable}
+						✏️
 					</button>
 				</div>) : null}
 		</div>
