@@ -40,7 +40,7 @@ export default function CookiesWarning(): JSX.Element | null {
 	return accepted ? null : (
 		<div className='cookies__warning'>
 			<span>{localization.cookiesWarning}</span>
-			<button onClick={acceptCookie}>{localization.cookiesConfirm}</button>
+			<button className='standard' onClick={acceptCookie}>{localization.cookiesConfirm}</button>
 		</div>
 	);
 }

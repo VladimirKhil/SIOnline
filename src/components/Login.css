@@ -105,6 +105,12 @@
     padding: 3px 5px;
 }
 
+.siAdHost {
+    flex: 1 0 0;
+    margin: 10px 10px 75px 10px;
+    overflow: hidden;
+}
+
 #logonerror {
     width: 100%;
     color: darkred;
@@ -127,5 +133,9 @@
 
     #howToPlay, #enter {
         width: auto;
+    }
+
+    .siAdHost {
+        margin: 10px;
     }
 }

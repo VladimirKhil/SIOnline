@@ -3,7 +3,7 @@
 	bottom: 0;
 	left: 0;
 	right: 0;
-	height: 60px;
+	height: 120px;
 	text-align: center;
 	background-color: #5A95E2;
 	display: flex;
@@ -28,5 +28,6 @@
     .cookies__warning {
 		left: 100px;
 		right: 100px;
+		height: 60px;
 	}
 }

@@ -488,12 +488,6 @@ video, audio {
     animation-duration: 2s;
 }
 
-.siAdHost {
-    flex: 1 0 0;
-    margin: 10px;
-    overflow: hidden;
-}
-
 #lastReplic {
     position: absolute;
     top: -65px;

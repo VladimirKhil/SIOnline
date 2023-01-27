@@ -123,7 +123,7 @@ function validateBrowser() : boolean {
 
 async function registerServiceWorker2() {
 	try {
-		const registration = await navigator.serviceWorker.register('/service-worker.js');
+		const registration = await navigator.serviceWorker.register(config?.rootUri + 'service-worker.js');
 		console.log('Service worker registered: ', registration);
 	} catch (error) {
 		console.log('Service worker Registration Failed: ' + getErrorMessage(error));
