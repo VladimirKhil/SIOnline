@@ -861,8 +861,13 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 	(isSingleGame: boolean) => async (dispatch: Dispatch<any>, getState: () => State, dataContext: DataContext) => {
 		const state = getState();
 
-		if (state.game.name.length === 0 || state.common.computerAccounts === null) {
+		if (!isSingleGame && state.game.name.length === 0) {
 			dispatch(gameCreationEnd(localization.gameNameMustBeSpecified));
+			return;
+		}
+
+		if (state.common.computerAccounts === null) {
+			dispatch(gameCreationEnd(localization.computerAccountsMissing));
 			return;
 		}
 
@@ -870,20 +875,19 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 
 		const game = isSingleGame
 			? {
-					...state.game,
-					name: getRandomValue().toString(),
-					password: getRandomValue().toString(), // protecting from anyone to join
-					isShowmanHuman: false,
-					humanPlayersCount: 0
+				...state.game,
+				name: getRandomValue().toString(),
+				password: getRandomValue().toString(), // protecting from anyone to join
+				isShowmanHuman: false,
+				humanPlayersCount: 0
 			} : state.game;
 
 		const { playersCount, humanPlayersCount, role } = game;
 		const me: AccountSettings = { name: state.user.login, isHuman: true, isMale: state.settings.sex === Sex.Male };
 
-		const showman: AccountSettings =
-			role === Role.Showman
-				? me
-				: game.isShowmanHuman
+		const showman: AccountSettings = role === Role.Showman
+			? me
+			: game.isShowmanHuman
 				? { name: Constants.ANY_NAME, isHuman: true }
 				: { name: localization.defaultShowman };
 		
