@@ -26,7 +26,7 @@ interface TableAudioProps {
 
 const mapStateToProps = (state: State) => ({
 	soundVolume: state.settings.soundVolume,
-	audio: state.run.table.audio.replace('https://vladimirkhil.com/siserver/3', 'http://192.168.100.3:5005'),
+	audio: state.run.table.audio,
 	isMediaStopped: state.run.stage.isGamePaused || state.run.table.isMediaStopped
 });
 
@@ -49,7 +49,6 @@ export class TableAudio extends React.Component<TableAudioProps> {
 	private audioRef: HTMLAudioElement = AUDIO_OBJECT;
 
 	componentDidMount() {
-		console.log(this.audioRef);
 		this.audioRef.volume = this.props.soundVolume;
 		this.audioRef.loop = false;
 		const audio = this.audioRef;
@@ -61,11 +60,9 @@ export class TableAudio extends React.Component<TableAudioProps> {
 			this.props.operationError(`${localization.unsupportedMediaType}: ${ext}`);
 		} else {
 			audio.onload = () => {
-				console.log('load');
 				this.props.mediaLoaded();
 			};
 			audio.onended = () => {
-				console.log('endaudio');
 				this.props.onMediaEnded();
 			};
 			audio.src = this.props.audio;
@@ -81,7 +78,6 @@ export class TableAudio extends React.Component<TableAudioProps> {
 		const audio = this.audioRef;
 
 		if (this.props.audio !== audio.currentSrc) {
-			console.log(this.props.audio);
 			audio.src = this.props.audio;
 			audio.load();
 		}
