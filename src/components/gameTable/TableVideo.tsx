@@ -86,6 +86,7 @@ export class TableVideo extends React.Component<TableVideoProps> {
 	onEnableAudioPlay = () => {
 		if (this.videoRef.current) {
 			this.videoRef.current.play();
+			this.videoRef.current.muted = false;
 		}
 	};
 
