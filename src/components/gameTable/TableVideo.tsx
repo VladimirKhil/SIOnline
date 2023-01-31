@@ -34,7 +34,7 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	},
 	mediaLoaded: () => {
 		dispatch(runActionCreators.mediaLoaded() as unknown as Action);
-	},
+	}
 });
 
 export class TableVideo extends React.Component<TableVideoProps> {
@@ -52,7 +52,7 @@ export class TableVideo extends React.Component<TableVideoProps> {
 		}
 
 		this.videoRef.current.volume = this.props.soundVolume;
-		
+
 		const ext = getExtension(this.props.text);
 		const canPlay = ext !== null && this.videoRef.current.canPlayType('video/' + ext);
 
@@ -76,12 +76,18 @@ export class TableVideo extends React.Component<TableVideoProps> {
 			if (this.props.isMediaStopped) {
 				video.pause();
 			} else {
-				video.play().catch(e => this.props.operationError(getErrorMessage(e)));
+				video.play().catch((e) => this.props.operationError(getErrorMessage(e)));
 			}
 		}
 
 		video.volume = this.props.soundVolume;
 	}
+
+	onEnableAudioPlay = () => {
+		if (this.videoRef.current) {
+			this.videoRef.current.play();
+		}
+	};
 
 	render() {
 		const { onMediaEnded, text } = this.props;
@@ -91,7 +97,7 @@ export class TableVideo extends React.Component<TableVideoProps> {
 				<video ref={this.videoRef} autoPlay onEnded={onMediaEnded} onLoadedData={() => this.props.mediaLoaded()}>
 					<source src={text} />
 				</video>
-				<VolumeButton />
+				<VolumeButton onEnableAudioPlay={this.onEnableAudioPlay} />
 			</TableBorder>
 		);
 	}

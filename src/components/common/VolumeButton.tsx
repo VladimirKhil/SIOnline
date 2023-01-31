@@ -7,9 +7,17 @@ import localization from '../../model/resources/localization';
 
 import './VolumeButton.css';
 
+const globalAudioContext = new AudioContext();
+
 interface VolumeButtonProps {
 	soundVolume: number;
+	onEnableAudioPlay: () => void;
 	onSoundVolumeChange: (volume: number) => void;
+}
+
+interface VolumeButtonState {
+	isVolumeControlVisible: boolean;
+	canPlayAudio: boolean;
 }
 
 const mapStateToProps = (state: State) => ({
@@ -22,11 +30,46 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	}
 });
 
-export class VolumeButton extends React.Component<VolumeButtonProps> {
-	state = { isVolumeControlVisible: false };
+export class VolumeButton extends React.Component<VolumeButtonProps, VolumeButtonState> {
+	audioContext: AudioContext;
+
+	_audioContextEventListener: () => void = () => {};
+
+	constructor(props: VolumeButtonProps) {
+		super(props);
+
+		this.audioContext = globalAudioContext;
+		this.state = {
+			isVolumeControlVisible: false,
+			canPlayAudio: this.audioContext.state === 'running'
+		};
+	}
+
+	componentDidMount(): void {
+		this._audioContextEventListener = () => {
+			const canPlay = this.audioContext.state === 'running';
+			if (canPlay) {
+				this.setState({
+					canPlayAudio: canPlay
+				});
+				this.audioContext.removeEventListener('statechange', this._audioContextEventListener);
+			}
+		};
+		this.audioContext.addEventListener('statechange', this._audioContextEventListener);
+	}
+
+	componentWillUnmount(): void {
+		this.audioContext.removeEventListener('statechange', this._audioContextEventListener);
+	}
 
 	toggleVisibility = () => {
-		this.setState((state) => ({ ...state, isVolumeControlVisible: !this.state.isVolumeControlVisible }));
+		if (!this.state.canPlayAudio) {
+			this.audioContext.resume();
+			this.audioContext.createGain();
+			this.props.onEnableAudioPlay();
+		} else {
+			this.setState((state) => ({ ...state, isVolumeControlVisible: !this.state.isVolumeControlVisible }));
+		}
 	};
 
 	changeVolumeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -43,7 +86,7 @@ export class VolumeButton extends React.Component<VolumeButtonProps> {
 					style={{ background: this.state.isVolumeControlVisible ? 'lightgrey' : 'none' }}
 					title={this.props.soundVolume ? localization.enableSound : localization.disableSound}
 				>
-					{this.props.soundVolume ? '🔈' : '🔇'}
+					{this.props.soundVolume && this.state.canPlayAudio ? '🔈' : '🔇'}
 				</button>
 				<input
 					min={0}
