@@ -10,7 +10,7 @@ interface TableRoundProps {
 }
 
 const mapStateToProps = (state: State) => ({
-	text: state.run.table.text,
+	text: state.table.text,
 });
 
 export function TableRound(props: TableRoundProps) {

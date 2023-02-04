@@ -15,7 +15,7 @@ interface TableRoundThemesState {
 }
 
 const mapStateToProps = (state: State) => ({
-	roundThemes: state.run.table.roundInfo.map(theme => theme.name)
+	roundThemes: state.table.roundInfo.map(theme => theme.name)
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({

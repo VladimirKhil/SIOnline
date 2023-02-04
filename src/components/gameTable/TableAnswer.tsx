@@ -9,11 +9,7 @@ interface TableAnswerProps {
 }
 
 const mapStateToProps = (state: State) => ({
-	text: state.run.table.text
-});
-
-const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
-
+	text: state.table.text
 });
 
 export function TableAnswer(props: TableAnswerProps) {
@@ -26,4 +22,4 @@ export function TableAnswer(props: TableAnswerProps) {
 	);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(TableAnswer);
+export default connect(mapStateToProps)(TableAnswer);

@@ -1,6 +1,5 @@
 import * as React from 'react';
 import State from '../../state/State';
-import { Dispatch, Action } from 'redux';
 import { connect } from 'react-redux';
 import TimerInfo from '../../model/TimerInfo';
 import { isRunning } from '../../utils/TimerInfoHelpers';
@@ -14,12 +13,8 @@ interface TableBorderProps {
 }
 
 const mapStateToProps = (state: State) => ({
-	canTry: state.run.table.canPress,
+	canTry: state.table.canPress,
 	pressTimer: state.run.timers.press
-});
-
-const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
-
 });
 
 export function TableBorder(props: TableBorderProps) {
@@ -56,4 +51,4 @@ export function TableBorder(props: TableBorderProps) {
 	);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(TableBorder);
+export default connect(mapStateToProps)(TableBorder);

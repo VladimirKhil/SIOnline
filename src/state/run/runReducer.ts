@@ -2,8 +2,6 @@ import { Reducer, AnyAction } from 'redux';
 import RunState, { initialState } from './RunState';
 import { KnownRunAction, RunActionTypes } from './RunActions';
 import { replace, swap } from '../../utils/ArrayExtensions';
-import tableReducer from '../table/tableReducer';
-import { KnownTableAction } from '../table/TableActions';
 import { set, removeS } from '../../utils/RecordExtensions';
 import PlayerStates from '../../model/enums/PlayerStates';
 import Constants from '../../model/enums/Constants';
@@ -258,11 +256,6 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 					areVisible: false,
 					areSimple: false
 				},
-				table: { // ? -> tableReducer?
-					...state.table,
-					isSelectable: false,
-					caption: ''
-				}
 			};
 
 		case RunActionTypes.SumsChanged:
@@ -484,10 +477,6 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 				validation: {
 					...state.validation,
 					isVisible: false
-				},
-				table: {
-					...state.table,
-					isSelectable: false
 				},
 				selection: {
 					...state.selection,
@@ -874,10 +863,7 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 			};
 
 		default:
-			return {
-				...state,
-				table: tableReducer(state.table, action as KnownTableAction)
-			};
+			return state;
 	}
 };
 

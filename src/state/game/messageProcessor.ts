@@ -231,7 +231,7 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 				dispatch(runActionCreators.playersStateCleared());
 				dispatch(runActionCreators.afterQuestionStateChanged(false));
 
-				const themeInfo = state.run.table.roundInfo[themeIndex];
+				const themeInfo = state.table.roundInfo[themeIndex];
 
 				if (themeInfo) {
 					const price = themeInfo.questions[questIndex];
@@ -354,7 +354,8 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 			{
 				const themeIndex = parseInt(args[1], 10);
 
-				const themeInfo = state.run.table.roundInfo[themeIndex];
+				const themeInfo = state.table.roundInfo[themeIndex];
+				
 				if (themeInfo) {
 					dispatch(tableActionCreators.blinkTheme(themeIndex));
 
@@ -491,7 +492,7 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 			const qType = args[1];
 			switch (qType) {
 				case 'auction':
-					dispatch(tableActionCreators.showSpecial(localization.questionTypeStake, state.run.table.activeThemeIndex));
+					dispatch(tableActionCreators.showSpecial(localization.questionTypeStake, state.table.activeThemeIndex));
 					break;
 
 				case 'cat':
@@ -653,6 +654,8 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 			}
 
 			dispatch(runActionCreators.gameStateCleared());
+			dispatch(tableActionCreators.isSelectableChanged(false));
+			dispatch(tableActionCreators.captionChanged(''));
 			break;
 
 		case 'STOP':
@@ -675,7 +678,7 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 			break;
 
 		case 'TABLO2':
-			const { roundInfo } = state.run.table;
+			const { roundInfo } = state.table;
 			const areQuestionsFilled = roundInfo.some(theme => theme.questions.length > 0);
 
 			if (areQuestionsFilled) {
@@ -810,7 +813,7 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 				const questionIndex = parseInt(args[2], 10);
 				const price = parseInt(args[3], 10);
 
-				const themeInfo = state.run.table.roundInfo[themeIndex];
+				const themeInfo = state.table.roundInfo[themeIndex];
 
 				if (themeInfo) {
 					const existingPrice = themeInfo.questions[questionIndex];

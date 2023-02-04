@@ -20,10 +20,10 @@ interface RoundTableProps {
 }
 
 const mapStateToProps = (state: State) => ({
-	roundInfo: state.run.table.roundInfo,
-	isSelectable: state.run.table.isSelectable,
-	activeThemeIndex: state.run.table.activeThemeIndex,
-	actionQuestionIndex: state.run.table.actionQuestionIndex,
+	roundInfo: state.table.roundInfo,
+	isSelectable: state.table.isSelectable,
+	activeThemeIndex: state.table.activeThemeIndex,
+	actionQuestionIndex: state.table.actionQuestionIndex,
 	isEditEnabled: state.run.stage.isEditEnabled,
 });
 

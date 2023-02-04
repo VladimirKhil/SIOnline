@@ -14,13 +14,9 @@ interface TableTextProps {
 }
 
 const mapStateToProps = (state: State) => ({
-	text: state.run.table.text,
-	animateReading: state.run.table.animateReading,
-	readingSpeed: state.run.readingSpeed
-});
-
-const mapDispatchToProps = () => ({
-
+	text: state.table.text,
+	animateReading: state.table.animateReading,
+	readingSpeed: state.run.readingSpeed,
 });
 
 export function TableText(props: TableTextProps) {
@@ -57,4 +53,4 @@ export function TableText(props: TableTextProps) {
 	);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(TableText);
+export default connect(mapStateToProps)(TableText);

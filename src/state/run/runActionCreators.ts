@@ -373,13 +373,15 @@ const selectQuestion: ActionCreator<ThunkAction<void, State, DataContext, Action
 	dispatch: Dispatch<Action>,
 	getState: () => State, dataContext: DataContext
 ) => {
-	if (!getState().run.table.isSelectable) {
+	if (!getState().table.isSelectable) {
 		return;
 	}
 
-	const theme = getState().run.table.roundInfo[themeIndex];
+	const theme = getState().table.roundInfo[themeIndex];
+	
 	if (theme) {
 		const question = theme.questions[questionIndex];
+
 		if (question > -1) {
 			if (await dataContext.gameClient.msgAsync('CHOICE', themeIndex, questionIndex)) {
 				dispatch(tableActionCreators.isSelectableChanged(false));
@@ -393,7 +395,7 @@ const toggleQuestion: ActionCreator<ThunkAction<void, State, DataContext, Action
 	_dispatch: Dispatch<Action>,
 	getState: () => State, dataContext: DataContext
 ) => {
-	const theme = getState().run.table.roundInfo[themeIndex];
+	const theme = getState().table.roundInfo[themeIndex];
 
 	if (theme && theme.questions[questionIndex]) {
 		await dataContext.game.toggle(themeIndex, questionIndex);
@@ -404,11 +406,11 @@ const selectTheme: ActionCreator<ThunkAction<void, State, DataContext, Action>> 
 	dispatch: Dispatch<Action>,
 	getState: () => State, dataContext: DataContext
 ) => {
-	if (!getState().run.table.isSelectable) {
+	if (!getState().table.isSelectable) {
 		return;
 	}
 
-	const theme = getState().run.table.roundInfo[themeIndex];
+	const theme = getState().table.roundInfo[themeIndex];
 	if (theme) {
 		if (await dataContext.gameClient.msgAsync('DELETE', themeIndex)) {
 			dispatch(tableActionCreators.isSelectableChanged(false));

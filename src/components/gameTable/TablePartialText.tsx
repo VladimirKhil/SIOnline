@@ -1,6 +1,5 @@
 import * as React from 'react';
 import State from '../../state/State';
-import { Dispatch, Action } from 'redux';
 import { connect } from 'react-redux';
 import AutoSizedText from '../common/AutoSizedText';
 import TableBorder from './TableBorder';
@@ -14,13 +13,9 @@ interface TablePartialTextProps {
 }
 
 const mapStateToProps = (state: State) => ({
-	text: state.run.table.text,
-	tail: state.run.table.tail,
-	readingSpeed: state.run.readingSpeed
-});
-
-const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
-
+	text: state.table.text,
+	tail: state.table.tail,
+	readingSpeed: state.run.readingSpeed,
 });
 
 export class TablePartialText extends React.Component<TablePartialTextProps> {
@@ -81,4 +76,4 @@ export class TablePartialText extends React.Component<TablePartialTextProps> {
 	}
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(TablePartialText);
+export default connect(mapStateToProps)(TablePartialText);

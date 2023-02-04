@@ -13,8 +13,12 @@ import settingsReducer from './settings/settingsReducer';
 import { KnownSettingsAction } from './settings/SettingsActions';
 import Role from '../client/contracts/Role';
 import MessageLevel from '../model/enums/MessageLevel';
+import tableReducer from './table/tableReducer';
+import { KnownTableAction } from './table/TableActions';
 
-const reducer: Reducer<State> = (state: State = initialState, action: KnownAction | KnownRunAction | KnownSettingsAction): State => {
+const reducer: Reducer<State> = (
+	state: State = initialState,
+	action: KnownAction | KnownRunAction | KnownSettingsAction | KnownTableAction): State => {
 	switch (action.type) {
 		case ActionTypes.IsConnectedChanged:
 			return {
@@ -732,7 +736,8 @@ const reducer: Reducer<State> = (state: State = initialState, action: KnownActio
 			return {
 				...state,
 				run: runReducer(state.run, action as KnownRunAction),
-				settings: settingsReducer(state.settings, action as KnownSettingsAction)
+				settings: settingsReducer(state.settings, action as KnownSettingsAction),
+				table: tableReducer(state.table, action as KnownTableAction),
 			};
 	}
 };

@@ -1,7 +1,6 @@
 ﻿import * as React from 'react';
 import { connect } from 'react-redux';
 import State from '../../state/State';
-
 import TableMode from '../../model/enums/TableMode';
 import TableLogo from './TableLogo';
 import TableText from './TableText';
@@ -37,12 +36,12 @@ interface GameTableProps {
 
 const mapStateToProps = (state: State) => ({
 	isConnected: state.common.isConnected,
-	mode: state.run.table.mode,
+	mode: state.table.mode,
 	isPaused: state.run.stage.isGamePaused,
 	isEditEnabled: state.run.stage.isEditEnabled,
 	showMainTimer: state.run.showMainTimer,
 	decisionTimer: state.run.timers.decision,
-	caption: state.run.table.caption,
+	caption: state.table.caption,
 });
 
 function getContent(mode: TableMode) {
@@ -142,4 +141,4 @@ export function GameTable(props: GameTableProps): JSX.Element {
 	);
 }
 
-export default connect(mapStateToProps, {})(GameTable);
+export default connect(mapStateToProps)(GameTable);

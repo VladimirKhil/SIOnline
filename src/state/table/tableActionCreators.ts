@@ -128,7 +128,7 @@ const tableActionCreators = {
 	canPressChanged,
 	isSelectableChanged,
 	resumeMedia,
-	captionChanged
+	captionChanged,
 };
 
 export default tableActionCreators;

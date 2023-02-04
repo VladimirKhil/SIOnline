@@ -1,4 +1,3 @@
-import TableState, { initialState as tableInitialState } from '../table/TableState';
 import ChatMode from '../../model/enums/ChatMode';
 import ChatMessage from '../../model/ChatMessage';
 import PersonInfo from '../../model/PersonInfo';
@@ -34,7 +33,6 @@ export default interface RunState {
 	};
 	timers: Timers;
 	showMainTimer: boolean;
-	table: TableState;
 	selection: {
 		isEnabled: boolean;
 		message: string;
@@ -142,7 +140,6 @@ export const initialState: RunState = {
 		}
 	},
 	showMainTimer: false,
-	table: tableInitialState,
 	selection: {
 		isEnabled: false,
 		message: ''

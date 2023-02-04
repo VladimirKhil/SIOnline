@@ -11,12 +11,11 @@ import spinnerSvg from '../../../assets/images/spinner.svg';
 
 interface TableImageProps {
 	text: string;
-
 	mediaLoaded: () => void;
 }
 
 const mapStateToProps = (state: State) => ({
-	text: state.run.table.text
+	text: state.table.text,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({

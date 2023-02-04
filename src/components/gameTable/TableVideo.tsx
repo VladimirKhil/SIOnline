@@ -21,8 +21,8 @@ interface TableVideoProps {
 
 const mapStateToProps = (state: State) => ({
 	soundVolume: state.settings.soundVolume,
-	text: state.run.table.text,
-	isMediaStopped: state.run.stage.isGamePaused || state.run.table.isMediaStopped
+	text: state.table.text,
+	isMediaStopped: state.run.stage.isGamePaused || state.table.isMediaStopped,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
@@ -47,14 +47,14 @@ export class TableVideo extends React.Component<TableVideoProps> {
 	}
 
 	componentDidMount() {
-		if (!this.videoRef.current) {
+		if (!this.videoRef.current || this.props.text.length === 0) {
 			return;
 		}
 
 		this.videoRef.current.volume = this.props.soundVolume;
 
 		const ext = getExtension(this.props.text);
-		const canPlay = ext !== null && this.videoRef.current.canPlayType('video/' + ext);
+		const canPlay = ext && this.videoRef.current.canPlayType('video/' + ext);
 
 		if (canPlay === '') {
 			this.props.operationError(`${localization.unsupportedMediaType}: ${ext}`);

@@ -15,22 +15,18 @@ interface FinalTableProps {
 }
 
 const mapStateToProps = (state: State) => ({
-	roundInfo: state.run.table.roundInfo,
-	isSelectable: state.run.table.isSelectable,
-	activeThemeIndex: state.run.table.activeThemeIndex
+	roundInfo: state.table.roundInfo,
+	isSelectable: state.table.isSelectable,
+	activeThemeIndex: state.table.activeThemeIndex,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	onSelectTheme: (themeIndex: number) => {
 		dispatch(runActionCreators.selectTheme(themeIndex) as object as Action);
-	}
+	},
 });
 
 export class FinalTable extends React.Component<FinalTableProps> {
-	constructor(props: FinalTableProps) {
-		super(props);
-	}
-
 	onSelectTheme(themeIndex: number) {
 		if (!this.props.isSelectable) {
 			return;

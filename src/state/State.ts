@@ -13,6 +13,7 @@ import PackageType from '../model/enums/PackageType';
 import { SIPackageInfo } from '../model/SIPackageInfo';
 import { SearchEntity } from '../model/SearchEntity';
 import MessageLevel from '../model/enums/MessageLevel';
+import TableState, { initialState as tableInitialState } from './table/TableState';
 
 export default interface State {
 	user: {
@@ -69,7 +70,8 @@ export default interface State {
 		id: number;
 		isAutomatic: boolean;
 	};
-	run: RunState;
+	run: RunState;	
+	table: TableState;
 	common: {
 		computerAccounts: string[] | null;
 		isConnected: boolean;
@@ -161,6 +163,7 @@ export const initialState: State = {
 		error: '',
 	},
 	run: runInitialState,
+	table: tableInitialState,
 	common: {
 		computerAccounts: null,
 		isConnected: true,

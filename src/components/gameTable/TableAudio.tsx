@@ -11,6 +11,7 @@ import localization from '../../model/resources/localization';
 
 const EMPTY_WAV_SOUND =
 	'data:audio/wav;base64,UklGRjIAAABXQVZFZm10IBIAAAABAAEAQB8AAEAfAAABAAgAAABmYWN0BAAAAAAAAABkYXRhAAAAAA==';
+
 export const AUDIO_OBJECT = new Audio(EMPTY_WAV_SOUND);
 
 interface TableAudioProps {
@@ -26,8 +27,8 @@ interface TableAudioProps {
 
 const mapStateToProps = (state: State) => ({
 	soundVolume: state.settings.soundVolume,
-	audio: state.run.table.audio,
-	isMediaStopped: state.run.stage.isGamePaused || state.run.table.isMediaStopped
+	audio: state.table.audio,
+	isMediaStopped: state.run.stage.isGamePaused || state.table.isMediaStopped,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
@@ -42,19 +43,23 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	},
 	mediaLoaded: () => {
 		dispatch(runActionCreators.mediaLoaded() as unknown as Action);
-	}
+	},
 });
 
 export class TableAudio extends React.Component<TableAudioProps> {
 	private audioRef: HTMLAudioElement = AUDIO_OBJECT;
 
 	componentDidMount() {
+		if (this.props.audio.length === 0) {
+			return;
+		}
+
 		this.audioRef.volume = this.props.soundVolume;
 		this.audioRef.loop = false;
 		const audio = this.audioRef;
 
 		const ext = getExtension(this.props.audio);
-		const canPlay = ext !== null && this.audioRef.canPlayType('audio/' + ext);
+		const canPlay = ext && this.audioRef.canPlayType('audio/' + ext);
 
 		if (canPlay === '') {
 			this.props.operationError(`${localization.unsupportedMediaType}: ${ext}`);
@@ -62,12 +67,16 @@ export class TableAudio extends React.Component<TableAudioProps> {
 			audio.onload = () => {
 				this.props.mediaLoaded();
 			};
+
 			audio.onended = () => {
 				this.props.onMediaEnded();
 			};
+
 			audio.src = this.props.audio;
 			audio.load();
+
 			audio.play().catch((e) => this.props.operationError(getErrorMessage(e)));
+
 			if (audio.readyState >= 3) {
 				this.props.mediaLoaded();
 			}
