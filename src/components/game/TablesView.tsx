@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Dispatch, AnyAction } from 'redux';
 import State from '../../state/State';
 import localization from '../../model/resources/localization';
-import runActionCreators from '../../state/run/runActionCreators';
+import roomActionCreators from '../../state/room/roomActionCreators';
 import PersonInfo from '../../model/PersonInfo';
 import PlayerInfo from '../../model/PlayerInfo';
 import TableView from './TableView';
@@ -33,32 +33,32 @@ interface TablesViewProps {
 
 const mapStateToProps = (state: State) => ({
 	isConnected: state.common.isConnected,
-	showman: state.run.persons.showman,
-	players: state.run.persons.players,
-	persons: state.run.persons.all,
-	selectedIndex: state.run.selectedTableIndex,
-	isGameStarted: state.run.stage.isGameStarted,
+	showman: state.room.persons.showman,
+	players: state.room.persons.players,
+	persons: state.room.persons.all,
+	selectedIndex: state.room.selectedTableIndex,
+	isGameStarted: state.room.stage.isGameStarted,
 	computerAccounts: state.common.computerAccounts
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => ({
 	selectTable: (tableIndex: number) => {
-		dispatch(runActionCreators.tableSelected(tableIndex));
+		dispatch(roomActionCreators.tableSelected(tableIndex));
 	},
 	addTable: () => {
-		dispatch(runActionCreators.addTable() as unknown as AnyAction);
+		dispatch(roomActionCreators.addTable() as unknown as AnyAction);
 	},
 	deleteTable: () => {
-		dispatch(runActionCreators.deleteTable() as unknown as AnyAction);
+		dispatch(roomActionCreators.deleteTable() as unknown as AnyAction);
 	},
 	freeTable: () => {
-		dispatch(runActionCreators.freeTable() as unknown as AnyAction);
+		dispatch(roomActionCreators.freeTable() as unknown as AnyAction);
 	},
 	changeType: () => {
-		dispatch(runActionCreators.changeType() as unknown as AnyAction);
+		dispatch(roomActionCreators.changeType() as unknown as AnyAction);
 	},
 	setTable: (name: string) => {
-		dispatch(runActionCreators.setTable(name) as unknown as AnyAction);
+		dispatch(roomActionCreators.setTable(name) as unknown as AnyAction);
 	}
 });
 

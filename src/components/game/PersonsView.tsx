@@ -4,7 +4,7 @@ import { Dispatch, AnyAction } from 'redux';
 import State from '../../state/State';
 import localization from '../../model/resources/localization';
 import Account from '../../model/Account';
-import runActionCreators from '../../state/run/runActionCreators';
+import roomActionCreators from '../../state/room/roomActionCreators';
 import PersonView from './PersonView';
 
 import './PersonsView.css';
@@ -21,20 +21,20 @@ interface PersonsViewProps {
 }
 
 const mapStateToProps = (state: State) => {
-	const showman = state.run.persons.all[state.run.persons.showman.name];
-	const playersNames = state.run.persons.players.map(p => p.name);
+	const showman = state.room.persons.all[state.room.persons.showman.name];
+	const playersNames = state.room.persons.players.map(p => p.name);
 
 	const players = playersNames
-		.map(name => state.run.persons.all[name])
+		.map(name => state.room.persons.all[name])
 		.filter(p => p)
 		.sort((p1, p2) => p1.name.localeCompare(p2.name));
 
-	const viewers = Object.keys(state.run.persons.all)
-		.filter(name => name !== state.run.persons.showman.name && !playersNames.includes(name))
-		.map(name => state.run.persons.all[name])
+	const viewers = Object.keys(state.room.persons.all)
+		.filter(name => name !== state.room.persons.showman.name && !playersNames.includes(name))
+		.map(name => state.room.persons.all[name])
 		.sort((p1, p2) => p1.name.localeCompare(p2.name));
 
-	const { selectedPersonName } = state.run.chat;
+	const { selectedPersonName } = state.room.chat;
 
 	return {
 		isConnected: state.common.isConnected,
@@ -42,16 +42,16 @@ const mapStateToProps = (state: State) => {
 		players,
 		viewers,
 		login: state.user.login,
-		selectedPerson: selectedPersonName ? state.run.persons.all[selectedPersonName] : null
+		selectedPerson: selectedPersonName ? state.room.persons.all[selectedPersonName] : null
 	};
 };
 
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => ({
 	kick: () => {
-		dispatch((runActionCreators.kickPerson() as object) as AnyAction);
+		dispatch((roomActionCreators.kickPerson() as object) as AnyAction);
 	},
 	ban: () => {
-		dispatch((runActionCreators.banPerson() as object) as AnyAction);
+		dispatch((roomActionCreators.banPerson() as object) as AnyAction);
 	}
 });
 

@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import * as React from 'react';
-import runActionCreators from '../../../state/run/runActionCreators';
+import roomActionCreators from '../../../state/room/roomActionCreators';
 import State from '../../../state/State';
 import { Dispatch, Action } from 'redux';
 import StakeTypes from '../../../model/enums/StakeTypes';
@@ -14,13 +14,13 @@ interface SendStakeButtonProps {
 
 const mapStateToProps = (state: State) => ({
 	isConnected: state.common.isConnected,
-	allowedStakeTypes: state.run.stakes.allowedStakeTypes,
-	stake: state.run.stakes.stake
+	allowedStakeTypes: state.room.stakes.allowedStakeTypes,
+	stake: state.room.stakes.stake
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	sendStake: () => {
-		dispatch((runActionCreators.sendStake() as object) as Action);
+		dispatch((roomActionCreators.sendStake() as object) as Action);
 	}
 });
 

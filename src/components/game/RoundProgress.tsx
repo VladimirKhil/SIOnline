@@ -17,10 +17,10 @@ interface RoundProgressProps {
 }
 
 const mapStateToProps = (state: State) => ({
-	roundTimer: state.run.timers.round,
-	roundsNames: state.run.roundsNames,
-	roundIndex: state.run.stage.roundIndex,
-	stageName: state.run.stage.name,
+	roundTimer: state.room.timers.round,
+	roundsNames: state.room.roundsNames,
+	roundIndex: state.room.stage.roundIndex,
+	stageName: state.room.stage.name,
 });
 
 function getLocalizedStageName(stageName: string): string {

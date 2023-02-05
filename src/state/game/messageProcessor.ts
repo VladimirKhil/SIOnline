@@ -3,9 +3,9 @@ import { ThunkAction } from 'redux-thunk';
 import Message from '../../model/Message';
 import State from '../State';
 import DataContext from '../../model/DataContext';
-import * as RunActions from '../run/RunActions';
+import * as RoomActions from '../room/RoomActions';
 import ChatMessage from '../../model/ChatMessage';
-import runActionCreators from '../run/runActionCreators';
+import roomActionCreators from '../room/roomActionCreators';
 import Account from '../../model/Account';
 import Sex from '../../model/enums/Sex';
 import PlayerStates from '../../model/enums/PlayerStates';
@@ -36,9 +36,9 @@ export default function messageProcessor(dispatch: Dispatch<AnyAction>, message:
 }
 
 const processSystemMessage: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (dispatch: Dispatch<AnyAction>, message: Message) =>
-	(dispatch: Dispatch<RunActions.KnownRunAction>, getState: () => State, dataContext: DataContext) => {
+	(dispatch: Dispatch<RoomActions.KnownRoomAction>, getState: () => State, dataContext: DataContext) => {
 		const state = getState();
-		const { role } = state.run;
+		const { role } = state.room;
 		const args = message.text.split('\n');
 
 		viewerHandler(dispatch, state, dataContext, args);
@@ -62,10 +62,10 @@ const userMessageReceived: ActionCreator<ThunkAction<void, State, DataContext, A
 			level: MessageLevel.Information,
 		};
 
-		dispatch(runActionCreators.chatMessageAdded(replic));
+		dispatch(roomActionCreators.chatMessageAdded(replic));
 
-		if (!getState().run.chat.isVisible && getState().ui.windowWidth < 800) {
-			dispatch(runActionCreators.lastReplicChanged(replic));
+		if (!getState().room.chat.isVisible && getState().ui.windowWidth < 800) {
+			dispatch(roomActionCreators.lastReplicChanged(replic));
 
 			if (lastReplicLock) {
 				window.clearTimeout(lastReplicLock);
@@ -73,7 +73,7 @@ const userMessageReceived: ActionCreator<ThunkAction<void, State, DataContext, A
 
 			lastReplicLock = window.setTimeout(
 				() => {
-					dispatch(runActionCreators.lastReplicChanged(null));
+					dispatch(roomActionCreators.lastReplicChanged(null));
 				},
 				3000
 			);
@@ -82,16 +82,16 @@ const userMessageReceived: ActionCreator<ThunkAction<void, State, DataContext, A
 
 function onReady(personName: string, isReady: boolean, dispatch: Dispatch<any>, state: State): void {
 	let personIndex: number;
-	if (personName === state.run.persons.showman.name) {
+	if (personName === state.room.persons.showman.name) {
 		personIndex = -1;
 	} else {
-		personIndex = state.run.persons.players.findIndex(p => p.name === personName);
+		personIndex = state.room.persons.players.findIndex(p => p.name === personName);
 		if (personIndex === -1) {
 			return;
 		}
 	}
 
-	dispatch(runActionCreators.isReadyChanged(personIndex, isReady));
+	dispatch(roomActionCreators.isReadyChanged(personIndex, isReady));
 }
 
 function preprocessServerUri(uri: string, dataContext: DataContext) {
@@ -125,7 +125,7 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 				break;
 			}
 
-			dispatch(runActionCreators.areApellationsEnabledChanged(args[1] === '+'));
+			dispatch(roomActionCreators.areApellationsEnabledChanged(args[1] === '+'));
 			break;
 
 		case 'ATOM':
@@ -202,7 +202,7 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 				break;
 			}
 
-			dispatch(runActionCreators.banned(args[1], args[2]));
+			dispatch(roomActionCreators.banned(args[1], args[2]));
 			break;
 
 		case GameMessages.BannedList:
@@ -212,7 +212,7 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 				bannedList[args[i]] = args[i + 1];
 			}
 
-			dispatch(runActionCreators.bannedListChanged(bannedList));
+			dispatch(roomActionCreators.bannedListChanged(bannedList));
 			break;
 
 		case 'BUTTON_BLOCKING_TIME':
@@ -220,7 +220,7 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 				break;
 			}
 
-			dispatch(runActionCreators.buttonBlockingTimeChanged(parseInt(args[1], 10)));
+			dispatch(roomActionCreators.buttonBlockingTimeChanged(parseInt(args[1], 10)));
 			break;
 
 		case 'CHOICE':
@@ -228,8 +228,8 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 				const themeIndex = parseInt(args[1], 10);
 				const questIndex = parseInt(args[2], 10);
 
-				dispatch(runActionCreators.playersStateCleared());
-				dispatch(runActionCreators.afterQuestionStateChanged(false));
+				dispatch(roomActionCreators.playersStateCleared());
+				dispatch(roomActionCreators.afterQuestionStateChanged(false));
 
 				const themeInfo = state.table.roundInfo[themeIndex];
 
@@ -237,7 +237,7 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 					const price = themeInfo.questions[questIndex];
 
 					if (price) {
-						dispatch(runActionCreators.currentPriceChanged(price));
+						dispatch(roomActionCreators.currentPriceChanged(price));
 						dispatch(tableActionCreators.captionChanged(`${themeInfo.name}, ${price}`));
 						dispatch(tableActionCreators.blinkQuestion(themeIndex, questIndex));
 
@@ -269,10 +269,10 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 				dispatch(tableActionCreators.canPressChanged(false));
 
 				const index = (Number)(args[1]);
-				if (!isNaN(index) && index > -1 && index < state.run.persons.players.length) {
-					dispatch(runActionCreators.playerStateChanged(index, PlayerStates.Press));
+				if (!isNaN(index) && index > -1 && index < state.room.persons.players.length) {
+					dispatch(roomActionCreators.playerStateChanged(index, PlayerStates.Press));
 				} else if (args[1] === 'A') {
-					dispatch(runActionCreators.stopTimer(1));
+					dispatch(roomActionCreators.stopTimer(1));
 				}
 			}
 			break;
@@ -282,9 +282,9 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 			break;
 
 		case 'FINALROUND':
-			const playersLength = state.run.persons.players.length;
+			const playersLength = state.room.persons.players.length;
 			for (let i = 1; i < Math.min(args.length, playersLength + 1); i++) {
-				dispatch(runActionCreators.playerInGameChanged(i - 1, args[i] === '+'));
+				dispatch(roomActionCreators.playerInGameChanged(i - 1, args[i] === '+'));
 			}
 			break;
 
@@ -298,7 +298,7 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 					break;
 				}
 
-				dispatch(runActionCreators.gameMetadataChanged(args[1], args[2], args[3]));
+				dispatch(roomActionCreators.gameMetadataChanged(args[1], args[2], args[3]));
 			}
 			break;
 
@@ -316,12 +316,12 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 
 		case 'HOSTNAME':
 			if (args.length > 1) {
-				dispatch(runActionCreators.hostNameChanged(args[1]));
+				dispatch(roomActionCreators.hostNameChanged(args[1]));
 
 				if (args.length > 2) {
 					const changeSource = args[2].length > 0 ? args[2] : localization.byGame;
 
-					dispatch(runActionCreators.chatMessageAdded({
+					dispatch(roomActionCreators.chatMessageAdded({
 						sender: '',
 						text: stringFormat(localization.hostNameChanged, changeSource, args[1]),
 						level: MessageLevel.System,
@@ -339,11 +339,11 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 				break;
 			}
 
-			const { players } = state.run.persons;
+			const { players } = state.room.persons;
 
 			for (let i = 0; i < players.length; i++) {
 				if (players[i].name === args[1]) {
-					dispatch(runActionCreators.playerMediaLoaded(i));
+					dispatch(roomActionCreators.playerMediaLoaded(i));
 					break;
 				}
 			}
@@ -378,25 +378,25 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 			{
 				const playerIndex = parseInt(args[1], 10);
 
-				if (playerIndex > -1 && playerIndex < state.run.persons.players.length) {
-					dispatch(runActionCreators.playerStateChanged(playerIndex, PlayerStates.Pass));
+				if (playerIndex > -1 && playerIndex < state.room.persons.players.length) {
+					dispatch(roomActionCreators.playerStateChanged(playerIndex, PlayerStates.Pass));
 				}
 			}
 			break;
 
 		case 'PAUSE':
 			const isPaused = args[1] === '+';
-			dispatch(runActionCreators.isPausedChanged(isPaused));
+			dispatch(roomActionCreators.isPausedChanged(isPaused));
 
 			if (args.length > 4) {
 				if (isPaused) {
-					dispatch(runActionCreators.pauseTimer(0, args[2], true));
-					dispatch(runActionCreators.pauseTimer(1, args[3], true));
-					dispatch(runActionCreators.pauseTimer(2, args[4], true));
+					dispatch(roomActionCreators.pauseTimer(0, args[2], true));
+					dispatch(roomActionCreators.pauseTimer(1, args[3], true));
+					dispatch(roomActionCreators.pauseTimer(2, args[4], true));
 				} else {
-					dispatch(runActionCreators.resumeTimer(0, true));
-					dispatch(runActionCreators.resumeTimer(1, true));
-					dispatch(runActionCreators.resumeTimer(2, true));
+					dispatch(roomActionCreators.resumeTimer(0, true));
+					dispatch(roomActionCreators.resumeTimer(1, true));
+					dispatch(roomActionCreators.resumeTimer(2, true));
 				}
 			}
 			break;
@@ -406,8 +406,8 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 				const isRight = args[1] === '+';
 				const index = parseInt(args[2], 10);
 
-				if (index > -1 && index < state.run.persons.players.length) {
-					dispatch(runActionCreators.playerStateChanged(index, isRight ? PlayerStates.Right : PlayerStates.Wrong));
+				if (index > -1 && index < state.room.persons.players.length) {
+					dispatch(roomActionCreators.playerStateChanged(index, isRight ? PlayerStates.Right : PlayerStates.Wrong));
 				}
 			}
 			break;
@@ -416,8 +416,8 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 			{
 				const playerIndex = parseInt(args[1], 10);
 
-				if (playerIndex > -1 && playerIndex < state.run.persons.players.length) {
-					dispatch(runActionCreators.playerStateChanged(playerIndex, PlayerStates.HasAnswered));
+				if (playerIndex > -1 && playerIndex < state.room.persons.players.length) {
+					dispatch(roomActionCreators.playerStateChanged(playerIndex, PlayerStates.HasAnswered));
 				}
 			}
 			break;
@@ -426,8 +426,8 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 			{
 				const playerIndex = parseInt(args[1], 10);
 
-				if (playerIndex > -1 && playerIndex < state.run.persons.players.length) {
-					dispatch(runActionCreators.playerStateChanged(playerIndex, PlayerStates.HasAnswered));
+				if (playerIndex > -1 && playerIndex < state.room.persons.players.length) {
+					dispatch(roomActionCreators.playerStateChanged(playerIndex, PlayerStates.HasAnswered));
 				}
 			}
 			break;
@@ -435,19 +435,19 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 		case 'PERSONFINALSTAKE':
 			{
 				const playerIndex = parseInt(args[1], 10);
-				const player = state.run.persons.players[playerIndex];
+				const player = state.room.persons.players[playerIndex];
 				if (!player) {
 					break;
 				}
 
-				dispatch(runActionCreators.playerStakeChanged(playerIndex, Constants.HIDDEN_STAKE));
+				dispatch(roomActionCreators.playerStakeChanged(playerIndex, Constants.HIDDEN_STAKE));
 			}
 			break;
 
 		case 'PERSONSTAKE':
 			{
 				const playerIndex = parseInt(args[1], 10);
-				const player = state.run.persons.players[playerIndex];
+				const player = state.room.persons.players[playerIndex];
 				if (!player) {
 					break;
 				}
@@ -456,7 +456,7 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 				let stake = 0;
 				switch (stakeType) {
 					case StakeTypes.Nominal:
-						stake = state.run.stage.currentPrice;
+						stake = state.room.stage.currentPrice;
 						break;
 
 					case StakeTypes.Sum:
@@ -475,7 +475,7 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 						break;
 				}
 
-				dispatch(runActionCreators.playerStakeChanged(playerIndex, stake));
+				dispatch(roomActionCreators.playerStakeChanged(playerIndex, stake));
 			}
 			break;
 
@@ -483,7 +483,7 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 			const personName = args[1];
 			const uri = preprocessServerUri(args[2], dataContext);
 
-			dispatch(runActionCreators.personAvatarChanged(personName, uri));
+			dispatch(roomActionCreators.personAvatarChanged(personName, uri));
 
 			break;
 		}
@@ -512,10 +512,10 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 
 		case 'QUESTION':
 			if (args.length > 1) {
-				dispatch(runActionCreators.playersStateCleared());
+				dispatch(roomActionCreators.playersStateCleared());
 				dispatch(tableActionCreators.showText(args[1], false));
-				dispatch(runActionCreators.afterQuestionStateChanged(false));
-				dispatch(runActionCreators.updateCaption(args[1]));
+				dispatch(roomActionCreators.afterQuestionStateChanged(false));
+				dispatch(roomActionCreators.updateCaption(args[1]));
 			}
 			break;
 
@@ -530,7 +530,7 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 				break;
 			}
 
-			dispatch(runActionCreators.readingSpeedChanged(parseInt(args[1], 10)));
+			dispatch(roomActionCreators.readingSpeedChanged(parseInt(args[1], 10)));
 			break;
 
 		case 'READY':
@@ -555,7 +555,7 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 
 		case 'RIGHTANSWER':
 			dispatch(tableActionCreators.showAnswer(args[2]));
-			dispatch(runActionCreators.afterQuestionStateChanged(true));
+			dispatch(roomActionCreators.afterQuestionStateChanged(true));
 			dispatch(tableActionCreators.captionChanged(''));
 			break;
 
@@ -579,7 +579,7 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 				fetch(contentUri)
 					.then(response => {
 						if (!response.ok) {
-							dispatch(runActionCreators.chatMessageAdded({
+							dispatch(roomActionCreators.chatMessageAdded({
 								sender: '',
 								text: response.statusText,
 								level: MessageLevel.System,
@@ -587,7 +587,7 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 						}
 					})
 					.catch((e : TypeError) => {
-						dispatch(runActionCreators.chatMessageAdded({
+						dispatch(roomActionCreators.chatMessageAdded({
 							sender: '',
 							text: e.message,
 							level: MessageLevel.System,
@@ -606,7 +606,7 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 			break;
 
 		case 'ROUNDSNAMES':
-			dispatch(runActionCreators.roundsNamesChanged(args.slice(1)));
+			dispatch(roomActionCreators.roundsNamesChanged(args.slice(1)));
 			break;
 
 		case 'ROUNDTHEMES':
@@ -617,14 +617,14 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 				roundThemes.push({ name: args[i], questions: [] });
 			}
 
-			dispatch(tableActionCreators.showRoundThemes(roundThemes, state.run.stage.name === 'Final', printThemes));
+			dispatch(tableActionCreators.showRoundThemes(roundThemes, state.room.stage.name === 'Final', printThemes));
 			break;
 
 		case 'SETCHOOSER':
 			const chooserIndex = parseInt(args[1], 10);
-			dispatch(runActionCreators.chooserChanged(chooserIndex));
+			dispatch(roomActionCreators.chooserChanged(chooserIndex));
 			if (args.length > 2) {
-				dispatch(runActionCreators.playerStateChanged(chooserIndex, PlayerStates.Press));
+				dispatch(roomActionCreators.playerStateChanged(chooserIndex, PlayerStates.Press));
 			}
 			break;
 
@@ -635,45 +635,45 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 		case 'STAGE':
 			const stage = args[1];
 			const roundIndex = args.length > 3 ? parseInt(args[3], 10) : -1;
-			dispatch(runActionCreators.stageChanged(stage, roundIndex));
+			dispatch(roomActionCreators.stageChanged(stage, roundIndex));
 
 			if (stage !== GameStage.Before) {
-				dispatch(runActionCreators.gameStarted());
+				dispatch(roomActionCreators.gameStarted());
 			}
 
 			if (stage === GameStage.Round || stage === GameStage.Final) {
 				dispatch(tableActionCreators.showRound(args[2]));
-				dispatch(runActionCreators.playersStateCleared());
+				dispatch(roomActionCreators.playersStateCleared());
 				if (stage === GameStage.Round) {
-					for	(let i = 0; i < state.run.persons.players.length; i++) {
-						dispatch(runActionCreators.playerInGameChanged(i, true));
+					for	(let i = 0; i < state.room.persons.players.length; i++) {
+						dispatch(roomActionCreators.playerInGameChanged(i, true));
 					}
 				}
 			} else if (stage === GameStage.After) {
 				dispatch(tableActionCreators.showLogo());
 			}
 
-			dispatch(runActionCreators.gameStateCleared());
+			dispatch(roomActionCreators.gameStateCleared());
 			dispatch(tableActionCreators.isSelectableChanged(false));
 			dispatch(tableActionCreators.captionChanged(''));
 			break;
 
 		case 'STOP':
-			dispatch(runActionCreators.stopTimer(0));
-			dispatch(runActionCreators.stopTimer(1));
-			dispatch(runActionCreators.stopTimer(2));
+			dispatch(roomActionCreators.stopTimer(0));
+			dispatch(roomActionCreators.stopTimer(1));
+			dispatch(roomActionCreators.stopTimer(2));
 
 			dispatch(tableActionCreators.showLogo());
 			break;
 
 		case 'SUMS':
-			const max = Math.min(args.length - 1, Object.keys(state.run.persons.players).length);
+			const max = Math.min(args.length - 1, Object.keys(state.room.persons.players).length);
 			const sums: number[] = [];
 			for (let i = 0; i < max; i++) {
 				sums.push(parseInt(args[i + 1], 10));
 			}
 
-			dispatch(runActionCreators.sumsChanged(sums));
+			dispatch(roomActionCreators.sumsChanged(sums));
 
 			break;
 
@@ -715,7 +715,7 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 				}
 			});
 
-			dispatch(tableActionCreators.showRoundThemes(newRoundInfo, state.run.stage.name === 'Final', false));
+			dispatch(tableActionCreators.showRoundThemes(newRoundInfo, state.room.stage.name === 'Final', false));
 			break;
 
 		case 'TEXTSHAPE':
@@ -737,11 +737,11 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 
 		case 'TIMER':
 			// Special case for automatic game
-			if (!state.run.stage.isGameStarted && state.game.isAutomatic && args.length === 5
+			if (!state.room.stage.isGameStarted && state.game.isAutomatic && args.length === 5
 				&& args[1] === '2' && args[2] === 'GO' && args[4] === '-2') {
 				const leftSeconds = parseInt(args[3], 10) / 10;
 
-				runActionCreators.showLeftSeconds(leftSeconds, dispatch);
+				roomActionCreators.showLeftSeconds(leftSeconds, dispatch);
 			} else if (args.length > 2) {
 				const timerIndex = parseInt(args[1], 10);
 				const timerCommand = args[2];
@@ -750,45 +750,45 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 
 				switch (timerCommand) {
 					case 'GO':
-						dispatch(runActionCreators.runTimer(timerIndex, timerArgument, false));
+						dispatch(roomActionCreators.runTimer(timerIndex, timerArgument, false));
 
 						if (timerIndex === 2 && timerPersonIndex !== null) {
 							if (timerPersonIndex === -1) {
-								dispatch(runActionCreators.activateShowmanDecision());
+								dispatch(roomActionCreators.activateShowmanDecision());
 							} else if (timerPersonIndex === -2) {
-								dispatch(runActionCreators.showMainTimer());
-							} else if (timerPersonIndex > -1 && timerPersonIndex < state.run.persons.players.length) {
-								dispatch(runActionCreators.activatePlayerDecision(timerPersonIndex));
+								dispatch(roomActionCreators.showMainTimer());
+							} else if (timerPersonIndex > -1 && timerPersonIndex < state.room.persons.players.length) {
+								dispatch(roomActionCreators.activatePlayerDecision(timerPersonIndex));
 							}
 						}
 						break;
 
 					case 'STOP':
-						dispatch(runActionCreators.stopTimer(timerIndex));
+						dispatch(roomActionCreators.stopTimer(timerIndex));
 
 						if (timerIndex === 2) {
-							dispatch(runActionCreators.clearDecisionsAndMainTimer());
+							dispatch(roomActionCreators.clearDecisionsAndMainTimer());
 						}
 						break;
 
 					case 'PAUSE':
-						dispatch(runActionCreators.pauseTimer(timerIndex, timerArgument, false));
+						dispatch(roomActionCreators.pauseTimer(timerIndex, timerArgument, false));
 						break;
 
 					case 'USER_PAUSE':
-						dispatch(runActionCreators.pauseTimer(timerIndex, timerArgument, true));
+						dispatch(roomActionCreators.pauseTimer(timerIndex, timerArgument, true));
 						break;
 
 					case 'RESUME':
-						dispatch(runActionCreators.resumeTimer(timerIndex, false));
+						dispatch(roomActionCreators.resumeTimer(timerIndex, false));
 						break;
 
 					case 'USER_RESUME':
-						dispatch(runActionCreators.resumeTimer(timerIndex, true));
+						dispatch(roomActionCreators.resumeTimer(timerIndex, true));
 						break;
 
 					case 'MAXTIME':
-						dispatch(runActionCreators.timerMaximumChanged(timerIndex, timerArgument));
+						dispatch(roomActionCreators.timerMaximumChanged(timerIndex, timerArgument));
 						break;
 
 					default:
@@ -799,11 +799,11 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 
 		case 'THEME':
 			if (args.length > 1) {
-				dispatch(runActionCreators.playersStateCleared());
-				dispatch(runActionCreators.showmanReplicChanged(''));
+				dispatch(roomActionCreators.playersStateCleared());
+				dispatch(roomActionCreators.showmanReplicChanged(''));
 				dispatch(tableActionCreators.showText(`${localization.theme}: ${args[1]}`, false));
-				dispatch(runActionCreators.afterQuestionStateChanged(false));
-				dispatch(runActionCreators.themeNameChanged(args[1]));
+				dispatch(roomActionCreators.afterQuestionStateChanged(false));
+				dispatch(roomActionCreators.themeNameChanged(args[1]));
 			}
 			break;
 
@@ -834,9 +834,9 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 				break;
 			}
 
-			dispatch(runActionCreators.unbanned(args[1]));
+			dispatch(roomActionCreators.unbanned(args[1]));
 
-			dispatch(runActionCreators.chatMessageAdded({
+			dispatch(roomActionCreators.chatMessageAdded({
 				sender: '',
 				text: stringFormat(localization.userUnbanned, args[1]),
 				level: MessageLevel.System,
@@ -851,14 +851,14 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 		case 'WRONGTRY':
 			{
 				const index = parseInt(args[1], 10);
-				const { players } = state.run.persons;
+				const { players } = state.room.persons;
 				if (index > -1 && index < players.length) {
 					const player = players[index];
 					if (player.state === PlayerStates.None) {
-						dispatch(runActionCreators.playerStateChanged(index, PlayerStates.Lost));
+						dispatch(roomActionCreators.playerStateChanged(index, PlayerStates.Lost));
 						setTimeout(
 							() => {
-								dispatch(runActionCreators.playerLostStateDropped(index));
+								dispatch(roomActionCreators.playerLostStateDropped(index));
 							},
 							800
 						);
@@ -874,7 +874,7 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 
 function onCat(dispatch: Dispatch<any>, args: string[]) {
 	const indices = getIndices(args);
-	dispatch(runActionCreators.selectionEnabled(indices, 'CAT'));
+	dispatch(roomActionCreators.selectionEnabled(indices, 'CAT'));
 }
 
 function onCatCost(dispatch: Dispatch<any>, args: string[]) {
@@ -889,12 +889,12 @@ function onCatCost(dispatch: Dispatch<any>, args: string[]) {
 	const maximum = parseInt(args[2], 10);
 	const step = parseInt(args[3], 10);
 
-	dispatch(runActionCreators.setStakes(allowedStakeTypes, minimum, maximum, minimum, step, 'CATCOST', true));
-	dispatch(runActionCreators.decisionNeededChanged(true));
+	dispatch(roomActionCreators.setStakes(allowedStakeTypes, minimum, maximum, minimum, step, 'CATCOST', true));
+	dispatch(roomActionCreators.decisionNeededChanged(true));
 }
 
 function onChoose(dispatch: Dispatch<any>) {	
-	dispatch(runActionCreators.decisionNeededChanged(true));
+	dispatch(roomActionCreators.decisionNeededChanged(true));
 	dispatch(tableActionCreators.isSelectableChanged(true));
 }
 
@@ -909,19 +909,19 @@ function onStake(dispatch: Dispatch<any>, state: State, args: string[], maximum:
 
 		const minimum = parseInt(args[5], 10);
 
-		dispatch(runActionCreators.setStakes(allowedStakeTypes, minimum, maximum, minimum, 100, 'STAKE', false));
-		dispatch(runActionCreators.decisionNeededChanged(true));
+		dispatch(roomActionCreators.setStakes(allowedStakeTypes, minimum, maximum, minimum, 100, 'STAKE', false));
+		dispatch(roomActionCreators.decisionNeededChanged(true));
 	}
 }
 
 const playerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataContext, args: string[]) => {
 	switch (args[0]) {
 		case 'ANSWER':
-			dispatch(runActionCreators.isAnswering());
+			dispatch(roomActionCreators.isAnswering());
 			break;
 
 		case 'CANCEL':
-			dispatch(runActionCreators.clearDecisions());
+			dispatch(roomActionCreators.clearDecisions());
 			break;
 
 		case 'CAT':
@@ -951,8 +951,8 @@ const playerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 					[StakeTypes.AllIn]: false
 				};
 
-				dispatch(runActionCreators.setStakes(allowedStakeTypes, 1, me.sum, 1, 1, 'FINALSTAKE', true));
-				dispatch(runActionCreators.decisionNeededChanged(true));
+				dispatch(roomActionCreators.setStakes(allowedStakeTypes, 1, me.sum, 1, 1, 'FINALSTAKE', true));
+				dispatch(roomActionCreators.decisionNeededChanged(true));
 			}
 			break;
 
@@ -982,43 +982,43 @@ const playerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 const showmanHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataContext, args: string[]) => {
 	switch (args[0]) {
 		case 'CANCEL':
-			dispatch(runActionCreators.clearDecisions());
+			dispatch(roomActionCreators.clearDecisions());
 			break;
 
 		case 'FIRST': {
 			const indices = getIndices(args);
-			dispatch(runActionCreators.selectionEnabled(indices, 'FIRST'));
-			dispatch(runActionCreators.showmanReplicChanged(localization.selectFirstPlayer));
+			dispatch(roomActionCreators.selectionEnabled(indices, 'FIRST'));
+			dispatch(roomActionCreators.showmanReplicChanged(localization.selectFirstPlayer));
 			break;
 		}
 
 		case 'FIRSTDELETE': {
 			const indices = getIndices(args);
-			dispatch(runActionCreators.selectionEnabled(indices, 'NEXTDELETE'));
-			dispatch(runActionCreators.showmanReplicChanged(localization.selectThemeDeleter));
+			dispatch(roomActionCreators.selectionEnabled(indices, 'NEXTDELETE'));
+			dispatch(roomActionCreators.showmanReplicChanged(localization.selectThemeDeleter));
 			break;
 		}
 
 		case 'FIRSTSTAKE': {
 			const indices = getIndices(args);
-			dispatch(runActionCreators.selectionEnabled(indices, 'NEXT'));
-			dispatch(runActionCreators.showmanReplicChanged(localization.selectStaker));
+			dispatch(roomActionCreators.selectionEnabled(indices, 'NEXT'));
+			dispatch(roomActionCreators.showmanReplicChanged(localization.selectStaker));
 			break;
 		}
 
 		case 'HINT':
 			if (args.length > 1) {
-				dispatch(runActionCreators.hintChanged(`${localization.rightAnswer}: ${args[1]}`));
+				dispatch(roomActionCreators.hintChanged(`${localization.rightAnswer}: ${args[1]}`));
 			}
 			break;
 
 		case 'RIGHTANSWER':
-			dispatch(runActionCreators.hintChanged(null));
+			dispatch(roomActionCreators.hintChanged(null));
 			break;
 
 		case 'STAGE':
-			dispatch(runActionCreators.decisionNeededChanged(false));
-			dispatch(runActionCreators.hintChanged(null));
+			dispatch(roomActionCreators.decisionNeededChanged(false));
+			dispatch(roomActionCreators.hintChanged(null));
 			break;
 
 		case 'VALIDATION':
@@ -1053,7 +1053,7 @@ const showmanHandler = (dispatch: Dispatch<any>, state: State, dataContext: Data
 	}
 };
 
-function startValidation(dispatch: Dispatch<RunActions.KnownRunAction>, title: string, args: string[]) {
+function startValidation(dispatch: Dispatch<RoomActions.KnownRoomAction>, title: string, args: string[]) {
 	if (args.length < 5) {
 		return;
 	}
@@ -1075,7 +1075,7 @@ function startValidation(dispatch: Dispatch<RunActions.KnownRunAction>, title: s
 	}
 
 	const validationMesssage = `${localization.playersAnswer} ${name} "${answer}". ${localization.validateAnswer}`;
-	dispatch(runActionCreators.validate(name, answer, right, wrong, title, validationMesssage));
+	dispatch(roomActionCreators.validate(name, answer, right, wrong, title, validationMesssage));
 }
 
 function getIndices(args: string[]): number[] {
@@ -1089,7 +1089,7 @@ function getIndices(args: string[]): number[] {
 	return indices;
 }
 
-function info(dispatch: Dispatch<RunActions.KnownRunAction>, ...args: string[]) {
+function info(dispatch: Dispatch<RoomActions.KnownRoomAction>, ...args: string[]) {
 	const playersCount = parseInt(args[1], 10);
 	const viewersCount = (args.length - 2) / 5 - 1 - playersCount;
 	let pIndex = 2;
@@ -1168,11 +1168,11 @@ function info(dispatch: Dispatch<RunActions.KnownRunAction>, ...args: string[]) 
 		};
 	}
 
-	dispatch(runActionCreators.infoChanged(all, showman, players));
+	dispatch(roomActionCreators.infoChanged(all, showman, players));
 	dispatch(actionCreators.sendAvatar() as any);
 }
 
-function onReplic(dispatch: Dispatch<RunActions.KnownRunAction>, state: State, args: string[]) {
+function onReplic(dispatch: Dispatch<RoomActions.KnownRoomAction>, state: State, args: string[]) {
 	const personCode = args[1];
 
 	let text = '';
@@ -1185,13 +1185,13 @@ function onReplic(dispatch: Dispatch<RunActions.KnownRunAction>, state: State, a
 	}
 
 	if (personCode === 's') {
-		dispatch(runActionCreators.showmanReplicChanged(text));
+		dispatch(roomActionCreators.showmanReplicChanged(text));
 		return;
 	}
 
 	if (personCode.startsWith('p') && personCode.length > 1) {
 		const index = parseInt(personCode.substring(1), 10);
-		dispatch(runActionCreators.playerReplicChanged(index, text));
+		dispatch(roomActionCreators.playerReplicChanged(index, text));
 		return;
 	}
 
@@ -1199,10 +1199,10 @@ function onReplic(dispatch: Dispatch<RunActions.KnownRunAction>, state: State, a
 		return;
 	}
 
-	dispatch(runActionCreators.chatMessageAdded({ sender: null, text, level: MessageLevel.System }));
+	dispatch(roomActionCreators.chatMessageAdded({ sender: null, text, level: MessageLevel.System }));
 }
 
-function connected(dispatch: Dispatch<RunActions.KnownRunAction>, state: State, ...args: string[]) {
+function connected(dispatch: Dispatch<RoomActions.KnownRoomAction>, state: State, ...args: string[]) {
 	const name = args[3];
 	if (name === state.user.login) {
 		return;
@@ -1219,15 +1219,15 @@ function connected(dispatch: Dispatch<RunActions.KnownRunAction>, state: State, 
 		avatar: null
 	};
 
-	dispatch(runActionCreators.personAdded(account));
+	dispatch(roomActionCreators.personAdded(account));
 
 	switch (role) {
 		case 'showman':
-			dispatch(runActionCreators.showmanChanged(name, true, false));
+			dispatch(roomActionCreators.showmanChanged(name, true, false));
 			break;
 
 		case 'player':
-			dispatch(runActionCreators.playerChanged(index, name, true, false));
+			dispatch(roomActionCreators.playerChanged(index, name, true, false));
 			break;
 
 		default:
@@ -1235,27 +1235,27 @@ function connected(dispatch: Dispatch<RunActions.KnownRunAction>, state: State, 
 	}
 }
 
-function disconnected(dispatch: Dispatch<RunActions.KnownRunAction>, state: State, ...args: string[]) {
+function disconnected(dispatch: Dispatch<RoomActions.KnownRoomAction>, state: State, ...args: string[]) {
 	const name = args[1];
 
-	dispatch(runActionCreators.personRemoved(name));
+	dispatch(roomActionCreators.personRemoved(name));
 
-	if (state.run.persons.showman.name === name) {
-		dispatch(runActionCreators.showmanChanged(Constants.ANY_NAME, null, false));
+	if (state.room.persons.showman.name === name) {
+		dispatch(roomActionCreators.showmanChanged(Constants.ANY_NAME, null, false));
 	} else {
-		for (let i = 0; i < state.run.persons.players.length; i++) {
-			if (state.run.persons.players[i].name === name) {
-				dispatch(runActionCreators.playerChanged(i, Constants.ANY_NAME, null, false));
+		for (let i = 0; i < state.room.persons.players.length; i++) {
+			if (state.room.persons.players[i].name === name) {
+				dispatch(roomActionCreators.playerChanged(i, Constants.ANY_NAME, null, false));
 				break;
 			}
 		}
 	}
 }
 
-function config(dispatch: Dispatch<RunActions.KnownRunAction>, state: State, ...args: string[]) {
+function config(dispatch: Dispatch<RoomActions.KnownRoomAction>, state: State, ...args: string[]) {
 	switch (args[1]) {
 		case 'ADDTABLE':
-			dispatch(runActionCreators.playerAdded());
+			dispatch(roomActionCreators.playerAdded());
 			break;
 
 		case 'FREE': {
@@ -1264,13 +1264,13 @@ function config(dispatch: Dispatch<RunActions.KnownRunAction>, state: State, ...
 
 			const isPlayer = personType === 'player';
 			dispatch(isPlayer
-				? runActionCreators.playerChanged(index, Constants.ANY_NAME, null, false)
-				: runActionCreators.showmanChanged(Constants.ANY_NAME, null, false));
+				? roomActionCreators.playerChanged(index, Constants.ANY_NAME, null, false)
+				: roomActionCreators.showmanChanged(Constants.ANY_NAME, null, false));
 			
-			const account = isPlayer ? state.run.persons.players[index] : state.run.persons.showman;
+			const account = isPlayer ? state.room.persons.players[index] : state.room.persons.showman;
 
 			if (account.name === state.user.login) {
-				dispatch(runActionCreators.roleChanged(Role.Viewer));
+				dispatch(roomActionCreators.roleChanged(Role.Viewer));
 			}
 
 			break;
@@ -1278,15 +1278,15 @@ function config(dispatch: Dispatch<RunActions.KnownRunAction>, state: State, ...
 
 		case 'DELETETABLE': {
 			const index = parseInt(args[2], 10);
-			const player = state.run.persons.players[index];
-			const person = state.run.persons.all[player.name];
+			const player = state.room.persons.players[index];
+			const person = state.room.persons.all[player.name];
 
-			dispatch(runActionCreators.playerDeleted(index));
+			dispatch(roomActionCreators.playerDeleted(index));
 
 			if (person && !person.isHuman) {
-				dispatch(runActionCreators.personRemoved(person.name));
+				dispatch(roomActionCreators.personRemoved(person.name));
 			} else if (player.name === state.user.login) {
-				dispatch(runActionCreators.roleChanged(Role.Viewer));
+				dispatch(roomActionCreators.roleChanged(Role.Viewer));
 			}
 
 			break;
@@ -1299,15 +1299,15 @@ function config(dispatch: Dispatch<RunActions.KnownRunAction>, state: State, ...
 			const replacerSex = args[5] === '+' ? Sex.Male : Sex.Female;
 
 			const isPlayer = personType === 'player';
-			const account = isPlayer ? state.run.persons.players[index] : state.run.persons.showman;
-			const person = state.run.persons.all[account.name];
+			const account = isPlayer ? state.room.persons.players[index] : state.room.persons.showman;
+			const person = state.room.persons.all[account.name];
 
 			if (person && !person.isHuman) {
 				dispatch(isPlayer
-					? runActionCreators.playerChanged(index, replacer, null, false)
-					: runActionCreators.showmanChanged(replacer, null, false));
+					? roomActionCreators.playerChanged(index, replacer, null, false)
+					: roomActionCreators.showmanChanged(replacer, null, false));
 				
-				dispatch(runActionCreators.personRemoved(person.name));
+				dispatch(roomActionCreators.personRemoved(person.name));
 
 				const newAccount: Account = {
 					name: replacer,
@@ -1316,37 +1316,37 @@ function config(dispatch: Dispatch<RunActions.KnownRunAction>, state: State, ...
 					avatar: null
 				};
 
-				dispatch(runActionCreators.personAdded(newAccount));
+				dispatch(roomActionCreators.personAdded(newAccount));
 				break;
 			}
 
-			if (state.run.persons.showman.name === replacer) { // isPlayer
-				dispatch(runActionCreators.showmanChanged(account.name, true, account.isReady));
-				dispatch(runActionCreators.playerChanged(index, replacer, true, state.run.persons.showman.isReady));
+			if (state.room.persons.showman.name === replacer) { // isPlayer
+				dispatch(roomActionCreators.showmanChanged(account.name, true, account.isReady));
+				dispatch(roomActionCreators.playerChanged(index, replacer, true, state.room.persons.showman.isReady));
 
 				if (account.name === state.user.login) {
-					dispatch(runActionCreators.roleChanged(Role.Showman));
+					dispatch(roomActionCreators.roleChanged(Role.Showman));
 				} else if (replacer === state.user.login) {
-					dispatch(runActionCreators.roleChanged(Role.Player));
+					dispatch(roomActionCreators.roleChanged(Role.Player));
 				}
 
 				break;
 			}
 
-			for (let i = 0; i < state.run.persons.players.length; i++) {
-				if (state.run.persons.players[i].name === replacer) {
+			for (let i = 0; i < state.room.persons.players.length; i++) {
+				if (state.room.persons.players[i].name === replacer) {
 					if (isPlayer) {
-						dispatch(runActionCreators.playersSwap(index, i));
+						dispatch(roomActionCreators.playersSwap(index, i));
 					} else {
-						const { isReady } = state.run.persons.players[i];
+						const { isReady } = state.room.persons.players[i];
 
-						dispatch(runActionCreators.playerChanged(i, account.name, null, account.isReady));
-						dispatch(runActionCreators.showmanChanged(replacer, null, isReady));
+						dispatch(roomActionCreators.playerChanged(i, account.name, null, account.isReady));
+						dispatch(roomActionCreators.showmanChanged(replacer, null, isReady));
 
-						if (state.run.persons.showman.name === state.user.login) {
-							dispatch(runActionCreators.roleChanged(Role.Player));
+						if (state.room.persons.showman.name === state.user.login) {
+							dispatch(roomActionCreators.roleChanged(Role.Player));
 						} else if (replacer === state.user.login) {
-							dispatch(runActionCreators.roleChanged(Role.Showman));
+							dispatch(roomActionCreators.roleChanged(Role.Showman));
 						}
 					}
 
@@ -1355,13 +1355,13 @@ function config(dispatch: Dispatch<RunActions.KnownRunAction>, state: State, ...
 			}
 
 			dispatch(isPlayer
-				? runActionCreators.playerChanged(index, replacer, null, false)
-				: runActionCreators.showmanChanged(replacer, null, false));
+				? roomActionCreators.playerChanged(index, replacer, null, false)
+				: roomActionCreators.showmanChanged(replacer, null, false));
 
 			if (account.name === state.user.login) {
-				dispatch(runActionCreators.roleChanged(Role.Viewer));
+				dispatch(roomActionCreators.roleChanged(Role.Viewer));
 			} else if (replacer === state.user.login) {
-				dispatch(runActionCreators.roleChanged(isPlayer ? Role.Player : Role.Showman));
+				dispatch(roomActionCreators.roleChanged(isPlayer ? Role.Player : Role.Showman));
 			}
 
 			break;
@@ -1375,8 +1375,8 @@ function config(dispatch: Dispatch<RunActions.KnownRunAction>, state: State, ...
 			const newSex = args[6] === '+' ? Sex.Male : Sex.Female;
 
 			const isPlayer = personType === 'player';
-			const account = isPlayer ? state.run.persons.players[index] : state.run.persons.showman;
-			const person = state.run.persons.all[account.name];
+			const account = isPlayer ? state.room.persons.players[index] : state.room.persons.showman;
+			const person = state.room.persons.all[account.name];
 
 			if (person && person.isHuman === newType) {
 				break;
@@ -1390,19 +1390,19 @@ function config(dispatch: Dispatch<RunActions.KnownRunAction>, state: State, ...
 					avatar: null
 				};
 
-				dispatch(runActionCreators.personAdded(newAccount));
+				dispatch(roomActionCreators.personAdded(newAccount));
 			}
 
 			dispatch(isPlayer
-				? runActionCreators.playerChanged(index, newName, newType, false)
-				: runActionCreators.showmanChanged(newName, newType, false));
+				? roomActionCreators.playerChanged(index, newName, newType, false)
+				: roomActionCreators.showmanChanged(newName, newType, false));
 			
 			if (newType) {
-				dispatch(runActionCreators.personRemoved(person.name));
+				dispatch(roomActionCreators.personRemoved(person.name));
 			}
 
 			if (person.name === state.user.login) {
-				dispatch(runActionCreators.roleChanged(Role.Viewer));
+				dispatch(roomActionCreators.roleChanged(Role.Viewer));
 			}
 
 			break;
@@ -1414,7 +1414,7 @@ function config(dispatch: Dispatch<RunActions.KnownRunAction>, state: State, ...
 }
 
 function getMe(state: State): PlayerInfo | null {
-	const { players } = state.run.persons;
+	const { players } = state.room.persons;
 	for (let i = 0; i < players.length; i++) {
 		if (players[i].name === state.user.login) {
 			return players[i];

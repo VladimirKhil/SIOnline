@@ -5,7 +5,7 @@ import ChatMessage from '../model/ChatMessage';
 import ChatMode from '../model/enums/ChatMode';
 import GameType from '../client/contracts/GameType';
 import Role from '../client/contracts/Role';
-import RunState, { initialState as runInitialState } from './run/RunState';
+import RoomState, { initialState as roomInitialState } from './room/RoomState';
 import GameInfo from '../client/contracts/GameInfo';
 import localization from '../model/resources/localization';
 import SettingsState, { initialState as settingsInitialState } from './settings/SettingsState';
@@ -70,7 +70,7 @@ export default interface State {
 		id: number;
 		isAutomatic: boolean;
 	};
-	run: RunState;	
+	room: RoomState;	
 	table: TableState;
 	common: {
 		computerAccounts: string[] | null;
@@ -162,7 +162,7 @@ export const initialState: State = {
 		tags: [],
 		error: '',
 	},
-	run: runInitialState,
+	room: roomInitialState,
 	table: tableInitialState,
 	common: {
 		computerAccounts: null,

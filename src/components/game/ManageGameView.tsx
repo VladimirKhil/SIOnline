@@ -1,7 +1,7 @@
 import * as React from 'react';
 import State from '../../state/State';
 import { connect } from 'react-redux';
-import runActionCreators from '../../state/run/runActionCreators';
+import roomActionCreators from '../../state/room/roomActionCreators';
 import { Action, Dispatch } from 'redux';
 
 import './ManageGameView.css';
@@ -14,13 +14,13 @@ interface ManageGameViewProps {
 }
 
 const mapStateToProps = (state: State) => ({
-	roundsNames: state.run.roundsNames,
-	roundIndex: state.run.stage.roundIndex,
+	roundsNames: state.room.roundsNames,
+	roundIndex: state.room.stage.roundIndex,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	navigateToRound: (roundIndex: number) => {
-		dispatch(runActionCreators.navigateToRound(roundIndex) as unknown as Action);
+		dispatch(roomActionCreators.navigateToRound(roundIndex) as unknown as Action);
 	}
 });
 

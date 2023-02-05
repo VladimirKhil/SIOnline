@@ -12,9 +12,9 @@ interface GameMetadataViewProps {
 }
 
 const mapStateToProps: MapStateToProps<GameMetadataViewProps, unknown, State> = (state: State) => ({
-	gameName: state.run.metadata.gameName,
-	packageName: state.run.metadata.packageName,
-	contactUri: state.run.metadata.contactUri,
+	gameName: state.room.metadata.gameName,
+	packageName: state.room.metadata.packageName,
+	contactUri: state.room.metadata.contactUri,
 });
 
 export function GameMetadataView(props: GameMetadataViewProps): JSX.Element {

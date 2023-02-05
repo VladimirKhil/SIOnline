@@ -15,7 +15,7 @@ interface TablePartialTextProps {
 const mapStateToProps = (state: State) => ({
 	text: state.table.text,
 	tail: state.table.tail,
-	readingSpeed: state.run.readingSpeed,
+	readingSpeed: state.room.readingSpeed,
 });
 
 export class TablePartialText extends React.Component<TablePartialTextProps> {

@@ -2,7 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch, Action } from 'redux';
 import State from '../../state/State';
-import runActionCreators from '../../state/run/runActionCreators';
+import roomActionCreators from '../../state/room/roomActionCreators';
 import localization from '../../model/resources/localization';
 import { isHost } from '../../utils/StateHelpers';
 import Sex from '../../model/enums/Sex';
@@ -23,7 +23,7 @@ interface StartGameAreaProps {
 }
 
 const getIsReady = (state: State) => {
-	const { persons, role } = state.run;
+	const { persons, role } = state.room;
 
 	if (role === Role.Showman) {
 		return persons.showman.isReady;
@@ -41,20 +41,20 @@ const getIsReady = (state: State) => {
 
 const mapStateToProps = (state: State) => ({
 	isConnected: state.common.isConnected,
-	hasGameStarted: state.run.stage.isGameStarted,
+	hasGameStarted: state.room.stage.isGameStarted,
 	isHost: isHost(state),
 	sex: state.settings.sex,
 	isReady: getIsReady(state),
 	isAutomatic: state.game.isAutomatic,
-	role: state.run.role
+	role: state.room.role
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	onStart: () => {
-		dispatch(runActionCreators.startGame() as unknown as Action);
+		dispatch(roomActionCreators.startGame() as unknown as Action);
 	},
 	onReady: (isReady: boolean) => {
-		dispatch(runActionCreators.ready(isReady) as unknown as Action);
+		dispatch(roomActionCreators.ready(isReady) as unknown as Action);
 	}
 });
 

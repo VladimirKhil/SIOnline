@@ -3,9 +3,9 @@ import { Dispatch, Action } from 'redux';
 import { connect } from 'react-redux';
 import localization from '../../model/resources/localization';
 import State from '../../state/State';
+import roomActionCreators from '../../state/room/roomActionCreators';
 
 import './BannedView.css';
-import runActionCreators from '../../state/run/runActionCreators';
 
 interface BannedViewProps {
 	isConnected: boolean;
@@ -18,16 +18,16 @@ interface BannedViewProps {
 
 const mapStateToProps = (state: State) => ({
 	isConnected: state.common.isConnected,
-	banned: state.run.banned.entries,
-	selectedInfoIp: state.run.banned.selectedIp,
+	banned: state.room.banned.entries,
+	selectedInfoIp: state.room.banned.selectedIp,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	selectItem: (ip: string) => {
-		dispatch(runActionCreators.selectBannedItem(ip) as object as Action);
+		dispatch(roomActionCreators.selectBannedItem(ip) as object as Action);
 	},
 	unban: (ip: string) => {
-		dispatch(runActionCreators.unban(ip) as object as Action);
+		dispatch(roomActionCreators.unban(ip) as object as Action);
 	},
 });
 

@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import TableBorder from './TableBorder';
 import TableAudio from './TableAudio';
 import { Dispatch, Action } from 'redux';
-import runActionCreators from '../../state/run/runActionCreators';
+import roomActionCreators from '../../state/room/roomActionCreators';
 
 import './TableImage.css';
 import spinnerSvg from '../../../assets/images/spinner.svg';
@@ -20,7 +20,7 @@ const mapStateToProps = (state: State) => ({
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	mediaLoaded: () => {
-		dispatch(runActionCreators.mediaLoaded() as unknown as Action);
+		dispatch(roomActionCreators.mediaLoaded() as unknown as Action);
 	},
 });
 

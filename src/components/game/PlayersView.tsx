@@ -2,7 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch, Action } from 'redux';
 import State from '../../state/State';
-import runActionCreators from '../../state/run/runActionCreators';
+import roomActionCreators from '../../state/room/roomActionCreators';
 import AutoSizedText from '../common/AutoSizedText';
 import PlayerInfo from '../../model/PlayerInfo';
 import Persons from '../../model/Persons';
@@ -35,27 +35,27 @@ interface PlayersViewProps {
 }
 
 const mapStateToProps = (state: State) => ({
-	players: state.run.persons.players,
-	all: state.run.persons.all,
+	players: state.room.persons.players,
+	all: state.room.persons.all,
 	login: state.user.login,
 	avatar: state.user.avatar,
-	isSelectionEnabled: state.run.selection.isEnabled,
-	isSumEditable: state.run.areSumsEditable,
-	decisionTimer: state.run.timers.decision,
-	hasGameStarted: state.run.stage.isGameStarted,
+	isSelectionEnabled: state.room.selection.isEnabled,
+	isSumEditable: state.room.areSumsEditable,
+	decisionTimer: state.room.timers.decision,
+	hasGameStarted: state.room.stage.isGameStarted,
 	windowWidth: state.ui.windowWidth,
 	windowHeight: state.ui.windowHeight
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	onPlayerSelected: (playerIndex: number) => {
-		dispatch(runActionCreators.playerSelected(playerIndex) as object as Action);
+		dispatch(roomActionCreators.playerSelected(playerIndex) as object as Action);
 	},
 	onSumChanged: (playerIndex: number, sum: number) => {
-		dispatch(runActionCreators.changePlayerSum(playerIndex, sum) as object as Action);
+		dispatch(roomActionCreators.changePlayerSum(playerIndex, sum) as object as Action);
 	},
 	onCancelSumChange: () => {
-		dispatch(runActionCreators.areSumsEditableChanged(false) as object as Action);
+		dispatch(roomActionCreators.areSumsEditableChanged(false) as object as Action);
 	}
 });
 

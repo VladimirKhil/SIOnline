@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import * as React from 'react';
-import runActionCreators from '../../state/run/runActionCreators';
+import roomActionCreators from '../../state/room/roomActionCreators';
 import State from '../../state/State';
 import { Dispatch, Action } from 'redux';
 import Constants from '../../model/enums/Constants';
@@ -16,15 +16,15 @@ interface ChatInputProps {
 
 const mapStateToProps = (state: State) => ({
 	isConnected: state.common.isConnected,
-	message: state.run.chat.message
+	message: state.room.chat.message,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	onChatMessageSend: () => {
-		dispatch((runActionCreators.runChatMessageSend() as object) as Action);
+		dispatch((roomActionCreators.runChatMessageSend() as object) as Action);
 	},
 	onChatMessageChanged: (message: string) => {
-		dispatch(runActionCreators.runChatMessageChanged(message));
+		dispatch(roomActionCreators.runChatMessageChanged(message));
 	},
 });
 

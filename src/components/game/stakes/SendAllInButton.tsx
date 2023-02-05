@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import * as React from 'react';
-import runActionCreators from '../../../state/run/runActionCreators';
+import roomActionCreators from '../../../state/room/roomActionCreators';
 import State from '../../../state/State';
 import { Dispatch, Action } from 'redux';
 import localization from '../../../model/resources/localization';
@@ -13,12 +13,12 @@ interface SendAllInButtonProps {
 
 const mapStateToProps = (state: State) => ({
 	isConnected: state.common.isConnected,
-	useSimpleStakes: state.run.stakes.areSimple
+	useSimpleStakes: state.room.stakes.areSimple
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	sendAllIn: () => {
-		dispatch((runActionCreators.sendAllIn() as object) as Action);
+		dispatch((roomActionCreators.sendAllIn() as object) as Action);
 	}
 });
 

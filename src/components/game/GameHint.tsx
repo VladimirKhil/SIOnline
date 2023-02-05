@@ -10,11 +10,7 @@ interface GameHintProps {
 }
 
 const mapStateToProps = (state: State) => ({
-	hint: state.run.hint
-});
-
-const mapDispatchToProps = () => ({
-
+	hint: state.room.hint,
 });
 
 export function GameHint(props: GameHintProps) {
@@ -23,4 +19,4 @@ export function GameHint(props: GameHintProps) {
 	) : null;
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(GameHint);
+export default connect(mapStateToProps)(GameHint);

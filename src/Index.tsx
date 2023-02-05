@@ -12,7 +12,7 @@ import { KnownAction } from './state/Actions';
 import actionCreators from './state/actionCreators';
 import DataContext from './model/DataContext';
 import Config from './state/Config';
-import runActionCreators from './state/run/runActionCreators';
+import roomActionCreators from './state/room/roomActionCreators';
 import localization from './model/resources/localization';
 import ServerInfo from './model/server/ServerInfo';
 import DummyGameServerClient from './client/DummyGameServerClient';
@@ -85,14 +85,14 @@ function subscribeToExternalEvents(store: Store<State, any>) {
 			store.dispatch(settingsActionCreators.gameButtonKeyChanged(e.key));
 			store.dispatch(actionCreators.isSettingGameButtonKeyChanged(false));
 		} else if (e.key === state.settings.gameButtonKey) {
-			store.dispatch(runActionCreators.pressGameButton());
+			store.dispatch(roomActionCreators.pressGameButton());
 		}
 
 		return true;
 	};
 
 	window.oncontextmenu = (e: MouseEvent) => {
-		store.dispatch(runActionCreators.pressGameButton());
+		store.dispatch(roomActionCreators.pressGameButton());
 		e.preventDefault();
 		return true;
 	};

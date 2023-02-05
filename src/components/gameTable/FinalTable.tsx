@@ -4,7 +4,7 @@ import { Dispatch, Action } from 'redux';
 import { connect } from 'react-redux';
 import AutoSizedText from '../common/AutoSizedText';
 import ThemeInfo from '../../model/ThemeInfo';
-import runActionCreators from '../../state/run/runActionCreators';
+import roomActionCreators from '../../state/room/roomActionCreators';
 
 interface FinalTableProps {
 	roundInfo: ThemeInfo[];
@@ -22,7 +22,7 @@ const mapStateToProps = (state: State) => ({
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	onSelectTheme: (themeIndex: number) => {
-		dispatch(runActionCreators.selectTheme(themeIndex) as object as Action);
+		dispatch(roomActionCreators.selectTheme(themeIndex) as object as Action);
 	},
 });
 

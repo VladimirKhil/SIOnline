@@ -14,7 +14,7 @@ import AnswerValidationDialog from './AnswerValidationDialog';
 import RoundProgress from './RoundProgress';
 import GameHint from './GameHint';
 import localization from '../../model/resources/localization';
-import runActionCreators from '../../state/run/runActionCreators';
+import roomActionCreators from '../../state/room/roomActionCreators';
 import PersonsView from './PersonsView';
 import TablesView from './TablesView';
 import Dialog from '../common/Dialog';
@@ -46,31 +46,31 @@ interface InGameViewProps {
 
 const mapStateToProps = (state: State) => ({
 	windowWidth: state.ui.windowWidth,
-	isChatOpen: state.run.chat.isVisible,
+	isChatOpen: state.room.chat.isVisible,
 	showPersonsAtBottomOnWideScreen: state.settings.showPersonsAtBottomOnWideScreen,
-	isPersonsDialogVisible: state.run.personsVisible,
-	isTablesDialogVisible: state.run.tablesVisible,
-	isBannedDialogVisible: state.run.bannedVisible,
-	isGameInfoDialogVisible: state.run.gameInfoVisible,
-	isManageGameDialogVisible: state.run.manageGameVisible,
-	isAnswerValidationDialogVisible: state.run.validation.isVisible
+	isPersonsDialogVisible: state.room.personsVisible,
+	isTablesDialogVisible: state.room.tablesVisible,
+	isBannedDialogVisible: state.room.bannedVisible,
+	isGameInfoDialogVisible: state.room.gameInfoVisible,
+	isManageGameDialogVisible: state.room.manageGameVisible,
+	isAnswerValidationDialogVisible: state.room.validation.isVisible
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	onPersonsDialogClose: () => {
-		dispatch(runActionCreators.runHidePersons());
+		dispatch(roomActionCreators.runHidePersons());
 	},
 	onTablesDialogClose: () => {
-		dispatch(runActionCreators.runHideTables());
+		dispatch(roomActionCreators.runHideTables());
 	},
 	onBannedDialogClose: () => {
-		dispatch(runActionCreators.runHideBanned());
+		dispatch(roomActionCreators.runHideBanned());
 	},
 	onGameInfoDialogClose: () => {
-		dispatch(runActionCreators.runHideGameInfo());
+		dispatch(roomActionCreators.runHideGameInfo());
 	},
 	onManageGameDialogClose: () => {
-		dispatch(runActionCreators.runHideManageGame());
+		dispatch(roomActionCreators.runHideManageGame());
 	}
 });
 

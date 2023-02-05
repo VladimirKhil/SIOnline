@@ -1,6 +1,6 @@
 import { ActionCreator, Action, Dispatch } from 'redux';
 import { ThunkAction } from 'redux-thunk';
-import * as RunActions from './RunActions';
+import * as RunActions from './RoomActions';
 import ChatMode from '../../model/enums/ChatMode';
 import State from '../State';
 import DataContext from '../../model/DataContext';
@@ -22,18 +22,18 @@ import MessageLevel from '../../model/enums/MessageLevel';
 let timerRef: number | null = null;
 
 const runChatModeChanged: ActionCreator<RunActions.RunChatModeChangedAction> = (chatMode: ChatMode) => ({
-	type: RunActions.RunActionTypes.RunChatModeChanged, chatMode
+	type: RunActions.RoomActionTypes.RoomChatModeChanged, chatMode
 });
 
 const runChatMessageChanged: ActionCreator<RunActions.RunChatMessageChangedAction> = (message: string) => ({
-	type: RunActions.RunActionTypes.RunChatMessageChanged, message
+	type: RunActions.RoomActionTypes.RoomChatMessageChanged, message
 });
 
 const runChatMessageSend: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () =>
-	(dispatch: Dispatch<RunActions.KnownRunAction>, getState: () => State, dataContext: DataContext) => {
+	(dispatch: Dispatch<RunActions.KnownRoomAction>, getState: () => State, dataContext: DataContext) => {
 		const state = getState();
 
-		const text = state.run.chat.message;
+		const text = state.room.chat.message;
 		if (text.length > 0) {
 			dataContext.gameClient.sayAsync(text);
 		}
@@ -43,13 +43,13 @@ const runChatMessageSend: ActionCreator<ThunkAction<void, State, DataContext, Ac
 		// Temporary
 		dispatch(chatMessageAdded({ sender: state.user.login, text, level: MessageLevel.Information }));
 
-		if (!state.run.chat.isVisible) {
+		if (!state.room.chat.isVisible) {
 			dispatch(activateChat());
 		}
 	};
 
 const markQuestion: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
-	_dispatch: Dispatch<RunActions.KnownRunAction>,
+	_dispatch: Dispatch<RunActions.KnownRoomAction>,
 	_getState: () => State,
 	dataContext: DataContext
 	) => {
@@ -57,7 +57,7 @@ const markQuestion: ActionCreator<ThunkAction<void, State, DataContext, Action>>
 	};
 
 const onPass: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
-	_dispatch: Dispatch<RunActions.KnownRunAction>,
+	_dispatch: Dispatch<RunActions.KnownRoomAction>,
 	_getState: () => State,
 	dataContext: DataContext
 	) => {
@@ -65,77 +65,77 @@ const onPass: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () 
 	};
 
 const pause: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
-	_dispatch: Dispatch<RunActions.KnownRunAction>,
+	_dispatch: Dispatch<RunActions.KnownRoomAction>,
 	getState: () => State,
 	dataContext: DataContext
 	) => {
-		await dataContext.gameClient.msgAsync('PAUSE', getState().run.stage.isGamePaused ? '-' : '+');
+		await dataContext.gameClient.msgAsync('PAUSE', getState().room.stage.isGamePaused ? '-' : '+');
 	};
 
 const editTable: ActionCreator<RunActions.EditTableAction> = () => ({
-	type: RunActions.RunActionTypes.EditTable
+	type: RunActions.RoomActionTypes.EditTable
 });
 
 const runShowPersons: ActionCreator<RunActions.RunShowPersonsAction> = () => ({
-	type: RunActions.RunActionTypes.RunShowPersons
+	type: RunActions.RoomActionTypes.RoomShowPersons
 });
 
 const runHidePersons: ActionCreator<RunActions.RunHidePersonsAction> = () => ({
-	type: RunActions.RunActionTypes.RunHidePersons
+	type: RunActions.RoomActionTypes.RoomHidePersons
 });
 
 const runShowTables: ActionCreator<RunActions.RunShowTablesAction> = () => ({
-	type: RunActions.RunActionTypes.RunShowTables
+	type: RunActions.RoomActionTypes.RoomShowTables
 });
 
 const runHideTables: ActionCreator<RunActions.RunHideTablesAction> = () => ({
-	type: RunActions.RunActionTypes.RunHideTables
+	type: RunActions.RoomActionTypes.RoomHideTables
 });
 
 const runShowBanned: ActionCreator<RunActions.RunShowBannedAction> = () => ({
-	type: RunActions.RunActionTypes.RunShowBanned
+	type: RunActions.RoomActionTypes.RoomShowBanned
 });
 
 const runHideBanned: ActionCreator<RunActions.RunHideBannedAction> = () => ({
-	type: RunActions.RunActionTypes.RunHideBanned
+	type: RunActions.RoomActionTypes.RoomHideBanned
 });
 
 const runShowGameInfo: ActionCreator<RunActions.RunShowGameInfoAction> = () => ({
-	type: RunActions.RunActionTypes.RunShowGameInfo
+	type: RunActions.RoomActionTypes.RoomShowGameInfo
 });
 
 const runHideGameInfo: ActionCreator<RunActions.RunHideGameInfoAction> = () => ({
-	type: RunActions.RunActionTypes.RunHideGameInfo
+	type: RunActions.RoomActionTypes.RoomHideGameInfo
 });
 
 const runShowManageGame: ActionCreator<RunActions.RunShowManageGameAction> = () => ({
-	type: RunActions.RunActionTypes.RunShowManageGame
+	type: RunActions.RoomActionTypes.RoomShowManageGame
 });
 
 const runHideManageGame: ActionCreator<RunActions.RunHideManageGameAction> = () => ({
-	type: RunActions.RunActionTypes.RunHideManageGame
+	type: RunActions.RoomActionTypes.RoomHideManageGame
 });
 
 const runChatVisibilityChanged: ActionCreator<RunActions.RunChatVisibilityChangedAction> = (isOpen: boolean) => ({
-	type: RunActions.RunActionTypes.RunChatVisibilityChanged, isOpen
+	type: RunActions.RoomActionTypes.RoomChatVisibilityChanged, isOpen
 });
 
 const clearDecisions: ActionCreator<RunActions.ClearDecisionsAction> = () => ({
-	type: RunActions.RunActionTypes.ClearDecisions
+	type: RunActions.RoomActionTypes.ClearDecisions
 });
 
 const playerSelected: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (playerIndex: number) => async (
-	dispatch: Dispatch<RunActions.KnownRunAction>,
+	dispatch: Dispatch<RunActions.KnownRoomAction>,
 	getState: () => State,
 	dataContext: DataContext
 	) => {
-	if (await dataContext.gameClient.msgAsync(getState().run.selection.message, playerIndex)) {
+	if (await dataContext.gameClient.msgAsync(getState().room.selection.message, playerIndex)) {
 		dispatch(clearDecisions());
 	}
 };
 
 const exitGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
-	dispatch: Dispatch<RunActions.KnownRunAction>,
+	dispatch: Dispatch<RunActions.KnownRoomAction>,
 	getState: () => State,
 	dataContext: DataContext) => {
 	try {
@@ -158,45 +158,45 @@ const exitGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (
 };
 
 const chatMessageAdded: ActionCreator<RunActions.ChatMessageAddedAction> = (chatMessage: ChatMessage) => ({
-	type: RunActions.RunActionTypes.ChatMessageAdded, chatMessage
+	type: RunActions.RoomActionTypes.ChatMessageAdded, chatMessage
 });
 
 const lastReplicChanged: ActionCreator<RunActions.LastReplicChangedAction> = (chatMessage: ChatMessage | null) => ({
-	type: RunActions.RunActionTypes.LastReplicChanged, chatMessage
+	type: RunActions.RoomActionTypes.LastReplicChanged, chatMessage
 });
 
 const activateChat: ActionCreator<RunActions.ActivateChatAction> = () => ({
-	type: RunActions.RunActionTypes.ActivateChat
+	type: RunActions.RoomActionTypes.ActivateChat
 });
 
 const showmanReplicChanged: ActionCreator<RunActions.ShowmanReplicChangedAction> = (replic: string) => ({
-	type: RunActions.RunActionTypes.ShowmanReplicChanged, replic
+	type: RunActions.RoomActionTypes.ShowmanReplicChanged, replic
 });
 
 const playerReplicChanged: ActionCreator<RunActions.PlayerReplicChangedAction> = (playerIndex: number, replic: string) => ({
-	type: RunActions.RunActionTypes.PlayerReplicChanged, playerIndex, replic
+	type: RunActions.RoomActionTypes.PlayerReplicChanged, playerIndex, replic
 });
 
 const infoChanged: ActionCreator<RunActions.InfoChangedAction> = (all: Persons, showman: PersonInfo, players: PlayerInfo[]) => ({
-	type: RunActions.RunActionTypes.InfoChanged, all, showman, players
+	type: RunActions.RoomActionTypes.InfoChanged, all, showman, players
 });
 
 const chatPersonSelected: ActionCreator<RunActions.ChatPersonSelectedAction> = (personName: string) => ({
-	type: RunActions.RunActionTypes.ChatPersonSelected, personName
+	type: RunActions.RoomActionTypes.ChatPersonSelected, personName
 });
 
 const tableSelected: ActionCreator<RunActions.TableSelectedAction> = (tableIndex: number) => ({
-	type: RunActions.RunActionTypes.TableSelected, tableIndex
+	type: RunActions.RoomActionTypes.TableSelected, tableIndex
 });
 
 const operationError: ActionCreator<RunActions.OperationErrorAction> = (error: string) => ({
-	type: RunActions.RunActionTypes.OperationError, error
+	type: RunActions.RoomActionTypes.OperationError, error
 });
 
 const addTable: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
-	dispatch: Dispatch<RunActions.KnownRunAction>,
+	dispatch: Dispatch<RunActions.KnownRoomAction>,
 	getState: () => State, dataContext: DataContext) => {
-	if (getState().run.persons.players.length >= Constants.MAX_PLAYER_COUNT) {
+	if (getState().room.persons.players.length >= Constants.MAX_PLAYER_COUNT) {
 		return;
 	}
 
@@ -204,12 +204,12 @@ const addTable: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (
 };
 
 const deleteTable: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
-	_dispatch: Dispatch<RunActions.KnownRunAction>,
+	_dispatch: Dispatch<RunActions.KnownRoomAction>,
 	getState: () => State,
 	dataContext: DataContext
 	) => {
-	const tableIndex = getState().run.selectedTableIndex - 1;
-	if (tableIndex < 0 || tableIndex >= getState().run.persons.players.length) {
+	const tableIndex = getState().room.selectedTableIndex - 1;
+	if (tableIndex < 0 || tableIndex >= getState().room.persons.players.length) {
 		return;
 	}
 
@@ -217,12 +217,12 @@ const deleteTable: ActionCreator<ThunkAction<void, State, DataContext, Action>> 
 };
 
 const freeTable: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
-	_dispatch: Dispatch<RunActions.KnownRunAction>,
+	_dispatch: Dispatch<RunActions.KnownRoomAction>,
 	getState: () => State,
 	dataContext: DataContext
 	) => {
-	const tableIndex = getState().run.selectedTableIndex;
-	if (tableIndex < 0 || tableIndex >= getState().run.persons.players.length + 1) {
+	const tableIndex = getState().room.selectedTableIndex;
+	if (tableIndex < 0 || tableIndex >= getState().room.persons.players.length + 1) {
 		return;
 	}
 
@@ -232,12 +232,12 @@ const freeTable: ActionCreator<ThunkAction<void, State, DataContext, Action>> = 
 };
 
 const setTable: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (name: string) => async (
-	_dispatch: Dispatch<RunActions.KnownRunAction>,
+	_dispatch: Dispatch<RunActions.KnownRoomAction>,
 	getState: () => State,
 	dataContext: DataContext
 	) => {
-	const tableIndex = getState().run.selectedTableIndex;
-	if (tableIndex < 0 || tableIndex >= getState().run.persons.players.length + 1) {
+	const tableIndex = getState().room.selectedTableIndex;
+	if (tableIndex < 0 || tableIndex >= getState().room.persons.players.length + 1) {
 		return;
 	}
 
@@ -247,12 +247,12 @@ const setTable: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (
 };
 
 const changeType: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
-	_dispatch: Dispatch<RunActions.KnownRunAction>,
+	_dispatch: Dispatch<RunActions.KnownRoomAction>,
 	getState: () => State,
 	dataContext: DataContext
 	) => {
-	const tableIndex = getState().run.selectedTableIndex;
-	if (tableIndex < 0 || tableIndex >= getState().run.persons.players.length + 1) {
+	const tableIndex = getState().room.selectedTableIndex;
+	if (tableIndex < 0 || tableIndex >= getState().room.persons.players.length + 1) {
 		return;
 	}
 
@@ -262,11 +262,11 @@ const changeType: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 };
 
 const kickPerson: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
-	_dispatch: Dispatch<RunActions.KnownRunAction>,
+	_dispatch: Dispatch<RunActions.KnownRoomAction>,
 	getState: () => State,
 	dataContext: DataContext
 	) => {
-	const personName = getState().run.chat.selectedPersonName;
+	const personName = getState().room.chat.selectedPersonName;
 	if (!personName) {
 		return;
 	}
@@ -275,11 +275,11 @@ const kickPerson: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 };
 
 const banPerson: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
-	_dispatch: Dispatch<RunActions.KnownRunAction>,
+	_dispatch: Dispatch<RunActions.KnownRoomAction>,
 	getState: () => State,
 	dataContext: DataContext
 	) => {
-	const personName = getState().run.chat.selectedPersonName;
+	const personName = getState().room.chat.selectedPersonName;
 	if (!personName) {
 		return;
 	}
@@ -288,85 +288,85 @@ const banPerson: ActionCreator<ThunkAction<void, State, DataContext, Action>> = 
 };
 
 const personAvatarChanged: ActionCreator<RunActions.PersonAvatarChangedAction> = (personName: string, avatarUri: string) => ({
-	type: RunActions.RunActionTypes.PersonAvatarChanged, personName, avatarUri
+	type: RunActions.RoomActionTypes.PersonAvatarChanged, personName, avatarUri
 });
 
-const gameStarted: ActionCreator<RunActions.GameStartedAction> = () => ({ type: RunActions.RunActionTypes.GameStarted });
+const gameStarted: ActionCreator<RunActions.GameStartedAction> = () => ({ type: RunActions.RoomActionTypes.GameStarted });
 
 const stageChanged: ActionCreator<RunActions.StageChangedAction> = (stageName: string, roundIndex: number) => ({
-	type: RunActions.RunActionTypes.StageChanged, stageName, roundIndex
+	type: RunActions.RoomActionTypes.StageChanged, stageName, roundIndex
 });
 
 const playersStateCleared: ActionCreator<RunActions.PlayersStateClearedAction> = () => ({
-	type: RunActions.RunActionTypes.PlayersStateCleared
+	type: RunActions.RoomActionTypes.PlayersStateCleared
 });
 
 const gameStateCleared: ActionCreator<RunActions.GameStateClearedAction> = () => ({
-	type: RunActions.RunActionTypes.GameStateCleared
+	type: RunActions.RoomActionTypes.GameStateCleared
 });
 
 const sumsChanged: ActionCreator<RunActions.SumsChangedAction> = (sums: number[]) => ({
-	type: RunActions.RunActionTypes.SumsChanged, sums
+	type: RunActions.RoomActionTypes.SumsChanged, sums
 });
 
 const afterQuestionStateChanged: ActionCreator<RunActions.AfterQuestionStateChangedAction> = (isAfterQuestion: boolean) => ({
-	type: RunActions.RunActionTypes.AfterQuestionStateChanged, isAfterQuestion
+	type: RunActions.RoomActionTypes.AfterQuestionStateChanged, isAfterQuestion
 });
 
 const currentPriceChanged: ActionCreator<RunActions.CurrentPriceChangedAction> = (currentPrice: number) => ({
-	type: RunActions.RunActionTypes.CurrentPriceChanged, currentPrice
+	type: RunActions.RoomActionTypes.CurrentPriceChanged, currentPrice
 });
 
 const personAdded: ActionCreator<RunActions.PersonAddedAction> = (person: Account) => ({
-	type: RunActions.RunActionTypes.PersonAdded, person
+	type: RunActions.RoomActionTypes.PersonAdded, person
 });
 
 const personRemoved: ActionCreator<RunActions.PersonRemovedAction> = (name: string) => ({
-	type: RunActions.RunActionTypes.PersonRemoved, name
+	type: RunActions.RoomActionTypes.PersonRemoved, name
 });
 
 const showmanChanged: ActionCreator<RunActions.ShowmanChangedAction> = (name: string, isHuman?: boolean, isReady?: boolean) => ({
-	type: RunActions.RunActionTypes.ShowmanChanged, name, isHuman, isReady
+	type: RunActions.RoomActionTypes.ShowmanChanged, name, isHuman, isReady
 });
 
 const playerAdded: ActionCreator<RunActions.PlayerAddedAction> = () => ({
-	type: RunActions.RunActionTypes.PlayerAdded
+	type: RunActions.RoomActionTypes.PlayerAdded
 });
 
 const playerChanged: ActionCreator<RunActions.PlayerChangedAction> = (index: number, name: string, isHuman?: boolean, isReady?: boolean) => ({
-	type: RunActions.RunActionTypes.PlayerChanged, index, name, isHuman, isReady
+	type: RunActions.RoomActionTypes.PlayerChanged, index, name, isHuman, isReady
 });
 
 const playerDeleted: ActionCreator<RunActions.PlayerDeletedAction> = (index: number) => ({
-	type: RunActions.RunActionTypes.PlayerDeleted, index
+	type: RunActions.RoomActionTypes.PlayerDeleted, index
 });
 
 const playersSwap: ActionCreator<RunActions.PlayersSwapAction> = (index1: number, index2: number) => ({
-	type: RunActions.RunActionTypes.PlayersSwap, index1, index2
+	type: RunActions.RoomActionTypes.PlayersSwap, index1, index2
 });
 
 const roleChanged: ActionCreator<RunActions.RoleChangedAction> = (role: Role) => ({
-	type: RunActions.RunActionTypes.RoleChanged, role
+	type: RunActions.RoomActionTypes.RoleChanged, role
 });
 
 const playerStateChanged: ActionCreator<RunActions.PlayerStateChangedAction> = (index: number, state: PlayerStates) => ({
-	type: RunActions.RunActionTypes.PlayerStateChanged, index, state
+	type: RunActions.RoomActionTypes.PlayerStateChanged, index, state
 });
 
 const playerLostStateDropped: ActionCreator<RunActions.PlayerLostStateDroppedAction> = (index: number) => ({
-	type: RunActions.RunActionTypes.PlayerLostStateDropped, index
+	type: RunActions.RoomActionTypes.PlayerLostStateDropped, index
 });
 
 const isPausedChanged: ActionCreator<RunActions.IsPausedChangedAction> = (isPaused: boolean) => ({
-	type: RunActions.RunActionTypes.IsPausedChanged, isPaused
+	type: RunActions.RoomActionTypes.IsPausedChanged, isPaused
 });
 
 const playerStakeChanged: ActionCreator<RunActions.PlayerStakeChangedAction> = (index: number, stake: number) => ({
-	type: RunActions.RunActionTypes.PlayerStakeChanged, index, stake
+	type: RunActions.RoomActionTypes.PlayerStakeChanged, index, stake
 });
 
 const decisionNeededChanged: ActionCreator<RunActions.DecisionNeededChangedAction> = (decisionNeeded: boolean) => ({
-	type: RunActions.RunActionTypes.DecisionNeededChanged, decisionNeeded
+	type: RunActions.RoomActionTypes.DecisionNeededChanged, decisionNeeded
 });
 
 const selectQuestion: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (themeIndex: number, questionIndex: number) => async (
@@ -420,7 +420,7 @@ const selectTheme: ActionCreator<ThunkAction<void, State, DataContext, Action>> 
 };
 
 const isGameButtonEnabledChanged: ActionCreator<RunActions.IsGameButtonEnabledChangedAction> = (isGameButtonEnabled: boolean) => ({
-	type: RunActions.RunActionTypes.IsGameButtonEnabledChanged, isGameButtonEnabled
+	type: RunActions.RoomActionTypes.IsGameButtonEnabledChanged, isGameButtonEnabled
 });
 
 const pressGameButton: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
@@ -438,7 +438,7 @@ const pressGameButton: ActionCreator<ThunkAction<void, State, DataContext, Actio
 		() => {
 			dispatch(isGameButtonEnabledChanged(true));
 		},
-		getState().run.buttonBlockingTimeSeconds * 1000
+		getState().room.buttonBlockingTimeSeconds * 1000
 	);
 };
 
@@ -459,11 +459,11 @@ const disagree: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (
 };
 
 const isAnswering: ActionCreator<RunActions.IsAnsweringAction> = () => ({
-	type: RunActions.RunActionTypes.IsAnswering
+	type: RunActions.RoomActionTypes.IsAnswering
 });
 
 const onAnswerChanged: ActionCreator<RunActions.AnswerChangedAction> = (answer: string) => ({
-	type: RunActions.RunActionTypes.AnswerChanged, answer
+	type: RunActions.RoomActionTypes.AnswerChanged, answer
 });
 
 const sendAnswer: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
@@ -471,7 +471,7 @@ const sendAnswer: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 	getState: () => State,
 	dataContext: DataContext
 	) => {
-	if (await dataContext.gameClient.msgAsync('ANSWER', getState().run.answer)) {
+	if (await dataContext.gameClient.msgAsync('ANSWER', getState().room.answer)) {
 		dispatch(clearDecisions());
 	}
 };
@@ -484,7 +484,7 @@ const validate: ActionCreator<RunActions.ValidateAction> = (
 	header: string,
 	message: string
 ) => ({
-	type: RunActions.RunActionTypes.Validate, name, answer, rightAnswers, wrongAnswers, header, message
+	type: RunActions.RoomActionTypes.Validate, name, answer, rightAnswers, wrongAnswers, header, message
 });
 
 const approveAnswer: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
@@ -516,11 +516,11 @@ const setStakes: ActionCreator<RunActions.SetStakesAction> = (
 	message: string,
 	areSimple: boolean
 ) => ({
-	type: RunActions.RunActionTypes.SetStakes, allowedStakeTypes, minimum, maximum, stake, step, message, areSimple
+	type: RunActions.RoomActionTypes.SetStakes, allowedStakeTypes, minimum, maximum, stake, step, message, areSimple
 });
 
 const stakeChanged: ActionCreator<RunActions.StakeChangedAction> = (stake: number) => ({
-	type: RunActions.RunActionTypes.StakeChanged, stake
+	type: RunActions.RoomActionTypes.StakeChanged, stake
 });
 
 const sendNominal: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
@@ -541,10 +541,10 @@ const sendStake: ActionCreator<ThunkAction<void, State, DataContext, Action>> = 
 		const state = getState();
 
 		let result : boolean;
-		if (state.run.stakes.message === 'STAKE') { // Bad design
-			result = await dataContext.gameClient.msgAsync('STAKE', 1, state.run.stakes.stake);
+		if (state.room.stakes.message === 'STAKE') { // Bad design
+			result = await dataContext.gameClient.msgAsync('STAKE', 1, state.room.stakes.stake);
 		} else {
-			result = await dataContext.gameClient.msgAsync(state.run.stakes.message, state.run.stakes.stake);
+			result = await dataContext.gameClient.msgAsync(state.room.stakes.message, state.room.stakes.stake);
 		}
 
 		if (result) {
@@ -573,10 +573,10 @@ const sendAllIn: ActionCreator<ThunkAction<void, State, DataContext, Action>> = 
 };
 
 const selectionEnabled: ActionCreator<RunActions.SelectionEnabledAction> = (allowedIndices: number[], message: string) => ({
-	type: RunActions.RunActionTypes.SelectionEnabled, allowedIndices, message
+	type: RunActions.RoomActionTypes.SelectionEnabled, allowedIndices, message
 });
 
-const showLeftSeconds = (leftSeconds: number, dispatch: Dispatch<RunActions.KnownRunAction>): void => {
+const showLeftSeconds = (leftSeconds: number, dispatch: Dispatch<RunActions.KnownRoomAction>): void => {
 	let leftSecondsString = (leftSeconds % 60).toString();
 
 	if (leftSecondsString.length < 2) {
@@ -606,7 +606,7 @@ const onMediaEnded: ActionCreator<ThunkAction<void, State, DataContext, Action>>
 };
 
 const areSumsEditableChanged: ActionCreator<RunActions.AreSumsEditableChangedAction> = (areSumsEditable: boolean) => ({
-	type: RunActions.RunActionTypes.AreSumsEditableChanged, areSumsEditable
+	type: RunActions.RoomActionTypes.AreSumsEditableChanged, areSumsEditable
 });
 
 const changePlayerSum: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (
@@ -621,51 +621,51 @@ const changePlayerSum: ActionCreator<ThunkAction<void, State, DataContext, Actio
 };
 
 const readingSpeedChanged: ActionCreator<RunActions.ReadingSpeedChangedAction> = (readingSpeed: number) => ({
-	type: RunActions.RunActionTypes.ReadingSpeedChanged, readingSpeed
+	type: RunActions.RoomActionTypes.ReadingSpeedChanged, readingSpeed
 });
 
 const runTimer: ActionCreator<RunActions.RunTimerAction> = (timerIndex: number, maximumTime: number, runByUser: boolean) => ({
-	type: RunActions.RunActionTypes.RunTimer, timerIndex, maximumTime, runByUser
+	type: RunActions.RoomActionTypes.RunTimer, timerIndex, maximumTime, runByUser
 });
 
 const pauseTimer: ActionCreator<RunActions.PauseTimerAction> = (timerIndex: number, currentTime: number, pausedByUser: boolean) => ({
-	type: RunActions.RunActionTypes.PauseTimer, timerIndex, currentTime, pausedByUser
+	type: RunActions.RoomActionTypes.PauseTimer, timerIndex, currentTime, pausedByUser
 });
 
 const resumeTimer: ActionCreator<RunActions.ResumeTimerAction> = (timerIndex: number, runByUser: boolean) => ({
-	type: RunActions.RunActionTypes.ResumeTimer, timerIndex, runByUser
+	type: RunActions.RoomActionTypes.ResumeTimer, timerIndex, runByUser
 });
 
 const stopTimer: ActionCreator<RunActions.StopTimerAction> = (timerIndex: number) => ({
-	type: RunActions.RunActionTypes.StopTimer, timerIndex
+	type: RunActions.RoomActionTypes.StopTimer, timerIndex
 });
 
 const timerMaximumChanged: ActionCreator<RunActions.TimerMaximumChangedAction> = (timerIndex: number, maximumTime: number) => ({
-	type: RunActions.RunActionTypes.TimerMaximumChanged, timerIndex, maximumTime
+	type: RunActions.RoomActionTypes.TimerMaximumChanged, timerIndex, maximumTime
 });
 
 const activateShowmanDecision: ActionCreator<RunActions.ActivateShowmanDecisionAction> = () => ({
-	type: RunActions.RunActionTypes.ActivateShowmanDecision
+	type: RunActions.RoomActionTypes.ActivateShowmanDecision
 });
 
 const activatePlayerDecision: ActionCreator<RunActions.ActivatePlayerDecisionAction> = (playerIndex: number) => ({
-	type: RunActions.RunActionTypes.ActivatePlayerDecision, playerIndex
+	type: RunActions.RoomActionTypes.ActivatePlayerDecision, playerIndex
 });
 
 const showMainTimer: ActionCreator<RunActions.ShowMainTimerAction> = () => ({
-	type: RunActions.RunActionTypes.ShowMainTimer
+	type: RunActions.RoomActionTypes.ShowMainTimer
 });
 
 const clearDecisionsAndMainTimer: ActionCreator<RunActions.ClearDecisionsAndMainTimerAction> = () => ({
-	type: RunActions.RunActionTypes.ClearDecisionsAndMainTimer
+	type: RunActions.RoomActionTypes.ClearDecisionsAndMainTimer
 });
 
 const hintChanged: ActionCreator<RunActions.HintChangedAction> = (hint: string | null) => ({
-	type: RunActions.RunActionTypes.HintChanged, hint
+	type: RunActions.RoomActionTypes.HintChanged, hint
 });
 
 const startGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
-	_dispatch: Dispatch<RunActions.KnownRunAction>,
+	_dispatch: Dispatch<RunActions.KnownRoomAction>,
 	_getState: () => State,
 	dataContext: DataContext
 ) => {
@@ -673,7 +673,7 @@ const startGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> = 
 };
 
 const ready: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (isReady: boolean) => async (
-	_dispatch: Dispatch<RunActions.KnownRunAction>,
+	_dispatch: Dispatch<RunActions.KnownRoomAction>,
 	_getState: () => State,
 	dataContext: DataContext
 ) => {
@@ -681,22 +681,22 @@ const ready: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (isR
 };
 
 const roundsNamesChanged: ActionCreator<RunActions.RoundsNamesChangedAction> = (roundsNames: string[]) => ({
-	type: RunActions.RunActionTypes.RoundsNamesChanged, roundsNames
+	type: RunActions.RoomActionTypes.RoundsNamesChanged, roundsNames
 });
 
 const hostNameChanged: ActionCreator<RunActions.HostNameChangedAction> = (hostName: string | null) => ({
-	type: RunActions.RunActionTypes.HostNameChanged, hostName
+	type: RunActions.RoomActionTypes.HostNameChanged, hostName
 });
 
 const themeNameChanged: ActionCreator<RunActions.ThemeNameChangedAction> = (themeName: string) => ({
-	type: RunActions.RunActionTypes.ThemeNameChanged, themeName
+	type: RunActions.RoomActionTypes.ThemeNameChanged, themeName
 });
 
 const updateCaption: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (questionCaption: string) => (
 	dispatch: Dispatch<any>,
 	getState: () => State
 ) => {
-	const { themeName } = getState().run.stage;
+	const { themeName } = getState().room.stage;
 	dispatch(tableActionCreators.captionChanged(`${themeName}, ${questionCaption}`));
 };
 
@@ -715,43 +715,43 @@ const navigateToRound: ActionCreator<ThunkAction<void, State, DataContext, Actio
 };
 
 const isReadyChanged: ActionCreator<RunActions.IsReadyChangedAction> = (personIndex: number, isReady: boolean) => ({
-	type: RunActions.RunActionTypes.IsReadyChanged, personIndex, isReady
+	type: RunActions.RoomActionTypes.IsReadyChanged, personIndex, isReady
 });
 
 const chooserChanged: ActionCreator<RunActions.ChooserChangedAction> = (chooserIndex: number) => ({
-	type: RunActions.RunActionTypes.ChooserChanged, chooserIndex
+	type: RunActions.RoomActionTypes.ChooserChanged, chooserIndex
 });
 
 const playerInGameChanged: ActionCreator<RunActions.PlayerInGameChangedAction> = (playerIndex: number, inGame: boolean) => ({
-	type: RunActions.RunActionTypes.PlayerInGameChanged, playerIndex, inGame
+	type: RunActions.RoomActionTypes.PlayerInGameChanged, playerIndex, inGame
 });
 
 const areApellationsEnabledChanged: ActionCreator<RunActions.AreApellationsEnabledChangedAction> = (areApellationsEnabled: boolean) => ({
-	type: RunActions.RunActionTypes.AreApellationsEnabledChanged, areApellationsEnabled
+	type: RunActions.RoomActionTypes.AreApellationsEnabledChanged, areApellationsEnabled
 });
 
 const buttonBlockingTimeChanged: ActionCreator<RunActions.ButtonBlockingChangedAction> = (buttonBlockingTime: number) => ({
-	type: RunActions.RunActionTypes.ButtonBlockingTimeChanged, buttonBlockingTime
+	type: RunActions.RoomActionTypes.ButtonBlockingTimeChanged, buttonBlockingTime
 });
 
 const gameMetadataChanged: ActionCreator<RunActions.GameMetadataChangedAction> = (gameName: string, packageName: string, contactUri: string) => ({
-	type: RunActions.RunActionTypes.GameMetadataChanged, gameName, packageName, contactUri
+	type: RunActions.RoomActionTypes.GameMetadataChanged, gameName, packageName, contactUri
 });
 
 const bannedListChanged: ActionCreator<RunActions.BannedListChangedAction> = (bannedList: Record<string, string>) => ({
-	type: RunActions.RunActionTypes.BannedListChanged, bannedList
+	type: RunActions.RoomActionTypes.BannedListChanged, bannedList
 });
 
 const banned: ActionCreator<RunActions.BannedAction> = (ip: string, name: string) => ({
-	type: RunActions.RunActionTypes.Banned, ip, name
+	type: RunActions.RoomActionTypes.Banned, ip, name
 });
 
 const unbanned: ActionCreator<RunActions.UnbannedAction> = (ip: string) => ({
-	type: RunActions.RunActionTypes.Unbanned, ip
+	type: RunActions.RoomActionTypes.Unbanned, ip
 });
 
 const selectBannedItem: ActionCreator<RunActions.SelectBannedItemAction> = (ip: string) => ({
-	type: RunActions.RunActionTypes.SelectBannedItem, ip
+	type: RunActions.RoomActionTypes.SelectBannedItem, ip
 });
 
 const unban: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (ip: string) => async (
@@ -763,7 +763,7 @@ const unban: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (ip:
 };
 
 const playerMediaLoaded: ActionCreator<RunActions.PlayerMediaLoadedAction> = (playerIndex: number) => ({
-	type: RunActions.RunActionTypes.PlayerMediaLoaded, playerIndex
+	type: RunActions.RoomActionTypes.PlayerMediaLoaded, playerIndex
 });
 
 const mediaLoaded: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
@@ -774,7 +774,7 @@ const mediaLoaded: ActionCreator<ThunkAction<void, State, DataContext, Action>> 
 	await dataContext.game.mediaLoaded();
 };
 
-const runActionCreators = {
+const roomActionCreators = {
 	runChatModeChanged,
 	runChatMessageChanged,
 	runChatMessageSend,
@@ -890,4 +890,4 @@ const runActionCreators = {
 	mediaLoaded,
 };
 
-export default runActionCreators;
+export default roomActionCreators;

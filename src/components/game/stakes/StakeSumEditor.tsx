@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import * as React from 'react';
-import runActionCreators from '../../../state/run/runActionCreators';
+import roomActionCreators from '../../../state/room/roomActionCreators';
 import State from '../../../state/State';
 import { Dispatch, Action } from 'redux';
 import StakeTypes from '../../../model/enums/StakeTypes';
@@ -17,16 +17,16 @@ interface StakeSumEditorProps {
 }
 
 const mapStateToProps = (state: State) => ({
-	stake: state.run.stakes.stake,
-	minimum: state.run.stakes.minimum,
-	maximum: state.run.stakes.maximum,
-	step: state.run.stakes.step,
-	allowedStakeTypes: state.run.stakes.allowedStakeTypes
+	stake: state.room.stakes.stake,
+	minimum: state.room.stakes.minimum,
+	maximum: state.room.stakes.maximum,
+	step: state.room.stakes.step,
+	allowedStakeTypes: state.room.stakes.allowedStakeTypes
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	onStakeChanged: (stake: number) => {
-		dispatch(runActionCreators.stakeChanged(stake));
+		dispatch(roomActionCreators.stakeChanged(stake));
 	}
 });
 

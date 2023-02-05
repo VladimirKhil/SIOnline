@@ -16,7 +16,7 @@ interface TableTextProps {
 const mapStateToProps = (state: State) => ({
 	text: state.table.text,
 	animateReading: state.table.animateReading,
-	readingSpeed: state.run.readingSpeed,
+	readingSpeed: state.room.readingSpeed,
 });
 
 export function TableText(props: TableTextProps) {

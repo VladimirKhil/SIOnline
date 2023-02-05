@@ -8,7 +8,7 @@ import StakeTypes from '../../model/enums/StakeTypes';
 import Timers from '../../model/Timers';
 import TimerStates from '../../model/enums/TimeStates';
 
-export default interface RunState {
+export default interface RoomState {
 	persons: {
 		all: Persons;
 		showman: PersonInfo;
@@ -87,7 +87,7 @@ export default interface RunState {
 	}
 }
 
-export const initialState: RunState = {
+export const initialState: RoomState = {
 	persons: {
 		all: {},
 		showman: {

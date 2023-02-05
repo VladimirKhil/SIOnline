@@ -2,7 +2,7 @@ import localization from '../model/resources/localization';
 import State from '../state/State';
 
 export function isHost(state: State): boolean {
-	return state.user.login === state.run.persons.hostName;
+	return state.user.login === state.room.persons.hostName;
 }
 
 export function getCulture(state: State): string {

@@ -1,6 +1,6 @@
 import { Reducer, AnyAction } from 'redux';
-import RunState, { initialState } from './RunState';
-import { KnownRunAction, RunActionTypes } from './RunActions';
+import RoomState, { initialState } from './RoomState';
+import { KnownRoomAction, RoomActionTypes } from './RoomActions';
 import { replace, swap } from '../../utils/ArrayExtensions';
 import { set, removeS } from '../../utils/RecordExtensions';
 import PlayerStates from '../../model/enums/PlayerStates';
@@ -9,11 +9,11 @@ import { updateTimers } from '../../utils/TimerInfoHelpers';
 import TimerStates from '../../model/enums/TimeStates';
 import MessageLevel from '../../model/enums/MessageLevel';
 
-const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction: AnyAction): RunState => {
-	const action = anyAction as KnownRunAction;
+const roomReducer: Reducer<RoomState> = (state: RoomState = initialState, anyAction: AnyAction): RoomState => {
+	const action = anyAction as KnownRoomAction;
 
 	switch (action.type) {
-		case RunActionTypes.RunChatModeChanged:
+		case RoomActionTypes.RoomChatModeChanged:
 			return {
 				...state,
 				chat: {
@@ -22,7 +22,7 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 				}
 			};
 
-		case RunActionTypes.RunChatMessageChanged:
+		case RoomActionTypes.RoomChatMessageChanged:
 			return {
 				...state,
 				chat: {
@@ -31,7 +31,7 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 				}
 			};
 
-		case RunActionTypes.RunChatVisibilityChanged:
+		case RoomActionTypes.RoomChatVisibilityChanged:
 			return {
 				...state,
 				chat: {
@@ -41,67 +41,67 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 				}
 			};
 
-		case RunActionTypes.RunShowPersons:
+		case RoomActionTypes.RoomShowPersons:
 			return {
 				...state,
 				personsVisible: true
 			};
 
-		case RunActionTypes.RunHidePersons:
+		case RoomActionTypes.RoomHidePersons:
 			return {
 				...state,
 				personsVisible: false
 			};
 
-		case RunActionTypes.RunShowTables:
+		case RoomActionTypes.RoomShowTables:
 			return {
 				...state,
 				tablesVisible: true
 			};
 
-		case RunActionTypes.RunHideTables:
+		case RoomActionTypes.RoomHideTables:
 			return {
 				...state,
 				tablesVisible: false
 			};
 
-		case RunActionTypes.RunShowBanned:
+		case RoomActionTypes.RoomShowBanned:
 			return {
 				...state,
 				bannedVisible: true
 			};
 
-		case RunActionTypes.RunHideBanned:
+		case RoomActionTypes.RoomHideBanned:
 			return {
 				...state,
 				bannedVisible: false
 			};
 
-		case RunActionTypes.RunShowGameInfo:
+		case RoomActionTypes.RoomShowGameInfo:
 			return {
 				...state,
 				gameInfoVisible: true
 			};
 
-		case RunActionTypes.RunHideGameInfo:
+		case RoomActionTypes.RoomHideGameInfo:
 			return {
 				...state,
 				gameInfoVisible: false
 			};
 
-		case RunActionTypes.RunShowManageGame:
+		case RoomActionTypes.RoomShowManageGame:
 			return {
 				...state,
 				manageGameVisible: true
 			};
 
-		case RunActionTypes.RunHideManageGame:
+		case RoomActionTypes.RoomHideManageGame:
 			return {
 				...state,
 				manageGameVisible: false
 			};
 
-		case RunActionTypes.ChatMessageAdded:
+		case RoomActionTypes.ChatMessageAdded:
 			return {
 				...state,
 				chat: {
@@ -110,7 +110,7 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 				}
 			};
 
-		case RunActionTypes.LastReplicChanged:
+		case RoomActionTypes.LastReplicChanged:
 			return {
 				...state,
 				lastReplic: action.chatMessage,
@@ -120,7 +120,7 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 				}
 			};
 
-		case RunActionTypes.ActivateChat:
+		case RoomActionTypes.ActivateChat:
 			return {
 				...state,
 				chat: {
@@ -129,7 +129,7 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 				}
 			};
 
-		case RunActionTypes.ShowmanReplicChanged:
+		case RoomActionTypes.ShowmanReplicChanged:
 			return {
 				...state,
 				persons: {
@@ -142,7 +142,7 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 				}
 			};
 
-		case RunActionTypes.PlayerReplicChanged:
+		case RoomActionTypes.PlayerReplicChanged:
 			return {
 				...state,
 				persons: {
@@ -155,7 +155,7 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 				}
 			};
 
-		case RunActionTypes.InfoChanged:
+		case RoomActionTypes.InfoChanged:
 			return {
 				...state,
 				persons: {
@@ -166,7 +166,7 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 				}
 			};
 
-		case RunActionTypes.ChatPersonSelected:
+		case RoomActionTypes.ChatPersonSelected:
 			return {
 				...state,
 				chat: {
@@ -175,13 +175,13 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 				}
 			};
 
-		case RunActionTypes.TableSelected:
+		case RoomActionTypes.TableSelected:
 			return {
 				...state,
 				selectedTableIndex: action.tableIndex
 			};
 
-		case RunActionTypes.PersonAvatarChanged:
+		case RoomActionTypes.PersonAvatarChanged:
 			if (Object.keys(state.persons.all).indexOf(action.personName) === -1) {
 				return state;
 			}
@@ -197,7 +197,7 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 				}
 			};
 
-		case RunActionTypes.GameStarted:
+		case RoomActionTypes.GameStarted:
 			return {
 				...state,
 				stage: {
@@ -206,7 +206,7 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 				}
 			};
 
-		case RunActionTypes.StageChanged:
+		case RoomActionTypes.StageChanged:
 			return {
 				...state,
 				stage: {
@@ -216,7 +216,7 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 				}
 			};
 
-		case RunActionTypes.PlayersStateCleared:
+		case RoomActionTypes.PlayersStateCleared:
 			return {
 				...state,
 				persons: {
@@ -230,7 +230,7 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 				}
 			};
 
-		case RunActionTypes.GameStateCleared:
+		case RoomActionTypes.GameStateCleared:
 			return {
 				...state,
 				stage: {
@@ -258,7 +258,7 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 				},
 			};
 
-		case RunActionTypes.SumsChanged:
+		case RoomActionTypes.SumsChanged:
 			return {
 				...state,
 				persons: {
@@ -267,7 +267,7 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 				}
 			};
 
-		case RunActionTypes.AfterQuestionStateChanged:
+		case RoomActionTypes.AfterQuestionStateChanged:
 			return {
 				...state,
 				stage: {
@@ -276,7 +276,7 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 				}
 			};
 
-		case RunActionTypes.CurrentPriceChanged:
+		case RoomActionTypes.CurrentPriceChanged:
 			return {
 				...state,
 				stage: {
@@ -285,7 +285,7 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 				}
 			};
 
-		case RunActionTypes.PersonAdded:
+		case RoomActionTypes.PersonAdded:
 			if (state.persons.all[action.person.name]) {
 				console.log(`Person ${action.person.name} already exists!`);
 			}
@@ -298,7 +298,7 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 				}
 			};
 
-		case RunActionTypes.PersonRemoved:
+		case RoomActionTypes.PersonRemoved:
 			return {
 				...state,
 				persons: {
@@ -307,7 +307,7 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 				}
 			};
 
-		case RunActionTypes.ShowmanChanged:
+		case RoomActionTypes.ShowmanChanged:
 			return {
 				...state,
 				persons: {
@@ -321,7 +321,7 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 				}
 			};
 
-		case RunActionTypes.PlayerAdded:
+		case RoomActionTypes.PlayerAdded:
 			return {
 				...state,
 				persons: {
@@ -343,7 +343,7 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 				}
 			};
 
-		case RunActionTypes.PlayerChanged:
+		case RoomActionTypes.PlayerChanged:
 			if (action.index < 0 || action.index >= state.persons.players.length) {
 				console.log(`PlayerChanged: Wrong index ${action.index}!`);
 				return state;
@@ -366,7 +366,7 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 				}
 			};
 
-		case RunActionTypes.PlayerDeleted:
+		case RoomActionTypes.PlayerDeleted:
 			if (action.index < 0 || action.index >= state.persons.players.length) {
 				console.log(`PlayerDeleted: Wrong index ${action.index}!`);
 				return state;
@@ -380,7 +380,7 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 				}
 			};
 
-		case RunActionTypes.PlayersSwap:
+		case RoomActionTypes.PlayersSwap:
 			return {
 				...state,
 				persons: {
@@ -389,13 +389,13 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 				}
 			};
 
-		case RunActionTypes.RoleChanged:
+		case RoomActionTypes.RoleChanged:
 			return {
 				...state,
 				role: action.role
 			};
 
-		case RunActionTypes.PlayerStateChanged:
+		case RoomActionTypes.PlayerStateChanged:
 			return {
 				...state,
 				persons: {
@@ -407,7 +407,7 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 				}
 			};
 
-		case RunActionTypes.PlayerLostStateDropped:
+		case RoomActionTypes.PlayerLostStateDropped:
 			if (action.index < 0 || action.index >= state.persons.players.length) {
 				console.log(`PlayerLostStateDropped: Wrong index ${action.index}!`);
 				return state;
@@ -428,7 +428,7 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 				}
 			};
 
-		case RunActionTypes.IsPausedChanged:
+		case RoomActionTypes.IsPausedChanged:
 			return {
 				...state,
 				stage: {
@@ -438,7 +438,7 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 				}
 			};
 
-		case RunActionTypes.PlayerStakeChanged:
+		case RoomActionTypes.PlayerStakeChanged:
 			return {
 				...state,
 				persons: {
@@ -450,7 +450,7 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 				}
 			};
 
-		case RunActionTypes.DecisionNeededChanged:
+		case RoomActionTypes.DecisionNeededChanged:
 			return {
 				...state,
 				stage: {
@@ -459,7 +459,7 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 				}
 			};
 
-		case RunActionTypes.ClearDecisions:
+		case RoomActionTypes.ClearDecisions:
 			return {
 				...state,
 				persons: {
@@ -491,13 +491,13 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 				hint: null
 			};
 
-		case RunActionTypes.IsGameButtonEnabledChanged:
+		case RoomActionTypes.IsGameButtonEnabledChanged:
 			return {
 				...state,
 				isGameButtonEnabled: action.isGameButtonEnabled
 			};
 
-		case RunActionTypes.IsAnswering:
+		case RoomActionTypes.IsAnswering:
 			return {
 				...state,
 				stage: {
@@ -508,13 +508,13 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 				answer: null
 			};
 
-		case RunActionTypes.AnswerChanged:
+		case RoomActionTypes.AnswerChanged:
 			return {
 				...state,
 				answer: action.answer
 			};
 
-		case RunActionTypes.Validate:
+		case RoomActionTypes.Validate:
 			return {
 				...state,
 				answer: action.answer,
@@ -529,7 +529,7 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 				}
 			};
 
-		case RunActionTypes.SetStakes:
+		case RoomActionTypes.SetStakes:
 			return {
 				...state,
 				stakes: {
@@ -544,7 +544,7 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 				}
 			};
 
-		case RunActionTypes.StakeChanged:
+		case RoomActionTypes.StakeChanged:
 			return {
 				...state,
 				stakes: {
@@ -553,7 +553,7 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 				}
 			};
 
-		case RunActionTypes.SelectionEnabled:
+		case RoomActionTypes.SelectionEnabled:
 			return {
 				...state,
 				persons: {
@@ -573,19 +573,19 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 				}
 			};
 
-		case RunActionTypes.AreSumsEditableChanged:
+		case RoomActionTypes.AreSumsEditableChanged:
 			return {
 				...state,
 				areSumsEditable: action.areSumsEditable
 			};
 
-		case RunActionTypes.ReadingSpeedChanged:
+		case RoomActionTypes.ReadingSpeedChanged:
 			return {
 				...state,
 				readingSpeed: action.readingSpeed
 			};
 
-		case RunActionTypes.RunTimer:
+		case RoomActionTypes.RunTimer:
 			return {
 				...state,
 				timers: updateTimers(state.timers, action.timerIndex, timer => ({
@@ -597,7 +597,7 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 				}))
 			};
 
-		case RunActionTypes.PauseTimer:
+		case RoomActionTypes.PauseTimer:
 			return {
 				...state,
 				timers: updateTimers(state.timers, action.timerIndex, timer => ({
@@ -609,7 +609,7 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 				}))
 			};
 
-		case RunActionTypes.ResumeTimer:
+		case RoomActionTypes.ResumeTimer:
 			return {
 				...state,
 				timers: updateTimers(state.timers, action.timerIndex, timer => ({
@@ -620,7 +620,7 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 				}))
 			};
 
-		case RunActionTypes.StopTimer:
+		case RoomActionTypes.StopTimer:
 			return {
 				...state,
 				timers: updateTimers(state.timers, action.timerIndex, timer => ({
@@ -632,7 +632,7 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 				}))
 			};
 
-		case RunActionTypes.TimerMaximumChanged:
+		case RoomActionTypes.TimerMaximumChanged:
 			return {
 				...state,
 				timers: updateTimers(state.timers, action.timerIndex, timer => ({
@@ -641,7 +641,7 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 				}))
 			};
 
-		case RunActionTypes.ActivateShowmanDecision:
+		case RoomActionTypes.ActivateShowmanDecision:
 			return {
 				...state,
 				persons: {
@@ -653,7 +653,7 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 				}
 			};
 
-		case RunActionTypes.ActivatePlayerDecision:
+		case RoomActionTypes.ActivatePlayerDecision:
 			return {
 				...state,
 				persons: {
@@ -665,13 +665,13 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 				}
 			};
 
-		case RunActionTypes.ShowMainTimer:
+		case RoomActionTypes.ShowMainTimer:
 			return {
 				...state,
 				showMainTimer: true
 			};
 
-		case RunActionTypes.ClearDecisionsAndMainTimer:
+		case RoomActionTypes.ClearDecisionsAndMainTimer:
 			return {
 				...state,
 				showMainTimer: false,
@@ -688,13 +688,13 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 				}
 			};
 
-		case RunActionTypes.HintChanged:
+		case RoomActionTypes.HintChanged:
 			return {
 				...state,
 				hint: action.hint
 			};
 
-		case RunActionTypes.OperationError:
+		case RoomActionTypes.OperationError:
 			return {
 				...state,
 				chat: {
@@ -707,7 +707,7 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 				}
 			};
 
-		case RunActionTypes.HostNameChanged:
+		case RoomActionTypes.HostNameChanged:
 			return {
 				...state,
 				persons: {
@@ -716,7 +716,7 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 				}
 			};
 
-		case RunActionTypes.ThemeNameChanged:
+		case RoomActionTypes.ThemeNameChanged:
 			return {
 				...state,
 				stage: {
@@ -725,7 +725,7 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 				}
 			};
 
-		case RunActionTypes.IsReadyChanged:
+		case RoomActionTypes.IsReadyChanged:
 			if (action.personIndex === -1) {
 				return {
 					...state,
@@ -750,13 +750,13 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 				}
 			};
 
-		case RunActionTypes.RoundsNamesChanged:
+		case RoomActionTypes.RoundsNamesChanged:
 			return {
 				...state,
 				roundsNames: action.roundsNames
 			};
 
-		case RunActionTypes.ChooserChanged:
+		case RoomActionTypes.ChooserChanged:
 			return {
 				...state,
 				persons: {
@@ -768,7 +768,7 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 				}
 			};
 
-		case RunActionTypes.PlayerInGameChanged:
+		case RoomActionTypes.PlayerInGameChanged:
 			return {
 				...state,
 				persons: {
@@ -780,19 +780,19 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 				}
 			};
 
-		case RunActionTypes.AreApellationsEnabledChanged:
+		case RoomActionTypes.AreApellationsEnabledChanged:
 			return {
 				...state,
 				areApellationsEnabled: action.areApellationsEnabled
 			};
 
-		case RunActionTypes.ButtonBlockingTimeChanged:
+		case RoomActionTypes.ButtonBlockingTimeChanged:
 			return {
 				...state,
 				buttonBlockingTimeSeconds: action.buttonBlockingTime
 			};
 
-		case RunActionTypes.GameMetadataChanged:
+		case RoomActionTypes.GameMetadataChanged:
 			return {
 				...state,
 				metadata: {
@@ -802,7 +802,7 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 				}
 			};
 
-		case RunActionTypes.BannedListChanged:
+		case RoomActionTypes.BannedListChanged:
 			return {
 				...state,
 				banned: {
@@ -811,7 +811,7 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 				}
 			};
 
-		case RunActionTypes.Banned:
+		case RoomActionTypes.Banned:
 			return {
 				...state,
 				banned: {
@@ -823,7 +823,7 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 				},
 			};
 
-		case RunActionTypes.Unbanned:
+		case RoomActionTypes.Unbanned:
 			return {
 				...state,
 				banned: {
@@ -832,7 +832,7 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 				},
 			};
 
-		case RunActionTypes.SelectBannedItem:
+		case RoomActionTypes.SelectBannedItem:
 			return {
 				...state,
 				banned: {
@@ -841,7 +841,7 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 				},
 			};
 
-		case RunActionTypes.PlayerMediaLoaded:
+		case RoomActionTypes.PlayerMediaLoaded:
 			return {
 				...state,
 				persons: {
@@ -853,7 +853,7 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 				}
 			};
 
-		case RunActionTypes.EditTable:
+		case RoomActionTypes.EditTable:
 			return {
 				...state,
 				stage: {
@@ -867,4 +867,4 @@ const runReducer: Reducer<RunState> = (state: RunState = initialState, anyAction
 	}
 };
 
-export default runReducer;
+export default roomReducer;

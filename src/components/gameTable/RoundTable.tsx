@@ -4,7 +4,7 @@ import { Dispatch, Action } from 'redux';
 import { connect } from 'react-redux';
 import AutoSizedText from '../common/AutoSizedText';
 import ThemeInfo from '../../model/ThemeInfo';
-import runActionCreators from '../../state/run/runActionCreators';
+import roomActionCreators from '../../state/room/roomActionCreators';
 
 import './RoundTable.css';
 
@@ -24,15 +24,15 @@ const mapStateToProps = (state: State) => ({
 	isSelectable: state.table.isSelectable,
 	activeThemeIndex: state.table.activeThemeIndex,
 	actionQuestionIndex: state.table.actionQuestionIndex,
-	isEditEnabled: state.run.stage.isEditEnabled,
+	isEditEnabled: state.room.stage.isEditEnabled,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	onSelectQuestion: (themeIndex: number, questionIndex: number) => {
-		dispatch((runActionCreators.selectQuestion(themeIndex, questionIndex) as object) as Action);
+		dispatch((roomActionCreators.selectQuestion(themeIndex, questionIndex) as object) as Action);
 	},
 	onToggleQuestion: (themeIndex: number, questionIndex: number) => {
-		dispatch((runActionCreators.toggleQuestion(themeIndex, questionIndex) as object) as Action);
+		dispatch((roomActionCreators.toggleQuestion(themeIndex, questionIndex) as object) as Action);
 	},
 });
 

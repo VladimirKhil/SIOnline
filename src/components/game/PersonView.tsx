@@ -4,7 +4,7 @@ import { Dispatch, AnyAction } from 'redux';
 import Account from '../../model/Account';
 import Sex from '../../model/enums/Sex';
 import localization from '../../model/resources/localization';
-import runActionCreators from '../../state/run/runActionCreators';
+import roomActionCreators from '../../state/room/roomActionCreators';
 import State from '../../state/State';
 
 import './PersonView.css';
@@ -19,15 +19,15 @@ interface PersonViewProps {
 }
 
 const mapStateToProps = (state: State) => ({
-	selectedPersonName: state.run.chat.selectedPersonName,
+	selectedPersonName: state.room.chat.selectedPersonName,
 	login: state.user.login,
 	avatar: state.user.avatar,
-	hostName: state.run.persons.hostName
+	hostName: state.room.persons.hostName
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => ({
 	selectPerson: (name: string) => {
-		dispatch(runActionCreators.chatPersonSelected(name));
+		dispatch(roomActionCreators.chatPersonSelected(name));
 	}
 });
 

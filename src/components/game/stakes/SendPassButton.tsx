@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import * as React from 'react';
-import runActionCreators from '../../../state/run/runActionCreators';
+import roomActionCreators from '../../../state/room/roomActionCreators';
 import State from '../../../state/State';
 import { Dispatch, Action } from 'redux';
 import StakeTypes from '../../../model/enums/StakeTypes';
@@ -16,16 +16,16 @@ interface SendPassButtonProps {
 
 const mapStateToProps = (state: State) => ({
 	isConnected: state.common.isConnected,
-	useSimpleStakes: state.run.stakes.areSimple,
-	allowedStakeTypes: state.run.stakes.allowedStakeTypes
+	useSimpleStakes: state.room.stakes.areSimple,
+	allowedStakeTypes: state.room.stakes.allowedStakeTypes
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	sendNominal: () => {
-		dispatch((runActionCreators.sendNominal() as object) as Action);
+		dispatch((roomActionCreators.sendNominal() as object) as Action);
 	},
 	sendPass: () => {
-		dispatch((runActionCreators.sendPass() as object) as Action);
+		dispatch((roomActionCreators.sendPass() as object) as Action);
 	}
 });
 

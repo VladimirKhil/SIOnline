@@ -2,7 +2,7 @@ import * as React from 'react';
 import State from '../../state/State';
 import { Dispatch, Action } from 'redux';
 import { connect } from 'react-redux';
-import runActionCreators from '../../state/run/runActionCreators';
+import roomActionCreators from '../../state/room/roomActionCreators';
 import VolumeButton from '../common/VolumeButton';
 import settingsActionCreators from '../../state/settings/settingsActionCreators';
 import getErrorMessage from '../../utils/ErrorHelpers';
@@ -28,21 +28,21 @@ interface TableAudioProps {
 const mapStateToProps = (state: State) => ({
 	soundVolume: state.settings.soundVolume,
 	audio: state.table.audio,
-	isMediaStopped: state.run.stage.isGamePaused || state.table.isMediaStopped,
+	isMediaStopped: state.room.stage.isGamePaused || state.table.isMediaStopped,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	onMediaEnded: () => {
-		dispatch(runActionCreators.onMediaEnded() as object as Action);
+		dispatch(roomActionCreators.onMediaEnded() as object as Action);
 	},
 	onSoundVolumeChange: (volume: number) => {
 		dispatch(settingsActionCreators.onSoundVolumeChanged(volume));
 	},
 	operationError: (error: string) => {
-		dispatch(runActionCreators.operationError(error) as object as Action);
+		dispatch(roomActionCreators.operationError(error) as object as Action);
 	},
 	mediaLoaded: () => {
-		dispatch(runActionCreators.mediaLoaded() as unknown as Action);
+		dispatch(roomActionCreators.mediaLoaded() as unknown as Action);
 	},
 });
 

@@ -17,8 +17,8 @@ interface BottomControlPanelProps {
 }
 
 const mapStateToProps = (state: State) => ({
-	role: state.run.role,
-	areStakesVisible: state.run.stakes.areVisible
+	role: state.room.role,
+	areStakesVisible: state.room.stakes.areVisible,
 });
 
 export function BottomControlPanel(props: BottomControlPanelProps) {

@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Dispatch, Action } from 'redux';
 import State from '../../state/State';
 import localization from '../../model/resources/localization';
-import runActionCreators from '../../state/run/runActionCreators';
+import roomActionCreators from '../../state/room/roomActionCreators';
 import Dialog from '../common/Dialog';
 import settingsActionCreators from '../../state/settings/settingsActionCreators';
 
@@ -24,19 +24,19 @@ interface AnswerValidationDialogProps {
 
 const mapStateToProps = (state: State) => ({
 	isConnected: state.common.isConnected,
-	header: state.run.validation.header,
-	message: state.run.validation.message,
-	rightAnswers: state.run.validation.rightAnswers,
-	wrongAnswers: state.run.validation.wrongAnswers,
+	header: state.room.validation.header,
+	message: state.room.validation.message,
+	rightAnswers: state.room.validation.rightAnswers,
+	wrongAnswers: state.room.validation.wrongAnswers,
 	areAnswersVisible: !state.settings.areValidationAnswersHidden,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	onApprove: () => {
-		dispatch(runActionCreators.approveAnswer() as unknown as Action);
+		dispatch(roomActionCreators.approveAnswer() as unknown as Action);
 	},
 	onReject: () => {
-		dispatch(runActionCreators.rejectAnswer() as unknown as Action);
+		dispatch(roomActionCreators.rejectAnswer() as unknown as Action);
 	},
 	onAnswersVisibilityChanged: (areAnswersVisible: boolean) => {
 		dispatch(settingsActionCreators.onValidationAnswersVisibilityChanged(areAnswersVisible));

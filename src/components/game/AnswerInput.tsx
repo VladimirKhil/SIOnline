@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import * as React from 'react';
 import { Dispatch, Action } from 'redux';
-import runActionCreators from '../../state/run/runActionCreators';
+import roomActionCreators from '../../state/room/roomActionCreators';
 import State from '../../state/State';
 import Constants from '../../model/enums/Constants';
 
@@ -16,16 +16,16 @@ interface AnswerInputProps {
 
 const mapStateToProps = (state: State) => ({
 	isConnected: state.common.isConnected,
-	isAnswering: state.run.stage.isAnswering,
-	answer: state.run.answer || ''
+	isAnswering: state.room.stage.isAnswering,
+	answer: state.room.answer || ''
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	onAnswerChanged: (answer: string) => {
-		dispatch(runActionCreators.onAnswerChanged(answer) as unknown as Action);
+		dispatch(roomActionCreators.onAnswerChanged(answer) as unknown as Action);
 	},
 	sendAnswer: () => {
-		dispatch(runActionCreators.sendAnswer() as unknown as Action);
+		dispatch(roomActionCreators.sendAnswer() as unknown as Action);
 	}
 });
 

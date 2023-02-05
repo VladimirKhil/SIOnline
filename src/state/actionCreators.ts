@@ -22,7 +22,7 @@ import * as GameErrorsHelper from '../utils/GameErrorsHelper';
 import GameInfo from '../client/contracts/GameInfo';
 import { attachListeners, detachListeners, activeConnections, removeConnection } from '../utils/ConnectionHelpers';
 import MainView from '../model/enums/MainView';
-import runActionCreators from './run/runActionCreators';
+import roomActionCreators from './room/roomActionCreators';
 import Slice from '../client/contracts/Slice';
 import PackageType from '../model/enums/PackageType';
 import PackageKey from '../client/contracts/PackageKey';
@@ -56,7 +56,7 @@ const onConnectionChanged: ActionCreator<ThunkAction<void, State, DataContext, A
 		const state = getState();
 
 		if (state.ui.mainView === MainView.Game) {
-			dispatch(runActionCreators.chatMessageAdded({ sender: '', text: message, level: MessageLevel.System }));
+			dispatch(roomActionCreators.chatMessageAdded({ sender: '', text: message, level: MessageLevel.System }));
 		} else {
 			dispatch(receiveMessage('', message));
 		}
@@ -397,7 +397,7 @@ const login: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 				// eslint-disable-next-line no-param-reassign
 				dataContext.gameClient = new GameServerClient(
 					connection,
-					e => dispatch(runActionCreators.operationError(getErrorMessage(e)) as object as Actions.KnownAction)
+					e => dispatch(roomActionCreators.operationError(getErrorMessage(e)) as object as Actions.KnownAction)
 				);
 
 				dataContext.game = new GameClient(dataContext.gameClient);
@@ -565,6 +565,20 @@ const joinGameFinished: ActionCreator<Actions.JoinGameFinishedAction> = (error: 
 	error
 });
 
+const gameSet: ActionCreator<Actions.GameSetAction> = (id: number, isAutomatic: boolean) => ({
+	type: Actions.ActionTypes.GameSet,
+	id,
+	isAutomatic,
+});
+
+const initGameAsync = async (dispatch: Dispatch<any>, dataContext: DataContext, gameId: number, role: Role, isAutomatic: boolean) => {
+	dispatch(gameSet(gameId, isAutomatic));
+	dispatch(tableActionCreators.showText(localization.tableHint, false));
+	dispatch(roomActionCreators.roleChanged(role));
+
+	await gameInit(gameId, dataContext, role);
+};
+
 const joinGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 	(gameId: number, role: Role) => async (dispatch: Dispatch<any>, getState: () => State, dataContext: DataContext) => {
 		dispatch(joinGameStarted());
@@ -584,10 +598,7 @@ const joinGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 				return;
 			}
 
-			dispatch(gameSet(gameId, false, role));
-			dispatch(tableActionCreators.showText(localization.tableHint, false));
-
-			await gameInit(gameId, dataContext, role);
+			await initGameAsync(dispatch, dataContext, gameId, role, false);
 
 			saveStateToStorage(state);
 			dispatch(joinGameFinished(null));
@@ -996,10 +1007,7 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 				dispatch(gameCreationEnd(GameErrorsHelper.getMessage(result.code) + (result.errorMessage || '')));
 			} else {
 				dispatch(newGameCancel());
-				dispatch(gameSet(result.gameId, false, role));
-				dispatch(tableActionCreators.showText(localization.tableHint, false));
-
-				await gameInit(result.gameId, dataContext, role);
+				await initGameAsync(dispatch, dataContext, result.gameId, role, false);
 			}
 		} catch (error) {
 			dispatch(gameCreationEnd(getErrorMessage(error)));
@@ -1024,22 +1032,12 @@ const createNewAutoGame: ActionCreator<ThunkAction<void, State, DataContext, Act
 			if (result.code > 0) {
 				alert(GameErrorsHelper.getMessage(result.code) + (result.errorMessage || ''));
 			} else {
-				dispatch(gameSet(result.gameId, true, Role.Player));
-				dispatch(tableActionCreators.showText(localization.tableHint, false));
-
-				await gameInit(result.gameId, dataContext, Role.Player);
+				await initGameAsync(dispatch, dataContext, result.gameId, Role.Player, true);
 			}
 		} catch (message) {
 			dispatch(gameCreationEnd(message));
 		}
 	};
-
-const gameSet: ActionCreator<Actions.GameSetAction> = (id: number, isAutomatic: boolean, role: Role) => ({
-	type: Actions.ActionTypes.GameSet,
-	id,
-	isAutomatic,
-	role
-});
 
 async function gameInit(gameId: number, dataContext: DataContext, role: Role) {
 	if (dataContext.config.rewriteUrl) {

@@ -37,10 +37,10 @@ interface GameTableProps {
 const mapStateToProps = (state: State) => ({
 	isConnected: state.common.isConnected,
 	mode: state.table.mode,
-	isPaused: state.run.stage.isGamePaused,
-	isEditEnabled: state.run.stage.isEditEnabled,
-	showMainTimer: state.run.showMainTimer,
-	decisionTimer: state.run.timers.decision,
+	isPaused: state.room.stage.isGamePaused,
+	isEditEnabled: state.room.stage.isEditEnabled,
+	showMainTimer: state.room.showMainTimer,
+	decisionTimer: state.room.timers.decision,
 	caption: state.table.caption,
 });
 

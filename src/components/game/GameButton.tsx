@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 import localization from '../../model/resources/localization';
 import * as React from 'react';
 import Sex from '../../model/enums/Sex';
-import runActionCreators from '../../state/run/runActionCreators';
+import roomActionCreators from '../../state/room/roomActionCreators';
 import State from '../../state/State';
 import { Dispatch, Action } from 'redux';
 import FlyoutButton, { FlyoutVerticalOrientation } from '../common/FlyoutButton';
@@ -26,26 +26,26 @@ interface GameButtonProps {
 
 const mapStateToProps = (state: State) => ({
 	isConnected: state.common.isConnected,
-	isGameButtonEnabled: state.run.isGameButtonEnabled,
-	isAfterQuestion: state.run.stage.isAfterQuestion,
+	isGameButtonEnabled: state.room.isGameButtonEnabled,
+	isAfterQuestion: state.room.stage.isAfterQuestion,
 	sex: state.settings.sex,
 	windowWidth: state.ui.windowWidth,
-	areApellationsEnabled: state.run.areApellationsEnabled,
-	playersCount: state.run.persons.players.length,
+	areApellationsEnabled: state.room.areApellationsEnabled,
+	playersCount: state.room.persons.players.length,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	pressGameButton: () => {
-		dispatch(runActionCreators.pressGameButton() as object as Action);
+		dispatch(roomActionCreators.pressGameButton() as object as Action);
 	},
 	apellate: () => {
-		dispatch(runActionCreators.apellate() as object as Action);
+		dispatch(roomActionCreators.apellate() as object as Action);
 	},
 	disagree: () => {
-		dispatch(runActionCreators.disagree() as object as Action);
+		dispatch(roomActionCreators.disagree() as object as Action);
 	},
 	onMarkQuestion: () => {
-		dispatch(runActionCreators.markQuestion() as unknown as Action);
+		dispatch(roomActionCreators.markQuestion() as unknown as Action);
 	}
 });
 

@@ -1,7 +1,7 @@
 import * as signalR from '@microsoft/signalr';
 import { Dispatch, AnyAction } from 'redux';
 import localization from '../model/resources/localization';
-import runActionCreators from '../state/run/runActionCreators';
+import roomActionCreators from '../state/room/roomActionCreators';
 import actionCreators from '../state/actionCreators';
 import Message from '../model/Message';
 import messageProcessor from '../state/game/messageProcessor';
@@ -23,7 +23,7 @@ export function attachListeners(connection: signalR.HubConnection, dispatch: Dis
 	
 	connection.on('Disconnect', () => {
 		alert(localization.youAreKicked);
-		dispatch((runActionCreators.exitGame() as object) as AnyAction);
+		dispatch((roomActionCreators.exitGame() as object) as AnyAction);
 	});
 
 	connection.onreconnecting((e) => {

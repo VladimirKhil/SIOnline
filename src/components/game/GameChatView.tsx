@@ -5,7 +5,7 @@ import State from '../../state/State';
 import PersonsView from './PersonsView';
 import GameLogView from './GameLogView';
 import ChatMode from '../../model/enums/ChatMode';
-import runActionCreators from '../../state/run/runActionCreators';
+import roomActionCreators from '../../state/room/roomActionCreators';
 import localization from '../../model/resources/localization';
 import ChatInput from './ChatInput';
 import Role from '../../client/contracts/Role';
@@ -41,38 +41,38 @@ interface GameChatViewProps {
 
 const mapStateToProps = (state: State) => ({
 	isConnected: state.common.isConnected,
-	chatMode: state.run.chat.mode,
-	personsCount: Object.values(state.run.persons.all).length,
-	role: state.run.role,
-	areSumsEditable: state.run.areSumsEditable,
-	roundsNames: state.run.roundsNames,
-	roundIndex: state.run.stage.roundIndex,
+	chatMode: state.room.chat.mode,
+	personsCount: Object.values(state.room.persons.all).length,
+	role: state.room.role,
+	areSumsEditable: state.room.areSumsEditable,
+	roundsNames: state.room.roundsNames,
+	roundIndex: state.room.stage.roundIndex,
 	isHost: isHost(state),
-	isPaused: state.run.stage.isGamePaused,
-	isEditEnabled: state.run.stage.isEditEnabled,
+	isPaused: state.room.stage.isGamePaused,
+	isEditEnabled: state.room.stage.isEditEnabled,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	onChatModeChanged: (chatMode: ChatMode) => {
-		dispatch(runActionCreators.runChatModeChanged(chatMode));
+		dispatch(roomActionCreators.runChatModeChanged(chatMode));
 	},
 	onMarkQuestion: () => {
-		dispatch(runActionCreators.markQuestion() as unknown as Action);
+		dispatch(roomActionCreators.markQuestion() as unknown as Action);
 	},
 	onEditSums: (enable: boolean) => {
-		dispatch(runActionCreators.areSumsEditableChanged(enable) as unknown as Action);
+		dispatch(roomActionCreators.areSumsEditableChanged(enable) as unknown as Action);
 	},
 	navigateToRound: (roundIndex: number) => {
-		dispatch(runActionCreators.navigateToRound(roundIndex) as unknown as Action);
+		dispatch(roomActionCreators.navigateToRound(roundIndex) as unknown as Action);
 	},
 	onPass: () => {
-		dispatch(runActionCreators.onPass() as unknown as Action);
+		dispatch(roomActionCreators.onPass() as unknown as Action);
 	},
 	onShowSettings: () => {
 		dispatch(actionCreators.showSettings(true));
 	},
 	onEditTable: () => {
-		dispatch(runActionCreators.editTable());
+		dispatch(roomActionCreators.editTable());
 	},
 });
 

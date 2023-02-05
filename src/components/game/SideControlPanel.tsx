@@ -2,7 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch, Action } from 'redux';
 import State from '../../state/State';
-import runActionCreators from '../../state/run/runActionCreators';
+import roomActionCreators from '../../state/room/roomActionCreators';
 import localization from '../../model/resources/localization';
 import FlyoutButton, { FlyoutVerticalOrientation, FlyoutTheme, FlyoutHorizontalOrientation } from '../common/FlyoutButton';
 import Role from '../../client/contracts/Role';
@@ -51,61 +51,61 @@ interface SideControlPanelProps {
 
 const mapStateToProps = (state: State) => ({
 	isConnected: state.common.isConnected,
-	role: state.run.role,
-	isChatVisible: state.run.chat.isVisible,
-	isChatActive: state.run.chat.isActive,
+	role: state.room.role,
+	isChatVisible: state.room.chat.isVisible,
+	isChatActive: state.room.chat.isActive,
 	isHost: isHost(state),
-	hasGameStarted: state.run.stage.isGameStarted,
-	isPaused: state.run.stage.isGamePaused,
-	isEditEnabled: state.run.stage.isEditEnabled,
-	lastReplic: state.run.lastReplic,
-	areStakesVisible: state.run.stakes.areVisible,
-	areSumsEditable: state.run.areSumsEditable,
-	roundsNames: state.run.roundsNames
+	hasGameStarted: state.room.stage.isGameStarted,
+	isPaused: state.room.stage.isGamePaused,
+	isEditEnabled: state.room.stage.isEditEnabled,
+	lastReplic: state.room.lastReplic,
+	areStakesVisible: state.room.stakes.areVisible,
+	areSumsEditable: state.room.areSumsEditable,
+	roundsNames: state.room.roundsNames
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	onChatVisibilityChanged: (isOpen: boolean) => {
-		dispatch(runActionCreators.runChatVisibilityChanged(isOpen));
+		dispatch(roomActionCreators.runChatVisibilityChanged(isOpen));
 	},
 	onMarkQuestion: () => {
-		dispatch(runActionCreators.markQuestion() as unknown as Action);
+		dispatch(roomActionCreators.markQuestion() as unknown as Action);
 	},
 	onShowPersons: () => {
-		dispatch(runActionCreators.runShowPersons());
+		dispatch(roomActionCreators.runShowPersons());
 	},
 	onShowTables: () => {
-		dispatch(runActionCreators.runShowTables());
+		dispatch(roomActionCreators.runShowTables());
 	},
 	onShowBanned: () => {
-		dispatch(runActionCreators.runShowBanned());
+		dispatch(roomActionCreators.runShowBanned());
 	},
 	onShowGameInfo: () => {
-		dispatch(runActionCreators.runShowGameInfo());
+		dispatch(roomActionCreators.runShowGameInfo());
 	},
 	onPause: () => {
-		dispatch(runActionCreators.pause() as unknown as Action);
+		dispatch(roomActionCreators.pause() as unknown as Action);
 	},
 	onEditTable: () => {
-		dispatch(runActionCreators.editTable());
+		dispatch(roomActionCreators.editTable());
 	},
 	onExit: () => {
-		dispatch(runActionCreators.exitGame() as unknown as Action);
+		dispatch(roomActionCreators.exitGame() as unknown as Action);
 	},
 	onEditSums: (enable: boolean) => {
-		dispatch(runActionCreators.areSumsEditableChanged(enable) as unknown as Action);
+		dispatch(roomActionCreators.areSumsEditableChanged(enable) as unknown as Action);
 	},
 	onMoveNext: () => {
-		dispatch(runActionCreators.moveNext() as unknown as Action);
+		dispatch(roomActionCreators.moveNext() as unknown as Action);
 	},
 	showGameManageDialog: () => {
-		dispatch(runActionCreators.runShowManageGame());
+		dispatch(roomActionCreators.runShowManageGame());
 	},
 	onStart: () => {
-		dispatch(runActionCreators.startGame() as unknown as Action);
+		dispatch(roomActionCreators.startGame() as unknown as Action);
 	},
 	onPass: () => {
-		dispatch(runActionCreators.onPass() as unknown as Action);
+		dispatch(roomActionCreators.onPass() as unknown as Action);
 	},
 	onShowSettings: () => {
 		dispatch(actionCreators.showSettings(true));

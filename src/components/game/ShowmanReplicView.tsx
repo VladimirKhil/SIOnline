@@ -26,13 +26,13 @@ interface ShowmanReplicViewProps {
 }
 
 const mapStateToProps = (state: State) => ({
-	replic: state.run.persons.showman.replic,
-	isReady: state.run.persons.showman.isReady,
-	account: state.run.persons.all[state.run.persons.showman.name],
-	decisionNeeded: state.run.stage.isDecisionNeeded,
-	isDeciding: state.run.persons.showman.isDeciding,
-	decisionTimer: state.run.timers.decision,
-	hasGameStarted: state.run.stage.isGameStarted,
+	replic: state.room.persons.showman.replic,
+	isReady: state.room.persons.showman.isReady,
+	account: state.room.persons.all[state.room.persons.showman.name],
+	decisionNeeded: state.room.stage.isDecisionNeeded,
+	isDeciding: state.room.persons.showman.isDeciding,
+	decisionTimer: state.room.timers.decision,
+	hasGameStarted: state.room.stage.isGameStarted,
 	login: state.user.login,
 	avatar: state.user.avatar
 });

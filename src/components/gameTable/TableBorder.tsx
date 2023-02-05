@@ -14,7 +14,7 @@ interface TableBorderProps {
 
 const mapStateToProps = (state: State) => ({
 	canTry: state.table.canPress,
-	pressTimer: state.run.timers.press
+	pressTimer: state.room.timers.press
 });
 
 export function TableBorder(props: TableBorderProps) {

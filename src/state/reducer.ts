@@ -5,10 +5,9 @@ import MainView from '../model/enums/MainView';
 import { create, remove, set } from '../utils/RecordExtensions';
 import { removeFromArray } from '../utils/ArrayExtensions';
 import localization from '../model/resources/localization';
-import { KnownRunAction } from './run/RunActions';
-import runReducer from './run/runReducer';
+import { KnownRoomAction } from './room/RoomActions';
+import roomReducer from './room/roomReducer';
 import OnlineMode from '../model/enums/OnlineMode';
-import * as runState from './run/RunState';
 import settingsReducer from './settings/settingsReducer';
 import { KnownSettingsAction } from './settings/SettingsActions';
 import Role from '../client/contracts/Role';
@@ -18,7 +17,7 @@ import { KnownTableAction } from './table/TableActions';
 
 const reducer: Reducer<State> = (
 	state: State = initialState,
-	action: KnownAction | KnownRunAction | KnownSettingsAction | KnownTableAction): State => {
+	action: KnownAction | KnownRoomAction | KnownSettingsAction | KnownTableAction): State => {
 	switch (action.type) {
 		case ActionTypes.IsConnectedChanged:
 			return {
@@ -598,10 +597,6 @@ const reducer: Reducer<State> = (
 					mainView: MainView.Game,
 					previousMainView: state.ui.mainView
 				},
-				run: {
-					...runState.initialState,
-					role: action.role
-				}
 			};
 		}
 
@@ -735,7 +730,7 @@ const reducer: Reducer<State> = (
 		default:
 			return {
 				...state,
-				run: runReducer(state.run, action as KnownRunAction),
+				room: roomReducer(state.room, action as KnownRoomAction),
 				settings: settingsReducer(state.settings, action as KnownSettingsAction),
 				table: tableReducer(state.table, action as KnownTableAction),
 			};
