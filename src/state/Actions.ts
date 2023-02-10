@@ -9,19 +9,10 @@ import { SIPackageInfo } from '../model/SIPackageInfo';
 import { SearchEntity } from '../model/SearchEntity';
 
 export const enum ActionTypes {
-	IsConnectedChanged = 'IS_CONNECTED_CHANGED',
-	ComputerAccountsChanged = 'COMPUTER_ACCOUNTS_CHANGED',
 	NavigateToLogin = 'NAVIGATE_TO_LOGIN',
 	ShowSettings = 'SHOW_SETTINGS',
 	NavigateToHowToPlay = 'NAVIGATE_TO_HOW_TO_PLAY',
 	NavigateBack = 'NAVIGATE_BACK',
-	LoginChanged = 'LOGIN_CHANGED',
-	AvatarLoadStart = 'AVATAR_LOAD_START',
-	AvatarLoadEnd = 'AVATAR_LOAD_END',
-	AvatarChanged = 'AVATAR_CHANGED',
-	AvatarLoadError = 'AVATAR_LOAD_ERROR',
-	LoginStart = 'LOGIN_START',
-	LoginEnd = 'LOGIN_END',
 	NavigateToWelcome = 'NAVIGATE_TO_WELCOME',
 	NavigateToNewGame = 'NAVIGATE_TO_NEW_GAME',
 	NavigateToGames = 'NAVIGATE_TO_GAMES',
@@ -69,7 +60,6 @@ export const enum ActionTypes {
 	UploadPackageFinished = 'UPLOAD_PACKAGE_FINISHED',
 	UploadPackageProgress = 'UPLOAD_PACKAGE_PROGRESS',
 	UnselectGame = 'UNSELECT_GAME',
-	ServerInfoChanged = 'SERVER_INFO_CHANGED',
 	SearchPackages = 'SEARCH_PACKAGES',
 	SearchPackagesFinished = 'SEARCH_PACKAGES_FINISHED',
 	SearchPackagesError = 'SEARCH_PACKAGES_ERROR',
@@ -82,24 +72,15 @@ export const enum ActionTypes {
 	IsSettingGameButtonKeyChanged = 'IS_SETTING_GAME_BUTTON_KEY_CHANGED',
 }
 
-export type IsConnectedChangedAction = { type: ActionTypes.IsConnectedChanged, isConnected: boolean };
-export type ComputerAccountsChangedAction = { type: ActionTypes.ComputerAccountsChanged, computerAccounts: string[] };
 export type NavigateToLoginAction = { type: ActionTypes.NavigateToLogin };
 export type ShowSettingsAction = { type: ActionTypes.ShowSettings, show: boolean };
 export type NavigateToHowToPlayAction = { type: ActionTypes.NavigateToHowToPlay };
 export type NavigateBackAction = { type: ActionTypes.NavigateBack };
-export type LoginChangedAction = { type: ActionTypes.LoginChanged, newLogin: string };
-export type AvatarLoadStartAction = { type: ActionTypes.AvatarLoadStart };
-export type AvatarLoadEndAction = { type: ActionTypes.AvatarLoadEnd };
-export type AvatarChangedAction = { type: ActionTypes.AvatarChanged, avatar: string };
-export type AvatarLoadErrorAction = { type: ActionTypes.AvatarLoadError, error: string | null };
-export type LoginStartAction = { type: ActionTypes.LoginStart };
-export type LoginEndAction = { type: ActionTypes.LoginEnd, error: string | null };
 export type NavigateToWelcomeAction = { type: ActionTypes.NavigateToWelcome };
 export type NavigateToNewGameAction = { type: ActionTypes.NavigateToNewGame };
 export type NavigateToGamesAction = { type: ActionTypes.NavigateToGames };
 export type NavigateToLobbyAction = { type: ActionTypes.NavigateToLobby };
-export type NavigateToErrorAction = { type: ActionTypes.NavigateToError, error: string };
+export type NavigateToErrorAction = { type: ActionTypes.NavigateToError };
 export type ClearGamesAction = { type: ActionTypes.ClearGames };
 export type ReceiveGamesAction = { type: ActionTypes.ReceiveGames, games: GameInfo[] };
 export type ReceiveUsersAction = { type: ActionTypes.ReceiveUsers, users: string[] };
@@ -142,7 +123,6 @@ export type UploadPackageStartedAction = { type: ActionTypes.UploadPackageStarte
 export type UploadPackageFinishedAction = { type: ActionTypes.UploadPackageFinished };
 export type UploadPackageProgressAction = { type: ActionTypes.UploadPackageProgress, progress: number };
 export type UnselectGameAction = { type: ActionTypes.UnselectGame };
-export type ServerInfoChangedAction = { type: ActionTypes.ServerInfoChanged, serverName: string, serverLicense: string, maxPackageSizeMb: number };
 export type SearchPackagesAction = { type: ActionTypes.SearchPackages };
 export type SearchPackagesFinishedAction = { type: ActionTypes.SearchPackagesFinished, packages: SIPackageInfo[] };
 export type SearchPackagesErrorAction = { type: ActionTypes.SearchPackagesError, error: string | null };
@@ -155,19 +135,10 @@ export type ReceivePublishersFinishedAction = { type: ActionTypes.ReceivePublish
 export type IsSettingGameButtonKeyChangedAction = { type: ActionTypes.IsSettingGameButtonKeyChanged, isSettingGameButtonKey: boolean };
 
 export type KnownAction =
-	IsConnectedChangedAction
-	| ComputerAccountsChangedAction
-	| NavigateToLoginAction
+	NavigateToLoginAction
 	| ShowSettingsAction
 	| NavigateToHowToPlayAction
 	| NavigateBackAction
-	| LoginChangedAction
-	| AvatarLoadStartAction
-	| AvatarLoadEndAction
-	| AvatarChangedAction
-	| AvatarLoadErrorAction
-	| LoginStartAction
-	| LoginEndAction
 	| NavigateToWelcomeAction
 	| NavigateToNewGameAction
 	| NavigateToGamesAction
@@ -214,7 +185,6 @@ export type KnownAction =
 	| UploadPackageFinishedAction
 	| UploadPackageProgressAction
 	| UnselectGameAction
-	| ServerInfoChangedAction
 	| SearchPackagesAction
 	| SearchPackagesFinishedAction
 	| SearchPackagesErrorAction

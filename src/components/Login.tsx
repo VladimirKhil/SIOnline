@@ -9,6 +9,7 @@ import ProgressBar from './common/ProgressBar';
 import AvatarView from './AvatarView';
 import SexView from './SexView';
 import LanguageView from './LanguageView';
+import userActionCreators from '../state/user/userActionCreators';
 
 import './Login.css';
 
@@ -33,7 +34,7 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 		dispatch(actionCreators.navigateToHowToPlay());
 	},
 	onLoginChanged: (newLogin: string) => {
-		dispatch(actionCreators.onLoginChanged(newLogin));
+		dispatch(userActionCreators.onLoginChanged(newLogin));
 	},
 	onLogin: () => {
 		dispatch(actionCreators.login() as unknown as Action); // TODO: разобраться с типизацией

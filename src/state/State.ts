@@ -14,16 +14,13 @@ import { SIPackageInfo } from '../model/SIPackageInfo';
 import { SearchEntity } from '../model/SearchEntity';
 import MessageLevel from '../model/enums/MessageLevel';
 import TableState, { initialState as tableInitialState } from './table/TableState';
+import UserState, { initialState as userInitialState } from './user/UserState';
+import LoginState, { initialState as loginInitialState } from './login/LoginState';
+import CommonState, { initialState as commonInitialState } from './common/CommonState';
 
 export default interface State {
-	user: {
-		login: string;
-		avatar: string | null;
-	};
-	login: {
-		inProgress: boolean;
-		errorMessage: string | null;
-	};
+	user: UserState;
+	login: LoginState;
 	ui: {
 		mainView: MainView;
 		previousMainView: MainView;
@@ -72,16 +69,7 @@ export default interface State {
 	};
 	room: RoomState;	
 	table: TableState;
-	common: {
-		computerAccounts: string[] | null;
-		isConnected: boolean;
-		serverName: string | null;
-		serverLicense: string | null;
-		maxPackageSizeMb: number;
-		error: string | null;
-		avatarLoadProgress: boolean;
-		avatarLoadError: string | null;
-	};
+	common: CommonState;
 	siPackages: {
 		packages: SIPackageInfo[];
 		authors: SearchEntity[];
@@ -94,14 +82,8 @@ export default interface State {
 }
 
 export const initialState: State = {
-	user: {
-		login: '',
-		avatar: null
-	},
-	login: {
-		inProgress: false,
-		errorMessage: null
-	},
+	user: userInitialState,
+	login: loginInitialState,
 	ui: {
 		mainView: MainView.Loading,
 		previousMainView: MainView.Loading,
@@ -164,15 +146,6 @@ export const initialState: State = {
 	},
 	room: roomInitialState,
 	table: tableInitialState,
-	common: {
-		computerAccounts: null,
-		isConnected: true,
-		serverName: null,
-		serverLicense: null,
-		maxPackageSizeMb: 100,
-		error: null,
-		avatarLoadProgress: false,
-		avatarLoadError: null
-	},
+	common: commonInitialState,
 	settings: settingsInitialState
 };

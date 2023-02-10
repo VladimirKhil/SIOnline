@@ -25,6 +25,7 @@ import settingsActionCreators from './state/settings/settingsActionCreators';
 import MainView from './model/enums/MainView';
 import NoSleep from 'nosleep.js';
 import getErrorMessage from './utils/ErrorHelpers';
+import commonActionCreators from './state/common/commonActionCreators';
 
 import './utils/polyfills';
 import './style.css';
@@ -98,12 +99,14 @@ function subscribeToExternalEvents(store: Store<State, any>) {
 	};
 
 	window.addEventListener('error', (e: ErrorEvent) => {
-		store.dispatch(actionCreators.navigateToError(`${e.type} ${e.message} ${e.filename} ${e.lineno}:${e.colno}`));
+		store.dispatch(commonActionCreators.commonErrorChanged(`${e.type} ${e.message} ${e.filename} ${e.lineno}:${e.colno}`));
+		store.dispatch(actionCreators.navigateToError());
 		return false;
 	});
 
 	window.addEventListener('unhandledrejection', (e: PromiseRejectionEvent) => {
-		store.dispatch(actionCreators.navigateToError(`${e.reason.message}: ${e.reason.stack}`));
+		store.dispatch(commonActionCreators.commonErrorChanged(`${e.reason.message}: ${e.reason.stack}`));
+		store.dispatch(actionCreators.navigateToError());
 		return false;
 	});
 }

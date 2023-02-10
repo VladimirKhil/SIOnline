@@ -1,6 +1,6 @@
-﻿import { Reducer } from 'redux';
+﻿import { AnyAction, Reducer } from 'redux';
 import State, { initialState } from './State';
-import { KnownAction, ActionTypes } from './Actions';
+import { ActionTypes } from './Actions';
 import MainView from '../model/enums/MainView';
 import { create, remove, set } from '../utils/RecordExtensions';
 import { removeFromArray } from '../utils/ArrayExtensions';
@@ -14,29 +14,17 @@ import Role from '../client/contracts/Role';
 import MessageLevel from '../model/enums/MessageLevel';
 import tableReducer from './table/tableReducer';
 import { KnownTableAction } from './table/TableActions';
+import userReducer from './user/userReducer';
+import { KnownUserAction } from './user/UserActions';
+import loginReducer from './login/loginReducer';
+import { KnownLoginAction } from './login/LoginActions';
+import commonReducer from './common/commonReducer';
+import { KnownCommonAction } from './common/CommonActions';
 
 const reducer: Reducer<State> = (
 	state: State = initialState,
-	action: KnownAction | KnownRoomAction | KnownSettingsAction | KnownTableAction): State => {
+	action: AnyAction): State => {
 	switch (action.type) {
-		case ActionTypes.IsConnectedChanged:
-			return {
-				...state,
-				common: {
-					...state.common,
-					isConnected: action.isConnected
-				}
-			};
-
-		case ActionTypes.ComputerAccountsChanged:
-			return {
-				...state,
-				common: {
-					...state.common,
-					computerAccounts: action.computerAccounts
-				}
-			};
-
 		case ActionTypes.NavigateToLogin:
 			return {
 				...state,
@@ -73,73 +61,6 @@ const reducer: Reducer<State> = (
 				ui: {
 					...state.ui,
 					mainView: state.ui.previousMainView
-				}
-			};
-
-		case ActionTypes.LoginChanged:
-			return {
-				...state,
-				user: {
-					...state.user,
-					login: action.newLogin
-				}
-			};
-
-		case ActionTypes.AvatarLoadStart:
-			return {
-				...state,
-				common: {
-					...state.common,
-					avatarLoadProgress: true
-				}
-			};
-
-		case ActionTypes.AvatarLoadEnd:
-			return {
-				...state,
-				common: {
-					...state.common,
-					avatarLoadError: null,
-					avatarLoadProgress: false
-				}
-			};
-
-		case ActionTypes.AvatarChanged:
-			return {
-				...state,
-				user: {
-					...state.user,
-					avatar: action.avatar
-				}
-			};
-
-		case ActionTypes.AvatarLoadError:
-			return {
-				...state,
-				common: {
-					...state.common,
-					avatarLoadError: action.error,
-					avatarLoadProgress: false
-				}
-			};
-
-		case ActionTypes.LoginStart:
-			return {
-				...state,
-				login: {
-					...state.login,
-					inProgress: true,
-					errorMessage: ''
-				}
-			};
-
-		case ActionTypes.LoginEnd:
-			return {
-				...state,
-				login: {
-					...state.login,
-					inProgress: false,
-					errorMessage: action.error
 				}
 			};
 
@@ -212,10 +133,6 @@ const reducer: Reducer<State> = (
 					mainView: MainView.Error,
 					previousMainView: state.ui.mainView
 				},
-				common: {
-					...state.common,
-					error: action.error
-				}
 			};
 
 		case ActionTypes.ClearGames:
@@ -650,17 +567,6 @@ const reducer: Reducer<State> = (
 				}
 			};
 
-		case ActionTypes.ServerInfoChanged:
-			return {
-				...state,
-				common: {
-					...state.common,
-					serverName: action.serverName,
-					serverLicense: action.serverLicense,
-					maxPackageSizeMb: action.maxPackageSizeMb,
-				}
-			};
-
 		case ActionTypes.SearchPackages:
 			return {
 				...state,
@@ -730,7 +636,10 @@ const reducer: Reducer<State> = (
 		default:
 			return {
 				...state,
+				user: userReducer(state.user, action as KnownUserAction),
+				login: loginReducer(state.login, action as KnownLoginAction),
 				room: roomReducer(state.room, action as KnownRoomAction),
+				common: commonReducer(state.common, action as KnownCommonAction),
 				settings: settingsReducer(state.settings, action as KnownSettingsAction),
 				table: tableReducer(state.table, action as KnownTableAction),
 			};

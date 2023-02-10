@@ -6,6 +6,7 @@ import actionCreators from '../state/actionCreators';
 import Message from '../model/Message';
 import messageProcessor from '../state/game/messageProcessor';
 import GameInfo from '../client/contracts/GameInfo';
+import commonActionCreators from '../state/common/commonActionCreators';
 
 export const activeConnections: string[] = [];
 
@@ -48,7 +49,7 @@ export function attachListeners(connection: signalR.HubConnection, dispatch: Dis
 			return;
 		}
 
-		dispatch(actionCreators.onConnectionClosed(`${localization.connectionClosed} ${e?.message || ''}`) as object as AnyAction);
+		dispatch(commonActionCreators.onConnectionClosed(`${localization.connectionClosed} ${e?.message || ''}`) as object as AnyAction);
 	});
 }
 
