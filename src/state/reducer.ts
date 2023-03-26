@@ -633,6 +633,15 @@ const reducer: Reducer<State> = (
 				}
 			};
 
+		case ActionTypes.EmojiPickerToggle:
+			return {
+				...state,
+				online: {
+					...state.online,
+					isEmojiPickerOpened: action.isOpened
+				}
+			};
+
 		default:
 			return {
 				...state,

@@ -49,6 +49,10 @@ export function ChatInput(props: ChatInputProps) {
 			value={props.message}
 			onChange={onMessageChanged}
 			onKeyPress={onMessageKeyPress} />
+
+		// See Chat.tsx for connecting emoji picker here
+		// Note: In game chat's redux related code has prefix 'Chat' (e.g. runChatMessageSend)
+		// Note: In game chat's state is living in RoomState.tsx
 	);
 }
 
