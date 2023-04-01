@@ -58,6 +58,7 @@ export default interface RoomState {
 	chat: {
 		isVisible: boolean;
 		isActive: boolean;
+		isEmojiPickerOpened: boolean;
 		mode: ChatMode;
 		message: string;
 		messages: ChatMessage[];
@@ -170,6 +171,7 @@ export const initialState: RoomState = {
 	chat: {
 		isVisible: false,
 		isActive: false,
+		isEmojiPickerOpened: false,
 		mode: ChatMode.Chat,
 		message: '',
 		messages: [],

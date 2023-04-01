@@ -1,8 +1,8 @@
-import { Reducer, AnyAction } from 'redux';
+import { AnyAction, Reducer } from 'redux';
 import RoomState, { initialState } from './RoomState';
 import { KnownRoomAction, RoomActionTypes } from './RoomActions';
 import { replace, swap } from '../../utils/ArrayExtensions';
-import { set, removeS } from '../../utils/RecordExtensions';
+import { removeS, set } from '../../utils/RecordExtensions';
 import PlayerStates from '../../model/enums/PlayerStates';
 import Constants from '../../model/enums/Constants';
 import { updateTimers } from '../../utils/TimerInfoHelpers';
@@ -859,6 +859,15 @@ const roomReducer: Reducer<RoomState> = (state: RoomState = initialState, anyAct
 				stage: {
 					...state.stage,
 					isEditEnabled: !state.stage.isEditEnabled,
+				}
+			};
+
+		case RoomActionTypes.RoomChatEmojiPickerToggle:
+			return {
+				...state,
+				chat: {
+					...state.chat,
+					isEmojiPickerOpened: action.isOpened
 				}
 			};
 
