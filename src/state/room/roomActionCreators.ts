@@ -774,11 +774,6 @@ const mediaLoaded: ActionCreator<ThunkAction<void, State, DataContext, Action>> 
 	await dataContext.game.mediaLoaded();
 };
 
-const runEmojiPickerToggle: ActionCreator<RunActions.RoomChatEmojiPickerToggleAction> = (isOpened: boolean) => ({
-	type: RunActions.RoomActionTypes.RoomChatEmojiPickerToggle,
-	isOpened: isOpened
-});
-
 const roomActionCreators = {
 	runChatModeChanged,
 	runChatMessageChanged,
@@ -893,7 +888,6 @@ const roomActionCreators = {
 	unban,
 	playerMediaLoaded,
 	mediaLoaded,
-	runEmojiPickerToggle,
 };
 
 export default roomActionCreators;

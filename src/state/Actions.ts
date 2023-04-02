@@ -70,7 +70,6 @@ export const enum ActionTypes {
 	ReceivePublishers = 'RECEIVE_PUBLISHERS',
 	ReceivePublishersFinished = 'RECEIVE_PUBLISHERS_FINISHED',
 	IsSettingGameButtonKeyChanged = 'IS_SETTING_GAME_BUTTON_KEY_CHANGED',
-	EmojiPickerToggle = 'EMOJI_PICKER_TOGGLE',
 }
 
 export type NavigateToLoginAction = { type: ActionTypes.NavigateToLogin };
@@ -134,7 +133,6 @@ export type ReceiveTagsFinishedAction = { type: ActionTypes.ReceiveTagsFinished,
 export type ReceivePublishersAction = { type: ActionTypes.ReceivePublishers };
 export type ReceivePublishersFinishedAction = { type: ActionTypes.ReceivePublishersFinished, publishers: SearchEntity[] };
 export type IsSettingGameButtonKeyChangedAction = { type: ActionTypes.IsSettingGameButtonKeyChanged, isSettingGameButtonKey: boolean };
-export type EmojiPickerToggleAction = { type: ActionTypes.EmojiPickerToggle, isOpened: boolean };
 
 export type KnownAction =
 	NavigateToLoginAction
@@ -197,5 +195,4 @@ export type KnownAction =
 	| ReceivePublishersAction
 	| ReceivePublishersFinishedAction
 	| GamePackageLibraryChangedAction
-	| IsSettingGameButtonKeyChangedAction
-	| EmojiPickerToggleAction;
+	| IsSettingGameButtonKeyChangedAction;

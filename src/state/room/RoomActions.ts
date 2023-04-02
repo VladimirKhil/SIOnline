@@ -87,7 +87,6 @@ export const enum RoomActionTypes {
 	SelectBannedItem = 'SELECT_BANNED_ITEM',
 	PlayerMediaLoaded = 'PLAYER_MEDIA_LOADED',
 	EditTable = 'EDIT_TABLE',
-	RoomChatEmojiPickerToggle = 'ROOM_CHAT_EMOJI_PICKER_TOGGLE',
 }
 
 export type RunChatModeChangedAction = { type: RoomActionTypes.RoomChatModeChanged, chatMode: ChatMode };
@@ -136,7 +135,6 @@ export type ClearDecisionsAction = { type: RoomActionTypes.ClearDecisions };
 export type IsGameButtonEnabledChangedAction = { type: RoomActionTypes.IsGameButtonEnabledChanged, isGameButtonEnabled: boolean };
 export type IsAnsweringAction = { type: RoomActionTypes.IsAnswering };
 export type AnswerChangedAction = { type: RoomActionTypes.AnswerChanged, answer: string };
-export type RoomChatEmojiPickerToggleAction = { type: RoomActionTypes.RoomChatEmojiPickerToggle, isOpened: boolean };
 
 export type ValidateAction = {
 	type: RoomActionTypes.Validate,
@@ -268,5 +266,4 @@ export type KnownRoomAction =
 	| UnbannedAction
 	| SelectBannedItemAction
 	| PlayerMediaLoadedAction
-	| EditTableAction
-	| RoomChatEmojiPickerToggleAction;
+	| EditTableAction;

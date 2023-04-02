@@ -49,7 +49,6 @@ export default interface State {
 		joingGameError: string | null;
 		uploadPackageProgress: boolean;
 		uploadPackagePercentage: number;
-		isEmojiPickerOpened: boolean;
 	};
 	game: {
 		name: string;
@@ -119,7 +118,6 @@ export const initialState: State = {
 		joingGameError: null,
 		uploadPackageProgress: false,
 		uploadPackagePercentage: 0,
-		isEmojiPickerOpened: false,
 	},
 	game: {
 		name: '',

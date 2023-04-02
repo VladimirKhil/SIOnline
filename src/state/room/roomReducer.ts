@@ -862,15 +862,6 @@ const roomReducer: Reducer<RoomState> = (state: RoomState = initialState, anyAct
 				}
 			};
 
-		case RoomActionTypes.RoomChatEmojiPickerToggle:
-			return {
-				...state,
-				chat: {
-					...state.chat,
-					isEmojiPickerOpened: action.isOpened
-				}
-			};
-
 		default:
 			return state;
 	}

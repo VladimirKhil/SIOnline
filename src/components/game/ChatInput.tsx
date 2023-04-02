@@ -4,9 +4,10 @@ import roomActionCreators from '../../state/room/roomActionCreators';
 import State from '../../state/State';
 import { Dispatch, Action } from 'redux';
 import Constants from '../../model/enums/Constants';
+import { EmojiClickData } from 'emoji-picker-react';
+import ChatInputEmojiPicker from '../common/ChatInputEmojiPicker';
 
 import './ChatInput.css';
-import EmojiPicker, { EmojiClickData, EmojiStyle, SkinTones } from 'emoji-picker-react';
 
 interface ChatInputProps {
 	isConnected: boolean;
@@ -15,19 +16,9 @@ interface ChatInputProps {
 	onChatMessageSend: () => void;
 }
 
-interface ChatInputEmojiPickerProps {
-	isEmojiPickerOpened: boolean;
-	onChatEmojiPickerToggle: (isOpened: boolean) => void;
-}
-
-interface RoomChatProps extends ChatInputProps, ChatInputEmojiPickerProps {
-
-}
-
 const mapStateToProps = (state: State) => ({
 	isConnected: state.common.isConnected,
 	message: state.room.chat.message,
-	isEmojiPickerOpened: state.room.chat.isEmojiPickerOpened
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
@@ -36,13 +27,10 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	},
 	onChatMessageChanged: (message: string) => {
 		dispatch(roomActionCreators.runChatMessageChanged(message));
-	},
-	onChatEmojiPickerToggle: (isOpened: boolean) => {
-		dispatch(roomActionCreators.runEmojiPickerToggle(isOpened));
-	},
+	}
 });
 
-export function ChatInput(props: RoomChatProps) {
+export function ChatInput(props: ChatInputProps) {
 	const onMessageChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
 		props.onChatMessageChanged(e.target.value);
 	};
@@ -56,44 +44,19 @@ export function ChatInput(props: RoomChatProps) {
 			e.preventDefault();
 		}
 	};
-
-	const onEmojiPickerButtonClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-		props.onChatEmojiPickerToggle(!props.isEmojiPickerOpened)
-	};
-
 	const onEmojiClick = (emojiData: EmojiClickData, e: MouseEvent) => {
 		props.onChatMessageChanged(props.message + emojiData.emoji);
 	};
 
 	return (
 		<div className={'roomChatBodyHost'}>
+			<ChatInputEmojiPicker onEmojiClick={onEmojiClick} />
 			<input
 				className={`gameInputBox gameMessage ${props.isConnected ? '' : 'disconnected'}`}
 				value={props.message}
 				onChange={onMessageChanged}
-				onKeyPress={onMessageKeyPress} />
-
-			<button
-				type={'button'}
-				className={'standard chatEmojiPickerButton'}
-				onClick={onEmojiPickerButtonClick}
-				title={'Pick an emoji'}
-			>🙂
-			</button>
-			{(() => {
-				if (props.isEmojiPickerOpened) {
-					return <EmojiPicker
-						skinTonesDisabled={true}
-						defaultSkinTone={SkinTones.NEUTRAL}
-						emojiStyle={EmojiStyle.NATIVE}
-						previewConfig={{ showPreview: false }}
-						onEmojiClick={onEmojiClick}
-						width={'100%'}
-					/>;
-				} else {
-					return null;
-				}
-			})()}
+				onKeyPress={onMessageKeyPress}
+			/>
 		</div>
 	);
 }

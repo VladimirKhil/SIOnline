@@ -1135,11 +1135,6 @@ const isSettingGameButtonKeyChanged: ActionCreator<Actions.IsSettingGameButtonKe
 	type: Actions.ActionTypes.IsSettingGameButtonKeyChanged, isSettingGameButtonKey
 });
 
-const onEmojiPickerToggle: ActionCreator<Actions.EmojiPickerToggleAction> = (isOpened: boolean) => ({
-	type: Actions.ActionTypes.EmojiPickerToggle,
-	isOpened: isOpened
-});
-
 const actionCreators = {
 	reloadComputerAccounts,
 	saveStateToStorage,
@@ -1196,7 +1191,6 @@ const actionCreators = {
 	receivePublishersThunk,
 	gamePackageLibraryChanged,
 	isSettingGameButtonKeyChanged,
-	onEmojiPickerToggle,
 };
 
 export default actionCreators;
