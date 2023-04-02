@@ -3,3 +3,31 @@
     width: 100%;
     bottom: 0;
 }
+
+.chatEmojiPickerButton {
+    height: 45px;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 10%;
+}
+
+aside.EmojiPickerReact.epr-main {
+    border-radius: inherit !important;
+    position: absolute;
+    bottom: 45px;
+}
+
+.EmojiPickerReact * {
+    font-family: SI !important;
+    font-size: 18px;
+}
+
+.EmojiPickerReact {
+    --epr-emoji-size: 20px !important;
+    --epr-search-input-border-radius: inherit !important;
+    --epr-category-label-bg-color: #d9e3f9e6;
+    --epr-category-navigation-button-size: 24px;
+    --epr-search-input-bg-color: #C0CFF4;
+    background: #d9e3f9;
+}
