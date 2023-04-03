@@ -7,7 +7,18 @@ import './ChatLog.css';
 interface ChatLogProps {
 	messages: ChatMessage[];
 	className: string;
+	user: string;
 }
+
+const hasUserMentioned = (message: string, user: string): boolean => {
+	//TODO: prevent self mention?
+	const regex = new RegExp(`@${user}\\W`);
+	return regex.test(message);
+};
+
+const userMessageSpanClass = (message: ChatMessage, user: string): string => hasUserMentioned(message.text, user)
+	? `${MessageLevel[message.level].toLowerCase()} mentioned`
+	: `${MessageLevel[message.level].toLowerCase()}`;
 
 export default class ChatLog extends React.Component<ChatLogProps> {
 	private myRef: React.RefObject<HTMLDivElement>;
@@ -28,7 +39,10 @@ export default class ChatLog extends React.Component<ChatLogProps> {
 		return (
 			<div ref={this.myRef} className={`chatLog ${this.props.className}`}>
 				{this.props.messages.map((message, index) => message.sender
-					? <span key={index} className={MessageLevel[message.level].toLowerCase()}><b>{message.sender}</b>{`: ${message.text}`}</span>
+					? <span
+							key={index} className={userMessageSpanClass(message, this.props.user)}
+						><b>{message.sender}</b>{`: ${message.text}`}
+						</span>
 					: <span key={index} className={MessageLevel[message.level].toLowerCase()}>{message.text}</span>)}
 			</div>
 		);

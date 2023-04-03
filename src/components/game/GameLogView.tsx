@@ -8,10 +8,12 @@ import './GameLogView.css';
 
 interface GameLogViewProps {
 	messages: ChatMessage[];
+	user: string;
 }
 
 const mapStateToProps = (state: State) => ({
-	messages: state.room.chat.messages
+	messages: state.room.chat.messages,
+	user: state.user.login,
 });
 
 const mapDispatchToProps = () => ({
@@ -21,7 +23,7 @@ const mapDispatchToProps = () => ({
 export function GameLogView(props: GameLogViewProps) {
 	return (
 		<div className="game__log">
-			<ChatLog className="gameLog" messages={props.messages} />
+			<ChatLog className="gameLog" messages={props.messages} user={props.user}/>
 		</div>
 	);
 }

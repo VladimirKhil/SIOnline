@@ -19,6 +19,7 @@ interface ChatOwnProps {
 interface ChatStateProps {
 	currentMessage: string;
 	messages: ChatMessage[];
+	currentUser: string;
 }
 
 interface ChatProps extends ChatStateProps, ChatOwnProps {
@@ -29,6 +30,7 @@ const mapStateToProps = (state: State) => ({
 	isConnected: state.common.isConnected,
 	currentMessage: state.online.currentMessage,
 	messages: state.online.messages,
+	currentUser: state.user.login,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
@@ -60,7 +62,7 @@ export function Chat(props: ChatProps): JSX.Element {
 
 	return (
 		<div className="chatBodyHost">
-			<ChatLog className="chat" messages={props.messages} />
+			<ChatLog className="chat" messages={props.messages} user={props.currentUser} />
 			<ChatInputEmojiPicker onEmojiClick={onEmojiClick} />
 			<input
 				type='text'
