@@ -42,9 +42,11 @@ export default class ChatLog extends React.Component<ChatLogProps> {
 						<b
 							className={'nickname'}
 							onClick={() => this.props.onNicknameClick(message.sender)}>
-							{message.sender}
+							{`${message.sender}: `}
 						</b>
-						{`: ${message.text}`}
+						{message.text.split(' ').map(
+							(word) => word === `@${this.props.user}` ? <strong className={'mentionedNickname'}>{`${word} `}</strong> : `${word} `
+						)}
 						</span>
 					: <span key={index} className={MessageLevel[message.level].toLowerCase()}>{message.text}</span>)}
 			</div>
