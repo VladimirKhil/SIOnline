@@ -1,4 +1,5 @@
 ﻿import * as React from 'react';
+import { createRef } from 'react';
 import { connect } from 'react-redux';
 import { Action, Dispatch } from 'redux';
 import { EmojiClickData } from 'emoji-picker-react';
@@ -8,6 +9,8 @@ import actionCreators from '../state/actionCreators';
 import ChatMessage from '../model/ChatMessage';
 import ChatLog from './common/ChatLog';
 import ChatInputEmojiPicker from './common/ChatInputEmojiPicker';
+import hasUserMentioned from '../utils/MentionHelpers';
+
 import './Chat.css';
 
 interface ChatOwnProps {
@@ -42,37 +45,68 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	}
 });
 
-export function Chat(props: ChatProps): JSX.Element {
-	const onMessageChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
-		props.onMessageChanged(e.target.value);
+export class Chat extends React.Component<ChatProps> {
+	private inputRef;
+
+	constructor(props: ChatProps) {
+		super(props);
+
+		this.inputRef = createRef<HTMLInputElement>();
+	}
+
+	componentDidUpdate() {
+		if (this.inputRef.current) {
+			this.inputRef.current.focus();
+		}
+	}
+
+	onMessageChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
+		this.props.onMessageChanged(e.target.value);
 	};
 
-	const onMessageKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+	onMessageKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
 		if (e.key === Constants.KEY_ENTER_NEW) {
-			if (props.isConnected) {
-				props.onSendMessage();
+			if (this.props.isConnected) {
+				this.props.onSendMessage();
 			}
 
 			e.preventDefault();
 		}
 	};
-	const onEmojiClick = (emojiData: EmojiClickData, e: MouseEvent) => {
-		props.onMessageChanged(props.currentMessage + emojiData.emoji);
+	onEmojiClick = (emojiData: EmojiClickData, e: MouseEvent) => {
+		this.props.onMessageChanged(this.props.currentMessage + emojiData.emoji);
 	};
 
-	return (
-		<div className="chatBodyHost">
-			<ChatLog className="chat" messages={props.messages} user={props.currentUser} />
-			<ChatInputEmojiPicker onEmojiClick={onEmojiClick} />
-			<input
-				type='text'
-				className={`message ${props.isConnected ? '' : 'disconnected'}`}
-				value={props.currentMessage}
-				onChange={onMessageChanged}
-				onKeyPress={onMessageKeyPress}
-			/>
-		</div>
-	);
+	appendMentionedUser = (nickname: string) => {
+		if (hasUserMentioned(this.props.currentMessage, nickname)) {
+			return;
+		}
+		this.props.onMessageChanged(`${this.props.currentMessage} @${nickname} `);
+	};
+
+	render(): JSX.Element {
+		return (
+			<div className="chatBodyHost">
+				<ChatLog
+					className="chat"
+					messages={this.props.messages}
+					user={this.props.currentUser}
+					message={this.props.currentMessage}
+					onNicknameClick={this.appendMentionedUser}
+				/>
+				<ChatInputEmojiPicker onEmojiClick={this.onEmojiClick} />
+
+				<input
+					ref={this.inputRef}
+					type='text'
+					className={`message ${this.props.isConnected ? '' : 'disconnected'}`}
+					value={this.props.currentMessage}
+					onChange={this.onMessageChanged}
+					onKeyPress={this.onMessageKeyPress}
+				/>
+			</div>
+		);
+	}
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Chat);

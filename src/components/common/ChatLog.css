@@ -22,5 +22,8 @@
 .mentioned {
     background: rgba(255,255,255,0.15);
     color: yellow;
-    font-style: italic;
+}
+
+.nickname {
+    cursor: pointer;
 }

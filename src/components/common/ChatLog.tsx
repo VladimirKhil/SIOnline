@@ -1,6 +1,7 @@
 import * as React from 'react';
 import ChatMessage from '../../model/ChatMessage';
 import MessageLevel from '../../model/enums/MessageLevel';
+import hasUserMentioned from '../../utils/MentionHelpers';
 
 import './ChatLog.css';
 
@@ -8,20 +9,16 @@ interface ChatLogProps {
 	messages: ChatMessage[];
 	className: string;
 	user: string;
+	message: string;
+	onNicknameClick: (nickname: string) => void;
 }
-
-const hasUserMentioned = (message: string, user: string): boolean => {
-	//TODO: prevent self mention?
-	const regex = new RegExp(`@${user}\\W`);
-	return regex.test(message);
-};
 
 const userMessageSpanClass = (message: ChatMessage, user: string): string => hasUserMentioned(message.text, user)
 	? `${MessageLevel[message.level].toLowerCase()} mentioned`
 	: `${MessageLevel[message.level].toLowerCase()}`;
 
 export default class ChatLog extends React.Component<ChatLogProps> {
-	private myRef: React.RefObject<HTMLDivElement>;
+	private readonly myRef: React.RefObject<HTMLDivElement>;
 
 	constructor(props: ChatLogProps) {
 		super(props);
@@ -41,7 +38,13 @@ export default class ChatLog extends React.Component<ChatLogProps> {
 				{this.props.messages.map((message, index) => message.sender
 					? <span
 							key={index} className={userMessageSpanClass(message, this.props.user)}
-						><b>{message.sender}</b>{`: ${message.text}`}
+						>
+						<b
+							className={'nickname'}
+							onClick={() => this.props.onNicknameClick(message.sender)}>
+							{message.sender}
+						</b>
+						{`: ${message.text}`}
 						</span>
 					: <span key={index} className={MessageLevel[message.level].toLowerCase()}>{message.text}</span>)}
 			</div>
