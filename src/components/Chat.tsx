@@ -46,7 +46,7 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 });
 
 export class Chat extends React.Component<ChatProps> {
-	private inputRef;
+	private readonly inputRef;
 
 	constructor(props: ChatProps) {
 		super(props);
