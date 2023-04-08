@@ -1,12 +1,13 @@
 ﻿import * as React from 'react';
 import { connect } from 'react-redux';
-import { Dispatch, Action } from 'redux';
+import { Action, Dispatch } from 'redux';
+import { EmojiClickData } from 'emoji-picker-react';
 import State from '../state/State';
 import Constants from '../model/enums/Constants';
 import actionCreators from '../state/actionCreators';
 import ChatMessage from '../model/ChatMessage';
 import ChatLog from './common/ChatLog';
-
+import ChatInputEmojiPicker from './common/ChatInputEmojiPicker';
 import './Chat.css';
 
 interface ChatOwnProps {
@@ -27,7 +28,7 @@ interface ChatProps extends ChatStateProps, ChatOwnProps {
 const mapStateToProps = (state: State) => ({
 	isConnected: state.common.isConnected,
 	currentMessage: state.online.currentMessage,
-	messages: state.online.messages
+	messages: state.online.messages,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
@@ -53,11 +54,14 @@ export function Chat(props: ChatProps): JSX.Element {
 			e.preventDefault();
 		}
 	};
+	const onEmojiClick = (emojiData: EmojiClickData, e: MouseEvent) => {
+		props.onMessageChanged(props.currentMessage + emojiData.emoji);
+	};
 
 	return (
 		<div className="chatBodyHost">
 			<ChatLog className="chat" messages={props.messages} />
-
+			<ChatInputEmojiPicker onEmojiClick={onEmojiClick} />
 			<input
 				type='text'
 				className={`message ${props.isConnected ? '' : 'disconnected'}`}

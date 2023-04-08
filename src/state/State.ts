@@ -117,7 +117,7 @@ export const initialState: State = {
 		joinGameProgress: false,
 		joingGameError: null,
 		uploadPackageProgress: false,
-		uploadPackagePercentage: 0
+		uploadPackagePercentage: 0,
 	},
 	game: {
 		name: '',

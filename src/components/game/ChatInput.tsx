@@ -4,6 +4,8 @@ import roomActionCreators from '../../state/room/roomActionCreators';
 import State from '../../state/State';
 import { Dispatch, Action } from 'redux';
 import Constants from '../../model/enums/Constants';
+import { EmojiClickData } from 'emoji-picker-react';
+import ChatInputEmojiPicker from '../common/ChatInputEmojiPicker';
 
 import './ChatInput.css';
 
@@ -25,7 +27,7 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	},
 	onChatMessageChanged: (message: string) => {
 		dispatch(roomActionCreators.runChatMessageChanged(message));
-	},
+	}
 });
 
 export function ChatInput(props: ChatInputProps) {
@@ -42,13 +44,20 @@ export function ChatInput(props: ChatInputProps) {
 			e.preventDefault();
 		}
 	};
+	const onEmojiClick = (emojiData: EmojiClickData, e: MouseEvent) => {
+		props.onChatMessageChanged(props.message + emojiData.emoji);
+	};
 
 	return (
-		<input
-			className={`gameInputBox gameMessage ${props.isConnected ? '' : 'disconnected'}`}
-			value={props.message}
-			onChange={onMessageChanged}
-			onKeyPress={onMessageKeyPress} />
+		<div className={'roomChatBodyHost'}>
+			<ChatInputEmojiPicker onEmojiClick={onEmojiClick} />
+			<input
+				className={`gameInputBox gameMessage ${props.isConnected ? '' : 'disconnected'}`}
+				value={props.message}
+				onChange={onMessageChanged}
+				onKeyPress={onMessageKeyPress}
+			/>
+		</div>
 	);
 }
 

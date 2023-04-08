@@ -1,3 +1,8 @@
 input.disconnected {
 	color: gray;
 }
+
+.roomChatBodyHost {
+	position: relative;
+	display: inline-block;
+}
