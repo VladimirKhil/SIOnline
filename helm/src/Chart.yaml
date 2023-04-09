@@ -2,5 +2,5 @@ apiVersion: v2
 name: sionline
 description: SIGame client web application
 type: application
-version: 1.0.3
-appVersion: 1.0.3
+version: 1.1.0
+appVersion: 1.1.0

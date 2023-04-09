@@ -12,7 +12,9 @@ data:
       apiUri: '{{ .Values.config.apiUri }}',
       forceHttps: {{ .Values.config.forceHttps }},
       useMessagePackProtocol: {{ .Values.config.useMessagePackProtocol }},
-      registerServiceWorker: {{ .Values.config.registerServiceWorker }}
+      registerServiceWorker: {{ .Values.config.registerServiceWorker }},
+      enableNoSleep: {{ .Values.config.enableNoSleep }},
+      askForConsent: {{ .Values.config.askForConsent }},
     };
 
 {{ if .Values.firebase }}

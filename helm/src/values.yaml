@@ -38,3 +38,5 @@ config:
   forceHttps: true
   useMessagePackProtocol: false
   registerServiceWorker: false
+  enableNoSleep: false
+  askForConsent: false

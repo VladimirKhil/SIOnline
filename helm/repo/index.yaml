@@ -2,8 +2,18 @@ apiVersion: v1
 entries:
   sionline:
   - apiVersion: v2
+    appVersion: 1.1.0
+    created: "2023-04-10T00:39:34.2285834+02:00"
+    description: SIGame client web application
+    digest: 4323b8538663374819f0394b9db0c1b8f60b2dab86221bfc3d844240a04418e7
+    name: sionline
+    type: application
+    urls:
+    - sionline-1.1.0.tgz
+    version: 1.1.0
+  - apiVersion: v2
     appVersion: 1.0.3
-    created: "2023-01-27T16:46:47.7516463+01:00"
+    created: "2023-04-10T00:39:34.2235773+02:00"
     description: SIGame client web application
     digest: 207bda237e4cb2c3712a67f1a4800c5779e5ef134ded1fb3c5b9dd54924a57cf
     name: sionline
@@ -13,7 +23,7 @@ entries:
     version: 1.0.3
   - apiVersion: v2
     appVersion: 1.0.2
-    created: "2023-01-27T16:46:47.7506458+01:00"
+    created: "2023-04-10T00:39:34.216579+02:00"
     description: SIGame client web application
     digest: c8bb7b0fa01c75c19bfa27d0d6c5857470d07412f22877864d144f67de7cd19f
     name: sionline
@@ -23,7 +33,7 @@ entries:
     version: 1.0.2
   - apiVersion: v2
     appVersion: 1.0.1
-    created: "2023-01-27T16:46:47.7496468+01:00"
+    created: "2023-04-10T00:39:34.2055798+02:00"
     description: SIGame client web application
     digest: f2c06b7e890afb9ec401c37bff09b5efcfa23f206791c1975e761cda04cf246c
     name: sionline
@@ -33,7 +43,7 @@ entries:
     version: 1.0.1
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2023-01-27T16:46:47.7486477+01:00"
+    created: "2023-04-10T00:39:34.1975802+02:00"
     description: SIGame client web application
     digest: 28537f2a0baf3b4db2918cab7a8e8c09eed0c7e5a83ae1fc729d11ff0d8f6485
     name: sionline
@@ -41,4 +51,4 @@ entries:
     urls:
     - sionline-1.0.0.tgz
     version: 1.0.0
-generated: "2023-01-27T16:46:47.7436512+01:00"
+generated: "2023-04-10T00:39:34.1845788+02:00"
