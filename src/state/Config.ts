@@ -7,4 +7,6 @@ export default interface Config {
 	ads?: string;
 	rewriteUrl?: boolean;
 	registerServiceWorker?: boolean;
+	enableNoSleep?: boolean;
+	askForConsent?: boolean;
 }

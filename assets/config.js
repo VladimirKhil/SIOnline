@@ -7,6 +7,8 @@ config = {
     forceHttps: false,
     useMessagePackProtocol: false,
     registerServiceWorker: false,
+    enableNoSleep: false,
+    askForConsent: false,
 };
 
 firebaseConfig = null;

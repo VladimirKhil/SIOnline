@@ -23,9 +23,9 @@ import { ErrorView } from './components/ErrorView';
 import Constants from './model/enums/Constants';
 import settingsActionCreators from './state/settings/settingsActionCreators';
 import MainView from './model/enums/MainView';
-import NoSleep from 'nosleep.js';
 import getErrorMessage from './utils/ErrorHelpers';
 import commonActionCreators from './state/common/commonActionCreators';
+import enableNoSleep from './utils/NoSleepHelper';
 
 import './utils/polyfills';
 import './style.css';
@@ -185,6 +185,8 @@ async function run() {
 	const savedState = loadState();
 	const state = setState(initialState, savedState, gameId);
 
+	state.common.askForConsent = !!config.askForConsent;
+
 	const gameClient = new DummyGameServerClient();
 
 	const dataContext: DataContext = {
@@ -207,6 +209,7 @@ async function run() {
 	store.subscribe(() => {
 		const newState = store.getState();
 		const newSettings = newState.settings;
+
 		if (newSettings !== currentSettings) {
 			if (newSettings.appSettings.culture !== currentSettings.appSettings.culture) {
 				localization.setLanguage(newSettings.appSettings.culture || localization.getInterfaceLanguage());
@@ -243,27 +246,13 @@ async function run() {
 	);
 
 	store.dispatch(actionCreators.navigateToLogin());
+
+	if (config.enableNoSleep) {
+		enableNoSleep();
+	}
 }
 
 run();
-
-// I have not found a way to make it work normally
-// 'new NoSleep()' throws an error 'default is not a constructor'
-
-let noSleep: NoSleep;
-
-try {
-	noSleep = new NoSleep();
-} catch {
-	// it is not working
-}
-
-noSleep = eval('new nosleep_js_1()');
-
-document.addEventListener('click', function enableNoSleep() {
-	document.removeEventListener('click', enableNoSleep, false);
-	noSleep.enable();
-}, false);
 
 if ('serviceWorker' in navigator && config && config.registerServiceWorker) {
 	window.addEventListener('load', registerServiceWorker2);

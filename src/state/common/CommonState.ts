@@ -5,6 +5,7 @@ export default interface CommonState {
 	serverLicense: string | null;
 	maxPackageSizeMb: number;
 	error: string | null;
+	askForConsent: boolean;
 	avatarLoadProgress: boolean;
 	avatarLoadError: string | null;
 }
@@ -16,6 +17,7 @@ export const initialState: CommonState = {
 	serverLicense: null,
 	maxPackageSizeMb: 100,
 	error: null,
+	askForConsent: true,
 	avatarLoadProgress: false,
 	avatarLoadError: null,
 };

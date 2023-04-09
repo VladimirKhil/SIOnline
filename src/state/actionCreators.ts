@@ -115,7 +115,7 @@ const onAvatarDeleted: ActionCreator<ThunkAction<void, State, DataContext, Actio
 
 async function hashData(data: ArrayBuffer): Promise<ArrayBuffer> {
 	if (location.protocol === 'https:') {
-		await crypto.subtle.digest('SHA-1', data); // It works only under HTTPS protocol
+		return crypto.subtle.digest('SHA-1', data); // It works only under HTTPS protocol
 	}
 
 	return Rusha.createHash().update(data).digest();
@@ -797,6 +797,7 @@ async function checkAndUploadPackageAsync(
 	};
 
 	const hasPackage = await gameClient.hasPackageAsync(packageKey);
+	
 	if (!hasPackage) {
 		await uploadPackageAsync(hashArrayEncoded, packageData, serverUri, dispatch);
 	}

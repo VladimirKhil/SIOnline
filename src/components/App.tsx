@@ -23,6 +23,7 @@ interface AppProps {
 	mainView: MainView;
 	areSettingsVisible: boolean;
 	commonError: string | null;
+	askForConsent: boolean;
 
 	closeNewGame: () => void;
 }
@@ -34,7 +35,8 @@ interface AppState {
 const mapStateToProps = (state: State) => ({
 	mainView: state.ui.mainView,
 	areSettingsVisible: state.ui.areSettingsVisible,
-	commonError: state.common.error
+	commonError: state.common.error,
+	askForConsent: state.common.askForConsent,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
@@ -105,7 +107,7 @@ export class App extends React.Component<AppProps, AppState> {
 			<div className="app">
 				{this.getContent()}
 				{this.props.areSettingsVisible ? <SettingsDialog /> : null}
-				<CookiesWarning />
+				{this.props.askForConsent ? <CookiesWarning /> : null}
 			</div>
 		);
 	}
