@@ -4,17 +4,29 @@
     scrollbar-width: thin;
 }
 
-    .chatLog span {
-        display: block;
-        overflow: hidden;
-        margin-top: 4px;
-        margin-bottom: 4px;
-    }
+.chatLog span {
+    display: block;
+    overflow: hidden;
+    margin-top: 4px;
+    margin-bottom: 4px;
+}
 
-    .chatLog span.system {
-        font-weight: bold;
-    }
+.chatLog span.system {
+    font-weight: bold;
+}
 
-    .chatLog span.warning {
-        color: darkred;
-    }
+.chatLog span.warning {
+    color: darkred;
+}
+
+.mentioned {
+    background: rgba(255,255,255,0.15);
+}
+
+.nickname {
+    cursor: pointer;
+}
+
+.mentionedNickname {
+    color: yellow;
+}

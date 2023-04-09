@@ -1,5 +1,6 @@
 import { connect } from 'react-redux';
 import * as React from 'react';
+import { createRef } from 'react';
 import roomActionCreators from '../../state/room/roomActionCreators';
 import State from '../../state/State';
 import { Dispatch, Action } from 'redux';
@@ -30,35 +31,51 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	}
 });
 
-export function ChatInput(props: ChatInputProps) {
-	const onMessageChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
-		props.onChatMessageChanged(e.target.value);
+export class ChatInput extends React.Component<ChatInputProps> {
+	private readonly inputRef;
+
+	constructor(props: ChatInputProps) {
+		super(props);
+
+		this.inputRef = createRef<HTMLInputElement>();
+	}
+
+	componentDidUpdate() {
+		if (this.inputRef.current) {
+			this.inputRef.current.focus();
+		}
+	}
+
+	onMessageChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
+		this.props.onChatMessageChanged(e.target.value);
 	};
 
-	const onMessageKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+	onMessageKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
 		if (e.key === Constants.KEY_ENTER_NEW) {
-			if (props.isConnected) {
-				props.onChatMessageSend();
+			if (this.props.isConnected) {
+				this.props.onChatMessageSend();
 			}
 
 			e.preventDefault();
 		}
 	};
-	const onEmojiClick = (emojiData: EmojiClickData, e: MouseEvent) => {
-		props.onChatMessageChanged(props.message + emojiData.emoji);
+	onEmojiClick = (emojiData: EmojiClickData, e: MouseEvent) => {
+		this.props.onChatMessageChanged(this.props.message + emojiData.emoji);
 	};
 
-	return (
-		<div className={'roomChatBodyHost'}>
-			<ChatInputEmojiPicker onEmojiClick={onEmojiClick} />
-			<input
-				className={`gameInputBox gameMessage ${props.isConnected ? '' : 'disconnected'}`}
-				value={props.message}
-				onChange={onMessageChanged}
-				onKeyPress={onMessageKeyPress}
-			/>
-		</div>
-	);
+	render(): JSX.Element {
+		return (
+			<div className={'roomChatBodyHost'}>
+				<ChatInputEmojiPicker onEmojiClick={this.onEmojiClick} />
+				<input
+					ref={this.inputRef}
+					className={`gameInputBox gameMessage ${this.props.isConnected ? '' : 'disconnected'}`}
+					value={this.props.message}
+					onChange={this.onMessageChanged}
+					onKeyPress={this.onMessageKeyPress} />
+			</div>
+		);
+	}
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(ChatInput);
