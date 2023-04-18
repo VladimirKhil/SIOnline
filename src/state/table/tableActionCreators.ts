@@ -105,6 +105,10 @@ const captionChanged: ActionCreator<TableActions.CaptionChangedAction> = (captio
 	type: TableActions.TableActionTypes.CaptionChanged, caption
 });
 
+const tableReset: ActionCreator<TableActions.TableResetAction> = () => ({
+	type: TableActions.TableActionTypes.TableReset
+});
+
 const tableActionCreators = {
 	showLogo,
 	showGameThemes,
@@ -129,6 +133,7 @@ const tableActionCreators = {
 	isSelectableChanged,
 	resumeMedia,
 	captionChanged,
+	tableReset,
 };
 
 export default tableActionCreators;

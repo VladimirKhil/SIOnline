@@ -41,6 +41,7 @@ export function ShowmanReplicView(props: ShowmanReplicViewProps): JSX.Element {
 	const isMe = props.account?.name === props.login;
 
 	const avatar = isMe && props.avatar ? props.avatar : props.account?.avatar;
+
 	const avatarStyle : React.CSSProperties = avatar
 		? { backgroundImage: `url("${avatar}")` }
 		: {};
@@ -55,6 +56,7 @@ export function ShowmanReplicView(props: ShowmanReplicViewProps): JSX.Element {
 		<div className={`showmanArea ${props.decisionNeeded ? 'highlighted' : ''}`}>
 			<div className="showmanInfo" style={showmanInfoStyle}>
 				<div className={`showmanAvatar ${avatarClass}`} style={avatarStyle} />
+
 				<div className="showmanName">
 					{props.isReady && !props.hasGameStarted ? (
 						<span
@@ -65,16 +67,20 @@ export function ShowmanReplicView(props: ShowmanReplicViewProps): JSX.Element {
 							✔️
 						</span>
 					) : null}
+
 					<span>{props.account?.name}</span>
 				</div>
 			</div>
+
 			<AutoSizedText className="showmanReplic" maxFontSize={48}>{props.replic || ''}</AutoSizedText>
+
 			{props.isDeciding ? (
 				<ProgressBar
 					value={1 - props.decisionTimer.value / props.decisionTimer.maximum}
 					valueChangeDuration={isRunning(props.decisionTimer) ? (props.decisionTimer.maximum - props.decisionTimer.value) / 10 : 0}
 				/>
 			) : null}
+
 			<StartGameArea />
 		</div>
 	);

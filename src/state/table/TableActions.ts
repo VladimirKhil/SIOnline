@@ -23,18 +23,21 @@ export const enum TableActionTypes {
 	CanPressChanged = 'CAN_PRESS_CHANGED',
 	IsSelectableChanged = 'IS_SELECTABLE_CHANGED',
 	ResumeMedia = 'RESUME_MEDIA',
-	CaptionChanged = 'CAPTION_CHANGED'
+	CaptionChanged = 'CAPTION_CHANGED',
+	TableReset = 'TABLE_RESET',
 }
 
 export type ShowLogoAction = { type: TableActionTypes.ShowLogo };
 export type ShowGameThemesAction = { type: TableActionTypes.ShowGameThemes, gameThemes: string[] };
 export type ShowRoundAction = { type: TableActionTypes.ShowRound, roundName: string };
+
 export type ShowRoundThemesAction = {
 	type: TableActionTypes.ShowRoundThemes,
 	roundThemes: ThemeInfo[],
 	isFinal: boolean,
 	display: boolean
 };
+
 export type ShowTextAction = { type: TableActionTypes.ShowText, text: string, animateReading: boolean };
 export type ShowAnswerAction = { type: TableActionTypes.ShowAnswer, text: string };
 export type ShowRoundTableAction = { type: TableActionTypes.ShowRoundTable };
@@ -54,6 +57,7 @@ export type CanPressChangedAction = { type: TableActionTypes.CanPressChanged, ca
 export type IsSelectableChangedAction = { type: TableActionTypes.IsSelectableChanged, isSelectable: boolean };
 export type ResumeMediaAction = { type: TableActionTypes.ResumeMedia };
 export type CaptionChangedAction = { type: TableActionTypes.CaptionChanged, caption: string };
+export type TableResetAction = { type: TableActionTypes.TableReset };
 
 export type KnownTableAction =
 	ShowLogoAction
@@ -78,4 +82,5 @@ export type KnownTableAction =
 	| CanPressChangedAction
 	| IsSelectableChangedAction
 	| ResumeMediaAction
-	| CaptionChangedAction;
+	| CaptionChangedAction
+	| TableResetAction;

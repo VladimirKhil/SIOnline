@@ -135,7 +135,7 @@ const playerSelected: ActionCreator<ThunkAction<void, State, DataContext, Action
 };
 
 const exitGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
-	dispatch: Dispatch<RunActions.KnownRoomAction>,
+	dispatch: Dispatch<Action>,
 	getState: () => State,
 	dataContext: DataContext) => {
 	try {
@@ -149,6 +149,12 @@ const exitGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (
 		window.clearTimeout(timerRef);
 		timerRef = null;
 	}
+
+	dispatch(tableActionCreators.tableReset());
+
+	dispatch(stopTimer(0));
+	dispatch(stopTimer(1));
+	dispatch(stopTimer(2));
 
 	if (getState().ui.previousMainView === MainView.Lobby) {
 		actionCreators.navigateToLobby(-1)(dispatch, getState, dataContext);

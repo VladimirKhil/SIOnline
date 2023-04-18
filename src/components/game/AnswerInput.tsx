@@ -4,6 +4,9 @@ import { Dispatch, Action } from 'redux';
 import roomActionCreators from '../../state/room/roomActionCreators';
 import State from '../../state/State';
 import Constants from '../../model/enums/Constants';
+import localization from '../../model/resources/localization';
+
+import './AnswerInput.css';
 
 interface AnswerInputProps {
 	isConnected: boolean;
@@ -45,15 +48,19 @@ export function AnswerInput(props: AnswerInputProps): JSX.Element | null {
 	};
 
 	return props.isAnswering ? (
-		<input
-			id={props.id}
-			autoFocus
-			className="gameInputBox"
-			value={props.answer}
-			onChange={onAnswerChanged}
-			onKeyPress={onAnswerKeyPress}
-			maxLength={250}
-		/>
+		<div className='answerInputHost'>
+			<input
+				id={props.id}
+				autoFocus
+				className="answerInput"
+				value={props.answer}
+				onChange={onAnswerChanged}
+				onKeyPress={onAnswerKeyPress}
+				maxLength={250}
+			/>
+
+			<button className='sendAnswer' title={localization.send} onClick={() => props.sendAnswer()}>💬</button>
+		</div>
 	) : null;
 }
 

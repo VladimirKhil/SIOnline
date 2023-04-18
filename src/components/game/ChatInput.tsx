@@ -59,20 +59,22 @@ export class ChatInput extends React.Component<ChatInputProps> {
 			e.preventDefault();
 		}
 	};
-	onEmojiClick = (emojiData: EmojiClickData, e: MouseEvent) => {
+
+	onEmojiClick = (emojiData: EmojiClickData) => {
 		this.props.onChatMessageChanged(this.props.message + emojiData.emoji);
 	};
 
 	render(): JSX.Element {
 		return (
-			<div className={'roomChatBodyHost'}>
-				<ChatInputEmojiPicker onEmojiClick={this.onEmojiClick} />
+			<div className='roomChatBodyHost'>
 				<input
 					ref={this.inputRef}
 					className={`gameInputBox gameMessage ${this.props.isConnected ? '' : 'disconnected'}`}
 					value={this.props.message}
 					onChange={this.onMessageChanged}
 					onKeyPress={this.onMessageKeyPress} />
+
+				<ChatInputEmojiPicker onEmojiClick={this.onEmojiClick} />
 			</div>
 		);
 	}

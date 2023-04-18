@@ -33,12 +33,13 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 export class VolumeButton extends React.Component<VolumeButtonProps, VolumeButtonState> {
 	audioContext: AudioContext;
 
-	_audioContextEventListener: () => void = () => {};
+	audioContextEventListener: () => void = () => {};
 
 	constructor(props: VolumeButtonProps) {
 		super(props);
 
 		this.audioContext = globalAudioContext;
+
 		this.state = {
 			isVolumeControlVisible: false,
 			canPlayAudio: this.audioContext.state === 'running'
@@ -46,20 +47,24 @@ export class VolumeButton extends React.Component<VolumeButtonProps, VolumeButto
 	}
 
 	componentDidMount(): void {
-		this._audioContextEventListener = () => {
+		this.audioContextEventListener = () => {
 			const canPlay = this.audioContext.state === 'running';
+
 			if (canPlay) {
 				this.setState({
 					canPlayAudio: canPlay
 				});
-				this.audioContext.removeEventListener('statechange', this._audioContextEventListener);
+
+				this.audioContext.removeEventListener('statechange', this.audioContextEventListener);
 			}
 		};
-		this.audioContext.addEventListener('statechange', this._audioContextEventListener);
+
+		this.audioContext.addEventListener('statechange', this.audioContextEventListener);
+		this.audioContextEventListener();
 	}
 
 	componentWillUnmount(): void {
-		this.audioContext.removeEventListener('statechange', this._audioContextEventListener);
+		this.audioContext.removeEventListener('statechange', this.audioContextEventListener);
 	}
 
 	toggleVisibility = () => {
@@ -88,6 +93,7 @@ export class VolumeButton extends React.Component<VolumeButtonProps, VolumeButto
 				>
 					{this.props.soundVolume && this.state.canPlayAudio ? '🔈' : '🔇'}
 				</button>
+
 				<input
 					min={0}
 					max={1}

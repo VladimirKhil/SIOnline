@@ -113,9 +113,9 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 });
 
 export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
-	const chatButtonStyle: React.CSSProperties = {
-		backgroundColor: props.isChatActive ? 'lightyellow' : 'transparent'
-	};
+	const chatButtonStyle: React.CSSProperties = props.isChatActive ? {
+		backgroundColor: 'lightyellow'
+	} : {};
 
 	const gameMenuHostStyle: React.CSSProperties = {
 		flex: props.isHost ? '2 0 0' : '1 0 0 '
@@ -149,6 +149,7 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 
 					<button
 						type="button"
+						className='standard'
 						id="showChat"
 						onClick={() => props.onChatVisibilityChanged(!props.isChatVisible)}
 						style={chatButtonStyle}

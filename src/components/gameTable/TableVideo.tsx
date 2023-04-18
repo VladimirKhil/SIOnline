@@ -40,6 +40,8 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 export class TableVideo extends React.Component<TableVideoProps> {
 	private videoRef: React.RefObject<HTMLVideoElement>;
 
+	private playPromise: Promise<void> | null = null;
+
 	constructor(props: TableVideoProps) {
 		super(props);
 
@@ -74,19 +76,25 @@ export class TableVideo extends React.Component<TableVideoProps> {
 
 		if (this.props.isMediaStopped !== prevProps.isMediaStopped) {
 			if (this.props.isMediaStopped) {
-				video.pause();
+				if (this.playPromise) {
+					this.playPromise.then(() => video.pause());
+				} else {
+					video.pause();
+				}
 			} else {
-				video.play().catch((e) => this.props.operationError(getErrorMessage(e)));
+				this.playPromise = video.play().catch((e) => this.props.operationError(getErrorMessage(e)));
 			}
 		}
 
 		video.volume = this.props.soundVolume;
 	}
 
-	onEnableAudioPlay = () => {
-		if (this.videoRef.current) {
-			this.videoRef.current.play();
-			this.videoRef.current.muted = false;
+	play = () => {
+		const video = this.videoRef.current;
+
+		if (video) {
+			this.playPromise = video.play().catch((e) => this.props.operationError(getErrorMessage(e)));
+			video.muted = false;
 		}
 	};
 
@@ -98,7 +106,8 @@ export class TableVideo extends React.Component<TableVideoProps> {
 				<video ref={this.videoRef} autoPlay onEnded={onMediaEnded} onLoadedData={() => this.props.mediaLoaded()}>
 					<source src={text} />
 				</video>
-				<VolumeButton onEnableAudioPlay={this.onEnableAudioPlay} />
+
+				<VolumeButton onEnableAudioPlay={this.play} />
 			</TableBorder>
 		);
 	}

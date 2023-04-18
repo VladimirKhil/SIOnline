@@ -49,6 +49,12 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 export class TableAudio extends React.Component<TableAudioProps> {
 	private audioRef: HTMLAudioElement = AUDIO_OBJECT;
 
+	private playPromise: Promise<void> | null = null;
+
+	private playTime: number | null = null;
+
+	private completed = false;
+
 	componentDidMount() {
 		if (this.props.audio.length === 0) {
 			return;
@@ -69,13 +75,16 @@ export class TableAudio extends React.Component<TableAudioProps> {
 			};
 
 			audio.onended = () => {
+				this.completed = true;
 				this.props.onMediaEnded();
 			};
+
+			this.completed = false;
 
 			audio.src = this.props.audio;
 			audio.load();
 
-			audio.play().catch((e) => this.props.operationError(getErrorMessage(e)));
+			this.play();
 
 			if (audio.readyState >= 3) {
 				this.props.mediaLoaded();
@@ -86,6 +95,10 @@ export class TableAudio extends React.Component<TableAudioProps> {
 	componentDidUpdate(prevProps: TableAudioProps) {
 		const audio = this.audioRef;
 
+		if (this.props.audio == '') {
+			return;
+		}
+
 		if (this.props.audio !== audio.currentSrc) {
 			audio.src = this.props.audio;
 			audio.load();
@@ -93,25 +106,52 @@ export class TableAudio extends React.Component<TableAudioProps> {
 
 		if (this.props.isMediaStopped !== prevProps.isMediaStopped) {
 			if (this.props.isMediaStopped) {
-				audio.pause();
-			} else {
-				audio.play().catch((e) => this.props.operationError(getErrorMessage(e)));
+				this.pause();
+			} else if (!this.completed) {
+				if (this.playTime) {
+					audio.currentTime = this.playTime;
+				}
+
+				this.play();
 			}
 		}
 
 		audio.volume = this.props.soundVolume;
 	}
 
-	onEnableAudioPlay = () => {
-		this.audioRef.play();
+	play = () => {
+		const audio = this.audioRef;
+		this.playPromise = audio.play().catch((e) => this.props.operationError(getErrorMessage(e)));
 	};
+
+	pause(): void {
+		const audio = this.audioRef;
+
+		if (audio.paused) {
+			return;
+		}
+
+		if (this.playPromise) {
+			this.playPromise.then(() => {
+				this.playTime = audio.currentTime;
+				audio.pause();
+			});
+		} else {
+			this.playTime = audio.currentTime;
+			audio.pause();
+		}
+	}
+
+	componentWillUnmount(): void {
+		this.pause();
+	}
 
 	render() {
 		const { audio } = this.props;
 
 		return audio.length === 0 ? null : (
 			<>
-				<VolumeButton onEnableAudioPlay={this.onEnableAudioPlay} />
+				<VolumeButton onEnableAudioPlay={this.play} />
 			</>
 		);
 	}

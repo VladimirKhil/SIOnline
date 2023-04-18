@@ -1,0 +1,40 @@
+.answerInputHost {
+	display: flex;
+    margin: 0;
+    height: 45px;
+    top: 0;
+    border: 0;
+	overflow: hidden;
+    pointer-events: initial;	
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+	background-color: lightyellow;
+    border-top: 1px solid gray;
+	padding-right: 50px;
+}
+
+.answerInput {
+	border: 0;
+    max-width: none;
+    box-sizing: border-box;
+	height: 100%;
+	flex: 1;
+    padding-left: 10px;
+    padding-right: 10px;
+    font-size: 23px;
+	margin: 0;
+	background-color: lightyellow;
+}
+
+.sendAnswer {
+	width: 60px;
+	height: 100%;
+}
+
+@media screen and (min-width: 800px) {
+	.answerInputHost {
+		padding-right: 0;
+	}
+}

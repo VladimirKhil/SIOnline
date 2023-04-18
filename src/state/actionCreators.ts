@@ -516,8 +516,12 @@ const gameSet: ActionCreator<Actions.GameSetAction> = (id: number, isAutomatic: 
 
 const initGameAsync = async (dispatch: Dispatch<any>, dataContext: DataContext, gameId: number, role: Role, isAutomatic: boolean) => {
 	dispatch(gameSet(gameId, isAutomatic));
+	dispatch(tableActionCreators.tableReset());
 	dispatch(tableActionCreators.showText(localization.tableHint, false));
 	dispatch(roomActionCreators.roleChanged(role));
+	dispatch(roomActionCreators.stopTimer(0));
+	dispatch(roomActionCreators.stopTimer(1));
+	dispatch(roomActionCreators.stopTimer(2));
 
 	await gameInit(gameId, dataContext, role);
 };

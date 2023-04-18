@@ -380,48 +380,8 @@ showman::after, player::after, viewer::after {
     content: ": "
 }
 
-#showChat {
-    position: absolute;
-    height: 45px;
-    width: 45px;
-    border: 0;
-    font-size: 20px;
-    color: #FFFFFF;
-    right: 0;
-    top: 0;
-    bottom: 0;
-}
-
-#showChat span {
-    position: relative;
-    bottom: 0;
-}
-
-.gameInputBox {
-    max-width: none;
-    width: 100%;
-    margin: 0;
-    height: 45px;
-    top: 0;
-    border: 0;
-    border-top: 1px solid gray;
-    font-size: 14pt;
-    padding-left: 10px;
-    padding-right: 47px;
-    box-sizing: border-box;
-    pointer-events: initial;
-}
-
 .gameMessage {
     background-color: #C0CFF4;
-}
-
-#answerBox {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background-color: lightyellow;
 }
 
 .playerButtonWrapper {

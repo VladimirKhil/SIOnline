@@ -1,8 +1,35 @@
 import { Reducer, AnyAction } from 'redux';
 import TableState, { initialState } from './TableState';
-import { KnownTableAction, TableActionTypes } from './TableActions';
+import { KnownTableAction, RemoveThemeAction, TableActionTypes, UpdateQuestionAction } from './TableActions';
 import TableMode from '../../model/enums/TableMode';
 import { replace } from '../../utils/ArrayExtensions';
+
+function updateQuestion(state: TableState, action: UpdateQuestionAction) {
+	const activeTheme = state.roundInfo[action.themeIndex];
+
+	return activeTheme
+		? {
+			...state,
+			roundInfo: replace(state.roundInfo, action.themeIndex, {
+				name: activeTheme.name,
+				questions: replace(activeTheme.questions, action.questionIndex, action.price)
+			})
+		} : state;
+}
+
+function removeTheme(state: TableState, action: RemoveThemeAction) {
+	const activeTheme = state.roundInfo[action.themeIndex];
+
+	return activeTheme
+		? {
+			...state,
+			activeThemeIndex: -1,
+			roundInfo: replace(state.roundInfo, action.themeIndex, {
+				name: '',
+				questions: activeTheme.questions
+			})
+		} : state;
+}
 
 const tableReducer: Reducer<TableState> = (state: TableState = initialState, anyAction: AnyAction): TableState => {
 	const action = anyAction as KnownTableAction;
@@ -74,23 +101,10 @@ const tableReducer: Reducer<TableState> = (state: TableState = initialState, any
 			};
 
 		case TableActionTypes.UpdateQuestion:
-			return {
-				...state,
-				roundInfo: replace(state.roundInfo, action.themeIndex, {
-					name: state.roundInfo[action.themeIndex].name,
-					questions: replace(state.roundInfo[action.themeIndex].questions, action.questionIndex, action.price)
-				})
-			};
+			return updateQuestion(state, action);
 
 		case TableActionTypes.RemoveTheme:
-			return {
-				...state,
-				activeThemeIndex: -1,
-				roundInfo: replace(state.roundInfo, action.themeIndex, {
-					name: '',
-					questions: state.roundInfo[action.themeIndex].questions
-				})
-			};
+			return removeTheme(state, action);
 
 		case TableActionTypes.ShowPartialText:
 			return {
@@ -177,6 +191,9 @@ const tableReducer: Reducer<TableState> = (state: TableState = initialState, any
 				...state,
 				caption: action.caption
 			};
+
+		case TableActionTypes.TableReset:
+			return initialState;
 
 		default:
 			return state;
