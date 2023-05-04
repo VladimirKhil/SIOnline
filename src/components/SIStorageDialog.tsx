@@ -4,7 +4,7 @@ import { Dispatch, Action } from 'redux';
 import Dialog from './common/Dialog';
 import localization from '../model/resources/localization';
 import State from '../state/State';
-import actionCreators from '../state/actionCreators';
+import siPackagesActionCreators from '../state/siPackages/siPackagesActionCreators';
 import { PackageFilters } from '../model/PackageFilters';
 import { SIPackageInfo } from '../model/SIPackageInfo';
 import { SearchEntity } from '../model/SearchEntity';
@@ -53,16 +53,16 @@ const mapStateToProps = (state: State): StateProps => ({
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>): DispatchProps => ({
 	searchPackages: (filters?: PackageFilters) => {
-		dispatch(actionCreators.searchPackagesThunk(filters) as unknown as Action);
+		dispatch(siPackagesActionCreators.searchPackagesThunk(filters) as unknown as Action);
 	},
 	receiveAuthors: () => {
-		dispatch(actionCreators.receiveAuthorsThunk() as unknown as Action);
+		dispatch(siPackagesActionCreators.receiveAuthorsThunk() as unknown as Action);
 	},
 	receivePublishers: () => {
-		dispatch(actionCreators.receivePublishersThunk() as unknown as Action);
+		dispatch(siPackagesActionCreators.receivePublishersThunk() as unknown as Action);
 	},
 	receiveTags: () => {
-		dispatch(actionCreators.receiveTagsThunk() as unknown as Action);
+		dispatch(siPackagesActionCreators.receiveTagsThunk() as unknown as Action);
 	}
 });
 

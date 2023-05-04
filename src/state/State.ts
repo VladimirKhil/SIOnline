@@ -10,13 +10,12 @@ import GameInfo from '../client/contracts/GameInfo';
 import localization from '../model/resources/localization';
 import SettingsState, { initialState as settingsInitialState } from './settings/SettingsState';
 import PackageType from '../model/enums/PackageType';
-import { SIPackageInfo } from '../model/SIPackageInfo';
-import { SearchEntity } from '../model/SearchEntity';
 import MessageLevel from '../model/enums/MessageLevel';
 import TableState, { initialState as tableInitialState } from './table/TableState';
 import UserState, { initialState as userInitialState } from './user/UserState';
 import LoginState, { initialState as loginInitialState } from './login/LoginState';
 import CommonState, { initialState as commonInitialState } from './common/CommonState';
+import SIPackagesState, { initialState as siPackagesInitialState } from './siPackages/SIPackagesState';
 
 export default interface State {
 	user: UserState;
@@ -70,14 +69,7 @@ export default interface State {
 	room: RoomState;	
 	table: TableState;
 	common: CommonState;
-	siPackages: {
-		packages: SIPackageInfo[];
-		authors: SearchEntity[];
-		tags: SearchEntity[];
-		publishers: SearchEntity[];
-		isLoading: boolean;
-		error: string | null;
-	};
+	siPackages: SIPackagesState;
 	settings: SettingsState;
 }
 
@@ -136,14 +128,7 @@ export const initialState: State = {
 		id: -1,
 		isAutomatic: false
 	},
-	siPackages: {
-		authors: [],
-		isLoading: false,
-		packages: [],
-		publishers: [],
-		tags: [],
-		error: '',
-	},
+	siPackages: siPackagesInitialState,
 	room: roomInitialState,
 	table: tableInitialState,
 	common: commonInitialState,

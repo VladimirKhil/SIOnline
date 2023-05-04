@@ -20,6 +20,8 @@ import loginReducer from './login/loginReducer';
 import { KnownLoginAction } from './login/LoginActions';
 import commonReducer from './common/commonReducer';
 import { KnownCommonAction } from './common/CommonActions';
+import siPackagesReducer from './siPackages/siPackagesReducer';
+import { KnownSIPackagesAction } from './siPackages/SIPackagesActions';
 
 const reducer: Reducer<State> = (
 	state: State = initialState,
@@ -567,63 +569,6 @@ const reducer: Reducer<State> = (
 				}
 			};
 
-		case ActionTypes.SearchPackages:
-			return {
-				...state,
-				siPackages: {
-					...state.siPackages,
-					isLoading: true,
-					error: null
-				}
-			};
-
-		case ActionTypes.SearchPackagesFinished:
-			return {
-				...state,
-				siPackages: {
-					...state.siPackages,
-					packages: action.packages,
-					isLoading: false
-				}
-			};
-
-		case ActionTypes.SearchPackagesError:
-			return {
-				...state,
-				siPackages: {
-					...state.siPackages,
-					isLoading: false,
-					error: action.error,
-				}
-			};
-
-		case ActionTypes.ReceiveAuthorsFinished:
-			return {
-				...state,
-				siPackages: {
-					...state.siPackages,
-					authors: action.authors
-				}
-			};
-
-		case ActionTypes.ReceiveTagsFinished:
-			return {
-				...state,
-				siPackages: {
-					...state.siPackages,
-					tags: action.tags
-				}
-			};
-
-		case ActionTypes.ReceivePublishersFinished:
-			return {
-				...state,
-				siPackages: {
-					...state.siPackages,
-					publishers: action.publishers
-				}
-			};		
-
 		case ActionTypes.IsSettingGameButtonKeyChanged:
 			return {
 				...state,
@@ -642,6 +587,7 @@ const reducer: Reducer<State> = (
 				common: commonReducer(state.common, action as KnownCommonAction),
 				settings: settingsReducer(state.settings, action as KnownSettingsAction),
 				table: tableReducer(state.table, action as KnownTableAction),
+				siPackages: siPackagesReducer(state.siPackages, action as KnownSIPackagesAction)
 			};
 	}
 };

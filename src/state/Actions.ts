@@ -60,15 +60,6 @@ export const enum ActionTypes {
 	UploadPackageFinished = 'UPLOAD_PACKAGE_FINISHED',
 	UploadPackageProgress = 'UPLOAD_PACKAGE_PROGRESS',
 	UnselectGame = 'UNSELECT_GAME',
-	SearchPackages = 'SEARCH_PACKAGES',
-	SearchPackagesFinished = 'SEARCH_PACKAGES_FINISHED',
-	SearchPackagesError = 'SEARCH_PACKAGES_ERROR',
-	ReceiveAuthors = 'RECEIVE_AUTHORS',
-	ReceiveAuthorsFinished = 'RECEIVE_AUTHORS_FINISHED',
-	ReceiveTags = 'RECEIVE_TAGS',
-	ReceiveTagsFinished = 'RECEIVE_TAGS_FINISHED',
-	ReceivePublishers = 'RECEIVE_PUBLISHERS',
-	ReceivePublishersFinished = 'RECEIVE_PUBLISHERS_FINISHED',
 	IsSettingGameButtonKeyChanged = 'IS_SETTING_GAME_BUTTON_KEY_CHANGED',
 }
 
@@ -123,15 +114,6 @@ export type UploadPackageStartedAction = { type: ActionTypes.UploadPackageStarte
 export type UploadPackageFinishedAction = { type: ActionTypes.UploadPackageFinished };
 export type UploadPackageProgressAction = { type: ActionTypes.UploadPackageProgress, progress: number };
 export type UnselectGameAction = { type: ActionTypes.UnselectGame };
-export type SearchPackagesAction = { type: ActionTypes.SearchPackages };
-export type SearchPackagesFinishedAction = { type: ActionTypes.SearchPackagesFinished, packages: SIPackageInfo[] };
-export type SearchPackagesErrorAction = { type: ActionTypes.SearchPackagesError, error: string | null };
-export type ReceiveAuthorsAction = { type: ActionTypes.ReceiveAuthors };
-export type ReceiveAuthorsFinishedAction = { type: ActionTypes.ReceiveAuthorsFinished, authors: SearchEntity[] };
-export type ReceiveTagsAction = { type: ActionTypes.ReceiveTags };
-export type ReceiveTagsFinishedAction = { type: ActionTypes.ReceiveTagsFinished, tags: SearchEntity[] };
-export type ReceivePublishersAction = { type: ActionTypes.ReceivePublishers };
-export type ReceivePublishersFinishedAction = { type: ActionTypes.ReceivePublishersFinished, publishers: SearchEntity[] };
 export type IsSettingGameButtonKeyChangedAction = { type: ActionTypes.IsSettingGameButtonKeyChanged, isSettingGameButtonKey: boolean };
 
 export type KnownAction =
@@ -185,14 +167,5 @@ export type KnownAction =
 	| UploadPackageFinishedAction
 	| UploadPackageProgressAction
 	| UnselectGameAction
-	| SearchPackagesAction
-	| SearchPackagesFinishedAction
-	| SearchPackagesErrorAction
-	| ReceiveAuthorsAction
-	| ReceiveAuthorsFinishedAction
-	| ReceiveTagsAction
-	| ReceiveTagsFinishedAction
-	| ReceivePublishersAction
-	| ReceivePublishersFinishedAction
 	| GamePackageLibraryChangedAction
 	| IsSettingGameButtonKeyChangedAction;
