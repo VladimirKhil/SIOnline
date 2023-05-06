@@ -11,6 +11,7 @@ import GamesFilter from '../model/enums/GamesFilter';
 import NewGameDialog from './NewGameDialog';
 import Dialog from './common/Dialog';
 import GameInfoView from './GameInfoView';
+import uiActionCreators from '../state/ui/uiActionCreators';
 
 import './Games.css';
 
@@ -72,7 +73,7 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 		dispatch(actionCreators.unselectGame());
 	},
 	onClose: () => {
-		dispatch(actionCreators.navigateToWelcome());
+		dispatch(uiActionCreators.navigateToWelcome());
 	}
 });
 

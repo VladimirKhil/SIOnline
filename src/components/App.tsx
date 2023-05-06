@@ -11,10 +11,10 @@ import OnlineView from './OnlineView';
 import InGameView from './game/InGameView';
 import SettingsDialog from './settings/SettingsDialog';
 import NewGameDialog from './NewGameDialog';
-import actionCreators from '../state/actionCreators';
 import Games from './Games';
 import ErrorView from './ErrorView';
 import CookiesWarning from './CookiesWarning';
+import uiActionCreators from '../state/ui/uiActionCreators';
 
 import './App.css';
 
@@ -41,7 +41,7 @@ const mapStateToProps = (state: State) => ({
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	closeNewGame: () => {
-		dispatch(actionCreators.navigateToWelcome());
+		dispatch(uiActionCreators.navigateToWelcome());
 	}
 });
 

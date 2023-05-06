@@ -14,6 +14,7 @@ import ProgressBar from './common/ProgressBar';
 import { filterGames } from '../utils/GamesHelpers';
 import SettingsButton from './SettingsButton';
 import LobbyChatVisibilityButton from './LobbyChatVisibilityButton';
+import uiActionCreators from '../state/ui/uiActionCreators';
 
 import './OnlineView.css';
 
@@ -51,7 +52,7 @@ const mapStateToProps = (state: State) => {
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	closeGameInfo: () => {
-		dispatch(actionCreators.closeGameInfo());
+		dispatch(uiActionCreators.closeGameInfo());
 	},
 	closeNewGame: () => {
 		dispatch(actionCreators.newGameCancel());

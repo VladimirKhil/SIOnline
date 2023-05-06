@@ -12,6 +12,7 @@ import Constants from '../model/enums/Constants';
 import PackageType from '../model/enums/PackageType';
 import SIStorageDialog from './SIStorageDialog';
 import FlyoutButton from './common/FlyoutButton';
+import uiActionCreators from '../state/ui/uiActionCreators';
 
 import './NewGameDialog.css';
 
@@ -102,7 +103,7 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 		dispatch(actionCreators.humanPlayersCountChanged(humanPlayersCount));
 	},
 	onShowSettings: () => {
-		dispatch(actionCreators.showSettings(true));
+		dispatch(uiActionCreators.showSettings(true));
 	},
 	onCreate: (isSingleGame: boolean) => {
 		dispatch(actionCreators.createNewGame(isSingleGame) as unknown as Action);

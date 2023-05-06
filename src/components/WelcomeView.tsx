@@ -4,7 +4,7 @@ import localization from '../model/resources/localization';
 import actionCreators from '../state/actionCreators';
 import State from '../state/State';
 import Dialog from './common/Dialog';
-import FlyoutButton, { FlyoutHorizontalOrientation } from './common/FlyoutButton';
+import uiActionCreators from '../state/ui/uiActionCreators';
 
 import './WelcomeView.css';
 
@@ -34,7 +34,7 @@ const mapStateToProps = (state: State) => ({
 
 const mapDispatchToProps = (dispatch: any) => ({
 	singlePlay: () => {
-		dispatch(actionCreators.singlePlay());
+		dispatch(uiActionCreators.singlePlay());
 	},
 	friendsPlay: () => {
 		dispatch(actionCreators.friendsPlay());
@@ -81,15 +81,15 @@ export function WelcomeView(props: WelcomeViewProps): JSX.Element {
 				<button className='standard welcomeRow left' disabled={!props.isConnected} onClick={() => props.friendsPlay()}>
 					{localization.friendsPlay}
 				</button>
-				
+
 				<button className='standard welcomeRow right' disabled={!props.isConnected} onClick={() => props.anyonePlay()}>
 					{localization.anyonePlay}
 				</button>
-				
+
 				<button className='standard welcomeRow left' disabled={!props.isConnected} onClick={() => props.joinLobby()}>
 					{localization.joinLobby}
 				</button>
-				
+
 				<button className='standard welcomeRow right' disabled={!props.isConnected} onClick={() => props.exit()}>
 					{localization.exitFromGame}
 				</button>

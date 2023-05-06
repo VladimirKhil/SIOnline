@@ -18,6 +18,7 @@ import StakeTypes from '../../model/enums/StakeTypes';
 import MainView from '../../model/enums/MainView';
 import Constants from '../../model/enums/Constants';
 import MessageLevel from '../../model/enums/MessageLevel';
+import uiActionCreators from '../ui/uiActionCreators';
 
 let timerRef: number | null = null;
 
@@ -159,7 +160,7 @@ const exitGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (
 	if (getState().ui.previousMainView === MainView.Lobby) {
 		actionCreators.navigateToLobby(-1)(dispatch, getState, dataContext);
 	} else {
-		dispatch(actionCreators.navigateToWelcome() as any);
+		dispatch(uiActionCreators.navigateToWelcome() as any);
 	}
 };
 

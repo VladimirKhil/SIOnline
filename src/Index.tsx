@@ -26,6 +26,7 @@ import MainView from './model/enums/MainView';
 import getErrorMessage from './utils/ErrorHelpers';
 import commonActionCreators from './state/common/commonActionCreators';
 import enableNoSleep from './utils/NoSleepHelper';
+import uiActionCreators from './state/ui/uiActionCreators';
 
 import './utils/polyfills';
 import './style.css';
@@ -76,7 +77,7 @@ function setState(state: State, savedState: SavedState | null, gameId: string | 
 }
 
 function subscribeToExternalEvents(store: Store<State, any>) {
-	window.onresize = () => store.dispatch(actionCreators.windowSizeChanged(window.innerWidth, window.innerHeight));
+	window.onresize = () => store.dispatch(uiActionCreators.windowSizeChanged(window.innerWidth, window.innerHeight));
 	window.onpopstate = () => true;
 
 	window.onkeydown = (e: KeyboardEvent) => {
@@ -84,7 +85,7 @@ function subscribeToExternalEvents(store: Store<State, any>) {
 
 		if (state.ui.isSettingGameButtonKey) {
 			store.dispatch(settingsActionCreators.gameButtonKeyChanged(e.key));
-			store.dispatch(actionCreators.isSettingGameButtonKeyChanged(false));
+			store.dispatch(uiActionCreators.isSettingGameButtonKeyChanged(false));
 		} else if (e.key === state.settings.gameButtonKey) {
 			store.dispatch(roomActionCreators.pressGameButton());
 		}
@@ -100,13 +101,13 @@ function subscribeToExternalEvents(store: Store<State, any>) {
 
 	window.addEventListener('error', (e: ErrorEvent) => {
 		store.dispatch(commonActionCreators.commonErrorChanged(`${e.type} ${e.message} ${e.filename} ${e.lineno}:${e.colno}`));
-		store.dispatch(actionCreators.navigateToError());
+		store.dispatch(uiActionCreators.navigateToError());
 		return false;
 	});
 
 	window.addEventListener('unhandledrejection', (e: PromiseRejectionEvent) => {
 		store.dispatch(commonActionCreators.commonErrorChanged(`${e.reason.message}: ${e.reason.stack}`));
-		store.dispatch(actionCreators.navigateToError());
+		store.dispatch(uiActionCreators.navigateToError());
 		return false;
 	});
 }
@@ -215,7 +216,7 @@ async function run() {
 			if (newSettings.appSettings.culture !== currentSettings.appSettings.culture) {
 				localization.setLanguage(newSettings.appSettings.culture || localization.getInterfaceLanguage());
 				document.title = localization.appTitle;
-				
+
 				if (newState.ui.mainView === MainView.Login) {
 					window.location.reload();
 				} else {
@@ -246,7 +247,7 @@ async function run() {
 		document.getElementById('reactHost')
 	);
 
-	store.dispatch(actionCreators.navigateToLogin());
+	store.dispatch(uiActionCreators.navigateToLogin() as any);
 
 	if (config.enableNoSleep) {
 		enableNoSleep();

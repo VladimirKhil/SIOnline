@@ -1,9 +1,9 @@
 ﻿import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch, Action } from 'redux';
-import actionCreators from '../state/actionCreators';
 import localization from '../model/resources/localization';
 import Dialog from './common/Dialog';
+import uiActionCreators from '../state/ui/uiActionCreators';
 
 import './About.css';
 
@@ -13,7 +13,7 @@ interface AboutProps {
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	onClose: () => {
-		dispatch(actionCreators.navigateBack());
+		dispatch(uiActionCreators.navigateBack());
 	}
 });
 

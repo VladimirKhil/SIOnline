@@ -10,6 +10,7 @@ import AvatarView from './AvatarView';
 import SexView from './SexView';
 import LanguageView from './LanguageView';
 import userActionCreators from '../state/user/userActionCreators';
+import uiActionCreators from '../state/ui/uiActionCreators';
 
 import './Login.css';
 
@@ -31,7 +32,7 @@ const mapStateToProps = (state: State) => ({
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	onHowToPlay: () => {
-		dispatch(actionCreators.navigateToHowToPlay());
+		dispatch(uiActionCreators.navigateToHowToPlay());
 	},
 	onLoginChanged: (newLogin: string) => {
 		dispatch(userActionCreators.onLoginChanged(newLogin));

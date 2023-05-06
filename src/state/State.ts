@@ -1,6 +1,4 @@
-﻿import MainView from '../model/enums/MainView';
-import GamesFilter from '../model/enums/GamesFilter';
-import OnlineMode from '../model/enums/OnlineMode';
+﻿import GamesFilter from '../model/enums/GamesFilter';
 import ChatMessage from '../model/ChatMessage';
 import ChatMode from '../model/enums/ChatMode';
 import GameType from '../client/contracts/GameType';
@@ -16,19 +14,12 @@ import UserState, { initialState as userInitialState } from './user/UserState';
 import LoginState, { initialState as loginInitialState } from './login/LoginState';
 import CommonState, { initialState as commonInitialState } from './common/CommonState';
 import SIPackagesState, { initialState as siPackagesInitialState } from './siPackages/SIPackagesState';
+import UIState, { initialState as uiInitialState } from './ui/UIState';
 
 export default interface State {
 	user: UserState;
 	login: LoginState;
-	ui: {
-		mainView: MainView;
-		previousMainView: MainView;
-		onlineView: OnlineMode;
-		windowWidth: number;
-		windowHeight: number;
-		areSettingsVisible: boolean;
-		isSettingGameButtonKey: boolean;
-	};
+	ui: UIState;
 	online: {
 		inProgress: boolean;
 		error: string;
@@ -66,7 +57,7 @@ export default interface State {
 		id: number;
 		isAutomatic: boolean;
 	};
-	room: RoomState;	
+	room: RoomState;
 	table: TableState;
 	common: CommonState;
 	siPackages: SIPackagesState;
@@ -76,15 +67,7 @@ export default interface State {
 export const initialState: State = {
 	user: userInitialState,
 	login: loginInitialState,
-	ui: {
-		mainView: MainView.Loading,
-		previousMainView: MainView.Loading,
-		onlineView: OnlineMode.Games,
-		windowWidth: window.innerWidth,
-		windowHeight: window.innerHeight,
-		areSettingsVisible: false,
-		isSettingGameButtonKey: false
-	},
+	ui: uiInitialState,
 	online: {
 		inProgress: false,
 		error: '',

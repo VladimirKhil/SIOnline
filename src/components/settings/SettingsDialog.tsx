@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { Dispatch, Action } from 'redux';
 import Dialog from '../common/Dialog';
 import State from '../../state/State';
-import actionCreators from '../../state/actionCreators';
 import localization from '../../model/resources/localization';
 import SettingsState from '../../state/settings/SettingsState';
 import settingsActionCreators from '../../state/settings/settingsActionCreators';
@@ -11,6 +10,7 @@ import TimeSettingsView from './TimeSettingsView';
 import SettingsView from '../../model/enums/SettingsView';
 import CommonSettingsView from './CommonSettingsView';
 import RulesSettingsView from './RulesSettingsView';
+import uiActionCreators from '../../state/ui/uiActionCreators';
 
 import './SettingsDialog.css';
 
@@ -33,7 +33,7 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 		dispatch(settingsActionCreators.resetSettings());
 	},
 	onClose: () => {
-		dispatch(actionCreators.showSettings(false));
+		dispatch(uiActionCreators.showSettings(false));
 	},
 });
 

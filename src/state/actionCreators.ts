@@ -12,7 +12,6 @@ import DataContext from '../model/DataContext';
 
 import 'es6-promise/auto';
 import { saveState } from './SavedState';
-import OnlineMode from '../model/enums/OnlineMode';
 import GamesFilter from '../model/enums/GamesFilter';
 import localization from '../model/resources/localization';
 import ChatMode from '../model/enums/ChatMode';
@@ -48,6 +47,7 @@ import PackageInfo from '../client/contracts/PackageInfo';
 import PackageType2 from '../client/contracts/PackageType';
 import SIContentClient from 'sicontent-client';
 import GameCreationResult from '../client/contracts/GameCreationResult';
+import uiActionCreators from './ui/uiActionCreators';
 
 const onConnectionChanged: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 	(isConnected: boolean, message: string) => async (dispatch: Dispatch<any>, getState: () => State, dataContext: DataContext) => {
@@ -73,23 +73,6 @@ const onConnectionChanged: ActionCreator<ThunkAction<void, State, DataContext, A
 		}
 	};
 
-const navigateToLogin: ActionCreator<Actions.NavigateToLoginAction> = () => ({
-	type: Actions.ActionTypes.NavigateToLogin
-});
-
-const showSettings: ActionCreator<Actions.ShowSettingsAction> = (show: boolean) => ({
-	type: Actions.ActionTypes.ShowSettings,
-	show
-});
-
-const navigateToHowToPlay: ActionCreator<Actions.NavigateToHowToPlayAction> = () => ({
-	type: Actions.ActionTypes.NavigateToHowToPlay
-});
-
-const navigateBack: ActionCreator<Actions.NavigateBackAction> = () => ({
-	type: Actions.ActionTypes.NavigateBack
-});
-
 const onAvatarSelectedLocal: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 	(avatar: File) => async (dispatch: Dispatch<Action>) => {
 		try {
@@ -97,7 +80,7 @@ const onAvatarSelectedLocal: ActionCreator<ThunkAction<void, State, DataContext,
 			const base64 = btoa(new Uint8Array(buffer).reduce((data, byte) => data + String.fromCharCode(byte), ''));
 
 			const key = crypto.randomUUID ? crypto.randomUUID() : Math.random().toString();
-			
+
 			localStorage.setItem(Constants.AVATAR_KEY, base64);
 			localStorage.setItem(Constants.AVATAR_NAME_KEY, avatar.name);
 
@@ -137,7 +120,7 @@ async function uploadAvatarAsync(dispatch: Dispatch<Action>, dataContext: DataCo
 		const data = Uint8Array.from(window.atob(base64), c => c.charCodeAt(0));
 
 		const { buffer } = data;
-	
+
 		const { gameClient, serverUri, contentClient } = dataContext;
 
 		if (contentClient) {
@@ -161,7 +144,7 @@ async function uploadAvatarAsync(dispatch: Dispatch<Action>, dataContext: DataCo
 			name: fileName,
 			hash: hashArrayEncoded
 		};
-		
+
 		let avatarUri = await gameClient.hasImageAsync(imageKey);
 
 		if (!avatarUri) {
@@ -184,7 +167,7 @@ async function uploadAvatarAsync(dispatch: Dispatch<Action>, dataContext: DataCo
 
 			avatarUri = await response.text();
 		}
-		
+
 		const fullAvatarUri = (dataContext.contentUris ? dataContext.contentUris[0] : '') + avatarUri;
 
 		dispatch(commonActionCreators.avatarLoadEnd(null));
@@ -242,10 +225,6 @@ function getLoginErrorByCode(response: Response): string {
 	}
 }
 
-const navigateToWelcome: ActionCreator<Actions.NavigateToWelcomeAction> = () => ({
-	type: Actions.ActionTypes.NavigateToWelcome
-});
-
 async function loadHostInfoAsync(dispatch: Dispatch<any>, dataContext: DataContext, culture: string) {
 	const hostInfo = await dataContext.gameClient.getGameHostInfoAsync(culture);
 	// eslint-disable-next-line no-param-reassign
@@ -262,10 +241,6 @@ async function loadHostInfoAsync(dispatch: Dispatch<any>, dataContext: DataConte
 
 	dispatch(commonActionCreators.serverInfoChanged(hostInfo.name, hostInfo.license, hostInfo.maxPackageSizeMb));
 }
-
-const friendsPlayInternal: ActionCreator<Actions.NavigateToGamesAction> = () => ({
-	type: Actions.ActionTypes.NavigateToGames
-});
 
 const selectGame: ActionCreator<Actions.SelectGameAction> = (gameId: number, showInfo: boolean) => ({
 	type: Actions.ActionTypes.SelectGame,
@@ -307,12 +282,19 @@ const onlineLoadError: ActionCreator<Actions.OnlineLoadErrorAction> = (error: st
 	error
 });
 
+const dropSelectedGame: ActionCreator<Actions.DropSelectedGameAction> = () => ({
+	type: Actions.ActionTypes.DropSelectedGame
+});
+
 const friendsPlay: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
-	() => async (dispatch: Dispatch<Actions.KnownAction>, getState: () => State, dataContext: DataContext) => {
+	() => async (dispatch: Dispatch<Action>, getState: () => State, dataContext: DataContext) => {
 		const state = getState();
 		const { selectedGameId } = state.online;
 
-		dispatch(friendsPlayInternal());
+		dispatch(uiActionCreators.friendsPlayInternal());
+		dispatch(dropSelectedGame());
+
+
 		try {
 			await loadGamesAsync(dispatch, dataContext.gameClient);
 
@@ -397,7 +379,7 @@ const login: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 					if (state.online.selectedGameId && invite == 'true') {
 						friendsPlay()(dispatch, getState, dataContext);
 					} else {
-						dispatch(navigateToWelcome());
+						dispatch(uiActionCreators.navigateToWelcome());
 					}
 				} catch (error) {
 					dispatch(loginActionCreators.loginEnd(`${localization.cannotConnectToServer}: ${getErrorMessage(error)}`));
@@ -411,17 +393,14 @@ const login: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 		}
 	};
 
-const singlePlay: ActionCreator<Actions.NavigateToNewGameAction> = () => ({
-	type: Actions.ActionTypes.NavigateToNewGame
-});
-
-const navigateToLobbyInternal: ActionCreator<Actions.NavigateToLobbyAction> = () => ({
-	type: Actions.ActionTypes.NavigateToLobby
+const resetLobby: ActionCreator<Actions.ResetLobbyAction> = () => ({
+	type: Actions.ActionTypes.ResetLobby
 });
 
 const navigateToLobby: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
-	(gameId: number, showInfo?: boolean) => async (dispatch: Dispatch<Actions.KnownAction>, _: () => State, dataContext: DataContext) => {
-		dispatch(navigateToLobbyInternal());
+	(gameId: number, showInfo?: boolean) => async (dispatch: Dispatch<Action>, _: () => State, dataContext: DataContext) => {
+		dispatch(uiActionCreators.navigateToLobbyInternal());
+		dispatch(resetLobby());
 
 		if (gameId > -1) {
 			dispatch(selectGame(gameId, showInfo));
@@ -450,10 +429,6 @@ const navigateToLobby: ActionCreator<ThunkAction<void, State, DataContext, Actio
 		}
 	};
 
-const navigateToError: ActionCreator<Actions.NavigateToErrorAction> = () => ({
-	type: Actions.ActionTypes.NavigateToError
-});
-
 const receiveUsers: ActionCreator<Actions.ReceiveUsersAction> = (users: string[]) => ({
 	type: Actions.ActionTypes.ReceiveUsers,
 	users
@@ -465,13 +440,8 @@ const receiveMessage: ActionCreator<Actions.ReceiveMessageAction> = (sender: str
 	message
 });
 
-const onOnlineModeChanged: ActionCreator<Actions.OnlineModeChangedAction> = (mode: OnlineMode) => ({
-	type: Actions.ActionTypes.OnlineModeChanged,
-	mode
-});
-
 const onExit: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
-	() => async (dispatch: Dispatch<Actions.KnownAction>, getState: () => State, dataContext: DataContext) => {
+	() => async (dispatch: Dispatch<Action>, getState: () => State, dataContext: DataContext) => {
 		const server = dataContext.connection;
 
 		if (!server) {
@@ -480,7 +450,7 @@ const onExit: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 
 		try {
 			await dataContext.gameClient.logOutAsync();
-			
+
 			if (server.connectionId) {
 				activeConnections.splice(activeConnections.indexOf(server.connectionId), 1);
 			}
@@ -489,7 +459,7 @@ const onExit: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 			await server.stop();
 			removeConnection(server);
 
-			dispatch(navigateToLogin());
+			dispatch(uiActionCreators.navigateToLogin());
 		} catch (error) {
 			alert(getErrorMessage(error)); // TODO: normal error message
 		}
@@ -503,10 +473,6 @@ const onGamesFilterToggle: ActionCreator<Actions.GamesFilterToggleAction> = (fil
 const onGamesSearchChanged: ActionCreator<Actions.GamesSearchChangedAction> = (search: string) => ({
 	type: Actions.ActionTypes.GamesSearchChanged,
 	search
-});
-
-const closeGameInfo: ActionCreator<Actions.CloseGameInfoAction> = () => ({
-	type: Actions.ActionTypes.CloseGameInfo
 });
 
 const unselectGame: ActionCreator<Actions.UnselectGameAction> = () => ({
@@ -631,12 +597,6 @@ const sendMessage: ActionCreator<ThunkAction<void, State, DataContext, Action>> 
 
 		dispatch(messageChanged(''));
 	};
-
-const windowSizeChanged: ActionCreator<Actions.WindowSizeChangedAction> = (width: number, height: number) => ({
-	type: Actions.ActionTypes.WindowSizeChanged,
-	width,
-	height
-});
 
 const gameNameChanged: ActionCreator<Actions.GameNameChangedAction> = (gameName: string) => ({
 	type: Actions.ActionTypes.GameNameChanged,
@@ -771,7 +731,7 @@ function uploadPackageAsync(
 				reject(new Error(xhr.response));
 			}
 		};
-		
+
 		xhr.onerror = () => {
 			dispatch(uploadPackageFinished());
 			reject(new Error(xhr.statusText || xhr.responseText || `${localization.unknownError}: ${xhr.status}`));
@@ -850,7 +810,7 @@ async function checkAndUploadPackageAsync(
 	};
 
 	const hasPackage = await gameClient.hasPackageAsync(packageKey);
-	
+
 	if (!hasPackage) {
 		await uploadPackageAsync(hashArrayEncoded, packageData, serverUri, dispatch);
 	}
@@ -898,7 +858,7 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 			: game.isShowmanHuman
 				? { name: Constants.ANY_NAME, isHuman: true }
 				: { name: localization.defaultShowman };
-		
+
 		const players: AccountSettings[] = [];
 		const viewers: AccountSettings[] = [];
 
@@ -1065,33 +1025,20 @@ async function gameInit(gameId: number, dataContext: DataContext, role: Role) {
 	}
 }
 
-const isSettingGameButtonKeyChanged: ActionCreator<Actions.IsSettingGameButtonKeyChangedAction> = (isSettingGameButtonKey: boolean) => ({
-	type: Actions.ActionTypes.IsSettingGameButtonKeyChanged, isSettingGameButtonKey
-});
-
 const actionCreators = {
 	reloadComputerAccounts,
 	saveStateToStorage,
 	onConnectionChanged,
-	navigateToLogin,
-	showSettings,
-	navigateToHowToPlay,
-	navigateBack,
 	onAvatarSelectedLocal,
 	onAvatarDeleted,
 	sendAvatar,
 	login,
-	navigateToWelcome,
-	singlePlay,
 	friendsPlay,
 	navigateToLobby,
-	navigateToError,
-	onOnlineModeChanged,
 	onExit,
 	onGamesFilterToggle,
 	onGamesSearchChanged,
 	selectGame,
-	closeGameInfo,
 	unselectGame,
 	newAutoGame,
 	newGame,
@@ -1107,7 +1054,6 @@ const actionCreators = {
 	messageChanged,
 	sendMessage,
 	receiveMessage,
-	windowSizeChanged,
 	gameNameChanged,
 	gamePasswordChanged,
 	gamePackageTypeChanged,
@@ -1120,7 +1066,6 @@ const actionCreators = {
 	createNewGame,
 	createNewAutoGame,
 	gamePackageLibraryChanged,
-	isSettingGameButtonKeyChanged,
 };
 
 export default actionCreators;

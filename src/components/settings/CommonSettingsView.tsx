@@ -5,8 +5,8 @@ import State from '../../state/State';
 import localization from '../../model/resources/localization';
 import SettingsState from '../../state/settings/SettingsState';
 import settingsActionCreators from '../../state/settings/settingsActionCreators';
-import actionCreators from '../../state/actionCreators';
 import LanguageView from '../LanguageView';
+import uiActionCreators from '../../state/ui/uiActionCreators';
 
 interface CommonSettingsViewProps {
 	settings: SettingsState;
@@ -30,7 +30,7 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 		dispatch(settingsActionCreators.showPersonsAtBottomOnWideScreenChanged(showPersonsAtBottomOnWideScreen));
 	},
 	isSettingGameButtonKeyChanged: (isSettingGameButtonKey: boolean) => {
-		dispatch(actionCreators.isSettingGameButtonKeyChanged(isSettingGameButtonKey));
+		dispatch(uiActionCreators.isSettingGameButtonKeyChanged(isSettingGameButtonKey));
 	},
 });
 

@@ -13,7 +13,7 @@ import RoundProgress from './RoundProgress';
 import TablesView from './TablesView';
 import { isHost } from '../../utils/StateHelpers';
 import FlyoutButton, { FlyoutHorizontalOrientation, FlyoutVerticalOrientation } from '../common/FlyoutButton';
-import actionCreators from '../../state/actionCreators';
+import uiActionCreators from '../../state/ui/uiActionCreators';
 import GameMetadataView from './GameMetadataView';
 import BannedView from './BannedView';
 
@@ -69,7 +69,7 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 		dispatch(roomActionCreators.onPass() as unknown as Action);
 	},
 	onShowSettings: () => {
-		dispatch(actionCreators.showSettings(true));
+		dispatch(uiActionCreators.showSettings(true));
 	},
 	onEditTable: () => {
 		dispatch(roomActionCreators.editTable());

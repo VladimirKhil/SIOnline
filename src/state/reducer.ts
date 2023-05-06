@@ -22,82 +22,20 @@ import commonReducer from './common/commonReducer';
 import { KnownCommonAction } from './common/CommonActions';
 import siPackagesReducer from './siPackages/siPackagesReducer';
 import { KnownSIPackagesAction } from './siPackages/SIPackagesActions';
+import uiReducer from './ui/uiReducer';
+import { KnownUIAction } from './ui/UIActions';
 
 const reducer: Reducer<State> = (
 	state: State = initialState,
 	action: AnyAction): State => {
 	switch (action.type) {
-		case ActionTypes.NavigateToLogin:
-			return {
-				...state,
-				ui: {
-					...state.ui,
-					mainView: MainView.Login,
-					previousMainView: state.ui.mainView
-				}
-			};
-
-		case ActionTypes.ShowSettings:
-			return {
-				...state,
-				ui: {
-					...state.ui,
-					areSettingsVisible: action.show,
-					isSettingGameButtonKey: state.ui.isSettingGameButtonKey && action.show
-				}
-			};
-
-		case ActionTypes.NavigateToHowToPlay:
-			return {
-				...state,
-				ui: {
-					...state.ui,
-					mainView: MainView.About,
-					previousMainView: state.ui.mainView
-				}
-			};
-
-		case ActionTypes.NavigateBack:
-			return {
-				...state,
-				ui: {
-					...state.ui,
-					mainView: state.ui.previousMainView
-				}
-			};
-
-		case ActionTypes.NavigateToWelcome:
-			return {
-				...state,
-				ui: {
-					...state.ui,
-					mainView: MainView.Welcome,
-					previousMainView: state.ui.mainView
-				}
-			};
-
-		case ActionTypes.NavigateToNewGame:
-			return {
-				...state,
-				ui: {
-					...state.ui,
-					mainView: MainView.NewGame,
-					previousMainView: state.ui.mainView
-				}
-			};
-
-		case ActionTypes.NavigateToGames:
+		case ActionTypes.DropSelectedGame:
 			return {
 				...state,
 				online: {
 					...state.online,
 					selectedGameId: -1
 				},
-				ui: {
-					...state.ui,
-					mainView: MainView.Games,
-					previousMainView: state.ui.mainView
-				}
 			};
 
 		case ActionTypes.UnselectGame:
@@ -109,14 +47,9 @@ const reducer: Reducer<State> = (
 				}
 			};
 
-		case ActionTypes.NavigateToLobby:
+		case ActionTypes.ResetLobby:
 			return {
 				...state,
-				ui: {
-					...state.ui,
-					mainView: MainView.Lobby,
-					previousMainView: state.ui.mainView
-				},
 				online: {
 					...state.online,
 					games: [],
@@ -125,16 +58,6 @@ const reducer: Reducer<State> = (
 					inProgress: true,
 					error: ''
 				}
-			};
-
-		case ActionTypes.NavigateToError:
-			return {
-				...state,
-				ui: {
-					...state.ui,
-					mainView: MainView.Error,
-					previousMainView: state.ui.mainView
-				},
 			};
 
 		case ActionTypes.ClearGames:
@@ -280,15 +203,6 @@ const reducer: Reducer<State> = (
 				}
 			};
 
-		case ActionTypes.CloseGameInfo:
-			return {
-				...state,
-				ui: {
-					...state.ui,
-					onlineView: OnlineMode.Games
-				}
-			};
-
 		case ActionTypes.PasswordChanged: {
 			return {
 				...state,
@@ -315,27 +229,6 @@ const reducer: Reducer<State> = (
 				online: {
 					...state.online,
 					chatMode: action.chatMode
-				}
-			};
-		}
-
-		case ActionTypes.OnlineModeChanged: {
-			return {
-				...state,
-				ui: {
-					...state.ui,
-					onlineView: action.mode
-				}
-			};
-		}
-
-		case ActionTypes.WindowSizeChanged: {
-			return {
-				...state,
-				ui: {
-					...state.ui,
-					windowWidth: action.width,
-					windowHeight: action.height
 				}
 			};
 		}
@@ -569,15 +462,6 @@ const reducer: Reducer<State> = (
 				}
 			};
 
-		case ActionTypes.IsSettingGameButtonKeyChanged:
-			return {
-				...state,
-				ui: {
-					...state.ui,
-					isSettingGameButtonKey: action.isSettingGameButtonKey
-				}
-			};
-
 		default:
 			return {
 				...state,
@@ -587,7 +471,8 @@ const reducer: Reducer<State> = (
 				common: commonReducer(state.common, action as KnownCommonAction),
 				settings: settingsReducer(state.settings, action as KnownSettingsAction),
 				table: tableReducer(state.table, action as KnownTableAction),
-				siPackages: siPackagesReducer(state.siPackages, action as KnownSIPackagesAction)
+				siPackages: siPackagesReducer(state.siPackages, action as KnownSIPackagesAction),
+				ui: uiReducer(state.ui, action as KnownUIAction),
 			};
 	}
 };

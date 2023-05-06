@@ -5,6 +5,7 @@ import OnlineMode from '../model/enums/OnlineMode';
 import localization from '../model/resources/localization';
 import actionCreators from '../state/actionCreators';
 import FlyoutButton, { FlyoutHorizontalOrientation, FlyoutVerticalOrientation } from './common/FlyoutButton';
+import uiActionCreators from '../state/ui/uiActionCreators';
 
 import './LobbyMenu.css';
 
@@ -18,16 +19,16 @@ interface LobbyMenuProps {
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	onShowGames: () => {
-		dispatch(actionCreators.onOnlineModeChanged(OnlineMode.Games));
+		dispatch(uiActionCreators.onOnlineModeChanged(OnlineMode.Games));
 	},
 	onShowChat: () => {
-		dispatch(actionCreators.onOnlineModeChanged(OnlineMode.Chat));
+		dispatch(uiActionCreators.onOnlineModeChanged(OnlineMode.Chat));
 	},
 	onShowSettings: () => {
-		dispatch(actionCreators.showSettings(true));
+		dispatch(uiActionCreators.showSettings(true));
 	},
 	onHowToPlay: () => {
-		dispatch(actionCreators.navigateToHowToPlay());
+		dispatch(uiActionCreators.navigateToHowToPlay());
 	},
 	onExit: () => {
 		dispatch(actionCreators.onExit() as unknown as Action);

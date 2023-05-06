@@ -16,6 +16,7 @@ import SendStakeButton from './stakes/SendStakeButton';
 import SendAllInButton from './stakes/SendAllInButton';
 import { isHost } from '../../utils/StateHelpers';
 import actionCreators from '../../state/actionCreators';
+import uiActionCreators from '../../state/ui/uiActionCreators';
 
 import './SideControlPanel.css';
 
@@ -108,7 +109,7 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 		dispatch(roomActionCreators.onPass() as unknown as Action);
 	},
 	onShowSettings: () => {
-		dispatch(actionCreators.showSettings(true));
+		dispatch(uiActionCreators.showSettings(true));
 	},
 });
 

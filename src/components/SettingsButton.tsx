@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Action } from 'redux';
 import localization from '../model/resources/localization';
 import actionCreators from '../state/actionCreators';
+import uiActionCreators from '../state/ui/uiActionCreators';
 import FlyoutButton, { FlyoutHorizontalOrientation, FlyoutVerticalOrientation } from './common/FlyoutButton';
 
 import './SettingsButton.css';
@@ -15,10 +16,10 @@ interface SettingsButtonProps {
 
 const mapDispatchToProps = (dispatch: any) => ({
 	onShowSettings: () => {
-		dispatch(actionCreators.showSettings(true));
+		dispatch(uiActionCreators.showSettings(true));
 	},
 	onHowToPlay: () => {
-		dispatch(actionCreators.navigateToHowToPlay());
+		dispatch(uiActionCreators.navigateToHowToPlay());
 	},
 	onExit: () => {
 		dispatch(actionCreators.onExit() as unknown as Action);
