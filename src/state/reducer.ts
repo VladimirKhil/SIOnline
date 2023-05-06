@@ -196,10 +196,6 @@ const reducer: Reducer<State> = (
 				online: {
 					...state.online,
 					selectedGameId: action.gameId
-				},
-				ui: {
-					...state.ui,
-					onlineView: action.showInfo ? OnlineMode.GameInfo : state.ui.onlineView
 				}
 			};
 
@@ -403,12 +399,7 @@ const reducer: Reducer<State> = (
 					...state.game,
 					id: action.id,
 					isAutomatic: action.isAutomatic
-				},
-				ui: {
-					...state.ui,
-					mainView: MainView.Game,
-					previousMainView: state.ui.mainView
-				},
+				}
 			};
 		}
 

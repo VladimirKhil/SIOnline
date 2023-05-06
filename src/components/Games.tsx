@@ -12,6 +12,7 @@ import NewGameDialog from './NewGameDialog';
 import Dialog from './common/Dialog';
 import GameInfoView from './GameInfoView';
 import uiActionCreators from '../state/ui/uiActionCreators';
+import OnlineMode from '../model/enums/OnlineMode';
 
 import './Games.css';
 
@@ -67,7 +68,11 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 		dispatch(actionCreators.newGameCancel());
 	},
 	onSelectGame: (gameId: number, showInfo: boolean) => {
-		dispatch(actionCreators.selectGame(gameId, showInfo));
+		dispatch(actionCreators.selectGame(gameId));
+
+		if (showInfo) {
+			dispatch(uiActionCreators.onOnlineModeChanged(OnlineMode.GameInfo));
+		}
 	},
 	unselectGame: () => {
 		dispatch(actionCreators.unselectGame());

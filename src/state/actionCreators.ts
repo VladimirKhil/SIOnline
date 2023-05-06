@@ -48,6 +48,7 @@ import PackageType2 from '../client/contracts/PackageType';
 import SIContentClient from 'sicontent-client';
 import GameCreationResult from '../client/contracts/GameCreationResult';
 import uiActionCreators from './ui/uiActionCreators';
+import OnlineMode from '../model/enums/OnlineMode';
 
 const onConnectionChanged: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 	(isConnected: boolean, message: string) => async (dispatch: Dispatch<any>, getState: () => State, dataContext: DataContext) => {
@@ -242,10 +243,9 @@ async function loadHostInfoAsync(dispatch: Dispatch<any>, dataContext: DataConte
 	dispatch(commonActionCreators.serverInfoChanged(hostInfo.name, hostInfo.license, hostInfo.maxPackageSizeMb));
 }
 
-const selectGame: ActionCreator<Actions.SelectGameAction> = (gameId: number, showInfo: boolean) => ({
+const selectGame: ActionCreator<Actions.SelectGameAction> = (gameId: number) => ({
 	type: Actions.ActionTypes.SelectGame,
-	gameId,
-	showInfo
+	gameId
 });
 
 const clearGames: ActionCreator<Actions.ClearGamesAction> = () => ({
@@ -301,7 +301,7 @@ const friendsPlay: ActionCreator<ThunkAction<void, State, DataContext, Action>> 
 			const state2 = getState();
 
 			if (selectedGameId && state2.online.games[selectedGameId]) {
-				dispatch(selectGame(selectedGameId, false));
+				dispatch(selectGame(selectedGameId));
 			}
 
 			dispatch(onlineLoadFinish());
@@ -403,7 +403,11 @@ const navigateToLobby: ActionCreator<ThunkAction<void, State, DataContext, Actio
 		dispatch(resetLobby());
 
 		if (gameId > -1) {
-			dispatch(selectGame(gameId, showInfo));
+			dispatch(selectGame(gameId));
+
+			if (showInfo) {
+				dispatch(uiActionCreators.onOnlineModeChanged(OnlineMode.GameInfo));
+			}
 		} else if (dataContext.config.rewriteUrl) {
 			window.history.pushState({}, '', dataContext.config.rootUri);
 		}
@@ -508,6 +512,7 @@ const gameSet: ActionCreator<Actions.GameSetAction> = (id: number, isAutomatic: 
 
 const initGameAsync = async (dispatch: Dispatch<any>, dataContext: DataContext, gameId: number, role: Role, isAutomatic: boolean) => {
 	dispatch(gameSet(gameId, isAutomatic));
+	dispatch(uiActionCreators.navigateToGame());
 	dispatch(tableActionCreators.tableReset());
 	dispatch(tableActionCreators.showText(localization.tableHint, false));
 	dispatch(roomActionCreators.roleChanged(role));

@@ -52,6 +52,10 @@ const navigateToError: ActionCreator<UIActions.NavigateToErrorAction> = () => ({
 	type: UIActions.UIActionTypes.NavigateToError
 });
 
+const navigateToGame: ActionCreator<UIActions.NavigateToGameAction> = () => ({
+	type: UIActions.UIActionTypes.NavigateToGame
+});
+
 const windowSizeChanged: ActionCreator<UIActions.WindowSizeChangedAction> = (width: number, height: number) => ({
 	type: UIActions.UIActionTypes.WindowSizeChanged,
 	width,
@@ -70,6 +74,7 @@ const uiActionCreators = {
 	windowSizeChanged,
 	isSettingGameButtonKeyChanged,
 	navigateToError,
+	navigateToGame,
 	navigateToLobbyInternal,
 	friendsPlayInternal,
 };

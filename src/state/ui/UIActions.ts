@@ -10,6 +10,7 @@ export const enum UIActionTypes {
 	NavigateToGames = 'NAVIGATE_TO_GAMES',
 	NavigateToLobby = 'NAVIGATE_TO_LOBBY',
 	NavigateToError = 'NAVIGATE_TO_ERROR',
+	NavigateToGame = 'NAVIGATE_TO_GAME',
 	CloseGameInfo = 'CLOSE_GAME_INFO',
 	WindowSizeChanged = 'WINDOW_SIZE_CHANGED',
 	OnlineModeChanged = 'ONLINE_MODE_CHANGED',
@@ -25,6 +26,7 @@ export type NavigateToNewGameAction = { type: UIActionTypes.NavigateToNewGame };
 export type NavigateToGamesAction = { type: UIActionTypes.NavigateToGames };
 export type NavigateToLobbyAction = { type: UIActionTypes.NavigateToLobby };
 export type NavigateToErrorAction = { type: UIActionTypes.NavigateToError };
+export type NavigateToGameAction = { type: UIActionTypes.NavigateToGame };
 export type OnlineModeChangedAction = { type: UIActionTypes.OnlineModeChanged, mode: OnlineMode };
 export type CloseGameInfoAction = { type: UIActionTypes.CloseGameInfo };
 export type WindowSizeChangedAction = { type: UIActionTypes.WindowSizeChanged, width: number, height: number };
@@ -40,6 +42,7 @@ export type KnownUIAction =
 	| NavigateToGamesAction
 	| NavigateToLobbyAction
 	| NavigateToErrorAction
+	| NavigateToGameAction
 	| OnlineModeChangedAction
 	| CloseGameInfoAction
 	| WindowSizeChangedAction

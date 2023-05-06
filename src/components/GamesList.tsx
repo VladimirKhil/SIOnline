@@ -9,6 +9,8 @@ import getFilterValue from '../state/getFilterValue';
 import actionCreators from '../state/actionCreators';
 import GameInfo from '../client/contracts/GameInfo';
 import LobbyMenu from './LobbyMenu';
+import uiActionCreators from '../state/ui/uiActionCreators';
+import OnlineMode from '../model/enums/OnlineMode';
 
 import './GamesList.css';
 
@@ -48,7 +50,11 @@ const mapDispatchToProps = (dispatch: any) => ({
 		dispatch(actionCreators.onGamesSearchChanged(gamesSearch));
 	},
 	onSelectGame: (gameId: number, showInfo: boolean) => {
-		dispatch(actionCreators.selectGame(gameId, showInfo));
+		dispatch(actionCreators.selectGame(gameId));
+
+		if (showInfo) {
+			dispatch(uiActionCreators.onOnlineModeChanged(OnlineMode.GameInfo));
+		}
 	},
 	onNewAutoSearchGame: () => {
 		dispatch(actionCreators.createNewAutoGame());

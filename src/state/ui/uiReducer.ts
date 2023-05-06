@@ -70,6 +70,13 @@ const uiReducer: Reducer<UIState> = (state: UIState = initialState, anyAction: A
 				previousMainView: state.mainView
 			};
 
+		case UIActionTypes.NavigateToGame:
+			return {
+				...state,
+				mainView: MainView.Game,
+				previousMainView: state.mainView
+			};
+
 		case UIActionTypes.CloseGameInfo:
 			return {
 				...state,
