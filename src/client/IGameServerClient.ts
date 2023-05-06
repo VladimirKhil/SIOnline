@@ -6,6 +6,7 @@ import GameSettings from './contracts/GameSettings';
 import HostInfo from './contracts/HostInfo';
 import PackageKey from './contracts/PackageKey';
 import Slice from './contracts/Slice';
+import PackageInfo from './contracts/PackageInfo';
 
 /** Defines the SIGame Server client. */
 export default interface IGameServerClient {
@@ -44,6 +45,13 @@ export default interface IGameServerClient {
 	 * @param isMale If host is a male person (or female otherwise).
 	 */
 	createAndJoinGameAsync(gameSettings: GameSettings, packageKey: PackageKey, isMale: boolean): Promise<GameCreationResult>;
+		/**
+	 * Creates a new game and joins it as a host.
+	 * @param gameSettings Game settings.
+	 * @param packageInfo Package info.
+	 * @param isMale If host is a male person (or female otherwise).
+	 */
+	createAndJoinGame2Async(gameSettings: GameSettings, packageInfo: PackageInfo, isMale: boolean): Promise<GameCreationResult>;
 	/**
 	 * Creates an automatic game to play with anybody and joins it.
 	 * @param login User login.

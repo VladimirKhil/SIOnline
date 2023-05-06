@@ -7,6 +7,7 @@ import HostInfo from './contracts/HostInfo';
 import PackageKey from './contracts/PackageKey';
 import Slice from './contracts/Slice';
 import IGameServerClient from './IGameServerClient';
+import PackageInfo from './contracts/PackageInfo';
 
 /** Represents a connection to a SIGame Server. */
 export default class GameServerClient implements IGameServerClient {
@@ -55,6 +56,16 @@ export default class GameServerClient implements IGameServerClient {
 			'CreateAndJoinGameNew',
 			gameSettings,
 			packageKey,
+			[],
+			isMale
+		);
+	}
+
+	createAndJoinGame2Async(gameSettings: GameSettings, packageInfo: PackageInfo, isMale: boolean): Promise<GameCreationResult> {
+		return this.connection.invoke<GameCreationResult>(
+			'CreateAndJoinGame2',
+			gameSettings,
+			packageInfo,
 			[],
 			isMale
 		);

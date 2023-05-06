@@ -31,7 +31,8 @@ const dataContext : DataContext = {
 	connection: null,
 	gameClient,
 	game: new GameClient(gameClient),
-	contentUris: null
+	contentUris: null,
+	contentClient: null,
 };
 
 const store = configureStore({

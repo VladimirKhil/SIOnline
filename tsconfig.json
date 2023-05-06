@@ -8,7 +8,10 @@
     "jsx": "react",
     "skipLibCheck": true,
     "lib": [ "es5", "es2015", "dom" ],
-    "outDir": "dist"
+    "outDir": "dist",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "esModuleInterop": true
   },
   "include": [
     "src"

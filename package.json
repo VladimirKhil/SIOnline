@@ -32,7 +32,8 @@
     "react-router-dom": "^6.2.1",
     "redux": "^4.1.2",
     "redux-thunk": "^2.4.1",
-    "rusha": "^0.8.14"
+    "rusha": "^0.8.14",
+    "sicontent-client": "1.0.8"
   },
   "overrides": {
     "@microsoft/signalr": {

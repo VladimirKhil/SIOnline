@@ -10,6 +10,7 @@ import HostInfo from './contracts/HostInfo';
 import PackageKey from './contracts/PackageKey';
 import Slice from './contracts/Slice';
 import IGameServerClient from './IGameServerClient';
+import PackageInfo from './contracts/PackageInfo';
 
 /** Defines a disconnected version of IGameServerClient. */
 export default class DummyGameServerClient implements IGameServerClient {
@@ -46,6 +47,10 @@ export default class DummyGameServerClient implements IGameServerClient {
 	}
 
 	async createAndJoinGameAsync(gameSettings: GameSettings, packageKey: PackageKey, isMale: boolean): Promise<GameCreationResult> {
+		this.throwNotConnectedError();
+	}
+
+	async createAndJoinGame2Async(gameSettings: GameSettings, packageInfo: PackageInfo, isMale: boolean): Promise<GameCreationResult> {
 		this.throwNotConnectedError();
 	}
 

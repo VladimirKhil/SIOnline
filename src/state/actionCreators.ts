@@ -2,7 +2,7 @@
 import { ThunkAction } from 'redux-thunk';
 import * as signalR from '@microsoft/signalr';
 import * as signalRMsgPack from '@microsoft/signalr-protocol-msgpack';
-import * as JSZip from 'jszip';
+import JSZip from 'jszip';
 import * as Rusha from 'rusha';
 import * as Actions from './Actions';
 import State from './State';
@@ -33,9 +33,6 @@ import ServerAppSettings from '../client/contracts/ServerAppSettings';
 import AccountSettings from '../client/contracts/AccountSettings';
 import GameSettings from '../client/contracts/GameSettings';
 import IGameServerClient from '../client/IGameServerClient';
-import { PackageFilters } from '../model/PackageFilters';
-import { SIPackageInfo } from '../model/SIPackageInfo';
-import { SearchEntity } from '../model/SearchEntity';
 import getErrorMessage from '../utils/ErrorHelpers';
 import FileKey from '../client/contracts/FileKey';
 import tableActionCreators from './table/tableActionCreators';
@@ -46,6 +43,11 @@ import GameClient from '../client/game/GameClient';
 import userActionCreators from './user/userActionCreators';
 import loginActionCreators from './login/loginActionCreators';
 import commonActionCreators from './common/commonActionCreators';
+
+import PackageInfo from '../client/contracts/PackageInfo';
+import PackageType2 from '../client/contracts/PackageType';
+import SIContentClient from 'sicontent-client';
+import GameCreationResult from '../client/contracts/GameCreationResult';
 
 const onConnectionChanged: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 	(isConnected: boolean, message: string) => async (dispatch: Dispatch<any>, getState: () => State, dataContext: DataContext) => {
@@ -132,20 +134,33 @@ async function uploadAvatarAsync(dispatch: Dispatch<Action>, dataContext: DataCo
 			return;
 		}
 
-		const data = Uint8Array.from(atob(base64), c => c.charCodeAt(0));
+		const data = Uint8Array.from(window.atob(base64), c => c.charCodeAt(0));
 
 		const { buffer } = data;
+	
+		const { gameClient, serverUri, contentClient } = dataContext;
+
+		if (contentClient) {
+			const avatarUri2 = await contentClient.uploadAvatarIfNotExistAsync(fileName, new Blob([buffer]));
+
+			const fullAvatarUri2 = avatarUri2.startsWith('/')
+				? contentClient.options.serviceUri + avatarUri2.substring(1)
+				: avatarUri2;
+
+			dispatch(commonActionCreators.avatarLoadEnd(null));
+			dispatch(userActionCreators.avatarChanged(fullAvatarUri2));
+			return;
+		}
+
 		const hash = await hashData(buffer);
 
 		const hashArray = new Uint8Array(hash);
-		const hashArrayEncoded = btoa(String.fromCharCode.apply(null, hashArray as any));
+		const hashArrayEncoded = window.btoa(String.fromCharCode.apply(null, hashArray as any));
 
 		const imageKey: FileKey = {
 			name: fileName,
 			hash: hashArrayEncoded
 		};
-	
-		const { gameClient, serverUri } = dataContext;
 		
 		let avatarUri = await gameClient.hasImageAsync(imageKey);
 
@@ -175,7 +190,9 @@ async function uploadAvatarAsync(dispatch: Dispatch<Action>, dataContext: DataCo
 		dispatch(commonActionCreators.avatarLoadEnd(null));
 		dispatch(userActionCreators.avatarChanged(fullAvatarUri));
 	} catch (err) {
-		dispatch(commonActionCreators.avatarLoadError(getErrorMessage(err)));
+		const errorMessage = getErrorMessage(err);
+		console.log(errorMessage);
+		dispatch(commonActionCreators.avatarLoadError(errorMessage));
 	}
 }
 
@@ -233,6 +250,15 @@ async function loadHostInfoAsync(dispatch: Dispatch<any>, dataContext: DataConte
 	const hostInfo = await dataContext.gameClient.getGameHostInfoAsync(culture);
 	// eslint-disable-next-line no-param-reassign
 	dataContext.contentUris = hostInfo.contentPublicBaseUrls;
+
+	if (hostInfo.contentInfos && hostInfo.contentInfos.length > 0) {
+		const contentIndex = Math.floor(Math.random() * hostInfo.contentInfos.length);
+		const { serviceUri } = hostInfo.contentInfos[contentIndex];
+
+		dataContext.contentClient = new SIContentClient({
+			serviceUri
+		});
+	}
 
 	dispatch(commonActionCreators.serverInfoChanged(hostInfo.name, hostInfo.license, hostInfo.maxPackageSizeMb));
 }
@@ -762,6 +788,29 @@ function uploadPackageAsync(
 	});
 }
 
+async function uploadPackageAsync2(
+	contentClient: SIContentClient,
+	packageData: File,
+	dispatch: Dispatch<any>
+): Promise<PackageInfo> {
+	const packageUri = await contentClient.uploadPackageIfNotExistAsync(
+		packageData.name,
+		packageData,
+		() => dispatch(uploadPackageStarted()),
+		(progress: number) => {
+			dispatch(uploadPackageProgress(progress));
+		},
+		() => dispatch(uploadPackageFinished())
+	);
+
+	return {
+		type: PackageType2.Content,
+		uri: packageUri,
+		contentServiceUri: contentClient.options.serviceUri,
+		secret: null
+	};
+}
+
 async function checkAndUploadPackageAsync(
 	gameClient: IGameServerClient,
 	serverUri: string,
@@ -792,7 +841,7 @@ async function checkAndUploadPackageAsync(
 	const hash = await hashData(await packageData.arrayBuffer());
 
 	const hashArray = new Uint8Array(hash);
-	const hashArrayEncoded = btoa(String.fromCharCode.apply(null, hashArray as any));
+	const hashArrayEncoded = window.btoa(String.fromCharCode.apply(null, hashArray as any));
 
 	const packageKey: PackageKey = {
 		name: packageData.name,
@@ -862,6 +911,7 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 		const compPlayersCount = playersCount - humanPlayersCount - (role === Role.Player ? 1 : 0);
 
 		const compIndicies = [];
+
 		for (let i = 0; i < state.common.computerAccounts.length; i++) {
 			compIndicies.push(i);
 		}
@@ -910,47 +960,63 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 			appSettings: appSettings
 		};
 
+		let result: GameCreationResult;
+
 		try {
-			const packageKey: PackageKey | null = await (async (): Promise<PackageKey | null> => {
-				switch (game.package.type) {
-					case PackageType.Random:
-						return {
-							name: '',
-							hash: null,
-							id: null
-						};
+			if (dataContext.contentClient && game.package.type === PackageType.File && game.package.data) {
+				const packageInfo = await uploadPackageAsync2(dataContext.contentClient, game.package.data, dispatch);
 
-					case PackageType.File:
-						return game.package.data
-							? checkAndUploadPackageAsync(dataContext.gameClient, dataContext.serverUri, game.package.data, dispatch)
-							: null;
+				result = await dataContext.gameClient.createAndJoinGame2Async(
+					gameSettings,
+					packageInfo,
+					state.settings.sex === Sex.Male
+				);
+			} else {
+				const packageKey: PackageKey | null = await (async (): Promise<PackageKey | null> => {
+					switch (game.package.type) {
+						case PackageType.Random:
+							return {
+								name: '',
+								hash: null,
+								id: null
+							};
 
-					case PackageType.SIStorage:
-						return {
-							name: null,
-							hash: null,
-							id: game.package.id
-						};
+						case PackageType.File:
+							return game.package.data
+								? checkAndUploadPackageAsync(
+									dataContext.gameClient,
+									dataContext.serverUri,
+									game.package.data,
+									dispatch
+								) : null;
 
-					default:
-						return null;
+						case PackageType.SIStorage:
+							return {
+								name: null,
+								hash: null,
+								id: game.package.id
+							};
+
+						default:
+							return null;
+					}
+				})();
+
+				if (!packageKey) {
+					dispatch(gameCreationEnd(localization.badPackage));
+					return;
 				}
-			})();
 
-			if (!packageKey) {
-				dispatch(gameCreationEnd(localization.badPackage));
-				return;
+				result = await dataContext.gameClient.createAndJoinGameAsync(
+					gameSettings,
+					packageKey,
+					state.settings.sex === Sex.Male
+				);
 			}
 
-			const result = await dataContext.gameClient.createAndJoinGameAsync(
-				gameSettings,
-				packageKey,
-				state.settings.sex === Sex.Male
-			);
-
 			saveStateToStorage(state);
-
 			dispatch(gameCreationEnd());
+
 			if (result.code > 0) {
 				dispatch(gameCreationEnd(GameErrorsHelper.getMessage(result.code) + (result.errorMessage || '')));
 			} else {
