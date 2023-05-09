@@ -256,6 +256,11 @@ const roomReducer: Reducer<RoomState> = (state: RoomState = initialState, anyAct
 					areVisible: false,
 					areSimple: false
 				},
+				chat: {
+					...state.chat,
+					messages: [],
+					message: ''
+				}
 			};
 
 		case RoomActionTypes.SumsChanged:

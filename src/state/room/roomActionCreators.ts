@@ -152,6 +152,7 @@ const exitGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (
 	}
 
 	dispatch(tableActionCreators.tableReset());
+	dispatch(gameStateCleared());
 
 	dispatch(stopTimer(0));
 	dispatch(stopTimer(1));
