@@ -1,0 +1,7 @@
+1. Add library for sounds
+https://github.com/joshwcomeau/use-sound
+
+2. Use sprites example to fill in
+https://www.joshwcomeau.com/react/announcing-use-sound-react-hook/#sprites-13
+
+3. Downsample sounds from 2.9M to eg 500kb

@@ -27,6 +27,7 @@ import getErrorMessage from './utils/ErrorHelpers';
 import commonActionCreators from './state/common/commonActionCreators';
 import enableNoSleep from './utils/NoSleepHelper';
 import uiActionCreators from './state/ui/uiActionCreators';
+import SoundPlayer from './utils/SoundPlayer';
 
 import './utils/polyfills';
 import './style.css';
@@ -252,6 +253,10 @@ async function run() {
 	if (config.enableNoSleep) {
 		enableNoSleep();
 	}
+
+	// Test code
+	const soundPlayer = new SoundPlayer();
+	soundPlayer.play('test');
 }
 
 run();
