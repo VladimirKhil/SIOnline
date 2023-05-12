@@ -8,6 +8,16 @@ const onSoundVolumeChanged: ActionCreator<SettingsActions.SoundVolumeChangeActio
 	volume
 });
 
+const onSoundChanged: ActionCreator<SettingsActions.SoundChangedAction> = (sound: boolean) => ({
+	type: SettingsActions.SettingsActionTypes.SoundChanged,
+	sound
+});
+
+const onMainMenuSoundChanged: ActionCreator<SettingsActions.MainMenuSoundChangedAction> = (sound: boolean) => ({
+	type: SettingsActions.SettingsActionTypes.MainMenusSoundChanged,
+	sound
+});
+
 const showPersonsAtBottomOnWideScreenChanged: ActionCreator<
 	SettingsActions.ShowPersonsAtBottomOnWideScreenChangedAction
 > = (showPersonsAtBottomOnWideScreen: boolean) => ({
@@ -107,6 +117,8 @@ const onValidationAnswersVisibilityChanged: ActionCreator<SettingsActions.Valida
 
 const settingsActionCreators = {
 	onSoundVolumeChanged,
+	onSoundChanged,
+	onMainMenuSoundChanged,
 	showPersonsAtBottomOnWideScreenChanged,
 	onSexChanged,
 	onAvatarKeyChanged,

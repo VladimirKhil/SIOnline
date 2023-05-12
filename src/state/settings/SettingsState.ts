@@ -4,6 +4,8 @@ import Constants from '../../model/enums/Constants';
 
 export default interface SettingsState {
 	soundVolume: number;
+	sound: boolean;
+	mainMenuSound: boolean;
 	showPersonsAtBottomOnWideScreen: boolean;
 	sex: Sex;
 	avatarKey: string | null;
@@ -15,6 +17,8 @@ export default interface SettingsState {
 
 export const initialState: SettingsState = {
 	soundVolume: 1,
+	sound: true,
+	mainMenuSound: false,
 	showPersonsAtBottomOnWideScreen: true,
 	sex: Sex.Male,
 	avatarKey: null,

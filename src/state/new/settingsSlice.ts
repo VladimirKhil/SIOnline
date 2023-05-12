@@ -5,6 +5,8 @@ import Sex from '../../model/enums/Sex';
 
 export interface SettingsState {
 	soundVolume: number;
+	sound: boolean;
+	mainMenuSound: boolean;
 	showPersonsAtBottomOnWideScreen: boolean;
 	sex: Sex;
 	avatarKey: string | null;
@@ -16,6 +18,8 @@ export interface SettingsState {
 
 const initialState: SettingsState = {
 	soundVolume: 1,
+	sound: true,
+	mainMenuSound: false,
 	showPersonsAtBottomOnWideScreen: true,
 	sex: Sex.Male,
 	avatarKey: null,
