@@ -58,7 +58,7 @@ class GameSoundPlayer {
 	play(sound: GameSound) {
 		this.current = this.sounds.get(sound);
 
-		this.current.play().catch((e) => console.log(e))
+		this.current.play().catch((e) => console.log(e));
 	}
 
 	pause() {
