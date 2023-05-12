@@ -31,7 +31,7 @@ export enum GameSound {
 	ROUND_TIMEOUT = 'round_timeout',
 }
 
-export default class GameSoundPlayer {
+class GameSoundPlayer {
 	private sounds: Map<GameSound, HTMLAudioElement>;
 
 	private current: HTMLAudioElement | null;
@@ -62,7 +62,7 @@ export default class GameSoundPlayer {
 	}
 
 	pause() {
-		if (!this.current instanceof HTMLAudioElement) {
+		if (!this.current) {
 			return;
 		}
 
@@ -70,3 +70,6 @@ export default class GameSoundPlayer {
 		this.current = null;
 	}
 }
+
+const gameSoundPlayer = new GameSoundPlayer();
+export { gameSoundPlayer };

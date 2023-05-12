@@ -27,7 +27,6 @@ import getErrorMessage from './utils/ErrorHelpers';
 import commonActionCreators from './state/common/commonActionCreators';
 import enableNoSleep from './utils/NoSleepHelper';
 import uiActionCreators from './state/ui/uiActionCreators';
-import GameSoundPlayer, { GameSound } from './utils/GameSoundPlayer';
 
 import './utils/polyfills';
 import './style.css';
@@ -253,10 +252,6 @@ async function run() {
 	if (config.enableNoSleep) {
 		enableNoSleep();
 	}
-
-	// Test code
-	const soundPlayer = new GameSoundPlayer();
-	soundPlayer.play(GameSound.MAIN_MENU);
 }
 
 run();
