@@ -34,6 +34,8 @@ export enum GameSound {
 export default class GameSoundPlayer {
 	private sounds: Map<GameSound, HTMLAudioElement>;
 
+	private current: HTMLAudioElement | null;
+
 	constructor() {
 		this.sounds = new Map<GameSound, HTMLAudioElement>([
 			[GameSound.ANSWER_WRONG, new Audio(answerWrongSfx)],
@@ -54,6 +56,17 @@ export default class GameSoundPlayer {
 	}
 
 	play(sound: GameSound) {
-		this.sounds.get(sound)?.play();
+		this.current = this.sounds.get(sound);
+
+		this.current.play().catch((e) => console.log(e))
+	}
+
+	pause() {
+		if (!this.current instanceof HTMLAudioElement) {
+			return;
+		}
+
+		this.current.pause();
+		this.current = null;
 	}
 }

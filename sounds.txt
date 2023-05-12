@@ -1,7 +1,3 @@
-1. Add library for sounds
-https://github.com/joshwcomeau/use-sound
+1. Player should be used in react component for proper interrupt
 
-2. Use sprites example to fill in
-https://www.joshwcomeau.com/react/announcing-use-sound-react-hook/#sprites-13
-
-3. Downsample sounds from 2.9M to eg 500kb
+2. Downsample sounds from 2.9M to eg 500kb
