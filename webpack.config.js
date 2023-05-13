@@ -33,7 +33,8 @@ module.exports = (env, argv) => {
 					  }
 					]
 				},
-				{ test: /\.(eot|ttf|woff|otf)$/, type: 'asset/resource' }
+				{ test: /\.(eot|ttf|woff|otf)$/, type: 'asset/resource' },
+				{ test: /\.mp3?$/, type: 'asset/resource' },
 			]
 		},
 		resolve: {

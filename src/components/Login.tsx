@@ -1,5 +1,5 @@
 ﻿import * as React from 'react';
-import { Dispatch, Action } from 'redux';
+import { Action, Dispatch } from 'redux';
 import { connect } from 'react-redux';
 import Constants from '../model/enums/Constants';
 import localization from '../model/resources/localization';
@@ -13,12 +13,14 @@ import userActionCreators from '../state/user/userActionCreators';
 import uiActionCreators from '../state/ui/uiActionCreators';
 
 import './Login.css';
+import { GameSound, gameSoundPlayer } from '../utils/GameSoundPlayer';
 
 interface LoginProps {
 	login: string;
 	inProgress: boolean;
 	error: string | null;
 	ads?: string;
+	mainMenuSound: boolean;
 	onLoginChanged: (newLogin: string) => void;
 	onHowToPlay: () => void;
 	onLogin: () => void;
@@ -28,6 +30,7 @@ const mapStateToProps = (state: State) => ({
 	login: state.user.login,
 	inProgress: state.login.inProgress,
 	error: state.login.errorMessage,
+	mainMenuSound: state.settings.mainMenuSound,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
@@ -52,6 +55,16 @@ export class Login extends React.Component<LoginProps> {
 			this.props.onLogin();
 		}
 	};
+
+	componentDidMount() {
+		if (this.props.mainMenuSound) {
+			gameSoundPlayer.play(GameSound.MAIN_MENU);
+		}
+	}
+
+	componentWillUnmount() {
+		gameSoundPlayer.pause();
+	}
 
 	render(): JSX.Element {
 		return (

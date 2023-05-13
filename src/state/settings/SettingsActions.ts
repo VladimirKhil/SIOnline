@@ -3,6 +3,8 @@ import TimeSettings from '../../client/contracts/TimeSettings';
 
 export const enum SettingsActionTypes {
 	SoundVolumeChanged = 'SOUND_VOLUME_CHANGED',
+	SoundChanged = 'SOUND_CHANGED',
+	MainMenusSoundChanged = 'MAIN_MENU_SOUND_CHANGED',
 	ShowPersonsAtBottomOnWideScreenChanged = 'SHOW_PERSONS_AT_BOTTOM_ON_WIDE_SCREEN',
 	SexChanged = 'SEX_CHANGED',
 	AvatarKeyChanged = 'AVATAR_KEY_CHANGED',
@@ -25,6 +27,8 @@ export const enum SettingsActionTypes {
 }
 
 export type SoundVolumeChangeAction = { type: SettingsActionTypes.SoundVolumeChanged; volume: number };
+export type SoundChangedAction = { type: SettingsActionTypes.SoundChanged; sound: boolean };
+export type MainMenuSoundChangedAction = { type: SettingsActionTypes.MainMenusSoundChanged; sound: boolean };
 
 export type ShowPersonsAtBottomOnWideScreenChangedAction = {
 	type: SettingsActionTypes.ShowPersonsAtBottomOnWideScreenChanged;
@@ -62,6 +66,8 @@ export type ValidationAnswersVisibilityChangedAction = {
 
 export type KnownSettingsAction =
 	| SoundVolumeChangeAction
+	| SoundChangedAction
+	| MainMenuSoundChangedAction
 	| ShowPersonsAtBottomOnWideScreenChangedAction
 	| SexChangedAction
 	| AvatarKeyChangedAction

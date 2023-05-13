@@ -17,7 +17,7 @@ import localization from './model/resources/localization';
 import ServerInfo from './model/server/ServerInfo';
 import DummyGameServerClient from './client/DummyGameServerClient';
 import GameClient from './client/game/GameClient';
-import { FirebaseOptions, initializeApp, FirebaseApp } from 'firebase/app';
+import { FirebaseApp, FirebaseOptions, initializeApp } from 'firebase/app';
 import { Analytics, getAnalytics } from 'firebase/analytics';
 import { ErrorView } from './components/ErrorView';
 import Constants from './model/enums/Constants';
