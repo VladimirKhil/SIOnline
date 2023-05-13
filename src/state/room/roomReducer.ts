@@ -255,7 +255,17 @@ const roomReducer: Reducer<RoomState> = (state: RoomState = initialState, anyAct
 					...state.stakes,
 					areVisible: false,
 					areSimple: false
-				},
+				}
+			};
+
+		case RoomActionTypes.ClearRoomChat:
+			return {
+				...state,
+				chat: {
+					...state.chat,
+					messages: [],
+					message: ''
+				}
 			};
 
 		case RoomActionTypes.SumsChanged:

@@ -152,6 +152,7 @@ const exitGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (
 	}
 
 	dispatch(tableActionCreators.tableReset());
+	dispatch(clearRoomChat());
 
 	dispatch(stopTimer(0));
 	dispatch(stopTimer(1));
@@ -781,6 +782,10 @@ const mediaLoaded: ActionCreator<ThunkAction<void, State, DataContext, Action>> 
 	await dataContext.game.mediaLoaded();
 };
 
+const clearRoomChat: ActionCreator<RunActions.ClearRoomChatAction> = () => ({
+	type: RunActions.RoomActionTypes.ClearRoomChat
+});
+
 const roomActionCreators = {
 	runChatModeChanged,
 	runChatMessageChanged,
@@ -895,6 +900,7 @@ const roomActionCreators = {
 	unban,
 	playerMediaLoaded,
 	mediaLoaded,
+	clearRoomChat,
 };
 
 export default roomActionCreators;
