@@ -13,7 +13,7 @@ export default interface TimerInfo {
 
 	/** Current timer value. */
 	value: number;
-	
+
 	/** Maximum timer value. */
 	maximum: number;
 }

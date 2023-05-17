@@ -12,6 +12,8 @@ import Slice from './contracts/Slice';
 import IGameServerClient from './IGameServerClient';
 import PackageInfo from './contracts/PackageInfo';
 
+// TODO: remove and replace with dummy version of SignalR connection
+
 /** Defines a disconnected version of IGameServerClient. */
 export default class DummyGameServerClient implements IGameServerClient {
 	async getComputerAccountsAsync(culture: string): Promise<string[]> {

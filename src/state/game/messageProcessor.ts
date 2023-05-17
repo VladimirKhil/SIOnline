@@ -208,7 +208,7 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 
 		case GameMessages.BannedList:
 			const bannedList: Record<string, string> = {};
-				
+
 			for (let i = 1; i < args.length - 1; i += 2) {
 				bannedList[args[i]] = args[i + 1];
 			}
@@ -909,25 +909,23 @@ function onCatCost(dispatch: Dispatch<any>, args: string[]) {
 	dispatch(roomActionCreators.decisionNeededChanged(true));
 }
 
-function onChoose(dispatch: Dispatch<any>) {	
+function onChoose(dispatch: Dispatch<any>) {
 	dispatch(roomActionCreators.decisionNeededChanged(true));
 	dispatch(tableActionCreators.isSelectableChanged(true));
 }
 
 function onStake(dispatch: Dispatch<any>, state: State, args: string[], maximum: number) {
-	{
-		const allowedStakeTypes = {
-			[StakeTypes.Nominal]: args[1] === '+',
-			[StakeTypes.Sum]: args[2] === '+',
-			[StakeTypes.Pass]: args[3] === '+',
-			[StakeTypes.AllIn]: args[4] === '+'
-		};
+	const allowedStakeTypes = {
+		[StakeTypes.Nominal]: args[1] === '+',
+		[StakeTypes.Sum]: args[2] === '+',
+		[StakeTypes.Pass]: args[3] === '+',
+		[StakeTypes.AllIn]: args[4] === '+'
+	};
 
-		const minimum = parseInt(args[5], 10);
+	const minimum = parseInt(args[5], 10);
 
-		dispatch(roomActionCreators.setStakes(allowedStakeTypes, minimum, maximum, minimum, 100, 'STAKE', false));
-		dispatch(roomActionCreators.decisionNeededChanged(true));
-	}
+	dispatch(roomActionCreators.setStakes(allowedStakeTypes, minimum, maximum, minimum, 100, 'STAKE', false));
+	dispatch(roomActionCreators.decisionNeededChanged(true));
 }
 
 const playerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataContext, args: string[]) => {

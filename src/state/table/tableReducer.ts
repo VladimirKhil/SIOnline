@@ -171,7 +171,7 @@ const tableReducer: Reducer<TableState> = (state: TableState = initialState, any
 			return {
 				...state,
 				canPress: action.canPress,
-				isMediaStopped: true
+				isMediaStopped: action.canPress ? state.isMediaStopped : true,
 			};
 
 		case TableActionTypes.IsSelectableChanged:
