@@ -36,7 +36,9 @@ jobs:
       run: npm run build-prod
       
     - name: Set image tag
-      run: echo "IMAGE_TAG=${{ github.event.release.tag_name:1 || github.event.inputs.version }}" >> $GITHUB_ENV
+      run: |
+        TAG=${{ github.event.release.tag_name || github.event.inputs.version }}
+        echo "IMAGE_TAG=${TAG#v}" >> $GITHUB_ENV
       
     - name: Build the Docker image
       run: |
