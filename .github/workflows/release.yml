@@ -36,10 +36,10 @@ jobs:
       run: npm run build-prod
       
     - name: Set image tag
-      run: echo "IMAGE_TAG=${{ secrets.DOCKER_HUB_REPOSITORY }}:${{ github.event.release.tag_name || github.event.inputs.version }}"" >> $GITHUB_ENV
+      run: echo "IMAGE_TAG=${{ github.event.release.tag_name:1 || github.event.inputs.version }}" >> $GITHUB_ENV
       
     - name: Build the Docker image
       run: |
         echo "${{ secrets.DOCKER_HUB_TOKEN }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin docker.io
-        docker build . --file Dockerfile --tag $IMAGE_TAG
-        docker push $IMAGE_TAG
+        docker build . --file Dockerfile --tag ${{ secrets.DOCKER_HUB_REPOSITORY }}:$IMAGE_TAG
+        docker push ${{ secrets.DOCKER_HUB_REPOSITORY }}:$IMAGE_TAG
