@@ -4,6 +4,12 @@ on:
   release:
     types:
       - created
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version'
+        required: true
+        default: '1.0.0'
 
 jobs:
   build:
@@ -30,7 +36,7 @@ jobs:
       run: npm run build-prod
       
     - name: Set image tag
-      run: echo "IMAGE_TAG=${{ secrets.DOCKER_HUB_REPOSITORY }}:${{ github.event.release.tag_name || github.ref }}"" >> $GITHUB_ENV
+      run: echo "IMAGE_TAG=${{ secrets.DOCKER_HUB_REPOSITORY }}:${{ github.event.release.tag_name || github.event.inputs.version }}"" >> $GITHUB_ENV
       
     - name: Build the Docker image
       run: |
