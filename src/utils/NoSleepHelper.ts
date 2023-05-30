@@ -10,10 +10,8 @@ export default function enableNoSleep() {
 	try {
 		noSleep = new NoSleep();
 	} catch {
-		// it is not working
+		noSleep = eval('new nosleep_js_1()');
 	}
-
-	noSleep = eval('new nosleep_js_1()');
 
 	document.addEventListener(
 		'click',
