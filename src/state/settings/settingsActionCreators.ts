@@ -13,6 +13,11 @@ const onSoundChanged: ActionCreator<SettingsActions.SoundChangedAction> = (sound
 	sound
 });
 
+const onAppSoundChanged: ActionCreator<SettingsActions.AppSoundChangedAction> = (sound: boolean) => ({
+	type: SettingsActions.SettingsActionTypes.AppSoundChanged,
+	sound
+});
+
 const onMainMenuSoundChanged: ActionCreator<SettingsActions.MainMenuSoundChangedAction> = (sound: boolean) => ({
 	type: SettingsActions.SettingsActionTypes.MainMenusSoundChanged,
 	sound
@@ -118,6 +123,7 @@ const onValidationAnswersVisibilityChanged: ActionCreator<SettingsActions.Valida
 const settingsActionCreators = {
 	onSoundVolumeChanged,
 	onSoundChanged,
+	onAppSoundChanged,
 	onMainMenuSoundChanged,
 	showPersonsAtBottomOnWideScreenChanged,
 	onSexChanged,

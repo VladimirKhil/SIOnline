@@ -14,10 +14,17 @@ const settingsReducer: Reducer<SettingsState> = (
 				...state,
 				soundVolume: action.volume
 			};
+
 		case SettingsActionTypes.SoundChanged:
 			return {
 				...state,
 				sound: action.sound
+			};
+
+		case SettingsActionTypes.AppSoundChanged:
+			return {
+				...state,
+				appSound: action.sound
 			};
 
 		case SettingsActionTypes.MainMenusSoundChanged:

@@ -273,7 +273,7 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 				if (!isNaN(index) && index > -1 && index < state.room.persons.players.length) {
 					dispatch(roomActionCreators.playerStateChanged(index, PlayerStates.Press));
 				} else if (args[1] === 'A') { // This is ENDTRY for All
-					playGameSound(state.settings.sound, GameSound.QUESTION_NOANSWERS);
+					playGameSound(state.settings.appSound, GameSound.QUESTION_NOANSWERS);
 					dispatch(roomActionCreators.stopTimer(1));
 				}
 			}
@@ -292,7 +292,7 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 
 		case 'FINALTHINK':
 			// Not used - finalthink sound could be played here
-			playGameSound(state.settings.sound, GameSound.FINAL_THINK);
+			playGameSound(state.settings.appSound, GameSound.FINAL_THINK);
 			break;
 
 		case 'GAMEMETADATA':
@@ -350,7 +350,7 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 					break;
 				}
 			}
-			
+
 			break;
 
 		case 'OUT':
@@ -359,7 +359,7 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 
 				const themeInfo = state.table.roundInfo[themeIndex];
 
-				playGameSound(state.settings.sound, GameSound.FINAL_DELETE);
+				playGameSound(state.settings.appSound, GameSound.FINAL_DELETE);
 
 				if (themeInfo) {
 					dispatch(tableActionCreators.blinkTheme(themeIndex));
@@ -413,10 +413,12 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 
 				if (index > -1 && index < state.room.persons.players.length) {
 					dispatch(roomActionCreators.playerStateChanged(index, isRight ? PlayerStates.Right : PlayerStates.Wrong));
+
 					const rightApplause = state.room.stage.currentPrice >= 2000
 						? GameSound.APPLAUSE_BIG
 						: GameSound.APPLAUSE_SMALL;
-					playGameSound(state.settings.sound, isRight ? rightApplause : GameSound.ANSWER_WRONG);
+
+					playGameSound(state.settings.appSound, isRight ? rightApplause : GameSound.ANSWER_WRONG);
 				}
 			}
 			break;
@@ -445,6 +447,7 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 			{
 				const playerIndex = parseInt(args[1], 10);
 				const player = state.room.persons.players[playerIndex];
+
 				if (!player) {
 					break;
 				}
@@ -457,12 +460,14 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 			{
 				const playerIndex = parseInt(args[1], 10);
 				const player = state.room.persons.players[playerIndex];
+
 				if (!player) {
 					break;
 				}
 
 				const stakeType = parseInt(args[2], 10) as StakeTypes;
 				let stake = 0;
+
 				switch (stakeType) {
 					case StakeTypes.Nominal:
 						stake = state.room.stage.currentPrice;
@@ -493,26 +498,31 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 			const uri = preprocessServerUri(args[2], dataContext);
 
 			dispatch(roomActionCreators.personAvatarChanged(personName, uri));
-
 			break;
 		}
 
 		case 'QTYPE':
 			const qType = args[1];
+
 			switch (qType) {
 				case 'auction':
-					playGameSound(state.settings.sound, GameSound.QUESTION_STAKE);
+				case 'stake':
+					playGameSound(state.settings.appSound, GameSound.QUESTION_STAKE);
 					dispatch(tableActionCreators.showSpecial(localization.questionTypeStake, state.table.activeThemeIndex));
 					break;
 
 				case 'cat':
 				case 'bagcat':
-					playGameSound(state.settings.sound, GameSound.QUESTION_SECRET);
+				case 'secret':
+				case 'secretPublicPrice':
+				case 'secretNoQuestion':
+					playGameSound(state.settings.appSound, GameSound.QUESTION_SECRET);
 					dispatch(tableActionCreators.showSpecial(localization.questionTypeSecret));
 					break;
 
 				case 'sponsored':
-					playGameSound(state.settings.sound, GameSound.QUESTION_NORISK);
+				case 'noRisk':
+					playGameSound(state.settings.appSound, GameSound.QUESTION_NORISK);
 					dispatch(tableActionCreators.showSpecial(localization.questionTypeNoRisk));
 					break;
 
@@ -629,7 +639,7 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 				roundThemes.push({ name: args[i], questions: [] });
 			}
 
-			playGameSound(state.settings.sound, GameSound.ROUND_THEMES);
+			playGameSound(state.settings.appSound, GameSound.ROUND_THEMES);
 			dispatch(tableActionCreators.showRoundThemes(roundThemes, state.room.stage.name === 'Final', printThemes));
 			break;
 
@@ -655,9 +665,10 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 			}
 
 			if (stage === GameStage.Round || stage === GameStage.Final) {
-				playGameSound(state.settings.sound, GameSound.ROUND_BEGIN);
+				playGameSound(state.settings.appSound, GameSound.ROUND_BEGIN);
 				dispatch(tableActionCreators.showRound(args[2]));
 				dispatch(roomActionCreators.playersStateCleared());
+
 				if (stage === GameStage.Round) {
 					for	(let i = 0; i < state.room.persons.players.length; i++) {
 						dispatch(roomActionCreators.playerInGameChanged(i, true));
@@ -747,7 +758,7 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 
 		case 'TIMEOUT':
 			// Not used - timeout sound could be played here
-			playGameSound(state.settings.sound, GameSound.ROUND_TIMEOUT);
+			playGameSound(state.settings.appSound, GameSound.ROUND_TIMEOUT);
 			break;
 
 		case 'TIMER':
@@ -861,7 +872,7 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 
 		case 'WINNER':
 			// Not used - applause sound could be played here
-			playGameSound(state.settings.sound, GameSound.APPLAUSE_FINAL);
+			playGameSound(state.settings.appSound, GameSound.APPLAUSE_FINAL);
 			break;
 
 		case 'WRONGTRY':

@@ -14,6 +14,7 @@ interface CommonSettingsViewProps {
 
 	onSoundVolumeChange: (volume: number) => void;
 	onSoundChange: (sound: boolean) => void;
+	onAppSoundChange: (sound: boolean) => void;
 	onMainMenuSoundChange: (sound: boolean) => void;
 	onShowPersonsAtBottomOnWideScreenChanged: (showPersonsAtBottomOnWideScreen: boolean) => void;
 	isSettingGameButtonKeyChanged: (isSettingGameButtonKey: boolean) => void;
@@ -30,6 +31,9 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	},
 	onSoundChange: (sound: boolean) => {
 		dispatch(settingsActionCreators.onSoundChanged(sound));
+	},
+	onAppSoundChange: (sound: boolean) => {
+		dispatch(settingsActionCreators.onAppSoundChanged(sound));
 	},
 	onMainMenuSoundChange: (sound: boolean) => {
 		dispatch(settingsActionCreators.onMainMenuSoundChanged(sound));
@@ -58,6 +62,16 @@ export function CommonSettingsView(props: CommonSettingsViewProps): JSX.Element 
 					onChange={() => props.onSoundChange(!props.settings.sound)}
 				/>
 				<label htmlFor="sound">{localization.sound}</label>
+			</div>
+
+			<div className="settingItem">
+				<input
+					id="appSound"
+					type="checkbox"
+					checked={props.settings.appSound}
+					onChange={() => props.onAppSoundChange(!props.settings.appSound)}
+				/>
+				<label htmlFor="appSound">{localization.soundApp}</label>
 			</div>
 
 			<div className="settingItem">
