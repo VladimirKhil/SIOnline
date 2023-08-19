@@ -214,13 +214,13 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 												</li>
 											</>
 										) : null}
-										
+
 									<li onClick={() => props.onShowPersons()}>{localization.members}</li>
 									<li onClick={() => props.onShowTables()}>{localization.tables}</li>
 									<li onClick={() => props.onShowBanned()}>{localization.bannedList}</li>
 									<li onClick={() => props.onShowGameInfo()}>{localization.gameInfo}</li>
 									{canPause ? <li className={enabledClass} onClick={() => props.onPause()}>{pauseTitle}</li> : null}
-									
+
 									{props.role === Role.Showman ? (
 										<li className={enabledEditClass} onClick={() => props.onEditTable()}>{localization.editTable}</li>
 									) : null}
@@ -228,7 +228,7 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 									<li onClick={() => props.onShowSettings()}>{localization.settings}</li>
 								</ul>
 							)}
-							theme={FlyoutTheme.Light}
+							theme={FlyoutTheme.Dark}
 							alignWidth
 							verticalOrientation={FlyoutVerticalOrientation.Top}
 						>
@@ -259,7 +259,7 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 								</div>
 							</div>
 						)}
-						theme={FlyoutTheme.Light}
+						theme={FlyoutTheme.Dark}
 						alignWidth
 						verticalOrientation={FlyoutVerticalOrientation.Top}
 						horizontalOrientation={FlyoutHorizontalOrientation.Left}

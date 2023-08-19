@@ -295,6 +295,20 @@ const banPerson: ActionCreator<ThunkAction<void, State, DataContext, Action>> = 
 	await dataContext.gameClient.msgAsync('BAN', personName);
 };
 
+const setHost: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
+	_dispatch: Dispatch<RunActions.KnownRoomAction>,
+	getState: () => State,
+	dataContext: DataContext
+	) => {
+	const personName = getState().room.chat.selectedPersonName;
+
+	if (!personName) {
+		return;
+	}
+
+	await dataContext.game.setHost(personName);
+};
+
 const personAvatarChanged: ActionCreator<RunActions.PersonAvatarChangedAction> = (personName: string, avatarUri: string) => ({
 	type: RunActions.RoomActionTypes.PersonAvatarChanged, personName, avatarUri
 });
@@ -846,6 +860,7 @@ const roomActionCreators = {
 	changeType,
 	kickPerson,
 	banPerson,
+	setHost,
 	personAvatarChanged,
 	gameStarted,
 	stageChanged,

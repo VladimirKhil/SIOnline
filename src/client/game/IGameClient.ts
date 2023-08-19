@@ -6,6 +6,9 @@ export default interface IGameClient {
 	/** Sends answer version. */
 	sendAnswerVersion(answerVersion: string): Promise<boolean>;
 
+	/** Sets person as host. */
+	setHost(personName: string): Promise<boolean>;
+
 	/** Toggles (removes or restores) a question on game table. */
 	toggle(themeIndex: number, questionIndex: number): Promise<boolean>;
 

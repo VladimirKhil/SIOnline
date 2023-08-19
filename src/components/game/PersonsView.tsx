@@ -6,11 +6,13 @@ import localization from '../../model/resources/localization';
 import Account from '../../model/Account';
 import roomActionCreators from '../../state/room/roomActionCreators';
 import PersonView from './PersonView';
+import { isHost } from '../../utils/StateHelpers';
 
 import './PersonsView.css';
 
 interface PersonsViewProps {
 	isConnected: boolean;
+	isHost: boolean;
 	showman: Account | undefined;
 	players: Account[];
 	viewers: Account[];
@@ -18,6 +20,7 @@ interface PersonsViewProps {
 	selectedPerson: Account | null;
 	kick: () => void;
 	ban: () => void;
+	setHost: () => void;
 }
 
 const mapStateToProps = (state: State) => {
@@ -38,6 +41,7 @@ const mapStateToProps = (state: State) => {
 
 	return {
 		isConnected: state.common.isConnected,
+		isHost: isHost(state),
 		showman,
 		players,
 		viewers,
@@ -52,6 +56,9 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => ({
 	},
 	ban: () => {
 		dispatch((roomActionCreators.banPerson() as object) as AnyAction);
+	},
+	setHost: () => {
+		dispatch((roomActionCreators.setHost() as object) as AnyAction);
 	}
 });
 
@@ -81,7 +88,7 @@ function inviteLink() {
 }
 
 export function PersonsView(props: PersonsViewProps): JSX.Element {
-	const canKick = props.selectedPerson && props.selectedPerson.name !== props.login && props.selectedPerson.isHuman;
+	const canKick = props.isHost && props.selectedPerson && props.selectedPerson.name !== props.login && props.selectedPerson.isHuman;
 
 	return (
 		<>
@@ -112,6 +119,16 @@ export function PersonsView(props: PersonsViewProps): JSX.Element {
 			<div className="buttonsPanel inviteLinkHost">
 				<button type="button" className='standard' onClick={() => inviteLink()}>{localization.inviteLink}</button>
 				<div ref={tooltipRef} className='inviteLinkTooltip'>{localization.inviteLinkCopied}</div>
+			</div>
+
+			<div className="buttonsPanel">
+				<button
+					type="button"
+					className='standard'
+					onClick={() => props.setHost()}
+					disabled={!props.isConnected || !canKick}>
+					{localization.setHost}
+				</button>
 			</div>
 
 			<div className="buttonsPanel">
