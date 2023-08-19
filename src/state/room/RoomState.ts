@@ -80,6 +80,7 @@ export default interface RoomState {
 		gameName: string | null;
 		packageName: string | null;
 		contactUri: string | null;
+		voiceChatUri: string | null;
 	},
 	banned: {
 		entries: Record<string, string>;
@@ -192,6 +193,7 @@ export const initialState: RoomState = {
 		gameName: null,
 		packageName: null,
 		contactUri: null,
+		voiceChatUri: null,
 	},
 	banned: {
 		entries: {},

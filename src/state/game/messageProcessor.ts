@@ -295,13 +295,13 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 			playGameSound(state.settings.appSound, GameSound.FINAL_THINK);
 			break;
 
-		case 'GAMEMETADATA':
+		case GameMessages.GameMetadata:
 			{
 				if (args.length < 4) {
 					break;
 				}
 
-				dispatch(roomActionCreators.gameMetadataChanged(args[1], args[2], args[3]));
+				dispatch(roomActionCreators.gameMetadataChanged(args[1], args[2], args[3], args.length > 4 ? args[4] : null));
 			}
 			break;
 

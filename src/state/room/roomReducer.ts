@@ -809,6 +809,7 @@ const roomReducer: Reducer<RoomState> = (state: RoomState = initialState, anyAct
 					gameName: action.gameName,
 					packageName: action.packageName,
 					contactUri: action.contactUri,
+					voiceChatUri: action.voiceChatUri,
 				}
 			};
 

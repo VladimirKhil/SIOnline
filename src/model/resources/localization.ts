@@ -125,7 +125,7 @@ const localization = new LocalizedStrings({
 		gameStarted: 'Game started',
 		gamesTitle: 'Find a game in the list or create a new game',
 		gameType: 'Game type',
-		gameTypeClassicHint: 'Selecting questions from table, playing special questions and final round',		
+		gameTypeClassicHint: 'Selecting questions from table, playing special questions and final round',
 		gameTypeSimpleHint: 'Playing only standard questions one be one',
 		greeting: 'Welcome to SIOnline!',
 		hideAnswers: 'Hide answers',
@@ -178,7 +178,7 @@ const localization = new LocalizedStrings({
 		nofalsestart: 'without false starts',
 		nominal: 'Nominal',
 		notSet: 'Not set',
-		noWarranty: `The game is distributed free of charge. 
+		noWarranty: `The game is distributed free of charge.
 		The author does not guarantee the correct operation of the game in arbitrary conditions
 		and is not responsible for any consequences from the game usage.`,
 		oral: 'oral',
@@ -295,6 +295,7 @@ const localization = new LocalizedStrings({
 		validateAnswer: 'Is player answer correct?',
 		viewer: 'Viewer',
 		viewers: 'Viewers',
+		voiceChat: 'Voice chat',
 		welcomeTitle: 'Select an action',
 		withoutPassword: 'Without password',
 		wrongAnswers: 'Wrong answers',
@@ -588,6 +589,7 @@ const localization = new LocalizedStrings({
 		validateAnswer: 'Верен ли ответ игрока?',
 		viewer: 'Зритель',
 		viewers: 'Зрители',
+		voiceChat: 'Голосовой чат',
 		welcomeTitle: 'Выберите действие',
 		withoutPassword: 'Без пароля',
 		wrongAnswers: 'Неправильные ответы',

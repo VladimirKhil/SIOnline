@@ -15,7 +15,7 @@ interface StartGameAreaProps {
 	hasGameStarted: boolean;
 	isHost: boolean;
 	isReady: boolean;
-	sex: Sex;	
+	sex: Sex;
 	isAutomatic: boolean;
 	role: Role;
 	onReady: (isReady: boolean) => void;
@@ -28,7 +28,7 @@ const getIsReady = (state: State) => {
 	if (role === Role.Showman) {
 		return persons.showman.isReady;
 	}
-	
+
 	if (role === Role.Player) {
 		const me = persons.players.find(p => p.name === state.user.login);
 		if (me) {

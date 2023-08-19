@@ -780,8 +780,13 @@ const buttonBlockingTimeChanged: ActionCreator<RunActions.ButtonBlockingChangedA
 	type: RunActions.RoomActionTypes.ButtonBlockingTimeChanged, buttonBlockingTime
 });
 
-const gameMetadataChanged: ActionCreator<RunActions.GameMetadataChangedAction> = (gameName: string, packageName: string, contactUri: string) => ({
-	type: RunActions.RoomActionTypes.GameMetadataChanged, gameName, packageName, contactUri
+const gameMetadataChanged: ActionCreator<RunActions.GameMetadataChangedAction> = (
+	gameName: string,
+	packageName: string,
+	contactUri: string,
+	voiceChatUri: string | null
+) => ({
+	type: RunActions.RoomActionTypes.GameMetadataChanged, gameName, packageName, contactUri, voiceChatUri
 });
 
 const bannedListChanged: ActionCreator<RunActions.BannedListChangedAction> = (bannedList: Record<string, string>) => ({

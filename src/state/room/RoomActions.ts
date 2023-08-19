@@ -182,7 +182,15 @@ export type ChooserChangedAction = { type: RoomActionTypes.ChooserChanged, choos
 export type PlayerInGameChangedAction = { type: RoomActionTypes.PlayerInGameChanged, playerIndex: number, inGame: boolean };
 export type AreApellationsEnabledChangedAction = { type: RoomActionTypes.AreApellationsEnabledChanged, areApellationsEnabled: boolean };
 export type ButtonBlockingChangedAction = { type: RoomActionTypes.ButtonBlockingTimeChanged, buttonBlockingTime: number };
-export type GameMetadataChangedAction = { type: RoomActionTypes.GameMetadataChanged, gameName: string, packageName: string, contactUri: string };
+
+export type GameMetadataChangedAction = {
+	type: RoomActionTypes.GameMetadataChanged,
+	gameName: string,
+	packageName: string,
+	contactUri: string,
+	voiceChatUri: string | null
+};
+
 export type BannedListChangedAction = { type: RoomActionTypes.BannedListChanged, bannedList: Record<string, string> };
 export type BannedAction = { type: RoomActionTypes.Banned, ip: string, name: string };
 export type UnbannedAction = { type: RoomActionTypes.Unbanned, ip: string };

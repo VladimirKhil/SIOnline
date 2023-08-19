@@ -16,6 +16,7 @@ import FlyoutButton, { FlyoutHorizontalOrientation, FlyoutVerticalOrientation } 
 import uiActionCreators from '../../state/ui/uiActionCreators';
 import GameMetadataView from './GameMetadataView';
 import BannedView from './BannedView';
+import isWellFormedUri from '../../utils/isWellFormedUri';
 
 import './GameChatView.css';
 
@@ -30,6 +31,8 @@ interface GameChatViewProps {
 	isHost: boolean;
 	isPaused: boolean;
 	isEditEnabled: boolean;
+	voiceChatUri: string | null;
+
 	onChatModeChanged: (chatMode: ChatMode) => void;
 	onMarkQuestion: () => void;
 	onEditSums: (enable: boolean) => void;
@@ -50,6 +53,7 @@ const mapStateToProps = (state: State) => ({
 	isHost: isHost(state),
 	isPaused: state.room.stage.isGamePaused,
 	isEditEnabled: state.room.stage.isEditEnabled,
+	voiceChatUri: state.room.metadata.voiceChatUri,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
@@ -83,6 +87,12 @@ function getSideArea(props: GameChatViewProps): React.ReactNode {
 				<div className="game__chat">
 					<GameLogView />
 					<ChatInput />
+
+					{props.voiceChatUri && isWellFormedUri(props.voiceChatUri) ? (
+						<a href={props.voiceChatUri} className='voiceChatUrl' target='_blank' title={props.voiceChatUri}>
+							<button className="standard wide commandButton bottomButton">{localization.voiceChat}</button>
+						</a>
+					) : null}
 				</div>
 			);
 
@@ -107,7 +117,7 @@ function getSideArea(props: GameChatViewProps): React.ReactNode {
 				</div>
 			);
 
-		case ChatMode.Info:			
+		case ChatMode.Info:
 		default:
 			return (
 				<div className="tabBody">
@@ -121,7 +131,7 @@ export function GameChatView(props: GameChatViewProps): JSX.Element {
 	return (
 		<div id="gameLogHost">
 			<RoundProgress />
-			
+
 			<div className="wide tabHeader gameHeader">
 				<h1
 					className={props.chatMode === ChatMode.Chat ? 'activeTab' : ''}

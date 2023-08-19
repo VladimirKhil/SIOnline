@@ -17,6 +17,7 @@ import SendAllInButton from './stakes/SendAllInButton';
 import { isHost } from '../../utils/StateHelpers';
 import actionCreators from '../../state/actionCreators';
 import uiActionCreators from '../../state/ui/uiActionCreators';
+import isWellFormedUri from '../../utils/isWellFormedUri';
 
 import './SideControlPanel.css';
 
@@ -33,6 +34,8 @@ interface SideControlPanelProps {
 	areStakesVisible: boolean;
 	areSumsEditable: boolean;
 	roundsNames: string[] | null;
+	voiceChatUri: string | null;
+
 	onChatVisibilityChanged: (isOpen: boolean) => void;
 	onMarkQuestion: () => void;
 	onShowPersons: () => void;
@@ -62,7 +65,8 @@ const mapStateToProps = (state: State) => ({
 	lastReplic: state.room.lastReplic,
 	areStakesVisible: state.room.stakes.areVisible,
 	areSumsEditable: state.room.areSumsEditable,
-	roundsNames: state.room.roundsNames
+	roundsNames: state.room.roundsNames,
+	voiceChatUri: state.room.metadata.voiceChatUri,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
@@ -130,6 +134,8 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 	const enabledEditClass = props.isConnected && props.isPaused ? '' : 'disabled';
 
 	const canStart = !props.hasGameStarted && props.isHost;
+
+	const { voiceChatUri } = props;
 
 	return (
 		<div className="game__utilsArea">
@@ -223,6 +229,10 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 
 									{props.role === Role.Showman ? (
 										<li className={enabledEditClass} onClick={() => props.onEditTable()}>{localization.editTable}</li>
+									) : null}
+
+									{voiceChatUri && isWellFormedUri(voiceChatUri) ? (
+										<li title={voiceChatUri} onClick={() => window.open(voiceChatUri, '_blank')}>{localization.voiceChat}</li>
 									) : null}
 
 									<li onClick={() => props.onShowSettings()}>{localization.settings}</li>
