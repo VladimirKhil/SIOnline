@@ -474,6 +474,30 @@ const onAnswerChanged: ActionCreator<RunActions.AnswerChangedAction> = (answer: 
 	type: RunActions.RoomActionTypes.AnswerChanged, answer
 });
 
+let isAnswerVersionThrottled = false;
+
+const updateAnswer: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (answer: string) => async (
+	dispatch: Dispatch<any>,
+	getState: () => State,
+	dataContext: DataContext
+	) => {
+	dispatch(onAnswerChanged(answer));
+
+	if (isAnswerVersionThrottled) {
+		return;
+	}
+
+	isAnswerVersionThrottled = true;
+
+	setTimeout(
+		async () => {
+			isAnswerVersionThrottled = false;
+			await dataContext.game.sendAnswerVersion(answer);
+		},
+		3000
+	);
+};
+
 const sendAnswer: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
 	dispatch: Dispatch<any>,
 	getState: () => State,
@@ -851,7 +875,7 @@ const roomActionCreators = {
 	apellate,
 	disagree,
 	isAnswering,
-	onAnswerChanged,
+	updateAnswer,
 	sendAnswer,
 	validate,
 	approveAnswer,

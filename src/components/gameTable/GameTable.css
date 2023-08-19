@@ -191,8 +191,13 @@
     height: 10px;
 }
 
+.commonProgress.captioned {
+    margin-top: 28px;
+}
+
 .commonProgress .progress-bar {
-    background: #FFFFFF;
+    background: rgb(255, 188, 62);
+    height: 10px;
 }
 
 @media screen and (min-width: 1100px) {
@@ -202,5 +207,9 @@
 
     .tableCaption {
         font-size: 25px;
+    }
+
+    .commonProgress.captioned {
+        margin-top: 35px;
     }
 }

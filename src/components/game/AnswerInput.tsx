@@ -25,7 +25,7 @@ const mapStateToProps = (state: State) => ({
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	onAnswerChanged: (answer: string) => {
-		dispatch(roomActionCreators.onAnswerChanged(answer) as unknown as Action);
+		dispatch(roomActionCreators.updateAnswer(answer) as unknown as Action);
 	},
 	sendAnswer: () => {
 		dispatch(roomActionCreators.sendAnswer() as unknown as Action);
