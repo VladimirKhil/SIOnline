@@ -113,15 +113,7 @@
     line-height: 19px;
     border-left: 0;
     border-right: 0;
-}
-
-#newGame {
     bottom: 0;
-}
-
-#newAutoGame {
-    bottom: 44px;
-    margin-bottom: 1px;
 }
 
 .flyoutButton_flyout.dark > ul.gamesFilter > li {
@@ -172,7 +164,7 @@ ul.gamesFilter > li.disabled {
 
 @media screen and (min-height: 600px) {
     .commandButtonsPanel {
-        flex-flow: column;
+        flex-flow: row;
     }
 
     #newGame, #newAutoGame {

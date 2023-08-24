@@ -140,17 +140,6 @@ export function GamesList(props: GamesListProps): JSX.Element {
 
 			<div className="commandButtonsPanel">
 				<button
-					id="newAutoGame"
-					className='standard'
-					type="button"
-					disabled={!props.isConnected}
-					onClick={props.onNewAutoSearchGame}
-					title={localization.autoSearchHint}
-				>
-					{localization.autoSearch}
-				</button>
-				
-				<button
 					id="newGame"
 					className='standard'
 					type="button"
@@ -158,6 +147,17 @@ export function GamesList(props: GamesListProps): JSX.Element {
 					onClick={props.onNewGame}
 				>
 					{localization.newGame.toLocaleUpperCase()}
+				</button>
+
+				<button
+					id="newAutoGame"
+					className='standard'
+					type="button"
+					disabled={!props.isConnected}
+					onClick={props.onNewAutoSearchGame}
+					title={localization.autoSearchHint}
+				>
+					{localization.autoSearch.toLocaleUpperCase()}
 				</button>
 			</div>
 		</section>

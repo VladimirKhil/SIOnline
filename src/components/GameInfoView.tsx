@@ -7,6 +7,7 @@ import actionCreators from '../state/actionCreators';
 import GameInfo from '../client/contracts/GameInfo';
 import GameType from '../client/contracts/GameType';
 import ProgressBar from './common/ProgressBar';
+import { getReadableTimeSpan } from '../utils/TimeHelpers';
 
 import './GameInfoView.css';
 
@@ -96,7 +97,7 @@ export function GameInfoView(props: GameInfoViewProps): JSX.Element {
 	const createdTime = new Date(props.game.startTime).toLocaleString(language);
 
 	const realStart = new Date(props.game.realStartTime);
-	const startedTime = realStart.getFullYear() !== 1 ? realStart.toLocaleString(language) : '';
+	const duration = realStart.getFullYear() !== 1 ? getReadableTimeSpan(Date.now() - realStart.getTime()) : '';
 
 	const free = [true, false, false];
 
@@ -105,8 +106,10 @@ export function GameInfoView(props: GameInfoViewProps): JSX.Element {
 	const viewers : string[] = [];
 
 	const { persons } = props.game;
+
 	for (let i = 0; i < persons.length; i++) {
 		const person = persons[i];
+
 		if (!person.isOnline) {
 			free[person.role] = true;
 		} else if (person.role === Role.Showman) {
@@ -131,6 +134,7 @@ export function GameInfoView(props: GameInfoViewProps): JSX.Element {
 				{game ? (
 					<div id="innerinfo">
 						{props.showGameName ? <h1 id="gameName" title={game.gameName}>{game.gameName}</h1> : null}
+
 						<div className="maininfo">
 							<dl>
 								<dt>{localization.host}</dt>
@@ -147,12 +151,17 @@ export function GameInfoView(props: GameInfoViewProps): JSX.Element {
 								<dd>{viewers.map(name => <div className='personName' key={name}>{name}</div>)}</dd>
 								<dt>{localization.status}</dt>
 								<dd>{buildStage(game.stage, game.stageName)}</dd>
-								<dt>{localization.created}</dt>
-								<dd>{createdTime}</dd>
-								<dt>{localization.started}</dt>
-								<dd>{startedTime}</dd>
+
+								{duration.length > 0 ? (<>
+									<dt>{localization.duration}</dt>
+									<dd>{duration}</dd>
+								</>) : (<>
+									<dt>{localization.created}</dt>
+									<dd>{createdTime}</dd>
+								</>)}
 							</dl>
 						</div>
+
 						{game.passwordRequired ? (
 							<div className="passwordInfo">
 								<span>{localization.password}</span>
@@ -165,13 +174,16 @@ export function GameInfoView(props: GameInfoViewProps): JSX.Element {
 								/>
 							</div>
 						) : null}
+
 						<div className="joinGameError">{props.joinGameError}</div>
+
 						<div className="actions">
 							<div id="actionsHost">
 								<button
 									type="button"
 									className="join standard"
 									onClick={() => props.onJoin(game.gameID, Role.Showman)}
+									title={localization.joinAsShowmanHint}
 									disabled={!props.isConnected ||
 										props.joinGameProgress ||
 										(game.passwordRequired && !props.password) ||
@@ -179,10 +191,12 @@ export function GameInfoView(props: GameInfoViewProps): JSX.Element {
 								>
 									{localization.joinAsShowman}
 								</button>
+
 								<button
 									type="button"
 									className="join standard"
 									onClick={() => props.onJoin(game.gameID, Role.Player)}
+									title={localization.joinAsPlayerHint}
 									disabled={!props.isConnected ||
 										props.joinGameProgress ||
 										(game.passwordRequired && !props.password) ||
@@ -190,10 +204,12 @@ export function GameInfoView(props: GameInfoViewProps): JSX.Element {
 								>
 									{localization.joinAsPlayer}
 								</button>
+
 								<button
 									type="button"
 									className="join standard"
 									onClick={() => props.onJoin(game.gameID, Role.Viewer)}
+									title={localization.joinAsViewerHint}
 									disabled={!props.isConnected || props.joinGameProgress || (game.passwordRequired && !props.password)}
 								>
 									{localization.joinAsViewer}
@@ -202,6 +218,7 @@ export function GameInfoView(props: GameInfoViewProps): JSX.Element {
 						</div>
 					</div>
 				) : null}
+
 				{props.joinGameProgress ? <div className="joinGameProgress"><ProgressBar isIndeterminate /></div> : null}
 			</div>
 		</section>

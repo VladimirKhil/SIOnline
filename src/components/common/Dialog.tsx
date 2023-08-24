@@ -15,7 +15,7 @@ interface DialogProps {
 }
 
 const Dialog = React.forwardRef((props: DialogProps, ref: ForwardedRef<HTMLElement>) => (
-	<section id={props.id} className={`dialog ${props.className}`} ref={ref}>
+	<section id={props.id} className={`dialog ${props.className ?? ''}`} ref={ref}>
 		<header><h1>{props.title}</h1></header>
 
 		<button type="button" className="dialog_closeButton" onClick={props.onClose}>

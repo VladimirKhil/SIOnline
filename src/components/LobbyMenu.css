@@ -6,6 +6,11 @@
     width: 47px;
 }
 
+.activeMenuItem {
+    background: #98B9FF;
+    cursor: default !important;
+}
+
 @media screen and (min-width: 800px) {
     .navButton {
         display: none;

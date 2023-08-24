@@ -15,7 +15,6 @@ import SendPassButton from './stakes/SendPassButton';
 import SendStakeButton from './stakes/SendStakeButton';
 import SendAllInButton from './stakes/SendAllInButton';
 import { isHost } from '../../utils/StateHelpers';
-import actionCreators from '../../state/actionCreators';
 import uiActionCreators from '../../state/ui/uiActionCreators';
 import isWellFormedUri from '../../utils/isWellFormedUri';
 

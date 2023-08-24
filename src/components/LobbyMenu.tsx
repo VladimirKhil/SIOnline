@@ -6,16 +6,23 @@ import localization from '../model/resources/localization';
 import actionCreators from '../state/actionCreators';
 import FlyoutButton, { FlyoutHorizontalOrientation, FlyoutVerticalOrientation } from './common/FlyoutButton';
 import uiActionCreators from '../state/ui/uiActionCreators';
+import State from '../state/State';
 
 import './LobbyMenu.css';
 
 interface LobbyMenuProps {
+	currentMode: OnlineMode;
+
 	onShowGames: () => void;
 	onShowChat: () => void;
 	onHowToPlay: () => void;
 	onShowSettings: () => void;
 	onExit: () => void;
 }
+
+const mapStateToProps = (state: State) => ({
+	currentMode: state.ui.onlineView,
+});
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	onShowGames: () => {
@@ -41,8 +48,14 @@ export function LobbyMenu(props: LobbyMenuProps): JSX.Element {
 			className="navButton"
 			flyout={(
 				<ul>
-					<li onClick={props.onShowGames}>{localization.games}</li>
-					<li onClick={props.onShowChat}>{localization.chat}</li>
+					<li className={props.currentMode === OnlineMode.Games ? 'activeMenuItem' : ''} onClick={props.onShowGames}>
+						{localization.games}
+					</li>
+
+					<li className={props.currentMode === OnlineMode.Chat ? 'activeMenuItem' : ''} onClick={props.onShowChat}>
+						{localization.chat}
+					</li>
+
 					<li onClick={props.onShowSettings}>{localization.settings}</li>
 					<li onClick={props.onHowToPlay}>{localization.aboutTitle}</li>
 					<li onClick={props.onExit}>{localization.exit}</li>
@@ -56,4 +69,4 @@ export function LobbyMenu(props: LobbyMenuProps): JSX.Element {
 	);
 }
 
-export default connect(null, mapDispatchToProps)(LobbyMenu);
+export default connect(mapStateToProps, mapDispatchToProps)(LobbyMenu);
