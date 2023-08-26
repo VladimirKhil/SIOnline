@@ -7,14 +7,11 @@
     margin: 0;
     position: relative;
     display: flex;
-    background-color: #5A95E2;
 }
 
-.sidecontrol_buttons button {
+.sidecontrol_buttons button.standard {
     padding: 0;
     height: 45px;
-    border-width: 1px 0 1px 1px;
-    font-size: 22px;
 }
 
 #gameMenuButton, .gameMenuButton {
@@ -24,11 +21,9 @@
     width: 100%;
 }
 
-.pauseButton {
+button.standard.imageButton.pauseButton {
     display: none;
     flex: 1 0 0;
-    font-size: 20px;
-    padding: 0;
 }
 
 .nextButton {
@@ -38,8 +33,9 @@
 
 .nextButton.startButton {
     background-color: lightyellow;
-    color: darkblue;
-    font-size: 27px;
+    color: orange;
+    font-size: 28px !important;
+    padding-top: 6px !important;
 }
 
 #exit, .exit {
@@ -48,6 +44,10 @@
     width: 100%;
     flex: 1 0 0;
     position: relative;
+}
+
+.nextButton img, .pauseButton img, .exit img {
+    margin: 8px;
 }
 
 .exitMenu {
@@ -169,9 +169,8 @@ ul.gameMenu, .exitMenu ul {
         display: none;
     }
 
-    .pauseButton {
-        display: initial;
-        font-size: 19px;
+    button.standard.imageButton.pauseButton {
+        display: flex;
     }
 
     #gameMenuButton, .gameMenuButton {

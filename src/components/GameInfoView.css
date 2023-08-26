@@ -36,13 +36,13 @@
 .gameinfoHost dd {
     font-size: 17px;
     font-weight: bold;
+    color: rgb(222, 206, 108);
 }
 
 .personName {
-    background-color: rgba(255,255,255,0.15);
     margin-right: 7px;
     margin-top: 2px;
-    padding: 4px 10px;
+    padding: 4px 0px;
     min-height: 32px;
 }
 

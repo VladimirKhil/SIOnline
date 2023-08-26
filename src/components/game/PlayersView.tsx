@@ -140,13 +140,13 @@ export class PlayersView extends React.Component<PlayersViewProps> {
 					{this.props.players.map((player, index) => {
 						const account = this.props.all[player.name];
 						const isMe = player.name === this.props.login;
-						
+
 						const avatar = isMe && this.props.avatar ? this.props.avatar : account?.avatar;
-	
+
 						const avatarStyle : React.CSSProperties = avatar
 							? { backgroundImage: `url("${avatar}")` }
 							: {};
-						
+
 						const avatarClass = getAvatarClass(account);
 
 						const displayedStake = player.stake > 0
@@ -183,7 +183,10 @@ export class PlayersView extends React.Component<PlayersViewProps> {
 													onCancel={this.props.onCancelSumChange}
 												/>
 											) : <span>{player.sum}</span>}
-											{displayedStake ? <span className="stake">{displayedStake}</span> : null}
+										</div>
+
+										<div className="stakeHost">
+											<span className="stake">{displayedStake ?? '\u200b'}</span>
 										</div>
 									</div>
 								</div>

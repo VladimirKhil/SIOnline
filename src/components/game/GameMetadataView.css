@@ -3,4 +3,6 @@
 	scrollbar-width: thin;
 	flex: 1 0 0;
 	padding: 10px;
+	background-color: #5A95E2;
+	height: 100%;
 }

@@ -26,5 +26,6 @@ input.disconnected {
 @media screen and (min-width: 800px) {
 	.roomChatBodyHost {
 		flex: initial;
+		width: 100%;
 	}
 }

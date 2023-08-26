@@ -19,6 +19,9 @@ import uiActionCreators from '../../state/ui/uiActionCreators';
 import isWellFormedUri from '../../utils/isWellFormedUri';
 
 import './SideControlPanel.css';
+import nextImg from '../../../assets/images/next.png';
+import pauseImg from '../../../assets/images/pause.png';
+import exitImg from '../../../assets/images/exit.png';
 
 interface SideControlPanelProps {
 	isConnected: boolean;
@@ -175,12 +178,12 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 					{canPause ? (
 						<button
 							type="button"
-							className='pauseButton standard'
+							className={`pauseButton standard imageButton ${props.isPaused ? 'active' : ''}`}
 							title={pauseTitle}
 							disabled={!props.isConnected || !props.hasGameStarted}
 							onClick={() => props.onPause()}
 						>
-							{props.isPaused ? '▶' : '⏸'}
+							<img src={pauseImg} />
 						</button>
 					) : null}
 
@@ -248,15 +251,15 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 					{props.isHost ? (
 						<button
 							type="button"
-							className={`nextButton standard ${canStart ? 'startButton' : ''}`}
+							className={`nextButton standard imageButton ${canStart ? 'startButton' : ''}`}
 							title={canStart ? localization.startGameHint : localization.next}
 							onClick={canStart ? props.onStart : props.onMoveNext}>
-							<span role="img" aria-label="arrow right">{canStart ? '➔' : '➡️'}</span>
+							{canStart ? <span role="img" aria-label="arrow right">▶</span> : <img src={nextImg} />}
 						</button>
 					) : null}
 
 					<FlyoutButton
-						className="exit standard"
+						className="exit standard imageButton"
 						title={localization.exit}
 						flyout={(
 							<div id="exitMenu" className="exitMenu">
@@ -273,7 +276,7 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 						verticalOrientation={FlyoutVerticalOrientation.Top}
 						horizontalOrientation={FlyoutHorizontalOrientation.Left}
 					>
-						<span role="img" aria-label="door">🚪</span>
+						<img src={exitImg} />
 					</FlyoutButton>
 				</div>
 			</div>

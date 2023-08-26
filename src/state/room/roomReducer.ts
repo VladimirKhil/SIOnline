@@ -202,7 +202,7 @@ const roomReducer: Reducer<RoomState> = (state: RoomState = initialState, anyAct
 				...state,
 				stage: {
 					...state.stage,
-					isGameStarted: true
+					isGameStarted: action.started
 				}
 			};
 

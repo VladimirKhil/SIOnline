@@ -19,6 +19,9 @@ import BannedView from './BannedView';
 import isWellFormedUri from '../../utils/isWellFormedUri';
 
 import './GameChatView.css';
+import sumsImg from '../../../assets/images/sums.png';
+import editImg from '../../../assets/images/edit.png';
+import moveRoundImg from '../../../assets/images/move_round.png';
 
 interface GameChatViewProps {
 	isConnected: boolean;
@@ -155,7 +158,7 @@ export function GameChatView(props: GameChatViewProps): JSX.Element {
 					<h1
 						className={props.chatMode === ChatMode.Tables ? 'activeTab' : ''}
 						onClick={() => props.onChatModeChanged(ChatMode.Tables)}
-						title={localization.gameInfo}
+						title={localization.tables}
 					>
 						🎓
 					</h1>
@@ -190,28 +193,28 @@ export function GameChatView(props: GameChatViewProps): JSX.Element {
 				<div className="sideButtonHost">
 					<button
 						type="button"
-						className='standard wide commandButton bottomButton'
+						className='passButton standard wide commandButton bottomButton'
 						disabled={!props.isConnected}
 						onClick={() => props.onPass()}
 					>
-						{localization.pass}
+						<span className='passText'>{localization.pass}</span>
 					</button>
 				</div>) : null}
-			
+
 			{props.role === Role.Showman ? (
 				<div className="sideButtonHost">
 					<button
 						type="button"
-						className={`standard wide commandButton bottomButton ${props.areSumsEditable ? 'active' : ''}`}
+						className={`sumsButton standard imageButton wide commandButton bottomButton ${props.areSumsEditable ? 'active' : ''}`}
 						disabled={!props.isConnected}
 						onClick={() => props.onEditSums(!props.areSumsEditable)}
 						title={localization.changeSums}
 					>
-						💰
+						<img src={sumsImg} />
 					</button>
 
 					<FlyoutButton
-						className="standard wide commandButton bottomButton"
+						className="standard imageButton wide commandButton bottomButton"
 						disabled={!props.isConnected || !props.roundsNames || props.roundsNames.length < 2}
 						flyout={
 							<ul>
@@ -230,17 +233,17 @@ export function GameChatView(props: GameChatViewProps): JSX.Element {
 						alignWidth
 						title={localization.gameManageHint}
 					>
-						⚙️
+						<img src={moveRoundImg} />
 					</FlyoutButton>
 
 					<button
 						type="button"
-						className={`standard wide commandButton bottomButton ${props.isEditEnabled ? 'active' : ''}`}
+						className={`standard imageButton wide commandButton bottomButton ${props.isEditEnabled ? 'active' : ''}`}
 						disabled={!props.isConnected || !props.isPaused}
 						onClick={() => props.onEditTable()}
 						title={localization.editTable}
 					>
-						✏️
+						<img src={editImg} />
 					</button>
 				</div>) : null}
 		</div>

@@ -6,20 +6,25 @@
 	right: 0;
 	display: flex;
 	align-items: center;
-	justify-content: center;
-    font-size: 30px;
+	justify-content: end;
+	font-size: 30px;
 }
 
 .start_area button {
 	padding: 5px 40px;
-    font-family: SI;
-    background-color: #00000022;
+	font-family: SI;
+	background-color: #00000022;
 	margin-top: 2px;
-	margin-right: 2px;
+	margin-right: 10px;
+	margin-bottom: 10px;
 }
 
 .start_area button:hover {
-    background-color: #00000044;
+	background-color: #00000044;
+}
+
+.ready_button {
+	margin: 5px;
 }
 
 .ready_button .mark {

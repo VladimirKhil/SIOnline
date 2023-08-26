@@ -19,7 +19,7 @@
 .tableArea {
     flex-grow: 2;
     height: 100%;
-    position: relative;    
+    position: relative;
     overflow: hidden;
 }
 
@@ -63,4 +63,8 @@
     .showmanTableArea {
         flex-direction: row !important;
     }
+
+	.tableArea {
+		margin-right: 10px;
+	}
 }

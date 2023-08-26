@@ -208,6 +208,25 @@ button.standard {
     background-color: #2c7be1;
 }
 
+button.standard.imageButton {
+	display: flex;
+	align-items: stretch;
+	justify-content: center;
+	background-color: transparent;
+}
+
+button.standard.imageButton.active {
+	background-color: #CEE0FF;
+}
+
+button.standard.imageButton img {
+	object-fit: contain;
+}
+
+button.standard.imageButton:disabled img {
+	opacity: 0.5;
+}
+
 button:hover, button.standard:hover {
     background-color: #98B9FF;
 }
@@ -339,7 +358,6 @@ h1.activeTab {
 }
 
 #gameLogHost {
-    background-color: #5A95E2;
     flex: 0 0 130px;
     margin: 0;
     display: flex;
@@ -360,6 +378,7 @@ h1.activeTab {
     display: flex;
     flex-direction: column;
     flex: 1 0 0;
+    background-color: #5A95E2;
 }
 
 .game__log {

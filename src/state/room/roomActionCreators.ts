@@ -158,6 +158,8 @@ const exitGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (
 	dispatch(stopTimer(1));
 	dispatch(stopTimer(2));
 
+	dispatch(isPausedChanged(false));
+
 	if (getState().ui.previousMainView === MainView.Lobby) {
 		actionCreators.navigateToLobby(-1)(dispatch, getState, dataContext);
 	} else {
@@ -313,7 +315,7 @@ const personAvatarChanged: ActionCreator<RunActions.PersonAvatarChangedAction> =
 	type: RunActions.RoomActionTypes.PersonAvatarChanged, personName, avatarUri
 });
 
-const gameStarted: ActionCreator<RunActions.GameStartedAction> = () => ({ type: RunActions.RoomActionTypes.GameStarted });
+const gameStarted: ActionCreator<RunActions.GameStartedAction> = (started: boolean) => ({ type: RunActions.RoomActionTypes.GameStarted, started });
 
 const stageChanged: ActionCreator<RunActions.StageChangedAction> = (stageName: string, roundIndex: number) => ({
 	type: RunActions.RoomActionTypes.StageChanged, stageName, roundIndex
@@ -400,7 +402,7 @@ const selectQuestion: ActionCreator<ThunkAction<void, State, DataContext, Action
 	}
 
 	const theme = getState().table.roundInfo[themeIndex];
-	
+
 	if (theme) {
 		const question = theme.questions[questionIndex];
 
@@ -455,7 +457,7 @@ const pressGameButton: ActionCreator<ThunkAction<void, State, DataContext, Actio
 	}
 
 	dispatch(isGameButtonEnabledChanged(false));
-	
+
 	setTimeout(
 		() => {
 			dispatch(isGameButtonEnabledChanged(true));

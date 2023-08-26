@@ -59,6 +59,7 @@
     .showmanArea {
         flex: 0 0 250px;
         flex-direction: column;
+        margin: 10px 10px 0 10px;
     }
 
     .showmanInfo {

@@ -9,7 +9,6 @@
 
 .sideButtonHost button.active {
 	flex: 1;
-	background-color: lightyellow;
 }
 
 .sideButtonActiveRound {
@@ -24,6 +23,7 @@
 .gameHeader {
 	height: 50px;
 	position: relative;
+	background-color: #5A95E2;
 }
 
 #gameLogHost .tabHeader h1 {
@@ -62,6 +62,38 @@
 
 .voiceChatUrl button {
 	width: 100%;
+}
+
+.bottomButton.standard {
+	margin-bottom: -1px;
+}
+
+.bottomButton img {
+	margin: 3px;
+}
+
+.bottomButton.sumsButton img {
+	margin: 5px;;
+}
+
+.bottomButton.standard.passButton {
+	background-color: gray;
+	align-items: center;
+	justify-content: center;
+}
+
+.bottomButton.standard.passButton:hover {
+	background-color: lightgray;
+}
+
+.passText {
+	padding-top: 2px;
+}
+
+@media screen and (min-width: 1100px) {
+	.bottomButton {
+		display: flex !important;
+	}
 }
 
 @media screen and (min-width: 1400px) {

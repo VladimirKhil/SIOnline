@@ -27,7 +27,7 @@
     }
 
     .gamePlayers .playerCard {
-        padding: 2px;        
+        padding: 2px;
         height: 100%;
         width: 100%;
         display: flex;
@@ -56,13 +56,19 @@
 
     .gamePlayers .stake {
         font-weight: bold;
-        border-left: 1px solid gray;
         padding-left: 3.5px;
         margin-left: 3.5px;
     }
 
     .gamePlayers .name, .gamePlayers .sum {
         display: block;
+    }
+
+    .gamePlayers .stakeHost {
+        display: none;
+    }
+
+    .gamePlayers .name, .gamePlayers .sum, .gamePlayers .stakeHost {
         text-align: center;
         overflow: hidden;
         white-space: nowrap;
@@ -196,7 +202,9 @@
 @media screen and (min-width: 1100px) and (min-height: 700px) {
     .gamePlayers {
         flex-flow: initial;
-        height: 175px;
+        height: 250px;
+        margin: 0 9px;
+        width: calc(100% - 18px);
     }
 
     #playersPanel {
@@ -204,10 +212,10 @@
     }
 
     .gamePlayers li {
-        height: 175px;
+        height: 100%;
         flex: 1;
         flex-flow: column;
-        margin: 3px;
+        margin: 10px 4px;
     }
 
     .gamePlayers .playerCard {
@@ -216,7 +224,7 @@
     }
 
     .playerAvatar {
-        height: 50%;
+        height: 60%;
         flex: initial;
     }
 
@@ -241,18 +249,20 @@
     }
 
     .gamePlayers .playerInfo {
-        font-size: 20px;
-        padding: 2px;
+        font-size: 17px;
+        padding: 2px 0 0 0;
         width: initial;
     }
 
-    .gamePlayers .stake {
+    .gamePlayers .stakeHost {
         display: block;
-        border-left-width: 0;
+    }
+
+    .gamePlayers .stake {
         padding-left: 0;
         margin-left: 0;
     }
-    
+
     .playerAvatar {
         margin-right: 0;
     }
@@ -260,11 +270,11 @@
 
 @media screen and (min-width: 1600px) and (min-height: 700px) {
     .gamePlayers {
-        height: 250px;
+        height: 300px;
     }
 
     .gamePlayers li {
-        height: 250px;
+        height: 100%;
         margin: 5px;
     }
 
@@ -293,14 +303,15 @@
         flex: 0.3;
     }
 
-    .gamePlayers {        
+    .gamePlayers {
         flex-direction: row;
+        justify-content: center;
     }
 
     .gamePlayers .playerReplic {
         top: 100%;
         left: 50%;
-        transform: translate(-50%,0); 
+        transform: translate(-50%,0);
         width: 100%;
         min-width: 180px;
         max-width: 360px;
@@ -335,9 +346,10 @@
     .gamePlayers li {
         height: initial;
         width: 100px;
+        max-width: 200px;
     }
 
     .gamePlayers .playerCard {
-        padding: 4px;
+        padding: 6px;
     }
 }

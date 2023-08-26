@@ -661,7 +661,7 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 			dispatch(roomActionCreators.stageChanged(stage, roundIndex));
 
 			if (stage !== GameStage.Before) {
-				dispatch(roomActionCreators.gameStarted());
+				dispatch(roomActionCreators.gameStarted(true));
 			}
 
 			if (stage === GameStage.Round || stage === GameStage.Final) {

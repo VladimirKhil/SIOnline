@@ -519,6 +519,7 @@ const initGameAsync = async (dispatch: Dispatch<any>, dataContext: DataContext, 
 	dispatch(roomActionCreators.stopTimer(0));
 	dispatch(roomActionCreators.stopTimer(1));
 	dispatch(roomActionCreators.stopTimer(2));
+	dispatch(roomActionCreators.gameStarted(false));
 
 	await gameInit(gameId, dataContext, role);
 };
