@@ -12,6 +12,7 @@ import NewGameDialog from './NewGameDialog';
 import Dialog from './common/Dialog';
 import GameInfoView from './GameInfoView';
 import uiActionCreators from '../state/ui/uiActionCreators';
+import onlineActionCreators from '../state/online/onlineActionCreators';
 import OnlineMode from '../model/enums/OnlineMode';
 
 import './Games.css';
@@ -59,23 +60,24 @@ const mapStateToProps = (state: State) => {
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	onGamesSearchChanged: (gamesSearch: string) => {
-		dispatch(actionCreators.onGamesSearchChanged(gamesSearch));
+		dispatch(onlineActionCreators.onGamesSearchChanged(gamesSearch));
 	},
 	onNewGame: () => {
-		dispatch(actionCreators.newGame());
+		dispatch(onlineActionCreators.newGame());
+		dispatch(actionCreators.newGame2());
 	},
 	closeNewGame: () => {
-		dispatch(actionCreators.newGameCancel());
+		dispatch(onlineActionCreators.newGameCancel());
 	},
 	onSelectGame: (gameId: number, showInfo: boolean) => {
-		dispatch(actionCreators.selectGame(gameId));
+		dispatch(onlineActionCreators.selectGame(gameId));
 
 		if (showInfo) {
 			dispatch(uiActionCreators.onOnlineModeChanged(OnlineMode.GameInfo));
 		}
 	},
 	unselectGame: () => {
-		dispatch(actionCreators.unselectGame());
+		dispatch(onlineActionCreators.unselectGame());
 	},
 	onClose: () => {
 		dispatch(uiActionCreators.navigateToWelcome());

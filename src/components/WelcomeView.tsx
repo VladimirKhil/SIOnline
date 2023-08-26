@@ -5,6 +5,7 @@ import actionCreators from '../state/actionCreators';
 import State from '../state/State';
 import Dialog from './common/Dialog';
 import uiActionCreators from '../state/ui/uiActionCreators';
+import onlineActionCreators from '../state/online/onlineActionCreators';
 
 import './WelcomeView.css';
 
@@ -21,10 +22,6 @@ interface WelcomeViewProps {
 	exit: () => void;
 }
 
-interface WelcomeViewState {
-	showLicense: boolean;
-}
-
 const mapStateToProps = (state: State) => ({
 	isConnected: state.common.isConnected,
 	serverName: state.common.serverName,
@@ -37,13 +34,13 @@ const mapDispatchToProps = (dispatch: any) => ({
 		dispatch(uiActionCreators.singlePlay());
 	},
 	friendsPlay: () => {
-		dispatch(actionCreators.friendsPlay());
+		dispatch(onlineActionCreators.friendsPlay());
 	},
 	anyonePlay: () => {
-		dispatch(actionCreators.createNewAutoGame());
+		dispatch(onlineActionCreators.createNewAutoGame());
 	},
 	joinLobby: () => {
-		dispatch(actionCreators.navigateToLobby(-1));
+		dispatch(onlineActionCreators.navigateToLobby(-1));
 	},
 	exit: () => {
 		dispatch(actionCreators.onExit());

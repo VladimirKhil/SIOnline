@@ -2,39 +2,25 @@
 import { ThunkAction } from 'redux-thunk';
 import * as signalR from '@microsoft/signalr';
 import * as signalRMsgPack from '@microsoft/signalr-protocol-msgpack';
-import JSZip from 'jszip';
-import * as Rusha from 'rusha';
 import * as Actions from './Actions';
 import State from './State';
-import Sex from '../model/enums/Sex';
 import Role from '../client/contracts/Role';
 import DataContext from '../model/DataContext';
 
 import 'es6-promise/auto';
 import { saveState } from './SavedState';
-import GamesFilter from '../model/enums/GamesFilter';
 import localization from '../model/resources/localization';
-import ChatMode from '../model/enums/ChatMode';
 
 import GameType from '../client/contracts/GameType';
-import * as GameErrorsHelper from '../utils/GameErrorsHelper';
-import GameInfo from '../client/contracts/GameInfo';
 import { attachListeners, detachListeners, activeConnections, removeConnection } from '../utils/ConnectionHelpers';
 import MainView from '../model/enums/MainView';
 import roomActionCreators from './room/roomActionCreators';
-import Slice from '../client/contracts/Slice';
 import PackageType from '../model/enums/PackageType';
-import PackageKey from '../client/contracts/PackageKey';
 import Constants from '../model/enums/Constants';
 
 import GameServerClient from '../client/GameServerClient';
-import ServerAppSettings from '../client/contracts/ServerAppSettings';
-import AccountSettings from '../client/contracts/AccountSettings';
-import GameSettings from '../client/contracts/GameSettings';
-import IGameServerClient from '../client/IGameServerClient';
 import getErrorMessage from '../utils/ErrorHelpers';
 import FileKey from '../client/contracts/FileKey';
-import tableActionCreators from './table/tableActionCreators';
 import { getFullCulture } from '../utils/StateHelpers';
 import settingsActionCreators from './settings/settingsActionCreators';
 import MessageLevel from '../model/enums/MessageLevel';
@@ -42,13 +28,11 @@ import GameClient from '../client/game/GameClient';
 import userActionCreators from './user/userActionCreators';
 import loginActionCreators from './login/loginActionCreators';
 import commonActionCreators from './common/commonActionCreators';
+import onlineActionCreators from './online/onlineActionCreators';
 
-import PackageInfo from '../client/contracts/PackageInfo';
-import PackageType2 from '../client/contracts/PackageType';
 import SIContentClient from 'sicontent-client';
-import GameCreationResult from '../client/contracts/GameCreationResult';
 import uiActionCreators from './ui/uiActionCreators';
-import OnlineMode from '../model/enums/OnlineMode';
+import hashData from '../utils/hashData';
 
 const onConnectionChanged: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 	(isConnected: boolean, message: string) => async (dispatch: Dispatch<any>, getState: () => State, dataContext: DataContext) => {
@@ -59,7 +43,7 @@ const onConnectionChanged: ActionCreator<ThunkAction<void, State, DataContext, A
 		if (state.ui.mainView === MainView.Game) {
 			dispatch(roomActionCreators.chatMessageAdded({ sender: '', text: message, level: MessageLevel.System }));
 		} else {
-			dispatch(receiveMessage('', message));
+			dispatch(onlineActionCreators.receiveMessage('', message));
 		}
 
 		if (!isConnected) {
@@ -70,7 +54,7 @@ const onConnectionChanged: ActionCreator<ThunkAction<void, State, DataContext, A
 		if (state.ui.mainView === MainView.Game) {
 			await dataContext.gameClient.sendMessageToServerAsync('INFO');
 		} else if (state.ui.mainView === MainView.Lobby) {
-			navigateToLobby(-1)(dispatch, getState, dataContext);
+			onlineActionCreators.navigateToLobby(-1)(dispatch, getState, dataContext);
 		}
 	};
 
@@ -78,7 +62,7 @@ const onAvatarSelectedLocal: ActionCreator<ThunkAction<void, State, DataContext,
 	(avatar: File) => async (dispatch: Dispatch<Action>) => {
 		try {
 			const buffer = await avatar.arrayBuffer();
-			const base64 = btoa(new Uint8Array(buffer).reduce((data, byte) => data + String.fromCharCode(byte), ''));
+			const base64 = window.btoa(new Uint8Array(buffer).reduce((data, byte) => data + String.fromCharCode(byte), ''));
 
 			const key = crypto.randomUUID ? crypto.randomUUID() : Math.random().toString();
 
@@ -98,14 +82,6 @@ const onAvatarDeleted: ActionCreator<ThunkAction<void, State, DataContext, Actio
 
 		dispatch(settingsActionCreators.onAvatarKeyChanged('') as any);
 	};
-
-async function hashData(data: ArrayBuffer): Promise<ArrayBuffer> {
-	if (location.protocol === 'https:') {
-		return crypto.subtle.digest('SHA-1', data); // It works only under HTTPS protocol
-	}
-
-	return Rusha.createHash().update(data).digest();
-}
 
 async function uploadAvatarAsync(dispatch: Dispatch<Action>, dataContext: DataContext) {
 	dispatch(commonActionCreators.avatarLoadStart(null));
@@ -243,73 +219,6 @@ async function loadHostInfoAsync(dispatch: Dispatch<any>, dataContext: DataConte
 	dispatch(commonActionCreators.serverInfoChanged(hostInfo.name, hostInfo.license, hostInfo.maxPackageSizeMb));
 }
 
-const selectGame: ActionCreator<Actions.SelectGameAction> = (gameId: number) => ({
-	type: Actions.ActionTypes.SelectGame,
-	gameId
-});
-
-const clearGames: ActionCreator<Actions.ClearGamesAction> = () => ({
-	type: Actions.ActionTypes.ClearGames
-});
-
-const receiveGames: ActionCreator<Actions.ReceiveGamesAction> = (games: any[]) => ({
-	type: Actions.ActionTypes.ReceiveGames,
-	games
-});
-
-async function loadGamesAsync(dispatch: Dispatch<Actions.KnownAction>, gameClient: IGameServerClient) {
-	dispatch(clearGames());
-
-	let gamesSlice: Slice<GameInfo> = { data: [], isLastSlice: false };
-	let whileGuard = 100;
-	do {
-		const fromId = gamesSlice.data.length > 0 ? gamesSlice.data[gamesSlice.data.length - 1].gameID + 1 : 0;
-
-		gamesSlice = await gameClient.getGamesSliceAsync(fromId);
-
-		dispatch(receiveGames(gamesSlice.data));
-
-		whileGuard--;
-	} while (!gamesSlice.isLastSlice && whileGuard > 0);
-}
-
-const onlineLoadFinish: ActionCreator<Actions.OnlineLoadFinishedAction> = () => ({
-	type: Actions.ActionTypes.OnlineLoadFinished
-});
-
-const onlineLoadError: ActionCreator<Actions.OnlineLoadErrorAction> = (error: string) => ({
-	type: Actions.ActionTypes.OnlineLoadError,
-	error
-});
-
-const dropSelectedGame: ActionCreator<Actions.DropSelectedGameAction> = () => ({
-	type: Actions.ActionTypes.DropSelectedGame
-});
-
-const friendsPlay: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
-	() => async (dispatch: Dispatch<Action>, getState: () => State, dataContext: DataContext) => {
-		const state = getState();
-		const { selectedGameId } = state.online;
-
-		dispatch(uiActionCreators.friendsPlayInternal());
-		dispatch(dropSelectedGame());
-
-
-		try {
-			await loadGamesAsync(dispatch, dataContext.gameClient);
-
-			const state2 = getState();
-
-			if (selectedGameId && state2.online.games[selectedGameId]) {
-				dispatch(selectGame(selectedGameId));
-			}
-
-			dispatch(onlineLoadFinish());
-		} catch (error) {
-			dispatch(onlineLoadError(getErrorMessage(error)));
-		}
-	};
-
 const login: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 	() => async (dispatch: Dispatch<Action>, getState: () => State, dataContext: DataContext) => {
 		dispatch(loginActionCreators.loginStart());
@@ -334,7 +243,7 @@ const login: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 
 				let connectionBuilder = new signalR.HubConnectionBuilder()
 					.withAutomaticReconnect({
-    					nextRetryDelayInMilliseconds: (retryContext: signalR.RetryContext) => 1000 * (retryContext.previousRetryCount + 1)
+						nextRetryDelayInMilliseconds: (retryContext: signalR.RetryContext) => 1000 * (retryContext.previousRetryCount + 1)
 					})
 					.withUrl(`${dataContext.serverUri}/sionline${queryString}`);
 
@@ -377,7 +286,7 @@ const login: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 					const invite = urlParams.get('invite');
 
 					if (state.online.selectedGameId && invite == 'true') {
-						friendsPlay()(dispatch, getState, dataContext);
+						onlineActionCreators.friendsPlay()(dispatch, getState, dataContext);
 					} else {
 						dispatch(uiActionCreators.navigateToWelcome());
 					}
@@ -393,56 +302,6 @@ const login: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 		}
 	};
 
-const resetLobby: ActionCreator<Actions.ResetLobbyAction> = () => ({
-	type: Actions.ActionTypes.ResetLobby
-});
-
-const navigateToLobby: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
-	(gameId: number, showInfo?: boolean) => async (dispatch: Dispatch<Action>, _: () => State, dataContext: DataContext) => {
-		dispatch(uiActionCreators.navigateToLobbyInternal());
-		dispatch(resetLobby());
-
-		if (gameId > -1) {
-			dispatch(selectGame(gameId));
-
-			if (showInfo) {
-				dispatch(uiActionCreators.onOnlineModeChanged(OnlineMode.GameInfo));
-			}
-		} else if (dataContext.config.rewriteUrl) {
-			window.history.pushState({}, '', dataContext.config.rootUri);
-		}
-
-		// Games filtering is performed on client
-		try {
-			await loadGamesAsync(dispatch, dataContext.gameClient);
-
-			const users = await dataContext.gameClient.getUsersAsync();
-			const sortedUsers = users.sort((user1: string, user2: string) => user1.localeCompare(user2));
-
-			dispatch(receiveUsers(sortedUsers));
-
-			const news = await dataContext.gameClient.getNewsAsync();
-
-			if (news !== null) {
-				dispatch(receiveMessage(localization.news, news));
-			}
-
-			dispatch(onlineLoadFinish());
-		} catch (error) {
-			dispatch(onlineLoadError(getErrorMessage(error)));
-		}
-	};
-
-const receiveUsers: ActionCreator<Actions.ReceiveUsersAction> = (users: string[]) => ({
-	type: Actions.ActionTypes.ReceiveUsers,
-	users
-});
-
-const receiveMessage: ActionCreator<Actions.ReceiveMessageAction> = (sender: string, message: string) => ({
-	type: Actions.ActionTypes.ReceiveMessage,
-	sender,
-	message
-});
 
 const onExit: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 	() => async (dispatch: Dispatch<Action>, getState: () => State, dataContext: DataContext) => {
@@ -469,140 +328,11 @@ const onExit: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 		}
 	};
 
-const onGamesFilterToggle: ActionCreator<Actions.GamesFilterToggleAction> = (filter: GamesFilter) => ({
-	type: Actions.ActionTypes.GamesFilterToggle,
-	filter
-});
-
-const onGamesSearchChanged: ActionCreator<Actions.GamesSearchChangedAction> = (search: string) => ({
-	type: Actions.ActionTypes.GamesSearchChanged,
-	search
-});
-
-const unselectGame: ActionCreator<Actions.UnselectGameAction> = () => ({
-	type: Actions.ActionTypes.UnselectGame
-});
-
-const newAutoGame: ActionCreator<Actions.NewAutoGameAction> = () => ({
-	type: Actions.ActionTypes.NewAutoGame
-});
-
-const newGame: ActionCreator<Actions.NewGameAction> = () => ({
-	type: Actions.ActionTypes.NewGame
-});
-
-const newGameCancel: ActionCreator<Actions.NewGameCancelAction> = () => ({
-	type: Actions.ActionTypes.NewGameCancel
-});
-
-const joinGameStarted: ActionCreator<Actions.JoinGameStartedAction> = () => ({
-	type: Actions.ActionTypes.JoinGameStarted
-});
-
-const joinGameFinished: ActionCreator<Actions.JoinGameFinishedAction> = (error: string | null) => ({
-	type: Actions.ActionTypes.JoinGameFinished,
-	error
-});
-
 const gameSet: ActionCreator<Actions.GameSetAction> = (id: number, isAutomatic: boolean) => ({
 	type: Actions.ActionTypes.GameSet,
 	id,
 	isAutomatic,
 });
-
-const initGameAsync = async (dispatch: Dispatch<any>, dataContext: DataContext, gameId: number, role: Role, isAutomatic: boolean) => {
-	dispatch(gameSet(gameId, isAutomatic));
-	dispatch(uiActionCreators.navigateToGame());
-	dispatch(tableActionCreators.tableReset());
-	dispatch(tableActionCreators.showText(localization.tableHint, false));
-	dispatch(roomActionCreators.roleChanged(role));
-	dispatch(roomActionCreators.stopTimer(0));
-	dispatch(roomActionCreators.stopTimer(1));
-	dispatch(roomActionCreators.stopTimer(2));
-	dispatch(roomActionCreators.gameStarted(false));
-
-	await gameInit(gameId, dataContext, role);
-};
-
-const joinGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
-	(gameId: number, role: Role) => async (dispatch: Dispatch<any>, getState: () => State, dataContext: DataContext) => {
-		dispatch(joinGameStarted());
-
-		try {
-			const state = getState();
-
-			const result = await dataContext.gameClient.joinGameAsync(
-				gameId,
-				role,
-				state.settings.sex === Sex.Male,
-				state.online.password
-			);
-
-			if (result.errorMessage) {
-				dispatch(joinGameFinished(`${localization.joinError}: ${result.errorMessage}`));
-				return;
-			}
-
-			await initGameAsync(dispatch, dataContext, gameId, role, false);
-
-			saveStateToStorage(state);
-			dispatch(joinGameFinished(null));
-		} catch (error) {
-			dispatch(joinGameFinished(getErrorMessage(error)));
-		}
-	};
-
-const passwordChanged: ActionCreator<Actions.PasswordChangedAction> = (newPassword: string) => ({
-	type: Actions.ActionTypes.PasswordChanged,
-	newPassword
-});
-
-const chatModeChanged: ActionCreator<Actions.ChatModeChangedAction> = (chatMode: ChatMode) => ({
-	type: Actions.ActionTypes.ChatModeChanged,
-	chatMode
-});
-
-const gameCreated: ActionCreator<Actions.GameCreatedAction> = (game: GameInfo) => ({
-	type: Actions.ActionTypes.GameCreated,
-	game
-});
-
-const gameChanged: ActionCreator<Actions.GameChangedAction> = (game: GameInfo) => ({
-	type: Actions.ActionTypes.GameChanged,
-	game
-});
-
-const gameDeleted: ActionCreator<Actions.GameDeletedAction> = (gameId: number) => ({
-	type: Actions.ActionTypes.GameDeleted,
-	gameId
-});
-
-const userJoined: ActionCreator<Actions.UserJoinedAction> = (login: string) => ({
-	type: Actions.ActionTypes.UserJoined,
-	login
-});
-
-const userLeaved: ActionCreator<Actions.UserLeavedAction> = (login: string) => ({
-	type: Actions.ActionTypes.UserLeaved,
-	login
-});
-
-const messageChanged: ActionCreator<Actions.MessageChangedAction> = (message: string) => ({
-	type: Actions.ActionTypes.MessageChanged,
-	message
-});
-
-const sendMessage: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
-	() => (dispatch: Dispatch<Actions.KnownAction>, getState: () => State, dataContext: DataContext) => {
-		const state = getState();
-
-		const text = state.online.currentMessage.trim();
-		if (text.length > 0) {
-			dataContext.gameClient.sayInLobbyAsync(text);
-		}
-
-		dispatch(messageChanged(''));
-	};
 
 const gameNameChanged: ActionCreator<Actions.GameNameChangedAction> = (gameName: string) => ({
 	type: Actions.ActionTypes.GameNameChanged,
@@ -678,358 +408,9 @@ const humanPlayersCountChanged: ActionCreator<Actions.HumanPlayersCountChangedAc
 	humanPlayersCount
 });
 
-const gameCreationStart: ActionCreator<Actions.GameCreationStartAction> = () => ({
-	type: Actions.ActionTypes.GameCreationStart
+const newGame2: ActionCreator<Actions.NewGame2Action> = () => ({
+	type: Actions.ActionTypes.NewGame2
 });
-
-const gameCreationEnd: ActionCreator<Actions.GameCreationEndAction> = (error: string | null = null) => ({
-	type: Actions.ActionTypes.GameCreationEnd,
-	error
-});
-
-const uploadPackageStarted: ActionCreator<Actions.UploadPackageStartedAction> = () => ({
-	type: Actions.ActionTypes.UploadPackageStarted
-});
-
-const uploadPackageFinished: ActionCreator<Actions.UploadPackageFinishedAction> = () => ({
-	type: Actions.ActionTypes.UploadPackageFinished
-});
-
-const uploadPackageProgress: ActionCreator<Actions.UploadPackageProgressAction> = (progress: number) => ({
-	type: Actions.ActionTypes.UploadPackageProgress,
-	progress
-});
-
-function uploadPackageAsync(
-	packageHash: string,
-	packageData: File,
-	serverUri: string,
-	dispatch: Dispatch<any>
-): Promise<boolean> {
-	dispatch(uploadPackageStarted());
-
-	const formData = new FormData();
-	formData.append('file', packageData, packageData.name);
-
-	// fetch() does not support reporting progress right now
-	// Switch to fetch() when progress support would be implemented
-	// const response = await fetch(`${serverUri}/api/upload/package`, {
-	// 	method: 'POST',
-	// 	credentials: 'include',
-	// 	body: formData,
-	// 	headers: {
-	// 		'Content-MD5': hashArrayEncoded
-	// 	}
-	// });
-
-	// if (!response.ok) {
-	// 	throw new Error(`${localization.uploadingPackageError}: ${response.status} ${await response.text()}`);
-	// }
-
-	return new Promise<boolean>((resolve, reject) => {
-		const xhr = new XMLHttpRequest();
-
-		xhr.onload = () => {
-			dispatch(uploadPackageFinished());
-			if (xhr.status >= 200 && xhr.status < 300) {
-				resolve(true);
-			} else {
-				reject(new Error(xhr.response));
-			}
-		};
-
-		xhr.onerror = () => {
-			dispatch(uploadPackageFinished());
-			reject(new Error(xhr.statusText || xhr.responseText || `${localization.unknownError}: ${xhr.status}`));
-		};
-
-		xhr.upload.onprogress = (e) => {
-			dispatch(uploadPackageProgress(e.loaded / e.total));
-		};
-
-		xhr.open('post', `${serverUri}/api/upload/package`, true);
-		xhr.setRequestHeader('Content-MD5', packageHash);
-		xhr.withCredentials = true;
-		xhr.send(formData);
-	});
-}
-
-async function uploadPackageAsync2(
-	contentClient: SIContentClient,
-	packageData: File,
-	dispatch: Dispatch<any>
-): Promise<PackageInfo> {
-	const packageUri = await contentClient.uploadPackageIfNotExistAsync(
-		packageData.name,
-		packageData,
-		() => dispatch(uploadPackageStarted()),
-		(progress: number) => {
-			dispatch(uploadPackageProgress(progress));
-		},
-		() => dispatch(uploadPackageFinished())
-	);
-
-	return {
-		type: PackageType2.Content,
-		uri: packageUri,
-		contentServiceUri: contentClient.options.serviceUri,
-		secret: null
-	};
-}
-
-async function checkAndUploadPackageAsync(
-	gameClient: IGameServerClient,
-	serverUri: string,
-	packageData: File,
-	dispatch: Dispatch<any>
-): Promise<PackageKey> {
-	const zip = new JSZip();
-	await zip.loadAsync(packageData);
-	const contentFile = zip.file('content.xml');
-
-	if (!contentFile) {
-		throw new Error(localization.corruptedPackage + ' (!contentFile)');
-	}
-
-	const content = await contentFile.async('text');
-
-	const parser = new DOMParser();
-	const xmlDoc = parser.parseFromString(content.substring(39), 'application/xml');
-
-	const packageElements = xmlDoc.getElementsByTagName('package');
-
-	if (packageElements.length === 0) {
-		throw new Error(localization.corruptedPackage + ' (packageElements.length === 0)');
-	}
-
-	const id = packageElements[0].getAttribute('id');
-
-	const hash = await hashData(await packageData.arrayBuffer());
-
-	const hashArray = new Uint8Array(hash);
-	const hashArrayEncoded = window.btoa(String.fromCharCode.apply(null, hashArray as any));
-
-	const packageKey: PackageKey = {
-		name: packageData.name,
-		hash: hashArrayEncoded,
-		id
-	};
-
-	const hasPackage = await gameClient.hasPackageAsync(packageKey);
-
-	if (!hasPackage) {
-		await uploadPackageAsync(hashArrayEncoded, packageData, serverUri, dispatch);
-	}
-
-	return packageKey;
-}
-
-function getRandomValue(): number {
-	const array = new Uint32Array(1);
-	crypto.getRandomValues(array);
-
-	return array[0];
-}
-
-const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
-	(isSingleGame: boolean) => async (dispatch: Dispatch<any>, getState: () => State, dataContext: DataContext) => {
-		const state = getState();
-
-		if (!isSingleGame && state.game.name.length === 0) {
-			dispatch(gameCreationEnd(localization.gameNameMustBeSpecified));
-			return;
-		}
-
-		if (state.common.computerAccounts === null) {
-			dispatch(gameCreationEnd(localization.computerAccountsMissing));
-			return;
-		}
-
-		dispatch(gameCreationStart());
-
-		const game = isSingleGame
-			? {
-				...state.game,
-				name: getRandomValue().toString(),
-				password: getRandomValue().toString(), // protecting from anyone to join
-				isShowmanHuman: false,
-				humanPlayersCount: 0
-			} : state.game;
-
-		const { playersCount, humanPlayersCount, role } = game;
-		const me: AccountSettings = { name: state.user.login, isHuman: true, isMale: state.settings.sex === Sex.Male };
-
-		const showman: AccountSettings = role === Role.Showman
-			? me
-			: game.isShowmanHuman
-				? { name: Constants.ANY_NAME, isHuman: true }
-				: { name: localization.defaultShowman };
-
-		const players: AccountSettings[] = [];
-		const viewers: AccountSettings[] = [];
-
-		if (role === Role.Viewer) {
-			viewers.push(me);
-		} else if (role === Role.Player) {
-			players.push(me);
-		}
-
-		const compPlayersCount = playersCount - humanPlayersCount - (role === Role.Player ? 1 : 0);
-
-		const compIndicies = [];
-
-		for (let i = 0; i < state.common.computerAccounts.length; i++) {
-			compIndicies.push(i);
-		}
-
-		for (let i = 0; i < humanPlayersCount; i++) {
-			players.push({ name: Constants.ANY_NAME, isHuman: true });
-		}
-
-		for (let i = 0; i < compPlayersCount; i++) {
-			const ind = Math.floor(Math.random() * compIndicies.length);
-			players.push({ name: state.common.computerAccounts[compIndicies[ind]], isHuman: false });
-			compIndicies.splice(ind, 1);
-		}
-
-		const gameMode = game.type;
-
-		const appSettings: ServerAppSettings = {
-			timeSettings: state.settings.appSettings.timeSettings,
-			readingSpeed: state.settings.appSettings.readingSpeed,
-			falseStart: state.settings.appSettings.falseStart,
-			hintShowman: state.settings.appSettings.hintShowman,
-			oral: state.settings.appSettings.oral,
-			ignoreWrong: state.settings.appSettings.ignoreWrong,
-			managed: state.settings.appSettings.managed,
-			gameMode: gameMode.toString(),
-			partialText: state.settings.appSettings.partialText,
-			randomQuestionsBasePrice: gameMode === GameType.Simple ? 10 : 100,
-			randomRoundsCount: gameMode === GameType.Simple ? 1 : 3,
-			randomThemesCount: gameMode === GameType.Simple ? 5 : 6,
-			culture: getFullCulture(state),
-			usePingPenalty: state.settings.appSettings.usePingPenalty,
-			preloadRoundContent: state.settings.appSettings.preloadRoundContent,
-			useApellations: state.settings.appSettings.useApellations,
-		};
-
-		const gameSettings: GameSettings = {
-			humanPlayerName: state.user.login,
-			randomSpecials: game.package.type === PackageType.Random,
-			networkGameName: game.name.trim(),
-			networkGamePassword: game.password,
-			isPrivate: isSingleGame,
-			allowViewers: true,
-			showman: showman,
-			players: players,
-			viewers: viewers,
-			appSettings: appSettings
-		};
-
-		let result: GameCreationResult;
-
-		try {
-			if (dataContext.contentClient && game.package.type === PackageType.File && game.package.data) {
-				const packageInfo = await uploadPackageAsync2(dataContext.contentClient, game.package.data, dispatch);
-
-				result = await dataContext.gameClient.createAndJoinGame2Async(
-					gameSettings,
-					packageInfo,
-					state.settings.sex === Sex.Male
-				);
-			} else {
-				const packageKey: PackageKey | null = await (async (): Promise<PackageKey | null> => {
-					switch (game.package.type) {
-						case PackageType.Random:
-							return {
-								name: '',
-								hash: null,
-								id: null
-							};
-
-						case PackageType.File:
-							return game.package.data
-								? checkAndUploadPackageAsync(
-									dataContext.gameClient,
-									dataContext.serverUri,
-									game.package.data,
-									dispatch
-								) : null;
-
-						case PackageType.SIStorage:
-							return {
-								name: null,
-								hash: null,
-								id: game.package.id
-							};
-
-						default:
-							return null;
-					}
-				})();
-
-				if (!packageKey) {
-					dispatch(gameCreationEnd(localization.badPackage));
-					return;
-				}
-
-				result = await dataContext.gameClient.createAndJoinGameAsync(
-					gameSettings,
-					packageKey,
-					state.settings.sex === Sex.Male
-				);
-			}
-
-			saveStateToStorage(state);
-			dispatch(gameCreationEnd());
-
-			if (result.code > 0) {
-				dispatch(gameCreationEnd(GameErrorsHelper.getMessage(result.code) + (result.errorMessage || '')));
-			} else {
-				dispatch(newGameCancel());
-				await initGameAsync(dispatch, dataContext, result.gameId, role, false);
-			}
-		} catch (error) {
-			dispatch(gameCreationEnd(getErrorMessage(error)));
-		}
-	};
-
-const createNewAutoGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
-	() => async (dispatch: Dispatch<any>, getState: () => State, dataContext: DataContext) => {
-		const state = getState();
-
-		dispatch(gameCreationStart());
-
-		try {
-			const result = await dataContext.gameClient.createAutomaticGameAsync(
-				state.user.login,
-				state.settings.sex === Sex.Male
-			);
-
-			saveStateToStorage(state);
-
-			dispatch(gameCreationEnd());
-			if (result.code > 0) {
-				alert(GameErrorsHelper.getMessage(result.code) + (result.errorMessage || ''));
-			} else {
-				await initGameAsync(dispatch, dataContext, result.gameId, Role.Player, true);
-			}
-		} catch (message) {
-			dispatch(gameCreationEnd(message));
-		}
-	};
-
-async function gameInit(gameId: number, dataContext: DataContext, role: Role) {
-	if (dataContext.config.rewriteUrl) {
-		window.history.pushState({}, `${localization.game} ${gameId}`, `${dataContext.config.rootUri}?gameId=${gameId}`);
-	}
-
-	await dataContext.gameClient.sendMessageToServerAsync('INFO');
-
-	if (role === Role.Player || role === Role.Showman) {
-		await dataContext.gameClient.sendMessageToServerAsync('READY');
-	}
-}
 
 const actionCreators = {
 	reloadComputerAccounts,
@@ -1039,27 +420,7 @@ const actionCreators = {
 	onAvatarDeleted,
 	sendAvatar,
 	login,
-	friendsPlay,
-	navigateToLobby,
 	onExit,
-	onGamesFilterToggle,
-	onGamesSearchChanged,
-	selectGame,
-	unselectGame,
-	newAutoGame,
-	newGame,
-	newGameCancel,
-	joinGame,
-	passwordChanged,
-	chatModeChanged,
-	gameCreated,
-	gameChanged,
-	gameDeleted,
-	userJoined,
-	userLeaved,
-	messageChanged,
-	sendMessage,
-	receiveMessage,
 	gameNameChanged,
 	gamePasswordChanged,
 	gamePackageTypeChanged,
@@ -1069,9 +430,9 @@ const actionCreators = {
 	showmanTypeChanged,
 	playersCountChanged,
 	humanPlayersCountChanged,
-	createNewGame,
-	createNewAutoGame,
 	gamePackageLibraryChanged,
+	gameSet,
+	newGame2,
 };
 
 export default actionCreators;

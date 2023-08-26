@@ -6,7 +6,7 @@ import GamesFilter from '../model/enums/GamesFilter';
 import State from '../state/State';
 import localization from '../model/resources/localization';
 import getFilterValue from '../state/getFilterValue';
-import actionCreators from '../state/actionCreators';
+import onlineActionCreators from '../state/online/onlineActionCreators';
 import GameInfo from '../client/contracts/GameInfo';
 import LobbyMenu from './LobbyMenu';
 import uiActionCreators from '../state/ui/uiActionCreators';
@@ -44,23 +44,23 @@ const mapStateToProps = (state: State) => ({
 
 const mapDispatchToProps = (dispatch: any) => ({
 	onToggleFilterItem: (gamesFilterItem: GamesFilter) => {
-		dispatch(actionCreators.onGamesFilterToggle(gamesFilterItem));
+		dispatch(onlineActionCreators.onGamesFilterToggle(gamesFilterItem));
 	},
 	onGamesSearchChanged: (gamesSearch: string) => {
-		dispatch(actionCreators.onGamesSearchChanged(gamesSearch));
+		dispatch(onlineActionCreators.onGamesSearchChanged(gamesSearch));
 	},
 	onSelectGame: (gameId: number, showInfo: boolean) => {
-		dispatch(actionCreators.selectGame(gameId));
+		dispatch(onlineActionCreators.selectGame(gameId));
 
 		if (showInfo) {
 			dispatch(uiActionCreators.onOnlineModeChanged(OnlineMode.GameInfo));
 		}
 	},
 	onNewAutoSearchGame: () => {
-		dispatch(actionCreators.createNewAutoGame());
+		dispatch(onlineActionCreators.createNewAutoGame());
 	},
 	onNewGame: () => {
-		dispatch(actionCreators.newGame());
+		dispatch(onlineActionCreators.newGame());
 	}
 });
 

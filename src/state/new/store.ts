@@ -40,7 +40,7 @@ const store = configureStore({
 		user: userReducer,
 		login: loginReducer,
 		ui: uiReducer,
-		online: onlineReducer,		
+		online: onlineReducer,
 		game: gameReducer,
 		run: runReducer,
 		common: commonReducer,

@@ -6,7 +6,7 @@ import Chat from './Chat';
 import UsersList from './UsersList';
 import State from '../state/State';
 import localization from '../model/resources/localization';
-import actionCreators from '../state/actionCreators';
+import onlineActionCreators from '../state/online/onlineActionCreators';
 import LobbyMenu from './LobbyMenu';
 
 import './UsersView.css';
@@ -33,7 +33,7 @@ const mapStateToProps = (state: State) => ({
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	onChatModeChanged: (chatMode: ChatMode) => {
-		dispatch(actionCreators.chatModeChanged(chatMode));
+		dispatch(onlineActionCreators.chatModeChanged(chatMode));
 	},
 });
 

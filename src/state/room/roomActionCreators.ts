@@ -5,7 +5,7 @@ import ChatMode from '../../model/enums/ChatMode';
 import State from '../State';
 import DataContext from '../../model/DataContext';
 import localization from '../../model/resources/localization';
-import actionCreators from '../actionCreators';
+import onlineActionCreators from '../online/onlineActionCreators';
 import ChatMessage from '../../model/ChatMessage';
 import Account from '../../model/Account';
 import Persons from '../../model/Persons';
@@ -161,7 +161,7 @@ const exitGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (
 	dispatch(isPausedChanged(false));
 
 	if (getState().ui.previousMainView === MainView.Lobby) {
-		actionCreators.navigateToLobby(-1)(dispatch, getState, dataContext);
+		onlineActionCreators.navigateToLobby(-1)(dispatch, getState, dataContext);
 	} else {
 		dispatch(uiActionCreators.navigateToWelcome() as any);
 	}

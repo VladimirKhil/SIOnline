@@ -8,7 +8,7 @@ import OnlineMode from '../model/enums/OnlineMode';
 import NewGameDialog from './NewGameDialog';
 import GameInfo from '../client/contracts/GameInfo';
 import Dialog from './common/Dialog';
-import actionCreators from '../state/actionCreators';
+import onlineActionCreators from '../state/online/onlineActionCreators';
 import { Dispatch, Action } from 'redux';
 import ProgressBar from './common/ProgressBar';
 import { filterGames } from '../utils/GamesHelpers';
@@ -55,7 +55,7 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 		dispatch(uiActionCreators.closeGameInfo());
 	},
 	closeNewGame: () => {
-		dispatch(actionCreators.newGameCancel());
+		dispatch(onlineActionCreators.newGameCancel());
 	}
 });
 

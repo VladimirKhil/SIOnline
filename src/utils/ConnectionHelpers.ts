@@ -7,18 +7,19 @@ import Message from '../model/Message';
 import messageProcessor from '../state/game/messageProcessor';
 import GameInfo from '../client/contracts/GameInfo';
 import commonActionCreators from '../state/common/commonActionCreators';
+import onlineActionCreators from '../state/online/onlineActionCreators';
 
 export const activeConnections: string[] = [];
 
 const detachedConnections: signalR.HubConnection[] = [];
 
 export function attachListeners(connection: signalR.HubConnection, dispatch: Dispatch<AnyAction>): void {
-	connection.on('Joined', (login: string) => dispatch(actionCreators.userJoined(login)));
-	connection.on('Leaved', (login: string) => dispatch(actionCreators.userLeaved(login)));
-	connection.on('Say', (name: string, text: string) => dispatch(actionCreators.receiveMessage(name, text)));
-	connection.on('GameCreated', (game: GameInfo) => dispatch(actionCreators.gameCreated(game)));
-	connection.on('GameChanged', (game: GameInfo) => dispatch(actionCreators.gameChanged(game)));
-	connection.on('GameDeleted', (id: number) => dispatch(actionCreators.gameDeleted(id)));
+	connection.on('Joined', (login: string) => dispatch(onlineActionCreators.userJoined(login)));
+	connection.on('Leaved', (login: string) => dispatch(onlineActionCreators.userLeaved(login)));
+	connection.on('Say', (name: string, text: string) => dispatch(onlineActionCreators.receiveMessage(name, text)));
+	connection.on('GameCreated', (game: GameInfo) => dispatch(onlineActionCreators.gameCreated(game)));
+	connection.on('GameChanged', (game: GameInfo) => dispatch(onlineActionCreators.gameChanged(game)));
+	connection.on('GameDeleted', (id: number) => dispatch(onlineActionCreators.gameDeleted(id)));
 
 	connection.on('Receive', (message: Message) => messageProcessor(dispatch, message));
 

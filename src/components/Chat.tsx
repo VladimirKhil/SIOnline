@@ -5,7 +5,7 @@ import { Action, Dispatch } from 'redux';
 import { EmojiClickData } from 'emoji-picker-react';
 import State from '../state/State';
 import Constants from '../model/enums/Constants';
-import actionCreators from '../state/actionCreators';
+import onlineActionCreators from '../state/online/onlineActionCreators';
 import ChatMessage from '../model/ChatMessage';
 import ChatLog from './common/ChatLog';
 import ChatInputEmojiPicker from './common/ChatInputEmojiPicker';
@@ -38,10 +38,10 @@ const mapStateToProps = (state: State) => ({
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	onMessageChanged: (value: string) => {
-		dispatch(actionCreators.messageChanged(value));
+		dispatch(onlineActionCreators.messageChanged(value));
 	},
 	onSendMessage: () => {
-		dispatch((actionCreators.sendMessage() as object) as Action);
+		dispatch((onlineActionCreators.sendMessage() as object) as Action);
 	}
 });
 
@@ -73,6 +73,7 @@ export class Chat extends React.Component<ChatProps> {
 			e.preventDefault();
 		}
 	};
+	
 	onEmojiClick = (emojiData: EmojiClickData, e: MouseEvent) => {
 		this.props.onMessageChanged(this.props.currentMessage + emojiData.emoji);
 	};

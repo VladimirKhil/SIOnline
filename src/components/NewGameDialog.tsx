@@ -13,6 +13,7 @@ import PackageType from '../model/enums/PackageType';
 import SIStorageDialog from './SIStorageDialog';
 import FlyoutButton from './common/FlyoutButton';
 import uiActionCreators from '../state/ui/uiActionCreators';
+import onlineActionCreators from '../state/online/onlineActionCreators';
 
 import './NewGameDialog.css';
 
@@ -106,7 +107,7 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 		dispatch(uiActionCreators.showSettings(true));
 	},
 	onCreate: (isSingleGame: boolean) => {
-		dispatch(actionCreators.createNewGame(isSingleGame) as unknown as Action);
+		dispatch(onlineActionCreators.createNewGame(isSingleGame) as unknown as Action);
 	}
 });
 

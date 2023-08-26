@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import localization from '../model/resources/localization';
 import Role from '../client/contracts/Role';
 import State from '../state/State';
-import actionCreators from '../state/actionCreators';
+import onlineActionCreators from '../state/online/onlineActionCreators';
 import GameInfo from '../client/contracts/GameInfo';
 import GameType from '../client/contracts/GameType';
 import ProgressBar from './common/ProgressBar';
@@ -39,10 +39,10 @@ const mapStateToProps = (state: State) => ({
 
 const mapDispatchToProps = (dispatch: any) => ({
 	onPasswordChanged: (newPassword: string) => {
-		dispatch(actionCreators.passwordChanged(newPassword));
+		dispatch(onlineActionCreators.passwordChanged(newPassword));
 	},
 	onJoin: (gameId: number, role: Role) => {
-		dispatch(actionCreators.joinGame(gameId, role));
+		dispatch(onlineActionCreators.joinGame(gameId, role));
 	}
 });
 

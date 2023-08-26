@@ -1,12 +1,11 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import GameInfo from '../../client/contracts/GameInfo';
 import ChatMessage from '../../model/ChatMessage';
 import ChatMode from '../../model/enums/ChatMode';
 import GamesFilter from '../../model/enums/GamesFilter';
-import localization from '../../model/resources/localization';
-import GameInfo from '../../client/contracts/GameInfo';
 import MessageLevel from '../../model/enums/MessageLevel';
+import localization from '../../model/resources/localization';
 
-interface OnlineState {
+export default interface OnlineState {
 	inProgress: boolean;
 	error: string;
 	gamesFilter: GamesFilter;
@@ -27,7 +26,7 @@ interface OnlineState {
 	uploadPackagePercentage: number;
 }
 
-const initialState: OnlineState = {
+export const initialState: OnlineState = {
 	inProgress: false,
 	error: '',
 	gamesFilter: GamesFilter.NoFilter,
@@ -40,7 +39,7 @@ const initialState: OnlineState = {
 		{
 			sender: localization.appUser,
 			text: localization.greeting,
-			level: MessageLevel.System
+			level: MessageLevel.System,
 		}
 	],
 	password: '',
@@ -51,21 +50,5 @@ const initialState: OnlineState = {
 	joinGameProgress: false,
 	joingGameError: null,
 	uploadPackageProgress: false,
-	uploadPackagePercentage: 0
+	uploadPackagePercentage: 0,
 };
-
-export const onlineSlice = createSlice({
-	name: 'online',
-	initialState,
-	reducers: {
-		setInProgress: (state: OnlineState, action: PayloadAction<boolean>) => {
-
-		}
-	}
-});
-
-export const {
-	setInProgress
-} = onlineSlice.actions;
-
-export default onlineSlice.reducer;
