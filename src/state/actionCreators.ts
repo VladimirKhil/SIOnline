@@ -344,6 +344,11 @@ const gamePasswordChanged: ActionCreator<Actions.GamePasswordChangedAction> = (g
 	gamePassword
 });
 
+const gameVoiceChatChanged: ActionCreator<Actions.GameVoiceChatChangedAction> = (gameVoiceChat: string) => ({
+	type: Actions.ActionTypes.GameVoiceChatChanged,
+	gameVoiceChat
+});
+
 const gamePackageTypeChanged: ActionCreator<Actions.GamePackageTypeChangedAction> = (packageType: PackageType) => ({
 	type: Actions.ActionTypes.GamePackageTypeChanged,
 	packageType
@@ -423,6 +428,7 @@ const actionCreators = {
 	onExit,
 	gameNameChanged,
 	gamePasswordChanged,
+	gameVoiceChatChanged,
 	gamePackageTypeChanged,
 	gamePackageDataChangedRequest,
 	gameTypeChanged,

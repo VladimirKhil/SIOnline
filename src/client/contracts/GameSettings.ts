@@ -6,6 +6,8 @@ export default interface GameSettings {
 	randomSpecials: boolean;
 	networkGameName: string;
 	networkGamePassword: string;
+	/** Network voice chat link. */
+	networkVoiceChat: string;
 	isPrivate: boolean;
 	allowViewers: boolean;
 	showman: AccountSettings;

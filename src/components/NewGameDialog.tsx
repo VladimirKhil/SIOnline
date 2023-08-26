@@ -22,6 +22,8 @@ interface NewGameDialogProps {
 	isSingleGame: boolean;
 	gameName: string;
 	gamePassword: string;
+	isOralGame: boolean;
+	gameVoiceChat: string;
 	gamePackageType: PackageType;
 	gamePackageName: string;
 	gamePackageData: File | null;
@@ -37,6 +39,7 @@ interface NewGameDialogProps {
 
 	onGameNameChanged: (newGameName: string) => void;
 	onGamePasswordChanged: (newGamePassword: string) => void;
+	onGameVoiceChatChanged: (newVoiceChat: string) => void;
 	onGamePackageTypeChanged: (type: PackageType) => void;
 	onGamePackageDataChanged: (name: string, data: File | null) => void;
 	onGamePackageLibraryChanged: (id: string, name: string) => void;
@@ -58,6 +61,8 @@ const mapStateToProps = (state: State) => ({
 	isConnected: state.common.isConnected,
 	gameName: state.game.name,
 	gamePassword: state.game.password,
+	isOralGame: state.settings.appSettings.oral,
+	gameVoiceChat: state.game.voiceChat,
 	gamePackageType: state.game.package.type,
 	gamePackageName: state.game.package.name,
 	gamePackageData: state.game.package.data,
@@ -78,6 +83,9 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	},
 	onGamePasswordChanged: (newGamePassword: string) => {
 		dispatch(actionCreators.gamePasswordChanged(newGamePassword));
+	},
+	onGameVoiceChatChanged: (newVoiceChat: string) => {
+		dispatch(actionCreators.gameVoiceChatChanged(newVoiceChat));
 	},
 	onGamePackageTypeChanged: (type: PackageType) => {
 		dispatch(actionCreators.gamePackageTypeChanged(type));
@@ -145,19 +153,13 @@ export class NewGameDialog extends React.Component<NewGameDialogProps, NewGameDi
 		this.props.onGamePasswordChanged(e.target.value);
 	};
 
+	private onGameVoiceChatChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
+		this.props.onGameVoiceChatChanged(e.target.value);
+	};
+
 	private onKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
 		if (e.key === Constants.KEY_ENTER_NEW) {
 			this.props.onCreate(this.props.isSingleGame);
-		}
-	};
-
-	private onGamePackageTypeChanged = (e: React.ChangeEvent<HTMLSelectElement>) => {
-		if (parseInt(e.target.value, 10) === PackageType.SIStorage) {
-			this.setState({
-				isSIStorageOpen: true
-			});
-		} else {
-			this.props.onGamePackageTypeChanged(parseInt(e.target.value, 10));
 		}
 	};
 
@@ -168,7 +170,7 @@ export class NewGameDialog extends React.Component<NewGameDialogProps, NewGameDi
 	private onFilePackageSelected = () => {
 		if (this.fileRef.current) {
 			this.fileRef.current.click();
-		}		
+		}
 	};
 
 	private onSIStorageSelected = () => {
@@ -246,6 +248,18 @@ export class NewGameDialog extends React.Component<NewGameDialogProps, NewGameDi
 									onChange={this.onGamePasswordChanged}
 									onKeyPress={this.onKeyPress}
 								/>
+
+								{this.props.isOralGame ? (
+									<>
+										<p>{localization.voiceChat}</p>
+
+										<input
+											type="text"
+											value={this.props.gameVoiceChat}
+											onChange={this.onGameVoiceChatChanged}
+										/>
+									</>
+								) : null}
 							</>
 						)}
 
@@ -271,6 +285,10 @@ export class NewGameDialog extends React.Component<NewGameDialogProps, NewGameDi
 
 							<input ref={this.fileRef} type="file" accept=".siq" onChange={this.onGamePackageDataChanged} />
 						</div>
+
+						{this.props.gamePackageType === PackageType.File
+							? (<div className="licenseAgreement">{localization.licenseAgreement}</div>)
+							: null}
 
 						<p className='newGameHeader'>{localization.gameType}</p>
 
@@ -327,7 +345,7 @@ export class NewGameDialog extends React.Component<NewGameDialogProps, NewGameDi
 								<div className="playersBlock">
 									<span className="playersCountTitle">{`${localization.humanPlayers} `}</span>
 									<span className="playersCountValue">{this.props.humanPlayersCount}</span>
-									
+
 									<input
 										type="range"
 										className="playersCount"

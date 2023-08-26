@@ -131,6 +131,11 @@
     margin-right: 10px;
 }
 
+.licenseAgreement {
+    margin: 4px;
+    font-weight: bolder;
+}
+
 @media screen and (min-width: 800px) {
     #newGameDialog input, #newGameDialog select {
         width: 400px;

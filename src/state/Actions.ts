@@ -5,6 +5,7 @@ import PackageType from '../model/enums/PackageType';
 export const enum ActionTypes {
 	GameNameChanged = 'GAME_NAME_CHANGED',
 	GamePasswordChanged = 'GAME_PASSWORD_CHANGED',
+	GameVoiceChatChanged = 'GAME_VOICE_CHAT_CHANGED',
 	GamePackageTypeChanged = 'GAME_PACKAGE_TYPE_CHANGED',
 	GamePackageDataChanged = 'GAME_PACKAGE_DATA_CHANGED',
 	GamePackageLibraryChanged = 'GAME_PACKAGE_LIBRARY_CHANGED',
@@ -19,6 +20,7 @@ export const enum ActionTypes {
 
 export type GameNameChangedAction = { type: ActionTypes.GameNameChanged, gameName: string };
 export type GamePasswordChangedAction = { type: ActionTypes.GamePasswordChanged, gamePassword: string };
+export type GameVoiceChatChangedAction = { type: ActionTypes.GameVoiceChatChanged, gameVoiceChat: string };
 export type GamePackageTypeChangedAction = { type: ActionTypes.GamePackageTypeChanged, packageType: PackageType };
 export type GamePackageLibraryChangedAction = { type: ActionTypes.GamePackageLibraryChanged, name: string, id: string };
 export type GamePackageDataChangedAction = { type: ActionTypes.GamePackageDataChanged, packageName: string, packageData: File | null };
@@ -33,6 +35,7 @@ export type NewGame2Action = { type: ActionTypes.NewGame2 };
 export type KnownAction =
 	| GameNameChangedAction
 	| GamePasswordChangedAction
+	| GameVoiceChatChangedAction
 	| GamePackageTypeChangedAction
 	| GamePackageDataChangedAction
 	| GameTypeChangedAction

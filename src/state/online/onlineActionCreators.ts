@@ -507,6 +507,7 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 			randomSpecials: game.package.type === PackageType.Random,
 			networkGameName: game.name.trim(),
 			networkGamePassword: game.password,
+			networkVoiceChat: game.voiceChat,
 			isPrivate: isSingleGame,
 			allowViewers: true,
 			showman: showman,

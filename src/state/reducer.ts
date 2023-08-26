@@ -46,6 +46,16 @@ const reducer: Reducer<State> = (
 			};
 		}
 
+		case ActionTypes.GameVoiceChatChanged: {
+			return {
+				...state,
+				game: {
+					...state.game,
+					voiceChat: action.gameVoiceChat
+				}
+			};
+		}
+
 		case ActionTypes.GamePackageTypeChanged: {
 			return {
 				...state,
