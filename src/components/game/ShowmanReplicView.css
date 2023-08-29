@@ -95,7 +95,11 @@
     }
 
     .showmanInfo {
-        flex: 0 0 340px;
+        flex: 0 0 240px;
+    }
+
+    .showmanReplic {
+        flex: 0 0 460px;
     }
 
     .showmanAvatar img {

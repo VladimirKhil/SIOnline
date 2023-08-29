@@ -291,7 +291,6 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 			break;
 
 		case 'FINALTHINK':
-			// Not used - finalthink sound could be played here
 			playGameSound(state.settings.appSound, GameSound.FINAL_THINK);
 			break;
 
@@ -614,8 +613,8 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 							text: e.message,
 							level: MessageLevel.System,
 						}));
-					}); 
-				
+					});
+
 				// Chrome does not support audio and video preload
 				// We can return to this method later
 				// const link = document.createElement('link');
@@ -633,13 +632,16 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 
 		case 'ROUNDTHEMES':
 			const printThemes = args[1] === '+';
-
 			const roundThemes: ThemeInfo[] = [];
+
 			for (let i = 2; i < args.length; i++) {
 				roundThemes.push({ name: args[i], questions: [] });
 			}
 
-			playGameSound(state.settings.appSound, GameSound.ROUND_THEMES);
+			if (state.room.stage.name !== 'Final') {
+				playGameSound(state.settings.appSound, GameSound.ROUND_THEMES, true);
+			}
+
 			dispatch(tableActionCreators.showRoundThemes(roundThemes, state.room.stage.name === 'Final', printThemes));
 			break;
 
@@ -653,6 +655,7 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 
 		case 'SHOWTABLO':
 			dispatch(tableActionCreators.showRoundTable());
+			gameSoundPlayer.pause();
 			break;
 
 		case 'STAGE':
@@ -757,7 +760,6 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 			break;
 
 		case 'TIMEOUT':
-			// Not used - timeout sound could be played here
 			playGameSound(state.settings.appSound, GameSound.ROUND_TIMEOUT);
 			break;
 
@@ -871,7 +873,6 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 			break;
 
 		case 'WINNER':
-			// Not used - applause sound could be played here
 			playGameSound(state.settings.appSound, GameSound.APPLAUSE_FINAL);
 			break;
 
@@ -1449,10 +1450,10 @@ function getMe(state: State): PlayerInfo | null {
 	return null;
 }
 
-function playGameSound(isSoundEnabled: boolean, sound: GameSound): void {
+function playGameSound(isSoundEnabled: boolean, sound: GameSound, loop = false): void {
 	if (!isSoundEnabled) {
 		return;
 	}
 
-	gameSoundPlayer.play(sound);
+	gameSoundPlayer.play(sound, loop);
 }

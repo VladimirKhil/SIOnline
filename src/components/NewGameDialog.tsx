@@ -73,7 +73,7 @@ const mapStateToProps = (state: State) => ({
 	humanPlayersCount: state.game.humanPlayersCount,
 	inProgress: state.online.gameCreationProgress,
 	error: state.online.gameCreationError,
-	uploadPackageProgress: state.online.uploadPackageProgress,
+	uploadPackageProgress:  state.online.uploadPackageProgress,
 	uploadPackagePercentage: state.online.uploadPackagePercentage
 });
 
@@ -397,8 +397,10 @@ export class NewGameDialog extends React.Component<NewGameDialogProps, NewGameDi
 
 					{this.props.uploadPackageProgress ? (
 						<div className="uploadPackagePanel">
-							<span>{localization.sendingPackage}</span>
-							<ProgressBar isIndeterminate={false} value={this.props.uploadPackagePercentage} />
+							<div className="uploadPackageMessage">
+								<span>{localization.sendingPackage}</span>
+								<ProgressBar isIndeterminate={false} value={this.props.uploadPackagePercentage} />
+							</div>
 						</div>
 					) : null}
 				</Dialog>

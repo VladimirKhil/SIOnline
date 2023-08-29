@@ -19,7 +19,7 @@ interface AnswerValidationDialogProps {
 	areAnswersVisible: boolean;
 	onApprove: () => void;
 	onReject: () => void;
-	onAnswersVisibilityChanged: (areAnswersVisible: boolean) => void; 
+	onAnswersVisibilityChanged: (areAnswersVisible: boolean) => void;
 }
 
 const mapStateToProps = (state: State) => ({

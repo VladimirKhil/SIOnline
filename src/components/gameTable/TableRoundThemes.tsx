@@ -4,6 +4,7 @@ import { Dispatch, Action } from 'redux';
 import { connect } from 'react-redux';
 import tableActionCreators from '../../state/table/tableActionCreators';
 import AutoSizedText from '../common/AutoSizedText';
+import { gameSoundPlayer } from '../../utils/GameSoundPlayer';
 
 interface TableRoundThemesProps {
 	roundThemes: string[];
@@ -21,6 +22,7 @@ const mapStateToProps = (state: State) => ({
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	onShowRoundTable: () => {
 		dispatch(tableActionCreators.showRoundTable());
+		gameSoundPlayer.pause();
 	}
 });
 

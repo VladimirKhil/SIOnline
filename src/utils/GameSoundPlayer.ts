@@ -55,9 +55,9 @@ class GameSoundPlayer {
 		]);
 	}
 
-	play(sound: GameSound) {
+	play(sound: GameSound, loop = false) {
 		this.current = this.sounds.get(sound);
-
+		this.current?.loop = loop;
 		this.current.play().catch((e) => console.log(e));
 	}
 
