@@ -996,8 +996,12 @@ const playerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 			onStake(dispatch, state, args, me.sum);
 			break;
 
-		case 'VALIDATION':
+		case GameMessages.Validation:
 			startValidation(dispatch, localization.apellation, args);
+			break;
+
+		case GameMessages.Validation2:
+			startValidation2(dispatch, localization.apellation, args);
 			break;
 
 		default:
@@ -1047,8 +1051,12 @@ const showmanHandler = (dispatch: Dispatch<any>, state: State, dataContext: Data
 			dispatch(roomActionCreators.hintChanged(null));
 			break;
 
-		case 'VALIDATION':
+		case GameMessages.Validation:
 			startValidation(dispatch, localization.answerChecking, args);
+			break;
+
+		case GameMessages.Validation2:
+			startValidation2(dispatch, localization.answerChecking, args);
 			break;
 
 		// Player commands for oral game
@@ -1101,7 +1109,33 @@ function startValidation(dispatch: Dispatch<RoomActions.KnownRoomAction>, title:
 	}
 
 	const validationMesssage = `${localization.playersAnswer} ${name} "${answer}". ${localization.validateAnswer}`;
-	dispatch(roomActionCreators.validate(name, answer, right, wrong, title, validationMesssage));
+	dispatch(roomActionCreators.validate(name, answer, right, wrong, title, validationMesssage, false));
+}
+
+function startValidation2(dispatch: Dispatch<RoomActions.KnownRoomAction>, title: string, args: string[]) {
+	if (args.length < 6) {
+		return;
+	}
+
+	const name = args[1];
+	const answer = args[2];
+	const showExtraRightButtons = args[4] == '+';
+	const rightAnswersCount = Math.min(parseInt(args[5], 10), args.length - 5);
+
+	const right = [];
+
+	for (let i = 0; i < rightAnswersCount; i++) {
+		right.push(args[6 + i]);
+	}
+
+	const wrong = [];
+
+	for (let i = 6 + rightAnswersCount; i < args.length; i++) {
+		wrong.push(args[i]);
+	}
+
+	const validationMesssage = `${localization.playersAnswer} ${name} "${answer}". ${localization.validateAnswer}`;
+	dispatch(roomActionCreators.validate(name, answer, right, wrong, title, validationMesssage, showExtraRightButtons));
 }
 
 function getIndices(args: string[]): number[] {

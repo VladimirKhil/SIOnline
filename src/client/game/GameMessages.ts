@@ -7,6 +7,10 @@ const enum GameMessages {
 	/** Toggles (removes or restores a question). */
 	Toggle = 'TOGGLE',
 	Unbanned = 'UNBANNED',
+	/** Answer validation. */
+	Validation = 'VALIDATION',
+	/** Answer validation. */
+	Validation2 = 'VALIDATION2',
 }
 
 export default GameMessages;

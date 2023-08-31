@@ -436,7 +436,7 @@ video, audio {
     width: 100%;
 }
 
-    .buttonsPanel button {
+    .buttonsPanel button, .buttonsPanel div {
         flex: 1 0 0;
         font-size: 25px;
     }

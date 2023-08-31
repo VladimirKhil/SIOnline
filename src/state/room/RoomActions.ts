@@ -145,7 +145,8 @@ export type ValidateAction = {
 	rightAnswers: string[],
 	wrongAnswers: string[],
 	header: string,
-	message: string
+	message: string,
+	showExtraRightButtons: boolean;
 };
 
 export type SetStakesAction = {

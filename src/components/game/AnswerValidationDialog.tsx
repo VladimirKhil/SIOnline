@@ -16,8 +16,9 @@ interface AnswerValidationDialogProps {
 	message: string;
 	rightAnswers: string[];
 	wrongAnswers: string[];
+	showExtraRightButtons: boolean;
 	areAnswersVisible: boolean;
-	onApprove: () => void;
+	onApprove: (factor: number) => void;
 	onReject: () => void;
 	onAnswersVisibilityChanged: (areAnswersVisible: boolean) => void;
 }
@@ -28,12 +29,13 @@ const mapStateToProps = (state: State) => ({
 	message: state.room.validation.message,
 	rightAnswers: state.room.validation.rightAnswers,
 	wrongAnswers: state.room.validation.wrongAnswers,
+	showExtraRightButtons: state.room.validation.showExtraRightButtons,
 	areAnswersVisible: !state.settings.areValidationAnswersHidden,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
-	onApprove: () => {
-		dispatch(roomActionCreators.approveAnswer() as unknown as Action);
+	onApprove: (factor: number) => {
+		dispatch(roomActionCreators.approveAnswer(factor) as unknown as Action);
 	},
 	onReject: () => {
 		dispatch(roomActionCreators.rejectAnswer() as unknown as Action);
@@ -83,8 +85,41 @@ export function AnswerValidationDialog(props: AnswerValidationDialogProps): JSX.
 				: null}
 
 			<div className="buttonsPanel">
-				<button type="button" className='standard' disabled={!props.isConnected} onClick={() => props.onApprove()}>{localization.yes}</button>
-				<button type="button" className='standard' disabled={!props.isConnected} onClick={() => props.onReject()}>{localization.no}</button>
+				<div className='rightPanel'>
+					<button
+						type="button"
+						className='standard validationButton'
+						disabled={!props.isConnected}
+						onClick={() => props.onApprove(1.0)}>
+						{localization.yes}
+					</button>
+
+					{props.showExtraRightButtons ? (<>
+						<button
+							type="button"
+							className='standard halfPrice extraButton'
+							disabled={!props.isConnected}
+							onClick={() => props.onApprove(0.5)}>
+							×0.5
+						</button>
+
+						<button
+							type="button"
+							className='standard doublePrice extraButton'
+							disabled={!props.isConnected}
+							onClick={() => props.onApprove(2.0)}>
+							×2
+						</button>
+					</>) : null}
+				</div>
+
+				<button
+					type="button"
+					className='standard validationButton'
+					disabled={!props.isConnected}
+					onClick={() => props.onReject()}>
+					{localization.no}
+				</button>
 			</div>
 		</Dialog>
 	);

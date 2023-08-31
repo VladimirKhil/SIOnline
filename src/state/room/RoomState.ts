@@ -54,6 +54,7 @@ export default interface RoomState {
 		message: string;
 		rightAnswers: string[];
 		wrongAnswers: string[];
+		showExtraRightButtons: boolean;
 	};
 	chat: {
 		isVisible: boolean;
@@ -166,7 +167,8 @@ export const initialState: RoomState = {
 		name: '',
 		message: '',
 		rightAnswers: [],
-		wrongAnswers: []
+		wrongAnswers: [],
+		showExtraRightButtons: false,
 	},
 	chat: {
 		isVisible: false,

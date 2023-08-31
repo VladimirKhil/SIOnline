@@ -19,6 +19,7 @@ import MainView from '../../model/enums/MainView';
 import Constants from '../../model/enums/Constants';
 import MessageLevel from '../../model/enums/MessageLevel';
 import uiActionCreators from '../ui/uiActionCreators';
+import Messages from '../../client/game/Messages';
 
 let timerRef: number | null = null;
 
@@ -530,17 +531,18 @@ const validate: ActionCreator<RunActions.ValidateAction> = (
 	rightAnswers: string[],
 	wrongAnswers: string[],
 	header: string,
-	message: string
+	message: string,
+	showExtraRightButtons: boolean,
 ) => ({
-	type: RunActions.RoomActionTypes.Validate, name, answer, rightAnswers, wrongAnswers, header, message
+	type: RunActions.RoomActionTypes.Validate, name, answer, rightAnswers, wrongAnswers, header, message, showExtraRightButtons
 });
 
-const approveAnswer: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
+const approveAnswer: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (factor: number) => async (
 	dispatch: Dispatch<any>,
 	_getState: () => State,
 	dataContext: DataContext
 	) => {
-		if (await dataContext.gameClient.msgAsync('ISRIGHT', '+')) {
+		if (await dataContext.gameClient.msgAsync(Messages.IsRight, '+', factor)) {
 			dispatch(clearDecisions());
 		}
 	};
@@ -550,7 +552,7 @@ const rejectAnswer: ActionCreator<ThunkAction<void, State, DataContext, Action>>
 	_getState: () => State,
 	dataContext: DataContext
 	) => {
-		if (await dataContext.gameClient.msgAsync('ISRIGHT', '-')) {
+		if (await dataContext.gameClient.msgAsync(Messages.IsRight, '-')) {
 			dispatch(clearDecisions());
 		}
 	};
