@@ -60,11 +60,12 @@
         flex: 0 0 250px;
         flex-direction: column;
         margin: 10px 10px 0 10px;
+        height: 70%;
     }
 
     .showmanInfo {
         display: flex;
-        flex: 0 0 240px;
+        flex: 1;
     }
 
     .showmanName {
@@ -84,8 +85,8 @@
     }
 
     .showmanReplic {
-        height: 100%;
         padding: 15px;
+        flex: 1;
     }
 }
 

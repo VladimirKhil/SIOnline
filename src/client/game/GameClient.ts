@@ -19,6 +19,10 @@ export default class GameClient implements IGameClient {
 		return this.gameServerClient.msgAsync(Messages.AnswerVersion, answerVersion);
 	}
 
+	setChooser(playerIndex: number): Promise<boolean> {
+		return this.gameServerClient.msgAsync(Messages.SetChooser, playerIndex);
+	}
+
 	setHost(personName: string): Promise<boolean> {
 		return this.gameServerClient.msgAsync(Messages.SetHost, personName);
 	}

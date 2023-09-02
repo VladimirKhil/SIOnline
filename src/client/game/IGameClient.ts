@@ -6,6 +6,9 @@ export default interface IGameClient {
 	/** Sends answer version. */
 	sendAnswerVersion(answerVersion: string): Promise<boolean>;
 
+	/** Gives turn to player. */
+	setChooser(playerIndex: number): Promise<boolean>;
+
 	/** Sets person as host. */
 	setHost(personName: string): Promise<boolean>;
 

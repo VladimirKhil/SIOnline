@@ -78,6 +78,16 @@ const editTable: ActionCreator<RunActions.EditTableAction> = () => ({
 	type: RunActions.RoomActionTypes.EditTable
 });
 
+const giveTurn: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
+	dispatch: Dispatch<RunActions.KnownRoomAction>,
+	getState: () => State
+	) => {
+		const indices = getState().room.persons.players.map((_value, index) => index);
+
+		dispatch(selectionEnabled(indices, Messages.SetChooser));
+		dispatch(showmanReplicChanged(localization.giveTurnHint));
+	};
+
 const runShowPersons: ActionCreator<RunActions.RunShowPersonsAction> = () => ({
 	type: RunActions.RoomActionTypes.RoomShowPersons
 });
@@ -133,6 +143,7 @@ const playerSelected: ActionCreator<ThunkAction<void, State, DataContext, Action
 	) => {
 	if (await dataContext.gameClient.msgAsync(getState().room.selection.message, playerIndex)) {
 		dispatch(clearDecisions());
+		dispatch(showmanReplicChanged(''));
 	}
 };
 
@@ -841,6 +852,7 @@ const roomActionCreators = {
 	onPass,
 	pause,
 	editTable,
+	giveTurn,
 	runShowPersons,
 	runHidePersons,
 	runShowTables,

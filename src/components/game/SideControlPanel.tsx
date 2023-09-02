@@ -46,6 +46,7 @@ interface SideControlPanelProps {
 	onShowGameInfo: () => void;
 	onPause: () => void;
 	onEditTable: () => void;
+	onGiveTurn: () => void;
 	onExit: () => void;
 	onEditSums: (enable: boolean) => void;
 	onMoveNext: () => void;
@@ -95,6 +96,9 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	},
 	onEditTable: () => {
 		dispatch(roomActionCreators.editTable());
+	},
+	onGiveTurn: () => {
+		dispatch(roomActionCreators.giveTurn() as unknown as Action);
 	},
 	onExit: () => {
 		dispatch(roomActionCreators.exitGame() as unknown as Action);
@@ -229,9 +233,10 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 									<li onClick={() => props.onShowGameInfo()}>{localization.gameInfo}</li>
 									{canPause ? <li className={enabledClass} onClick={() => props.onPause()}>{pauseTitle}</li> : null}
 
-									{props.role === Role.Showman ? (
+									{props.role === Role.Showman ? (<>
 										<li className={enabledEditClass} onClick={() => props.onEditTable()}>{localization.editTable}</li>
-									) : null}
+										<li className={enabledClass} onClick={() => props.onGiveTurn()}>{localization.giveTurn}</li>
+										</>) : null}
 
 									{voiceChatUri && isWellFormedUri(voiceChatUri) ? (
 										<li title={voiceChatUri} onClick={() => window.open(voiceChatUri, '_blank')}>{localization.voiceChat}</li>

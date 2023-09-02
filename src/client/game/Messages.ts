@@ -5,6 +5,8 @@ const enum Messages {
 	IsRight = 'ISRIGHT',
 	/** Notifies that media has been successfully loaded. */
 	MediaLoaded = 'MEDIALOADED',
+	/** Gives turn to player. */
+	SetChooser = 'SETCHOOSER',
 	/** Sets person as host. */
 	SetHost = 'SETHOST',
 	/** Toggles (removes or restores a question). */

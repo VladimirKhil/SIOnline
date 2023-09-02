@@ -171,14 +171,17 @@
 
 .chooserMark {
     position: absolute;
-    width: 20px;
-    height: 20px;
-    background: white;
+    width: 25px;
+    height: 25px;
     bottom: 0;
     right: 0;
-    border-width: 1px 0 0 1px;
-    border-color: lightgray;
-    border-style: solid;
+    background-color: rgba(0, 0, 0, 0.3);
+    background-image: url(../../../assets/images/active_player.png);
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    background-size: contain;
+    background-origin: content-box;
+    padding: 2px;
 }
 
 .mediaLoadedMark {
