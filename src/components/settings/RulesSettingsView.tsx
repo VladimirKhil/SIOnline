@@ -5,11 +5,15 @@ import State from '../../state/State';
 import localization from '../../model/resources/localization';
 import SettingsState from '../../state/settings/SettingsState';
 import settingsActionCreators from '../../state/settings/settingsActionCreators';
+import GameType from '../../client/contracts/GameType';
 
 interface RulesSettingsViewProps {
 	settings: SettingsState;
+	gameType: GameType;
 
+	onPlayAllQuestionsInFinalRoundChanged: (playAllQuestionsInFinalRound: boolean) => void;
 	onOralChanged: (oral: boolean) => void;
+	onOralPlayersActionsChanged: (oralPlayersActions: boolean) => void;
 	onFalseStartsChanged: (falseStarts: boolean) => void;
 	onHintShowmanChanged: (hintShowman: boolean) => void;
 	onReadingSpeedChanged: (readingSpeed: number) => void;
@@ -19,15 +23,24 @@ interface RulesSettingsViewProps {
 	onPreloadRoundContentChanged: (preloadRoundContent: boolean) => void;
 	onUsePingPenaltyChanged: (usePingPenalty: boolean) => void;
 	onPartialTextChanged: (hintShowman: boolean) => void;
+	onAllowEveryoneToPlayHiddenStakesChanged: (allowEveryoneToPlayHiddenStakes: boolean) => void;
+	onDisplaySourcesChanged: (displaySources: boolean) => void;
 }
 
 const mapStateToProps = (state: State) => ({
 	settings: state.settings,
+	gameType: state.game.type,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
+	onPlayAllQuestionsInFinalRoundChanged: (playAllQuestionsInFinalRound: boolean) => {
+		dispatch(settingsActionCreators.onPlayAllQuestionsInFinalRoundChanged(playAllQuestionsInFinalRound));
+	},
 	onOralChanged: (oral: boolean) => {
 		dispatch(settingsActionCreators.onOralChanged(oral));
+	},
+	onOralPlayersActionsChanged: (oralPlayersActions: boolean) => {
+		dispatch(settingsActionCreators.onOralPlayersActionsChanged(oralPlayersActions));
 	},
 	onFalseStartsChanged: (falseStarts: boolean) => {
 		dispatch(settingsActionCreators.onFalseStartsChanged(falseStarts));
@@ -56,6 +69,12 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	onPartialTextChanged: (partialText: boolean) => {
 		dispatch(settingsActionCreators.onPartialTextChanged(partialText));
 	},
+	onAllowEveryoneToPlayHiddenStakesChanged: (allowEveryoneToPlayHiddenStakes: boolean) => {
+		dispatch(settingsActionCreators.onAllowEveryoneToPlayHiddenStakesChanged(allowEveryoneToPlayHiddenStakes));
+	},
+	onDisplaySourcesChanged: (displaySources: boolean) => {
+		dispatch(settingsActionCreators.onDisplaySourcesChanged(displaySources));
+	},
 });
 
 
@@ -70,6 +89,19 @@ export function RulesSettingsView(props: RulesSettingsViewProps): JSX.Element {
 
 	return (
 		<div>
+			{props.gameType === GameType.Simple ? null : (
+				<div className="settingItem">
+					<input
+						id="playAllQuestionsInFinalRound"
+						type="checkbox"
+						checked={props.settings.appSettings.playAllQuestionsInFinalRound}
+						onChange={() => props.onPlayAllQuestionsInFinalRoundChanged(!props.settings.appSettings.playAllQuestionsInFinalRound)}
+					/>
+
+					<label htmlFor="playAllQuestionsInFinalRound">{localization.playAllQuestionsInFinalRound}</label>
+				</div>
+			)}
+
 			<div className="settingItem">
 				<input
 					id="oral"
@@ -80,6 +112,18 @@ export function RulesSettingsView(props: RulesSettingsViewProps): JSX.Element {
 
 				<label htmlFor="oral">{localization.oralGame}</label>
 				<span className="hint">{localization.oralGameHint}</span>
+			</div>
+
+			<div className="settingItem">
+				<input
+					id="oralPlayersActions"
+					type="checkbox"
+					disabled={!props.settings.appSettings.oral}
+					checked={props.settings.appSettings.oralPlayersActions}
+					onChange={() => props.onOralPlayersActionsChanged(!props.settings.appSettings.oralPlayersActions)}
+				/>
+
+				<label htmlFor="oralPlayersActions">{localization.oralPlayersActions}</label>
 			</div>
 
 			<div className="settingItem">
@@ -105,6 +149,18 @@ export function RulesSettingsView(props: RulesSettingsViewProps): JSX.Element {
 
 				<label htmlFor="partialText">{localization.partialText}</label>
 				<span className="hint">{localization.partialTextHint}</span>
+			</div>
+
+			<div className="settingItem">
+				<input
+					id="allowEveryoneToPlayHiddenStakes"
+					type="checkbox"
+					checked={props.settings.appSettings.allowEveryoneToPlayHiddenStakes}
+					onChange={() => props.onAllowEveryoneToPlayHiddenStakesChanged(!props.settings.appSettings.allowEveryoneToPlayHiddenStakes)}
+				/>
+
+				<label htmlFor="allowEveryoneToPlayHiddenStakes">{localization.allowEveryoneToPlayHiddenStakes}</label>
+				<span className="hint">{localization.allowEveryoneToPlayHiddenStakesHint}</span>
 			</div>
 
 			<div className="settingItem">
@@ -162,7 +218,7 @@ export function RulesSettingsView(props: RulesSettingsViewProps): JSX.Element {
 					checked={props.settings.appSettings.useApellations}
 					onChange={() => props.onUseApellationsChanged(!props.settings.appSettings.useApellations)}
 				/>
-				
+
 				<label htmlFor="useApellations">{localization.useApellations}</label>
 				<span className="hint">{localization.useApellationsHint}</span>
 			</div>
@@ -195,6 +251,16 @@ export function RulesSettingsView(props: RulesSettingsViewProps): JSX.Element {
 					onChange={() => props.onPreloadRoundContentChanged(!props.settings.appSettings.preloadRoundContent)}
 				/>
 				<label htmlFor="preloadRoundContent">{localization.preloadRoundContent}</label>
+			</div>
+
+			<div className="settingItem">
+				<input
+					id="displaySources"
+					type="checkbox"
+					checked={props.settings.appSettings.displaySources}
+					onChange={() => props.onDisplaySourcesChanged(!props.settings.appSettings.displaySources)}
+				/>
+				<label htmlFor="displaySources">{localization.displaySources}</label>
 			</div>
 		</div>
 	);

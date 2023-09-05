@@ -25,6 +25,10 @@ export const enum SettingsActionTypes {
 	GameButtonKeyChanged = 'GAME_BUTTON_KEY_CHANGED',
 	LobbyChatVisibilityChanged = 'LOBBY_CHAT_VISIBILITY_CHANGED',
 	ValidationAnswersVisibilityChanged = 'VALIDATION_ANSWERS_VISIBILITY_CHANGED',
+	PlayAllQuestionsInFinalRoundChanged = 'PLAY_ALL_QUESTIONS_IN_FINAL_ROUND_CHANGED',
+	OralPlayersActionsChanged = 'ORAL_PLAYERS_ACTIONS_CHANGED',
+	AllowEveryoneToPlayHiddenStakesChanged = 'ALLOW_EVERYONE_TO_PLAY_HIDDEN_STAKES_CHANGED',
+	DisplaySourcesChanged = 'DISPLAY_SOURCES_CHANGED',
 }
 
 export type SoundVolumeChangeAction = { type: SettingsActionTypes.SoundVolumeChanged; volume: number };
@@ -66,6 +70,20 @@ export type ValidationAnswersVisibilityChangedAction = {
 	validationAnswersVisible: boolean
 };
 
+export type PlayAllQuestionsInFinalRoundChangedAction = {
+	type: SettingsActionTypes.PlayAllQuestionsInFinalRoundChanged,
+	playAllQuestionsInFinalRound: boolean
+};
+
+export type OralPlayersActionsChangedAction = { type: SettingsActionTypes.OralPlayersActionsChanged, oralPlayersActions: boolean };
+
+export type AllowEveryoneToPlayHiddenStakesChangedAction = {
+	type: SettingsActionTypes.AllowEveryoneToPlayHiddenStakesChanged,
+	allowEveryoneToPlayHiddenStakes: boolean
+};
+
+export type DisplaySourcesChangedAction = { type: SettingsActionTypes.DisplaySourcesChanged, displaySources: boolean };
+
 export type KnownSettingsAction =
 	| SoundVolumeChangeAction
 	| SoundChangedAction
@@ -89,4 +107,8 @@ export type KnownSettingsAction =
 	| LanguageChangedAction
 	| GameButtonKeyChangedAction
 	| LobbyChatVisibilityChangedAction
-	| ValidationAnswersVisibilityChangedAction;
+	| ValidationAnswersVisibilityChangedAction
+	| PlayAllQuestionsInFinalRoundChangedAction
+	| OralPlayersActionsChangedAction
+	| AllowEveryoneToPlayHiddenStakesChangedAction
+	| DisplaySourcesChangedAction;

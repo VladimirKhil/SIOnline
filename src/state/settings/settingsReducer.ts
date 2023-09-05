@@ -180,6 +180,42 @@ const settingsReducer: Reducer<SettingsState> = (
 				areValidationAnswersHidden: !action.validationAnswersVisible
 			};
 
+		case SettingsActionTypes.PlayAllQuestionsInFinalRoundChanged:
+			return {
+				...state,
+				appSettings: {
+					...state.appSettings,
+					playAllQuestionsInFinalRound: action.playAllQuestionsInFinalRound
+				}
+			};
+
+		case SettingsActionTypes.OralPlayersActionsChanged:
+			return {
+				...state,
+				appSettings: {
+					...state.appSettings,
+					oralPlayersActions: action.oralPlayersActions
+				}
+			};
+
+		case SettingsActionTypes.AllowEveryoneToPlayHiddenStakesChanged:
+			return {
+				...state,
+				appSettings: {
+					...state.appSettings,
+					allowEveryoneToPlayHiddenStakes: action.allowEveryoneToPlayHiddenStakes
+				}
+			};
+
+		case SettingsActionTypes.DisplaySourcesChanged:
+			return {
+				...state,
+				appSettings: {
+					...state.appSettings,
+					displaySources: action.displaySources
+				}
+			};
+
 		case SettingsActionTypes.ResetSettings:
 			return initialState;
 

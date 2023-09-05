@@ -120,6 +120,26 @@ const onValidationAnswersVisibilityChanged: ActionCreator<SettingsActions.Valida
 	type: SettingsActions.SettingsActionTypes.ValidationAnswersVisibilityChanged, validationAnswersVisible
 });
 
+const onPlayAllQuestionsInFinalRoundChanged: ActionCreator<SettingsActions.PlayAllQuestionsInFinalRoundChangedAction> = (
+	playAllQuestionsInFinalRound: boolean) => ({
+	type: SettingsActions.SettingsActionTypes.PlayAllQuestionsInFinalRoundChanged, playAllQuestionsInFinalRound
+});
+
+const onOralPlayersActionsChanged: ActionCreator<SettingsActions.OralPlayersActionsChangedAction> = (
+	oralPlayersActions: boolean) => ({
+	type: SettingsActions.SettingsActionTypes.OralPlayersActionsChanged, oralPlayersActions
+});
+
+const onAllowEveryoneToPlayHiddenStakesChanged: ActionCreator<SettingsActions.AllowEveryoneToPlayHiddenStakesChangedAction> = (
+	allowEveryoneToPlayHiddenStakes: boolean) => ({
+	type: SettingsActions.SettingsActionTypes.AllowEveryoneToPlayHiddenStakesChanged, allowEveryoneToPlayHiddenStakes
+});
+
+const onDisplaySourcesChanged: ActionCreator<SettingsActions.DisplaySourcesChangedAction> = (
+	displaySources: boolean) => ({
+	type: SettingsActions.SettingsActionTypes.DisplaySourcesChanged, displaySources
+});
+
 const settingsActionCreators = {
 	onSoundVolumeChanged,
 	onSoundChanged,
@@ -144,6 +164,10 @@ const settingsActionCreators = {
 	gameButtonKeyChanged,
 	onLobbyChatVisibilityChanged,
 	onValidationAnswersVisibilityChanged,
+	onPlayAllQuestionsInFinalRoundChanged,
+	onOralPlayersActionsChanged,
+	onAllowEveryoneToPlayHiddenStakesChanged,
+	onDisplaySourcesChanged,
 };
 
 export default settingsActionCreators;

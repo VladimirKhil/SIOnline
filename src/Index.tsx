@@ -65,7 +65,9 @@ function setState(state: State, savedState: SavedState | null, gameId: string | 
 				timeSettings: savedState.settings.appSettings.timeSettings || state.settings.appSettings.timeSettings,
 				readingSpeed: savedState.settings.appSettings.readingSpeed || state.settings.appSettings.readingSpeed,
 				preloadRoundContent: savedState.settings.appSettings.preloadRoundContent ?? true,
-				useApellations: savedState.settings.appSettings.useApellations ?? true
+				useApellations: savedState.settings.appSettings.useApellations ?? true,
+				allowEveryoneToPlayHiddenStakes: savedState.settings.appSettings.allowEveryoneToPlayHiddenStakes ?? true,
+				oralPlayersActions: savedState.settings.appSettings.oralPlayersActions ?? true,
 			},
 			gameButtonKey: savedState.settings.gameButtonKey || Constants.KEY_CTRL
 		} : state.settings,

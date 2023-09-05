@@ -291,7 +291,7 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 			break;
 
 		case 'FINALTHINK':
-			playGameSound(state.settings.appSound, GameSound.FINAL_THINK);
+			playGameSound(state.settings.appSound, GameSound.FINAL_THINK, true);
 			break;
 
 		case GameMessages.GameMetadata:
@@ -765,10 +765,13 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 
 		case 'TIMER':
 			// Special case for automatic game
-			if (!state.room.stage.isGameStarted && state.game.isAutomatic && args.length === 5
-				&& args[1] === '2' && args[2] === 'GO' && args[4] === '-2') {
+			if (!state.room.stage.isGameStarted
+				&& state.game.isAutomatic
+				&& args.length === 5
+				&& args[1] === '2'
+				&& args[2] === 'GO'
+				&& args[4] === '-2') {
 				const leftSeconds = parseInt(args[3], 10) / 10;
-
 				roomActionCreators.showLeftSeconds(leftSeconds, dispatch);
 			} else if (args.length > 2) {
 				const timerIndex = parseInt(args[1], 10);
@@ -796,6 +799,7 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 
 						if (timerIndex === 2) {
 							dispatch(roomActionCreators.clearDecisionsAndMainTimer());
+							gameSoundPlayer.pause();
 						}
 						break;
 

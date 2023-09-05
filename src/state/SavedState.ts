@@ -6,6 +6,7 @@ const STATE_KEY = 'SIOnline_State';
 
 export default interface SavedState {
 	login: string;
+
 	game: {
 		name: string;
 		password: string;
@@ -14,11 +15,13 @@ export default interface SavedState {
 		playersCount: number;
 		humanPlayersCount: number;
 	};
+
 	settings: SettingsState;
 }
 
 export function loadState(): SavedState | null {
 	const savedState = localStorage.getItem(STATE_KEY);
+
 	if (!savedState) {
 		return null;
 	}

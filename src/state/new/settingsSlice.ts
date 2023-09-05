@@ -28,9 +28,13 @@ const initialState: SettingsState = {
 	appSettings: {
 		culture: null,
 		oral: false,
+		oralPlayersActions: true,
 		falseStart: true,
 		hintShowman: false,
 		partialText: false,
+		allowEveryoneToPlayHiddenStakes: true,
+		playAllQuestionsInFinalRound: false,
+		displaySources: false,
 		readingSpeed: 20,
 		managed: false,
 		ignoreWrong: false,
