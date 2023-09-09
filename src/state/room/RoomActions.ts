@@ -7,6 +7,7 @@ import PlayerInfo from '../../model/PlayerInfo';
 import Role from '../../client/contracts/Role';
 import PlayerStates from '../../model/enums/PlayerStates';
 import StakeTypes from '../../model/enums/StakeTypes';
+import JoinMode from '../../client/game/JoinMode';
 
 export const enum RoomActionTypes {
 	RoomChatModeChanged = 'ROOM_CHAT_MODE_CHANGED',
@@ -88,6 +89,7 @@ export const enum RoomActionTypes {
 	PlayerMediaLoaded = 'PLAYER_MEDIA_LOADED',
 	EditTable = 'EDIT_TABLE',
 	ClearRoomChat = 'ROOM_CHAT_CLEAR',
+	JoinModeChanged = 'JOIN_MODE_CHANGED',
 }
 
 export type RunChatModeChangedAction = { type: RoomActionTypes.RoomChatModeChanged, chatMode: ChatMode };
@@ -198,6 +200,7 @@ export type UnbannedAction = { type: RoomActionTypes.Unbanned, ip: string };
 export type SelectBannedItemAction = { type: RoomActionTypes.SelectBannedItem, ip: string };
 export type PlayerMediaLoadedAction = { type: RoomActionTypes.PlayerMediaLoaded, playerIndex: number };
 export type EditTableAction = { type: RoomActionTypes.EditTable };
+export type JoinModeChangedAction = { type: RoomActionTypes.JoinModeChanged, joinMode: JoinMode };
 
 export type KnownRoomAction =
 	RunChatModeChangedAction
@@ -278,4 +281,5 @@ export type KnownRoomAction =
 	| SelectBannedItemAction
 	| PlayerMediaLoadedAction
 	| EditTableAction
-	| ClearRoomChatAction;
+	| ClearRoomChatAction
+	| JoinModeChangedAction;

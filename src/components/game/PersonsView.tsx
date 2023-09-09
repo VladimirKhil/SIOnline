@@ -7,6 +7,7 @@ import Account from '../../model/Account';
 import roomActionCreators from '../../state/room/roomActionCreators';
 import PersonView from './PersonView';
 import { isHost } from '../../utils/StateHelpers';
+import JoinMode from '../../client/game/JoinMode';
 
 import './PersonsView.css';
 
@@ -18,9 +19,12 @@ interface PersonsViewProps {
 	viewers: Account[];
 	login: string;
 	selectedPerson: Account | null;
+	joinMode: JoinMode;
+
 	kick: () => void;
 	ban: () => void;
 	setHost: () => void;
+	onJoinModeChanged(joinMode: JoinMode): void;
 }
 
 const mapStateToProps = (state: State) => {
@@ -46,7 +50,8 @@ const mapStateToProps = (state: State) => {
 		players,
 		viewers,
 		login: state.user.login,
-		selectedPerson: selectedPersonName ? state.room.persons.all[selectedPersonName] : null
+		selectedPerson: selectedPersonName ? state.room.persons.all[selectedPersonName] : null,
+		joinMode: state.room.joinMode,
 	};
 };
 
@@ -59,6 +64,9 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => ({
 	},
 	setHost: () => {
 		dispatch((roomActionCreators.setHost() as object) as AnyAction);
+	},
+	onJoinModeChanged(joinMode: JoinMode) {
+		dispatch((roomActionCreators.setJoinMode(joinMode) as object) as AnyAction);
 	}
 });
 
@@ -90,6 +98,10 @@ function inviteLink() {
 export function PersonsView(props: PersonsViewProps): JSX.Element {
 	const canKick = props.isHost && props.selectedPerson && props.selectedPerson.name !== props.login && props.selectedPerson.isHuman;
 
+	const onJoinModeChanged = (e: React.ChangeEvent<HTMLSelectElement>) => {
+		props.onJoinModeChanged(parseInt(e.target.value, 10) as JoinMode);
+	};
+
 	return (
 		<>
 			<div className="personsList">
@@ -116,12 +128,25 @@ export function PersonsView(props: PersonsViewProps): JSX.Element {
 				</ul>
 			</div>
 
-			<div className="buttonsPanel inviteLinkHost">
+			<div className="buttonsPanel inviteLinkHost sidePanel">
 				<button type="button" className='standard' onClick={() => inviteLink()}>{localization.inviteLink}</button>
 				<div ref={tooltipRef} className='inviteLinkTooltip'>{localization.inviteLinkCopied}</div>
 			</div>
 
-			<div className="buttonsPanel">
+			<div className="buttonsPanel sidePanel joinMode">
+				<span className='joinModeTitle'>{localization.joinMode}</span>
+
+				<select
+					value = {props.joinMode}
+					onChange={onJoinModeChanged}
+					disabled={!props.isConnected || !props.isHost}>
+					<option value={JoinMode.AnyRole}>{localization.joinModeAnyRole}</option>
+					<option value={JoinMode.OnlyViewer}>{localization.joinModeViewer}</option>
+					<option value={JoinMode.Forbidden}>{localization.joinModeForbidden}</option>
+				</select>
+			</div>
+
+			<div className="buttonsPanel sidePanel">
 				<button
 					type="button"
 					className='standard'
@@ -131,7 +156,7 @@ export function PersonsView(props: PersonsViewProps): JSX.Element {
 				</button>
 			</div>
 
-			<div className="buttonsPanel">
+			<div className="buttonsPanel sidePanel">
 				<button
 					type="button"
 					className='standard'

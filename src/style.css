@@ -204,7 +204,7 @@ button {
     transition: all 1s;
 }
 
-button.standard {
+button.standard, .sidePanel {
     background-color: #2c7be1;
 }
 

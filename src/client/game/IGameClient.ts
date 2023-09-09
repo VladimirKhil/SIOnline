@@ -1,3 +1,5 @@
+import JoinMode from './JoinMode';
+
 /** Defines a high level game client built over IGameServerClient layer. */
 export default interface IGameClient {
 	/** Notifies that the client has loaded the media. */
@@ -11,6 +13,9 @@ export default interface IGameClient {
 
 	/** Sets person as host. */
 	setHost(personName: string): Promise<boolean>;
+
+	/** Sets game join mode. */
+	setJoinMode(joinMode: JoinMode): Promise<boolean>;
 
 	/** Toggles (removes or restores) a question on game table. */
 	toggle(themeIndex: number, questionIndex: number): Promise<boolean>;

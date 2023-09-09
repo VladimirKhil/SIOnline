@@ -24,6 +24,8 @@ import MessageLevel from '../../model/enums/MessageLevel';
 import GameStage from '../../model/enums/GameStage';
 import GameMessages from '../../client/game/GameMessages';
 import { GameSound, gameSoundPlayer } from '../../utils/GameSoundPlayer';
+import Messages from '../../client/game/Messages';
+import JoinMode from '../../client/game/JoinMode';
 
 let lastReplicLock: number;
 
@@ -648,9 +650,24 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 		case 'SETCHOOSER':
 			const chooserIndex = parseInt(args[1], 10);
 			dispatch(roomActionCreators.chooserChanged(chooserIndex));
+
 			if (args.length > 2) {
 				dispatch(roomActionCreators.playerStateChanged(chooserIndex, PlayerStates.Press));
 			}
+			break;
+
+		case Messages.SetJoinMode:
+			if (args.length < 2) {
+				break;
+			}
+
+			const joinMode = JoinMode[args[1] as keyof typeof JoinMode];
+
+			if (joinMode === undefined) {
+				break;
+			}
+
+			dispatch(roomActionCreators.joinModeChanged(joinMode));
 			break;
 
 		case 'SHOWTABLO':

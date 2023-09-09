@@ -1,3 +1,4 @@
+/** Defines OUTGOING SIGame messages. */
 const enum Messages {
 	/** Answer version. Denotes a preliminary answer printed by player. */
 	AnswerVersion = 'ANSWER_VERSION',
@@ -9,6 +10,8 @@ const enum Messages {
 	SetChooser = 'SETCHOOSER',
 	/** Sets person as host. */
 	SetHost = 'SETHOST',
+	/** Sets game join mode. */
+	SetJoinMode = 'SETJOINMODE',
 	/** Toggles (removes or restores a question). */
 	Toggle = 'TOGGLE',
 	/** Unbans the person. */

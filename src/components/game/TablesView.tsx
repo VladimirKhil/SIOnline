@@ -73,7 +73,7 @@ function loadPersonReplacementList(selectedPerson: PersonInfo | null, props: Tab
 			.filter(person => person.isHuman && person.name !== selectedPerson?.name)
 			.map(person => person.name);
 	}
-	
+
 	if (props.computerAccounts && isPlayerSelected) {
 		return props.computerAccounts.filter(name => !props.persons[name]);
 	}
@@ -108,11 +108,14 @@ export function TablesView(props: TablesViewProps): JSX.Element {
 		<>
 			<div className="tablesList">
 				<div className="tablesHeader">{localization.showman}</div>
+
 				<ul>
 					<TableView person={props.showman} isSelected={props.selectedIndex === 0} selectTable={() => props.selectTable(0)} />
 				</ul>
+
 				<div className="tablesHeader">
 					<span>{localization.players}</span>
+
 					<button
 						type="button"
 						className="addTableButton"
@@ -123,6 +126,7 @@ export function TablesView(props: TablesViewProps): JSX.Element {
 						<span>+</span>
 					</button>
 				</div>
+
 				<ul>
 					{props.players.map((player, index) => (
 						<TableView
@@ -134,7 +138,8 @@ export function TablesView(props: TablesViewProps): JSX.Element {
 					))}
 				</ul>
 			</div>
-			<div className="buttonsPanel">
+
+			<div className="buttonsPanel sidePanel">
 				<button
 					className='replacePersonButton standard'
 					type="button"
@@ -142,6 +147,7 @@ export function TablesView(props: TablesViewProps): JSX.Element {
 					disabled={!props.isConnected || !canChangeType}>
 					{selectedPerson && selectedPerson.isHuman ? localization.changeToBot : localization.changeToHuman}
 				</button>
+
 				<FlyoutButton
 					className='standard'
 					disabled={!props.isConnected || !canSet}
@@ -157,10 +163,12 @@ export function TablesView(props: TablesViewProps): JSX.Element {
 					{localization.replaceWith}
 				</FlyoutButton>
 			</div>
-			<div className="buttonsPanel">
+
+			<div className="buttonsPanel sidePanel">
 				<button type="button" className='standard' onClick={() => props.freeTable()} disabled={!props.isConnected || !canFree}>
 					{localization.freeTable}
 				</button>
+
 				<button type="button" className='standard' onClick={() => props.deleteTable()} disabled={!props.isConnected || !canDelete}>
 					{localization.deleteTable}
 				</button>

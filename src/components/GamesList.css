@@ -170,5 +170,6 @@ ul.gamesFilter > li.disabled {
     #newGame, #newAutoGame {
         font-size: 26px;
         line-height: 26px;
+        padding-top: 8px;
     }
 }

@@ -21,6 +21,7 @@ import MessageLevel from '../../model/enums/MessageLevel';
 import uiActionCreators from '../ui/uiActionCreators';
 import Messages from '../../client/game/Messages';
 import { gameSoundPlayer } from '../../utils/GameSoundPlayer';
+import JoinMode from '../../client/game/JoinMode';
 
 let timerRef: number | null = null;
 
@@ -847,6 +848,22 @@ const clearRoomChat: ActionCreator<RunActions.ClearRoomChatAction> = () => ({
 	type: RunActions.RoomActionTypes.ClearRoomChat
 });
 
+const joinModeChanged: ActionCreator<RunActions.JoinModeChangedAction> = (joinMode: JoinMode) => ({
+	type: RunActions.RoomActionTypes.JoinModeChanged, joinMode
+});
+
+const setJoinMode: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (joinMode: JoinMode) => async (
+	_dispatch: Dispatch<any>,
+	getState: () => State,
+	dataContext: DataContext
+) => {
+	const currentJoinMode = getState().room.joinMode;
+
+	if (currentJoinMode !== joinMode) {
+		await dataContext.game.setJoinMode(joinMode);
+	}
+};
+
 const roomActionCreators = {
 	runChatModeChanged,
 	runChatMessageChanged,
@@ -964,6 +981,8 @@ const roomActionCreators = {
 	playerMediaLoaded,
 	mediaLoaded,
 	clearRoomChat,
+	joinModeChanged,
+	setJoinMode,
 };
 
 export default roomActionCreators;

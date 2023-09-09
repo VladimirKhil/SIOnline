@@ -26,6 +26,7 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	selectItem: (ip: string) => {
 		dispatch(roomActionCreators.selectBannedItem(ip) as object as Action);
 	},
+
 	unban: (ip: string) => {
 		dispatch(roomActionCreators.unban(ip) as object as Action);
 	},
@@ -44,7 +45,7 @@ export function BannedView(props: BannedViewProps): JSX.Element {
 				))}
 			</ul>
 
-			<div className="buttonsPanel">
+			<div className="buttonsPanel sidePanel">
 				<button
 					type="button"
 					className='standard'

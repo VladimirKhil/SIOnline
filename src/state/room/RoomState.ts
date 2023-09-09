@@ -7,6 +7,7 @@ import Role from '../../client/contracts/Role';
 import StakeTypes from '../../model/enums/StakeTypes';
 import Timers from '../../model/Timers';
 import TimerStates from '../../model/enums/TimeStates';
+import JoinMode from '../../client/game/JoinMode';
 
 export default interface RoomState {
 	persons: {
@@ -77,16 +78,20 @@ export default interface RoomState {
 	hint: string | null;
 	roundsNames: string[] | null;
 	buttonBlockingTimeSeconds: number;
+
 	metadata: {
 		gameName: string | null;
 		packageName: string | null;
 		contactUri: string | null;
 		voiceChatUri: string | null;
-	},
+	};
+
 	banned: {
 		entries: Record<string, string>;
 		selectedIp: string | null;
-	}
+	};
+
+	joinMode: JoinMode;
 }
 
 export const initialState: RoomState = {
@@ -191,14 +196,18 @@ export const initialState: RoomState = {
 	hint: null,
 	roundsNames: null,
 	buttonBlockingTimeSeconds: 3,
+
 	metadata: {
 		gameName: null,
 		packageName: null,
 		contactUri: null,
 		voiceChatUri: null,
 	},
+
 	banned: {
 		entries: {},
 		selectedIp: null,
-	}
+	},
+
+	joinMode: JoinMode.AnyRole,
 };
