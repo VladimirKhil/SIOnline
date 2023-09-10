@@ -1,16 +1,11 @@
 .playerButton {
-    font-size: 19pt;
-    line-height: 19pt;
-    margin: 0;
-    padding: 7pt 0pt;
-    border-width: 1px;
     background: #690000;
-    width: 100%;
-    height: 100%;
+    background: radial-gradient(circle, rgba(183,144,42,1) 0%, rgba(187,0,0,1) 35%);
 }
 
 .playerButton:hover {
     background: #FF0000;
+    background: radial-gradient(circle, rgba(255,183,0,1) 0%, rgba(255,0,0,1) 35%);
 }
 
 .playerButton:active {
@@ -20,25 +15,4 @@
 .playerButton:disabled {
     background: gray;
     cursor: initial;
-}
-
-.reactions {
-    position: absolute;
-    top: 0;
-    left: 0;
-	width: 100%;
-	height: 100%;
-}
-
-.reactions_panel {
-	display: flex;
-	flex-direction: row;
-}
-
-.reactions_panel button {
-	flex: 1;
-}
-
-.reactions_list li {
-	text-align: center;
 }

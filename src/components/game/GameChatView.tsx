@@ -41,7 +41,6 @@ interface GameChatViewProps {
 	onMarkQuestion: () => void;
 	onEditSums: (enable: boolean) => void;
 	navigateToRound: (roundIndex: number) => void;
-	onPass: () => void;
 	onShowSettings: () => void;
 	onEditTable: () => void;
 	onGiveTurn: () => void;
@@ -73,9 +72,6 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	},
 	navigateToRound: (roundIndex: number) => {
 		dispatch(roomActionCreators.navigateToRound(roundIndex) as unknown as Action);
-	},
-	onPass: () => {
-		dispatch(roomActionCreators.onPass() as unknown as Action);
 	},
 	onShowSettings: () => {
 		dispatch(uiActionCreators.showSettings(true));
@@ -193,18 +189,6 @@ export function GameChatView(props: GameChatViewProps): JSX.Element {
 			<div className="sideArea">
 				{getSideArea(props)}
 			</div>
-
-			{props.role === Role.Player ? (
-				<div className="sideButtonHost">
-					<button
-						type="button"
-						className='passButton standard wide commandButton bottomButton'
-						disabled={!props.isConnected}
-						onClick={() => props.onPass()}
-					>
-						<span className='passText'>{localization.pass}</span>
-					</button>
-				</div>) : null}
 
 			{props.role === Role.Showman ? (
 				<div className="sideButtonHost">

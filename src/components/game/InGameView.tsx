@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { Action, Dispatch } from 'redux';
 import State from '../../state/State';
 import PlayersView from './PlayersView';
-import BottomControlPanel from './BottomControlPanel';
 import GameTable from '../gameTable/GameTable';
 import GameChatView from './GameChatView';
 import SideControlPanel from './SideControlPanel';
@@ -22,6 +21,7 @@ import ManageGameView from './ManageGameView';
 import Constants from '../../model/enums/Constants';
 import GameMetadataView from './GameMetadataView';
 import BannedView from './BannedView';
+import TableContextView from './TableContextView/TableContextView';
 
 import './InGameView.css';
 
@@ -86,7 +86,7 @@ function getMainAreaContent(props: InGameViewProps): React.ReactNode {
 					<GameLogView />
 				</div>
 			</div>
-			
+
 			<RoundProgress />
 		</div>
 	) : null;
@@ -107,11 +107,10 @@ export function InGameView(props: InGameViewProps) : JSX.Element {
 						<div className="tableArea">
 							<GameTable />
 							<GameHint />
+							<TableContextView />
 						</div>
 					</div>
 				</div>
-
-				<BottomControlPanel />
 			</div>
 
 			<div className="game__mainArea">

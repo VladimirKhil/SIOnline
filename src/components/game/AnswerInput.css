@@ -2,17 +2,11 @@
 	display: flex;
     margin: 0;
     height: 45px;
-    top: 0;
     border: 0;
 	overflow: hidden;
-    pointer-events: initial;	
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-	background-color: lightyellow;
+    pointer-events: initial;
+	background-color: rgb(255, 188, 62);
     border-top: 1px solid gray;
-	padding-right: 50px;
 }
 
 .answerInput {
@@ -25,16 +19,10 @@
     padding-right: 10px;
     font-size: 23px;
 	margin: 0;
-	background-color: lightyellow;
+	background-color: rgb(255, 188, 62);
 }
 
 .sendAnswer {
 	width: 60px;
 	height: 100%;
-}
-
-@media screen and (min-width: 800px) {
-	.answerInputHost {
-		padding-right: 0;
-	}
 }

@@ -57,6 +57,7 @@ export function AnswerInput(props: AnswerInputProps): JSX.Element | null {
 				onChange={onAnswerChanged}
 				onKeyPress={onAnswerKeyPress}
 				maxLength={250}
+				placeholder={localization.answer}
 			/>
 
 			<button className='sendAnswer' title={localization.send} onClick={() => props.sendAnswer()}>💬</button>

@@ -33,6 +33,7 @@ export default function ChatInputEmojiPicker(props: ChatInputEmojiPickerProps): 
 						previewConfig={{ showPreview: false }}
 						onEmojiClick={props.onEmojiClick}
 						width={'100%'}
+						autoFocusSearch={false}
 					/>;
 				} else {
 					return null;

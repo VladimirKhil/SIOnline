@@ -640,7 +640,7 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 				roundThemes.push({ name: args[i], questions: [] });
 			}
 
-			if (state.room.stage.name !== 'Final') {
+			if (state.room.stage.name !== 'Final' && printThemes) {
 				playGameSound(state.settings.appSound, GameSound.ROUND_THEMES, true);
 			}
 
@@ -685,6 +685,7 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 			}
 
 			if (stage === GameStage.Round || stage === GameStage.Final) {
+				// TODO: do not play music when STAGE was sent on INFO request
 				playGameSound(state.settings.appSound, GameSound.ROUND_BEGIN);
 				dispatch(tableActionCreators.showRound(args[2]));
 				dispatch(roomActionCreators.playersStateCleared());

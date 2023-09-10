@@ -79,16 +79,6 @@
 	margin: 5px;;
 }
 
-.bottomButton.standard.passButton {
-	background-color: gray;
-	align-items: center;
-	justify-content: center;
-}
-
-.bottomButton.standard.passButton:hover {
-	background-color: lightgray;
-}
-
 .passText {
 	padding-top: 2px;
 }

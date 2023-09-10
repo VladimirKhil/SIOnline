@@ -7,10 +7,7 @@ import localization from '../../model/resources/localization';
 import FlyoutButton, { FlyoutVerticalOrientation, FlyoutTheme, FlyoutHorizontalOrientation } from '../common/FlyoutButton';
 import Role from '../../client/contracts/Role';
 import ChatMessage from '../../model/ChatMessage';
-import GameButton from './GameButton';
 import ChatInput from './ChatInput';
-import AnswerInput from './AnswerInput';
-import StakeSumEditor from './stakes/StakeSumEditor';
 import SendPassButton from './stakes/SendPassButton';
 import SendStakeButton from './stakes/SendStakeButton';
 import SendAllInButton from './stakes/SendAllInButton';
@@ -145,20 +142,9 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 
 	return (
 		<div className="game__utilsArea">
-			{props.role === Role.Player
-				? (
-					<div className="playerButtonWrapper">
-						<div id="playerButtonHost">
-							<GameButton />
-							{props.areStakesVisible ? <StakeSumEditor type="number" className="stakeSum checkSum" /> : null}
-						</div>
-					</div>
-				) : null}
-
 			<div className="gameMessageHost">
 				<div className="messageWrapper">
 					<ChatInput />
-					<AnswerInput id="answerBox" />
 
 					<button
 						type="button"
@@ -170,12 +156,6 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 					>
 						<span>{props.isChatVisible ? '▼' : '▲'}</span>
 					</button>
-
-					{props.areStakesVisible ? (
-						<div className="stakeRangeHost">
-							<StakeSumEditor type="range" className="stakeRange" />
-						</div>
-					) : null}
 				</div>
 
 				<div className="sidecontrol_buttons">
@@ -197,18 +177,6 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 							title={localization.menu}
 							flyout={(
 								<ul className="gameMenu">
-									{props.role === Role.Player
-										? (
-											<>
-												<li
-													className={enabledClass}
-													onClick={() => props.onPass()}
-												>
-													{localization.pass}
-												</li>
-											</>
-										) : null}
-
 									{props.role === Role.Showman
 										? (
 											<>
@@ -299,15 +267,6 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 					</span>
 				</div>
 			) : null}
-
-			{props.areStakesVisible ? (
-				<div className='stakeButtonsHost'>
-					<div className="stakeButtons">
-						<SendPassButton />
-						<SendStakeButton />
-						<SendAllInButton />
-					</div>
-				</div>) : null}
 		</div>
 	);
 }

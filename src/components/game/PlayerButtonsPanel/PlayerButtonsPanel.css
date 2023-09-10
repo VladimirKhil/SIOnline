@@ -1,0 +1,14 @@
+.playerButtonsPanel {
+	display: flex;
+	flex-direction: row;
+	margin: 0 -2px;
+	height: 45px;
+}
+
+.playerButtonsPanel button {
+	flex: 1;
+	height: 41px;
+	font-size: 25px;
+    border-radius: 5px;
+	margin: 2px;
+}
