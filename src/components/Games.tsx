@@ -1,8 +1,8 @@
 /* eslint-disable react/no-unused-prop-types */
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { Dispatch, Action } from 'redux';
-import actionCreators from '../state/actionCreators';
+import { Dispatch, Action, AnyAction } from 'redux';
+import gameActionCreators from '../state/game/gameActionCreators';
 import localization from '../model/resources/localization';
 import State from '../state/State';
 import GameInfo from '../client/contracts/GameInfo';
@@ -64,7 +64,7 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	},
 	onNewGame: () => {
 		dispatch(onlineActionCreators.newGame());
-		dispatch(actionCreators.newGame2());
+		dispatch(gameActionCreators.runNewGame() as any as AnyAction);
 	},
 	closeNewGame: () => {
 		dispatch(onlineActionCreators.newGameCancel());

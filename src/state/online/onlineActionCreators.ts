@@ -32,6 +32,7 @@ import tableActionCreators from '../table/tableActionCreators';
 import roomActionCreators from '../room/roomActionCreators';
 import * as GameErrorsHelper from '../../utils/GameErrorsHelper';
 import actionCreators from '../actionCreators';
+import gameActionCreators from '../game/gameActionCreators';
 
 const selectGame: ActionCreator<OnlineActions.SelectGameAction> = (gameId: number) => ({
 	type: OnlineActions.OnlineActionTypes.SelectGame,
@@ -379,7 +380,7 @@ function getRandomValue(): number {
 }
 
 const initGameAsync = async (dispatch: Dispatch<any>, dataContext: DataContext, gameId: number, role: Role, isAutomatic: boolean) => {
-	dispatch(actionCreators.gameSet(gameId, isAutomatic));
+	dispatch(gameActionCreators.gameSet(gameId, isAutomatic));
 	dispatch(uiActionCreators.navigateToGame());
 	dispatch(tableActionCreators.tableReset());
 	dispatch(tableActionCreators.showText(localization.tableHint, false));

@@ -1,6 +1,6 @@
 ﻿import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import { applyMiddleware, createStore, Store } from 'redux';
+import { AnyAction, applyMiddleware, createStore, Store } from 'redux';
 import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import reduxThunk from 'redux-thunk';
@@ -8,7 +8,6 @@ import App from './components/App';
 import State, { initialState } from './state/State';
 import reducer from './state/reducer';
 import SavedState, { loadState } from './state/SavedState';
-import { KnownAction } from './state/Actions';
 import actionCreators from './state/actionCreators';
 import DataContext from './model/DataContext';
 import Config from './state/Config';
@@ -202,7 +201,7 @@ async function run() {
 		contentClient: null,
 	};
 
-	const store = createStore<State, KnownAction, {}, {}>(
+	const store = createStore<State, AnyAction, {}, {}>(
 		reducer,
 		state,
 		applyMiddleware(reduxThunk.withExtraArgument(dataContext))

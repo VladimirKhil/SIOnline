@@ -1,21 +1,17 @@
-﻿import { Action, Dispatch, ActionCreator } from 'redux';
+﻿import { Action, Dispatch, ActionCreator, AnyAction } from 'redux';
 import { ThunkAction } from 'redux-thunk';
 import * as signalR from '@microsoft/signalr';
 import * as signalRMsgPack from '@microsoft/signalr-protocol-msgpack';
-import * as Actions from './Actions';
 import State from './State';
-import Role from '../client/contracts/Role';
 import DataContext from '../model/DataContext';
 
 import 'es6-promise/auto';
 import { saveState } from './SavedState';
 import localization from '../model/resources/localization';
 
-import GameType from '../client/contracts/GameType';
 import { attachListeners, detachListeners, activeConnections, removeConnection } from '../utils/ConnectionHelpers';
 import MainView from '../model/enums/MainView';
 import roomActionCreators from './room/roomActionCreators';
-import PackageType from '../model/enums/PackageType';
 import Constants from '../model/enums/Constants';
 
 import GameServerClient from '../client/GameServerClient';
@@ -76,7 +72,7 @@ const onAvatarSelectedLocal: ActionCreator<ThunkAction<void, State, DataContext,
 	};
 
 const onAvatarDeleted: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
-	() => async (dispatch: Dispatch<Actions.KnownAction>) => {
+	() => async (dispatch: Dispatch<AnyAction>) => {
 		localStorage.removeItem(Constants.AVATAR_KEY);
 		localStorage.removeItem(Constants.AVATAR_NAME_KEY);
 
@@ -157,7 +153,7 @@ async function uploadAvatarAsync(dispatch: Dispatch<Action>, dataContext: DataCo
 }
 
 const sendAvatar: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
-	() => async (dispatch: Dispatch<Actions.KnownAction>, getState: () => State, dataContext: DataContext) => {
+	() => async (dispatch: Dispatch<AnyAction>, getState: () => State, dataContext: DataContext) => {
 	await dataContext.gameClient.msgAsync('PICTURE', getState().user.avatar);
 };
 
@@ -257,7 +253,7 @@ const login: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 				// eslint-disable-next-line no-param-reassign
 				dataContext.gameClient = new GameServerClient(
 					connection,
-					e => dispatch(roomActionCreators.operationError(getErrorMessage(e)) as object as Actions.KnownAction)
+					e => dispatch(roomActionCreators.operationError(getErrorMessage(e)) as object as AnyAction)
 				);
 
 				dataContext.game = new GameClient(dataContext.gameClient);
@@ -328,95 +324,6 @@ const onExit: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 		}
 	};
 
-const gameSet: ActionCreator<Actions.GameSetAction> = (id: number, isAutomatic: boolean) => ({
-	type: Actions.ActionTypes.GameSet,
-	id,
-	isAutomatic,
-});
-
-const gameNameChanged: ActionCreator<Actions.GameNameChangedAction> = (gameName: string) => ({
-	type: Actions.ActionTypes.GameNameChanged,
-	gameName
-});
-
-const gamePasswordChanged: ActionCreator<Actions.GamePasswordChangedAction> = (gamePassword: string) => ({
-	type: Actions.ActionTypes.GamePasswordChanged,
-	gamePassword
-});
-
-const gameVoiceChatChanged: ActionCreator<Actions.GameVoiceChatChangedAction> = (gameVoiceChat: string) => ({
-	type: Actions.ActionTypes.GameVoiceChatChanged,
-	gameVoiceChat
-});
-
-const gamePackageTypeChanged: ActionCreator<Actions.GamePackageTypeChangedAction> = (packageType: PackageType) => ({
-	type: Actions.ActionTypes.GamePackageTypeChanged,
-	packageType
-});
-
-const gamePackageDataChanged: ActionCreator<Actions.GamePackageDataChangedAction> = (
-	packageName: string,
-	packageData: File | null
-) => ({
-	type: Actions.ActionTypes.GamePackageDataChanged,
-	packageName,
-	packageData
-});
-
-const gamePackageDataChangedRequest: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (
-	packageName: string,
-	packageData: File | null) => (dispatch: Dispatch<Actions.KnownAction>, getState: () => State, dataContext: DataContext) => {
-		const state = getState();
-		const { maxPackageSizeMb } = state.common;
-
-		if (packageData && packageData.size > maxPackageSizeMb * 1024 * 1024) {
-			alert(`${localization.packageIsTooBig} (${maxPackageSizeMb} MB)`);
-			return;
-		}
-
-		dispatch(gamePackageDataChanged(packageName, packageData));
-	};
-
-const gamePackageLibraryChanged: ActionCreator<Actions.GamePackageLibraryChangedAction> = (
-	id: string,
-	name: string
-) => ({
-	type: Actions.ActionTypes.GamePackageLibraryChanged,
-	name,
-	id
-});
-
-const gameTypeChanged: ActionCreator<Actions.GameTypeChangedAction> = (gameType: GameType) => ({
-	type: Actions.ActionTypes.GameTypeChanged,
-	gameType
-});
-
-const gameRoleChanged: ActionCreator<Actions.GameRoleChangedAction> = (gameRole: Role) => ({
-	type: Actions.ActionTypes.GameRoleChanged,
-	gameRole
-});
-
-const showmanTypeChanged: ActionCreator<Actions.ShowmanTypeChangedAction> = (isHuman: boolean) => ({
-	type: Actions.ActionTypes.ShowmanTypeChanged,
-	isHuman
-});
-
-const playersCountChanged: ActionCreator<Actions.PlayersCountChangedAction> = (playersCount: number) => ({
-	type: Actions.ActionTypes.PlayersCountChanged,
-	playersCount
-});
-
-const humanPlayersCountChanged: ActionCreator<Actions.HumanPlayersCountChangedAction> = (
-	humanPlayersCount: number
-) => ({
-	type: Actions.ActionTypes.HumanPlayersCountChanged,
-	humanPlayersCount
-});
-
-const newGame2: ActionCreator<Actions.NewGame2Action> = () => ({
-	type: Actions.ActionTypes.NewGame2
-});
-
 const actionCreators = {
 	reloadComputerAccounts,
 	saveStateToStorage,
@@ -426,19 +333,6 @@ const actionCreators = {
 	sendAvatar,
 	login,
 	onExit,
-	gameNameChanged,
-	gamePasswordChanged,
-	gameVoiceChatChanged,
-	gamePackageTypeChanged,
-	gamePackageDataChangedRequest,
-	gameTypeChanged,
-	gameRoleChanged,
-	showmanTypeChanged,
-	playersCountChanged,
-	humanPlayersCountChanged,
-	gamePackageLibraryChanged,
-	gameSet,
-	newGame2,
 };
 
 export default actionCreators;

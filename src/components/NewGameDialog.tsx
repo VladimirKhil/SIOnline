@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch, Action } from 'redux';
-import actionCreators from '../state/actionCreators';
+import gameActionCreators from '../state/game/gameActionCreators';
 import localization from '../model/resources/localization';
 import Dialog from './common/Dialog';
 import ProgressBar from './common/ProgressBar';
@@ -79,37 +79,37 @@ const mapStateToProps = (state: State) => ({
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	onGameNameChanged: (newGameName: string) => {
-		dispatch(actionCreators.gameNameChanged(newGameName));
+		dispatch(gameActionCreators.gameNameChanged(newGameName));
 	},
 	onGamePasswordChanged: (newGamePassword: string) => {
-		dispatch(actionCreators.gamePasswordChanged(newGamePassword));
+		dispatch(gameActionCreators.gamePasswordChanged(newGamePassword));
 	},
 	onGameVoiceChatChanged: (newVoiceChat: string) => {
-		dispatch(actionCreators.gameVoiceChatChanged(newVoiceChat));
+		dispatch(gameActionCreators.gameVoiceChatChanged(newVoiceChat));
 	},
 	onGamePackageTypeChanged: (type: PackageType) => {
-		dispatch(actionCreators.gamePackageTypeChanged(type));
+		dispatch(gameActionCreators.gamePackageTypeChanged(type));
 	},
 	onGamePackageDataChanged: (name: string, data: File | null) => {
-		dispatch(actionCreators.gamePackageDataChangedRequest(name, data) as unknown as Action);
+		dispatch(gameActionCreators.gamePackageDataChangedRequest(name, data) as unknown as Action);
 	},
 	onGamePackageLibraryChanged: (id: string, name: string) => {
-		dispatch(actionCreators.gamePackageLibraryChanged(id, name));
+		dispatch(gameActionCreators.gamePackageLibraryChanged(id, name));
 	},
 	onGameTypeChanged: (newGameType: number) => {
-		dispatch(actionCreators.gameTypeChanged(newGameType));
+		dispatch(gameActionCreators.gameTypeChanged(newGameType));
 	},
 	onGameRoleChanged: (newGameRole: Role) => {
-		dispatch(actionCreators.gameRoleChanged(newGameRole));
+		dispatch(gameActionCreators.gameRoleChanged(newGameRole));
 	},
 	showmanTypeChanged: (isHuman: boolean) => {
-		dispatch(actionCreators.showmanTypeChanged(isHuman));
+		dispatch(gameActionCreators.showmanTypeChanged(isHuman));
 	},
 	onPlayersCountChanged: (playersCount: number) => {
-		dispatch(actionCreators.playersCountChanged(playersCount));
+		dispatch(gameActionCreators.playersCountChanged(playersCount));
 	},
 	onHumanPlayersCountChanged: (humanPlayersCount: number) => {
-		dispatch(actionCreators.humanPlayersCountChanged(humanPlayersCount));
+		dispatch(gameActionCreators.humanPlayersCountChanged(humanPlayersCount));
 	},
 	onShowSettings: () => {
 		dispatch(uiActionCreators.showSettings(true));
