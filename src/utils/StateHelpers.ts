@@ -1,3 +1,4 @@
+import PlayerInfo from '../model/PlayerInfo';
 import localization from '../model/resources/localization';
 import State from '../state/State';
 
@@ -11,4 +12,16 @@ export function getCulture(state: State): string {
 
 export function getFullCulture(state: State): string {
 	return getCulture(state) === 'ru' ? 'ru-RU' : 'en-US';
+}
+
+export function getMeAsPlayer(state: State): PlayerInfo | null {
+	const { players } = state.room.persons;
+
+	for (let i = 0; i < players.length; i++) {
+		if (players[i].name === state.user.login) {
+			return players[i];
+		}
+	}
+
+	return null;
 }

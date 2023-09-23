@@ -5,7 +5,7 @@ input.disconnected {
 .roomChatBodyHost {
 	position: relative;
 	display: flex;
-	flex: 1;
+	flex: 0 0 45px;
 }
 
 .gameInputBox {

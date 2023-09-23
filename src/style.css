@@ -350,13 +350,6 @@ h1.activeTab {
     margin-left: 5px;
 }
 
-.game__utilsArea {
-    display: flex;
-    flex-direction: row;
-    flex: 0 0 90px;
-    position: relative;
-}
-
 #gameLogHost {
     flex: 0 0 130px;
     margin: 0;
@@ -469,7 +462,7 @@ video, audio {
 
 #lastReplic {
     position: absolute;
-    top: -65px;
+    top: -110px;
     height: 65px;
     display: flex;
     justify-content: center;
@@ -538,10 +531,6 @@ video, audio {
 }
 
 @media screen and (min-width: 800px) {
-    .game__utilsArea {
-        flex: 0 0 45px;
-    }
-
     #gamesTitle, #chatHostTitle {
         padding-left: 0;
     }

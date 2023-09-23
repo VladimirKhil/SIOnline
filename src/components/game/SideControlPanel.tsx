@@ -126,7 +126,7 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 	} : {};
 
 	const gameMenuHostStyle: React.CSSProperties = {
-		flex: props.isHost ? '2 0 0' : '1 0 0 '
+		flex: '1 0 0'
 	};
 
 	const pauseTitle = props.isPaused ? localization.resume : localization.pause;
@@ -143,37 +143,10 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 	return (
 		<div className="game__utilsArea">
 			<div className="gameMessageHost">
-				<div className="messageWrapper">
-					<ChatInput />
-
-					<button
-						type="button"
-						className='standard'
-						id="showChat"
-						onClick={() => props.onChatVisibilityChanged(!props.isChatVisible)}
-						style={chatButtonStyle}
-						title={localization.showChat}
-					>
-						<span>{props.isChatVisible ? '▼' : '▲'}</span>
-					</button>
-				</div>
-
 				<div className="sidecontrol_buttons">
-					{canPause ? (
-						<button
-							type="button"
-							className={`pauseButton standard imageButton ${props.isPaused ? 'active' : ''}`}
-							title={pauseTitle}
-							disabled={!props.isConnected || !props.hasGameStarted}
-							onClick={() => props.onPause()}
-						>
-							<img src={pauseImg} />
-						</button>
-					) : null}
-
 					<div className="gameMenuHost" style={gameMenuHostStyle}>
 						<FlyoutButton
-							className="gameMenuButton standard"
+							className="gameMenuButton imageButton"
 							title={localization.menu}
 							flyout={(
 								<ul className="gameMenu">
@@ -199,7 +172,6 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 									<li onClick={() => props.onShowTables()}>{localization.tables}</li>
 									<li onClick={() => props.onShowBanned()}>{localization.bannedList}</li>
 									<li onClick={() => props.onShowGameInfo()}>{localization.gameInfo}</li>
-									{canPause ? <li className={enabledClass} onClick={() => props.onPause()}>{pauseTitle}</li> : null}
 
 									{props.role === Role.Showman ? (<>
 										<li className={enabledEditClass} onClick={() => props.onEditTable()}>{localization.editTable}</li>
@@ -220,6 +192,28 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 							<span>…</span>
 						</FlyoutButton>
 					</div>
+
+					<button
+						type="button"
+						className={`standard imageButton showChat ${props.isChatVisible ? 'active' : ''}`}
+						onClick={() => props.onChatVisibilityChanged(!props.isChatVisible)}
+						style={chatButtonStyle}
+						title={localization.showChat}
+					>
+						<span>💬</span>
+					</button>
+
+					{canPause ? (
+						<button
+							type="button"
+							className={`pauseButton standard imageButton ${props.isPaused ? 'active' : ''}`}
+							title={pauseTitle}
+							disabled={!props.isConnected || !props.hasGameStarted}
+							onClick={() => props.onPause()}
+						>
+							<img src={pauseImg} />
+						</button>
+					) : null}
 
 					{props.isHost ? (
 						<button

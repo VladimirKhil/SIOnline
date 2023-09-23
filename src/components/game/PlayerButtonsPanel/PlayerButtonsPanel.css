@@ -1,7 +1,7 @@
 .playerButtonsPanel {
 	display: flex;
 	flex-direction: row;
-	margin: 0 -2px;
+	margin: 0;
 	height: 45px;
 }
 

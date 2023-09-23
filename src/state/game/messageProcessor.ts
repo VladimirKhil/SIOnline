@@ -26,6 +26,7 @@ import GameMessages from '../../client/game/GameMessages';
 import { GameSound, gameSoundPlayer } from '../../utils/GameSoundPlayer';
 import Messages from '../../client/game/Messages';
 import JoinMode from '../../client/game/JoinMode';
+import { getMeAsPlayer } from '../../utils/StateHelpers';
 
 let lastReplicLock: number;
 
@@ -986,7 +987,7 @@ const playerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 
 		case 'FINALSTAKE':
 			{
-				const me = getMe(state);
+				const me = getMeAsPlayer(state);
 
 				if (!me) {
 					break;
@@ -1009,7 +1010,7 @@ const playerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 			break;
 
 		case 'STAKE':
-			const me = getMe(state);
+			const me = getMeAsPlayer(state);
 
 			if (!me) {
 				return;
@@ -1478,7 +1479,7 @@ function config(dispatch: Dispatch<RoomActions.KnownRoomAction>, state: State, .
 			dispatch(isPlayer
 				? roomActionCreators.playerChanged(index, newName, newType, false)
 				: roomActionCreators.showmanChanged(newName, newType, false));
-			
+
 			if (newType) {
 				dispatch(roomActionCreators.personRemoved(person.name));
 			}
@@ -1493,17 +1494,6 @@ function config(dispatch: Dispatch<RoomActions.KnownRoomAction>, state: State, .
 		default:
 			break;
 	}
-}
-
-function getMe(state: State): PlayerInfo | null {
-	const { players } = state.room.persons;
-	for (let i = 0; i < players.length; i++) {
-		if (players[i].name === state.user.login) {
-			return players[i];
-		}
-	}
-
-	return null;
 }
 
 function playGameSound(isSoundEnabled: boolean, sound: GameSound, loop = false): void {

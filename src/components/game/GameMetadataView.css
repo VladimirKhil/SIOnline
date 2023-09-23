@@ -4,5 +4,11 @@
 	flex: 1 0 0;
 	padding: 10px;
 	background-color: #5A95E2;
-	height: 100%;
+	height: calc(100% - 60px);
+}
+
+@media screen and (min-width: 1100px) {
+    .gameMetadataView {
+        height: 100%;
+    }
 }

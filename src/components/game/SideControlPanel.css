@@ -2,6 +2,10 @@
     position: relative;
 }
 
+.gameMenuHost button {
+    height: 100%;
+}
+
 .sidecontrol_buttons {
     width: 100%;
     margin: 0;
@@ -22,7 +26,6 @@
 }
 
 button.standard.imageButton.pauseButton {
-    display: none;
     flex: 1 0 0;
 }
 
@@ -46,7 +49,11 @@ button.standard.imageButton.pauseButton {
     position: relative;
 }
 
-.nextButton img, .pauseButton img, .exit img {
+.pauseButton img {
+    margin: 6px;
+}
+
+.nextButton img, .exit img {
     margin: 8px;
 }
 
@@ -96,6 +103,14 @@ ul.gameMenu, .exitMenu ul {
     padding-top: 10px;
 }
 
+.game__utilsArea {
+    display: flex;
+    flex-direction: row;
+    flex: 0 0 45px;
+    position: relative;
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
 .gameMessageHost {
     flex: 2 0 0;
     margin: 0;
@@ -106,7 +121,7 @@ ul.gameMenu, .exitMenu ul {
     position: relative;
     width: 100%;
     height: 45px;
-    display: flex;
+    display: none;
 }
 
 .stakeButtonsHost {
@@ -128,10 +143,10 @@ ul.gameMenu, .exitMenu ul {
         flex: 1 0 0;
     }
 
-#showChat {
+.showChat {
     height: 45px;
     width: 45px;
-    flex: 0 0 45px;
+    flex: 1 0 0;
     border: 0;
     font-size: 20px;
     color: #FFFFFF;
@@ -140,7 +155,8 @@ ul.gameMenu, .exitMenu ul {
     bottom: 0;
 }
 
-#showChat span {
+.showChat span {
+    margin-top: 9px;
     position: relative;
     bottom: 0;
 }
@@ -150,11 +166,19 @@ ul.gameMenu, .exitMenu ul {
         display: flex;
         flex: 3 0 0;
     }
+
+    .messageWrapper {
+        display: flex;
+    }
+
+    .pauseButton img {
+        margin: 8px;
+    }
 }
 
 @media screen and (min-width: 1100px) {
-    .gameMenuHost {
-        display: none;
+    .gameMenuHost, .showChat {
+        display: none !important;
     }
 
     .sidecontrol_buttons {

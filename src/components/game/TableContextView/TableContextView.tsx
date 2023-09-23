@@ -24,12 +24,14 @@ const mapStateToProps = (state: State) => ({
 });
 
 function renderBody(props: TableContextViewProps) : JSX.Element | null {
+	// TODO: Switch to enum to select view to displaty
+
 	if (props.areStakesVisible) {
 		return <StakePanel />;
 	}
 
 	if (props.isAfterQuestion) {
-		return <ReactionPanel />;
+		return props.role === Role.Player ? <ReactionPanel /> : null;
 	}
 
 	if (props.isAnswering) {

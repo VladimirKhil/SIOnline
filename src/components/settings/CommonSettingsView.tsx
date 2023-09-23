@@ -105,7 +105,7 @@ export function CommonSettingsView(props: CommonSettingsViewProps): JSX.Element 
 					checked={props.settings.showPersonsAtBottomOnWideScreen}
 					onChange={() => props.onShowPersonsAtBottomOnWideScreenChanged(!props.settings.showPersonsAtBottomOnWideScreen)}
 				/>
-				
+
 				<label htmlFor="showPersonsAtBottomOnWideScreen">{localization.showPersonsAtBottomOnWideScreen}</label>
 			</div>
 

@@ -27,7 +27,7 @@ function getLocalizedStageName(stageName: string): string {
 	switch (stageName) {
 		case GameStage.Begin:
 			return localization.gameStarted;
-			
+
 		case GameStage.After:
 			return localization.gameFinished;
 
@@ -52,4 +52,4 @@ export function RoundProgress(props: RoundProgressProps): JSX.Element {
 	);
 }
 
-export default connect(mapStateToProps, {})(RoundProgress);
+export default connect(mapStateToProps)(RoundProgress);

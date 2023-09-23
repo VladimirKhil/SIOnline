@@ -50,17 +50,17 @@ export class VolumeButton extends React.Component<VolumeButtonProps, VolumeButto
 		this.audioContextEventListener = () => {
 			const canPlay = this.audioContext.state === 'running';
 
-			if (canPlay) {
-				this.setState({
-					canPlayAudio: canPlay
-				});
+			this.setState({
+				canPlayAudio: canPlay
+			});
 
+			if (canPlay) {
 				this.audioContext.removeEventListener('statechange', this.audioContextEventListener);
 			}
 		};
 
 		this.audioContext.addEventListener('statechange', this.audioContextEventListener);
-		this.audioContextEventListener();
+		this.audioContext.resume().then(this.audioContextEventListener);
 	}
 
 	componentWillUnmount(): void {

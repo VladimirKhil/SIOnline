@@ -18,7 +18,7 @@
 	font-size: 24px;
 }
 
-.serverName {	
+.serverName {
 	color: #FFFFFF;
 }
 
@@ -40,7 +40,7 @@
 .licenseText {
 	display: block;
 	padding: 10px;
-	height: 100%;
+	height: calc(100% - 50px);
 	color: black;
 	background-color: #98B9FF;
 	font-weight: normal;
@@ -61,6 +61,7 @@
 	font-size: 30px;
 	display: flex;
 	flex-direction: column;
+	overflow-x: hidden;
 }
 
 .welcomeViewActions button {

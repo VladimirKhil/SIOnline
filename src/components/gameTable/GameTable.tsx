@@ -21,6 +21,8 @@ import { isRunning } from '../../utils/TimerInfoHelpers';
 import TableRound from './TableRound';
 import TableAudioFrame from './TableAudioFrame';
 import TableHtml from './TableHtml';
+import PlayerInfo from '../../model/PlayerInfo';
+import { getMeAsPlayer } from '../../utils/StateHelpers';
 
 import './GameTable.css';
 
@@ -32,6 +34,8 @@ interface GameTableProps {
 	showMainTimer: boolean;
 	decisionTimer: TimerInfo;
 	caption: string;
+	windowWidth: number;
+	me: PlayerInfo | null;
 }
 
 const mapStateToProps = (state: State) => ({
@@ -42,6 +46,8 @@ const mapStateToProps = (state: State) => ({
 	showMainTimer: state.room.showMainTimer,
 	decisionTimer: state.room.timers.decision,
 	caption: state.table.caption,
+	windowWidth: state.ui.windowWidth,
+	me: getMeAsPlayer(state),
 });
 
 function getContent(mode: TableMode) {
@@ -93,27 +99,29 @@ function getContent(mode: TableMode) {
 	}
 }
 
-function showCaption(mode: TableMode): boolean {
-	switch (mode) {
+function getCaption(props: GameTableProps): string | null {
+	switch (props.mode) {
 		case TableMode.Text:
 		case TableMode.PartialText:
 		case TableMode.Image:
 		case TableMode.Audio:
 		case TableMode.Video:
 		case TableMode.Html:
-			return true;
+			return props.caption;
 
 		default:
-			return false;
+			return props.windowWidth < 1100 && props.me ? props.me.sum.toString() : null;
 	}
 }
 
 export function GameTable(props: GameTableProps): JSX.Element {
+	const caption = getCaption(props);
+
 	return (
 		<div id="table">
-			{showCaption(props.mode) ? (
+			{caption ? (
 				<div className="tableCaption">
-					{props.caption}
+					{caption}
 				</div>
 			) : null}
 
@@ -123,7 +131,7 @@ export function GameTable(props: GameTableProps): JSX.Element {
 
 			{props.showMainTimer ? (
 				<ProgressBar
-					className={`commonProgress ${showCaption(props.mode) ? 'captioned' : ''}`}
+					className={`commonProgress ${caption ? 'captioned' : ''}`}
 					value={1 - props.decisionTimer.value / props.decisionTimer.maximum}
 					valueChangeDuration={isRunning(props.decisionTimer) ? (props.decisionTimer.maximum - props.decisionTimer.value) / 10 : 0}
 				/>

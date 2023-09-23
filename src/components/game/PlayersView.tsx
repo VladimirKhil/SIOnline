@@ -29,6 +29,8 @@ interface PlayersViewProps {
 	hasGameStarted: boolean;
 	windowWidth: number;
 	windowHeight: number;
+	showPersonsAtBottomOnWideScreen: boolean;
+
 	onPlayerSelected: (playerIndex: number) => void;
 	onSumChanged: (playerIndex: number, sum: number) => void;
 	onCancelSumChange: () => void;
@@ -44,7 +46,8 @@ const mapStateToProps = (state: State) => ({
 	decisionTimer: state.room.timers.decision,
 	hasGameStarted: state.room.stage.isGameStarted,
 	windowWidth: state.ui.windowWidth,
-	windowHeight: state.ui.windowHeight
+	windowHeight: state.ui.windowHeight,
+	showPersonsAtBottomOnWideScreen: state.settings.showPersonsAtBottomOnWideScreen,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
@@ -84,12 +87,17 @@ export class PlayersView extends React.Component<PlayersViewProps> {
 			return;
 		}
 
+		const isScreenWide = this.props.windowWidth >= Constants.WIDE_WINDOW_WIDTH;
+		const playersAreAtBottom = this.props.showPersonsAtBottomOnWideScreen && isScreenWide;
+
 		const replic = this.replicRef.current;
 		const list = this.listRef.current;
 
 		if (replic === null || list === null) {
 			return;
 		}
+
+		replic.style.transform = 'translate(-50%,0)';
 
 		const replicRect = replic.getBoundingClientRect();
 		const listRect = list.getBoundingClientRect();
@@ -103,9 +111,9 @@ export class PlayersView extends React.Component<PlayersViewProps> {
 			transformX = `calc(-50% - ${replicRect.right - listRect.right + 1}px)`;
 		}
 
-		if (replicRect.top < listRect.top) {
+		if (!playersAreAtBottom && replicRect.top < listRect.top) {
 			transformY = `calc(${listRect.top - replicRect.top + 1}px)`;
-		} else if (replicRect.bottom > listRect.bottom) {
+		} else if (playersAreAtBottom && replicRect.bottom > listRect.bottom) {
 			transformY = `calc(${listRect.bottom - replicRect.bottom - 1}px)`;
 		}
 
@@ -160,7 +168,8 @@ export class PlayersView extends React.Component<PlayersViewProps> {
 								onClick={() => player.canBeSelected ? this.props.onPlayerSelected(index) : null}
 							>
 								<div className="playerCard">
-									<div className={`playerAvatar ${avatarClass}`} style={avatarStyle} />
+									<div className={`playerAvatar ${avatarClass}`} style={avatarStyle} title={`${player.name} ${player.sum}`} />
+
 									<div className="playerInfo">
 										<div className="name" title={player.name}>
 											{player.isReady && !this.props.hasGameStarted ? (

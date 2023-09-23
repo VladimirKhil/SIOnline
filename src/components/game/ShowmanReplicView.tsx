@@ -86,4 +86,4 @@ export function ShowmanReplicView(props: ShowmanReplicViewProps): JSX.Element {
 	);
 }
 
-export default connect(mapStateToProps, {})(ShowmanReplicView);
+export default connect(mapStateToProps)(ShowmanReplicView);

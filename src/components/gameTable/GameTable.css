@@ -11,13 +11,14 @@
 
 .tableCaption {
     flex: 0;
-    font-size: 20px;
+    font-size: 22px;
     font-family: SI;
     background-color: rgba(0,0,0,.3);
     color: #FFFFFF;
     display: flex;
     justify-content: center;
     align-items: center;
+    padding: 2px 0;
 }
 
 .tableContent {

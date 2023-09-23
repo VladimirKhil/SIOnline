@@ -22,6 +22,8 @@ import Constants from '../../model/enums/Constants';
 import GameMetadataView from './GameMetadataView';
 import BannedView from './BannedView';
 import TableContextView from './TableContextView/TableContextView';
+import ChatInput from './ChatInput';
+import PlayersListView from './PlayersListView/PlayersListView';
 
 import './InGameView.css';
 
@@ -36,12 +38,14 @@ interface InGameViewProps {
 	isGameInfoDialogVisible: boolean;
 	isAnswerValidationDialogVisible: boolean;
 	isManageGameDialogVisible: boolean;
+	areSumsEditable: boolean;
 
 	onPersonsDialogClose: () => void;
 	onTablesDialogClose: () => void;
 	onBannedDialogClose: () => void;
 	onGameInfoDialogClose: () => void;
 	onManageGameDialogClose: () => void;
+	onCancelSumChange: () => void;
 }
 
 const mapStateToProps = (state: State) => ({
@@ -53,7 +57,8 @@ const mapStateToProps = (state: State) => ({
 	isBannedDialogVisible: state.room.bannedVisible,
 	isGameInfoDialogVisible: state.room.gameInfoVisible,
 	isManageGameDialogVisible: state.room.manageGameVisible,
-	isAnswerValidationDialogVisible: state.room.validation.isVisible
+	isAnswerValidationDialogVisible: state.room.validation.isVisible,
+	areSumsEditable: state.room.areSumsEditable,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
@@ -71,26 +76,11 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	},
 	onManageGameDialogClose: () => {
 		dispatch(roomActionCreators.runHideManageGame());
-	}
+	},
+	onCancelSumChange: () => {
+		dispatch(roomActionCreators.areSumsEditableChanged(false) as object as Action);
+	},
 });
-
-function getMainAreaContent(props: InGameViewProps): React.ReactNode {
-	if (props.windowWidth >= Constants.WIDE_WINDOW_WIDTH) {
-		return <GameChatView />;
-	}
-
-	return props.isChatOpen ? (
-		<div id="gameLogHost">
-			<div className="sideArea">
-				<div className="game__chat">
-					<GameLogView />
-				</div>
-			</div>
-
-			<RoundProgress />
-		</div>
-	) : null;
-}
 
 export function InGameView(props: InGameViewProps) : JSX.Element {
 	const isScreenWide = props.windowWidth >= Constants.WIDE_WINDOW_WIDTH;
@@ -108,15 +98,29 @@ export function InGameView(props: InGameViewProps) : JSX.Element {
 							<GameTable />
 							<GameHint />
 							<TableContextView />
+
+							{props.isChatOpen && !isScreenWide ? (
+								<div className="compactChatView">
+									<div className="sideArea">
+										<div className="game__chat">
+											<GameLogView />
+										</div>
+									</div>
+
+									<ChatInput />
+								</div>
+							) : null}
 						</div>
 					</div>
 				</div>
 			</div>
 
 			<div className="game__mainArea">
-				{getMainAreaContent(props)}
+				{isScreenWide ? <GameChatView /> : null}
 				<SideControlPanel />
 			</div>
+
+			{/* TODO: Switch to a single enum here */}
 
 			{props.isPersonsDialogVisible && !isScreenWide ? (
 				<PersonsDialog title={localization.members} onClose={props.onPersonsDialogClose}>
@@ -145,6 +149,12 @@ export function InGameView(props: InGameViewProps) : JSX.Element {
 			{props.isManageGameDialogVisible && !isScreenWide ? (
 				<Dialog className='manageGameDialog' title={localization.game} onClose={props.onManageGameDialogClose}>
 					<ManageGameView onClose={props.onManageGameDialogClose} />
+				</Dialog>
+			) : null}
+
+			{props.areSumsEditable && !isScreenWide ? (
+				<Dialog className='sumEditDialog' title={localization.changeSums} onClose={props.onCancelSumChange}>
+					<PlayersListView />
 				</Dialog>
 			) : null}
 

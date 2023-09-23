@@ -1,0 +1,23 @@
+.playerListView {
+	overflow: auto;
+	height: calc(100% - 61px);
+}
+
+.playerListView li {
+	padding: 5px 10px;
+	display: flex;
+	justify-self: center;
+	align-items: start;
+	background-color: #C0CFF4;
+	margin: 1px 0;
+}
+
+.playerListView li input {
+	width: 100px;
+}
+
+.playerListView .playerAvatar2 {
+	height: 50px;
+	width: 50px;
+	margin-right: 10px;
+}
