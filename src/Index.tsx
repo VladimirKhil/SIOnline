@@ -144,7 +144,7 @@ async function run() {
 		return;
 	}
 
-	document.title = localization.appTitle;
+	document.title = localization.appName;
 
 	try {
 		if (firebaseConfig) {
@@ -216,7 +216,7 @@ async function run() {
 		if (newSettings !== currentSettings) {
 			if (newSettings.appSettings.culture !== currentSettings.appSettings.culture) {
 				localization.setLanguage(newSettings.appSettings.culture || localization.getInterfaceLanguage());
-				document.title = localization.appTitle;
+				document.title = localization.appName;
 
 				if (newState.ui.mainView === MainView.Login) {
 					window.location.reload();
@@ -234,7 +234,7 @@ async function run() {
 
 	if (state.settings.appSettings.culture) {
 		localization.setLanguage(state.settings.appSettings.culture);
-		document.title = localization.appTitle;
+		document.title = localization.appName;
 	}
 
 	ReactDOM.render(

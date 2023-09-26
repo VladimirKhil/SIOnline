@@ -70,8 +70,8 @@ module.exports = (env, argv) => {
 			}),
 			new WebpackPwaManifest({
 				id: "sionline",
-				name: "SIOnline",
-				short_name: "SIOnline",
+				name: "SIGame Online",
+				short_name: "SIGame Online",
 				decription: "SIGame web application",
 				start_url: ".",
 				theme_color: "#FFFFFF",
@@ -80,7 +80,7 @@ module.exports = (env, argv) => {
 				crossorigin: 'use-credentials', //can be null, use-credentials or anonymous
 				icons: [
 				{
-					src: path.resolve('assets/images/sionline.png'),
+					src: path.resolve('assets/images/logo.jpg'),
 					sizes: [96, 128, 192, 256, 512] // multiple sizes
 				}
 				]

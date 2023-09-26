@@ -1,0 +1,17 @@
+.ready_button {
+	font-family: SI;
+	background-color: #2c7be1;
+	width: 100%;
+	font-size: 25px;
+	height: 45px;
+	padding: 0;
+}
+
+.ready_button.active {
+	background-color: #CEE0FF;
+	color: orange;
+}
+
+.ready_button span {
+	vertical-align: middle;
+}

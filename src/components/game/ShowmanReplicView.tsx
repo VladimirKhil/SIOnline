@@ -6,7 +6,6 @@ import Account from '../../model/Account';
 import ProgressBar from '../common/ProgressBar';
 import TimerInfo from '../../model/TimerInfo';
 import { isRunning } from '../../utils/TimerInfoHelpers';
-import StartGameArea from './StartGameArea';
 import getAvatarClass from '../../utils/AccountHelpers';
 import Sex from '../../model/enums/Sex';
 import localization from '../../model/resources/localization';
@@ -80,8 +79,6 @@ export function ShowmanReplicView(props: ShowmanReplicViewProps): JSX.Element {
 					valueChangeDuration={isRunning(props.decisionTimer) ? (props.decisionTimer.maximum - props.decisionTimer.value) / 10 : 0}
 				/>
 			) : null}
-
-			<StartGameArea />
 		</div>
 	);
 }

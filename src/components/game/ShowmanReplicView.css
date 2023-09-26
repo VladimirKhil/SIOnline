@@ -1,7 +1,7 @@
 .showmanArea {
     position: relative;
     width: 100%;
-    flex: 0 0 90px;
+    height: 100%;
     display: flex;
     overflow: hidden;
 }
@@ -29,7 +29,7 @@
     padding: 10px;
     padding: 10px 7px 7px 7px;
     justify-content: center;
-    background-color: #ebf0fc;
+    background-color: transparent;
 }
 
 .showmanAvatar {
@@ -49,6 +49,8 @@
     white-space: nowrap;
     text-align: center;
     font-size: 15px;
+    color: white;
+    font-weight: bolder;
 }
 
 .showmanAvatar, .showmanName {
@@ -57,10 +59,10 @@
 
 @media screen and (min-width: 1100px) {
     .showmanArea {
-        flex: 0 0 250px;
         flex-direction: column;
-        margin: 10px 10px 0 10px;
+        margin: 10px 0 0 0;
         height: 70%;
+        width: calc(100% - 20px);
     }
 
     .showmanInfo {
@@ -69,7 +71,7 @@
     }
 
     .showmanName {
-        font-size: 18px;
+        font-size: 20px;
         width: initial;
         margin-top: 2px;
     }
@@ -91,10 +93,6 @@
 }
 
 @media screen and (min-width: 1600px) {
-    .showmanArea {
-        flex: 0 0 330px;
-    }
-
     .showmanInfo {
         flex: 0 0 240px;
     }

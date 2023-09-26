@@ -16,6 +16,20 @@
     overflow: hidden;
 }
 
+.showmanProgressArea {
+    flex: 0 0 90px;
+    display: flex;
+    overflow: hidden;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
+}
+
+.showmanProgressArea .round_progress {
+    display: none;
+}
+
 .tableArea {
     flex-grow: 2;
     height: 100%;
@@ -76,6 +90,12 @@
 }
 
 @media screen and (min-width: 1100px) {
+    .gameMain {
+        flex-direction: row;
+        background-image: url('../../../assets/images/studia.png');
+        background-size: contain;
+    }
+
     .showmanTableArea {
         flex-direction: row !important;
         align-items: center;
@@ -84,4 +104,21 @@
 	.tableArea {
 		margin-right: 10px;
 	}
+
+    .showmanProgressArea {
+        flex: 0 0 250px;
+        height: 100%;
+    }
+
+    .showmanProgressArea .round_progress {
+        display: initial;
+        margin: 10px;
+        width: calc(100% - 20px);
+    }
+}
+
+@media screen and (min-width: 1600px) {
+    .showmanProgressArea {
+        flex: 0 0 330px;
+    }
 }

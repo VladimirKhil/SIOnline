@@ -9,7 +9,6 @@ import roomActionCreators from '../../state/room/roomActionCreators';
 import localization from '../../model/resources/localization';
 import ChatInput from './ChatInput';
 import Role from '../../client/contracts/Role';
-import RoundProgress from './RoundProgress';
 import TablesView from './TablesView';
 import { isHost } from '../../utils/StateHelpers';
 import FlyoutButton, { FlyoutHorizontalOrientation, FlyoutVerticalOrientation } from '../common/FlyoutButton';
@@ -134,8 +133,6 @@ function getSideArea(props: GameChatViewProps): React.ReactNode {
 export function GameChatView(props: GameChatViewProps): JSX.Element {
 	return (
 		<div id="gameLogHost">
-			<RoundProgress />
-
 			<div className="wide tabHeader gameHeader">
 				<h1
 					className={props.chatMode === ChatMode.Chat ? 'activeTab' : ''}

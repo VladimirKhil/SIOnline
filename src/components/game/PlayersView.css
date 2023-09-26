@@ -18,7 +18,7 @@
     .gamePlayers li {
         height: 50px;
         list-style-type: none;
-        background-color: #C0CFF4;
+        background-color: transparent;
         flex-grow: 1;
         margin: 0.5px;
         position: relative;
@@ -41,6 +41,7 @@
         flex-flow: column;
         justify-content: center;
         width: 0;
+        font-weight: bolder;
     }
 
     .gamePlayers li.me .name {
@@ -238,6 +239,14 @@
     .gamePlayers .playerCard {
         padding: 10px;
         flex-direction: column;
+    }
+
+    .gamePlayers .playerInfo {
+        background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    .gamePlayers .playerInfo {
+        color: white;
     }
 
     .playerAvatar {

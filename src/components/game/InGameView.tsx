@@ -92,7 +92,10 @@ export function InGameView(props: InGameViewProps) : JSX.Element {
 					<PlayersView />
 
 					<div className="showmanTableArea">
-						<ShowmanReplicView />
+						<div className="showmanProgressArea">
+							<RoundProgress />
+							<ShowmanReplicView />
+						</div>
 
 						<div className="tableArea">
 							<GameTable />

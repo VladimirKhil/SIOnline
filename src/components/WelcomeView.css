@@ -98,6 +98,7 @@
 		width: initial;
 		height: initial;
 		flex: initial;
+		overflow-x: initial;
 	}
 
 	.licenseDialog {

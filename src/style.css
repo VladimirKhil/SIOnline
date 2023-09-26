@@ -550,10 +550,6 @@ video, audio {
         right: 400px;
     }
 
-    .gameMain {
-        flex-direction: row;
-    }
-
     .game__mainArea {
         flex: 1 0 0;
     }
