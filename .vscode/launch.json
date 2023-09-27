@@ -5,7 +5,6 @@
     "version": "0.2.0",
     "configurations": [
         {
-            // Using the chrome debugger to debug a Vue application
             "type": "chrome",
             "request": "launch",
             "name": "Chrome launch",
@@ -14,6 +13,13 @@
             "runtimeArgs": [
                 "--disable-web-security"
             ]
+        },
+        {
+            "type": "firefox",
+            "request": "launch",
+            "name": "Firefox launch",
+            "url":"http://localhost:8080/",
+            "webRoot": "${workspaceFolder}"
         }
     ]
 }

@@ -16,6 +16,11 @@
     align-items: center;
     overflow: hidden;
     background-color: lightyellow;
+    transition: opacity 1s;
+}
+
+.showmanReplic.hidden {
+    opacity: 0;
 }
 
 .showmanArea.highlighted .showmanReplic {

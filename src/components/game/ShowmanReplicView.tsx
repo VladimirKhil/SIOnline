@@ -71,7 +71,7 @@ export function ShowmanReplicView(props: ShowmanReplicViewProps): JSX.Element {
 				</div>
 			</div>
 
-			<AutoSizedText className="showmanReplic" maxFontSize={48}>{props.replic || ''}</AutoSizedText>
+			<AutoSizedText className={`showmanReplic ${props.replic ? '' : 'hidden'}`} maxFontSize={48}>{props.replic || ''}</AutoSizedText>
 
 			{props.isDeciding ? (
 				<ProgressBar
