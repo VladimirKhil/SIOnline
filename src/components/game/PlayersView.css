@@ -233,7 +233,7 @@
         height: 100%;
         flex: 1;
         flex-flow: column;
-        margin: 10px 0px !important;
+        margin: 10px 1px !important;
     }
 
     .gamePlayers .playerCard {
