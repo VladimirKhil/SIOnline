@@ -38,7 +38,13 @@ button.standard.imageButton.pauseButton {
     background-color: lightyellow;
     color: orange;
     font-size: 28px !important;
-    padding-top: 6px !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nextButton.startButton span {
+    margin: 6px;
 }
 
 #exit, .exit {

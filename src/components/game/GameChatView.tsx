@@ -92,7 +92,7 @@ function getSideArea(props: GameChatViewProps): React.ReactNode {
 					<ChatInput />
 
 					{props.voiceChatUri && isWellFormedUri(props.voiceChatUri) ? (
-						<a href={props.voiceChatUri} className='voiceChatUrl' target='_blank' title={props.voiceChatUri}>
+						<a href={props.voiceChatUri} className='voiceChatUrl' target='_blank' rel='noopener noreferrer' title={props.voiceChatUri}>
 							<button className="standard wide commandButton bottomButton">{localization.voiceChat}</button>
 						</a>
 					) : null}

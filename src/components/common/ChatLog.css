@@ -12,7 +12,7 @@
 }
 
 .chatLog span.system {
-    font-weight: bold;
+    font-style: italic;
 }
 
 .chatLog span.warning {

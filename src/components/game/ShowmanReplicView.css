@@ -93,14 +93,6 @@
 }
 
 @media screen and (min-width: 1600px) {
-    .showmanInfo {
-        flex: 0 0 240px;
-    }
-
-    .showmanReplic {
-        flex: 0 0 460px;
-    }
-
     .showmanAvatar img {
         max-height: 290px;
     }
