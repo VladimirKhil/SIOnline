@@ -34,6 +34,7 @@ interface PlayersViewProps {
 	onPlayerSelected: (playerIndex: number) => void;
 	onSumChanged: (playerIndex: number, sum: number) => void;
 	onCancelSumChange: () => void;
+	onShowTables: () => void;
 }
 
 const mapStateToProps = (state: State) => ({
@@ -59,7 +60,10 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	},
 	onCancelSumChange: () => {
 		dispatch(roomActionCreators.areSumsEditableChanged(false) as object as Action);
-	}
+	},
+	onShowTables: () => {
+		dispatch(roomActionCreators.runShowTables());
+	},
 });
 
 export class PlayersView extends React.Component<PlayersViewProps> {
@@ -125,9 +129,15 @@ export class PlayersView extends React.Component<PlayersViewProps> {
 	render() {
 		const playersCount = Object.keys(this.props.players).length;
 
+		const isScreenWide = this.props.windowWidth >= Constants.WIDE_WINDOW_WIDTH;
+
 		const mainStyle: React.CSSProperties = {
 			fontSize: `${15.5 - playersCount * 0.2}px`
 		};
+
+		if (!isScreenWide) {
+			mainStyle.cursor = 'pointer';
+		}
 
 		const buildPlayerClasses = (player: PlayerInfo, isMe: boolean, canBeSelected: boolean) => {
 			const stateClass = `state_${(PlayerStates[player.state] ?? '').toLowerCase()}`;
@@ -143,7 +153,7 @@ export class PlayersView extends React.Component<PlayersViewProps> {
 		};
 
 		return (
-			<div id="playersPanel">
+			<div id="playersPanel" onClick={() => { if (isScreenWide) return; this.props.onShowTables(); } }>
 				<ul className="gamePlayers" style={mainStyle} ref={this.listRef}>
 					{this.props.players.map((player, index) => {
 						const account = this.props.all[player.name];

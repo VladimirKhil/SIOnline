@@ -6,6 +6,9 @@ import localization from '../../model/resources/localization';
 import SettingsState from '../../state/settings/SettingsState';
 import settingsActionCreators from '../../state/settings/settingsActionCreators';
 import GameType from '../../client/contracts/GameType';
+import gameActionCreators from '../../state/game/gameActionCreators';
+
+import './RulesSettingsView.css';
 
 interface RulesSettingsViewProps {
 	settings: SettingsState;
@@ -25,6 +28,7 @@ interface RulesSettingsViewProps {
 	onPartialTextChanged: (hintShowman: boolean) => void;
 	onAllowEveryoneToPlayHiddenStakesChanged: (allowEveryoneToPlayHiddenStakes: boolean) => void;
 	onDisplaySourcesChanged: (displaySources: boolean) => void;
+	onGameTypeChanged: (newGameType: number) => void;
 }
 
 const mapStateToProps = (state: State) => ({
@@ -75,8 +79,10 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	onDisplaySourcesChanged: (displaySources: boolean) => {
 		dispatch(settingsActionCreators.onDisplaySourcesChanged(displaySources));
 	},
+	onGameTypeChanged: (newGameType: number) => {
+		dispatch(gameActionCreators.gameTypeChanged(newGameType));
+	},
 });
-
 
 export function RulesSettingsView(props: RulesSettingsViewProps): JSX.Element {
 	function onReadingSpeedChanged(e: React.ChangeEvent<HTMLInputElement>) {
@@ -87,20 +93,36 @@ export function RulesSettingsView(props: RulesSettingsViewProps): JSX.Element {
 		}
 	}
 
+	function onGameTypeChanged(e: React.ChangeEvent<HTMLSelectElement>) {
+		props.onGameTypeChanged(parseInt(e.target.value, 10));
+	}
+
 	return (
 		<div>
-			{props.gameType === GameType.Simple ? null : (
-				<div className="settingItem">
-					<input
-						id="playAllQuestionsInFinalRound"
-						type="checkbox"
-						checked={props.settings.appSettings.playAllQuestionsInFinalRound}
-						onChange={() => props.onPlayAllQuestionsInFinalRoundChanged(!props.settings.appSettings.playAllQuestionsInFinalRound)}
-					/>
+			<div className="settingItem">
+				<p className='gameTypeHeader'>{localization.gameType}</p>
 
-					<label htmlFor="playAllQuestionsInFinalRound">{localization.playAllQuestionsInFinalRound}</label>
-				</div>
-			)}
+				<select className='gameType' value={props.gameType} onChange={onGameTypeChanged}>
+					<option value="1">{localization.sport}</option>
+					<option value="0">{localization.tv}</option>
+				</select>
+
+				<span className='gameTypeHint'>
+					{props.gameType === GameType.Classic ? localization.gameTypeClassicHint : localization.gameTypeSimpleHint}
+				</span>
+			</div>
+
+			<div className="settingItem">
+				<input
+					id="playAllQuestionsInFinalRound"
+					type="checkbox"
+					checked={props.settings.appSettings.playAllQuestionsInFinalRound}
+					disabled={props.gameType === GameType.Simple}
+					onChange={() => props.onPlayAllQuestionsInFinalRoundChanged(!props.settings.appSettings.playAllQuestionsInFinalRound)}
+				/>
+
+				<label htmlFor="playAllQuestionsInFinalRound">{localization.playAllQuestionsInFinalRound}</label>
+			</div>
 
 			<div className="settingItem">
 				<input

@@ -27,7 +27,6 @@ interface NewGameDialogProps {
 	gamePackageType: PackageType;
 	gamePackageName: string;
 	gamePackageData: File | null;
-	gameType: GameType;
 	gameRole: Role;
 	isShowmanHuman: boolean;
 	playersCount: number;
@@ -43,7 +42,6 @@ interface NewGameDialogProps {
 	onGamePackageTypeChanged: (type: PackageType) => void;
 	onGamePackageDataChanged: (name: string, data: File | null) => void;
 	onGamePackageLibraryChanged: (id: string, name: string) => void;
-	onGameTypeChanged: (newGameType: number) => void;
 	onGameRoleChanged: (newGameRole: Role) => void;
 	showmanTypeChanged: (isHuman: boolean) => void;
 	onPlayersCountChanged: (gamePlayersCount: number) => void;
@@ -66,7 +64,6 @@ const mapStateToProps = (state: State) => ({
 	gamePackageType: state.game.package.type,
 	gamePackageName: state.game.package.name,
 	gamePackageData: state.game.package.data,
-	gameType: state.game.type,
 	gameRole: state.game.role,
 	isShowmanHuman: state.game.isShowmanHuman,
 	playersCount: state.game.playersCount,
@@ -95,9 +92,6 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	},
 	onGamePackageLibraryChanged: (id: string, name: string) => {
 		dispatch(gameActionCreators.gamePackageLibraryChanged(id, name));
-	},
-	onGameTypeChanged: (newGameType: number) => {
-		dispatch(gameActionCreators.gameTypeChanged(newGameType));
 	},
 	onGameRoleChanged: (newGameRole: Role) => {
 		dispatch(gameActionCreators.gameRoleChanged(newGameRole));
@@ -184,10 +178,6 @@ export class NewGameDialog extends React.Component<NewGameDialogProps, NewGameDi
 			this.props.onGamePackageDataChanged(e.target.value, e.target.files[0]);
 			this.props.onGamePackageTypeChanged(PackageType.File);
 		}
-	};
-
-	private onGameTypeChanged = (e: React.ChangeEvent<HTMLSelectElement>) => {
-		this.props.onGameTypeChanged(parseInt(e.target.value, 10));
 	};
 
 	private onGameRoleChanged = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -289,17 +279,6 @@ export class NewGameDialog extends React.Component<NewGameDialogProps, NewGameDi
 						{this.props.gamePackageType === PackageType.File
 							? (<div className="licenseAgreement">{localization.licenseAgreement}</div>)
 							: null}
-
-						<p className='newGameHeader'>{localization.gameType}</p>
-
-						<select className='gameType' value={this.props.gameType} onChange={this.onGameTypeChanged}>
-							<option value="1">{localization.sport}</option>
-							<option value="0">{localization.tv}</option>
-						</select>
-
-						<span className='gameTypeHint'>
-							{this.props.gameType === GameType.Classic ? localization.gameTypeClassicHint : localization.gameTypeSimpleHint}
-						</span>
 
 						<p className='newGameHeader'>{localization.role}</p>
 

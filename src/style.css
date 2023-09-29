@@ -210,7 +210,7 @@ button.standard, .sidePanel {
 
 button.standard.imageButton {
 	display: flex;
-	align-items: stretch;
+	align-items: center;
 	justify-content: center;
 	background-color: transparent;
 }

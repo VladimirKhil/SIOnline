@@ -1,0 +1,22 @@
+.settingItem select {
+	font-size: 16px;
+	max-width: 95%;
+	width: 95%;
+	padding: 5px 6px;
+	background-color: white;
+}
+
+.gameTypeHeader {
+	margin: 0 0 10px 0;
+}
+
+.gameType {
+	margin-right: 10px;
+	margin-bottom: 10px;
+}
+
+.gameTypeHint {
+	font-size: 14px;
+	display: block;
+	height: 35px;
+}

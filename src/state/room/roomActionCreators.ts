@@ -173,6 +173,7 @@ const exitGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (
 	dispatch(stopTimer(2));
 
 	dispatch(isPausedChanged(false));
+	dispatch(clearDecisionsAndMainTimer());
 
 	gameSoundPlayer.pause();
 
@@ -507,10 +508,11 @@ const onAnswerChanged: ActionCreator<RunActions.AnswerChangedAction> = (answer: 
 });
 
 let isAnswerVersionThrottled = false;
+let answerLock: number | null = null;
 
 const updateAnswer: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (answer: string) => async (
 	dispatch: Dispatch<any>,
-	getState: () => State,
+	_getState: () => State,
 	dataContext: DataContext
 	) => {
 	dispatch(onAnswerChanged(answer));
@@ -521,7 +523,7 @@ const updateAnswer: ActionCreator<ThunkAction<void, State, DataContext, Action>>
 
 	isAnswerVersionThrottled = true;
 
-	setTimeout(
+	answerLock = window.setTimeout(
 		async () => {
 			isAnswerVersionThrottled = false;
 			await dataContext.game.sendAnswerVersion(answer);
@@ -535,7 +537,14 @@ const sendAnswer: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 	getState: () => State,
 	dataContext: DataContext
 	) => {
-	if (await dataContext.gameClient.msgAsync('ANSWER', getState().room.answer)) {
+	if (answerLock) {
+		window.clearTimeout(answerLock);
+		answerLock = null;
+	}
+
+	const { answer } = getState().room;
+
+	if (await dataContext.gameClient.msgAsync('ANSWER', answer)) {
 		dispatch(clearDecisions());
 	}
 };

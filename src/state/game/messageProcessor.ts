@@ -288,9 +288,12 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 
 		case 'FINALROUND':
 			const playersLength = state.room.persons.players.length;
+			
 			for (let i = 1; i < Math.min(args.length, playersLength + 1); i++) {
 				dispatch(roomActionCreators.playerInGameChanged(i - 1, args[i] === '+'));
 			}
+
+			dispatch(roomActionCreators.afterQuestionStateChanged(false));
 			break;
 
 		case 'FINALTHINK':

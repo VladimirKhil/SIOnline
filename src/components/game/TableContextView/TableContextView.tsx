@@ -39,12 +39,12 @@ function renderBody(props: TableContextViewProps) : JSX.Element | null {
 		return <StakePanel />;
 	}
 
-	if (props.isAfterQuestion) {
-		return props.role === Role.Player ? <ReactionPanel /> : null;
-	}
-
 	if (props.isAnswering) {
 		return <AnswerInput id="answerBoxWide" />;
+	}
+
+	if (props.isAfterQuestion) {
+		return props.role === Role.Player ? <ReactionPanel /> : null;
 	}
 
 	return props.role === Role.Player ? (<PlayerButtonsPanel />) : null;

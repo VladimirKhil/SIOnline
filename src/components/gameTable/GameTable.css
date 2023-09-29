@@ -172,6 +172,7 @@
     align-items: center;
     padding: 7px;
     flex: 1 0 0;
+    overflow: hidden;
 }
 
     #table .finalTableCell.blink {

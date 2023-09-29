@@ -9,6 +9,7 @@ import { isRunning } from '../../utils/TimerInfoHelpers';
 import getAvatarClass from '../../utils/AccountHelpers';
 import Sex from '../../model/enums/Sex';
 import localization from '../../model/resources/localization';
+import Constants from '../../model/enums/Constants';
 
 import './ShowmanReplicView.css';
 
@@ -22,6 +23,7 @@ interface ShowmanReplicViewProps {
 	hasGameStarted: boolean;
 	login: string;
 	avatar: string | null;
+	windowWidth: number;
 }
 
 const mapStateToProps = (state: State) => ({
@@ -33,7 +35,8 @@ const mapStateToProps = (state: State) => ({
 	decisionTimer: state.room.timers.decision,
 	hasGameStarted: state.room.stage.isGameStarted,
 	login: state.user.login,
-	avatar: state.user.avatar
+	avatar: state.user.avatar,
+	windowWidth: state.ui.windowWidth,
 });
 
 export function ShowmanReplicView(props: ShowmanReplicViewProps): JSX.Element {
@@ -51,6 +54,9 @@ export function ShowmanReplicView(props: ShowmanReplicViewProps): JSX.Element {
 		display: 'flex'
 	};
 
+	const isScreenWide = props.windowWidth >= Constants.WIDE_WINDOW_WIDTH;
+	const meClass = isMe ? 'me' : '';
+
 	return (
 		<div className={`showmanArea ${props.decisionNeeded ? 'highlighted' : ''}`}>
 			<div className="showmanInfo" style={showmanInfoStyle}>
@@ -67,11 +73,13 @@ export function ShowmanReplicView(props: ShowmanReplicViewProps): JSX.Element {
 						</span>
 					) : null}
 
-					<span>{props.account?.name}</span>
+					<span className={meClass}>{props.account?.name}</span>
 				</div>
 			</div>
 
-			<AutoSizedText className={`showmanReplic ${props.replic ? '' : 'hidden'}`} maxFontSize={48}>{props.replic || ''}</AutoSizedText>
+			<AutoSizedText className={`showmanReplic ${props.replic || !isScreenWide ? '' : 'hidden'}`} maxFontSize={48}>
+				{props.replic || ''}
+			</AutoSizedText>
 
 			{props.isDeciding ? (
 				<ProgressBar

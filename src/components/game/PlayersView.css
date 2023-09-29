@@ -44,8 +44,8 @@
         font-weight: bolder;
     }
 
-    .gamePlayers li.me .name {
-        font-weight: bold;
+    .gamePlayers li.me .name, .gamePlayers li.me .sum, .gamePlayers li.me .stakeHost {
+        color: orange;
     }
 
         .gamePlayers li.selectable {
@@ -64,6 +64,7 @@
 
     .gamePlayers .name, .gamePlayers .sum {
         display: block;
+        margin: 0 3px;
     }
 
     .gamePlayers .stakeHost {

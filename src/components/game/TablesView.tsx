@@ -110,7 +110,7 @@ export function TablesView(props: TablesViewProps): JSX.Element {
 				<div className="tablesHeader">{localization.showman}</div>
 
 				<ul>
-					<TableView person={props.showman} isSelected={props.selectedIndex === 0} selectTable={() => props.selectTable(0)} />
+					<TableView person={props.showman} sum={null} isSelected={props.selectedIndex === 0} selectTable={() => props.selectTable(0)} />
 				</ul>
 
 				<div className="tablesHeader">
@@ -132,6 +132,7 @@ export function TablesView(props: TablesViewProps): JSX.Element {
 						<TableView
 							key={index}
 							person={player}
+							sum={player.sum}
 							isSelected={props.selectedIndex === index + 1}
 							selectTable={() => props.selectTable(index + 1)}
 						/>

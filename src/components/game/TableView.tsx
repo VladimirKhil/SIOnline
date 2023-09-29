@@ -5,6 +5,7 @@ import './TableView.css';
 
 interface TableViewProps {
 	person: PersonInfo;
+	sum: number | null;
 	isSelected: boolean;
 
 	selectTable: () => void;
@@ -16,8 +17,12 @@ export default function TableView(props: TableViewProps): JSX.Element {
 			className={`tableItem ${props.isSelected ? 'active ' : ''}`}
 			onClick={() => props.selectTable()}
 		>
-			<span>
+			<span className='tableName'>
 				{props.person.name}
+			</span>
+
+			<span className='tableSum'>
+				{props.sum}
 			</span>
 		</li>
 	);

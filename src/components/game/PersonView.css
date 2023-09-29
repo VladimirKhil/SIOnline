@@ -21,7 +21,7 @@
 
 .personItem_avatar {
 	width: 40px;
-	margin: 2px 2px 2px 10px;
+	margin: 2px 4px 2px 10px;
 	height: calc(100% - 4px);
 	display: inline-block;
 	background-size: contain;

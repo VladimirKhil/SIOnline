@@ -5,7 +5,9 @@
 	line-height: 40px;
 	vertical-align: middle;
 	display: flex;
+	justify-content: space-between;
 	background-color: #00000017;
+	overflow: hidden;
 }
 
 	.tableItem:hover {
@@ -15,3 +17,10 @@
 	.tableItem.active {
 		background-color: #5A95E2;
 	}
+
+.tableSum {
+	font-weight: bold;
+	text-align: right;
+	margin-left: 10px;
+	margin-right: 10px;
+}

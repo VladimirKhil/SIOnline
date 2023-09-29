@@ -58,6 +58,10 @@
     font-weight: bolder;
 }
 
+.showmanName .me {
+    color: orange;
+}
+
 .showmanAvatar, .showmanName {
     width: 120px;
 }
@@ -66,7 +70,7 @@
     .showmanArea {
         flex-direction: column;
         margin: 10px 0 0 0;
-        height: 70%;
+        height: 75%;
         width: calc(100% - 20px);
     }
 
@@ -92,7 +96,7 @@
     }
 
     .showmanReplic {
-        padding: 15px;
+        padding: 7px;
         flex: 1;
     }
 }
@@ -100,5 +104,9 @@
 @media screen and (min-width: 1600px) {
     .showmanAvatar img {
         max-height: 290px;
+    }
+
+    .showmanReplic {
+        padding: 12px;
     }
 }
