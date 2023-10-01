@@ -72,7 +72,7 @@ module.exports = (env, argv) => {
 				id: "sionline",
 				name: "SIGame",
 				short_name: "SIGame",
-				decription: "Online quiz where you could create you own questions and play with friends",
+				description: "Online quiz where you could create you own questions and play with friends",
 				start_url: ".",
 				theme_color: "#FFFFFF",
 				background_color: "#010450",

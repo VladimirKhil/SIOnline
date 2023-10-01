@@ -152,6 +152,11 @@ export class PlayersView extends React.Component<PlayersViewProps> {
 			this.props.onCancelSumChange();
 		};
 
+		const onPlayerClicked = (playerIndex: number, e: React.MouseEvent<HTMLLIElement, MouseEvent>) => {
+			this.props.onPlayerSelected(playerIndex);
+			e.stopPropagation();
+		};
+
 		return (
 			<div id="playersPanel" onClick={() => { if (isScreenWide) return; this.props.onShowTables(); } }>
 				<ul className="gamePlayers" style={mainStyle} ref={this.listRef}>
@@ -175,7 +180,7 @@ export class PlayersView extends React.Component<PlayersViewProps> {
 							<li
 								key={`${player.name}_${index}`}
 								className={buildPlayerClasses(player, isMe, player.canBeSelected)}
-								onClick={() => player.canBeSelected ? this.props.onPlayerSelected(index) : null}
+								onClick={(e) => player.canBeSelected ? onPlayerClicked(index, e) : null}
 							>
 								<div className="playerCard">
 									<div className={`playerAvatar ${avatarClass}`} style={avatarStyle} title={`${player.name} ${player.sum}`} />
@@ -215,6 +220,7 @@ export class PlayersView extends React.Component<PlayersViewProps> {
 										<AutoSizedText id={`playerReplic_${index}`} className="playerReplicText" maxFontSize={48}>
 											{player.replic}
 										</AutoSizedText>
+
 										<div className='replicLink' />
 									</div>
 								) : null}
