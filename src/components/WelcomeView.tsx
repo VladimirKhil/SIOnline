@@ -8,6 +8,7 @@ import uiActionCreators from '../state/ui/uiActionCreators';
 import onlineActionCreators from '../state/online/onlineActionCreators';
 
 import './WelcomeView.css';
+import exitImg from '../../assets/images/exit.png';
 
 interface WelcomeViewProps {
 	isConnected: boolean;
@@ -65,6 +66,14 @@ export function WelcomeView(props: WelcomeViewProps): JSX.Element {
 					>
 						ⓘ
 					</button>
+
+					<button
+						className='standard imageButton welcomeExit'
+						disabled={!props.isConnected}
+						onClick={() => props.exit()}
+						title={localization.exitFromGame}>
+						<img src={exitImg} />
+					</button>
 				</h1>
 
 				<h1>{localization.welcomeTitle}</h1>
@@ -85,10 +94,6 @@ export function WelcomeView(props: WelcomeViewProps): JSX.Element {
 
 				<button className='standard welcomeRow left' disabled={!props.isConnected} onClick={() => props.joinLobby()}>
 					{localization.joinLobby}
-				</button>
-
-				<button className='standard welcomeRow right' disabled={!props.isConnected} onClick={() => props.exit()}>
-					{localization.exitFromGame}
 				</button>
 			</div>
 

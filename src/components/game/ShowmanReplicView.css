@@ -70,7 +70,7 @@
     .showmanArea {
         flex-direction: column;
         margin: 10px 0 0 0;
-        height: 75%;
+        height: 85%;
         width: calc(100% - 20px);
     }
 
@@ -97,7 +97,7 @@
 
     .showmanReplic {
         padding: 7px;
-        flex: 1;
+        flex: 1.5;
     }
 }
 

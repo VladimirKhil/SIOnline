@@ -107,7 +107,7 @@ export function GamesList(props: GamesListProps): JSX.Element {
 					verticalOrientation={FlyoutVerticalOrientation.Bottom}
 				>
 					<span className="filterText">
-						<span style={{ fontSize: filterValue.length > 15 ? '20px' : '26px' }}>{filterValue}</span>
+						<span style={{ fontSize: filterValue.length > 15 ? '14px' : '22px' }}>{filterValue}</span>
 						<span className="triangle">▾</span>
 					</span>
 				</FlyoutButton>
@@ -139,17 +139,6 @@ export function GamesList(props: GamesListProps): JSX.Element {
 			) : <span className="loadError">{props.error}</span>}
 
 			<div className="commandButtonsPanel">
-				<button
-					id="newAutoGame"
-					className='standard'
-					type="button"
-					disabled={!props.isConnected}
-					onClick={props.onNewAutoSearchGame}
-					title={localization.autoSearchHint}
-				>
-					{localization.autoSearch.toLocaleUpperCase()}
-				</button>
-
 				<button
 					id="newGame"
 					className='standard'

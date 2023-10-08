@@ -4,8 +4,9 @@
 	flex-flow: column;
 	align-items: center;
 	color: #FFFFFF;
-	font-family: SI;
+	font-family: Main;
 	overflow-y: auto;
+	overflow-x: hidden;
 	scrollbar-width: thin;
 }
 
@@ -34,7 +35,6 @@
 .licenseDialog {
 	background-color: #000451;
 	overflow-y: hidden;
-	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .licenseText {
@@ -93,6 +93,14 @@
 	transform: translate(100%);
 }
 
+.welcomeExit {
+	display: inline-flex !important;
+	vertical-align: middle;
+	height: 42px;
+	margin-left: 2px;
+	margin-top: -3px;
+}
+
 @media screen and (min-width: 800px) {
 	.welcomeViewActions {
 		width: initial;
@@ -102,8 +110,8 @@
 	}
 
 	.licenseDialog {
-		top: 100px;
-		bottom: 100px;
+		top: 50px;
+		bottom: 50px;
 		left: 100px;
 		right: 100px;
 	}
@@ -117,7 +125,7 @@
 	}
 
 	.welcomeView header h1 {
-		font-size: 36px;
+		font-size: 28px;
 	}
 
 	.welcomeViewActions {

@@ -38,7 +38,7 @@
 }
 
 #newGameDialog .startGame, #newGameDialog .showSettings {
-    font-size: 25px;
+    font-size: 20px;
     height: 45px;
     flex: 1;
     margin-top: 5px;

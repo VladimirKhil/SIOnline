@@ -1,5 +1,6 @@
 #settingsDialog {
-    background-color: #5A95E2;
+    background-color: #000451;
+    color: white;
     z-index: 4;
     overflow-y: hidden;
 }
@@ -35,7 +36,6 @@
 }
 
 #settingsDialog h2 {
-    font-family: SI;
     color: #FFFFFF;
     text-shadow: 1px 1px 0 #000;
     font-weight: normal;

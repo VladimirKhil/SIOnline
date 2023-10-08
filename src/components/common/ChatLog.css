@@ -25,6 +25,7 @@
 
 .nickname {
     cursor: pointer;
+    color: rgb(222, 206, 108);
 }
 
 .mentionedNickname {

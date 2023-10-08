@@ -40,7 +40,6 @@
         display: flex;
         flex-flow: column;
         justify-content: center;
-        width: 0;
         font-weight: bolder;
     }
 
@@ -171,12 +170,19 @@
     font-size: smaller;
 }
 
-.chooserMark {
+.marksArea {
     position: absolute;
-    width: 15px;
-    height: 15px;
     bottom: 0;
     right: 0;
+}
+
+.readyMark {
+    font-size: 25px;
+}
+
+.chooserMark {
+    width: 15px;
+    height: 15px;
     background-color: rgba(0, 0, 0, 0.3);
     background-image: url(../../../assets/images/active_player.png);
     background-repeat: no-repeat;
@@ -187,12 +193,9 @@
 }
 
 .mediaLoadedMark {
-    position: absolute;
     width: 20px;
     height: 20px;
     background: green;
-    bottom: 0;
-    left: 0;
     border-width: 1px 1px 0 0;
     border-color: lightgray;
     border-style: solid;
@@ -216,6 +219,14 @@
     .chooserMark {
         width: 25px;
         height: 25px;
+    }
+
+    .gamePlayers .playerInfo .name, .gamePlayers .playerInfo .stakeHost {
+        display: block !important;
+    }
+
+    .gamePlayers .playerInfo .sum {
+        margin-top: 0 !important;
     }
 
     .gamePlayers {
@@ -329,11 +340,20 @@
 
 @media screen and (min-height: 600px), (max-width: 600px) {
     #playersPanel {
-        flex: 0 0 50px;
+        flex: 0 0 75px;
     }
 
-    .gamePlayers .playerInfo {
+    .gamePlayers .playerInfo .name, .gamePlayers .playerInfo .stakeHost {
         display: none;
+    }
+
+    .gamePlayers .playerInfo .sum {
+        margin-top: 2px;
+    }
+
+    .gamePlayers li.me .sum {
+        color: darkorange;
+        text-shadow: 0.5px 0.5px 0 gray;
     }
 
     .gamePlayers {
@@ -373,6 +393,7 @@
 
     .playerAvatar {
         min-width: 43px;
+        flex: 3;
     }
 
     .gamePlayers li {
@@ -381,6 +402,7 @@
     }
 
     .gamePlayers .playerCard {
-        padding: 6px;
+        padding: 3px 3px 0 3px;
+        flex-direction: column;
     }
 }

@@ -33,7 +33,7 @@ config:
   apiUri: 'https://vladimirkhil.com/api/si'
   rootUri: '/'
   ads: '<b>Test ad</b>'
-  onLoad: console.log('SI Online successfully loaded!');
+  onLoad: console.log('SIGame Online successfully loaded!');
   rewriteUrl: true
   forceHttps: true
   useMessagePackProtocol: false

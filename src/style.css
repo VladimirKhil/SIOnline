@@ -14,6 +14,27 @@
     font-style: normal;
 }
 
+@font-face {
+    font-family: 'Main';
+    src: url('../assets/fonts/Jost-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Main';
+    src: url('../assets/fonts/Jost-SemiBold.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Main';
+    src: url('../assets/fonts/Jost-Bold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+}
+
 html,body { height:100%; }
 
 body {
@@ -34,10 +55,15 @@ body {
     user-select: none;
     scrollbar-width: thin;
     scrollbar-color: #a8acfd transparent;
+	font-family: Main;
 }
 
 #reactHost {
     height: 100%;
+}
+
+select {
+    font-family: Main;
 }
 
 /* Set padding to keep content from hitting the edges */
@@ -46,8 +72,8 @@ body {
     padding-right: 15px;
 }
 
-/* Override the default bootstrap behavior where horizontal description lists 
-   will truncate terms that are too long to fit in the left column 
+/* Override the default bootstrap behavior where horizontal description lists
+   will truncate terms that are too long to fit in the left column
 */
 .dl-horizontal dt {
     white-space: normal;
@@ -83,7 +109,7 @@ textarea {
     resize: none;
 }
 
-input:focus, textarea:focus, button:focus {    
+input:focus, textarea:focus, button:focus {
     outline: none;
 }
 
@@ -94,7 +120,7 @@ input[type='password'], input[type='search'], input[type='text'] {
 
 h1 {
     font-weight: 500;
-    font-size: 36px;
+    font-size: 30px;
     line-height: 39px;
 }
 
@@ -196,8 +222,8 @@ button {
     color: #FFFFFF;
     background-color: transparent;
     border: 0;
-    padding: 5px 10px 6px 7px;
-    font-family: SI;
+    padding: 5px 7px 5px 7px;
+    font-family: Main;
     text-shadow: 1px 1px 0 #000;
     font-size: inherit;
     cursor: pointer;
@@ -297,8 +323,8 @@ button:disabled, button.standard:disabled {
     display: inline-flex;
     justify-content: center;
     align-items: center;
-    font-family: SI;
-    font-size: 26px;
+    font-family: Main;
+    font-size: 20px;
     height: 100%;
     margin: 0;
     padding: 0 12px;
@@ -371,7 +397,8 @@ h1.activeTab {
     display: flex;
     flex-direction: column;
     flex: 1 0 0;
-    background-color: #5A95E2;
+    background-color: #000451;
+    color: white;
 }
 
 .game__log {
@@ -431,7 +458,7 @@ video, audio {
 
     .buttonsPanel button, .buttonsPanel div {
         flex: 1 0 0;
-        font-size: 25px;
+        font-size: 16px;
     }
 
 @keyframes spinner {
@@ -548,10 +575,6 @@ video, audio {
     .actions {
         left: 400px;
         right: 400px;
-    }
-
-    .game__mainArea {
-        flex: 1 0 0;
     }
 
     #gameLogHost {

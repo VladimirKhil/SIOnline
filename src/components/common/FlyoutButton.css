@@ -6,7 +6,6 @@
 
     .flyoutButton_flyout li {
         color: #FFFFFF;
-        font-family: SI;
         font-size: 26px;
         cursor: pointer;
         text-shadow: 1px 1px 0 #000;
@@ -16,11 +15,15 @@
         background-color: #000451;
     }
 
+    .flyoutButton_flyout.light {
+        background: #5A95E2;
+    }
+
     .flyoutButton_flyout.dark {
         background: rgb(0, 4, 81);
     }
 
-        .flyoutButton_flyout.dark > ul > li {
+        .flyoutButton_flyout > ul > li {
             padding: 10pt 30pt;
         }
 

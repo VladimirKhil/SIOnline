@@ -14,5 +14,5 @@ config = {
 firebaseConfig = null;
 
 onLoad = function () {
-    console.log('SI Online successfully loaded!');
+    console.log('SIGame Online successfully loaded!');
 };

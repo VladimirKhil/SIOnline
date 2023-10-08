@@ -187,16 +187,7 @@ export class PlayersView extends React.Component<PlayersViewProps> {
 
 									<div className="playerInfo">
 										<div className="name" title={player.name}>
-											{player.isReady && !this.props.hasGameStarted ? (
-												<span
-													role="img"
-													aria-label="checkmark"
-													title={account?.sex === Sex.Female ? localization.readyFemale : localization.readyMale}
-												>
-													✔️
-												</span>
-											) : null}
-											<span>{player.name}</span>
+											<span>{player.name != Constants.ANY_NAME ? player.name : '\u200b'}</span>
 										</div>
 
 										<div className="sum" title={player.sum.toString()}>
@@ -233,13 +224,25 @@ export class PlayersView extends React.Component<PlayersViewProps> {
 									/>
 								) : null}
 
-								{player.isChooser ? (
-									<div className='chooserMark' title={localization.chooserMark} />
-								) : null}
+								<div className='marksArea'>
+									{player.isReady && !this.props.hasGameStarted ? (
+										<span
+											className='readyMark'
+											role="img"
+											aria-label="checkmark"
+											title={account?.sex === Sex.Female ? localization.readyFemale : localization.readyMale}
+										>
+											✔️
+										</span>
+									) : null}
+									{player.isChooser ? (
+										<div className='chooserMark' title={localization.chooserMark} />
+									) : null}
 
-								{player.mediaLoaded ? (
-									<div className='mediaLoadedMark' title={localization.mediaLoadedMark} />
-								) : null}
+									{player.mediaLoaded ? (
+										<div className='mediaLoadedMark' title={localization.mediaLoadedMark} />
+									) : null}
+								</div>
 							</li>
 						);
 					})}

@@ -14,3 +14,7 @@
 .playersList li {
     padding: 6px 12px;
 }
+
+.playersList li.me {
+    color: rgb(222, 206, 108);
+}

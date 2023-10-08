@@ -21,7 +21,7 @@ export function UsersList(props: UsersListProps): JSX.Element {
 	return (
 		<ul className="playersList">
 			{users.map(user => (
-				<li key={user} style={{ fontWeight: user === props.login ? 'bold' : 'initial' }}>{user}</li>
+				<li key={user} className={user === props.login ? 'me' : ''}>{user}</li>
 			))}
 		</ul>
 	);

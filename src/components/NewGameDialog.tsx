@@ -11,7 +11,7 @@ import GameType from '../client/contracts/GameType';
 import Constants from '../model/enums/Constants';
 import PackageType from '../model/enums/PackageType';
 import SIStorageDialog from './SIStorageDialog';
-import FlyoutButton from './common/FlyoutButton';
+import FlyoutButton, { FlyoutTheme } from './common/FlyoutButton';
 import uiActionCreators from '../state/ui/uiActionCreators';
 import onlineActionCreators from '../state/online/onlineActionCreators';
 
@@ -257,6 +257,7 @@ export class NewGameDialog extends React.Component<NewGameDialogProps, NewGameDi
 
 						<div className='packageSelector'>
 							<FlyoutButton
+								theme={FlyoutTheme.Dark}
 								flyout={
 									<ul>
 										<li onClick={this.onRandomThemesSelected}>{localization.randomThemes}</li>

@@ -24,7 +24,7 @@
 .gameHeader {
 	height: 50px;
 	position: relative;
-	background-color: #5A95E2;
+	background-color: rgba(255, 255, 255, 0.3);
 }
 
 #gameLogHost .tabHeader h1 {
@@ -92,8 +92,8 @@
 
 @media screen and (min-width: 1400px) {
 	#gameLogHost .tabHeader h1 {
-		font-size: 19px;
+		font-size: 17px;
 		width: 45px;
-		padding: 6px 0 0 0;
+		padding: 6px 0 2px 0;
 	}
 }
