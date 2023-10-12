@@ -62,7 +62,7 @@ body {
     height: 100%;
 }
 
-select {
+select, input {
     font-family: Main;
 }
 
@@ -529,18 +529,6 @@ video, audio {
 .stakeRange {
     width: 100%;
     height: 100%;
-    max-width: 100%;
-}
-
-.wideStakeHost__number {
-    flex: 0 0 80px;
-    font-size: 24px;
-    text-align: center;
-}
-
-.wideStakeHost__range {
-    flex: 3 0 0;
-    margin: 0 10px;
     max-width: 100%;
 }
 

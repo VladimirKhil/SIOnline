@@ -11,9 +11,9 @@ import SexView from './SexView';
 import LanguageView from './LanguageView';
 import userActionCreators from '../state/user/userActionCreators';
 import uiActionCreators from '../state/ui/uiActionCreators';
+import { GameSound, gameSoundPlayer } from '../utils/GameSoundPlayer';
 
 import './Login.css';
-import { GameSound, gameSoundPlayer } from '../utils/GameSoundPlayer';
 
 interface LoginProps {
 	login: string;

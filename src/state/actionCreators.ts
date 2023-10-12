@@ -218,7 +218,6 @@ async function loadHostInfoAsync(dispatch: Dispatch<any>, dataContext: DataConte
 const login: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 	() => async (dispatch: Dispatch<Action>, getState: () => State, dataContext: DataContext) => {
 		dispatch(loginActionCreators.loginStart());
-
 		const state = getState();
 
 		try {

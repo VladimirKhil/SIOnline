@@ -71,7 +71,7 @@ export function AvatarView(props: AvatarViewProps): JSX.Element {
 		}
 
 		const selector = inputRef.current;
-	
+
 		if (selector) {
 			selector.click();
 		}
@@ -81,6 +81,7 @@ export function AvatarView(props: AvatarViewProps): JSX.Element {
 		<>
 			{props.avatarKey ? (
 				<FlyoutButton
+					disabled={props.disabled}
 					className={`avatarArea ${props.disabled ? 'unselectable' : ''}`}
 					title={localization.selectAvatar}
 					flyout={
@@ -95,7 +96,7 @@ export function AvatarView(props: AvatarViewProps): JSX.Element {
 					{renderEmpty()}
 				</div>
 			)}
-		
+
 			<input
 				ref={inputRef}
 				className='avatarSelector'

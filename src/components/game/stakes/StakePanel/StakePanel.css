@@ -1,5 +1,5 @@
 .wideStakeHost {
-	height: 45px;
+	height: 100%;
 	width: 100%;
 	background-color: #2c7be1;
 	display: flex;
@@ -8,6 +8,24 @@
 .wideStakeHost button {
 	font-size: 20px;
 	padding: 0 15px;
+	background-color: rgba(255, 165, 0, 0.5);
+	margin: 0px 1px;
+}
+
+.wideStakeHost button.wide {
+	flex: 1;
+}
+
+.wideStakeHost__number {
+	flex: 0 0 80px;
+	font-size: 24px;
+	text-align: center;
+}
+
+.wideStakeHost__range {
+	flex: 3 0 0;
+	margin: 0 10px;
+	max-width: 100%;
 }
 
 @media screen and (min-width: 1100px) {

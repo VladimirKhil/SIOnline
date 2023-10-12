@@ -165,7 +165,11 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 										) : null}
 
 									<li onClick={() => props.onShowPersons()}>{localization.members}</li>
-									<li onClick={() => props.onShowTables()}>{localization.tables}</li>
+
+									{props.isHost
+										? <li onClick={() => props.onShowTables()}>{localization.tables}</li>
+										: null}
+
 									<li onClick={() => props.onShowBanned()}>{localization.bannedList}</li>
 									<li onClick={() => props.onShowGameInfo()}>{localization.gameInfo}</li>
 

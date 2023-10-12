@@ -225,6 +225,11 @@
         display: block !important;
     }
 
+    .gamePlayers li.me .sum {
+        color: orange !important;
+        text-shadow: none;
+    }
+
     .gamePlayers .playerInfo .sum {
         margin-top: 0 !important;
     }

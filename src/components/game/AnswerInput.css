@@ -1,7 +1,7 @@
 .answerInputHost {
 	display: flex;
     margin: 0;
-    height: 45px;
+    height: 100%;
     border: 0;
 	overflow: hidden;
     pointer-events: initial;

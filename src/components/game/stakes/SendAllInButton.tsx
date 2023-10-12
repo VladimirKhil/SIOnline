@@ -8,6 +8,7 @@ import localization from '../../../model/resources/localization';
 interface SendAllInButtonProps {
 	isConnected: boolean;
 	useSimpleStakes: boolean;
+	className?: string;
 	sendAllIn: () => void;
 }
 
@@ -23,7 +24,9 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 });
 
 export function SendAllInButton(props: SendAllInButtonProps) {
-	return props.useSimpleStakes ? null : (<button disabled={!props.isConnected} onClick={() => props.sendAllIn()}>{localization.allIn}</button>);
+	return props.useSimpleStakes
+		? null
+		: (<button className={props.className} disabled={!props.isConnected} onClick={() => props.sendAllIn()}>{localization.allIn}</button>);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(SendAllInButton);

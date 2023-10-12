@@ -607,7 +607,7 @@ const sendNominal: ActionCreator<ThunkAction<void, State, DataContext, Action>> 
 		}
 	};
 
-const sendStake: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
+const sendStake: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (stake?: number) => async (
 	dispatch: Dispatch<any>,
 	getState: () => State,
 	dataContext: DataContext
@@ -615,10 +615,11 @@ const sendStake: ActionCreator<ThunkAction<void, State, DataContext, Action>> = 
 		const state = getState();
 
 		let result : boolean;
+
 		if (state.room.stakes.message === 'STAKE') { // Bad design
-			result = await dataContext.gameClient.msgAsync('STAKE', 1, state.room.stakes.stake);
+			result = await dataContext.gameClient.msgAsync('STAKE', 1, stake ?? state.room.stakes.stake);
 		} else {
-			result = await dataContext.gameClient.msgAsync(state.room.stakes.message, state.room.stakes.stake);
+			result = await dataContext.gameClient.msgAsync(state.room.stakes.message, stake ?? state.room.stakes.stake);
 		}
 
 		if (result) {
