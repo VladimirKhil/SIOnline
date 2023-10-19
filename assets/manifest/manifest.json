@@ -59,7 +59,7 @@
 		  "src": "screenshot.png",
 		  "sizes": "1024x500",
 		  "type": "image/png",
-		  "platform": "wide"
+		  "form_factor": "wide"
 		}
 	  ]
 }
