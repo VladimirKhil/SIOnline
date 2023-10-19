@@ -2,7 +2,7 @@ replicaCount: 1
 
 image:
   repository: vladimirkhil/sionline
-  tag: 1.5.1
+  tag: 1.9.3
   pullPolicy: IfNotPresent
 
 nameOverride: ""
@@ -11,6 +11,7 @@ fullnameOverride: ""
 podAnnotations: {}
 
 podSecurityContext: {}
+securityContext: {}
 
 service:
   type: ClusterIP
@@ -20,11 +21,9 @@ service:
 ingress:
   enabled: false
   className: nginx
-  path: /
   pathType: Prefix
-  annotations: []
   hosts: []
-  secretName: ''
+  tls: []
 
 resources: {}
 
@@ -33,7 +32,7 @@ config:
   apiUri: 'https://vladimirkhil.com/api/si'
   rootUri: '/'
   ads: '<b>Test ad</b>'
-  onLoad: console.log('SIGame Online successfully loaded!');
+  onLoad: console.log('SIGame successfully loaded!');
   rewriteUrl: true
   forceHttps: true
   useMessagePackProtocol: false
