@@ -51,7 +51,8 @@ function renderBody(props: TableContextViewProps) : JSX.Element | null {
 }
 
 export function TableContextView(props: TableContextViewProps): JSX.Element | null {
-	return (<div className='tableContextView'>{renderBody(props)}</div>);
+	const body = renderBody(props);
+	return body == null ? null : <div className='tableContextView'>{body}</div>;
 }
 
 export default connect(mapStateToProps)(TableContextView);

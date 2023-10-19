@@ -1,7 +1,6 @@
 const path = require('path');
 const HtmlWebPackPlugin = require("html-webpack-plugin");
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-var WebpackPwaManifest = require('webpack-pwa-manifest');
 const WorkboxPlugin = require('workbox-webpack-plugin');
 
 module.exports = (env, argv) => {
@@ -35,6 +34,23 @@ module.exports = (env, argv) => {
 				},
 				{ test: /\.(eot|ttf|woff|otf)$/, type: 'asset/resource' },
 				{ test: /\.mp3?$/, type: 'asset/resource' },
+				// TODO: I cannot make it work, so all referenced images from manifest would be automatically copied to dist folder
+				// {
+				// 	test: require.resolve('./assets/manifest/manifest.json'),
+				// 	use: [
+				// 		{
+				// 			loader: 'val-loader',
+				// 			options: {
+				// 				executableFile: path.resolve(
+				// 					__dirname,
+				// 					"assets",
+				// 					"manifest",
+				// 					"manifest-loader.js"
+				// 				)
+				// 			}
+				// 		}
+				// 	]
+				// }
 			]
 		},
 		resolve: {
@@ -67,23 +83,6 @@ module.exports = (env, argv) => {
 				template: "./src/index-template.html",
 				filename: "./index.html",
 				favicon: './assets/images/favicon.ico'
-			}),
-			new WebpackPwaManifest({
-				id: "sionline",
-				name: "SIGame",
-				short_name: "SIGame",
-				description: "Online quiz where you could create you own questions and play with friends",
-				start_url: ".",
-				theme_color: "#FFFFFF",
-				background_color: "#010450",
-				display: "standalone",
-				crossorigin: 'use-credentials', //can be null, use-credentials or anonymous
-				icons: [
-				{
-					src: path.resolve('assets/images/sigame.png'),
-					sizes: [96, 128, 192, 256, 512] // multiple sizes
-				}
-				]
 			})].concat(
 				argv.mode === 'development'
 					? []

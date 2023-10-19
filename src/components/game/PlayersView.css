@@ -63,7 +63,7 @@
 
     .gamePlayers .name, .gamePlayers .sum {
         display: block;
-        margin: 0 3px;
+        margin: 0 1px;
     }
 
     .gamePlayers .stakeHost {
@@ -177,7 +177,7 @@
 }
 
 .readyMark {
-    font-size: 25px;
+    font-size: 15px;
 }
 
 .chooserMark {
@@ -212,6 +212,14 @@
 
     .gamePlayers li {
         max-width: 200px;
+    }
+
+    .readyMark {
+        font-size: 25px;
+    }
+
+    .gamePlayers .name, .gamePlayers .sum {
+        margin: 0 3px;
     }
 }
 
@@ -397,17 +405,18 @@
     }
 
     .playerAvatar {
-        min-width: 43px;
+        min-width: 28px;
         flex: 3;
     }
 
     .gamePlayers li {
         height: initial;
         margin: 0;
+        flex: 1;
     }
 
     .gamePlayers .playerCard {
-        padding: 3px 3px 0 3px;
+        padding: 3px 1px 0 1px;
         flex-direction: column;
     }
 }

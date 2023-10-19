@@ -128,9 +128,10 @@ export class PlayersView extends React.Component<PlayersViewProps> {
 
 	render() {
 		const playersCount = Object.keys(this.props.players).length;
+		const fontSizeMultiplier = this.props.windowWidth < 800 ? 2.5 : 1.0;
 
 		const mainStyle: React.CSSProperties = {
-			fontSize: `${15.5 - playersCount * 0.2}px`
+			fontSize: `${15.5 - playersCount * 0.2 * fontSizeMultiplier}px`
 		};
 
 		const buildPlayerClasses = (player: PlayerInfo, isMe: boolean, canBeSelected: boolean) => {

@@ -1,0 +1,65 @@
+{
+	"id": "sigame",
+	"name": "SIGame",
+	"short_name": "SIGame",
+	"description": "Online quiz where you could create you own questions and play with friends",
+	"categories": ["games", "quiz"],
+	"lang": "en",
+	"start_url": ".",
+	"orientation": "portrait",
+	"display": "standalone",
+	"display_override": [
+		"window-controls-overlay",
+		"standalone",
+		"browser"
+	],
+	"edge_side_panel": {},
+	"prefer_related_applications": false,
+	"handle_links": "auto",
+	"launch_handler": {
+		"client_mode": "auto"
+	},
+	"theme_color": "#FFFFFF",
+	"background_color": "#010450",
+	"dir": "ltr",
+	"icons": [
+		{
+			"src": "icon_512x512.c9f84f9d42caece2b65d20e3ec0d6feb.png",
+			"sizes": "512x512",
+			"type": "image/png",
+			"purpose": "any"
+		},
+		{
+			"src": "icon_256x256.d4c470d4a1041f7b26d32038a094ed03.png",
+			"sizes": "256x256",
+			"type": "image/png",
+			"purpose": "any"
+		},
+		{
+			"src": "icon_192x192.8833eed25276a881e226446ad998f0fc.png",
+			"sizes": "192x192",
+			"type": "image/png",
+			"purpose": "any"
+		},
+		{
+			"src": "icon_128x128.2156187cf12c7b6a377e2a744f4e3199.png",
+			"sizes": "128x128",
+			"type": "image/png",
+			"purpose": "any"
+		},
+		{
+			"src": "icon_96x96.fec54ba312fae2f080cba7c8fda493f3.png",
+			"sizes": "96x96",
+			"type": "image/png",
+			"purpose": "any"
+		}
+	],
+	"screenshots" : [
+		{
+		  "src": "screenshot.png",
+		  "sizes": "1024x500",
+		  "type": "image/png",
+		  "platform": "wide"
+		}
+	  ]
+}

@@ -107,7 +107,7 @@ export function GamesList(props: GamesListProps): JSX.Element {
 					verticalOrientation={FlyoutVerticalOrientation.Bottom}
 				>
 					<span className="filterText">
-						<span style={{ fontSize: filterValue.length > 15 ? '14px' : '22px' }}>{filterValue}</span>
+						<span style={{ fontSize: filterValue.length > 15 ? '10px' : '22px' }}>{filterValue}</span>
 						<span className="triangle">▾</span>
 					</span>
 				</FlyoutButton>

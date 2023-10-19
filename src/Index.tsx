@@ -26,6 +26,8 @@ import getErrorMessage from './utils/ErrorHelpers';
 import commonActionCreators from './state/common/commonActionCreators';
 import enableNoSleep from './utils/NoSleepHelper';
 import uiActionCreators from './state/ui/uiActionCreators';
+import getDeviceType from './utils/getDeviceType';
+import isSafari from './utils/isSafari';
 
 import './utils/polyfills';
 import './style.css';
@@ -250,7 +252,11 @@ async function run() {
 
 	store.dispatch(uiActionCreators.navigateToLogin() as any);
 
-	if (config.enableNoSleep) {
+	const deviceType = getDeviceType();
+
+	console.log('Device type: ' + deviceType);
+
+	if (config.enableNoSleep && deviceType == 'mobile' && !isSafari()) {
 		enableNoSleep();
 	}
 }
