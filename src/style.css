@@ -545,6 +545,11 @@ video, audio {
     margin-bottom: -1px;
 }
 
+a.simpleLink {
+	text-decoration: none;
+	color: white;
+}
+
 @media screen and (min-width: 800px) {
     #gamesTitle, #chatHostTitle {
         padding-left: 0;

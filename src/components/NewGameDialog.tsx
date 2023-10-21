@@ -263,6 +263,28 @@ export class NewGameDialog extends React.Component<NewGameDialogProps, NewGameDi
 										<li onClick={this.onRandomThemesSelected}>{localization.randomThemes}</li>
 										<li onClick={this.onFilePackageSelected}>{`${localization.file}…`}</li>
 										<li onClick={this.onSIStorageSelected}>{`${localization.libraryTitle}…`}</li>
+
+										{localization.userPackages.length > 0
+										? <li>
+											<a
+												className='simpleLink'
+												href="https://vk.com/topic-135725718_34975471"
+												target='_blank'
+												rel='noopener noreferrer'>
+												{`${localization.userPackages}…`}
+											</a>
+										</li>
+										: null}
+
+										<li>
+											<a
+												className='simpleLink'
+												href="https://vladimirkhil.com/si/siquester"
+												target='_blank'
+												rel='noopener noreferrer'>
+												{`${localization.createOwnPackage}…`}
+											</a>
+										</li>
 									</ul>
 								}
 								title={localization.select}
