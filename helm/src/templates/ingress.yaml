@@ -1,5 +1,7 @@
 {{- if .Values.ingress.enabled }}
 {{- $fullName := include "sionline.fullname" . -}}
+{{- $pathType := .Values.ingress.pathType -}}
+{{- $port := .Values.service.port -}}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -28,12 +30,12 @@ spec:
         paths:
           {{- range .paths }}
           - path: {{ . }}
-            pathType: {{ .Values.ingress.pathType }}
+            pathType: {{ $pathType }}
             backend:
               service:
                 name: {{ $fullName }}
                 port:
-                  number: {{ .Values.service.port }}
+                  number: {{ $port }}
           {{- end }}
     {{- end }}
 {{- end }}
