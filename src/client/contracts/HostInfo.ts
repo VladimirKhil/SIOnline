@@ -1,5 +1,5 @@
 import SIContentInfo from './SIContentInfo';
-import SIStorageInfo from './SiStorageInfo';
+import SIStorageInfo from './SIStorageInfo';
 
 /** Provides game server information. */
 export default interface HostInfo {
