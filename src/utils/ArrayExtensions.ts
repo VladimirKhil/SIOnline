@@ -2,8 +2,12 @@ export function removeFromArray<T>(array: T[], item: T): T[] {
 	return array.filter(value => value !== item);
 }
 
-export function arrayToRecord<T>(array: T[], keySelector: (item: T) => string): Record<string, T> {
-	return array.reduce((res: Record<string, T>, value: T) => ({ ...res, [keySelector(value)]: value }), {});
+export function arrayToRecord<T>(array: T[], keySelector: (item: T) => string | number): Record<string, T> {
+	return array.reduce((res: Record<string | number, T>, value: T) => ({ ...res, [keySelector(value)]: value }), {});
+}
+
+export function arrayToValue<T, U>(array: T[], keySelector: (item: T) => string | number, valueSelector: (item: T) => U): Record<string, U> {
+	return array.reduce((res: Record<string | number, U>, value: T) => ({ ...res, [keySelector(value)]: valueSelector(value) }), {});
 }
 
 export function replace<T>(array: T[], index: number, item: T): T[] {

@@ -1,4 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit';
+import * as signalR from '@microsoft/signalr';
 import userReducer from './userSlice';
 import loginReducer from './loginSlice';
 import uiReducer from './uiSlice';
@@ -9,9 +10,10 @@ import commonReducer from './commonSlice';
 import siPackagesReducer from './siPackagesSlice';
 import settingsReducer from './settingsSlice';
 import DataContext from '../../model/DataContext';
-import DummyGameServerClient from '../../client/DummyGameServerClient';
 import Config from '../Config';
 import GameClient from '../../client/game/GameClient';
+import GameServerClient from '../../client/GameServerClient';
+import SIContentClient from 'sicontent-client';
 
 /* New version of store. Not used yet */
 
@@ -23,7 +25,9 @@ if (!serverUri) {
 	serverUri = '';
 }
 
-const gameClient = new DummyGameServerClient();
+const noOpHubConnection = new signalR.HubConnectionBuilder().withUrl('http://fake').build();
+
+const gameClient = new GameServerClient(noOpHubConnection, () => { });
 
 const dataContext : DataContext = {
 	config,
@@ -32,7 +36,8 @@ const dataContext : DataContext = {
 	gameClient,
 	game: new GameClient(gameClient),
 	contentUris: null,
-	contentClient: null,
+	contentClient: new SIContentClient({ serviceUri: 'http://fake' }),
+	storageClient: null,
 };
 
 const store = configureStore({

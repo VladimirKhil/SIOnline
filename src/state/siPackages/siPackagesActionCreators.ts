@@ -1,18 +1,22 @@
 import { Action, ActionCreator, Dispatch } from 'redux';
+import { ThunkAction } from 'redux-thunk';
 import getErrorMessage from '../../utils/ErrorHelpers';
 import * as SIPackagesActions from './SIPackagesActions';
-import { SearchEntity } from '../../model/SearchEntity';
 import State from '../State';
 import DataContext from '../../model/DataContext';
-import { ThunkAction } from 'redux-thunk';
-import { PackageFilters } from '../../model/PackageFilters';
-import { SIPackageInfo } from '../../model/SIPackageInfo';
+import PackageFilters from 'sistorage-client/dist/models/PackageFilters';
+import PackageSelectionParameters from 'sistorage-client/dist/models/PackageSelectionParameters';
+import Restriction from 'sistorage-client/dist/models/Restriction';
+import PackagesPage from 'sistorage-client/dist/models/PackagesPage';
+import { arrayToRecord, arrayToValue } from '../../utils/ArrayExtensions';
+import localization from '../../model/resources/localization';
+import { getFullCulture } from '../../utils/StateHelpers';
 
 const searchPackages: ActionCreator<SIPackagesActions.SearchPackagesAction> = () => ({
 	type: SIPackagesActions.SIPackagesActionTypes.SearchPackages
 });
 
-const searchPackagesFinished: ActionCreator<SIPackagesActions.SearchPackagesFinishedAction> = (packages: SIPackageInfo[]) => ({
+const searchPackagesFinished: ActionCreator<SIPackagesActions.SearchPackagesFinishedAction> = (packages: PackagesPage) => ({
 	type: SIPackagesActions.SIPackagesActionTypes.SearchPackagesFinished,
 	packages
 });
@@ -26,14 +30,14 @@ const receiveAuthors: ActionCreator<SIPackagesActions.ReceiveAuthorsAction> = ()
 	type: SIPackagesActions.SIPackagesActionTypes.ReceiveAuthors
 });
 
-const receiveAuthorsFinished: ActionCreator<SIPackagesActions.ReceiveAuthorsFinishedAction> = (authors: SearchEntity[]) => ({
+const receiveAuthorsFinished: ActionCreator<SIPackagesActions.ReceiveAuthorsFinishedAction> = (authors: Record<number, string>) => ({
 	type: SIPackagesActions.SIPackagesActionTypes.ReceiveAuthorsFinished,
 	authors
 });
 
 const receiveTags: ActionCreator<SIPackagesActions.ReceiveTagsAction> = () => ({ type: SIPackagesActions.SIPackagesActionTypes.ReceiveTags });
 
-const receiveTagsFinished: ActionCreator<SIPackagesActions.ReceiveTagsFinishedAction> = (tags: SearchEntity[]) => ({
+const receiveTagsFinished: ActionCreator<SIPackagesActions.ReceiveTagsFinishedAction> = (tags: Record<number, string>) => ({
 	type: SIPackagesActions.SIPackagesActionTypes.ReceiveTagsFinished,
 	tags
 });
@@ -43,103 +47,131 @@ const receivePublishers: ActionCreator<SIPackagesActions.ReceivePublishersAction
 });
 
 const receivePublishersFinished: ActionCreator<SIPackagesActions.ReceivePublishersFinishedAction> = (
-	publishers: SearchEntity[]
+	publishers: Record<number, string>
 ) => ({
 	type: SIPackagesActions.SIPackagesActionTypes.ReceivePublishersFinished,
 	publishers
 });
 
-const receiveAuthorsThunk: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
-	() => async (dispatch: Dispatch<any>, getState: () => State, dataContext: DataContext) => {
-		try {
-			dispatch(receiveAuthors());
-			const { apiUri } = dataContext.config;
-			const response = await fetch(`${apiUri}/Authors`);
+const receiveLanguagesFinished: ActionCreator<SIPackagesActions.ReceiveLanguagesFinishedAction> = (
+	languages: Record<number, string>
+) => ({
+	type: SIPackagesActions.SIPackagesActionTypes.ReceiveLanguagesFinished,
+	languages
+});
 
-			if (!response.ok) {
-				console.error(response.statusText);
+const receiveRestrictionsFinished: ActionCreator<SIPackagesActions.ReceiveRestrictionsFinishedAction> = (
+	restrictions: Record<number, Restriction>
+) => ({
+	type: SIPackagesActions.SIPackagesActionTypes.ReceiveRestrictionsFinished,
+	restrictions
+});
+
+const receiveAuthorsThunk: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
+	() => async (dispatch: Dispatch<any>, _: () => State, dataContext: DataContext) => {
+		try {
+			if (!dataContext.storageClient) {
 				return;
 			}
 
-			const data = await response.json();
-			dispatch(receiveAuthorsFinished(data));
+			dispatch(receiveAuthors());
+			const authors = await dataContext.storageClient.facets.getAuthorsAsync();
+			dispatch(receiveAuthorsFinished(arrayToValue(authors, author => author.id, author => author.name)));
 		} catch (error) {
 			dispatch(searchPackagesError(getErrorMessage(error)));
 		}
 	};
 
 const receiveTagsThunk: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
-	() => async (dispatch: Dispatch<any>, getState: () => State, dataContext: DataContext) => {
+	() => async (dispatch: Dispatch<any>, _getState: () => State, dataContext: DataContext) => {
 		try {
-			dispatch(receiveTags());
-			const { apiUri } = dataContext.config;
-			const response = await fetch(`${apiUri}/Tags`);
-
-			if (!response.ok) {
-				console.error(response.statusText);
+			if (!dataContext.storageClient) {
 				return;
 			}
 
-			const data = await response.json();
-			dispatch(receiveTagsFinished(data));
+			dispatch(receiveTags());
+			const tags = await dataContext.storageClient.facets.getTagsAsync();
+			dispatch(receiveTagsFinished(arrayToValue(tags, tag => tag.id, tag => tag.name)));
 		} catch (error) {
 			dispatch(searchPackagesError(getErrorMessage(error)));
 		}
 	};
 
 const receivePublishersThunk: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
-	() => async (dispatch: Dispatch<any>, getState: () => State, dataContext: DataContext) => {
+	() => async (dispatch: Dispatch<any>, _getState: () => State, dataContext: DataContext) => {
 		try {
-			dispatch(receivePublishers());
-			const { apiUri } = dataContext.config;
-			const response = await fetch(`${apiUri}/Publishers`);
-
-			if (!response.ok) {
-				console.error(response.statusText);
+			if (!dataContext.storageClient) {
 				return;
 			}
 
-			const data = await response.json();
-			dispatch(receivePublishersFinished(data));
+			dispatch(receivePublishers());
+			const publishers = await dataContext.storageClient.facets.getPublishersAsync();
+			dispatch(receivePublishersFinished(arrayToValue(publishers, publisher => publisher.id, publisher => publisher.name)));
 		} catch (error) {
 			dispatch(searchPackagesError(getErrorMessage(error)));
 		}
 	};
 
-const searchPackagesThunk: ActionCreator<ThunkAction<void, State, DataContext, Action>> = 
-	(filters: PackageFilters = {
-		difficultyRelation: 0,
-		difficulty: 1,
-		sortMode: 0,
-		sortAscending: true,
-		authorId: null,
-		publisherId: null,
-		tagId: null,
-		restriction: null
-	}) => async (dispatch: Dispatch<any>, _: () => State, dataContext: DataContext) => {
+const setLanguage: ActionCreator<SIPackagesActions.SetLanguageAction> = (
+	languageId: number
+) => ({
+	type: SIPackagesActions.SIPackagesActionTypes.SetLanguage,
+	languageId
+});
+
+const receiveLanguagesThunk: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
+	() => async (dispatch: Dispatch<any>, getState: () => State, dataContext: DataContext) => {
+		try {
+			if (!dataContext.storageClient) {
+				return;
+			}
+
+			const languages = await dataContext.storageClient.facets.getLanguagesAsync();
+			dispatch(receiveLanguagesFinished(arrayToValue(languages, language => language.id, language => language.code)));
+
+			const currentLanguage = getFullCulture(getState());
+			const language = languages.find(l => l.code === currentLanguage);
+
+			if (language) {
+				dispatch(setLanguage(language.id));
+			}
+		} catch (error) {
+			dispatch(searchPackagesError(getErrorMessage(error)));
+		}
+	};
+
+const receiveRestrictionsThunk: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
+	() => async (dispatch: Dispatch<any>, getState: () => State, dataContext: DataContext) => {
+		try {
+			if (!dataContext.storageClient) {
+				return;
+			}
+
+			const restrictions = await dataContext.storageClient.facets.getRestrictionsAsync();
+			dispatch(receiveRestrictionsFinished(arrayToRecord(restrictions, r => r.id)));
+		} catch (error) {
+			dispatch(searchPackagesError(getErrorMessage(error)));
+		}
+	};
+
+const searchPackagesThunk: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
+	(filters: PackageFilters, selectionParameters: PackageSelectionParameters) => async (
+		dispatch: Dispatch<any>,
+		getState: () => State,
+		dataContext: DataContext
+	) => {
 	try {
-		dispatch(searchPackages());
-		const { apiUri } = dataContext.config;
+		const { storageClient } = dataContext;
 
-		const response = await fetch(
-			`${apiUri}/FilteredPackages?${new URLSearchParams(
-				Object.entries(filters)
-					.filter(([, value]: [string, PackageFilters[keyof PackageFilters]]) => value ?? false)
-					.reduce(
-						(acc, [key, value]) => ({
-							...acc,
-							[key]: value
-						}),
-						{}
-					))}`);
-
-		if (!response.ok) {
-			console.error(response.statusText);
+		if (!storageClient) {
 			return;
 		}
 
-		const data = await response.json();
-		dispatch(searchPackagesFinished(data));
+		const { languageId } = getState().siPackages;
+
+		dispatch(searchPackages());
+		const packagesPage = await storageClient.packages.getPackagesAsync({ ...filters, languageId }, selectionParameters);
+		dispatch(searchPackagesFinished(packagesPage));
 	} catch (error) {
 		dispatch(searchPackagesError(getErrorMessage(error)));
 	}
@@ -150,6 +182,8 @@ const siPackagesActionCreators = {
 	receiveAuthorsThunk,
 	receiveTagsThunk,
 	receivePublishersThunk,
+	receiveLanguagesThunk,
+	receiveRestrictionsThunk,
 };
 
 export default siPackagesActionCreators;

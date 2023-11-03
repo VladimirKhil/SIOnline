@@ -75,6 +75,10 @@
     align-items: center;
 }
 
+.packageSources li {
+    font-size: 18px;
+}
+
 .packageName {
     vertical-align: middle;
     margin: 3px 0 0 5px;

@@ -59,11 +59,13 @@ const gamePackageDataChangedRequest: ActionCreator<ThunkAction<void, State, Data
 
 const gamePackageLibraryChanged: ActionCreator<GameActions.GamePackageLibraryChangedAction> = (
 	id: string,
-	name: string
+	name: string,
+	uri: string
 ) => ({
 	type: GameActions.GameActionTypes.GamePackageLibraryChanged,
+	id,
 	name,
-	id
+	uri,
 });
 
 const gameTypeChanged: ActionCreator<GameActions.GameTypeChangedAction> = (gameType: GameType) => ({

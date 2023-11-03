@@ -56,7 +56,8 @@ const gameReducer: Reducer<GameState> = (state: GameState = initialState, anyAct
 				package: {
 					...state.package,
 					name: action.name,
-					id: action.id
+					id: action.id,
+					uri: action.uri,
 				}
 			};
 		}

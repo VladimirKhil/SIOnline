@@ -1,5 +1,6 @@
 ﻿import * as React from 'react';
 import * as ReactDOM from 'react-dom';
+import * as signalR from '@microsoft/signalr';
 import { AnyAction, applyMiddleware, createStore, Store } from 'redux';
 import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
@@ -14,7 +15,6 @@ import Config from './state/Config';
 import roomActionCreators from './state/room/roomActionCreators';
 import localization from './model/resources/localization';
 import ServerInfo from './model/server/ServerInfo';
-import DummyGameServerClient from './client/DummyGameServerClient';
 import GameClient from './client/game/GameClient';
 import { FirebaseApp, FirebaseOptions, initializeApp } from 'firebase/app';
 import { Analytics, getAnalytics } from 'firebase/analytics';
@@ -28,6 +28,8 @@ import enableNoSleep from './utils/NoSleepHelper';
 import uiActionCreators from './state/ui/uiActionCreators';
 import getDeviceType from './utils/getDeviceType';
 import isSafari from './utils/isSafari';
+import GameServerClient from './client/GameServerClient';
+import SIContentClient from 'sicontent-client';
 
 import './utils/polyfills';
 import './style.css';
@@ -191,7 +193,9 @@ async function run() {
 
 	state.common.askForConsent = !!config.askForConsent;
 
-	const gameClient = new DummyGameServerClient();
+	const noOpHubConnection = new signalR.HubConnectionBuilder().withUrl('http://fake').build();
+
+	const gameClient = new GameServerClient(noOpHubConnection, () => { });
 
 	const dataContext: DataContext = {
 		config,
@@ -200,7 +204,8 @@ async function run() {
 		gameClient,
 		game: new GameClient(gameClient),
 		contentUris: null,
-		contentClient: null,
+		contentClient: new SIContentClient({ serviceUri: 'http://fake' }),
+		storageClient: null,
 	};
 
 	const store = createStore<State, AnyAction, {}, {}>(

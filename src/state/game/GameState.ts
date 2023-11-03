@@ -11,6 +11,7 @@ export default interface GameState {
 		name: string;
 		data: File | null;
 		id: string | null;
+		uri: string | null;
 	};
 	type: GameType;
 	role: Role;
@@ -29,7 +30,8 @@ export const initialState: GameState = {
 		type: PackageType.Random,
 		name: '',
 		data: null,
-		id: null
+		id: null,
+		uri: null,
 	},
 	type: GameType.Simple,
 	role: Role.Player,

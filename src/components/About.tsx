@@ -58,7 +58,6 @@ export function About(props: AboutProps): JSX.Element {
 						<li><a href="https://github.com/reduxjs/redux-thunk/blob/master/LICENSE.md">Redux-Thunk (MIT)</a></li>
 						<li><a href="https://github.com/ReactTraining/react-router/blob/master/LICENSE">React Router DOM (MIT)</a></li>
 						<li><a href="https://github.com/stefanpenner/es6-promise/blob/master/LICENSE">ES6 Promise (MIT)</a></li>
-						<li><a href="https://github.com/Stuk/jszip/blob/master/LICENSE.markdown">JSZip (MIT)</a></li>
 						<li><a href="https://github.com/srijs/rusha/blob/master/LICENSE">Rusha (MIT)</a></li>
 
 						<li>

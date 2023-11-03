@@ -36,6 +36,7 @@
 .games_controls button {
 	padding: 5px 20px;
 	width: initial !important;
+	font-size: 18px !important;
 }
 
 .games .loadError {

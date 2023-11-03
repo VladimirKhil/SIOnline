@@ -7,13 +7,13 @@ import Dialog from './common/Dialog';
 import ProgressBar from './common/ProgressBar';
 import State from '../state/State';
 import Role from '../client/contracts/Role';
-import GameType from '../client/contracts/GameType';
 import Constants from '../model/enums/Constants';
 import PackageType from '../model/enums/PackageType';
 import SIStorageDialog from './SIStorageDialog';
 import FlyoutButton, { FlyoutTheme } from './common/FlyoutButton';
 import uiActionCreators from '../state/ui/uiActionCreators';
 import onlineActionCreators from '../state/online/onlineActionCreators';
+import isWindowsOS from '../utils/isWindowsOS';
 
 import './NewGameDialog.css';
 
@@ -41,7 +41,7 @@ interface NewGameDialogProps {
 	onGameVoiceChatChanged: (newVoiceChat: string) => void;
 	onGamePackageTypeChanged: (type: PackageType) => void;
 	onGamePackageDataChanged: (name: string, data: File | null) => void;
-	onGamePackageLibraryChanged: (id: string, name: string) => void;
+	onGamePackageLibraryChanged: (id: string, name: string, uri: string) => void;
 	onGameRoleChanged: (newGameRole: Role) => void;
 	showmanTypeChanged: (isHuman: boolean) => void;
 	onPlayersCountChanged: (gamePlayersCount: number) => void;
@@ -90,8 +90,8 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	onGamePackageDataChanged: (name: string, data: File | null) => {
 		dispatch(gameActionCreators.gamePackageDataChangedRequest(name, data) as unknown as Action);
 	},
-	onGamePackageLibraryChanged: (id: string, name: string) => {
-		dispatch(gameActionCreators.gamePackageLibraryChanged(id, name));
+	onGamePackageLibraryChanged: (id: string, name: string, uri: string) => {
+		dispatch(gameActionCreators.gamePackageLibraryChanged(id, name, uri));
 	},
 	onGameRoleChanged: (newGameRole: Role) => {
 		dispatch(gameActionCreators.gameRoleChanged(newGameRole));
@@ -202,13 +202,13 @@ export class NewGameDialog extends React.Component<NewGameDialogProps, NewGameDi
 		});
 	};
 
-	private onSelectSIPackage = async (id: string, name: string) => {
+	private onSelectSIPackage = async (id: string, name: string, uri: string) => {
 		this.setState({
 			isSIStorageOpen: false
 		});
 
 		this.props.onGamePackageTypeChanged(PackageType.SIStorage);
-		this.props.onGamePackageLibraryChanged(id, name);
+		this.props.onGamePackageLibraryChanged(id, name, uri);
 	};
 
 	render(): JSX.Element {
@@ -259,32 +259,56 @@ export class NewGameDialog extends React.Component<NewGameDialogProps, NewGameDi
 							<FlyoutButton
 								theme={FlyoutTheme.Dark}
 								flyout={
-									<ul>
+									<ul className='packageSources'>
 										<li onClick={this.onRandomThemesSelected}>{localization.randomThemes}</li>
 										<li onClick={this.onFilePackageSelected}>{`${localization.file}…`}</li>
 										<li onClick={this.onSIStorageSelected}>{`${localization.libraryTitle}…`}</li>
 
 										{localization.userPackages.length > 0
-										? <li>
-											<a
-												className='simpleLink'
-												href="https://vk.com/topic-135725718_34975471"
-												target='_blank'
-												rel='noopener noreferrer'>
-												{`${localization.userPackages}…`}
-											</a>
-										</li>
+										? <>
+											<li>
+												<a
+													className='simpleLink'
+													href="https://vk.com/topic-135725718_34975471"
+													target='_blank'
+													rel='noopener noreferrer'>
+													{`${localization.userPackages}…`}
+												</a>
+											</li>
+
+											<li>
+												<a
+													className='simpleLink'
+													href="https://sigame.xyz"
+													target='_blank'
+													rel='noopener noreferrer'>
+													{`${localization.library} sigame.xyz…`}
+												</a>
+											</li>
+
+											<li>
+												<a
+													className='simpleLink'
+													href="https://www.sibrowser.ru"
+													target='_blank'
+													rel='noopener noreferrer'>
+													{`${localization.library} sibrowser.ru…`}
+												</a>
+											</li>
+										</>
 										: null}
 
-										<li>
-											<a
-												className='simpleLink'
-												href="https://vladimirkhil.com/si/siquester"
-												target='_blank'
-												rel='noopener noreferrer'>
-												{`${localization.createOwnPackage}…`}
-											</a>
-										</li>
+										{isWindowsOS()
+											? <li>
+												<a
+													className='simpleLink'
+													href="https://vladimirkhil.com/si/siquester"
+													target='_blank'
+													rel='noopener noreferrer'>
+													{`${localization.createOwnPackage}…`}
+												</a>
+											</li>
+											: null}
 									</ul>
 								}
 								title={localization.select}

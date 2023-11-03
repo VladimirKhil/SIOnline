@@ -60,6 +60,12 @@
 		  "sizes": "1024x500",
 		  "type": "image/png",
 		  "form_factor": "wide"
+		},
+		{
+		  "src": "screenshot_narrow.png",
+		  "sizes": "1024x500",
+		  "type": "image/png",
+		  "form_factor": "narrow"
 		}
 	]
 }

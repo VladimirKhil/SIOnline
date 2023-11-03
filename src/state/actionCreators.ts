@@ -16,7 +16,6 @@ import Constants from '../model/enums/Constants';
 
 import GameServerClient from '../client/GameServerClient';
 import getErrorMessage from '../utils/ErrorHelpers';
-import FileKey from '../client/contracts/FileKey';
 import { getFullCulture } from '../utils/StateHelpers';
 import settingsActionCreators from './settings/settingsActionCreators';
 import MessageLevel from '../model/enums/MessageLevel';
@@ -28,7 +27,7 @@ import onlineActionCreators from './online/onlineActionCreators';
 
 import SIContentClient from 'sicontent-client';
 import uiActionCreators from './ui/uiActionCreators';
-import hashData from '../utils/hashData';
+import SIStorageClient from 'sistorage-client';
 
 const onConnectionChanged: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 	(isConnected: boolean, message: string) => async (dispatch: Dispatch<any>, getState: () => State, dataContext: DataContext) => {
@@ -94,57 +93,16 @@ async function uploadAvatarAsync(dispatch: Dispatch<Action>, dataContext: DataCo
 
 		const { buffer } = data;
 
-		const { gameClient, serverUri, contentClient } = dataContext;
+		const { contentClient } = dataContext;
 
-		if (contentClient) {
-			const avatarUri2 = await contentClient.uploadAvatarIfNotExistAsync(fileName, new Blob([buffer]));
+		const avatarUri2 = await contentClient.uploadAvatarIfNotExistAsync(fileName, new Blob([buffer]));
 
-			const fullAvatarUri2 = avatarUri2.startsWith('/')
-				? contentClient.options.serviceUri + avatarUri2.substring(1)
-				: avatarUri2;
-
-			dispatch(commonActionCreators.avatarLoadEnd(null));
-			dispatch(userActionCreators.avatarChanged(fullAvatarUri2));
-			return;
-		}
-
-		const hash = await hashData(buffer);
-
-		const hashArray = new Uint8Array(hash);
-		const hashArrayEncoded = window.btoa(String.fromCharCode.apply(null, hashArray as any));
-
-		const imageKey: FileKey = {
-			name: fileName,
-			hash: hashArrayEncoded
-		};
-
-		let avatarUri = await gameClient.hasImageAsync(imageKey);
-
-		if (!avatarUri) {
-			const formData = new FormData();
-			formData.append('file', new Blob([buffer]), fileName);
-
-			const response = await fetch(`${serverUri}/api/upload/image`, {
-				method: 'POST',
-				credentials: 'include',
-				body: formData,
-				headers: {
-					'Content-MD5': hashArrayEncoded
-				}
-			});
-
-			if (!response.ok) {
-				dispatch(commonActionCreators.avatarLoadError(`${localization.uploadingImageError}: ${response.status} ${await response.text()}`));
-				return;
-			}
-
-			avatarUri = await response.text();
-		}
-
-		const fullAvatarUri = (dataContext.contentUris ? dataContext.contentUris[0] : '') + avatarUri;
+		const fullAvatarUri2 = avatarUri2.startsWith('/')
+			? contentClient.options.serviceUri + avatarUri2.substring(1)
+			: avatarUri2;
 
 		dispatch(commonActionCreators.avatarLoadEnd(null));
-		dispatch(userActionCreators.avatarChanged(fullAvatarUri));
+		dispatch(userActionCreators.avatarChanged(fullAvatarUri2));
 	} catch (err) {
 		const errorMessage = getErrorMessage(err);
 		console.log(errorMessage);
@@ -208,6 +166,16 @@ async function loadHostInfoAsync(dispatch: Dispatch<any>, dataContext: DataConte
 		const { serviceUri } = hostInfo.contentInfos[contentIndex];
 
 		dataContext.contentClient = new SIContentClient({
+			serviceUri
+		});
+	} else {
+		throw new Error('No SIContent service found');
+	}
+
+	if (hostInfo.storageInfos && hostInfo.storageInfos.length > 0) {
+		const { serviceUri } = hostInfo.storageInfos[0];
+
+		dataContext.storageClient = new SIStorageClient({
 			serviceUri
 		});
 	}

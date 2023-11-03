@@ -110,6 +110,11 @@
     overflow: hidden;
 }
 
+.clientLink {
+    display: block;
+    margin-bottom: 5px;
+}
+
 #logonerror {
     width: 100%;
     color: darkred;

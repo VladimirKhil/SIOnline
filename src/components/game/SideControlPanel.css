@@ -59,6 +59,11 @@ button.standard.imageButton.pauseButton {
     margin: 6px;
 }
 
+.exit img {
+    width: 30px;
+    height: 30px;
+}
+
 .nextButton img, .exit img {
     margin: 8px;
 }
@@ -103,6 +108,10 @@ ul.gameMenu, .exitMenu ul {
 
 #exitMenuPopup {
     padding-top: 10px;
+}
+
+#exitMenuPopup li {
+    padding: 0 10px;
 }
 
 .game__utilsArea {

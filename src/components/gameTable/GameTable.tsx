@@ -21,8 +21,6 @@ import { isRunning } from '../../utils/TimerInfoHelpers';
 import TableRound from './TableRound';
 import TableAudioFrame from './TableAudioFrame';
 import TableHtml from './TableHtml';
-import PlayerInfo from '../../model/PlayerInfo';
-import { getMeAsPlayer } from '../../utils/StateHelpers';
 
 import './GameTable.css';
 
@@ -35,7 +33,6 @@ interface GameTableProps {
 	decisionTimer: TimerInfo;
 	caption: string;
 	windowWidth: number;
-	me: PlayerInfo | null;
 }
 
 const mapStateToProps = (state: State) => ({
@@ -47,7 +44,6 @@ const mapStateToProps = (state: State) => ({
 	decisionTimer: state.room.timers.decision,
 	caption: state.table.caption,
 	windowWidth: state.ui.windowWidth,
-	me: getMeAsPlayer(state),
 });
 
 function getContent(mode: TableMode) {
@@ -110,7 +106,7 @@ function getCaption(props: GameTableProps): string | null {
 			return props.caption;
 
 		default:
-			return props.windowWidth < 1100 && props.me ? props.me.sum.toString() : null;
+			return null;
 	}
 }
 

@@ -5,39 +5,50 @@ import Dialog from './common/Dialog';
 import localization from '../model/resources/localization';
 import State from '../state/State';
 import siPackagesActionCreators from '../state/siPackages/siPackagesActionCreators';
-import { PackageFilters } from '../model/PackageFilters';
-import { SIPackageInfo } from '../model/SIPackageInfo';
-import { SearchEntity } from '../model/SearchEntity';
-import RestrictionType from '../model/enums/RestrictionType';
+import CompareMode from 'sistorage-client/dist/models/CompareMode';
+import Restriction from 'sistorage-client/dist/models/Restriction';
+import PackageSortMode from 'sistorage-client/dist/models/PackageSortMode';
+import PackageSortDirection from 'sistorage-client/dist/models/PackageSortDirection';
+import PackagesPage from 'sistorage-client/dist/models/PackagesPage';
+import PackageFilters from 'sistorage-client/dist/models/PackageFilters';
+import PackageSelectionParameters from 'sistorage-client/dist/models/PackageSelectionParameters';
+import { keys, sortRecord } from '../utils/RecordExtensions';
+import { getFullCulture } from '../utils/StateHelpers';
 
 import './SIStorageDialog.css';
 
+const PAGE_SIZE = 20;
+
 interface DispatchProps {
-	searchPackages: (filters?: PackageFilters) => void;
+	searchPackages: (filters: PackageFilters, selectionParameters: PackageSelectionParameters) => void;
 	receiveAuthors: () => void;
 	receiveTags: () => void;
 	receivePublishers: () => void;
+	receiveLanguages: () => void;
+	receiveRestrictions: () => void;
 }
 
 interface StateProps {
-	packages: SIPackageInfo[];
-	tags: SearchEntity[];
-	publishers: SearchEntity[];
-	authors: SearchEntity[];
+	packages: PackagesPage;
+	tags: Record<number, string>;
+	publishers: Record<number, string>;
+	authors: Record<number, string>;
+	languages: Record<number, string>;
+	restrictions: Record<number, Restriction>;
 	isLoading: boolean;
 	error: string | null;
+	culture: string;
 }
 
 interface OwnProps {
 	onClose: () => void;
-	onSelect: (id: string, name: string) => void;
+	onSelect: (id: string, name: string, uri: string) => void;
 }
 
-interface SIStorageDialogState extends PackageFilters {
-	searchValue: string;
-	prevSearchValue: string;
-	prevPropsPackages: SIPackageInfo[];
-	filteredPackages: SIPackageInfo[];
+interface SIStorageDialogState {
+	filters: PackageFilters;
+	selectionParameters: PackageSelectionParameters;
+	pageIndex: number;
 }
 
 interface SIStorageDialogProps extends OwnProps, StateProps, DispatchProps {}
@@ -48,12 +59,15 @@ const mapStateToProps = (state: State): StateProps => ({
 	authors: state.siPackages.authors,
 	publishers: state.siPackages.publishers,
 	tags: state.siPackages.tags,
+	languages: state.siPackages.languages,
+	restrictions: state.siPackages.restrictions,
 	error: state.siPackages.error,
+	culture: getFullCulture(state),
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>): DispatchProps => ({
-	searchPackages: (filters?: PackageFilters) => {
-		dispatch(siPackagesActionCreators.searchPackagesThunk(filters) as unknown as Action);
+	searchPackages: (filters: PackageFilters, selectionParameters: PackageSelectionParameters) => {
+		dispatch(siPackagesActionCreators.searchPackagesThunk(filters, selectionParameters) as unknown as Action);
 	},
 	receiveAuthors: () => {
 		dispatch(siPackagesActionCreators.receiveAuthorsThunk() as unknown as Action);
@@ -63,6 +77,12 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>): DispatchProps => ({
 	},
 	receiveTags: () => {
 		dispatch(siPackagesActionCreators.receiveTagsThunk() as unknown as Action);
+	},
+	receiveLanguages: () => {
+		dispatch(siPackagesActionCreators.receiveLanguagesThunk() as unknown as Action);
+	},
+	receiveRestrictions: () => {
+		dispatch(siPackagesActionCreators.receiveRestrictionsThunk() as unknown as Action);
 	}
 });
 
@@ -71,125 +91,225 @@ export class SIStorageDialog extends React.Component<SIStorageDialogProps, SISto
 		super(props);
 
 		this.state = {
-			difficultyRelation: 0,
-			difficulty: 1,
-			sortMode: 0,
-			sortAscending: true,
-			authorId: null,
-			publisherId: null,
-			tagId: null,
-			restriction: null,
-			searchValue: '',
-			prevSearchValue: '',
-			prevPropsPackages: [],
-			filteredPackages: []
+			filters: {
+				difficulty: {
+					compareMode: CompareMode.GreaterThan | CompareMode.EqualTo,
+					value: 1
+				},
+			},
+			selectionParameters: {
+				sortDirection: PackageSortDirection.Ascending,
+				sortMode: PackageSortMode.Name,
+				from: 0,
+				count: PAGE_SIZE,
+			},
+			pageIndex: 0,
 		};
 	}
 
 	componentDidMount(): void {
-		this.props.searchPackages();
+		this.props.searchPackages(this.state.filters, this.state.selectionParameters);
 		this.props.receiveAuthors();
 		this.props.receivePublishers();
 		this.props.receiveTags();
+		this.props.receiveLanguages();
+		this.props.receiveRestrictions();
 	}
 
-	static getDerivedStateFromProps(
-		props: SIStorageDialogProps,
-		state: SIStorageDialogState
-	): Partial<SIStorageDialogState> | null {
-		if (state.searchValue !== state.prevSearchValue || state.prevPropsPackages !== props.packages) {
-			return {
-				prevSearchValue: state.searchValue,
-				prevPropsPackages: props.packages,
-				filteredPackages:
-					state.searchValue.length > 0
-						? props.packages.filter(({ description }) => description.toLocaleLowerCase().includes(state.searchValue.toLocaleLowerCase()))
-						: props.packages
-			};
+	private onTagIdChanged(value: string) {
+		const tagId = parseInt(value, 10);
+
+		this.setState(state => ({
+			...state,
+			filters: {
+				...state.filters,
+				tagIds: isNaN(tagId) ? undefined : [tagId]
+			},
+			pageIndex: 0,
+		}));
+	}
+
+	private onDifficultyCompareModeChanged(value: string) {
+		const compareMode = parseInt(value, 10) as CompareMode;
+
+		this.setState(state => ({
+			...state,
+			filters: {
+				...state.filters,
+				difficulty: {
+					value: state.filters.difficulty?.value ?? 1,
+					compareMode: compareMode
+				}
+			},
+			pageIndex: 0,
+		}));
+	}
+
+	private onDifficultyValueChanged(value: string) {
+		const difficultyValue = parseInt(value, 10);
+
+		this.setState(state => ({
+			...state,
+			filters: {
+				...state.filters,
+				difficulty: {
+					value: difficultyValue,
+					compareMode: state.filters.difficulty?.compareMode ?? CompareMode.GreaterThan | CompareMode.EqualTo,
+				}
+			},
+			pageIndex: 0,
+		}));
+	}
+
+	private onPublisherIdChanged(value: string) {
+		const publisherId = parseInt(value, 10);
+
+		this.setState(state => ({
+			...state,
+			filters: {
+				...state.filters,
+				publisherId: publisherId,
+			},
+			pageIndex: 0,
+		}));
+	}
+
+	private onAuthorIdChanged(value: string) {
+		const authorId = parseInt(value, 10);
+
+		this.setState(state => ({
+			...state,
+			filters: {
+				...state.filters,
+				authorId: authorId,
+			},
+			pageIndex: 0,
+		}));
+	}
+
+	private onRestrictionIdChanged(value: string) {
+		const restrictionId = parseInt(value, 10);
+
+		this.setState(state => ({
+			...state,
+			filters: {
+				...state.filters,
+				restrictionIds: isNaN(restrictionId) ? undefined : [restrictionId],
+			},
+			pageIndex: 0,
+		}));
+	}
+
+	private onTextChanged(value: string) {
+		this.setState(state => ({
+			...state,
+			filters: {
+				...state.filters,
+				searchText: value,
+			},
+			pageIndex: 0,
+		}));
+	}
+
+	private onSortModeChanged(value: string) {
+		const sortMode = parseInt(value, 10) as PackageSortMode;
+
+		this.setState(state => ({
+			...state,
+			selectionParameters: {
+				...state.selectionParameters,
+				sortMode: sortMode,
+			},
+			pageIndex: 0,
+		}));
+	}
+
+	private onSortDirectionChanged(value: string) {
+		const sortDirection = parseInt(value, 10) as PackageSortDirection;
+
+		this.setState(state => ({
+			...state,
+			selectionParameters: {
+				...state.selectionParameters,
+				sortDirection: sortDirection,
+			},
+			pageIndex: 0,
+		}));
+	}
+
+	componentDidUpdate(_prevProps: SIStorageDialogProps, prevState: SIStorageDialogState) {
+		if (this.state !== prevState) {
+			this.searchPackages();
 		}
-		return null;
 	}
 
-	private onSelectPackage = (id: string, name: string) => () => {
-		this.props.onSelect(id, name);
-	};
-
-	private onSelectorChange =
-		(filter: keyof Omit<PackageFilters, 'restriction' | 'sortAscending'>) => (event: React.ChangeEvent<HTMLSelectElement>) => {
-			const { value } = event.target;
-			this.setState(
-				{
-					[filter]: value === 'null' ? null : +value
-				} as Pick<PackageFilters, typeof filter>,
-				() => this.filterPackages()
-			);
-		};
-
-	private onRestrictionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-		const { value } = event.target;
-		this.setState(
+	searchPackages() {
+		this.props.searchPackages(
+			this.state.filters,
 			{
-				restriction: value === 'null' ? null : value
-			},
-			() => this.filterPackages()
+				sortDirection: this.state.selectionParameters.sortDirection,
+				sortMode: this.state.selectionParameters.sortMode,
+				from: this.state.pageIndex * PAGE_SIZE,
+				count: this.state.selectionParameters.count,
+			}
 		);
-	};
+	}
 
-	private onSortChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-		this.setState(
-			{
-				sortAscending: event.target.value === 'true'
-			},
-			() => this.filterPackages()
-		);
-	};
-
-	private onSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		this.setState({
-			searchValue: event.target.value
-		});
-	};
-
-	private filterPackages = () => {
-		const { searchValue, prevPropsPackages, prevSearchValue, filteredPackages, ...filters } = this.state;
-		this.props.searchPackages(filters);
-	};
+	setPage(pageIndex: number) {
+		this.setState({ pageIndex });
+	}
 
 	render(): JSX.Element {
+		const filterTagIds = this.state.filters.tagIds;
+		const filterRestrictionIds = this.state.filters.restrictionIds;
+		const tagId = filterTagIds && filterTagIds.length > 0 ? filterTagIds[0] : -2;
+		const restrictionId = filterRestrictionIds && filterRestrictionIds.length > 0 ? filterRestrictionIds[0] : -2;
+
+		const packageLength = this.props.packages.packages.length;
+		const pageCount = packageLength === 0 ? 0 : Math.ceil(this.props.packages.total / PAGE_SIZE);
+
+		const pages = Array.from({ length: pageCount }, (_, i) => i + 1);
+
 		return (
 			<Dialog id="siStorageDialog" title={localization.libraryTitle} onClose={this.props.onClose}>
 				<div className="container">
 					<div className="filters">
 						<div>
 							<span className="selectorName">{localization.packageSubject}</span>
-							<select className="selector" value={String(this.state.tagId)} onChange={this.onSelectorChange('tagId')}>
-								<option key="null" value="null">
+
+							<select className="selector" value={tagId} onChange={e => this.onTagIdChanged(e.target.value)}>
+								<option key={undefined} value={undefined}>
 									{localization.librarySearchAll}
 								</option>
-								<option key="-1" value="-1">
+
+								<option key={-1} value={-1}>
 									{localization.librarySearchNotSet}
 								</option>
-								{this.props.tags.map(({ id, name }) => (
+
+								{sortRecord(this.props.tags).map(({ id, value }) => (
 									<option key={id} value={id}>
-										{name}
+										{value}
 									</option>
 								))}
 							</select>
 							<br />
+
 							<span className="selectorName">{localization.packageDifficulty}</span>
+
 							<div className="selectorsGroup">
 								<select
 									className="selectorDifRel"
-									value={this.state.difficultyRelation}
-									onChange={this.onSelectorChange('difficultyRelation')}
+									value={this.state.filters.difficulty?.compareMode}
+									onChange={e => this.onDifficultyCompareModeChanged(e.target.value)}
 								>
-									<option value="0">{localization.librarySearchMoreOrEqual}</option>
-									<option value="1">{localization.librarySearchLessOrEqual}</option>
+									<option value={CompareMode.GreaterThan | CompareMode.EqualTo}>{localization.librarySearchMoreOrEqual}</option>
+									<option value={CompareMode.LessThan | CompareMode.EqualTo}>{localization.librarySearchLessOrEqual}</option>
 								</select>
+
 								<select
 									className="selectorDif"
-									value={this.state.difficulty}
-									onChange={this.onSelectorChange('difficulty')}
+									value={this.state.filters.difficulty?.value}
+									onChange={e => this.onDifficultyValueChanged(e.target.value)}
 								>
 									{Array.from({ length: 10 })
 										.map((_, i) => i + 1)
@@ -200,114 +320,171 @@ export class SIStorageDialog extends React.Component<SIStorageDialogProps, SISto
 										))}
 								</select>
 							</div>
+
 							<br />
+
 							<span className="selectorName">{localization.packagePublisher}</span>
+
 							<select
 								className="selector"
-								value={String(this.state.publisherId)}
-								onChange={this.onSelectorChange('publisherId')}
+								value={this.state.filters.publisherId}
+								onChange={e => this.onPublisherIdChanged(e.target.value)}
 							>
-								<option key="null" value="null">
+								<option key={undefined} value={undefined}>
 									{localization.librarySearchAll}
 								</option>
-								<option key="-1" value="-1">
+
+								<option key={-1} value={-1}>
 									{localization.librarySearchNotSet}
 								</option>
-								{this.props.publishers.map(({ id, name }) => (
+
+								{sortRecord(this.props.publishers).map(({ id, value }) => (
 									<option key={id} value={id}>
-										{name}
+										{value}
 									</option>
 								))}
 							</select>
+
 							<br />
+
 							<span className="selectorName">{localization.packageAuthor}</span>
+
 							<select
 								className="selector"
-								value={String(this.state.authorId)}
-								onChange={this.onSelectorChange('authorId')}
+								value={this.state.filters.authorId}
+								onChange={e => this.onAuthorIdChanged(e.target.value)}
 							>
-								<option key="null" value="null">
+								<option key={undefined} value={undefined}>
 									{localization.librarySearchAll}
 								</option>
-								{this.props.authors.map(({ id, name }) => (
+
+								{sortRecord(this.props.authors).map(({ id, value }) => (
 									<option key={id} value={id}>
-										{name}
+										{value}
 									</option>
 								))}
 							</select>
 							<br />
 						</div>
+
 						<div>
 							<span className="selectorName">{localization.packageRestriction}</span>
-							<select className="selector" value={String(this.state.restriction)} onChange={this.onRestrictionChange}>
-								<option value="null">{localization.librarySearchNotSet}</option>
-								<option value={RestrictionType.Age12}>{RestrictionType.Age12}</option>
-								<option value={RestrictionType.Age18}>{RestrictionType.Age18}</option>
+
+							<select className="selector" value={restrictionId} onChange={e => this.onRestrictionIdChanged(e.target.value)}>
+								<option key={undefined} value={undefined}>{localization.librarySearchNotSet}</option>
+
+								{keys(this.props.restrictions).map((id) => (
+									<option key={id} value={id}>
+										{this.props.restrictions[id].value}
+									</option>
+								))}
 							</select>
+
 							<br />
 							<span className="selectorName">{localization.filter}</span>
-							<input className="textFilter" type="text" value={this.state.searchValue} onChange={this.onSearchChange} />
+
+							<input
+								className="textFilter"
+								type="text"
+								value={this.state.filters.searchText}
+								onChange={e => this.onTextChanged(e.target.value)} />
+
 							<br />
 							<span className="selectorName">{localization.sort}</span>
+
 							<div className="selectorsGroup">
 								<select
 									className="selectorSortMode"
-									value={this.state.sortMode}
-									onChange={this.onSelectorChange('sortMode')}
+									value={this.state.selectionParameters.sortMode}
+									onChange={e => this.onSortModeChanged(e.target.value)}
 								>
-									<option value="0">{localization.name}</option>
-									<option value="1">{localization.packagePublishedDate}</option>
+									<option value={PackageSortMode.Name}>{localization.name}</option>
+									<option value={PackageSortMode.CreatedDate}>{localization.packagePublishedDate}</option>
 								</select>
+
 								<select
 									className="selectorSortDir"
-									value={this.state.sortAscending.toString()}
-									onChange={this.onSortChange}
+									value={this.state.selectionParameters.sortDirection}
+									onChange={e => this.onSortDirectionChanged(e.target.value)}
 								>
-									<option value="false">{localization.descending}</option>
-									<option value="true">{localization.ascending}</option>
+									<option value={PackageSortDirection.Descending}>{localization.descending}</option>
+									<option value={PackageSortDirection.Ascending}>{localization.ascending}</option>
 								</select>
 							</div>
 						</div>
 					</div>
-					<h2>{`${localization.packages} (${this.state.filteredPackages.length})`}</h2>
-					{this.props.error != null ? <div className='sistorage_error'>{this.props.error}</div> : null}
-					{this.props.isLoading && <p>{localization.loading}</p>}
+
+					<div className='packagesHeader'>
+						<h2>{`${localization.packages} (${this.props.packages.total})`}</h2>
+						{this.props.error != null ? <div className='sistorage_error'>{this.props.error}</div> : null}
+						{this.props.isLoading && <span className='loading'>{localization.loading}</span>}
+					</div>
+
+					<div className='pagination'>
+						<span className='header'>{localization.page}:</span>
+
+						{pages.map(i => (
+							<div
+								key={i}
+								className={`page ${this.state.pageIndex === i - 1 ? 'active' : 'inactive'}`}
+								onClick={() => this.setPage(i - 1)}>
+								{i}
+							</div>
+						))}
+					</div>
+
 					<ul>
-						{this.state.filteredPackages.map(({ authors,
-							description,
+						{this.props.packages.packages.map(({
+							authorIds,
+							name,
 							difficulty,
 							id,
-							guid,
-							publishedDate,
-							publisher,
-							restriction,
-							tags }) => (
+							createDate,
+							publisherId,
+							restrictionIds,
+							tagIds,
+							contentUri,
+						}) => (
 								<li key={id}>
-									<span className="packageName">{description}</span>
+									<span className="storagePackageName">{name}</span>
 									<br />
-									<span>{`${localization.packageSubject}: `}</span>
-									<span>{tags}</span>
+									<span className='packageItemHeader'>{`${localization.packageSubject}: `}</span>
+									<span>{tagIds?.map(t => <div className='packageItemValue'>{this.props.tags[t]}</div>)}</span>
 									<br />
-									<span>{`${localization.packageDifficulty}: `}</span>
+									<span className='packageItemHeader'>{`${localization.packageDifficulty}: `}</span>
 									<span>{difficulty}</span>
 									<br />
-									<span>{`${localization.packagePublisher}: `}</span>
-									<span>{publisher}</span>
+									<span className='packageItemHeader'>{`${localization.packagePublisher}: `}</span>
+									<span>{publisherId ? this.props.publishers[publisherId] : ''}</span>
 									<br />
-									<span>{`${localization.packageAuthor}: `}</span>
-									<span className="breakable">{authors}</span>
+									<span className='packageItemHeader'>{`${localization.packageAuthors}: `}</span>
+
+									<span className="breakable">
+										{authorIds?.map(a => <div className='packageItemValue'>{this.props.authors[a]}</div>)}
+									</span>
+
 									<br />
-									<span>{`${localization.packageRestriction}: `}</span>
-									<span className="breakable">{restriction}</span>
+									<span className='packageItemHeader'>{`${localization.packageRestriction}: `}</span>
+
+									<span className="breakable">
+										{restrictionIds?.map(r => <div className='packageItemValue'>{this.props.restrictions[r]?.value}</div>)}
+									</span>
+
 									<br />
-									<span>{`${localization.packagePublishedDate}: `}</span>
-									<span>{new Date(publishedDate).toLocaleDateString()}</span>
+									<span className='packageItemHeader'>{`${localization.packagePublishedDate}: `}</span>
+									<span>{createDate ? new Date(createDate).toLocaleDateString(this.props.culture) : ''}</span>
 									<br />
-									<div className="selectButton">
-										<button type="button" className='standard' onClick={this.onSelectPackage(guid, description)}>
-											{localization.librarySelect}
-										</button>
-									</div>
+
+									{contentUri
+										? <div className="selectButton">
+											<button
+												type="button"
+												className='standard'
+												onClick={() => this.props.onSelect(id, name ?? '', contentUri)}>
+												{localization.librarySelect}
+											</button>
+										</div>
+										: null}
 								</li>
 							))}
 					</ul>

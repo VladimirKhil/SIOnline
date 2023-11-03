@@ -1,5 +1,4 @@
 import Role from './contracts/Role';
-import FileKey from './contracts/FileKey';
 import GameCreationResult from './contracts/GameCreationResult';
 import GameInfo from './contracts/GameInfo';
 import GameSettings from './contracts/GameSettings';
@@ -41,14 +40,6 @@ export default class GameServerClient implements IGameServerClient {
 
 	sayInLobbyAsync(text: string): Promise<any> {
 		return this.connection.invoke('Say', text);
-	}
-
-	hasPackageAsync(packageKey: PackageKey): Promise<boolean> {
-		return this.connection.invoke<boolean>('HasPackage', packageKey);
-	}
-
-	hasImageAsync(fileKey: FileKey): Promise<string | null> {
-		return this.connection.invoke<string | null>('HasPicture', fileKey);
 	}
 
 	createAndJoinGameAsync(gameSettings: GameSettings, packageKey: PackageKey, isMale: boolean): Promise<GameCreationResult> {

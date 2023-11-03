@@ -45,6 +45,24 @@ const siPackagesReducer: Reducer<SIPackagesState> = (state: SIPackagesState = in
 				publishers: action.publishers
 			};
 
+		case SIPackagesActionTypes.ReceiveLanguagesFinished:
+			return {
+				...state,
+				languages: action.languages
+			};
+
+		case SIPackagesActionTypes.SetLanguage:
+			return {
+				...state,
+				languageId: action.languageId,
+			};
+
+		case SIPackagesActionTypes.ReceiveRestrictionsFinished:
+			return {
+				...state,
+				restrictions: action.restrictions
+			};
+
 		default:
 			return state;
 	}

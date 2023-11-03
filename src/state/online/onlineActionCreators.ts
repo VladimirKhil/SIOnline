@@ -13,7 +13,6 @@ import GamesFilter from '../../model/enums/GamesFilter';
 import SIContentClient from 'sicontent-client';
 import PackageInfo from '../../client/contracts/PackageInfo';
 import PackageKey from '../../client/contracts/PackageKey';
-import JSZip from 'jszip';
 import { ThunkAction } from 'redux-thunk';
 import AccountSettings from '../../client/contracts/AccountSettings';
 import Role from '../../client/contracts/Role';
@@ -27,7 +26,6 @@ import PackageType2 from '../../client/contracts/PackageType';
 import GameCreationResult from '../../client/contracts/GameCreationResult';
 import Sex from '../../model/enums/Sex';
 import ChatMode from '../../model/enums/ChatMode';
-import hashData from '../../utils/hashData';
 import tableActionCreators from '../table/tableActionCreators';
 import roomActionCreators from '../room/roomActionCreators';
 import * as GameErrorsHelper from '../../utils/GameErrorsHelper';
@@ -248,60 +246,6 @@ const uploadPackageProgress: ActionCreator<OnlineActions.UploadPackageProgressAc
 	progress
 });
 
-function uploadPackageAsync(
-	packageHash: string,
-	packageData: File,
-	serverUri: string,
-	dispatch: Dispatch<any>
-): Promise<boolean> {
-	dispatch(uploadPackageStarted());
-
-	const formData = new FormData();
-	formData.append('file', packageData, packageData.name);
-
-	// fetch() does not support reporting progress right now
-	// Switch to fetch() when progress support would be implemented
-	// const response = await fetch(`${serverUri}/api/upload/package`, {
-	// 	method: 'POST',
-	// 	credentials: 'include',
-	// 	body: formData,
-	// 	headers: {
-	// 		'Content-MD5': hashArrayEncoded
-	// 	}
-	// });
-
-	// if (!response.ok) {
-	// 	throw new Error(`${localization.uploadingPackageError}: ${response.status} ${await response.text()}`);
-	// }
-
-	return new Promise<boolean>((resolve, reject) => {
-		const xhr = new XMLHttpRequest();
-
-		xhr.onload = () => {
-			dispatch(uploadPackageFinished());
-			if (xhr.status >= 200 && xhr.status < 300) {
-				resolve(true);
-			} else {
-				reject(new Error(xhr.response));
-			}
-		};
-
-		xhr.onerror = () => {
-			dispatch(uploadPackageFinished());
-			reject(new Error(xhr.statusText || xhr.responseText || `${localization.unknownError}: ${xhr.status}`));
-		};
-
-		xhr.upload.onprogress = (e) => {
-			dispatch(uploadPackageProgress(e.loaded / e.total));
-		};
-
-		xhr.open('post', `${serverUri}/api/upload/package`, true);
-		xhr.setRequestHeader('Content-MD5', packageHash);
-		xhr.withCredentials = true;
-		xhr.send(formData);
-	});
-}
-
 async function uploadPackageAsync2(
 	contentClient: SIContentClient,
 	packageData: File,
@@ -323,53 +267,6 @@ async function uploadPackageAsync2(
 		contentServiceUri: contentClient.options.serviceUri,
 		secret: null
 	};
-}
-
-async function checkAndUploadPackageAsync(
-	gameClient: IGameServerClient,
-	serverUri: string,
-	packageData: File,
-	dispatch: Dispatch<any>
-): Promise<PackageKey> {
-	const zip = new JSZip();
-	await zip.loadAsync(packageData);
-	const contentFile = zip.file('content.xml');
-
-	if (!contentFile) {
-		throw new Error(localization.corruptedPackage + ' (!contentFile)');
-	}
-
-	const content = await contentFile.async('text');
-
-	const parser = new DOMParser();
-	const xmlDoc = parser.parseFromString(content.substring(39), 'application/xml');
-
-	const packageElements = xmlDoc.getElementsByTagName('package');
-
-	if (packageElements.length === 0) {
-		throw new Error(localization.corruptedPackage + ' (packageElements.length === 0)');
-	}
-
-	const id = packageElements[0].getAttribute('id');
-
-	const hash = await hashData(await packageData.arrayBuffer());
-
-	const hashArray = new Uint8Array(hash);
-	const hashArrayEncoded = window.btoa(String.fromCharCode.apply(null, hashArray as any));
-
-	const packageKey: PackageKey = {
-		name: packageData.name,
-		hash: hashArrayEncoded,
-		id
-	};
-
-	const hasPackage = await gameClient.hasPackageAsync(packageKey);
-
-	if (!hasPackage) {
-		await uploadPackageAsync(hashArrayEncoded, packageData, serverUri, dispatch);
-	}
-
-	return packageKey;
 }
 
 function getRandomValue(): number {
@@ -524,8 +421,21 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 		let result: GameCreationResult;
 
 		try {
-			if (dataContext.contentClient && game.package.type === PackageType.File && game.package.data) {
+			if (game.package.type === PackageType.File && game.package.data) {
 				const packageInfo = await uploadPackageAsync2(dataContext.contentClient, game.package.data, dispatch);
+
+				result = await dataContext.gameClient.createAndJoinGame2Async(
+					gameSettings,
+					packageInfo,
+					state.settings.sex === Sex.Male
+				);
+			} else if (game.package.type === PackageType.SIStorage && game.package.uri) {
+				const packageInfo: PackageInfo = {
+					type: PackageType2.LibraryItem,
+					uri: game.package.uri,
+					contentServiceUri: '',
+					secret: null
+				};
 
 				result = await dataContext.gameClient.createAndJoinGame2Async(
 					gameSettings,
@@ -543,20 +453,10 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 							};
 
 						case PackageType.File:
-							return game.package.data
-								? checkAndUploadPackageAsync(
-									dataContext.gameClient,
-									dataContext.serverUri,
-									game.package.data,
-									dispatch
-								) : null;
+							return null;
 
 						case PackageType.SIStorage:
-							return {
-								name: null,
-								hash: null,
-								id: game.package.id
-							};
+							return null;
 
 						default:
 							return null;

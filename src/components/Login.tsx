@@ -12,6 +12,7 @@ import LanguageView from './LanguageView';
 import userActionCreators from '../state/user/userActionCreators';
 import uiActionCreators from '../state/ui/uiActionCreators';
 import { GameSound, gameSoundPlayer } from '../utils/GameSoundPlayer';
+import isWindowsOS from '../utils/isWindowsOS';
 
 import './Login.css';
 
@@ -100,6 +101,12 @@ export class Login extends React.Component<LoginProps> {
 						</div>
 
 						<div className="siAdHost" dangerouslySetInnerHTML={{ __html: this.props.ads ? this.props.ads : '' }} />
+
+						{isWindowsOS()
+							? (<a className="clientLink" href='https://vladimirkhil.com/si/game' target='_blank' rel='noopener noreferrer'>
+								{localization.windowsClient}
+							</a>)
+							: null}
 
 						{this.props.error ? <p id="logonerror">{this.props.error}</p> : null}
 

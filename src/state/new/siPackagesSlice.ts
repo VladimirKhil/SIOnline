@@ -1,13 +1,21 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { SearchEntity } from '../../model/SearchEntity';
-import { SIPackageInfo } from '../../model/SIPackageInfo';
+import Author from 'sistorage-client/dist/models/Author';
+import Language from 'sistorage-client/dist/models/Language';
+import Package from 'sistorage-client/dist/models/Package';
+import Publisher from 'sistorage-client/dist/models/Publisher';
+import Restriction from 'sistorage-client/dist/models/Restriction';
+import Tag from 'sistorage-client/dist/models/Tag';
 
 interface SIPackagesState {
-	packages: SIPackageInfo[];
-	authors: SearchEntity[];
-	tags: SearchEntity[];
-	publishers: SearchEntity[];
+	packages: Package[];
+	authors: Author[];
+	tags: Tag[];
+	publishers: Publisher[];
+	languages: Language[];
+	restrictions: Restriction[];
 	isLoading: boolean;
+	error: string | null;
+	languageId?: number;
 }
 
 const initialState: SIPackagesState = {
@@ -15,7 +23,10 @@ const initialState: SIPackagesState = {
 	isLoading: false,
 	packages: [],
 	publishers: [],
-	tags: []
+	tags: [],
+	languages: [],
+	restrictions: [],
+	error: '',
 };
 
 export const siPackagesSlice = createSlice({
@@ -23,7 +34,7 @@ export const siPackagesSlice = createSlice({
 	initialState,
 	reducers: {
 		setInProgress: (state: SIPackagesState, action: PayloadAction<boolean>) => {
-			
+
 		}
 	}
 });

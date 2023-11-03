@@ -1,20 +1,30 @@
-import { SIPackageInfo } from '../../model/SIPackageInfo';
-import { SearchEntity } from '../../model/SearchEntity';
+import Restriction from 'sistorage-client/dist/models/Restriction';
+import PackagesPage from 'sistorage-client/dist/models/PackagesPage';
 
 export default interface SIPackagesState {
-	packages: SIPackageInfo[];
-	authors: SearchEntity[];
-	tags: SearchEntity[];
-	publishers: SearchEntity[];
+	packages: PackagesPage;
+	authors: Record<number, string>;
+	tags: Record<number, string>;
+	publishers: Record<number, string>;
+	languages: Record<number, string>;
+	restrictions: Record<number, Restriction>;
 	isLoading: boolean;
 	error: string | null;
+	languageId?: number;
 }
 
 export const initialState: SIPackagesState = {
-	authors: [],
+	authors: {},
 	isLoading: false,
-	packages: [],
-	publishers: [],
-	tags: [],
+
+	packages: {
+		packages: [],
+		total: 0,
+	},
+
+	publishers: {},
+	tags: {},
+	languages: {},
+	restrictions: [],
 	error: '',
 };
