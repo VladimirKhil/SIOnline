@@ -63,9 +63,9 @@ function getLoginErrorByCode(response: Response): string {
 async function loadHostInfoAsync(dispatch: AppDispatch, dataContext: DataContext, culture: string) {
 	const hostInfo = await dataContext.gameClient.getGameHostInfoAsync(culture);
 
-	dataContext.contentUris = hostInfo.contentPublicBaseUrls;
+	dataContext.contentUris = hostInfo.ContentPublicBaseUrls;
 
-	dispatch(serverNameChanged(hostInfo.name));
+	dispatch(serverNameChanged(hostInfo.Name));
 }
 
 export const login = () => async (dispatch: AppDispatch, getState: () => RootState, dataContext: DataContext) : Promise<void> => {
@@ -89,13 +89,10 @@ export const login = () => async (dispatch: AppDispatch, getState: () => RootSta
 			const token = await response.text();
 			const queryString = `?token=${encodeURIComponent(token)}`;
 
-			let connectionBuilder = new signalR.HubConnectionBuilder()
+			const connectionBuilder = new signalR.HubConnectionBuilder()
 				.withAutomaticReconnect()
-				.withUrl(`${dataContext.serverUri}/sionline${queryString}`);
-
-			if (dataContext.config.useMessagePackProtocol) {
-				connectionBuilder = connectionBuilder.withHubProtocol(new signalRMsgPack.MessagePackHubProtocol());
-			}
+				.withUrl(`${dataContext.serverUri}/sionline${queryString}`)
+				.withHubProtocol(new signalRMsgPack.MessagePackHubProtocol());
 
 			const connection = connectionBuilder.build();
 			// eslint-disable-next-line no-param-reassign

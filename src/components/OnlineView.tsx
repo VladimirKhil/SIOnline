@@ -35,8 +35,8 @@ interface OnlineViewProps {
 const mapStateToProps = (state: State) => {
 	const filteredGames = filterGames(Object.values(state.online.games), state.online.gamesFilter, state.online.gamesSearch);
 
-	const hasSelectedGame = filteredGames.some(game => game.gameID === state.online.selectedGameId);
-	const selectedGameId = hasSelectedGame ? state.online.selectedGameId : (filteredGames.length > 0 ? filteredGames[0].gameID : -1);
+	const hasSelectedGame = filteredGames.some(game => game.GameID === state.online.selectedGameId);
+	const selectedGameId = hasSelectedGame ? state.online.selectedGameId : (filteredGames.length > 0 ? filteredGames[0].GameID : -1);
 
 	return {
 		inProgress: state.online.inProgress,
@@ -70,7 +70,7 @@ export class OnlineView extends React.Component<OnlineViewProps> {
 		if (this.props.windowWidth < 800) {
 			if (this.props.mode === OnlineMode.GameInfo && this.props.selectedGame) {
 				return (
-					<Dialog id="gameInfoDialog" title={this.props.selectedGame.gameName} onClose={() => this.props.closeGameInfo()}>
+					<Dialog id="gameInfoDialog" title={this.props.selectedGame.GameName} onClose={() => this.props.closeGameInfo()}>
 						<GameInfoView game={this.props.selectedGame} showGameName={false} />
 					</Dialog>
 				);

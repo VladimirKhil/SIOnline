@@ -68,7 +68,7 @@ export function GamesList(props: GamesListProps): JSX.Element {
 	const filterValue = getFilterValue(props.gamesFilter);
 
 	const sortedGames = props.games.slice();
-	sortedGames.sort((game1, game2) => game1.gameName.localeCompare(game2.gameName));
+	sortedGames.sort((game1, game2) => game1.GameName.localeCompare(game2.GameName));
 
 	const enabledClass = props.isConnected ? '' : 'disabled';
 
@@ -127,12 +127,12 @@ export function GamesList(props: GamesListProps): JSX.Element {
 				<ul className="gamenames">
 					{sortedGames.map(game => (
 						<li
-							key={game.gameID}
-							className={game.gameID === props.selectedGameId ? 'active' : ''}
-							onClick={() => props.onSelectGame(game.gameID, props.showInfo)}
+							key={game.GameID}
+							className={game.GameID === props.selectedGameId ? 'active' : ''}
+							onClick={() => props.onSelectGame(game.GameID, props.showInfo)}
 						>
-							<div className={`gameName ${game.passwordRequired ? 'password' : ''}`} title={game.gameName}>{game.gameName}</div>
-							{game.passwordRequired ? <div className='locked' title={localization.passwordRequired}>🔓</div> : null}
+							<div className={`gameName ${game.PasswordRequired ? 'password' : ''}`} title={game.GameName}>{game.GameName}</div>
+							{game.PasswordRequired ? <div className='locked' title={localization.passwordRequired}>🔓</div> : null}
 						</li>
 					))}
 				</ul>

@@ -1,4 +1,4 @@
-import TimeSettings from '../client/contracts/TimeSettings';
+import TimeSettings from './TimeSettings';
 
 export default interface AppSettings {
 	readingSpeed: number;

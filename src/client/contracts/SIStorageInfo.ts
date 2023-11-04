@@ -1,8 +1,8 @@
 /** Contains information about SI Storage service. */
 export default interface SIStorageInfo {
 	/** Storage service uri. */
-	serviceUri: string;
+	ServiceUri: string;
 
 	/** Storage service name. */
-	name: string;
+	Name: string;
 }

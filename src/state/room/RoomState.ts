@@ -3,7 +3,7 @@ import ChatMessage from '../../model/ChatMessage';
 import PersonInfo from '../../model/PersonInfo';
 import PlayerInfo from '../../model/PlayerInfo';
 import Persons from '../../model/Persons';
-import Role from '../../client/contracts/Role';
+import Role from '../../model/Role';
 import StakeTypes from '../../model/enums/StakeTypes';
 import Timers from '../../model/Timers';
 import TimerStates from '../../model/enums/TimeStates';

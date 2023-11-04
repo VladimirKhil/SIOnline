@@ -159,28 +159,28 @@ function getLoginErrorByCode(response: Response): string {
 async function loadHostInfoAsync(dispatch: Dispatch<any>, dataContext: DataContext, culture: string) {
 	const hostInfo = await dataContext.gameClient.getGameHostInfoAsync(culture);
 	// eslint-disable-next-line no-param-reassign
-	dataContext.contentUris = hostInfo.contentPublicBaseUrls;
+	dataContext.contentUris = hostInfo.ContentPublicBaseUrls;
 
-	if (hostInfo.contentInfos && hostInfo.contentInfos.length > 0) {
-		const contentIndex = Math.floor(Math.random() * hostInfo.contentInfos.length);
-		const { serviceUri } = hostInfo.contentInfos[contentIndex];
+	if (hostInfo.ContentInfos && hostInfo.ContentInfos.length > 0) {
+		const contentIndex = Math.floor(Math.random() * hostInfo.ContentInfos.length);
+		const { ServiceUri } = hostInfo.ContentInfos[contentIndex];
 
 		dataContext.contentClient = new SIContentClient({
-			serviceUri
+			serviceUri: ServiceUri
 		});
 	} else {
 		throw new Error('No SIContent service found');
 	}
 
-	if (hostInfo.storageInfos && hostInfo.storageInfos.length > 0) {
-		const { serviceUri } = hostInfo.storageInfos[0];
+	if (hostInfo.StorageInfos && hostInfo.StorageInfos.length > 0) {
+		const { ServiceUri } = hostInfo.StorageInfos[0];
 
 		dataContext.storageClient = new SIStorageClient({
-			serviceUri
+			serviceUri: ServiceUri
 		});
 	}
 
-	dispatch(commonActionCreators.serverInfoChanged(hostInfo.name, hostInfo.license, hostInfo.maxPackageSizeMb));
+	dispatch(commonActionCreators.serverInfoChanged(hostInfo.Name, hostInfo.License, hostInfo.MaxPackageSizeMb));
 }
 
 const login: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
@@ -204,15 +204,12 @@ const login: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 				const token = await response.text();
 				const queryString = `?token=${encodeURIComponent(token)}`;
 
-				let connectionBuilder = new signalR.HubConnectionBuilder()
+				const connectionBuilder = new signalR.HubConnectionBuilder()
 					.withAutomaticReconnect({
 						nextRetryDelayInMilliseconds: (retryContext: signalR.RetryContext) => 1000 * (retryContext.previousRetryCount + 1)
 					})
-					.withUrl(`${dataContext.serverUri}/sionline${queryString}`);
-
-				if (dataContext.config.useMessagePackProtocol) {
-					connectionBuilder = connectionBuilder.withHubProtocol(new signalRMsgPack.MessagePackHubProtocol());
-				}
+					.withUrl(`${dataContext.serverUri}/sionline${queryString}`)
+					.withHubProtocol(new signalRMsgPack.MessagePackHubProtocol());
 
 				const connection = connectionBuilder.build();
 				// eslint-disable-next-line no-param-reassign

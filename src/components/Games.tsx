@@ -42,7 +42,7 @@ const mapStateToProps = (state: State) => {
 		? filterGames(Object.values(state.online.games), GamesFilter.NoFilter, state.online.gamesSearch)
 		: [];
 
-	filteredGames.sort((game1, game2) => game1.gameName.localeCompare(game2.gameName));
+	filteredGames.sort((game1, game2) => game1.GameName.localeCompare(game2.GameName));
 
 	const { selectedGameId } = state.online;
 
@@ -97,11 +97,11 @@ function renderGameList(props: GamesProps): React.ReactNode {
 		<ul className="gamenames">
 			{props.filteredGames.map(game => (
 				<li
-					key={game.gameID}
-					onClick={() => props.onSelectGame(game.gameID, false)}
+					key={game.GameID}
+					onClick={() => props.onSelectGame(game.GameID, false)}
 				>
-					<div className={`gameName ${game.passwordRequired ? 'password' : ''}`}>{game.gameName}</div>
-					{game.passwordRequired ? <div className='locked' title={localization.passwordRequired}>🔓</div> : null}
+					<div className={`gameName ${game.PasswordRequired ? 'password' : ''}`}>{game.GameName}</div>
+					{game.PasswordRequired ? <div className='locked' title={localization.passwordRequired}>🔓</div> : null}
 				</li>
 			))}
 		</ul>
@@ -114,7 +114,7 @@ export function Games(props: GamesProps): JSX.Element {
 	}
 
 	return props.selectedGame ? (
-		<Dialog className="gameInfoDialog2" title={props.selectedGame.gameName} onClose={() => props.unselectGame()}>
+		<Dialog className="gameInfoDialog2" title={props.selectedGame.GameName} onClose={() => props.unselectGame()}>
 			<GameInfoView game={props.selectedGame} showGameName={false} />
 		</Dialog>
 	) : (

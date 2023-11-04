@@ -5,7 +5,7 @@ import State from '../../../state/State';
 import localization from '../../../model/resources/localization';
 import roomActionCreators from '../../../state/room/roomActionCreators';
 import Sex from '../../../model/enums/Sex';
-import Role from '../../../client/contracts/Role';
+import Role from '../../../model/Role';
 
 import './ReadyButton.css';
 

@@ -1,6 +1,6 @@
 import { Action, ActionCreator, AnyAction, Dispatch } from 'redux';
 import { ThunkAction } from 'redux-thunk';
-import Message from '../../model/Message';
+import Message from '../../client/contracts/Message';
 import State from '../State';
 import DataContext from '../../model/DataContext';
 import * as RoomActions from '../room/RoomActions';
@@ -15,7 +15,7 @@ import PersonInfo from '../../model/PersonInfo';
 import Persons from '../../model/Persons';
 import PlayerInfo from '../../model/PlayerInfo';
 import Constants from '../../model/enums/Constants';
-import Role from '../../client/contracts/Role';
+import Role from '../../model/Role';
 import localization from '../../model/resources/localization';
 import StakeTypes from '../../model/enums/StakeTypes';
 import stringFormat from '../../utils/StringHelpers';
@@ -31,7 +31,7 @@ import { getMeAsPlayer } from '../../utils/StateHelpers';
 let lastReplicLock: number;
 
 export default function messageProcessor(dispatch: Dispatch<AnyAction>, message: Message) {
-	if (message.isSystem) {
+	if (message.IsSystem) {
 		dispatch((processSystemMessage(dispatch, message) as object) as AnyAction);
 		return;
 	}
@@ -43,7 +43,7 @@ const processSystemMessage: ActionCreator<ThunkAction<void, State, DataContext, 
 	(dispatch: Dispatch<RoomActions.KnownRoomAction>, getState: () => State, dataContext: DataContext) => {
 		const state = getState();
 		const { role } = state.room;
-		const args = message.text.split('\n');
+		const args = message.Text.split('\n');
 
 		viewerHandler(dispatch, state, dataContext, args);
 
@@ -56,13 +56,13 @@ const processSystemMessage: ActionCreator<ThunkAction<void, State, DataContext, 
 
 const userMessageReceived: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (message: Message) =>
 	(dispatch: Dispatch<any>, getState: () => State, dataContext: DataContext) => {
-		if (message.sender === getState().user.login) {
+		if (message.Sender === getState().user.login) {
 			return;
 		}
 
 		const replic: ChatMessage = {
-			sender: message.sender,
-			text: message.text,
+			sender: message.Sender,
+			text: message.Text,
 			level: MessageLevel.Information,
 		};
 

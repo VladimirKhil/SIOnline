@@ -11,7 +11,7 @@ import Account from '../../model/Account';
 import Persons from '../../model/Persons';
 import PersonInfo from '../../model/PersonInfo';
 import PlayerInfo from '../../model/PlayerInfo';
-import Role from '../../client/contracts/Role';
+import Role from '../../model/Role';
 import PlayerStates from '../../model/enums/PlayerStates';
 import tableActionCreators from '../table/tableActionCreators';
 import StakeTypes from '../../model/enums/StakeTypes';

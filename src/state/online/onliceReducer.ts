@@ -40,7 +40,7 @@ const onlineReducer: Reducer<OnlineState> = (state: OnlineState = initialState, 
 		case OnlineActionTypes.ReceiveGames:
 			return {
 				...state,
-				games: { ...state.games, ...create(action.games, game => game.gameID) }
+				games: { ...state.games, ...create(action.games, game => game.GameID) }
 			};
 
 		case OnlineActionTypes.ReceiveUsers:
@@ -63,13 +63,13 @@ const onlineReducer: Reducer<OnlineState> = (state: OnlineState = initialState, 
 		case OnlineActionTypes.GameCreated:
 			return {
 				...state,
-				games: set(state.games, action.game.gameID, action.game)
+				games: set(state.games, action.game.GameID, action.game)
 			};
 
 		case OnlineActionTypes.GameChanged:
 			return {
 				...state,
-				games: set(state.games, action.game.gameID, action.game)
+				games: set(state.games, action.game.GameID, action.game)
 			};
 
 		case OnlineActionTypes.GameDeleted:

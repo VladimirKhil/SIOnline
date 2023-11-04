@@ -1,4 +1,3 @@
-import Role from './contracts/Role';
 import GameCreationResult from './contracts/GameCreationResult';
 import GameInfo from './contracts/GameInfo';
 import GameSettings from './contracts/GameSettings';
@@ -7,6 +6,7 @@ import PackageKey from './contracts/PackageKey';
 import Slice from './contracts/Slice';
 import IGameServerClient from './IGameServerClient';
 import PackageInfo from './contracts/PackageInfo';
+import Role from '../model/Role';
 
 /** Represents a connection to a SIGame Server. */
 export default class GameServerClient implements IGameServerClient {
@@ -111,7 +111,7 @@ export default class GameServerClient implements IGameServerClient {
 		});
 	}
 
-	/** Leaves the game and returns to the lobby. */
+	/** Leaves game and returns to lobby. */
 	leaveGameAsync(): Promise<any> {
 		return this.connection.invoke('LeaveGame');
 	}

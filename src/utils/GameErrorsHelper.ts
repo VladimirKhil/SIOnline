@@ -1,41 +1,42 @@
+import GameCreationResultCode from '../client/contracts/GameCreationResultCode';
 import localization from '../model/resources/localization';
 
-export function getMessage(code: number): string {
+export function getMessage(code: GameCreationResultCode): string {
 	switch (code) {
-		case 1:
+		case GameCreationResultCode.NoPackage:
 			return localization.errorPackageNotFound;
 
-		case 2:
+		case GameCreationResultCode.TooMuchGames:
 			return localization.errorTooManyGames;
 
-		case 3:
+		case GameCreationResultCode.ServerUnderMaintainance:
 			return localization.errorServerUnderMaintainance;
 
-		case 4:
+		case GameCreationResultCode.BadPackage:
 			return localization.errorBadPackage;
 
-		case 5:
+		case GameCreationResultCode.GameNameCollision:
 			return localization.errorDuplicateGameName;
 
-		case 6:
+		case GameCreationResultCode.InternalServerError:
 			return localization.errorInternalServerError;
 
-		case 7:
+		case GameCreationResultCode.ServerNotReady:
 			return localization.errorServerNotReady;
 
-		case 8:
+		case GameCreationResultCode.YourClientIsObsolete:
 			return localization.errorObsoleteVersion;
 
-		case 9:
+		case GameCreationResultCode.UnknownError:
 			return localization.errorUnknownError;
 
-		case 10:
-			return localization.joinError;
+		case GameCreationResultCode.JoinError:
+			return localization.joinError + ': ';
 
-		case 11:
+		case GameCreationResultCode.WrongGameSettings:
 			return localization.wrongGameSettings;
 
-		case 12:
+		case GameCreationResultCode.TooManyGamesByAddress:
 			return localization.tooManyGamesByIp;
 
 		default:

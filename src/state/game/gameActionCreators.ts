@@ -3,8 +3,8 @@ import * as GameActions from './GameActions';
 import State from '../State';
 import DataContext from '../../model/DataContext';
 import localization from '../../model/resources/localization';
-import Role from '../../client/contracts/Role';
-import GameType from '../../client/contracts/GameType';
+import Role from '../../model/Role';
+import GameType from '../../model/GameType';
 import PackageType from '../../model/enums/PackageType';
 import { ThunkAction } from 'redux-thunk';
 

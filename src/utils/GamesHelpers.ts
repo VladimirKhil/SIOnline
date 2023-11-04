@@ -1,5 +1,6 @@
 import GamesFilter from '../model/enums/GamesFilter';
 import GameInfo from '../client/contracts/GameInfo';
+import ServerGameType from '../client/contracts/ServerGameType';
 
 export function filterGames(games: GameInfo[], filter: GamesFilter, search: string) {
 	const filteredGames: GameInfo[] = [];
@@ -16,10 +17,10 @@ export function filterGames(games: GameInfo[], filter: GamesFilter, search: stri
 	for (let j = 0; j < games.length; j++) {
 		const game = games[j];
 
-		const filteredOk = (allModes || (game.mode === 1 ? sport && !tv : tv && !sport))
-			&& (!game.passwordRequired || !noPassword)
-			&& (!game.started || !onlyNew)
-			&& (normalizedSearch.length === 0 || game.gameName.toLocaleLowerCase().includes(normalizedSearch));
+		const filteredOk = (allModes || (game.Mode === ServerGameType.Simple ? sport && !tv : tv && !sport))
+			&& (!game.PasswordRequired || !noPassword)
+			&& (!game.Started || !onlyNew)
+			&& (normalizedSearch.length === 0 || game.GameName.toLocaleLowerCase().includes(normalizedSearch));
 
 		if (filteredOk) {
 			filteredGames.push(games[j]);

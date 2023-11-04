@@ -1,17 +1,17 @@
 const enum GameCreationResultCode {
-	Ok,
-	NoPackage,
-	TooMuchGames,
-	ServerUnderMaintainance,
-	BadPackage,
-	GameNameCollision,
-	InternalServerError,
-	ServerNotReady,
-	YourClientIsObsolete,
-	UnknownError,
-	JoinError,
-	WrongGameSettings,
-	TooManyGamesByAddress
+	Ok = 'Ok',
+	NoPackage = 'NoPackage',
+	TooMuchGames = 'TooMuchGames',
+	ServerUnderMaintainance = 'ServerUnderMaintainance',
+	BadPackage = 'BadPackage',
+	GameNameCollision = 'GameNameCollision',
+	InternalServerError = 'InternalServerError',
+	ServerNotReady = 'ServerNotReady',
+	YourClientIsObsolete = 'YourClientIsObsolete',
+	UnknownError = 'UnknownError',
+	JoinError = 'JoinError',
+	WrongGameSettings = 'WrongGameSettings',
+	TooManyGamesByAddress = 'TooManyGamesByAddress',
 }
 
 export default GameCreationResultCode;

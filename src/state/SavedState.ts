@@ -1,5 +1,5 @@
-﻿import Role from '../client/contracts/Role';
-import GameType from '../client/contracts/GameType';
+﻿import Role from '../model/Role';
+import GameType from '../model/GameType';
 import SettingsState from './settings/SettingsState';
 
 const STATE_KEY = 'SIOnline_State';

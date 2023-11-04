@@ -3,7 +3,7 @@ import { Dispatch, AnyAction } from 'redux';
 import localization from '../model/resources/localization';
 import roomActionCreators from '../state/room/roomActionCreators';
 import actionCreators from '../state/actionCreators';
-import Message from '../model/Message';
+import Message from '../client/contracts/Message';
 import messageProcessor from '../state/game/messageProcessor';
 import GameInfo from '../client/contracts/GameInfo';
 import commonActionCreators from '../state/common/commonActionCreators';

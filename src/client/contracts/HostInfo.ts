@@ -4,26 +4,26 @@ import SIStorageInfo from './SIStorageInfo';
 /** Provides game server information. */
 export default interface HostInfo {
 	/** Server public name. */
-	name: string;
+	Name: string;
 
 	/** Server hostname. */
-	host: string;
+	Host: string;
 
 	/** Port number for TCP-based connections. */
-	port: number;
+	Port: number;
 
 	/** Base Urls that are considered valid for in-game content files. */
-	contentPublicBaseUrls: string[] | null;
+	ContentPublicBaseUrls: string[] | null;
 
 	/** Server license text. */
-	license: string;
+	License: string;
 
 	/** Maximum allowed package size in MB. */
-	maxPackageSizeMb: number;
+	MaxPackageSizeMb: number;
 
 	/** Contains information about well-known SIContent services. */
-	contentInfos: SIContentInfo[];
+	ContentInfos: SIContentInfo[];
 
 	/** Contains information about well-known SIStorage services. */
-	storageInfos: SIStorageInfo[];
+	StorageInfos: SIStorageInfo[];
 }

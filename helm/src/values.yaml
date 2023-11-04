@@ -35,7 +35,6 @@ config:
   onLoad: console.log('SIGame successfully loaded!');
   rewriteUrl: true
   forceHttps: true
-  useMessagePackProtocol: false
   registerServiceWorker: false
   enableNoSleep: false
   askForConsent: false

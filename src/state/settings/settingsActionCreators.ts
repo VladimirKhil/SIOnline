@@ -1,7 +1,7 @@
 import * as SettingsActions from './SettingsActions';
 import { ActionCreator } from 'redux';
 import Sex from '../../model/enums/Sex';
-import TimeSettings from '../../client/contracts/TimeSettings';
+import TimeSettings from '../../model/TimeSettings';
 
 const onSoundVolumeChanged: ActionCreator<SettingsActions.SoundVolumeChangeAction> = (volume: number) => ({
 	type: SettingsActions.SettingsActionTypes.SoundVolumeChanged,

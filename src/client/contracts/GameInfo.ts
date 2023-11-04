@@ -1,19 +1,20 @@
-import GameType from './GameType';
+import ServerGameType from './ServerGameType';
 import PersonInfo from './PersonInfo';
 
+/** Defines a server game info. */
 export default interface GameInfo {
-	gameID: number;
-	gameName: string;
-	language: string;
-	mode: GameType;
-	owner: string;
-	packageName: string;
-	passwordRequired: boolean;
-	persons: PersonInfo[];
-	realStartTime: string;
-	rules: number;
-	stage: number;
-	stageName: string;
-	started: boolean;
-	startTime: string;
+	GameID: number;
+	GameName: string;
+	Language: string;
+	Mode: ServerGameType;
+	Owner: string;
+	PackageName: string;
+	PasswordRequired: boolean;
+	Persons: PersonInfo[];
+	RealStartTime: string;
+	Rules: number;
+	Stage: number;
+	StageName: string;
+	Started: boolean;
+	StartTime: string;
 }

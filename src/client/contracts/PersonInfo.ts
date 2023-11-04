@@ -1,7 +1,8 @@
-import Role from './Role';
+import ServerRole from './ServerRole';
 
+/** Defines a game person info. */
 export default interface PersonInfo {
-	isOnline: boolean;
-	name: string;
-	role: Role;
+	IsOnline: boolean;
+	Name: string;
+	Role: ServerRole;
 }

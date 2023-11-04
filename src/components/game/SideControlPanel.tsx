@@ -5,7 +5,7 @@ import State from '../../state/State';
 import roomActionCreators from '../../state/room/roomActionCreators';
 import localization from '../../model/resources/localization';
 import FlyoutButton, { FlyoutVerticalOrientation, FlyoutTheme, FlyoutHorizontalOrientation } from '../common/FlyoutButton';
-import Role from '../../client/contracts/Role';
+import Role from '../../model/Role';
 import ChatMessage from '../../model/ChatMessage';
 import { isHost } from '../../utils/StateHelpers';
 import uiActionCreators from '../../state/ui/uiActionCreators';

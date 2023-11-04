@@ -1,4 +1,3 @@
-import Role from './contracts/Role';
 import GameCreationResult from './contracts/GameCreationResult';
 import GameInfo from './contracts/GameInfo';
 import GameSettings from './contracts/GameSettings';
@@ -6,6 +5,7 @@ import HostInfo from './contracts/HostInfo';
 import PackageKey from './contracts/PackageKey';
 import Slice from './contracts/Slice';
 import PackageInfo from './contracts/PackageInfo';
+import Role from '../model/Role';
 
 /** Defines the SIGame Server client. */
 export default interface IGameServerClient {

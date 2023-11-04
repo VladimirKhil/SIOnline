@@ -5,7 +5,6 @@ config = {
     rewriteUrl: true,
     apiUri: 'https://vladimirkhil.com/api/si',
     forceHttps: false,
-    useMessagePackProtocol: false,
     registerServiceWorker: false,
     enableNoSleep: false,
     askForConsent: false,

@@ -1,4 +1,4 @@
 export default interface FileKey {
-	name: string | null;
-	hash: string | null;
+	Name: string | null;
+	Hash: string | null;
 }

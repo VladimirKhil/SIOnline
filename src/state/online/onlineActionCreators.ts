@@ -15,10 +15,10 @@ import PackageInfo from '../../client/contracts/PackageInfo';
 import PackageKey from '../../client/contracts/PackageKey';
 import { ThunkAction } from 'redux-thunk';
 import AccountSettings from '../../client/contracts/AccountSettings';
-import Role from '../../client/contracts/Role';
+import Role from '../../model/Role';
 import Constants from '../../model/enums/Constants';
 import ServerAppSettings from '../../client/contracts/ServerAppSettings';
-import GameType from '../../client/contracts/GameType';
+import GameType from '../../model/GameType';
 import { getFullCulture } from '../../utils/StateHelpers';
 import GameSettings from '../../client/contracts/GameSettings';
 import PackageType from '../../model/enums/PackageType';
@@ -31,6 +31,8 @@ import roomActionCreators from '../room/roomActionCreators';
 import * as GameErrorsHelper from '../../utils/GameErrorsHelper';
 import actionCreators from '../actionCreators';
 import gameActionCreators from '../game/gameActionCreators';
+import ServerTimeSettings from '../../client/contracts/ServerTimeSettings';
+import GameCreationResultCode from '../../client/contracts/GameCreationResultCode';
 
 const selectGame: ActionCreator<OnlineActions.SelectGameAction> = (gameId: number) => ({
 	type: OnlineActions.OnlineActionTypes.SelectGame,
@@ -49,17 +51,17 @@ const receiveGames: ActionCreator<OnlineActions.ReceiveGamesAction> = (games: an
 async function loadGamesAsync(dispatch: Dispatch<OnlineActions.KnownOnlineAction>, gameClient: IGameServerClient) {
 	dispatch(clearGames());
 
-	let gamesSlice: Slice<GameInfo> = { data: [], isLastSlice: false };
+	let gamesSlice: Slice<GameInfo> = { Data: [], IsLastSlice: false };
 	let whileGuard = 100;
 	do {
-		const fromId = gamesSlice.data.length > 0 ? gamesSlice.data[gamesSlice.data.length - 1].gameID + 1 : 0;
+		const fromId = gamesSlice.Data.length > 0 ? gamesSlice.Data[gamesSlice.Data.length - 1].GameID + 1 : 0;
 
 		gamesSlice = await gameClient.getGamesSliceAsync(fromId);
 
-		dispatch(receiveGames(gamesSlice.data));
+		dispatch(receiveGames(gamesSlice.Data));
 
 		whileGuard--;
-	} while (!gamesSlice.isLastSlice && whileGuard > 0);
+	} while (!gamesSlice.IsLastSlice && whileGuard > 0);
 }
 
 const onlineLoadFinish: ActionCreator<OnlineActions.OnlineLoadFinishedAction> = () => ({
@@ -267,10 +269,10 @@ async function uploadPackageAsync2(
 	);
 
 	return {
-		type: PackageType2.Content,
-		uri: packageUri,
-		contentServiceUri: contentClient.options.serviceUri,
-		secret: null
+		Type: PackageType2.Content,
+		Uri: packageUri,
+		ContentServiceUri: contentClient.options.serviceUri,
+		Secret: null
 	};
 }
 
@@ -309,8 +311,8 @@ const joinGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 			state.online.password
 		);
 
-		if (result.errorMessage) {
-			dispatch(joinGameFinished(`${localization.joinError}: ${result.errorMessage}`));
+		if (result.ErrorMessage) {
+			dispatch(joinGameFinished(`${localization.joinError}: ${result.ErrorMessage}`));
 			return;
 		}
 
@@ -349,13 +351,13 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 			} : state.game;
 
 		const { playersCount, humanPlayersCount, role } = game;
-		const me: AccountSettings = { name: state.user.login, isHuman: true, isMale: state.settings.sex === Sex.Male };
+		const me: AccountSettings = { Name: state.user.login, IsHuman: true, IsMale: state.settings.sex === Sex.Male };
 
 		const showman: AccountSettings = role === Role.Showman
 			? me
 			: game.isShowmanHuman
-				? { name: Constants.ANY_NAME, isHuman: true }
-				: { name: localization.defaultShowman };
+				? { Name: Constants.ANY_NAME, IsHuman: true }
+				: { Name: localization.defaultShowman };
 
 		const players: AccountSettings[] = [];
 		const viewers: AccountSettings[] = [];
@@ -375,52 +377,70 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 		}
 
 		for (let i = 0; i < humanPlayersCount; i++) {
-			players.push({ name: Constants.ANY_NAME, isHuman: true });
+			players.push({ Name: Constants.ANY_NAME, IsHuman: true });
 		}
 
 		for (let i = 0; i < compPlayersCount; i++) {
 			const ind = Math.floor(Math.random() * compIndicies.length);
-			players.push({ name: state.common.computerAccounts[compIndicies[ind]], isHuman: false });
+			players.push({ Name: state.common.computerAccounts[compIndicies[ind]], IsHuman: false });
 			compIndicies.splice(ind, 1);
 		}
 
 		const gameMode = game.type;
 
+		const ts = state.settings.appSettings.timeSettings;
+
+		const timeSettings: ServerTimeSettings = {
+			TimeForChoosingQuestion: ts.timeForChoosingQuestion,
+			TimeForThinkingOnQuestion: ts.timeForThinkingOnQuestion,
+			TimeForPrintingAnswer: ts.timeForPrintingAnswer,
+			TimeForGivingACat: ts.timeForGivingACat,
+			TimeForMakingStake: ts.timeForMakingStake,
+			TimeForThinkingOnSpecial: ts.timeForThinkingOnSpecial,
+			TimeOfRound: ts.timeOfRound,
+			TimeForChoosingFinalTheme: ts.timeForChoosingFinalTheme,
+			TimeForFinalThinking: ts.timeForFinalThinking,
+			TimeForShowmanDecisions: ts.timeForShowmanDecisions,
+			TimeForRightAnswer: ts.timeForRightAnswer,
+			TimeForMediaDelay: ts.timeForMediaDelay,
+			TimeForBlockingButton: ts.timeForBlockingButton,
+		};
+
 		const appSettings: ServerAppSettings = {
-			timeSettings: state.settings.appSettings.timeSettings,
-			readingSpeed: state.settings.appSettings.readingSpeed,
-			falseStart: state.settings.appSettings.falseStart,
-			hintShowman: state.settings.appSettings.hintShowman,
-			oral: state.settings.appSettings.oral,
-			oralPlayersActions: state.settings.appSettings.oralPlayersActions,
-			ignoreWrong: state.settings.appSettings.ignoreWrong,
-			managed: state.settings.appSettings.managed,
-			gameMode: gameMode.toString(),
-			partialText: state.settings.appSettings.partialText,
-			playAllQuestionsInFinalRound: state.settings.appSettings.playAllQuestionsInFinalRound,
-			allowEveryoneToPlayHiddenStakes: state.settings.appSettings.allowEveryoneToPlayHiddenStakes,
-			displaySources: state.settings.appSettings.displaySources,
-			randomQuestionsBasePrice: gameMode === GameType.Simple ? 10 : 100,
-			randomRoundsCount: gameMode === GameType.Simple ? 1 : 3,
-			randomThemesCount: gameMode === GameType.Simple ? 5 : 6,
-			culture: getFullCulture(state),
-			usePingPenalty: state.settings.appSettings.usePingPenalty,
-			preloadRoundContent: state.settings.appSettings.preloadRoundContent,
-			useApellations: state.settings.appSettings.useApellations,
+			TimeSettings: timeSettings,
+			ReadingSpeed: state.settings.appSettings.readingSpeed,
+			FalseStart: state.settings.appSettings.falseStart,
+			HintShowman: state.settings.appSettings.hintShowman,
+			Oral: state.settings.appSettings.oral,
+			OralPlayersActions: state.settings.appSettings.oralPlayersActions,
+			IgnoreWrong: state.settings.appSettings.ignoreWrong,
+			Managed: state.settings.appSettings.managed,
+			GameMode: gameMode.toString(),
+			PartialText: state.settings.appSettings.partialText,
+			PlayAllQuestionsInFinalRound: state.settings.appSettings.playAllQuestionsInFinalRound,
+			AllowEveryoneToPlayHiddenStakes: state.settings.appSettings.allowEveryoneToPlayHiddenStakes,
+			DisplaySources: state.settings.appSettings.displaySources,
+			RandomQuestionsBasePrice: gameMode === GameType.Simple ? 10 : 100,
+			RandomRoundsCount: gameMode === GameType.Simple ? 1 : 3,
+			RandomThemesCount: gameMode === GameType.Simple ? 5 : 6,
+			Culture: getFullCulture(state),
+			UsePingPenalty: state.settings.appSettings.usePingPenalty,
+			PreloadRoundContent: state.settings.appSettings.preloadRoundContent,
+			UseApellations: state.settings.appSettings.useApellations,
 		};
 
 		const gameSettings: GameSettings = {
-			humanPlayerName: state.user.login,
-			randomSpecials: game.package.type === PackageType.Random,
-			networkGameName: game.name.trim(),
-			networkGamePassword: game.password,
-			networkVoiceChat: game.voiceChat,
-			isPrivate: isSingleGame,
-			allowViewers: true,
-			showman: showman,
-			players: players,
-			viewers: viewers,
-			appSettings: appSettings
+			HumanPlayerName: state.user.login,
+			RandomSpecials: game.package.type === PackageType.Random,
+			NetworkGameName: game.name.trim(),
+			NetworkGamePassword: game.password,
+			NetworkVoiceChat: game.voiceChat,
+			IsPrivate: isSingleGame,
+			AllowViewers: true,
+			Showman: showman,
+			Players: players,
+			Viewers: viewers,
+			AppSettings: appSettings
 		};
 
 		let result: GameCreationResult;
@@ -436,10 +456,10 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 				);
 			} else if (game.package.type === PackageType.SIStorage && game.package.uri) {
 				const packageInfo: PackageInfo = {
-					type: PackageType2.LibraryItem,
-					uri: game.package.uri,
-					contentServiceUri: '',
-					secret: null
+					Type: PackageType2.LibraryItem,
+					Uri: game.package.uri,
+					ContentServiceUri: '',
+					Secret: null
 				};
 
 				result = await dataContext.gameClient.createAndJoinGame2Async(
@@ -452,9 +472,9 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 					switch (game.package.type) {
 						case PackageType.Random:
 							return {
-								name: '',
-								hash: null,
-								id: null
+								Name: '',
+								Hash: null,
+								Id: null
 							};
 
 						case PackageType.File:
@@ -483,11 +503,11 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 			actionCreators.saveStateToStorage(state);
 			dispatch(gameCreationEnd());
 
-			if (result.code > 0) {
-				dispatch(gameCreationEnd(GameErrorsHelper.getMessage(result.code) + (result.errorMessage || '')));
+			if (result.Code !== GameCreationResultCode.Ok) {
+				dispatch(gameCreationEnd(GameErrorsHelper.getMessage(result.Code) + (result.ErrorMessage || '')));
 			} else {
 				dispatch(newGameCancel());
-				await initGameAsync(dispatch, dataContext, result.gameId, role, false);
+				await initGameAsync(dispatch, dataContext, result.GameId, role, false);
 			}
 		} catch (error) {
 			dispatch(gameCreationEnd(getErrorMessage(error)));
@@ -509,10 +529,11 @@ const createNewAutoGame: ActionCreator<ThunkAction<void, State, DataContext, Act
 			actionCreators.saveStateToStorage(state);
 
 			dispatch(gameCreationEnd());
-			if (result.code > 0) {
-				alert(GameErrorsHelper.getMessage(result.code) + (result.errorMessage || ''));
+
+			if (result.Code !== GameCreationResultCode.Ok) {
+				alert(GameErrorsHelper.getMessage(result.Code) + (result.ErrorMessage || ''));
 			} else {
-				await initGameAsync(dispatch, dataContext, result.gameId, Role.Player, true);
+				await initGameAsync(dispatch, dataContext, result.GameId, Role.Player, true);
 			}
 		} catch (message) {
 			dispatch(gameCreationEnd(message));

@@ -6,7 +6,7 @@ import localization from '../model/resources/localization';
 import Dialog from './common/Dialog';
 import ProgressBar from './common/ProgressBar';
 import State from '../state/State';
-import Role from '../client/contracts/Role';
+import Role from '../model/Role';
 import Constants from '../model/enums/Constants';
 import PackageType from '../model/enums/PackageType';
 import SIStorageDialog from './SIStorageDialog';

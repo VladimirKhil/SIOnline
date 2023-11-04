@@ -1,5 +1,5 @@
-import GameType from '../../client/contracts/GameType';
-import Role from '../../client/contracts/Role';
+import GameType from '../../model/GameType';
+import Role from '../../model/Role';
 import PackageType from '../../model/enums/PackageType';
 
 export default interface GameState {

@@ -1,17 +1,19 @@
 import AccountSettings from './AccountSettings';
 import ServerAppSettings from './ServerAppSettings';
 
+/** Defines a new game settings. */
 export default interface GameSettings {
-	humanPlayerName: string;
-	randomSpecials: boolean;
-	networkGameName: string;
-	networkGamePassword: string;
+	HumanPlayerName: string;
+	RandomSpecials: boolean;
+	NetworkGameName: string;
+	NetworkGamePassword: string;
+
 	/** Network voice chat link. */
-	networkVoiceChat: string;
-	isPrivate: boolean;
-	allowViewers: boolean;
-	showman: AccountSettings;
-	players: AccountSettings[];
-	viewers: AccountSettings[];
-	appSettings: ServerAppSettings;
+	NetworkVoiceChat: string;
+	IsPrivate: boolean;
+	AllowViewers: boolean;
+	Showman: AccountSettings;
+	Players: AccountSettings[];
+	Viewers: AccountSettings[];
+	AppSettings: ServerAppSettings;
 }

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import State from '../../../state/State';
-import Role from '../../../client/contracts/Role';
+import Role from '../../../model/Role';
 import StakePanel from '../stakes/StakePanel/StakePanel';
 import ReactionPanel from '../ReactionPanel/ReactionPanel';
 import AnswerInput from '../AnswerInput';

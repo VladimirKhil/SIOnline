@@ -8,7 +8,7 @@ import ChatMode from '../../model/enums/ChatMode';
 import roomActionCreators from '../../state/room/roomActionCreators';
 import localization from '../../model/resources/localization';
 import ChatInput from './ChatInput';
-import Role from '../../client/contracts/Role';
+import Role from '../../model/Role';
 import TablesView from './TablesView';
 import { isHost } from '../../utils/StateHelpers';
 import FlyoutButton, { FlyoutHorizontalOrientation, FlyoutVerticalOrientation } from '../common/FlyoutButton';

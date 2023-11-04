@@ -5,7 +5,7 @@ import State from '../../state/State';
 import localization from '../../model/resources/localization';
 import SettingsState from '../../state/settings/SettingsState';
 import settingsActionCreators from '../../state/settings/settingsActionCreators';
-import GameType from '../../client/contracts/GameType';
+import GameType from '../../model/GameType';
 import gameActionCreators from '../../state/game/gameActionCreators';
 
 import './RulesSettingsView.css';

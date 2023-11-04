@@ -1,7 +1,7 @@
 import { AnyAction, Reducer } from 'redux';
 import GameState, { initialState } from './GameState';
 import { GameActionTypes, KnownGameAction } from './GameActions';
-import Role from '../../client/contracts/Role';
+import Role from '../../model/Role';
 import localization from '../../model/resources/localization';
 
 const gameReducer: Reducer<GameState> = (state: GameState = initialState, anyAction: AnyAction): GameState => {
