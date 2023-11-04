@@ -93,6 +93,10 @@ ul.gameMenu, .exitMenu ul {
     padding: 5px 0 5px 0;
 }
 
+.gameMenu li {
+    padding: 10px 20px !important;
+}
+
 .gameMenu li, .exitMenu li {
     text-align: center;
 }

@@ -15,6 +15,9 @@ export default interface IGameServerClient {
 	/** Gets server global info. */
 	getGameHostInfoAsync(culture: string): Promise<HostInfo>;
 
+	/** Joins server lobby. */
+	joinLobbyAsync(culture: string): Promise<boolean>;
+
 	/**
 	 * Gets partial running games list starting from the first game after the game with id {@link fromId}.
 	 * To receive all games from the server, use 0 as {@link fromId} value;

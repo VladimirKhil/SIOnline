@@ -79,6 +79,14 @@
     flex-direction: column;
 }
 
+.settingsOpener {
+	position: absolute;
+	right: 0;
+	padding: 7px 12px;
+	font-size: 24px;
+	top: 1px;
+}
+
 @media screen and (min-height: 600px), (max-width: 600px) {
     .gameMainView {
         flex-direction: column;

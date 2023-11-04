@@ -1,8 +1,9 @@
 #siStorageDialog {
-	background-color: #5a95e2;
+	background-color: #000451;
 	overflow-y: hidden;
 	display: flex;
 	flex-flow: column;
+	color: white;
 }
 
 #siStorageDialog .container {
@@ -13,7 +14,8 @@
 
 #siStorageDialog li {
 	padding: 10px 10px 60px 10px;
-	background-color: #cdd;
+	background-color: #5a95e2;
+	color: black;
 	margin: 3px;
 	width: 350px;
 	position: relative;

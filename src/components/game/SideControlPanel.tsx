@@ -139,7 +139,7 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 	return (
 		<div className="game__utilsArea">
 			<div className="gameMessageHost">
-				<div className="sidecontrol_buttons">
+				<div className='sidecontrol_buttons'>
 					<div className="gameMenuHost" style={gameMenuHostStyle}>
 						<FlyoutButton
 							className="gameMenuButton imageButton"

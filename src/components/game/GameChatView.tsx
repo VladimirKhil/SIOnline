@@ -12,7 +12,6 @@ import Role from '../../client/contracts/Role';
 import TablesView from './TablesView';
 import { isHost } from '../../utils/StateHelpers';
 import FlyoutButton, { FlyoutHorizontalOrientation, FlyoutVerticalOrientation } from '../common/FlyoutButton';
-import uiActionCreators from '../../state/ui/uiActionCreators';
 import GameMetadataView from './GameMetadataView';
 import BannedView from './BannedView';
 import isWellFormedUri from '../../utils/isWellFormedUri';
@@ -40,7 +39,6 @@ interface GameChatViewProps {
 	onMarkQuestion: () => void;
 	onEditSums: (enable: boolean) => void;
 	navigateToRound: (roundIndex: number) => void;
-	onShowSettings: () => void;
 	onEditTable: () => void;
 	onGiveTurn: () => void;
 }
@@ -71,9 +69,6 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	},
 	navigateToRound: (roundIndex: number) => {
 		dispatch(roomActionCreators.navigateToRound(roundIndex) as unknown as Action);
-	},
-	onShowSettings: () => {
-		dispatch(uiActionCreators.showSettings(true));
 	},
 	onEditTable: () => {
 		dispatch(roomActionCreators.editTable());
@@ -177,10 +172,6 @@ export function GameChatView(props: GameChatViewProps): JSX.Element {
 				>
 					ℹ
 				</h1>
-
-				<button className='settingsOpener' onClick={props.onShowSettings} title={localization.settings}>
-					<span>⚙</span>
-				</button>
 			</div>
 
 			<div className="sideArea">

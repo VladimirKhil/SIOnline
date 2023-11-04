@@ -29,6 +29,7 @@ export const enum SettingsActionTypes {
 	OralPlayersActionsChanged = 'ORAL_PLAYERS_ACTIONS_CHANGED',
 	AllowEveryoneToPlayHiddenStakesChanged = 'ALLOW_EVERYONE_TO_PLAY_HIDDEN_STAKES_CHANGED',
 	DisplaySourcesChanged = 'DISPLAY_SOURCES_CHANGED',
+	FloatingControlsChanged = 'FLOATING_CONTROLS_CHANGED',
 }
 
 export type SoundVolumeChangeAction = { type: SettingsActionTypes.SoundVolumeChanged; volume: number };
@@ -83,6 +84,7 @@ export type AllowEveryoneToPlayHiddenStakesChangedAction = {
 };
 
 export type DisplaySourcesChangedAction = { type: SettingsActionTypes.DisplaySourcesChanged, displaySources: boolean };
+export type FloatingControlsChangedAction = { type: SettingsActionTypes.FloatingControlsChanged, float: boolean };
 
 export type KnownSettingsAction =
 	| SoundVolumeChangeAction
@@ -111,4 +113,5 @@ export type KnownSettingsAction =
 	| PlayAllQuestionsInFinalRoundChangedAction
 	| OralPlayersActionsChangedAction
 	| AllowEveryoneToPlayHiddenStakesChangedAction
-	| DisplaySourcesChangedAction;
+	| DisplaySourcesChangedAction
+	| FloatingControlsChangedAction;

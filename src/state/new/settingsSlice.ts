@@ -9,6 +9,7 @@ export interface SettingsState {
 	appSound: boolean;
 	mainMenuSound: boolean;
 	showPersonsAtBottomOnWideScreen: boolean;
+	floatingControls: boolean;
 	sex: Sex;
 	avatarKey: string | null;
 	appSettings: AppSettings;
@@ -23,6 +24,7 @@ const initialState: SettingsState = {
 	appSound: false,
 	mainMenuSound: false,
 	showPersonsAtBottomOnWideScreen: true,
+	floatingControls: false,
 	sex: Sex.Male,
 	avatarKey: null,
 	appSettings: {

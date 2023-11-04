@@ -14,6 +14,7 @@ import RoundProgress from './RoundProgress';
 import GameHint from './GameHint';
 import localization from '../../model/resources/localization';
 import roomActionCreators from '../../state/room/roomActionCreators';
+import uiActionCreators from '../../state/ui/uiActionCreators';
 import PersonsView from './PersonsView';
 import TablesView from './TablesView';
 import Dialog from '../common/Dialog';
@@ -39,6 +40,7 @@ interface InGameViewProps {
 	isAnswerValidationDialogVisible: boolean;
 	isManageGameDialogVisible: boolean;
 	areSumsEditable: boolean;
+	floatingControls: boolean;
 
 	onPersonsDialogClose: () => void;
 	onTablesDialogClose: () => void;
@@ -46,6 +48,7 @@ interface InGameViewProps {
 	onGameInfoDialogClose: () => void;
 	onManageGameDialogClose: () => void;
 	onCancelSumChange: () => void;
+	onShowSettings: () => void;
 }
 
 const mapStateToProps = (state: State) => ({
@@ -59,6 +62,7 @@ const mapStateToProps = (state: State) => ({
 	isManageGameDialogVisible: state.room.manageGameVisible,
 	isAnswerValidationDialogVisible: state.room.validation.isVisible,
 	areSumsEditable: state.room.areSumsEditable,
+	floatingControls: state.settings.floatingControls,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
@@ -79,6 +83,9 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	},
 	onCancelSumChange: () => {
 		dispatch(roomActionCreators.areSumsEditableChanged(false) as object as Action);
+	},
+	onShowSettings: () => {
+		dispatch(uiActionCreators.showSettings(true));
 	},
 });
 
@@ -118,10 +125,16 @@ export function InGameView(props: InGameViewProps) : JSX.Element {
 				</div>
 			</div>
 
-			<div className="game__mainArea">
+			<div className={`game__mainArea ${props.floatingControls ? 'floatable' : ''}`}>
 				{isScreenWide ? <GameChatView /> : null}
 				<SideControlPanel />
 			</div>
+
+			{isScreenWide
+				? <button className='settingsOpener' onClick={props.onShowSettings} title={localization.settings}>
+					<span>⚙</span>
+				</button>
+				: null}
 
 			{/* TODO: Switch to a single enum here */}
 

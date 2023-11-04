@@ -140,6 +140,11 @@ const onDisplaySourcesChanged: ActionCreator<SettingsActions.DisplaySourcesChang
 	type: SettingsActions.SettingsActionTypes.DisplaySourcesChanged, displaySources
 });
 
+const onFloatingControlsChanged: ActionCreator<SettingsActions.FloatingControlsChangedAction> = (
+	float: boolean) => ({
+	type: SettingsActions.SettingsActionTypes.FloatingControlsChanged, float
+});
+
 const settingsActionCreators = {
 	onSoundVolumeChanged,
 	onSoundChanged,
@@ -168,6 +173,7 @@ const settingsActionCreators = {
 	onOralPlayersActionsChanged,
 	onAllowEveryoneToPlayHiddenStakesChanged,
 	onDisplaySourcesChanged,
+	onFloatingControlsChanged,
 };
 
 export default settingsActionCreators;

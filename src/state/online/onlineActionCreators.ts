@@ -104,7 +104,12 @@ const resetLobby: ActionCreator<OnlineActions.ResetLobbyAction> = () => ({
 });
 
 const navigateToLobby: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
-	(gameId: number, showInfo?: boolean) => async (dispatch: Dispatch<Action>, _: () => State, dataContext: DataContext) => {
+	(gameId: number, showInfo?: boolean) => async (dispatch: Dispatch<Action>, getState: () => State, dataContext: DataContext) => {
+		const state = getState();
+		const requestCulture = getFullCulture(state);
+
+		await dataContext.gameClient.joinLobbyAsync(requestCulture);
+
 		dispatch(uiActionCreators.navigateToLobbyInternal());
 		dispatch(resetLobby());
 

@@ -26,6 +26,10 @@ export default class GameServerClient implements IGameServerClient {
 		return this.connection.invoke<HostInfo>('GetGamesHostInfoNew', culture);
 	}
 
+	joinLobbyAsync(culture: string): Promise<boolean> {
+		return this.connection.invoke<boolean>('JoinLobby');
+	}
+
 	getGamesSliceAsync(fromId: number): Promise<Slice<GameInfo>> {
 		return this.connection.invoke<Slice<GameInfo>>('GetGamesSlice', fromId);
 	}

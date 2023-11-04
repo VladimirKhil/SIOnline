@@ -17,6 +17,7 @@ interface CommonSettingsViewProps {
 	onAppSoundChange: (sound: boolean) => void;
 	onMainMenuSoundChange: (sound: boolean) => void;
 	onShowPersonsAtBottomOnWideScreenChanged: (showPersonsAtBottomOnWideScreen: boolean) => void;
+	onFloatingControlsChanged: (float: boolean) => void;
 	isSettingGameButtonKeyChanged: (isSettingGameButtonKey: boolean) => void;
 }
 
@@ -40,6 +41,9 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	},
 	onShowPersonsAtBottomOnWideScreenChanged: (showPersonsAtBottomOnWideScreen: boolean) => {
 		dispatch(settingsActionCreators.showPersonsAtBottomOnWideScreenChanged(showPersonsAtBottomOnWideScreen));
+	},
+	onFloatingControlsChanged: (float: boolean) => {
+		dispatch(settingsActionCreators.onFloatingControlsChanged(float));
 	},
 	isSettingGameButtonKeyChanged: (isSettingGameButtonKey: boolean) => {
 		dispatch(uiActionCreators.isSettingGameButtonKeyChanged(isSettingGameButtonKey));
@@ -107,6 +111,17 @@ export function CommonSettingsView(props: CommonSettingsViewProps): JSX.Element 
 				/>
 
 				<label htmlFor="showPersonsAtBottomOnWideScreen">{localization.showPersonsAtBottomOnWideScreen}</label>
+			</div>
+
+			<div className="settingItem">
+				<input
+					id="floatingControls"
+					type="checkbox"
+					checked={props.settings.floatingControls}
+					onChange={() => props.onFloatingControlsChanged(!props.settings.floatingControls)}
+				/>
+
+				<label htmlFor="floatingControls">{localization.floatingControls}</label>
 			</div>
 
 			<p className="header">{localization.gameButtonKey}</p>

@@ -160,7 +160,7 @@ ul {
 .avatarMale, .avatarFemale {
     background-repeat: no-repeat;
     background-position: 50% 50%;
-    background-size: contain;
+    background-size: cover;
 }
 
 .avatarMale {
@@ -173,6 +173,15 @@ ul {
 
 .gameHost {
     height: 100%;
+}
+
+.floatable {
+    opacity: 0;
+    transition: opacity 1s;
+}
+
+.floatable:hover {
+    opacity: 1;
 }
 
 #entermain {

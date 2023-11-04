@@ -216,6 +216,15 @@ const settingsReducer: Reducer<SettingsState> = (
 				}
 			};
 
+		case SettingsActionTypes.FloatingControlsChanged:
+			return {
+				...state,
+				floatingControls: action.float,
+				appSettings: {
+					...state.appSettings,
+				}
+			};
+
 		case SettingsActionTypes.ResetSettings:
 			return initialState;
 
