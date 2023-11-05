@@ -5,6 +5,10 @@ image:
   tag: 1.9.3
   pullPolicy: IfNotPresent
 
+nginxPrometheusExporter:
+  tag: 0.11.0
+  port: 9113
+
 nameOverride: ""
 fullnameOverride: ""
 
@@ -16,7 +20,7 @@ securityContext: {}
 service:
   type: ClusterIP
   port: 80
-  targetPort: 80
+  targetPort: 8080
 
 ingress:
   enabled: false
@@ -29,7 +33,6 @@ resources: {}
 
 config:
   serverDiscoveryUri: 'https://vladimirkhil.com/api/si/servers'
-  apiUri: 'https://vladimirkhil.com/api/si'
   rootUri: '/'
   ads: '<b>Test ad</b>'
   onLoad: console.log('SIGame successfully loaded!');

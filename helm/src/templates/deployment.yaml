@@ -20,19 +20,45 @@ spec:
     spec:
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 12 }}
+      volumes:
+        - name: config
+          configMap:
+            name: {{ include "sionline.fullname" . }}
+        - name: nginx
+          configMap:
+            name: {{ include "sionline.fullname" . }}-nginx
+            defaultMode: 0664
+        - name: nginx-default
+          configMap:
+            name: {{ include "sionline.fullname" . }}-nginx-default
+            defaultMode: 0664
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          resources:
-            {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
             - name: config
               mountPath: /usr/share/nginx/html/config.js
               subPath: config.js
-      volumes:
-        - name: config
-          configMap:
-            name: {{ include "sionline.fullname" . }}-config
+            - name: nginx
+              mountPath: /etc/nginx/nginx.conf
+              subPath: nginx.conf
+            - name: nginx-default
+              mountPath: /etc/nginx/conf.d/default.conf
+              subPath: default.conf
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          ports:
+            - containerPort: {{ .Values.service.targetPort }}
+        - name: nginx-prometheus-exporter
+          image: nginx/nginx-prometheus-exporter:{{ .Values.nginxPrometheusExporter.tag }}
+          args:
+            - '-nginx.scrape-uri=http://localhost:{{ .Values.service.targetPort }}/metrics'
+          resources:
+            limits:
+              memory: 128Mi
+              cpu: 500m
+          ports:
+            - containerPort: {{ .Values.nginxPrometheusExporter.port }}

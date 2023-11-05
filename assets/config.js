@@ -3,7 +3,6 @@ config = {
     rootUri: '/',
     ads: '<b>Test ad</b>',
     rewriteUrl: true,
-    apiUri: 'https://vladimirkhil.com/api/si',
     forceHttps: false,
     registerServiceWorker: false,
     enableNoSleep: false,
