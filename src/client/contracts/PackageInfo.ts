@@ -9,7 +9,7 @@ export default interface PackageInfo {
 	Uri: string;
 
 	/** Content service uri. */
-	ContentServiceUri: string;
+	ContentServiceUri: string | null;
 
 	/** Secret used for accessing package root content file when a custom Content service is used. */
 	Secret: string | null;

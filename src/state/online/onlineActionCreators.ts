@@ -458,7 +458,7 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 				const packageInfo: PackageInfo = {
 					Type: PackageType2.LibraryItem,
 					Uri: game.package.uri,
-					ContentServiceUri: '',
+					ContentServiceUri: null,
 					Secret: null
 				};
 
