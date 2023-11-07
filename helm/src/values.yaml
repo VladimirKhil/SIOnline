@@ -8,6 +8,7 @@ image:
 nginxPrometheusExporter:
   tag: 0.11.0
   port: 9113
+  resources: {}
 
 nameOverride: ""
 fullnameOverride: ""
