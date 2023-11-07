@@ -68,14 +68,16 @@ const receiveRestrictionsFinished: ActionCreator<SIPackagesActions.ReceiveRestri
 });
 
 const receiveAuthorsThunk: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
-	() => async (dispatch: Dispatch<any>, _: () => State, dataContext: DataContext) => {
+	() => async (dispatch: Dispatch<any>, getState: () => State, dataContext: DataContext) => {
 		try {
 			if (!dataContext.storageClient) {
 				return;
 			}
 
+			const { languageId } = getState().siPackages;
+
 			dispatch(receiveAuthors());
-			const authors = await dataContext.storageClient.facets.getAuthorsAsync();
+			const authors = await dataContext.storageClient.facets.getAuthorsAsync(languageId);
 			dispatch(receiveAuthorsFinished(arrayToValue(authors, author => author.id, author => author.name)));
 		} catch (error) {
 			dispatch(searchPackagesError(getErrorMessage(error)));
@@ -83,14 +85,16 @@ const receiveAuthorsThunk: ActionCreator<ThunkAction<void, State, DataContext, A
 	};
 
 const receiveTagsThunk: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
-	() => async (dispatch: Dispatch<any>, _getState: () => State, dataContext: DataContext) => {
+	() => async (dispatch: Dispatch<any>, getState: () => State, dataContext: DataContext) => {
 		try {
 			if (!dataContext.storageClient) {
 				return;
 			}
 
+			const { languageId } = getState().siPackages;
+
 			dispatch(receiveTags());
-			const tags = await dataContext.storageClient.facets.getTagsAsync();
+			const tags = await dataContext.storageClient.facets.getTagsAsync(languageId);
 			dispatch(receiveTagsFinished(arrayToValue(tags, tag => tag.id, tag => tag.name)));
 		} catch (error) {
 			dispatch(searchPackagesError(getErrorMessage(error)));
@@ -98,14 +102,16 @@ const receiveTagsThunk: ActionCreator<ThunkAction<void, State, DataContext, Acti
 	};
 
 const receivePublishersThunk: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
-	() => async (dispatch: Dispatch<any>, _getState: () => State, dataContext: DataContext) => {
+	() => async (dispatch: Dispatch<any>, getState: () => State, dataContext: DataContext) => {
 		try {
 			if (!dataContext.storageClient) {
 				return;
 			}
 
+			const { languageId } = getState().siPackages;
+
 			dispatch(receivePublishers());
-			const publishers = await dataContext.storageClient.facets.getPublishersAsync();
+			const publishers = await dataContext.storageClient.facets.getPublishersAsync(languageId);
 			dispatch(receivePublishersFinished(arrayToValue(publishers, publisher => publisher.id, publisher => publisher.name)));
 		} catch (error) {
 			dispatch(searchPackagesError(getErrorMessage(error)));
@@ -141,7 +147,7 @@ const receiveLanguagesThunk: ActionCreator<ThunkAction<void, State, DataContext,
 	};
 
 const receiveRestrictionsThunk: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
-	() => async (dispatch: Dispatch<any>, getState: () => State, dataContext: DataContext) => {
+	() => async (dispatch: Dispatch<any>, _getState: () => State, dataContext: DataContext) => {
 		try {
 			if (!dataContext.storageClient) {
 				return;

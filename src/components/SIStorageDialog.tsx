@@ -38,6 +38,7 @@ interface StateProps {
 	isLoading: boolean;
 	error: string | null;
 	culture: string;
+	languageId?: number;
 }
 
 interface OwnProps {
@@ -63,6 +64,7 @@ const mapStateToProps = (state: State): StateProps => ({
 	restrictions: state.siPackages.restrictions,
 	error: state.siPackages.error,
 	culture: getFullCulture(state),
+	languageId: state.siPackages.languageId,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>): DispatchProps => ({
@@ -108,11 +110,14 @@ export class SIStorageDialog extends React.Component<SIStorageDialogProps, SISto
 	}
 
 	componentDidMount(): void {
+		this.props.receiveLanguages();
+	}
+
+	onLanguageLoaded(): void {
 		this.props.searchPackages(this.state.filters, this.state.selectionParameters);
 		this.props.receiveAuthors();
 		this.props.receivePublishers();
 		this.props.receiveTags();
-		this.props.receiveLanguages();
 		this.props.receiveRestrictions();
 	}
 
@@ -237,9 +242,13 @@ export class SIStorageDialog extends React.Component<SIStorageDialogProps, SISto
 		}));
 	}
 
-	componentDidUpdate(_prevProps: SIStorageDialogProps, prevState: SIStorageDialogState) {
+	componentDidUpdate(prevProps: SIStorageDialogProps, prevState: SIStorageDialogState) {
 		if (this.state !== prevState) {
 			this.searchPackages();
+		}
+
+		if (this.props.languageId !== prevProps.languageId) {
+			this.onLanguageLoaded();
 		}
 	}
 
@@ -449,7 +458,7 @@ export class SIStorageDialog extends React.Component<SIStorageDialogProps, SISto
 									<span className="storagePackageName">{name}</span>
 									<br />
 									<span className='packageItemHeader'>{`${localization.packageSubject}: `}</span>
-									<span>{tagIds?.map(t => <div className='packageItemValue'>{this.props.tags[t]}</div>)}</span>
+									<span>{tagIds?.map(t => <div key={t} className='packageItemValue'>{this.props.tags[t]}</div>)}</span>
 									<br />
 									<span className='packageItemHeader'>{`${localization.packageDifficulty}: `}</span>
 									<span>{difficulty}</span>
@@ -460,14 +469,16 @@ export class SIStorageDialog extends React.Component<SIStorageDialogProps, SISto
 									<span className='packageItemHeader'>{`${localization.packageAuthors}: `}</span>
 
 									<span className="breakable">
-										{authorIds?.map(a => <div className='packageItemValue'>{this.props.authors[a]}</div>)}
+										{authorIds?.map(a => <div key={a} className='packageItemValue'>{this.props.authors[a]}</div>)}
 									</span>
 
 									<br />
 									<span className='packageItemHeader'>{`${localization.packageRestriction}: `}</span>
 
 									<span className="breakable">
-										{restrictionIds?.map(r => <div className='packageItemValue'>{this.props.restrictions[r]?.value}</div>)}
+										{restrictionIds?.map(r => <div key={r} className='packageItemValue'>
+											{this.props.restrictions[r]?.value}
+										</div>)}
 									</span>
 
 									<br />

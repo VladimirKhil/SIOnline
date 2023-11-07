@@ -18,10 +18,10 @@
 }
 
 .cookies__warning button {
-	width: 100px;
 	height: 40px;
 	margin: 0 20px;
 	font-size: 20px;
+	padding: 0 15px;
 }
 
 @media screen and (min-width: 470px) and (min-height: 600px) {
