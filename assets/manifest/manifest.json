@@ -63,7 +63,7 @@
 		},
 		{
 		  "src": "screenshot_narrow.png",
-		  "sizes": "1024x500",
+		  "sizes": "419x625",
 		  "type": "image/png",
 		  "form_factor": "narrow"
 		}

@@ -40,7 +40,7 @@ html,body { height:100%; }
 body {
     background-color: #000451;
     background: linear-gradient(to bottom, #000451 0%,#183CF3 50%,#000451 100%);
-    background-image: url('../assets/images/main_background.png');
+    background-image: url('../assets/images/main_background.jpg');
     background-size: cover;
     color: black;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -160,7 +160,7 @@ ul {
 .avatarMale, .avatarFemale {
     background-repeat: no-repeat;
     background-position: 50% 50%;
-    background-size: cover;
+    background-size: contain;
 }
 
 .avatarMale {
@@ -593,5 +593,9 @@ a.simpleLink {
 
     .wide {
         display: initial;
+    }
+
+    .avatarMale, .avatarFemale {
+        background-size: cover;
     }
 }

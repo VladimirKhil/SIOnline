@@ -244,7 +244,7 @@
 
     .gamePlayers {
         flex-flow: initial;
-        height: 250px;
+        height: 275px;
         margin: 0 9px;
         width: calc(100% - 18px);
         background-color: transparent;
@@ -323,7 +323,7 @@
 
 @media screen and (min-width: 1600px) and (min-height: 700px) {
     .gamePlayers {
-        height: 300px;
+        height: 400px;
     }
 
     .gamePlayers li {

@@ -102,12 +102,6 @@ export class Login extends React.Component<LoginProps> {
 
 						<div className="siAdHost" dangerouslySetInnerHTML={{ __html: this.props.ads ? this.props.ads : '' }} />
 
-						{isWindowsOS()
-							? (<a className="clientLink" href='https://vladimirkhil.com/si/game' target='_blank' rel='noopener noreferrer'>
-								{localization.windowsClient}
-							</a>)
-							: null}
-
 						{this.props.error ? <p id="logonerror">{this.props.error}</p> : null}
 
 						<div id="logonButtons">
