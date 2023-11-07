@@ -57,7 +57,7 @@
 	"screenshots" : [
 		{
 		  "src": "screenshot.png",
-		  "sizes": "1024x500",
+		  "sizes": "857x500",
 		  "type": "image/png",
 		  "form_factor": "wide"
 		},
