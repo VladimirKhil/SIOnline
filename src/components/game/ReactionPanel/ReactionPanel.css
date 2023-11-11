@@ -13,6 +13,7 @@
 	flex: 1;
     background-color: #2c7be1;
     cursor: pointer;
+	font-size: 20px;
 }
 
 .reactions_panel button:disabled {
@@ -21,4 +22,10 @@
 
 .reactions_list li {
 	text-align: center;
+}
+
+@media screen and (min-width: 800px) {
+	.reactions_panel button {
+		font-size: 25px;
+	}
 }

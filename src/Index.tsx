@@ -45,6 +45,8 @@ function setState(state: State, savedState: SavedState | null, gameId: string | 
 		return state;
 	}
 
+	const { appSettings } = savedState.settings;
+
 	return {
 		...state,
 		user: {
@@ -64,13 +66,22 @@ function setState(state: State, savedState: SavedState | null, gameId: string | 
 			...state.settings,
 			...savedState.settings,
 			appSettings: {
-				...savedState.settings.appSettings,
-				timeSettings: savedState.settings.appSettings.timeSettings || state.settings.appSettings.timeSettings,
-				readingSpeed: savedState.settings.appSettings.readingSpeed || state.settings.appSettings.readingSpeed,
-				preloadRoundContent: savedState.settings.appSettings.preloadRoundContent ?? true,
-				useApellations: savedState.settings.appSettings.useApellations ?? true,
-				allowEveryoneToPlayHiddenStakes: savedState.settings.appSettings.allowEveryoneToPlayHiddenStakes ?? true,
-				oralPlayersActions: savedState.settings.appSettings.oralPlayersActions ?? true,
+				falseStart: appSettings.falseStart ?? true,
+				hintShowman: appSettings.hintShowman ?? false,
+				partialText: appSettings.partialText ?? false,
+				oral: appSettings.oral ?? false,
+				ignoreWrong: appSettings.ignoreWrong ?? false,
+				culture: appSettings.culture,
+				managed: appSettings.managed ?? false,
+				usePingPenalty: appSettings.usePingPenalty ?? false,
+				timeSettings: appSettings.timeSettings || state.settings.appSettings.timeSettings,
+				readingSpeed: appSettings.readingSpeed || state.settings.appSettings.readingSpeed,
+				preloadRoundContent: appSettings.preloadRoundContent ?? true,
+				useApellations: appSettings.useApellations ?? true,
+				allowEveryoneToPlayHiddenStakes: appSettings.allowEveryoneToPlayHiddenStakes ?? true,
+				oralPlayersActions: appSettings.oralPlayersActions ?? true,
+				displaySources: appSettings.displaySources ?? false,
+				playAllQuestionsInFinalRound: appSettings.playAllQuestionsInFinalRound ?? false,
 			},
 			gameButtonKey: savedState.settings.gameButtonKey || Constants.KEY_CTRL
 		} : state.settings,

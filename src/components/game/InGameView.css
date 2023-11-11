@@ -101,7 +101,8 @@
     .gameMain {
         flex-direction: row;
         background-image: url('../../../assets/images/studia.jpg');
-        background-size: contain;
+        background-size: cover;
+        background-repeat: no-repeat;
     }
 
     .showmanTableArea {
