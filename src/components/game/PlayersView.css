@@ -202,6 +202,10 @@
 }
 
 @media screen and (min-width: 800px) {
+    #playersPanel {
+        flex: 0.45 0 0 !important;
+    }
+
     .playerAvatar {
         min-width: 26px;
     }
@@ -244,14 +248,9 @@
 
     .gamePlayers {
         flex-flow: initial;
-        height: 275px;
         margin: 0 9px;
         width: calc(100% - 18px);
         background-color: transparent;
-    }
-
-    #playersPanel {
-        flex: initial !important;
     }
 
     .gamePlayers li {
@@ -322,10 +321,6 @@
 }
 
 @media screen and (min-width: 1600px) and (min-height: 700px) {
-    .gamePlayers {
-        height: 400px;
-    }
-
     .gamePlayers li {
         height: 100%;
         margin: 5px !important;

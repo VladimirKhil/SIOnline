@@ -6,10 +6,11 @@ import ServerRole from '../client/contracts/ServerRole';
 import State from '../state/State';
 import onlineActionCreators from '../state/online/onlineActionCreators';
 import GameInfo from '../client/contracts/GameInfo';
-import GameType from '../model/GameType';
 import ServerGameType from '../client/contracts/ServerGameType';
 import ProgressBar from './common/ProgressBar';
 import { getReadableTimeSpan } from '../utils/TimeHelpers';
+import GameStage from '../client/contracts/GameStage';
+import GameRules, { parseRulesFromString } from '../client/contracts/GameRules';
 
 import './GameInfoView.css';
 
@@ -48,38 +49,40 @@ const mapDispatchToProps = (dispatch: any) => ({
 	}
 });
 
-const buildStage = (stage: number, stageName: string) => {
+const buildStage = (stage: GameStage, stageName: string) => {
 	switch (stage) {
-		case 0:
+		case GameStage.Created:
 			return localization.created;
-		case 1:
+		case GameStage.Started:
 			return localization.started;
-		case 2:
+		case GameStage.Round:
 			return `${localization.round}: ${stageName}`;
-		case 3:
+		case GameStage.Final:
 			return localization.final;
 		default:
 			return localization.gameFinished;
 	}
 };
 
-const buildRules = (rules: number, isSimple: boolean): string[] => {
+const buildRules = (rulesString: string, isSimple: boolean): string[] => {
+	const rules = parseRulesFromString(rulesString);
 	const result : string[] = [];
+
 	if (isSimple) {
 		result.push(localization.sport.toLowerCase());
 	} else {
 		result.push(localization.tv.toLowerCase());
 	}
 
-	if ((rules & 1) === 0) {
+	if ((rules & GameRules.FalseStart) === 0) {
 		result.push(localization.nofalsestart);
 	}
 
-	if ((rules & 2) > 0) {
+	if ((rules & GameRules.Oral) > 0) {
 		result.push(localization.oral);
 	}
 
-	if ((rules & 4) > 0) {
+	if ((rules & GameRules.IgnoreWrong) > 0) {
 		result.push(localization.errorTolerant);
 	}
 

@@ -1,6 +1,6 @@
 enum ServerGameType {
-	Classic = 'Classic',
-	Simple = 'Simple'
+	Classic = 'Tv',
+	Simple = 'Sport'
 }
 
 export default ServerGameType;

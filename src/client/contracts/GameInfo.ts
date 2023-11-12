@@ -1,5 +1,6 @@
 import ServerGameType from './ServerGameType';
 import PersonInfo from './PersonInfo';
+import GameStage from './GameStage';
 
 /** Defines a server game info. */
 export default interface GameInfo {
@@ -12,8 +13,8 @@ export default interface GameInfo {
 	PasswordRequired: boolean;
 	Persons: PersonInfo[];
 	RealStartTime: string;
-	Rules: number;
-	Stage: number;
+	Rules: string;
+	Stage: GameStage;
 	StageName: string;
 	Started: boolean;
 	StartTime: string;
