@@ -102,6 +102,9 @@ export class TableAudio extends React.Component<TableAudioProps> {
 		if (this.props.audio !== audio.currentSrc) {
 			audio.src = this.props.audio;
 			audio.load();
+
+			this.completed = false;
+			this.playTime = null;
 		}
 
 		if (this.props.isMediaStopped !== prevProps.isMediaStopped) {
