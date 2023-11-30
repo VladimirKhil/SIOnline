@@ -106,7 +106,6 @@ export function InGameView(props: InGameViewProps) : JSX.Element {
 
 						<div className="tableArea">
 							<GameTable />
-							<GameHint />
 							<TableContextView />
 
 							{props.isChatOpen && !isScreenWide ? (

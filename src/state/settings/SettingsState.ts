@@ -1,6 +1,7 @@
 import Sex from '../../model/enums/Sex';
 import AppSettings from '../../model/AppSettings';
 import Constants from '../../model/enums/Constants';
+import ButtonPressMode from '../../model/ButtonPressMode';
 
 export default interface SettingsState {
 	soundVolume: number;
@@ -55,6 +56,7 @@ export const initialState: SettingsState = {
 			timeForBlockingButton: 3
 		},
 		usePingPenalty: false,
+		buttonPressMode: ButtonPressMode.RandomWithinInterval,
 		preloadRoundContent: true,
 		useApellations: true,
 	},

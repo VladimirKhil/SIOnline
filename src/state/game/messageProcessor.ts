@@ -24,9 +24,9 @@ import MessageLevel from '../../model/enums/MessageLevel';
 import GameStage from '../../model/enums/GameStage';
 import GameMessages from '../../client/game/GameMessages';
 import { GameSound, gameSoundPlayer } from '../../utils/GameSoundPlayer';
-import Messages from '../../client/game/Messages';
 import JoinMode from '../../client/game/JoinMode';
 import { getMeAsPlayer } from '../../utils/StateHelpers';
+import StakeTypes2, { parseStakeTypesFromString } from '../../client/game/StakeTypes';
 
 let lastReplicLock: number;
 
@@ -552,6 +552,10 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 			}
 			break;
 
+		case GameMessages.QuestionEnd:
+			dispatch(roomActionCreators.afterQuestionStateChanged(true));
+			break;
+
 		case 'READINGSPEED':
 			if (args.length < 2) {
 				break;
@@ -660,7 +664,7 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 			}
 			break;
 
-		case Messages.SetJoinMode:
+		case GameMessages.SetJoinMode:
 			if (args.length < 2) {
 				break;
 			}
@@ -952,17 +956,24 @@ function onChoose(dispatch: Dispatch<any>) {
 	dispatch(tableActionCreators.isSelectableChanged(true));
 }
 
-function onStake(dispatch: Dispatch<any>, state: State, args: string[], maximum: number) {
+function onStake2(dispatch: Dispatch<any>, _state: State, args: string[], maximum: number) {
+	if (args.length < 4) {
+		return;
+	}
+
+	const stakeTypes = parseStakeTypesFromString(args[1]);
+
 	const allowedStakeTypes = {
-		[StakeTypes.Nominal]: args[1] === '+',
-		[StakeTypes.Sum]: args[2] === '+',
-		[StakeTypes.Pass]: args[3] === '+',
-		[StakeTypes.AllIn]: args[4] === '+'
+		[StakeTypes.Nominal]: (stakeTypes & StakeTypes2.Nominal) > 0,
+		[StakeTypes.Sum]: (stakeTypes & StakeTypes2.Stake) > 0,
+		[StakeTypes.Pass]: (stakeTypes & StakeTypes2.Pass) > 0,
+		[StakeTypes.AllIn]: (stakeTypes & StakeTypes2.AllIn) > 0,
 	};
 
-	const minimum = parseInt(args[5], 10);
+	const minimum = parseInt(args[2], 10);
+	const step = parseInt(args[3], 10);
 
-	dispatch(roomActionCreators.setStakes(allowedStakeTypes, minimum, maximum, minimum, 100, 'STAKE', false));
+	dispatch(roomActionCreators.setStakes(allowedStakeTypes, minimum, maximum, minimum, step, 'STAKE', false));
 	dispatch(roomActionCreators.decisionNeededChanged(true));
 }
 
@@ -1012,14 +1023,16 @@ const playerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 			// TODO: process
 			break;
 
-		case 'STAKE':
-			const me = getMeAsPlayer(state);
+		case GameMessages.Stake2:
+			const me2 = getMeAsPlayer(state);
 
-			if (!me) {
+			if (!me2) {
 				return;
 			}
 
-			onStake(dispatch, state, args, me.sum);
+			const playerName = ''; // TODO: support in UI
+
+			onStake2(dispatch, state, args, me2.sum);
 			break;
 
 		case GameMessages.Validation:
@@ -1064,7 +1077,7 @@ const showmanHandler = (dispatch: Dispatch<any>, state: State, dataContext: Data
 
 		case 'HINT':
 			if (args.length > 1) {
-				dispatch(roomActionCreators.hintChanged(`${localization.rightAnswer}: ${args[1]}`));
+				dispatch(roomActionCreators.hintChanged(args[1]));
 			}
 			break;
 
@@ -1098,14 +1111,15 @@ const showmanHandler = (dispatch: Dispatch<any>, state: State, dataContext: Data
 			onChoose(dispatch);
 			break;
 
-		case 'STAKE':
+		case GameMessages.Stake2:
 			if (args.length < 6) {
 				break;
 			}
 
-			const maximum = args.length > 6 ? args[6] : args[5];
+			const maximum2 = args[4];
+			const playerName = args[5]; // TODO: support in UI
 
-			onStake(dispatch, state, args, parseInt(maximum, 10));
+			onStake2(dispatch, state, args, parseInt(maximum2, 10));
 			break;
 
 		default:

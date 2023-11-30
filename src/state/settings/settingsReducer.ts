@@ -132,6 +132,15 @@ const settingsReducer: Reducer<SettingsState> = (
 				}
 			};
 
+		case SettingsActionTypes.ButtonPressModeChanged:
+			return {
+				...state,
+				appSettings: {
+					...state.appSettings,
+					buttonPressMode: action.buttonPressMode
+				}
+			};
+
 		case SettingsActionTypes.PreloadRoundContentChanged:
 			return {
 				...state,

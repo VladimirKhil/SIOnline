@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import AppSettings from '../../model/AppSettings';
 import Constants from '../../model/enums/Constants';
 import Sex from '../../model/enums/Sex';
+import ButtonPressMode from '../../model/ButtonPressMode';
 
 export interface SettingsState {
 	soundVolume: number;
@@ -56,6 +57,7 @@ const initialState: SettingsState = {
 			timeForBlockingButton: 3
 		},
 		usePingPenalty: false,
+		buttonPressMode: ButtonPressMode.RandomWithinInterval,
 		preloadRoundContent: true,
 		useApellations: true
 	},

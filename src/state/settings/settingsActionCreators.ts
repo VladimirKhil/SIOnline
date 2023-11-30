@@ -2,6 +2,7 @@ import * as SettingsActions from './SettingsActions';
 import { ActionCreator } from 'redux';
 import Sex from '../../model/enums/Sex';
 import TimeSettings from '../../model/TimeSettings';
+import ButtonPressMode from '../../model/ButtonPressMode';
 
 const onSoundVolumeChanged: ActionCreator<SettingsActions.SoundVolumeChangeAction> = (volume: number) => ({
 	type: SettingsActions.SettingsActionTypes.SoundVolumeChanged,
@@ -85,6 +86,11 @@ const onUsePingPenaltyChanged: ActionCreator<SettingsActions.UsePingPenaltyChang
 	usePingPenalty
 });
 
+const onButtonPressModeChanged: ActionCreator<SettingsActions.ButtonPressModeChangedAction> = (buttonPressMode: ButtonPressMode) => ({
+	type: SettingsActions.SettingsActionTypes.ButtonPressModeChanged,
+	buttonPressMode
+});
+
 const onPreloadRoundContentChanged: ActionCreator<SettingsActions.PreloadRoundContentChangedAction> = (preloadRoundContent: boolean) => ({
 	type: SettingsActions.SettingsActionTypes.PreloadRoundContentChanged,
 	preloadRoundContent
@@ -162,6 +168,7 @@ const settingsActionCreators = {
 	onUseApellationsChanged,
 	onIgnoreWrongChanged,
 	onUsePingPenaltyChanged,
+	onButtonPressModeChanged,
 	onPreloadRoundContentChanged,
 	onTimeSettingChanged,
 	resetSettings,

@@ -7,6 +7,7 @@ import SettingsState from '../../state/settings/SettingsState';
 import settingsActionCreators from '../../state/settings/settingsActionCreators';
 import GameType from '../../model/GameType';
 import gameActionCreators from '../../state/game/gameActionCreators';
+import ButtonPressMode from '../../model/ButtonPressMode';
 
 import './RulesSettingsView.css';
 
@@ -25,6 +26,7 @@ interface RulesSettingsViewProps {
 	onIgnoreWrongChanged: (ignoreWrong: boolean) => void;
 	onPreloadRoundContentChanged: (preloadRoundContent: boolean) => void;
 	onUsePingPenaltyChanged: (usePingPenalty: boolean) => void;
+	onButtonPressModeChanged: (buttonPressMode: number) => void;
 	onPartialTextChanged: (hintShowman: boolean) => void;
 	onAllowEveryoneToPlayHiddenStakesChanged: (allowEveryoneToPlayHiddenStakes: boolean) => void;
 	onDisplaySourcesChanged: (displaySources: boolean) => void;
@@ -67,6 +69,9 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	onUsePingPenaltyChanged: (usePingPenalty: boolean) => {
 		dispatch(settingsActionCreators.onUsePingPenaltyChanged(usePingPenalty));
 	},
+	onButtonPressModeChanged: (buttonPressMode: number) => {
+		dispatch(settingsActionCreators.onButtonPressModeChanged(buttonPressMode));
+	},
 	onPreloadRoundContentChanged: (preloadRoundContent: boolean) => {
 		dispatch(settingsActionCreators.onPreloadRoundContentChanged(preloadRoundContent));
 	},
@@ -97,12 +102,16 @@ export function RulesSettingsView(props: RulesSettingsViewProps): JSX.Element {
 		props.onGameTypeChanged(parseInt(e.target.value, 10));
 	}
 
+	function onButtonPressModeChanged(e: React.ChangeEvent<HTMLSelectElement>) {
+		props.onButtonPressModeChanged(parseInt(e.target.value, 10));
+	}
+
 	return (
 		<div>
 			<div className="settingItem">
 				<p className='gameTypeHeader'>{localization.gameType}</p>
 
-				<select className='gameType' value={props.gameType} onChange={onGameTypeChanged}>
+				<select aria-label='Game type' className='gameType' value={props.gameType} onChange={onGameTypeChanged}>
 					<option value="1">{localization.sport}</option>
 					<option value="0">{localization.tv}</option>
 				</select>
@@ -202,6 +211,7 @@ export function RulesSettingsView(props: RulesSettingsViewProps): JSX.Element {
 				<div>
 					<input
 						id='readingSpeed'
+						aria-label="Reading speed range"
 						className="rangeEditor"
 						type="range"
 						value={props.settings.appSettings.readingSpeed}
@@ -211,6 +221,7 @@ export function RulesSettingsView(props: RulesSettingsViewProps): JSX.Element {
 					/>
 
 					<input
+						aria-label="Reading speed value"
 						className="valueEditor"
 						type="number"
 						value={props.settings.appSettings.readingSpeed}
@@ -263,6 +274,19 @@ export function RulesSettingsView(props: RulesSettingsViewProps): JSX.Element {
 					onChange={() => props.onUsePingPenaltyChanged(!props.settings.appSettings.usePingPenalty)}
 				/>
 				<label htmlFor="usePingPenalty">{localization.usePingPenalty}</label>
+			</div>
+
+			<div className="settingItem">
+				<p className='gameTypeHeader'>{localization.buttonPressMode}</p>
+
+				<select
+					aria-label='Game type'
+					className='gameType'
+					value={props.settings.appSettings.buttonPressMode}
+					onChange={onButtonPressModeChanged}>
+					<option value={ButtonPressMode.RandomWithinInterval}>{localization.buttonPressModeRandomWithinInterval}</option>
+					<option value={ButtonPressMode.FirstWins}>{localization.buttonPressModeFirstWins}</option>
+				</select>
 			</div>
 
 			<div className="settingItem">

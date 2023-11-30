@@ -72,7 +72,7 @@ export function WelcomeView(props: WelcomeViewProps): JSX.Element {
 						disabled={!props.isConnected}
 						onClick={() => props.exit()}
 						title={localization.exitFromGame}>
-						<img src={exitImg} />
+						<img src={exitImg} alt='Exit' />
 					</button>
 				</h1>
 

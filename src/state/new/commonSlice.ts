@@ -20,7 +20,7 @@ export const commonSlice = createSlice({
 	reducers: {
 		serverNameChanged: (state: CommonState, action: PayloadAction<string>) => {
 			state.serverName = action.payload;
-		},	
+		},
 		computerAccountsChanged: (state: CommonState, action: PayloadAction<string[]>) => {
 			state.computerAccounts = action.payload;
 		}

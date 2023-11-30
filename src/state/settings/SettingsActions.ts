@@ -1,3 +1,4 @@
+import ButtonPressMode from '../../model/ButtonPressMode';
 import TimeSettings from '../../model/TimeSettings';
 import Sex from '../../model/enums/Sex';
 
@@ -18,6 +19,7 @@ export const enum SettingsActionTypes {
 	UseApellationsChanged = 'USE_APELLATIONS_CHANGED',
 	IgnoreWrongChanged = 'IGNORE_WRONG_CHANGED',
 	UsePingPenaltyChanged = 'USE_PING_PENALTY_CHANGED',
+	ButtonPressModeChanged = 'BUTTON_PRESS_MODE_CHANGED',
 	PreloadRoundContentChanged = 'PRELOAD_DOUND_CONTENT_CHANGED',
 	TimeSettingChanged = 'TIME_SETTING_CHANGED',
 	ResetSettings = 'RESET_SETTINGS',
@@ -53,6 +55,7 @@ export type ManagedChangedAction = { type: SettingsActionTypes.ManagedChanged; m
 export type UseApellationsChangedAction = { type: SettingsActionTypes.UseApellationsChanged; useApellations: boolean };
 export type IgnoreWrongChangedAction = { type: SettingsActionTypes.IgnoreWrongChanged; ignoreWrong: boolean };
 export type UsePingPenaltyChangedAction = { type: SettingsActionTypes.UsePingPenaltyChanged; usePingPenalty: boolean };
+export type ButtonPressModeChangedAction = { type: SettingsActionTypes.ButtonPressModeChanged; buttonPressMode: ButtonPressMode };
 export type PreloadRoundContentChangedAction = { type: SettingsActionTypes.PreloadRoundContentChanged; preloadRoundContent: boolean };
 
 export type TimeSettingChangedAction = {
@@ -103,6 +106,7 @@ export type KnownSettingsAction =
 	| UseApellationsChangedAction
 	| IgnoreWrongChangedAction
 	| UsePingPenaltyChangedAction
+	| ButtonPressModeChangedAction
 	| PreloadRoundContentChangedAction
 	| TimeSettingChangedAction
 	| ResetSettingsAction

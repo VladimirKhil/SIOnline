@@ -102,6 +102,7 @@ export class Chat extends React.Component<ChatProps> {
 					type='text'
 					className={`message ${this.props.isConnected ? '' : 'disconnected'}`}
 					value={this.props.currentMessage}
+					aria-label='Message'
 					onChange={this.onMessageChanged}
 					onKeyPress={this.onMessageKeyPress}
 				/>

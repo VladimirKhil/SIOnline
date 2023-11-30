@@ -6,6 +6,7 @@ interface AutoSizedTextProps {
 	style?: React.CSSProperties;
 	className?: string;
 	maxFontSize: number;
+	title?: string;
 
 	onClick?: () => void;
 }
@@ -95,6 +96,7 @@ export default class AutoSizedText extends React.Component<AutoSizedTextProps> {
 			<div
 				id={this.props.id}
 				ref={this.myRef}
+				title={this.props.title}
 				className={this.props.className}
 				onClick={() => this.onClick()}
 			>

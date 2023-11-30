@@ -7,6 +7,7 @@ import ReactionPanel from '../ReactionPanel/ReactionPanel';
 import AnswerInput from '../AnswerInput';
 import PlayerButtonsPanel from '../PlayerButtonsPanel/PlayerButtonsPanel';
 import ReadyButton from '../ReadyButton/ReadyButton';
+import GameHint from '../GameHint';
 
 import './TableContextView.css';
 
@@ -17,6 +18,7 @@ interface TableContextViewProps {
 	isAnswering: boolean;
 	hasGameStarted: boolean;
 	isAutomatic: boolean;
+	hint: string | null;
 }
 
 const mapStateToProps = (state: State) => ({
@@ -26,6 +28,7 @@ const mapStateToProps = (state: State) => ({
 	isAnswering: state.room.stage.isAnswering,
 	hasGameStarted: state.room.stage.isGameStarted,
 	isAutomatic: state.game.isAutomatic,
+	hint: state.room.hint,
 });
 
 function renderBody(props: TableContextViewProps) : JSX.Element | null {
@@ -47,7 +50,15 @@ function renderBody(props: TableContextViewProps) : JSX.Element | null {
 		return props.role === Role.Player ? <ReactionPanel /> : null;
 	}
 
-	return props.role === Role.Player ? (<PlayerButtonsPanel />) : null;
+	if (props.role === Role.Player) {
+		return <PlayerButtonsPanel />;
+	}
+
+	if (props.hint) {
+		return <GameHint />;
+	}
+
+	return null;
 }
 
 export function TableContextView(props: TableContextViewProps): JSX.Element | null {

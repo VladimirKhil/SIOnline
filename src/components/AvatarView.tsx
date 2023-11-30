@@ -59,7 +59,7 @@ function renderAvatar() {
 		return renderEmpty();
 	}
 
-	return <img className='avatarView' src={`data:image/png;base64, ${base64}`} />;
+	return <img className='avatarView' alt='user avatar' src={`data:image/png;base64, ${base64}`} />;
 }
 
 export function AvatarView(props: AvatarViewProps): JSX.Element {
@@ -102,6 +102,7 @@ export function AvatarView(props: AvatarViewProps): JSX.Element {
 				className='avatarSelector'
 				type="file"
 				accept=".jpg,.jpeg,.png"
+				aria-label='Avatar selector'
 				disabled={props.avatarLoadProgress}
 				onChange={e => onAvatarChanged(e, props)}
 			/>

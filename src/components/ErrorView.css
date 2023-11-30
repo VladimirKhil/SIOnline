@@ -30,6 +30,7 @@
 	overflow-y: auto;
 	scrollbar-width: thin;
 	margin-right: 20px;
+	-webkit-user-select: text;
 	user-select: text;
 	padding: 0 40px 0 40px;
 }

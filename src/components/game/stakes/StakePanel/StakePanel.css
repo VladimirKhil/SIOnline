@@ -10,9 +10,12 @@
 	padding: 0 15px;
 	background-color: rgba(255, 165, 0, 0.5);
 	margin: 0px 1px;
+	overflow: hidden;
+	font-size: 12px;
+	padding: 2px;
 }
 
-.wideStakeHost button.wide {
+.wideStakeHost button.wideStake {
 	flex: 1;
 }
 
@@ -20,17 +23,31 @@
 	flex: 0 0 80px;
 	font-size: 24px;
 	text-align: center;
+	overflow: hidden;
 }
 
 .wideStakeHost__range {
 	flex: 3 0 0;
 	margin: 0 10px;
 	max-width: 100%;
+	overflow: hidden;
+}
+
+@media screen and (min-width: 800px) {
+	.wideStakeHost button {
+		font-size: 16px;
+	}
 }
 
 @media screen and (min-width: 1100px) {
 	.wideStakeHost button {
 		font-size: 25px;
 		padding: 0 30px;
+	}
+}
+
+@media screen and (min-width: 1600px) {
+	.wideStakeHost button {
+		font-size: 29px;
 	}
 }

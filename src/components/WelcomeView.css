@@ -29,7 +29,11 @@
 	cursor: pointer;
 	display: inline-flex;
 	align-items: center;
+	justify-content: center;
 	border: 0;
+	width: 44px;
+	height: 42px;
+	padding: 3px;
 }
 
 .licenseDialog {
@@ -46,6 +50,7 @@
 	font-weight: normal;
 	font-size: 18px;
 	overflow-y: auto;
+	-webkit-user-select: text;
 	user-select: text;
 }
 
@@ -99,6 +104,11 @@
 	height: 42px;
 	margin-left: 2px;
 	margin-top: -3px;
+}
+
+.welcomeExit img {
+	width: 30px;
+	height: 30px;
 }
 
 @media screen and (min-width: 800px) {

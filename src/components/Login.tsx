@@ -87,6 +87,7 @@ export class Login extends React.Component<LoginProps> {
 									title={localization.yourName}
 									autoFocus
 									value={this.props.login}
+									autoComplete='on'
 									maxLength={30}
 									disabled={this.props.inProgress}
 									onChange={this.onLoginChanged}

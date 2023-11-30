@@ -2,6 +2,7 @@ import * as React from 'react';
 import State from '../../state/State';
 import { connect } from 'react-redux';
 import AutoSizedText from '../common/AutoSizedText';
+import localization from '../../model/resources/localization';
 
 import './GameHint.css';
 
@@ -15,7 +16,7 @@ const mapStateToProps = (state: State) => ({
 
 export function GameHint(props: GameHintProps) {
 	return props.hint ? (
-		<AutoSizedText className="gameHint" maxFontSize={31}>{props.hint}</AutoSizedText>
+		<AutoSizedText className="gameHint" maxFontSize={31} title={localization.rightAnswer}>{props.hint}</AutoSizedText>
 	) : null;
 }
 

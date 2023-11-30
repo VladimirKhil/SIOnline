@@ -425,6 +425,7 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 			RandomThemesCount: gameMode === GameType.Simple ? 5 : 6,
 			Culture: getFullCulture(state),
 			UsePingPenalty: state.settings.appSettings.usePingPenalty,
+			ButtonPressMode: state.settings.appSettings.buttonPressMode.toString(),
 			PreloadRoundContent: state.settings.appSettings.preloadRoundContent,
 			UseApellations: state.settings.appSettings.useApellations,
 		};

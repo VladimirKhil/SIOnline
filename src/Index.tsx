@@ -30,6 +30,7 @@ import getDeviceType from './utils/getDeviceType';
 import isSafari from './utils/isSafari';
 import GameServerClient from './client/GameServerClient';
 import SIContentClient from 'sicontent-client';
+import ButtonPressMode from './model/ButtonPressMode';
 
 import './utils/polyfills';
 import './style.css';
@@ -74,6 +75,7 @@ function setState(state: State, savedState: SavedState | null, gameId: string | 
 				culture: appSettings.culture,
 				managed: appSettings.managed ?? false,
 				usePingPenalty: appSettings.usePingPenalty ?? false,
+				buttonPressMode: appSettings.buttonPressMode ?? ButtonPressMode.RandomWithinInterval,
 				timeSettings: appSettings.timeSettings || state.settings.appSettings.timeSettings,
 				readingSpeed: appSettings.readingSpeed || state.settings.appSettings.readingSpeed,
 				preloadRoundContent: appSettings.preloadRoundContent ?? true,
