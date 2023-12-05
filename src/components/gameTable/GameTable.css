@@ -68,7 +68,7 @@
         font-size: 36px;
         color: #FFFFFF;
         text-shadow: 1px 1px 0 #000;
-        padding: 15px;
+        padding: 5px;
         white-space: pre-line;
         display: flex;
         align-items: center;
@@ -206,7 +206,7 @@
 
 @media screen and (min-width: 1100px) {
     #table .tableText {
-        padding: 40px;
+        padding: 10px;
     }
 
     .tableCaption {

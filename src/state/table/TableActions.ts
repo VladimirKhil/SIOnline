@@ -1,3 +1,4 @@
+import ContentItem from '../../model/ContentItem';
 import ThemeInfo from '../../model/ThemeInfo';
 
 export const enum TableActionTypes {
@@ -19,12 +20,14 @@ export const enum TableActionTypes {
 	ShowBackgroundAudio = 'SHOW_BACKGROUND_AUDIO',
 	ShowVideo = 'SHOW_VIDEO',
 	ShowHtml = 'SHOW_HTML',
+	ShowContent = 'SHOW_CONTENT',
 	ShowSpecial = 'SHOW_SPECIAL',
 	CanPressChanged = 'CAN_PRESS_CHANGED',
 	IsSelectableChanged = 'IS_SELECTABLE_CHANGED',
 	ResumeMedia = 'RESUME_MEDIA',
 	CaptionChanged = 'CAPTION_CHANGED',
 	TableReset = 'TABLE_RESET',
+	EndQuestion = 'END_QUESTION',
 }
 
 export type ShowLogoAction = { type: TableActionTypes.ShowLogo };
@@ -52,12 +55,14 @@ export type ShowAudioAction = { type: TableActionTypes.ShowAudio, uri: string };
 export type ShowBackgroundAudioAction = { type: TableActionTypes.ShowBackgroundAudio, uri: string };
 export type ShowVideoAction = { type: TableActionTypes.ShowVideo, uri: string };
 export type ShowHtmlAction = { type: TableActionTypes.ShowHtml, uri: string };
+export type ShowContentAction = { type: TableActionTypes.ShowContent, content: ContentItem[] };
 export type ShowSpecialAction = { type: TableActionTypes.ShowSpecial, text: string, activeThemeIndex: number };
 export type CanPressChangedAction = { type: TableActionTypes.CanPressChanged, canPress: boolean };
 export type IsSelectableChangedAction = { type: TableActionTypes.IsSelectableChanged, isSelectable: boolean };
 export type ResumeMediaAction = { type: TableActionTypes.ResumeMedia };
 export type CaptionChangedAction = { type: TableActionTypes.CaptionChanged, caption: string };
 export type TableResetAction = { type: TableActionTypes.TableReset };
+export type EndQuestionAction = { type: TableActionTypes.EndQuestion };
 
 export type KnownTableAction =
 	ShowLogoAction
@@ -78,9 +83,11 @@ export type KnownTableAction =
 	| ShowBackgroundAudioAction
 	| ShowVideoAction
 	| ShowHtmlAction
+	| ShowContentAction
 	| ShowSpecialAction
 	| CanPressChangedAction
 	| IsSelectableChangedAction
 	| ResumeMediaAction
 	| CaptionChangedAction
-	| TableResetAction;
+	| TableResetAction
+	| EndQuestionAction;

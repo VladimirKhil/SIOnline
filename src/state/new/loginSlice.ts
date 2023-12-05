@@ -110,7 +110,7 @@ export const login = () => async (dispatch: AppDispatch, getState: () => RootSta
 					activeConnections.push(dataContext.connection.connectionId);
 				}
 
-				attachListeners(dataContext.connection, dispatch);
+				attachListeners(dataContext.gameClient, dataContext.connection, dispatch);
 
 				const { culture } = state.settings.appSettings;
 				const requestCulture = culture == 'ru' ? 'ru-RU' : 'en-US'; // TODO: getFullCulture

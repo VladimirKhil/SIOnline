@@ -95,6 +95,7 @@ export class VolumeButton extends React.Component<VolumeButtonProps, VolumeButto
 				</button>
 
 				<input
+					aria-label='Volume range'
 					min={0}
 					max={1}
 					step={0.1}

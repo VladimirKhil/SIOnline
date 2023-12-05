@@ -5,3 +5,8 @@
 @keyframes color-change {
 	100% { color: #22ffff; }
 }
+
+.textHost {
+	overflow: hidden;
+	width: 100%;
+}

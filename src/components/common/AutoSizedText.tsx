@@ -29,6 +29,7 @@ function fitElement(element: HTMLElement, maxFont: number) {
 
 	let extraHeight = 0;
 	const style = window.getComputedStyle(element);
+
 	if (style.paddingTop) {
 		extraHeight += parseInt(style.paddingTop, 10);
 	}
@@ -98,6 +99,7 @@ export default class AutoSizedText extends React.Component<AutoSizedTextProps> {
 				ref={this.myRef}
 				title={this.props.title}
 				className={this.props.className}
+				style={this.props.style}
 				onClick={() => this.onClick()}
 			>
 				<span>{this.props.children}</span>

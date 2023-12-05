@@ -6,3 +6,8 @@
 	bottom: 0;
 	margin: auto;
 }
+
+.image-host {
+	overflow: hidden;
+	display: flex;
+}

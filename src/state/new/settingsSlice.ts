@@ -15,6 +15,7 @@ export interface SettingsState {
 	avatarKey: string | null;
 	appSettings: AppSettings;
 	gameButtonKey: string | null;
+	nextButtonKey: string | null;
 	isLobbyChatHidden: boolean;
 	areValidationAnswersHidden: boolean;
 }
@@ -62,6 +63,7 @@ const initialState: SettingsState = {
 		useApellations: true
 	},
 	gameButtonKey: Constants.KEY_CTRL,
+	nextButtonKey: Constants.KEY_RIGHT,
 	isLobbyChatHidden: false,
 	areValidationAnswersHidden: false,
 };

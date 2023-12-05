@@ -21,6 +21,7 @@ import { isRunning } from '../../utils/TimerInfoHelpers';
 import TableRound from './TableRound';
 import TableAudioFrame from './TableAudioFrame';
 import TableHtml from './TableHtml';
+import TableContent from './TableContent/TableContent';
 
 import './GameTable.css';
 
@@ -72,6 +73,9 @@ function getContent(mode: TableMode) {
 		case TableMode.Html:
 			return <TableHtml />;
 
+		case TableMode.Content:
+			return <TableContent onMediaPlay={() => {}} />; // TODO
+
 		case TableMode.Answer:
 			return <TableAnswer />;
 
@@ -103,6 +107,7 @@ function getCaption(props: GameTableProps): string | null {
 		case TableMode.Audio:
 		case TableMode.Video:
 		case TableMode.Html:
+		case TableMode.Content:
 			return props.caption;
 
 		default:

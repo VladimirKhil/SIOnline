@@ -1,6 +1,7 @@
 import * as TableActions from './TableActions';
 import { ActionCreator } from 'redux';
 import ThemeInfo from '../../model/ThemeInfo';
+import ContentItem from '../../model/ContentItem';
 
 const showLogo: ActionCreator<TableActions.ShowLogoAction> = () => ({
 	type: TableActions.TableActionTypes.ShowLogo
@@ -85,6 +86,10 @@ const showHtml: ActionCreator<TableActions.ShowHtmlAction> = (uri: string) => ({
 	type: TableActions.TableActionTypes.ShowHtml, uri
 });
 
+const showContent: ActionCreator<TableActions.ShowContentAction> = (content: ContentItem[]) => ({
+	type: TableActions.TableActionTypes.ShowContent, content
+});
+
 const showSpecial: ActionCreator<TableActions.ShowSpecialAction> = (text: string, activeThemeIndex = -1) => ({
 	type: TableActions.TableActionTypes.ShowSpecial, text, activeThemeIndex
 });
@@ -109,6 +114,10 @@ const tableReset: ActionCreator<TableActions.TableResetAction> = () => ({
 	type: TableActions.TableActionTypes.TableReset
 });
 
+const endQuestion: ActionCreator<TableActions.EndQuestionAction> = () => ({
+	type: TableActions.TableActionTypes.EndQuestion
+});
+
 const tableActionCreators = {
 	showLogo,
 	showGameThemes,
@@ -128,12 +137,14 @@ const tableActionCreators = {
 	showBackgroundAudio,
 	showVideo,
 	showHtml,
+	showContent,
 	showSpecial,
 	canPressChanged,
 	isSelectableChanged,
 	resumeMedia,
 	captionChanged,
 	tableReset,
+	endQuestion,
 };
 
 export default tableActionCreators;

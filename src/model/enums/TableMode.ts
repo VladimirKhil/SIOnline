@@ -12,7 +12,8 @@
 	RoundThemes,
 	RoundTable,
 	Special,
-	Final
+	Final,
+	Content,
 }
 
 export default TableMode;

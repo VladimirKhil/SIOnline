@@ -60,6 +60,7 @@ export function WelcomeView(props: WelcomeViewProps): JSX.Element {
 					<span className="serverName">{props.serverName || localization.appUser}</span>
 
 					<button
+						type='button'
 						className='serverLicense'
 						title={localization.serverLicense}
 						onClick={() => setShowLicense(true)}
@@ -68,6 +69,7 @@ export function WelcomeView(props: WelcomeViewProps): JSX.Element {
 					</button>
 
 					<button
+						type='button'
 						className='standard imageButton welcomeExit'
 						disabled={!props.isConnected}
 						onClick={() => props.exit()}
@@ -80,20 +82,20 @@ export function WelcomeView(props: WelcomeViewProps): JSX.Element {
 			</header>
 
 			<div className={`welcomeViewActions ${props.isConnected ? '' : 'disconnected'}`}>
-				<button className='standard welcomeRow right' disabled={!props.isConnected} onClick={() => props.singlePlay()}>
+				<button type='button' className='standard welcomeRow right' disabled={!props.isConnected} onClick={() => props.singlePlay()}>
 					{localization.singlePlay}
 				</button>
 
-				<button className='standard welcomeRow left' disabled={!props.isConnected} onClick={() => props.friendsPlay()}>
+				<button type='button' className='standard welcomeRow left' disabled={!props.isConnected} onClick={() => props.friendsPlay()}>
 					{localization.friendsPlay}
 				</button>
 
-				<button className='standard welcomeRow right' disabled={!props.isConnected} onClick={() => props.anyonePlay()}>
+				<button type='button' className='standard welcomeRow right' disabled={!props.isConnected} onClick={() => props.anyonePlay()}>
 					{localization.anyonePlay}
 				</button>
 
 				{localization.getLanguage() === 'ru'
-					? <button className='standard welcomeRow left' disabled={!props.isConnected} onClick={() => props.joinLobby()}>
+					? <button type='button' className='standard welcomeRow left' disabled={!props.isConnected} onClick={() => props.joinLobby()}>
 						{localization.joinLobby}
 					</button>
 					: null}

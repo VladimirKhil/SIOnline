@@ -8,8 +8,23 @@ import IGameServerClient from './IGameServerClient';
 import PackageInfo from './contracts/PackageInfo';
 import Role from '../model/Role';
 
+const enum State { None, Lobby, Game }
+
+interface JoinInfo {
+	gameId: number;
+	role: Role;
+	isMale: boolean;
+	password: string;
+}
+
 /** Represents a connection to a SIGame Server. */
 export default class GameServerClient implements IGameServerClient {
+	private state: State = State.None;
+
+	private culture = '';
+
+	private joinInfo: JoinInfo | null = null;
+
 	/**
 	 * Initializes a new instance of {@link GameServerClient}.
 	 * @param connection Underlying SignalR connection.
@@ -26,8 +41,13 @@ export default class GameServerClient implements IGameServerClient {
 		return this.connection.invoke<HostInfo>('GetGamesHostInfoNew', culture);
 	}
 
-	joinLobbyAsync(culture: string): Promise<boolean> {
-		return this.connection.invoke<boolean>('JoinLobby');
+	async joinLobbyAsync(culture: string): Promise<boolean> {
+		await this.connection.invoke<boolean>('JoinLobby2', culture);
+
+		this.state = State.Lobby;
+		this.culture = culture;
+
+		return true;
 	}
 
 	getGamesSliceAsync(fromId: number): Promise<Slice<GameInfo>> {
@@ -74,14 +94,21 @@ export default class GameServerClient implements IGameServerClient {
 		);
 	}
 
-	joinGameAsync(gameId: number, role: Role, isMale: boolean, password: string): Promise<GameCreationResult> {
-		return this.connection.invoke<GameCreationResult>(
+	async joinGameAsync(gameId: number, role: Role, isMale: boolean, password: string): Promise<GameCreationResult> {
+		const result = await this.connection.invoke<GameCreationResult>(
 			'JoinGameNew',
 			gameId,
 			role,
 			isMale,
 			password
 		);
+
+		if (!result.ErrorMessage) {
+			this.state = State.Game;
+			this.joinInfo = { gameId, role, isMale, password };
+		}
+
+		return result;
 	}
 
 	async sendMessageToServerAsync(message: string): Promise<boolean> {
@@ -112,11 +139,20 @@ export default class GameServerClient implements IGameServerClient {
 	}
 
 	/** Leaves game and returns to lobby. */
-	leaveGameAsync(): Promise<any> {
-		return this.connection.invoke('LeaveGame');
+	async leaveGameAsync(): Promise<any> {
+		await this.connection.invoke('LeaveGame');
+		this.state = State.None;
 	}
 
 	logOutAsync(): Promise<any> {
 		return this.connection.invoke('LogOut');
+	}
+
+	async reconnectAsync(): Promise<any> {
+		if (this.state === State.Lobby) {
+			await this.joinLobbyAsync(this.culture);
+		} else if (this.state === State.Game && this.joinInfo) {
+			await this.joinGameAsync(this.joinInfo.gameId, this.joinInfo.role, this.joinInfo.isMale, this.joinInfo.password);
+		}
 	}
 }

@@ -27,6 +27,9 @@ import { GameSound, gameSoundPlayer } from '../../utils/GameSoundPlayer';
 import JoinMode from '../../client/game/JoinMode';
 import { getMeAsPlayer } from '../../utils/StateHelpers';
 import StakeTypes2, { parseStakeTypesFromString } from '../../client/game/StakeTypes';
+import ContentInfo from '../../model/ContentInfo';
+import ContentItem from '../../model/ContentItem';
+import ContentType from '../../model/enums/ContentType';
 
 let lastReplicLock: number;
 
@@ -113,6 +116,174 @@ function preprocessServerUri(uri: string, dataContext: DataContext) {
 	return result;
 }
 
+function unescapeNewLines(value: string): string {
+	return value.replace('\\n', '\n').replace('\\\\', '\\');
+}
+
+function onScreenContent(dispatch: Dispatch<AnyAction>, dataContext: DataContext, content: ContentInfo[]) {
+	const contentList: ContentItem[] = [];
+
+	for	(let i = 0; i < content.length; i++) {
+		const { type, value } = content[i];
+
+		switch (type) {
+			case 'text':
+				contentList.push({
+					type: ContentType.Text,
+					value: unescapeNewLines(value),
+					weight: 1.0,
+					read: contentList.length === 0
+				});
+				break;
+
+			case 'image':
+				contentList.push({
+					type: ContentType.Image,
+					value: preprocessServerUri(value, dataContext),
+					weight: 3.0,
+					read: false,
+				});
+				break;
+
+			case 'video':
+				contentList.push({
+					type: ContentType.Video,
+					value: preprocessServerUri(value, dataContext),
+					weight: 3.0,
+					read: false,
+				});
+				break;
+
+			case 'html':
+				contentList.push({
+					type: ContentType.Html,
+					value: preprocessServerUri(value, dataContext),
+					weight: 3.0,
+					read: false,
+				});
+				break;
+
+			default:
+				break;
+		}
+	}
+
+	dispatch(tableActionCreators.showContent(contentList));
+}
+
+function onContent(dispatch: Dispatch<AnyAction>, state: State, dataContext: DataContext, ...args: string[]) {
+	if (args.length < 5) {
+		return;
+	}
+
+	const placement = args[1];
+
+	const content: ContentInfo[] = [];
+
+	for (let i = 2; i + 2 < args.length; i++) {
+		const layoutId = parseInt(args[i], 10);
+
+		if (layoutId === 0) {
+			content.push({
+				type: args[i + 1],
+				value: args[i + 2]
+			});
+
+			i += 2;
+		}
+		// else if (false) {
+		// 	// TODO
+		// }
+	}
+
+	if (content.length === 0) {
+		return;
+	}
+
+	switch (placement) {
+		case 'screen':
+			onScreenContent(dispatch, dataContext, content);
+			break;
+
+		case 'replic':
+			const replic = content[0];
+
+			if (replic.type === 'text') {
+				// Not needed now. Replic is delivered via REPLIC message
+			}
+			break;
+
+		case 'background':
+			const backgroundContent = content[0];
+
+			if (backgroundContent.type === 'audio') {
+				const uri = preprocessServerUri(backgroundContent.value, dataContext);
+				dispatch(tableActionCreators.showBackgroundAudio(uri));
+			}
+			break;
+
+		default:
+			break;
+	}
+}
+
+function onContentAppend(dispatch: Dispatch<AnyAction>, state: State, dataContext: DataContext, ...args: string[]) {
+	if (args.length < 5) {
+		return;
+	}
+
+	const placement = args[1];
+	const layoutId = args[2];
+	const contentType = args[3];
+	const contentValue = args[4];
+
+	if (placement !== 'screen' || layoutId !== '0' || contentType !== 'text') {
+		return;
+	}
+
+	const text = unescapeNewLines(contentValue);
+
+	dispatch(tableActionCreators.appendPartialText(text));
+}
+
+function onContentShape(dispatch: Dispatch<AnyAction>, ...args: string[]) {
+	if (args.length < 5) {
+		return;
+	}
+
+	let text = '';
+
+	for (let i = 4; i < args.length; i++) {
+		if (text.length > 0) {
+			text += '\n';
+		}
+
+		text += args[i];
+	}
+
+	dispatch(tableActionCreators.showPartialText(text));
+}
+
+function onLayout(dispatch: Dispatch<RoomActions.KnownRoomAction>, state: State, ...args: string[]) {
+	if (args.length < 5) {
+		return;
+	}
+
+	if (args[1] !== 'ANSWER_OPTIONS') {
+		return;
+	}
+
+	const questionHasScreenContent = args[2] === '+';
+
+	const optionsTypes: string[] = [];
+
+	for (let i = 3; i < args.length; i++) {
+		optionsTypes.push(args[i]);
+	}
+
+	// TODO dispatch();
+}
+
 const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataContext, args: string[]) => {
 	switch (args[0]) {
 		case 'ADS':
@@ -132,73 +303,8 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 			dispatch(roomActionCreators.areApellationsEnabledChanged(args[1] === '+'));
 			break;
 
-		case 'ATOM':
-			switch (args[1]) {
-				case 'text':
-				case 'partial':
-					{
-						let text = '';
-						for (let i = 2; i < args.length; i++) {
-							if (text.length > 0) {
-								text += '\n';
-							}
-
-							text += args[i];
-						}
-
-						if (args[1] === 'text') {
-							dispatch(tableActionCreators.showText(text, true));
-						} else {
-							dispatch(tableActionCreators.appendPartialText(text));
-						}
-					}
-					break;
-
-				case 'image':
-					{
-						const uri = preprocessServerUri(args[3], dataContext);
-						dispatch(tableActionCreators.showImage(uri));
-					}
-					break;
-
-				case 'voice':
-					{
-						const uri = preprocessServerUri(args[3], dataContext);
-						dispatch(tableActionCreators.showAudio(uri));
-					}
-					break;
-
-				case 'video':
-					{
-						const uri = preprocessServerUri(args[3], dataContext);
-						dispatch(tableActionCreators.showVideo(uri));
-					}
-					break;
-
-				case 'html':
-					{
-						const uri = preprocessServerUri(args[3], dataContext);
-						dispatch(tableActionCreators.showHtml(uri));
-					}
-					break;
-
-				default:
-					break;
-			}
-			break;
-
-		case 'ATOM_SECOND':
-			switch (args[1]) {
-				case 'voice': // only audio is supported as a second atom
-					{
-						const uri = preprocessServerUri(args[3], dataContext);
-						dispatch(tableActionCreators.showBackgroundAudio(uri));
-					}
-					break;
-
-				default:
-					break;
-			}
+		case GameMessages.AtomHint:
+			// TODO
 			break;
 
 		case GameMessages.Banned:
@@ -262,6 +368,18 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 
 		case 'CONNECTED':
 			connected(dispatch, state, ...args);
+			break;
+
+		case GameMessages.Content:
+			onContent(dispatch, state, dataContext, ...args);
+			break;
+
+		case GameMessages.ContentAppend:
+			onContentAppend(dispatch, state, dataContext, ...args);
+			break;
+
+		case GameMessages.ContentShape:
+			onContentShape(dispatch, ...args);
 			break;
 
 		case 'DISCONNECTED':
@@ -340,6 +458,10 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 
 		case 'INFO2':
 			info(dispatch, ...args);
+			break;
+
+		case GameMessages.Layout:
+			onLayout(dispatch, state, ...args);
 			break;
 
 		case GameMessages.MediaLoaded:
@@ -554,6 +676,7 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 
 		case GameMessages.QuestionEnd:
 			dispatch(roomActionCreators.afterQuestionStateChanged(true));
+			dispatch(tableActionCreators.endQuestion());
 			break;
 
 		case 'READINGSPEED':
@@ -770,19 +893,6 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 			});
 
 			dispatch(tableActionCreators.showRoundThemes(newRoundInfo, state.room.stage.name === 'Final', false));
-			break;
-
-		case 'TEXTSHAPE':
-			let text = '';
-			for (let i = 1; i < args.length; i++) {
-				if (text.length > 0) {
-					text += '\n';
-				}
-
-				text += args[i];
-			}
-
-			dispatch(tableActionCreators.showPartialText(text));
 			break;
 
 		case 'TIMEOUT':

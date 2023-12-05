@@ -92,4 +92,7 @@ export default interface IGameServerClient {
 
 	/** Logs out from the server. */
 	logOutAsync(): Promise<any>;
+
+	/** Reconnects to server aftesr re-establishing connection. */
+	reconnectAsync(): Promise<any>;
 }

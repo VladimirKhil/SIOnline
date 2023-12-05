@@ -20,7 +20,7 @@ const mapStateToProps = (state: State) => ({
 	step: state.room.stakes.step,
 });
 
-const MAX_EXPLICIT_STAKE_COUNT = 5;
+const MAX_EXPLICIT_STAKE_COUNT = 4;
 
 export function StakePanel(props: StakePanelProps): JSX.Element | null {
 	const stakeVariants = Math.floor((props.maximum - props.minimum) / props.step) + 1;

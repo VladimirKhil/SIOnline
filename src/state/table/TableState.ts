@@ -1,8 +1,12 @@
-﻿import TableMode from '../../model/enums/TableMode';
+﻿import AnswerOption from '../../model/AnswerOption';
+import ContentItem from '../../model/ContentItem';
+import LayoutMode from '../../model/enums/LayoutMode';
+import TableMode from '../../model/enums/TableMode';
 import ThemeInfo from '../../model/ThemeInfo';
 
 export default interface TableState {
 	mode: TableMode;
+	layoutMode: LayoutMode;
 	caption: string;
 	text: string;
 	tail: string;
@@ -15,10 +19,13 @@ export default interface TableState {
 	activeThemeIndex: number;
 	actionQuestionIndex: number;
 	isMediaStopped: boolean;
+	content: ContentItem[];
+	answerOptions: AnswerOption[];
 }
 
 export const initialState: TableState = {
 	mode: TableMode.Logo,
+	layoutMode: LayoutMode.Simple,
 	caption: '',
 	text: '',
 	tail: '',
@@ -30,5 +37,7 @@ export const initialState: TableState = {
 	isSelectable: false,
 	activeThemeIndex: -1,
 	actionQuestionIndex: -1,
-	isMediaStopped: false
+	isMediaStopped: false,
+	content: [],
+	answerOptions: [],
 };

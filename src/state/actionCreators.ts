@@ -229,7 +229,7 @@ const login: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 						activeConnections.push(dataContext.connection.connectionId);
 					}
 
-					attachListeners(dataContext.connection, dispatch);
+					attachListeners(dataContext.gameClient, dataContext.connection, dispatch);
 
 					const requestCulture = getFullCulture(state);
 

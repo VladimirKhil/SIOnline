@@ -8,12 +8,13 @@ import messageProcessor from '../state/game/messageProcessor';
 import GameInfo from '../client/contracts/GameInfo';
 import commonActionCreators from '../state/common/commonActionCreators';
 import onlineActionCreators from '../state/online/onlineActionCreators';
+import IGameServerClient from '../client/IGameServerClient';
 
 export const activeConnections: string[] = [];
 
 const detachedConnections: signalR.HubConnection[] = [];
 
-export function attachListeners(connection: signalR.HubConnection, dispatch: Dispatch<AnyAction>): void {
+export function attachListeners(gameClient: IGameServerClient, connection: signalR.HubConnection, dispatch: Dispatch<AnyAction>): void {
 	connection.on('Joined', (login: string) => dispatch(onlineActionCreators.userJoined(login)));
 	connection.on('Leaved', (login: string) => dispatch(onlineActionCreators.userLeaved(login)));
 	connection.on('Say', (name: string, text: string) => dispatch(onlineActionCreators.receiveMessage(name, text)));
@@ -45,9 +46,17 @@ export function attachListeners(connection: signalR.HubConnection, dispatch: Dis
 		dispatch(actionCreators.onConnectionChanged(true, localization.connectionReconnected) as object as AnyAction);
 	});
 
-	connection.onclose((e) => {
+	connection.onclose(async (e) => {
 		if (detachedConnections.includes(connection)) {
 			return;
+		}
+
+		try {
+			await connection.start();
+			await gameClient.reconnectAsync();
+			return;
+		} catch {
+			// empty
 		}
 
 		dispatch(commonActionCreators.onConnectionClosed(`${localization.connectionClosed} ${e?.message || ''}`) as object as AnyAction);

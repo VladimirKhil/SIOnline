@@ -53,7 +53,8 @@ const tableReducer: Reducer<TableState> = (state: TableState = initialState, any
 				...state,
 				mode: TableMode.Round,
 				text: action.roundName,
-				animateReading: false
+				animateReading: false,
+				content: [],
 			};
 
 		case TableActionTypes.ShowRoundThemes:
@@ -140,6 +141,7 @@ const tableReducer: Reducer<TableState> = (state: TableState = initialState, any
 		case TableActionTypes.ShowBackgroundAudio:
 			return {
 				...state,
+				mode: TableMode.Content,
 				audio: action.uri,
 				isMediaStopped: false
 			};
@@ -157,6 +159,13 @@ const tableReducer: Reducer<TableState> = (state: TableState = initialState, any
 				...state,
 				mode: TableMode.Html,
 				text: action.uri,
+			};
+
+		case TableActionTypes.ShowContent:
+			return {
+				...state,
+				mode: TableMode.Content,
+				content: action.content,
 			};
 
 		case TableActionTypes.ShowSpecial:
@@ -194,6 +203,13 @@ const tableReducer: Reducer<TableState> = (state: TableState = initialState, any
 
 		case TableActionTypes.TableReset:
 			return initialState;
+
+		case TableActionTypes.EndQuestion:
+			return {
+				...state,
+				content: [],
+				audio: '',
+			};
 
 		default:
 			return state;
