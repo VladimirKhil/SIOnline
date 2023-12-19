@@ -23,6 +23,10 @@ export class TablePartialText extends React.Component<TablePartialTextProps> {
 
 	private tailRef: React.RefObject<HTMLSpanElement>;
 
+	private animationStart = 0;
+
+	private interval: number | undefined;
+
 	constructor(props: TablePartialTextProps) {
 		super(props);
 
@@ -30,15 +34,26 @@ export class TablePartialText extends React.Component<TablePartialTextProps> {
 		this.tailRef = React.createRef<HTMLSpanElement>();
 	}
 
+	componentDidMount() {
+		this.interval = window.setInterval(() => {
+			this.animationStart = Math.max(0, this.animationStart - 0.1);
+		}, 100);
+	}
+
+	componentWillUnmount() {
+		if (this.interval) {
+			window.clearInterval(this.interval);
+		}
+	}
+
 	convertToAnimatable(text: string): string {
 		let animatedText = '';
 
 		const animationStep = this.props.readingSpeed === 0 ? 0 : 1 / this.props.readingSpeed;
-		let animation = 0;
 
 		for (let i = 0; i < text.length; i++) {
-			animation += animationStep;
-			const style = `animation-delay: ${animation}s`;
+			this.animationStart += animationStep;
+			const style = `animation-delay: ${this.animationStart}s`;
 
 			animatedText += `<span class="animatablePartialCharacter" style="${style}">${text[i]}</span>`;
 		}

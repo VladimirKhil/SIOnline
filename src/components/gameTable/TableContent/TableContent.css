@@ -1,3 +1,11 @@
+.table-content-group {
+	width: 100%;
+	height: 100%;
+	display: grid;
+	gap: 7px;
+	overflow: hidden;
+}
+
 .table-content {
 	width: 100%;
 	height: 100%;

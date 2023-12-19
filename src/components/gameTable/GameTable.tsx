@@ -5,8 +5,6 @@ import TableMode from '../../model/enums/TableMode';
 import TableLogo from './TableLogo';
 import TableText from './TableText';
 import TablePartialText from './TablePartialText';
-import TableImage from './TableImage';
-import TableVideo from './TableVideo';
 import TableAnswer from './TableAnswer';
 import TableGameThemes from './TableGameThemes';
 import TableRoundThemes from './TableRoundThemes';
@@ -19,8 +17,6 @@ import TimerInfo from '../../model/TimerInfo';
 import ProgressBar from '../common/ProgressBar';
 import { isRunning } from '../../utils/TimerInfoHelpers';
 import TableRound from './TableRound';
-import TableAudioFrame from './TableAudioFrame';
-import TableHtml from './TableHtml';
 import TableContent from './TableContent/TableContent';
 
 import './GameTable.css';
@@ -61,18 +57,6 @@ function getContent(mode: TableMode) {
 		case TableMode.PartialText:
 			return <TablePartialText />;
 
-		case TableMode.Image:
-			return <TableImage />;
-
-		case TableMode.Audio:
-			return <TableAudioFrame />;
-
-		case TableMode.Video:
-			return <TableVideo />;
-
-		case TableMode.Html:
-			return <TableHtml />;
-
 		case TableMode.Content:
 			return <TableContent onMediaPlay={() => {}} />; // TODO
 
@@ -103,10 +87,6 @@ function getCaption(props: GameTableProps): string | null {
 	switch (props.mode) {
 		case TableMode.Text:
 		case TableMode.PartialText:
-		case TableMode.Image:
-		case TableMode.Audio:
-		case TableMode.Video:
-		case TableMode.Html:
 		case TableMode.Content:
 			return props.caption;
 

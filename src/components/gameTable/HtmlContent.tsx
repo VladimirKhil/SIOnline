@@ -1,10 +1,9 @@
 import * as React from 'react';
 
-import './TableHtml.css';
+import './HtmlContent.css';
 
 interface HtmlContentProps {
 	uri: string;
-	weight: number;
 }
 
 export function HtmlContent(props: HtmlContentProps) {

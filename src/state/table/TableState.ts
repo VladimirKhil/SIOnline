@@ -1,5 +1,5 @@
 ﻿import AnswerOption from '../../model/AnswerOption';
-import ContentItem from '../../model/ContentItem';
+import ContentGroup from '../../model/ContentGroup';
 import LayoutMode from '../../model/enums/LayoutMode';
 import TableMode from '../../model/enums/TableMode';
 import ThemeInfo from '../../model/ThemeInfo';
@@ -19,7 +19,7 @@ export default interface TableState {
 	activeThemeIndex: number;
 	actionQuestionIndex: number;
 	isMediaStopped: boolean;
-	content: ContentItem[];
+	content: ContentGroup[];
 	answerOptions: AnswerOption[];
 }
 

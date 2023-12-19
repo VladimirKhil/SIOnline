@@ -1,4 +1,4 @@
-import ContentItem from '../../model/ContentItem';
+import ContentGroup from '../../model/ContentGroup';
 import ThemeInfo from '../../model/ThemeInfo';
 
 export const enum TableActionTypes {
@@ -15,11 +15,7 @@ export const enum TableActionTypes {
 	RemoveTheme = 'REMOVE_THEME',
 	ShowPartialText = 'SHOW_PARTIAL_TEXT',
 	AppendPartialText = 'APPEND_PARTIAL_TEXT',
-	ShowImage = 'SHOW_IMAGE',
-	ShowAudio = 'SHOW_AUDIO',
 	ShowBackgroundAudio = 'SHOW_BACKGROUND_AUDIO',
-	ShowVideo = 'SHOW_VIDEO',
-	ShowHtml = 'SHOW_HTML',
 	ShowContent = 'SHOW_CONTENT',
 	ShowSpecial = 'SHOW_SPECIAL',
 	CanPressChanged = 'CAN_PRESS_CHANGED',
@@ -50,12 +46,8 @@ export type UpdateQuestionAction = { type: TableActionTypes.UpdateQuestion, them
 export type RemoveThemeAction = { type: TableActionTypes.RemoveTheme, themeIndex: number };
 export type ShowPartialTextAction = { type: TableActionTypes.ShowPartialText, textShape: string };
 export type AppendPartialTextAction = { type: TableActionTypes.AppendPartialText, text: string };
-export type ShowImageAction = { type: TableActionTypes.ShowImage, uri: string };
-export type ShowAudioAction = { type: TableActionTypes.ShowAudio, uri: string };
 export type ShowBackgroundAudioAction = { type: TableActionTypes.ShowBackgroundAudio, uri: string };
-export type ShowVideoAction = { type: TableActionTypes.ShowVideo, uri: string };
-export type ShowHtmlAction = { type: TableActionTypes.ShowHtml, uri: string };
-export type ShowContentAction = { type: TableActionTypes.ShowContent, content: ContentItem[] };
+export type ShowContentAction = { type: TableActionTypes.ShowContent, content: ContentGroup[] };
 export type ShowSpecialAction = { type: TableActionTypes.ShowSpecial, text: string, activeThemeIndex: number };
 export type CanPressChangedAction = { type: TableActionTypes.CanPressChanged, canPress: boolean };
 export type IsSelectableChangedAction = { type: TableActionTypes.IsSelectableChanged, isSelectable: boolean };
@@ -78,11 +70,7 @@ export type KnownTableAction =
 	| RemoveThemeAction
 	| ShowPartialTextAction
 	| AppendPartialTextAction
-	| ShowImageAction
-	| ShowAudioAction
 	| ShowBackgroundAudioAction
-	| ShowVideoAction
-	| ShowHtmlAction
 	| ShowContentAction
 	| ShowSpecialAction
 	| CanPressChangedAction

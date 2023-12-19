@@ -8,7 +8,6 @@ import './TableText.css';
 interface TextContentProps {
 	text: string;
 	animateReading: boolean;
-	weight: number;
 
 	readingSpeed: number;
 }
@@ -39,7 +38,7 @@ function getAnimatableContent(text: string, readingSpeed: number) {
 
 export function TextContent(props: TextContentProps) {
 	return (
-		<div className='textHost' style={{ flex: `${props.weight}` }}>
+		<div className='textHost'>
 			<AutoSizedText className="tableText tableTextCenter" maxFontSize={144}>
 				{props.animateReading && props.readingSpeed > 0 ? getAnimatableContent(props.text, props.readingSpeed) : props.text}
 			</AutoSizedText>

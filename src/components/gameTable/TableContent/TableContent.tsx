@@ -10,11 +10,12 @@ import VideoContent from '../VideoContent';
 import HtmlContent from '../HtmlContent';
 import AudioContent from '../AudioContent';
 import VolumeButton from '../../common/VolumeButton';
+import ContentGroup from '../../../model/ContentGroup';
 
 import './TableContent.css';
 
 interface TableContentProps {
-	content: ContentItem[];
+	content: ContentGroup[];
 	audio: string;
 
 	onMediaPlay: () => void;
@@ -28,20 +29,26 @@ const mapStateToProps = (state: State) => ({
 function getContent(content: ContentItem, key: React.Key, autoPlayEnabled: boolean): JSX.Element | null {
 	switch (content.type) {
 		case ContentType.Text:
-			return <TextContent key={key} text={content.value} animateReading={content.read} weight={content.weight} />;
+			return <TextContent key={key} text={content.value} animateReading={content.read} />;
 
 		case ContentType.Image:
-			return <ImageContent key={key} uri={content.value} weight={content.weight} />;
+			return <ImageContent key={key} uri={content.value} />;
 
 		case ContentType.Video:
-			return <VideoContent key={key} uri={content.value} autoPlayEnabled={autoPlayEnabled} weight={content.weight} />;
+			return <VideoContent key={key} uri={content.value} autoPlayEnabled={autoPlayEnabled} />;
 
 		case ContentType.Html:
-			return <HtmlContent key={key} uri={content.value} weight={content.weight} />;
+			return <HtmlContent key={key} uri={content.value} />;
 
 		default:
 			return null;
 	}
+}
+
+function getGroupContent(group: ContentGroup, key: React.Key, autoPlayEnabled: boolean): JSX.Element | null {
+	return (<div className='table-content-group' style={{ flex: `${group.weight}`, gridTemplateColumns: `repeat(${group.columnCount}, 1fr)` }}>
+		{group.content.map((c, i) => getContent(c, i, autoPlayEnabled))}
+	</div>);
 }
 
 export function TableContent(props: TableContentProps): JSX.Element {
@@ -53,12 +60,12 @@ export function TableContent(props: TableContentProps): JSX.Element {
 			: null;
 	}
 
-	const hasSound = props.audio.length > 0 || props.content.some(c => c.type === ContentType.Video);
+	const hasSound = props.audio.length > 0 || props.content.some(g => g.content.some(c => c.type === ContentType.Video));
 
 	return (
 		<TableBorder>
 			<div className='table-content'>
-				{props.content.length > 0 ? props.content.map((c, i) => getContent(c, i, autoPlayEnabled)) : getAudioContent()}
+				{props.content.length > 0 ? props.content.map((c, i) => getGroupContent(c, i, autoPlayEnabled)) : getAudioContent()}
 				{hasSound ? <VolumeButton onEnableAudioPlay={() => { setAutoPlayEnabled(true); props.onMediaPlay(); }} /> : null}
 				<AudioContent />
 			</div>

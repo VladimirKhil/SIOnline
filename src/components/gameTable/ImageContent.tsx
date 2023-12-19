@@ -3,12 +3,11 @@ import { connect } from 'react-redux';
 import { Dispatch, Action } from 'redux';
 import roomActionCreators from '../../state/room/roomActionCreators';
 
-import './TableImage.css';
+import './ImageContent.css';
 import spinnerSvg from '../../../assets/images/spinner.svg';
 
 interface ImageContentProps {
 	uri: string;
-	weight: number;
 
 	mediaLoaded: () => void;
 }
@@ -40,7 +39,7 @@ export class ImageContent extends React.Component<ImageContentProps> {
 
 	render() {
 		return (
-			<div className='image-host' style={{ flex: `${this.props.weight}` }}>
+			<div className='image-host'>
 				<img alt='spinner' className="spinnerImg" ref={this.spinnerRef} src={spinnerSvg} />
 				<img alt='image' className="inGameImg" src={this.props.uri} onLoad={() => this.onImageLoad()} />
 			</div>

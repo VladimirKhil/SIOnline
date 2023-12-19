@@ -30,6 +30,7 @@ import StakeTypes2, { parseStakeTypesFromString } from '../../client/game/StakeT
 import ContentInfo from '../../model/ContentInfo';
 import ContentItem from '../../model/ContentItem';
 import ContentType from '../../model/enums/ContentType';
+import ContentGroup from '../../model/ContentGroup';
 
 let lastReplicLock: number;
 
@@ -120,45 +121,84 @@ function unescapeNewLines(value: string): string {
 	return value.replace('\\n', '\n').replace('\\\\', '\\');
 }
 
+function initGroup(group: ContentGroup) {
+	let bestRowCount = 1;
+	let bestColumnCount = group.content.length / bestRowCount;
+	let bestItemSize = Math.min(9.0 / bestRowCount, 16.0 / bestColumnCount);
+
+	for	(let rowCount = 2; rowCount < group.content.length; rowCount++) {
+		const columnCount = Math.ceil(group.content.length / rowCount);
+		const itemSize = Math.min(9.0 / rowCount, 16.0 / columnCount);
+
+		if (itemSize > bestItemSize) {
+			bestItemSize = itemSize;
+			bestRowCount = rowCount;
+			bestColumnCount = columnCount;
+		}
+	}
+
+	group.columnCount = bestColumnCount;
+	group.weight *= bestRowCount;
+}
+
 function onScreenContent(dispatch: Dispatch<AnyAction>, dataContext: DataContext, content: ContentInfo[]) {
-	const contentList: ContentItem[] = [];
+	const groups: ContentGroup[] = [];
+	let group: ContentGroup | null = null;
 
 	for	(let i = 0; i < content.length; i++) {
 		const { type, value } = content[i];
 
 		switch (type) {
 			case 'text':
-				contentList.push({
+				if (group) {
+					groups.push(group);
+					initGroup(group);
+					group = null;
+				}
+
+				const textGroup: ContentGroup = { weight: 1.0, content: [], columnCount: 1 };
+
+				textGroup.content.push({
 					type: ContentType.Text,
 					value: unescapeNewLines(value),
-					weight: 1.0,
-					read: contentList.length === 0
+					read: groups.length === 0
 				});
+
+				groups.push(textGroup);
 				break;
 
 			case 'image':
-				contentList.push({
+				if (!group) {
+					group = { weight: 3.0, content: [], columnCount: 1 };
+				}
+
+				group.content.push({
 					type: ContentType.Image,
 					value: preprocessServerUri(value, dataContext),
-					weight: 3.0,
 					read: false,
 				});
 				break;
 
 			case 'video':
-				contentList.push({
+				if (!group) {
+					group = { weight: 3.0, content: [], columnCount: 1 };
+				}
+
+				group.content.push({
 					type: ContentType.Video,
 					value: preprocessServerUri(value, dataContext),
-					weight: 3.0,
 					read: false,
 				});
 				break;
 
 			case 'html':
-				contentList.push({
+				if (!group) {
+					group = { weight: 3.0, content: [], columnCount: 1 };
+				}
+
+				group.content.push({
 					type: ContentType.Html,
 					value: preprocessServerUri(value, dataContext),
-					weight: 3.0,
 					read: false,
 				});
 				break;
@@ -168,7 +208,12 @@ function onScreenContent(dispatch: Dispatch<AnyAction>, dataContext: DataContext
 		}
 	}
 
-	dispatch(tableActionCreators.showContent(contentList));
+	if (group) {
+		groups.push(group);
+		initGroup(group);
+	}
+
+	dispatch(tableActionCreators.showContent(groups));
 }
 
 function onContent(dispatch: Dispatch<AnyAction>, state: State, dataContext: DataContext, ...args: string[]) {
@@ -251,16 +296,7 @@ function onContentShape(dispatch: Dispatch<AnyAction>, ...args: string[]) {
 		return;
 	}
 
-	let text = '';
-
-	for (let i = 4; i < args.length; i++) {
-		if (text.length > 0) {
-			text += '\n';
-		}
-
-		text += args[i];
-	}
-
+	const text = unescapeNewLines(args[4]);
 	dispatch(tableActionCreators.showPartialText(text));
 }
 
@@ -499,11 +535,6 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 					);
 				}
 			}
-			break;
-
-		case 'PACKAGELOGO':
-			const uri = preprocessServerUri(args[1], dataContext);
-			dispatch(tableActionCreators.showImage(uri));
 			break;
 
 		case 'PASS':
@@ -1630,3 +1661,4 @@ function playGameSound(isSoundEnabled: boolean, sound: GameSound, loop = false):
 
 	gameSoundPlayer.play(sound, loop);
 }
+

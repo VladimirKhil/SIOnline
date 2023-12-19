@@ -8,9 +8,6 @@ export default interface ContentItem {
 	/** Text value or content uri. */
 	value: string;
 
-	/** Relative content weight (used for calculating content space size). */
-	weight: number;
-
 	/** Should be read. */
 	read: boolean;
 }

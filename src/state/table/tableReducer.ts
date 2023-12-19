@@ -122,43 +122,12 @@ const tableReducer: Reducer<TableState> = (state: TableState = initialState, any
 				tail: state.tail.substring(action.text.length)
 			};
 
-		case TableActionTypes.ShowImage:
-			return {
-				...state,
-				mode: TableMode.Image,
-				text: action.uri,
-				audio: '',
-			};
-
-		case TableActionTypes.ShowAudio:
-			return {
-				...state,
-				mode: TableMode.Audio,
-				audio: action.uri,
-				isMediaStopped: false
-			};
-
 		case TableActionTypes.ShowBackgroundAudio:
 			return {
 				...state,
 				mode: TableMode.Content,
 				audio: action.uri,
 				isMediaStopped: false
-			};
-
-		case TableActionTypes.ShowVideo:
-			return {
-				...state,
-				mode: TableMode.Video,
-				text: action.uri,
-				isMediaStopped: false
-			};
-
-		case TableActionTypes.ShowHtml:
-			return {
-				...state,
-				mode: TableMode.Html,
-				text: action.uri,
 			};
 
 		case TableActionTypes.ShowContent:

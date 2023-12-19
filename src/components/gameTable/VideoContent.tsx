@@ -12,7 +12,6 @@ interface VideoContentProps {
 	uri: string;
 	isMediaStopped: boolean;
 	autoPlayEnabled: boolean;
-	weight: number;
 
 	mediaLoaded: () => void;
 	onMediaEnded: () => void;

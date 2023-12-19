@@ -1,7 +1,7 @@
 import * as TableActions from './TableActions';
 import { ActionCreator } from 'redux';
 import ThemeInfo from '../../model/ThemeInfo';
-import ContentItem from '../../model/ContentItem';
+import ContentGroup from '../../model/ContentGroup';
 
 const showLogo: ActionCreator<TableActions.ShowLogoAction> = () => ({
 	type: TableActions.TableActionTypes.ShowLogo
@@ -66,27 +66,11 @@ const appendPartialText: ActionCreator<TableActions.AppendPartialTextAction> = (
 	type: TableActions.TableActionTypes.AppendPartialText, text
 });
 
-const showImage: ActionCreator<TableActions.ShowImageAction> = (uri: string) => ({
-	type: TableActions.TableActionTypes.ShowImage, uri
-});
-
-const showAudio: ActionCreator<TableActions.ShowAudioAction> = (uri: string) => ({
-	type: TableActions.TableActionTypes.ShowAudio, uri
-});
-
 const showBackgroundAudio: ActionCreator<TableActions.ShowBackgroundAudioAction> = (uri: string) => ({
 	type: TableActions.TableActionTypes.ShowBackgroundAudio, uri
 });
 
-const showVideo: ActionCreator<TableActions.ShowVideoAction> = (uri: string) => ({
-	type: TableActions.TableActionTypes.ShowVideo, uri
-});
-
-const showHtml: ActionCreator<TableActions.ShowHtmlAction> = (uri: string) => ({
-	type: TableActions.TableActionTypes.ShowHtml, uri
-});
-
-const showContent: ActionCreator<TableActions.ShowContentAction> = (content: ContentItem[]) => ({
+const showContent: ActionCreator<TableActions.ShowContentAction> = (content: ContentGroup[]) => ({
 	type: TableActions.TableActionTypes.ShowContent, content
 });
 
@@ -132,11 +116,7 @@ const tableActionCreators = {
 	removeTheme,
 	showPartialText,
 	appendPartialText,
-	showImage,
-	showAudio,
 	showBackgroundAudio,
-	showVideo,
-	showHtml,
 	showContent,
 	showSpecial,
 	canPressChanged,
