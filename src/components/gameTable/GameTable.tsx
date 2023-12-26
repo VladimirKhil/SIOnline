@@ -4,7 +4,6 @@ import State from '../../state/State';
 import TableMode from '../../model/enums/TableMode';
 import TableLogo from './TableLogo';
 import TableText from './TableText';
-import TablePartialText from './TablePartialText';
 import TableAnswer from './TableAnswer';
 import TableGameThemes from './TableGameThemes';
 import TableRoundThemes from './TableRoundThemes';
