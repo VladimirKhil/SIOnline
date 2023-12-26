@@ -54,11 +54,8 @@ function getContent(mode: TableMode) {
 		case TableMode.Text:
 			return <TableText />;
 
-		case TableMode.PartialText:
-			return <TablePartialText />;
-
 		case TableMode.Content:
-			return <TableContent onMediaPlay={() => {}} />; // TODO
+			return <TableContent />;
 
 		case TableMode.Answer:
 			return <TableAnswer />;
@@ -86,7 +83,6 @@ function getContent(mode: TableMode) {
 function getCaption(props: GameTableProps): string | null {
 	switch (props.mode) {
 		case TableMode.Text:
-		case TableMode.PartialText:
 		case TableMode.Content:
 			return props.caption;
 

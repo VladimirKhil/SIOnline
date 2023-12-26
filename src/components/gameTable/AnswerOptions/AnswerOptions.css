@@ -1,0 +1,76 @@
+.answerOptions {
+	display: flex;
+	flex-direction: column;
+	flex: 1 0 0;
+	overflow: hidden;
+}
+
+.answerOption {
+	flex: 1 0 0;
+	background-color: rgba(0,0,0,0.3);
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
+	padding: 10px;
+	overflow: hidden;
+    transition: background-color 1s;
+}
+
+.answerOptions.selectable .answerOption.normal {
+	cursor: pointer;
+}
+
+.answerOptions.selectable .answerOption.normal:hover {
+    background: rgb(189, 189, 166);
+}
+
+.answerOptions.selectable .answerOption.normal:active {
+	transform: scale(0.9,0.9);
+}
+
+.answerOption:not(:first-child) {
+	margin-top: 5px;
+}
+
+.answerOption.active {
+	background-color: lightyellow;
+}
+
+.answerOption.right {
+	background-color: green;
+}
+
+.answerOption.wrong {
+	background-color: darkred;
+}
+
+.answerOption.active:hover {
+	background-color: rgba(0,0,0,0.2);
+}
+
+.optionLabel {
+	color: cyan;
+	margin-right: 10px;
+	flex: 0 0 30px;
+	font-size: 25px;
+}
+
+.optionContent {
+	color: white;
+	flex: 1;
+	text-align: center;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+	overflow: hidden;
+}
+
+.optionContent div {
+	width: 100%;
+	height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

@@ -31,6 +31,9 @@ import ContentInfo from '../../model/ContentInfo';
 import ContentItem from '../../model/ContentItem';
 import ContentType from '../../model/enums/ContentType';
 import ContentGroup from '../../model/ContentGroup';
+import AnswerOption from '../../model/AnswerOption';
+import ItemState from '../../model/enums/ItemState';
+import LayoutMode from '../../model/enums/LayoutMode';
 
 let lastReplicLock: number;
 
@@ -161,7 +164,8 @@ function onScreenContent(dispatch: Dispatch<AnyAction>, dataContext: DataContext
 				textGroup.content.push({
 					type: ContentType.Text,
 					value: unescapeNewLines(value),
-					read: groups.length === 0
+					read: groups.length === 0,
+					partial: false,
 				});
 
 				groups.push(textGroup);
@@ -176,6 +180,7 @@ function onScreenContent(dispatch: Dispatch<AnyAction>, dataContext: DataContext
 					type: ContentType.Image,
 					value: preprocessServerUri(value, dataContext),
 					read: false,
+					partial: false,
 				});
 				break;
 
@@ -188,6 +193,7 @@ function onScreenContent(dispatch: Dispatch<AnyAction>, dataContext: DataContext
 					type: ContentType.Video,
 					value: preprocessServerUri(value, dataContext),
 					read: false,
+					partial: false,
 				});
 				break;
 
@@ -200,6 +206,7 @@ function onScreenContent(dispatch: Dispatch<AnyAction>, dataContext: DataContext
 					type: ContentType.Html,
 					value: preprocessServerUri(value, dataContext),
 					read: false,
+					partial: false,
 				});
 				break;
 
@@ -222,7 +229,7 @@ function onContent(dispatch: Dispatch<AnyAction>, state: State, dataContext: Dat
 	}
 
 	const placement = args[1];
-
+	const { layoutMode, answerOptions } = state.table;
 	const content: ContentInfo[] = [];
 
 	for (let i = 2; i + 2 < args.length; i++) {
@@ -235,10 +242,22 @@ function onContent(dispatch: Dispatch<AnyAction>, state: State, dataContext: Dat
 			});
 
 			i += 2;
+		} else if (layoutMode === LayoutMode.AnswerOptions && i + 3 < args.length && layoutId - 1 < answerOptions.length) {
+			const label = args[i + 1];
+			const contentType = args[i + 2];
+			const contentValue = args[i + 3];
+
+			if (contentType === 'text' || contentType === 'image') {
+				dispatch(tableActionCreators.updateOption(
+					layoutId - 1,
+					label,
+					contentType === 'text' ? ContentType.Text : ContentType.Image,
+					contentValue
+				));
+			}
+
+			i += 3;
 		}
-		// else if (false) {
-		// 	// TODO
-		// }
 	}
 
 	if (content.length === 0) {
@@ -298,9 +317,42 @@ function onContentShape(dispatch: Dispatch<AnyAction>, ...args: string[]) {
 
 	const text = unescapeNewLines(args[4]);
 	dispatch(tableActionCreators.showPartialText(text));
+
+	const groups: ContentGroup[] = [{
+		content: [
+			{
+				type: ContentType.Text,
+				value: '',
+				read: false,
+				partial: true
+			}
+		],
+		weight: 1,
+		columnCount: 1
+	}];
+
+	dispatch(tableActionCreators.showContent(groups));
 }
 
-function onLayout(dispatch: Dispatch<RoomActions.KnownRoomAction>, state: State, ...args: string[]) {
+function onContentState(dispatch: Dispatch<AnyAction>, state: State, ...args: string[]) {
+	if (args.length < 4) {
+		return;
+	}
+
+	const placement = args[1];
+	const layoutId = parseInt(args[2], 10);
+	const itemState = ItemState[args[3] as keyof typeof ItemState];
+
+	if (state.table.layoutMode === LayoutMode.AnswerOptions &&
+		placement === 'screen' &&
+		layoutId > 0 &&
+		layoutId <= state.table.answerOptions.length &&
+		itemState) {
+		dispatch(tableActionCreators.updateOptionState(layoutId - 1, itemState));
+	}
+}
+
+function onLayout(dispatch: Dispatch<AnyAction>, state: State, ...args: string[]) {
 	if (args.length < 5) {
 		return;
 	}
@@ -311,13 +363,19 @@ function onLayout(dispatch: Dispatch<RoomActions.KnownRoomAction>, state: State,
 
 	const questionHasScreenContent = args[2] === '+';
 
-	const optionsTypes: string[] = [];
+	const options: AnswerOption[] = [];
 
 	for (let i = 3; i < args.length; i++) {
-		optionsTypes.push(args[i]);
+		const typeName = args[i];
+
+		options.push({
+			label: '',
+			state: ItemState.Normal,
+			content: { type: ContentType[typeName as keyof typeof ContentType], value: '', read: false, partial: false }
+		});
 	}
 
-	// TODO dispatch();
+	dispatch(tableActionCreators.answerOptions(questionHasScreenContent, options));
 }
 
 const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataContext, args: string[]) => {
@@ -416,6 +474,10 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 
 		case GameMessages.ContentShape:
 			onContentShape(dispatch, ...args);
+			break;
+
+		case GameMessages.ContentState:
+			onContentState(dispatch, state, ...args);
 			break;
 
 		case 'DISCONNECTED':
@@ -738,10 +800,15 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 			dispatch(tableActionCreators.resumeMedia());
 			break;
 
-		case 'RIGHTANSWER':
-			dispatch(tableActionCreators.showAnswer(args[2]));
+		case GameMessages.RightAnswer:
+			if (state.table.layoutMode === LayoutMode.Simple) {
+				dispatch(tableActionCreators.showAnswer(args[2]));
+				dispatch(tableActionCreators.captionChanged(''));
+			} else {
+				dispatch(tableActionCreators.rightOption(args[2]));
+			}
+
 			dispatch(roomActionCreators.afterQuestionStateChanged(true));
-			dispatch(tableActionCreators.captionChanged(''));
 			break;
 
 		case 'ROUNDCONTENT':
@@ -1120,8 +1187,13 @@ function onStake2(dispatch: Dispatch<any>, _state: State, args: string[], maximu
 
 const playerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataContext, args: string[]) => {
 	switch (args[0]) {
-		case 'ANSWER':
-			dispatch(roomActionCreators.isAnswering());
+		case GameMessages.Answer:
+			if (state.table.layoutMode === LayoutMode.Simple) {
+				dispatch(roomActionCreators.isAnswering());
+			} else {
+				dispatch(roomActionCreators.decisionNeededChanged(true));
+				dispatch(tableActionCreators.isSelectableChanged(true));
+			}
 			break;
 
 		case 'CANCEL':
@@ -1222,7 +1294,7 @@ const showmanHandler = (dispatch: Dispatch<any>, state: State, dataContext: Data
 			}
 			break;
 
-		case 'RIGHTANSWER':
+		case GameMessages.RightAnswer:
 			dispatch(roomActionCreators.hintChanged(null));
 			break;
 

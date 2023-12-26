@@ -1,5 +1,8 @@
+import AnswerOption from '../../model/AnswerOption';
 import ContentGroup from '../../model/ContentGroup';
 import ThemeInfo from '../../model/ThemeInfo';
+import ContentType from '../../model/enums/ContentType';
+import ItemState from '../../model/enums/ItemState';
 
 export const enum TableActionTypes {
 	ShowLogo = 'SHOW_LOGO',
@@ -24,6 +27,10 @@ export const enum TableActionTypes {
 	CaptionChanged = 'CAPTION_CHANGED',
 	TableReset = 'TABLE_RESET',
 	EndQuestion = 'END_QUESTION',
+	AnswerOptions = 'ANSWER_OPTIONS',
+	UpdateOption = 'UPDATE_OPTION',
+	UpdateOptionState = 'UPDATE_OPTION_STATE',
+	RightOption = 'RIGHT_OPTION',
 }
 
 export type ShowLogoAction = { type: TableActionTypes.ShowLogo };
@@ -55,6 +62,10 @@ export type ResumeMediaAction = { type: TableActionTypes.ResumeMedia };
 export type CaptionChangedAction = { type: TableActionTypes.CaptionChanged, caption: string };
 export type TableResetAction = { type: TableActionTypes.TableReset };
 export type EndQuestionAction = { type: TableActionTypes.EndQuestion };
+export type AnswerOptionsAction = { type: TableActionTypes.AnswerOptions, questionHasScreenContent: boolean, options: AnswerOption[] };
+export type UpdateOptionAction = { type: TableActionTypes.UpdateOption, index: number, label: string, contentType: ContentType, value: string };
+export type UpdateOptionStateAction = { type: TableActionTypes.UpdateOptionState, index: number, state: ItemState };
+export type RightOptionAction = { type: TableActionTypes.RightOption, label: string };
 
 export type KnownTableAction =
 	ShowLogoAction
@@ -78,4 +89,8 @@ export type KnownTableAction =
 	| ResumeMediaAction
 	| CaptionChangedAction
 	| TableResetAction
-	| EndQuestionAction;
+	| EndQuestionAction
+	| AnswerOptionsAction
+	| UpdateOptionAction
+	| UpdateOptionStateAction
+	| RightOptionAction;

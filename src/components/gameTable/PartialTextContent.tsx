@@ -2,11 +2,10 @@ import * as React from 'react';
 import State from '../../state/State';
 import { connect } from 'react-redux';
 import AutoSizedText from '../common/AutoSizedText';
-import TableBorder from './TableBorder';
 
-import './TablePartialText.css';
+import './PartialTextContent.css';
 
-interface TablePartialTextProps {
+interface PartialTextContentProps {
 	text: string;
 	tail: string;
 	readingSpeed: number;
@@ -18,7 +17,7 @@ const mapStateToProps = (state: State) => ({
 	readingSpeed: state.room.readingSpeed,
 });
 
-export class TablePartialText extends React.Component<TablePartialTextProps> {
+export class PartialTextContent extends React.Component<PartialTextContentProps> {
 	private textRef: React.RefObject<HTMLSpanElement>;
 
 	private tailRef: React.RefObject<HTMLSpanElement>;
@@ -27,7 +26,7 @@ export class TablePartialText extends React.Component<TablePartialTextProps> {
 
 	private interval: number | undefined;
 
-	constructor(props: TablePartialTextProps) {
+	constructor(props: PartialTextContentProps) {
 		super(props);
 
 		this.textRef = React.createRef<HTMLSpanElement>();
@@ -63,7 +62,7 @@ export class TablePartialText extends React.Component<TablePartialTextProps> {
 		return `${animatedText}<span></span>`;
 	}
 
-	shouldComponentUpdate(nextProps: TablePartialTextProps) {
+	shouldComponentUpdate(nextProps: PartialTextContentProps) {
 		// We update component manually so we always return false
 		if (nextProps.text !== this.props.text && this.textRef.current && this.tailRef.current) {
 			let lastChild: ChildNode = this.textRef.current;
@@ -81,14 +80,14 @@ export class TablePartialText extends React.Component<TablePartialTextProps> {
 
 	render() {
 		return (
-			<TableBorder>
+			<div className='textHost'>
 				<AutoSizedText className="tableText nonAligned" maxFontSize={144}>
 					<span ref={this.textRef} key="text">{this.props.text}</span>
 					<span ref={this.tailRef} key="tail" className="invisible">{this.props.tail}</span>
 				</AutoSizedText>
-			</TableBorder>
+			</div>
 		);
 	}
 }
 
-export default connect(mapStateToProps)(TablePartialText);
+export default connect(mapStateToProps)(PartialTextContent);

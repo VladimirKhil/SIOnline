@@ -1,5 +1,5 @@
 /** Defines table item state. */
-const enum ItemState {
+enum ItemState {
     /** Normal (default) state. */
     Normal,
 

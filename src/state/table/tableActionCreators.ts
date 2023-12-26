@@ -2,6 +2,9 @@ import * as TableActions from './TableActions';
 import { ActionCreator } from 'redux';
 import ThemeInfo from '../../model/ThemeInfo';
 import ContentGroup from '../../model/ContentGroup';
+import AnswerOption from '../../model/AnswerOption';
+import ContentType from '../../model/enums/ContentType';
+import ItemState from '../../model/enums/ItemState';
 
 const showLogo: ActionCreator<TableActions.ShowLogoAction> = () => ({
 	type: TableActions.TableActionTypes.ShowLogo
@@ -102,6 +105,22 @@ const endQuestion: ActionCreator<TableActions.EndQuestionAction> = () => ({
 	type: TableActions.TableActionTypes.EndQuestion
 });
 
+const answerOptions: ActionCreator<TableActions.AnswerOptionsAction> = (questionHasScreenContent: boolean, options: AnswerOption[]) => ({
+	type: TableActions.TableActionTypes.AnswerOptions, questionHasScreenContent, options
+});
+
+const updateOption: ActionCreator<TableActions.UpdateOptionAction> = (index: number, label: string, contentType: ContentType, value: string) => ({
+	type: TableActions.TableActionTypes.UpdateOption, index, label, contentType, value
+});
+
+const updateOptionState: ActionCreator<TableActions.UpdateOptionStateAction> = (index: number, state: ItemState) => ({
+	type: TableActions.TableActionTypes.UpdateOptionState, index, state
+});
+
+const rightOption: ActionCreator<TableActions.RightOptionAction> = (label: string) => ({
+	type: TableActions.TableActionTypes.RightOption, label
+});
+
 const tableActionCreators = {
 	showLogo,
 	showGameThemes,
@@ -125,6 +144,10 @@ const tableActionCreators = {
 	captionChanged,
 	tableReset,
 	endQuestion,
+	answerOptions,
+	updateOption,
+	updateOptionState,
+	rightOption,
 };
 
 export default tableActionCreators;

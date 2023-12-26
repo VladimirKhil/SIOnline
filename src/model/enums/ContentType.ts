@@ -1,5 +1,5 @@
 /** Defines well-known displayable content type. */
-const enum ContentType {
+enum ContentType {
     /** Empty content. */
     Void,
 

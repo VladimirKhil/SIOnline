@@ -7,6 +7,8 @@ import getErrorMessage from '../../utils/ErrorHelpers';
 import localization from '../../model/resources/localization';
 import getExtension from '../../utils/FileHelper';
 
+import './VideoContent.css';
+
 interface VideoContentProps {
 	soundVolume: number;
 	uri: string;
@@ -104,9 +106,11 @@ export class VideoContent extends React.Component<VideoContentProps> {
 		const { onMediaEnded, uri } = this.props;
 
 		return (
-			<video ref={this.videoRef} autoPlay onEnded={onMediaEnded} onLoadedData={() => this.props.mediaLoaded()}>
-				<source src={uri} />
-			</video>
+			<div className='video-host'>
+				<video ref={this.videoRef} autoPlay onEnded={onMediaEnded} onLoadedData={() => this.props.mediaLoaded()}>
+					<source src={uri} />
+				</video>
+			</div>
 		);
 	}
 }

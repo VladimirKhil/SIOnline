@@ -1,5 +1,8 @@
 /** Defines INCOMING SIGame messages. */
 const enum GameMessages {
+	/** Asks person answer. */
+	Answer = 'ANSWER',
+
 	/** Small hint fragment. Displayed separately from the main content. */
 	AtomHint = 'ATOM_HINT',
 
@@ -32,6 +35,9 @@ const enum GameMessages {
 
 	/** Question has ended. */
 	QuestionEnd = 'QUESTION_END',
+
+	/** Question right answer. */
+	RightAnswer = 'RIGHTANSWER',
 
 	/** Sets game join mode. */
 	SetJoinMode = 'SETJOINMODE',

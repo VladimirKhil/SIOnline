@@ -10,4 +10,7 @@ export default interface ContentItem {
 
 	/** Should be read. */
 	read: boolean;
+
+	/** Should be output partially. */
+	partial: boolean;
 }

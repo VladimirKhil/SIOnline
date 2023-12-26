@@ -11,25 +11,30 @@ import HtmlContent from '../HtmlContent';
 import AudioContent from '../AudioContent';
 import VolumeButton from '../../common/VolumeButton';
 import ContentGroup from '../../../model/ContentGroup';
+import LayoutMode from '../../../model/enums/LayoutMode';
+import AnswerOptions from '../AnswerOptions/AnswerOptions';
+import PartialTextContent from '../PartialTextContent';
 
 import './TableContent.css';
 
 interface TableContentProps {
+	layoutMode: LayoutMode;
 	content: ContentGroup[];
 	audio: string;
-
-	onMediaPlay: () => void;
 }
 
 const mapStateToProps = (state: State) => ({
 	content: state.table.content,
 	audio: state.table.audio,
+	layoutMode: state.table.layoutMode,
 });
 
 function getContent(content: ContentItem, key: React.Key, autoPlayEnabled: boolean): JSX.Element | null {
 	switch (content.type) {
 		case ContentType.Text:
-			return <TextContent key={key} text={content.value} animateReading={content.read} />;
+			return content.partial
+				? <PartialTextContent key={key} />
+				: <TextContent key={key} text={content.value} animateReading={content.read} />;
 
 		case ContentType.Image:
 			return <ImageContent key={key} uri={content.value} />;
@@ -46,9 +51,20 @@ function getContent(content: ContentItem, key: React.Key, autoPlayEnabled: boole
 }
 
 function getGroupContent(group: ContentGroup, key: React.Key, autoPlayEnabled: boolean): JSX.Element | null {
-	return (<div className='table-content-group' style={{ flex: `${group.weight}`, gridTemplateColumns: `repeat(${group.columnCount}, 1fr)` }}>
-		{group.content.map((c, i) => getContent(c, i, autoPlayEnabled))}
-	</div>);
+	return (
+		<div
+			key={key}
+			className='table-content-group'
+			style={{ flex: `${group.weight}`, gridTemplateColumns: `repeat(${group.columnCount}, 1fr)` }}>
+			{group.content.map((c, i) => getContent(c, i, autoPlayEnabled))}
+		</div>
+	);
+}
+
+function getLayout(layoutMode: LayoutMode, mainContent: JSX.Element) {
+	return layoutMode === LayoutMode.Simple
+		? mainContent
+		: <div className='optionsLayout'>{mainContent}<AnswerOptions /></div>;
 }
 
 export function TableContent(props: TableContentProps): JSX.Element {
@@ -62,11 +78,15 @@ export function TableContent(props: TableContentProps): JSX.Element {
 
 	const hasSound = props.audio.length > 0 || props.content.some(g => g.content.some(c => c.type === ContentType.Video));
 
+	const mainContent = <div className='mainContent'>
+		{props.content.length > 0 ? props.content.map((c, i) => getGroupContent(c, i, autoPlayEnabled)) : getAudioContent()}
+	</div>;
+
 	return (
 		<TableBorder>
 			<div className='table-content'>
-				{props.content.length > 0 ? props.content.map((c, i) => getGroupContent(c, i, autoPlayEnabled)) : getAudioContent()}
-				{hasSound ? <VolumeButton onEnableAudioPlay={() => { setAutoPlayEnabled(true); props.onMediaPlay(); }} /> : null}
+				{getLayout(props.layoutMode, mainContent)}
+				{hasSound ? <VolumeButton onEnableAudioPlay={() => { setAutoPlayEnabled(true); }} /> : null}
 				<AudioContent />
 			</div>
 		</TableBorder>

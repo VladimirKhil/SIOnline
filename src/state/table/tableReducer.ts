@@ -3,6 +3,8 @@ import TableState, { initialState } from './TableState';
 import { KnownTableAction, RemoveThemeAction, TableActionTypes, UpdateQuestionAction } from './TableActions';
 import TableMode from '../../model/enums/TableMode';
 import { replace } from '../../utils/ArrayExtensions';
+import LayoutMode from '../../model/enums/LayoutMode';
+import ItemState from '../../model/enums/ItemState';
 
 function updateQuestion(state: TableState, action: UpdateQuestionAction) {
 	const activeTheme = state.roundInfo[action.themeIndex];
@@ -110,7 +112,6 @@ const tableReducer: Reducer<TableState> = (state: TableState = initialState, any
 		case TableActionTypes.ShowPartialText:
 			return {
 				...state,
-				mode: TableMode.PartialText,
 				text: '',
 				tail: action.textShape
 			};
@@ -178,6 +179,48 @@ const tableReducer: Reducer<TableState> = (state: TableState = initialState, any
 				...state,
 				content: [],
 				audio: '',
+				layoutMode: LayoutMode.Simple,
+			};
+
+		case TableActionTypes.AnswerOptions:
+			return {
+				...state,
+				mode: TableMode.Content,
+				layoutMode: LayoutMode.AnswerOptions,
+				answerOptions: action.options,
+			};
+
+		case TableActionTypes.UpdateOption:
+			return {
+				...state,
+				answerOptions: replace(state.answerOptions, action.index, {
+					label: action.label,
+					state: state.answerOptions[action.index].state,
+					content: {
+						type: action.contentType,
+						value: action.value,
+						read: state.answerOptions[action.index].content.read,
+						partial: state.answerOptions[action.index].content.partial
+					}
+				})
+			};
+
+		case TableActionTypes.UpdateOptionState:
+			return {
+				...state,
+				answerOptions: replace(state.answerOptions, action.index, {
+					...state.answerOptions[action.index],
+					state: action.state,
+				})
+			};
+
+		case TableActionTypes.RightOption:
+			return {
+				...state,
+				answerOptions: state.answerOptions.map(o => ({
+					...o,
+					state: o.label === action.label ? ItemState.Right : (o.state === ItemState.Active ? ItemState.Normal : o.state)
+				}))
 			};
 
 		default:

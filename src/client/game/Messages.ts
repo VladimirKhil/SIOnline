@@ -1,5 +1,8 @@
 /** Defines OUTGOING SIGame messages. */
 const enum Messages {
+	/** Sends player answer. */
+	Answer = 'ANSWER',
+
 	/** Answer version. Denotes a preliminary answer printed by player. */
 	AnswerVersion = 'ANSWER_VERSION',
 

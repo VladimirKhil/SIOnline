@@ -460,6 +460,20 @@ const selectTheme: ActionCreator<ThunkAction<void, State, DataContext, Action>> 
 	}
 };
 
+const selectAnswerOption: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (label: string) => async (
+	dispatch: Dispatch<Action>,
+	getState: () => State, dataContext: DataContext
+) => {
+	if (!getState().table.isSelectable) {
+		return;
+	}
+
+	if (await dataContext.gameClient.msgAsync(Messages.Answer, label)) {
+		dispatch(tableActionCreators.isSelectableChanged(false));
+		dispatch(decisionNeededChanged(false));
+	}
+};
+
 const isGameButtonEnabledChanged: ActionCreator<RunActions.IsGameButtonEnabledChangedAction> = (isGameButtonEnabled: boolean) => ({
 	type: RunActions.RoomActionTypes.IsGameButtonEnabledChanged, isGameButtonEnabled
 });
@@ -993,6 +1007,7 @@ const roomActionCreators = {
 	clearRoomChat,
 	joinModeChanged,
 	setJoinMode,
+	selectAnswerOption,
 };
 
 export default roomActionCreators;

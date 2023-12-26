@@ -1,7 +1,6 @@
 ﻿const enum TableMode {
 	Logo,
 	Text,
-	PartialText,
 	Answer,
 	GameThemes,
 	Round,
