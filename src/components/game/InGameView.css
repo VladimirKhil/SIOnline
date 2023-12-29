@@ -7,6 +7,7 @@
 .game__mainArea {
     display: flex;
     flex-direction: column;
+    overflow-x: hidden;
 }
 
 .game__tableArea {

@@ -408,6 +408,8 @@ h1.activeTab {
     flex: 1 0 0;
     background-color: #000451;
     color: white;
+    overflow-x: hidden;
+    overflow-wrap: break-word;
 }
 
 .game__log {
