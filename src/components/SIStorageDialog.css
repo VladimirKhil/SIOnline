@@ -153,3 +153,17 @@
 	display: inline-block;
 	margin: 0 2px;
 }
+
+.rounds {
+	font-size: 14px;
+	margin-left: 20px !important;
+	list-style-type: disc !important;
+}
+
+.roundInfo {
+	padding: 0 !important;
+}
+
+.roundName {
+	font-weight: bold;
+}

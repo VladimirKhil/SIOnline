@@ -268,6 +268,25 @@ export class SIStorageDialog extends React.Component<SIStorageDialogProps, SISto
 		this.setState({ pageIndex });
 	}
 
+	getContentName(contentKey: string) {
+		switch (contentKey) {
+			case 'image':
+				return localization.images;
+
+			case 'audio':
+				return localization.audio;
+
+			case 'video':
+				return localization.video;
+
+			case 'html':
+				return localization.html;
+
+			default:
+				return localization.text;
+		}
+	}
+
 	render(): JSX.Element {
 		const filterTagIds = this.state.filters.tagIds;
 		const filterRestrictionIds = this.state.filters.restrictionIds;
@@ -453,6 +472,11 @@ export class SIStorageDialog extends React.Component<SIStorageDialogProps, SISto
 							restrictionIds,
 							tagIds,
 							contentUri,
+							size,
+							rounds,
+							questionCount,
+							contentTypeStatistic,
+							downloadCount,
 						}) => (
 								<li key={id}>
 									<span className="storagePackageName">{name}</span>
@@ -484,6 +508,40 @@ export class SIStorageDialog extends React.Component<SIStorageDialogProps, SISto
 									<br />
 									<span className='packageItemHeader'>{`${localization.packagePublishedDate}: `}</span>
 									<span>{createDate ? new Date(createDate).toLocaleDateString(this.props.culture) : ''}</span>
+
+									{size
+										? (<>
+											<br />
+											<span className='packageItemHeader'>{`${localization.size}: `}</span>
+											<span>{Math.round(size / 1024 / 1024 * 100) / 100} MB</span>
+											</>)
+										: null}
+
+									<br />
+									<span className='packageItemHeader'>{`${localization.questionCount}: `}</span>
+									<span>{questionCount}</span>
+
+									{contentTypeStatistic
+										? (<>
+											<br />
+											<span className='packageItemHeader'>{`${localization.content}: `}</span>
+											<span>{Object.keys(contentTypeStatistic).map(
+												key => `${this.getContentName(key)} (${contentTypeStatistic[key]})`).join(', ')}
+											</span>
+											</>)
+										: null}
+
+									<br />
+									<span className='packageItemHeader'>{`${localization.roundsAndThemes}: `}</span>
+
+									<ul className='rounds'>{rounds?.map((r, i) => <li key={i} className='roundInfo'>
+										<span className='roundName'>{r.name}</span>: {r.themeNames.join(', ')}
+										</li>)}
+									</ul>
+
+									<span className='packageItemHeader'>{`${localization.downloadCount}: `}</span>
+									<span>{downloadCount}</span>
+
 									<br />
 
 									{contentUri
