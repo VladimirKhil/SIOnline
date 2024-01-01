@@ -49,14 +49,14 @@ const mapDispatchToProps = (dispatch: any) => ({
 	}
 });
 
-const buildStage = (stage: GameStage, stageName: string) => {
+const buildStage = (stage: GameStage, stageName: string, progressCurrent: number, progressTotal: number) => {
 	switch (stage) {
 		case GameStage.Created:
 			return localization.created;
 		case GameStage.Started:
 			return localization.started;
 		case GameStage.Round:
-			return `${localization.round}: ${stageName}`;
+			return `${progressCurrent}/${progressTotal}: ${localization.round}: ${stageName}`;
 		case GameStage.Final:
 			return localization.final;
 		default:
@@ -159,7 +159,7 @@ export function GameInfoView(props: GameInfoViewProps): JSX.Element {
 								<dt>{localization.viewers}</dt>
 								<dd>{viewers.map(name => <div className='personName' key={name}>{name}</div>)}</dd>
 								<dt>{localization.status}</dt>
-								<dd>{buildStage(game.Stage, game.StageName)}</dd>
+								<dd>{buildStage(game.Stage, game.StageName, game.ProgressCurrent, game.ProgressTotal)}</dd>
 
 								{duration.length > 0 ? (<>
 									<dt>{localization.duration}</dt>
@@ -174,9 +174,11 @@ export function GameInfoView(props: GameInfoViewProps): JSX.Element {
 						{game.PasswordRequired ? (
 							<div className="passwordInfo">
 								<span>{localization.password}</span>
+
 								<input
 									id="password"
 									type="password"
+									aria-label='Password'
 									disabled={props.joinGameProgress}
 									value={props.password}
 									onChange={e => props.onPasswordChanged(e.target.value)}

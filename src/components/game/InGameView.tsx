@@ -25,6 +25,7 @@ import BannedView from './BannedView';
 import TableContextView from './TableContextView/TableContextView';
 import ChatInput from './ChatInput';
 import PlayersListView from './PlayersListView/PlayersListView';
+import GameProgress from './GameProgress';
 
 import './InGameView.css';
 
@@ -101,6 +102,7 @@ export function InGameView(props: InGameViewProps) : JSX.Element {
 					<div className="showmanTableArea">
 						<div className="showmanProgressArea">
 							<RoundProgress />
+							<GameProgress />
 							<ShowmanReplicView />
 						</div>
 

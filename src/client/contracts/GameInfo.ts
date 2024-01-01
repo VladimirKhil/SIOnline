@@ -12,6 +12,8 @@ export default interface GameInfo {
 	PackageName: string;
 	PasswordRequired: boolean;
 	Persons: PersonInfo[];
+	ProgressCurrent: number;
+	ProgressTotal: number;
 	RealStartTime: string;
 	Rules: string;
 	Stage: GameStage;
