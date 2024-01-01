@@ -21,6 +21,8 @@ export default interface TableState {
 	isMediaStopped: boolean;
 	content: ContentGroup[];
 	answerOptions: AnswerOption[];
+	prependText: string;
+	appendText: string;
 }
 
 export const initialState: TableState = {
@@ -40,4 +42,6 @@ export const initialState: TableState = {
 	isMediaStopped: false,
 	content: [],
 	answerOptions: [],
+	prependText: '',
+	appendText: '',
 };

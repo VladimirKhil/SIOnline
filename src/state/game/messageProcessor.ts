@@ -18,7 +18,7 @@ import Constants from '../../model/enums/Constants';
 import Role from '../../model/Role';
 import localization from '../../model/resources/localization';
 import StakeTypes from '../../model/enums/StakeTypes';
-import stringFormat from '../../utils/StringHelpers';
+import stringFormat, { trimLength } from '../../utils/StringHelpers';
 import actionCreators from '../actionCreators';
 import MessageLevel from '../../model/enums/MessageLevel';
 import GameStage from '../../model/enums/GameStage';
@@ -28,7 +28,6 @@ import JoinMode from '../../client/game/JoinMode';
 import { getMeAsPlayer } from '../../utils/StateHelpers';
 import StakeTypes2, { parseStakeTypesFromString } from '../../client/game/StakeTypes';
 import ContentInfo from '../../model/ContentInfo';
-import ContentItem from '../../model/ContentItem';
 import ContentType from '../../model/enums/ContentType';
 import ContentGroup from '../../model/ContentGroup';
 import AnswerOption from '../../model/AnswerOption';
@@ -36,6 +35,7 @@ import ItemState from '../../model/enums/ItemState';
 import LayoutMode from '../../model/enums/LayoutMode';
 
 let lastReplicLock: number;
+const MAX_APPEND_TEXT_LENGTH = 150;
 
 export default function messageProcessor(dispatch: Dispatch<AnyAction>, message: Message) {
 	if (message.IsSystem) {
@@ -173,7 +173,7 @@ function onScreenContent(dispatch: Dispatch<AnyAction>, dataContext: DataContext
 
 			case 'image':
 				if (!group) {
-					group = { weight: 3.0, content: [], columnCount: 1 };
+					group = { weight: 4.0, content: [], columnCount: 1 };
 				}
 
 				group.content.push({
@@ -186,7 +186,7 @@ function onScreenContent(dispatch: Dispatch<AnyAction>, dataContext: DataContext
 
 			case 'video':
 				if (!group) {
-					group = { weight: 3.0, content: [], columnCount: 1 };
+					group = { weight: 4.0, content: [], columnCount: 1 };
 				}
 
 				group.content.push({
@@ -199,7 +199,7 @@ function onScreenContent(dispatch: Dispatch<AnyAction>, dataContext: DataContext
 
 			case 'html':
 				if (!group) {
-					group = { weight: 3.0, content: [], columnCount: 1 };
+					group = { weight: 4.0, content: [], columnCount: 1 };
 				}
 
 				group.content.push({
@@ -427,13 +427,14 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 			dispatch(roomActionCreators.buttonBlockingTimeChanged(parseInt(args[1], 10)));
 			break;
 
-		case 'CHOICE':
+		case GameMessages.Choice:
 			{
 				const themeIndex = parseInt(args[1], 10);
 				const questIndex = parseInt(args[2], 10);
 
 				dispatch(roomActionCreators.playersStateCleared());
 				dispatch(roomActionCreators.afterQuestionStateChanged(false));
+				dispatch(tableActionCreators.questionReset());
 
 				const themeInfo = state.table.roundInfo[themeIndex];
 
@@ -752,12 +753,13 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 
 			break;
 
-		case 'QUESTION':
+		case GameMessages.Question:
 			if (args.length > 1) {
 				dispatch(roomActionCreators.playersStateCleared());
 				dispatch(tableActionCreators.showText(args[1], false));
 				dispatch(roomActionCreators.afterQuestionStateChanged(false));
 				dispatch(roomActionCreators.updateCaption(args[1]));
+				dispatch(tableActionCreators.questionReset());
 			}
 			break;
 
@@ -811,6 +813,12 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 			dispatch(roomActionCreators.afterQuestionStateChanged(true));
 			break;
 
+		case GameMessages.RightAnswerStart:
+			if (args.length > 2) {
+				onRightAnswerStart(dispatch, args[2]);
+			}
+			break;
+
 		case 'ROUNDCONTENT':
 			// Clearing old preloads
 			// for (let i = 0; i < document.head.children.length; i++) {
@@ -861,7 +869,7 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 			dispatch(roomActionCreators.roundsNamesChanged(args.slice(1)));
 			break;
 
-		case 'ROUNDTHEMES':
+		case GameMessages.RoundThemes:
 			const printThemes = args[1] === '+';
 			const roundThemes: ThemeInfo[] = [];
 
@@ -874,6 +882,7 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 			}
 
 			dispatch(tableActionCreators.showRoundThemes(roundThemes, state.room.stage.name === 'Final', printThemes));
+			dispatch(tableActionCreators.questionReset());
 			break;
 
 		case 'SETCHOOSER':
@@ -1073,6 +1082,12 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 			}
 			break;
 
+		case GameMessages.ThemeComments:
+			if (args.length > 1) {
+				onThemeComments(dispatch, args[1]);
+			}
+			break;
+
 		case GameMessages.Toggle:
 			if (args.length > 3) {
 				const themeIndex = parseInt(args[1], 10);
@@ -1183,6 +1198,16 @@ function onStake2(dispatch: Dispatch<any>, _state: State, args: string[], maximu
 
 	dispatch(roomActionCreators.setStakes(allowedStakeTypes, minimum, maximum, minimum, step, 'STAKE', false));
 	dispatch(roomActionCreators.decisionNeededChanged(true));
+}
+
+function onThemeComments(dispatch: Dispatch<any>, themeComments: string) {
+	const comments = trimLength(unescapeNewLines(themeComments), MAX_APPEND_TEXT_LENGTH);
+	dispatch(tableActionCreators.prependTextChanged(comments));
+}
+
+function onRightAnswerStart(dispatch: Dispatch<any>, rightAnswer: string) {
+	const answer = trimLength(unescapeNewLines(rightAnswer), MAX_APPEND_TEXT_LENGTH);
+	dispatch(tableActionCreators.setAnswerView(answer));
 }
 
 const playerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataContext, args: string[]) => {

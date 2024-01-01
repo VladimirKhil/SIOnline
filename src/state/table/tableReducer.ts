@@ -57,6 +57,8 @@ const tableReducer: Reducer<TableState> = (state: TableState = initialState, any
 				text: action.roundName,
 				animateReading: false,
 				content: [],
+				appendText: '',
+				prependText: '',
 			};
 
 		case TableActionTypes.ShowRoundThemes:
@@ -178,6 +180,8 @@ const tableReducer: Reducer<TableState> = (state: TableState = initialState, any
 			return {
 				...state,
 				content: [],
+				prependText: '',
+				appendText: '',
 				audio: '',
 				layoutMode: LayoutMode.Simple,
 			};
@@ -221,6 +225,28 @@ const tableReducer: Reducer<TableState> = (state: TableState = initialState, any
 					...o,
 					state: o.label === action.label ? ItemState.Right : (o.state === ItemState.Active ? ItemState.Normal : o.state)
 				}))
+			};
+
+		case TableActionTypes.PrependTextChanged:
+			return {
+				...state,
+				prependText: action.text
+			};
+
+		case TableActionTypes.QuestionReset:
+			return {
+				...state,
+				prependText: '',
+				appendText: '',
+			};
+
+		case TableActionTypes.SetAnswerView:
+			return {
+				...state,
+				prependText: '',
+				animateReading: false,
+				content: [],
+				appendText: action.rightAnswer,
 			};
 
 		default:

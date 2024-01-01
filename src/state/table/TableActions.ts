@@ -31,6 +31,9 @@ export const enum TableActionTypes {
 	UpdateOption = 'UPDATE_OPTION',
 	UpdateOptionState = 'UPDATE_OPTION_STATE',
 	RightOption = 'RIGHT_OPTION',
+	PrependTextChanged = 'PREPEND_TEXT_CHANGED',
+	QuestionReset = 'QUESTION_RESET',
+	SetAnswerView = 'SET_ANSWER_VIEW',
 }
 
 export type ShowLogoAction = { type: TableActionTypes.ShowLogo };
@@ -66,6 +69,9 @@ export type AnswerOptionsAction = { type: TableActionTypes.AnswerOptions, questi
 export type UpdateOptionAction = { type: TableActionTypes.UpdateOption, index: number, label: string, contentType: ContentType, value: string };
 export type UpdateOptionStateAction = { type: TableActionTypes.UpdateOptionState, index: number, state: ItemState };
 export type RightOptionAction = { type: TableActionTypes.RightOption, label: string };
+export type PrependTextChangedAction = { type: TableActionTypes.PrependTextChanged, text: string };
+export type QuestionResetAction = { type: TableActionTypes.QuestionReset };
+export type SetAnswerViewAction = { type: TableActionTypes.SetAnswerView, rightAnswer: string };
 
 export type KnownTableAction =
 	ShowLogoAction
@@ -93,4 +99,7 @@ export type KnownTableAction =
 	| AnswerOptionsAction
 	| UpdateOptionAction
 	| UpdateOptionStateAction
-	| RightOptionAction;
+	| RightOptionAction
+	| PrependTextChangedAction
+	| QuestionResetAction
+	| SetAnswerViewAction;

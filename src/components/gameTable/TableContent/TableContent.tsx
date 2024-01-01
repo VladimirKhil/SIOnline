@@ -21,12 +21,16 @@ interface TableContentProps {
 	layoutMode: LayoutMode;
 	content: ContentGroup[];
 	audio: string;
+	prependText: string;
+	appendText: string;
 }
 
 const mapStateToProps = (state: State) => ({
 	content: state.table.content,
 	audio: state.table.audio,
 	layoutMode: state.table.layoutMode,
+	prependText: state.table.prependText,
+	appendText: state.table.appendText,
 });
 
 function getContent(content: ContentItem, key: React.Key, autoPlayEnabled: boolean): JSX.Element | null {
@@ -76,10 +80,39 @@ export function TableContent(props: TableContentProps): JSX.Element {
 			: null;
 	}
 
-	const hasSound = props.audio.length > 0 || props.content.some(g => g.content.some(c => c.type === ContentType.Video));
+	let { content } = props;
+
+	if (props.audio.length > 0
+		|| content.length === 1 && content[0].content.length === 1 && content[0].content[0].type !== ContentType.Text) {
+		if (props.appendText.length > 0) {
+			content = [...content, {
+				columnCount: 1,
+				weight: 1,
+				content: [{
+					type: ContentType.Text,
+					value: props.appendText,
+					read: false,
+					partial: false
+				}]
+			}];
+		} else if (props.prependText.length > 0) {
+			content = [ {
+				columnCount: 1,
+				weight: 1,
+				content: [{
+					type: ContentType.Text,
+					value: props.prependText,
+					read: false,
+					partial: false
+				}]
+			}, ...content];
+		}
+	}
+
+	const hasSound = props.audio.length > 0 || content.some(g => g.content.some(c => c.type === ContentType.Video));
 
 	const mainContent = <div className='mainContent'>
-		{props.content.length > 0 ? props.content.map((c, i) => getGroupContent(c, i, autoPlayEnabled)) : getAudioContent()}
+		{content.length > 0 ? content.map((c, i) => getGroupContent(c, i, autoPlayEnabled)) : getAudioContent()}
 	</div>;
 
 	return (

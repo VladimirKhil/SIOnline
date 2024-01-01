@@ -121,6 +121,18 @@ const rightOption: ActionCreator<TableActions.RightOptionAction> = (label: strin
 	type: TableActions.TableActionTypes.RightOption, label
 });
 
+const prependTextChanged: ActionCreator<TableActions.PrependTextChangedAction> = (text: string) => ({
+	type: TableActions.TableActionTypes.PrependTextChanged, text
+});
+
+const questionReset: ActionCreator<TableActions.QuestionResetAction> = () => ({
+	type: TableActions.TableActionTypes.QuestionReset
+});
+
+const setAnswerView: ActionCreator<TableActions.SetAnswerViewAction> = (rightAnswer: string) => ({
+	type: TableActions.TableActionTypes.SetAnswerView, rightAnswer
+});
+
 const tableActionCreators = {
 	showLogo,
 	showGameThemes,
@@ -148,6 +160,9 @@ const tableActionCreators = {
 	updateOption,
 	updateOptionState,
 	rightOption,
+	prependTextChanged,
+	questionReset,
+	setAnswerView,
 };
 
 export default tableActionCreators;

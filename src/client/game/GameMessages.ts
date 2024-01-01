@@ -12,6 +12,9 @@ const enum GameMessages {
 	/** Person has been banned. */
 	BannedList = 'BANNEDLIST',
 
+	/** Question selection. */
+	Choice = 'CHOICE',
+
 	/** Table content. */
 	Content = 'CONTENT',
 
@@ -33,17 +36,29 @@ const enum GameMessages {
 	/** Notifies that the client has loaded the media. */
 	MediaLoaded = 'MEDIALOADED',
 
+	/** Current question price. */
+	Question = 'QUESTION',
+
 	/** Question has ended. */
 	QuestionEnd = 'QUESTION_END',
 
 	/** Question right answer. */
 	RightAnswer = 'RIGHTANSWER',
 
+	/** Notifies about complex answer start. */
+	RightAnswerStart = 'RIGHT_ANSWER_START',
+
+	/** Round themes names. */
+	RoundThemes = 'ROUNDTHEMES',
+
 	/** Sets game join mode. */
 	SetJoinMode = 'SETJOINMODE',
 
 	/** Stake info. */
 	Stake2 = 'STAKE2',
+
+	/** Theme comments. */
+	ThemeComments = 'THEME_COMMENTS',
 
 	/** Toggles (removes or restores a question). */
 	Toggle = 'TOGGLE',
