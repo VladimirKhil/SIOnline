@@ -218,6 +218,27 @@ const onlineReducer: Reducer<OnlineState> = (state: OnlineState = initialState, 
 			};
 		}
 
+		case OnlineActionTypes.LatestGamesLoaded: {
+			return {
+				...state,
+				latestGames: action.latestGames,
+			};
+		}
+
+		case OnlineActionTypes.GamesStatisticLoaded: {
+			return {
+				...state,
+				gamesStatistics: action.gamesStatistics,
+			};
+		}
+
+		case OnlineActionTypes.PackagesStatisticsLoaded: {
+			return {
+				...state,
+				packagesStatistics: action.packagesStatistics,
+			};
+		}
+
 		default:
 			return state;
 	}

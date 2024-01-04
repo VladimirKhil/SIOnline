@@ -79,7 +79,7 @@
     font-size: 18px;
 }
 
-.packageName {
+#newGameDialog .packageName {
     vertical-align: middle;
     margin: 3px 0 0 5px;
     font-size: 18px

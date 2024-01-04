@@ -7,4 +7,5 @@ export default interface Config {
 	registerServiceWorker?: boolean;
 	enableNoSleep?: boolean;
 	askForConsent?: boolean;
+	siStatisticsServiceUri: string;
 }

@@ -25,7 +25,6 @@ import PackageType from '../../model/enums/PackageType';
 import PackageType2 from '../../client/contracts/PackageType';
 import GameCreationResult from '../../client/contracts/GameCreationResult';
 import Sex from '../../model/enums/Sex';
-import ChatMode from '../../model/enums/ChatMode';
 import tableActionCreators from '../table/tableActionCreators';
 import roomActionCreators from '../room/roomActionCreators';
 import * as GameErrorsHelper from '../../utils/GameErrorsHelper';
@@ -33,6 +32,9 @@ import actionCreators from '../actionCreators';
 import gameActionCreators from '../game/gameActionCreators';
 import ServerTimeSettings from '../../client/contracts/ServerTimeSettings';
 import GameCreationResultCode from '../../client/contracts/GameCreationResultCode';
+import LobbySideMode from '../../model/enums/LobbySideMode';
+import SIStatisticsClient from 'sistatistics-client';
+import GamePlatforms from 'sistatistics-client/dist/models/GamePlatforms';
 
 const selectGame: ActionCreator<OnlineActions.SelectGameAction> = (gameId: number) => ({
 	type: OnlineActions.OnlineActionTypes.SelectGame,
@@ -128,6 +130,7 @@ const navigateToLobby: ActionCreator<ThunkAction<void, State, DataContext, Actio
 		// Games filtering is performed on client
 		try {
 			await loadGamesAsync(dispatch, dataContext.gameClient);
+			await loadStatisticsAsync(dispatch, dataContext);
 
 			const users = await dataContext.gameClient.getUsersAsync();
 			const sortedUsers = users.sort((user1: string, user2: string) => user1.localeCompare(user2));
@@ -184,7 +187,7 @@ const passwordChanged: ActionCreator<OnlineActions.PasswordChangedAction> = (new
 	newPassword
 });
 
-const chatModeChanged: ActionCreator<OnlineActions.ChatModeChangedAction> = (chatMode: ChatMode) => ({
+const chatModeChanged: ActionCreator<OnlineActions.ChatModeChangedAction> = (chatMode: LobbySideMode) => ({
 	type: OnlineActions.OnlineActionTypes.ChatModeChanged,
 	chatMode
 });
@@ -252,6 +255,28 @@ const uploadPackageProgress: ActionCreator<OnlineActions.UploadPackageProgressAc
 	type: OnlineActions.OnlineActionTypes.UploadPackageProgress,
 	progress
 });
+
+async function loadStatisticsAsync(dispatch: Dispatch<OnlineActions.KnownOnlineAction>, dataContext: DataContext) {
+	const siStatisticsClient = new SIStatisticsClient({ serviceUri: dataContext.config.siStatisticsServiceUri });
+
+	const now = new Date();
+	const ONE_DAY = 24 * 60 * 60 * 1000;
+
+	const filter = {
+		platform: GamePlatforms.GameServer,
+		from: new Date(now.getTime() - ONE_DAY),
+		to: now,
+	};
+
+	const packagesStatistics = await siStatisticsClient.getLatestTopPackagesAsync(filter);
+	dispatch({ type: OnlineActions.OnlineActionTypes.PackagesStatisticsLoaded, packagesStatistics });
+
+	const gamesStatistics = await siStatisticsClient.getLatestGamesStatisticAsync(filter);
+	dispatch({ type: OnlineActions.OnlineActionTypes.GamesStatisticLoaded, gamesStatistics });
+
+	const latestGames = await siStatisticsClient.getLatestGamesInfoAsync(filter);
+	dispatch({ type: OnlineActions.OnlineActionTypes.LatestGamesLoaded, latestGames });
+}
 
 async function uploadPackageAsync2(
 	contentClient: SIContentClient,

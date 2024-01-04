@@ -1,24 +1,25 @@
 ﻿import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch, Action } from 'redux';
-import ChatMode from '../model/enums/ChatMode';
+import LobbySideMode from '../model/enums/LobbySideMode';
 import Chat from './Chat';
 import UsersList from './UsersList';
 import State from '../state/State';
 import localization from '../model/resources/localization';
 import onlineActionCreators from '../state/online/onlineActionCreators';
 import LobbyMenu from './LobbyMenu';
+import Trends from './Trends';
 
 import './UsersView.css';
 
 interface UsersViewStateProps {
-	chatMode: ChatMode;
+	chatMode: LobbySideMode;
 	usersCount: number;
 	isLobbyChatHidden: boolean;
 }
 
 interface UsersViewOwnProps {
-	onChatModeChanged: (chatMode: ChatMode) => void;
+	onChatModeChanged: (chatMode: LobbySideMode) => void;
 }
 
 interface UsersViewProps extends UsersViewOwnProps, UsersViewStateProps {
@@ -32,13 +33,13 @@ const mapStateToProps = (state: State) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
-	onChatModeChanged: (chatMode: ChatMode) => {
+	onChatModeChanged: (chatMode: LobbySideMode) => {
 		dispatch(onlineActionCreators.chatModeChanged(chatMode));
 	},
 });
 
 export function UsersView(props: UsersViewProps): JSX.Element | null {
-	function chatModeChanged(chatMode: ChatMode) {
+	function chatModeChanged(chatMode: LobbySideMode) {
 		if (props.chatMode !== chatMode) {
 			props.onChatModeChanged(chatMode);
 		}
@@ -50,14 +51,20 @@ export function UsersView(props: UsersViewProps): JSX.Element | null {
 				<LobbyMenu />
 				<div id="chatHostTitle" className="tabHeader">
 					<h1
-						className={props.chatMode === ChatMode.Chat ? 'activeTab' : ''}
-						onClick={() => chatModeChanged(ChatMode.Chat)}
+						className={props.chatMode === LobbySideMode.Trends ? 'activeTab' : ''}
+						onClick={() => chatModeChanged(LobbySideMode.Trends)}
+					>
+						{localization.trends}
+					</h1>
+					<h1
+						className={props.chatMode === LobbySideMode.Chat ? 'activeTab' : ''}
+						onClick={() => chatModeChanged(LobbySideMode.Chat)}
 					>
 						{localization.chat}
 					</h1>
 					<h1
-						className={`playersTitle ${props.chatMode === ChatMode.Users ? 'activeTab' : ''}`}
-						onClick={() => chatModeChanged(ChatMode.Users)}
+						className={`playersTitle ${props.chatMode === LobbySideMode.Users ? 'activeTab' : ''}`}
+						onClick={() => chatModeChanged(LobbySideMode.Users)}
 					>
 						<div>
 							<span>{localization.users}</span>
@@ -70,7 +77,9 @@ export function UsersView(props: UsersViewProps): JSX.Element | null {
 			</header>
 
 			<div className="chatBody">
-				{props.chatMode === ChatMode.Chat ? <Chat /> : <UsersList />}
+				{props.chatMode === LobbySideMode.Trends
+					? <Trends />
+					: (props.chatMode === LobbySideMode.Chat ? <Chat /> : <UsersList />)}
 			</div>
 		</section>
 	);

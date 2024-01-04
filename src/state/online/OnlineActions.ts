@@ -1,6 +1,9 @@
+import GamesResponse from 'sistatistics-client/dist/models/GamesResponse';
 import GameInfo from '../../client/contracts/GameInfo';
-import ChatMode from '../../model/enums/ChatMode';
 import GamesFilter from '../../model/enums/GamesFilter';
+import LobbySideMode from '../../model/enums/LobbySideMode';
+import GamesStatistic from 'sistatistics-client/dist/models/GamesStatistic';
+import PackagesStatistic from 'sistatistics-client/dist/models/PackagesStatistic';
 
 export const enum OnlineActionTypes {
 	UnselectGame = 'UNSELECT_GAME',
@@ -32,6 +35,9 @@ export const enum OnlineActionTypes {
 	UploadPackageProgress = 'UPLOAD_PACKAGE_PROGRESS',
 	JoinGameStarted = 'JOIN_GAME_STARTED',
 	JoinGameFinished = 'JOIN_GAME_FINISHED',
+	LatestGamesLoaded = 'LATEST_GAMES_LOADED',
+	GamesStatisticLoaded = 'GAMES_STATISTICS_LOADED',
+	PackagesStatisticsLoaded = 'PACKAGES_STATISTICS_LOADED',
 }
 
 export type ClearGamesAction = { type: OnlineActionTypes.ClearGames };
@@ -46,7 +52,7 @@ export type SelectGameAction = { type: OnlineActionTypes.SelectGame, gameId: num
 export type NewGameAction = { type: OnlineActionTypes.NewGame };
 export type NewGameCancelAction = { type: OnlineActionTypes.NewGameCancel };
 export type PasswordChangedAction = { type: OnlineActionTypes.PasswordChanged, newPassword: string };
-export type ChatModeChangedAction = { type: OnlineActionTypes.ChatModeChanged, chatMode: ChatMode };
+export type ChatModeChangedAction = { type: OnlineActionTypes.ChatModeChanged, chatMode: LobbySideMode };
 export type GameCreatedAction = { type: OnlineActionTypes.GameCreated, game: GameInfo };
 export type GameChangedAction = { type: OnlineActionTypes.GameChanged, game: GameInfo };
 export type GameDeletedAction = { type: OnlineActionTypes.GameDeleted, gameId: number };
@@ -63,6 +69,9 @@ export type DropSelectedGameAction = { type: OnlineActionTypes.DropSelectedGame 
 export type ResetLobbyAction = { type: OnlineActionTypes.ResetLobby };
 export type JoinGameStartedAction = { type: OnlineActionTypes.JoinGameStarted };
 export type JoinGameFinishedAction = { type: OnlineActionTypes.JoinGameFinished, error: string | null };
+export type LatestGamesLoadedAction = { type: OnlineActionTypes.LatestGamesLoaded, latestGames: GamesResponse };
+export type GamesStatisticLoadedAction = { type: OnlineActionTypes.GamesStatisticLoaded, gamesStatistics: GamesStatistic };
+export type PackagesStatisticsLoadedAction = { type: OnlineActionTypes.PackagesStatisticsLoaded, packagesStatistics: PackagesStatistic };
 
 export type KnownOnlineAction =
 	ClearGamesAction
@@ -94,4 +103,7 @@ export type KnownOnlineAction =
 	| UnselectGameAction
 	| ResetLobbyAction
 	| JoinGameStartedAction
-	| JoinGameFinishedAction;
+	| JoinGameFinishedAction
+	| LatestGamesLoadedAction
+	| GamesStatisticLoadedAction
+	| PackagesStatisticsLoadedAction;

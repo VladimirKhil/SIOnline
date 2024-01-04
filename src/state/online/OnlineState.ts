@@ -1,9 +1,12 @@
 import GameInfo from '../../client/contracts/GameInfo';
 import ChatMessage from '../../model/ChatMessage';
-import ChatMode from '../../model/enums/ChatMode';
 import GamesFilter from '../../model/enums/GamesFilter';
+import LobbySideMode from '../../model/enums/LobbySideMode';
 import MessageLevel from '../../model/enums/MessageLevel';
 import localization from '../../model/resources/localization';
+import GamesResponse from 'sistatistics-client/dist/models/GamesResponse';
+import GamesStatistic from 'sistatistics-client/dist/models/GamesStatistic';
+import PackagesStatistic from 'sistatistics-client/dist/models/PackagesStatistic';
 
 export default interface OnlineState {
 	inProgress: boolean;
@@ -16,7 +19,7 @@ export default interface OnlineState {
 	currentMessage: string;
 	messages: ChatMessage[];
 	password: string;
-	chatMode: ChatMode;
+	chatMode: LobbySideMode;
 	newGameShown: boolean;
 	gameCreationProgress: boolean;
 	gameCreationError: string | null;
@@ -24,6 +27,9 @@ export default interface OnlineState {
 	joingGameError: string | null;
 	uploadPackageProgress: boolean;
 	uploadPackagePercentage: number;
+	latestGames?: GamesResponse;
+	gamesStatistics?: GamesStatistic;
+	packagesStatistics?: PackagesStatistic;
 }
 
 export const initialState: OnlineState = {
@@ -43,7 +49,7 @@ export const initialState: OnlineState = {
 		}
 	],
 	password: '',
-	chatMode: ChatMode.Chat,
+	chatMode: LobbySideMode.Trends,
 	newGameShown: false,
 	gameCreationProgress: false,
 	gameCreationError: null,
