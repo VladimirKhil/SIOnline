@@ -1,5 +1,8 @@
 /** Defines INCOMING SIGame messages. */
 const enum GameMessages {
+	/** Game ads. */
+	Ads = 'ADS',
+
 	/** Asks person answer. */
 	Answer = 'ANSWER',
 

@@ -29,9 +29,15 @@
 	flex-wrap: wrap;
 }
 
+.storagePackageLogo {
+	float: left;
+	margin-right: 10px;
+}
+
 #siStorageDialog .storagePackageName {
 	font-weight: bold;
 	font-size: 20px;
+	vertical-align: top;
 }
 
 #siStorageDialog .breakable {

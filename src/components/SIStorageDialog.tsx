@@ -16,6 +16,7 @@ import { keys, sortRecord } from '../utils/RecordExtensions';
 import { getFullCulture } from '../utils/StateHelpers';
 
 import './SIStorageDialog.css';
+import defaultLogo from '../../assets/images/qlogo.png';
 
 const PAGE_SIZE = 20;
 
@@ -477,8 +478,10 @@ export class SIStorageDialog extends React.Component<SIStorageDialogProps, SISto
 							questionCount,
 							contentTypeStatistic,
 							downloadCount,
+							logoUri,
 						}) => (
 								<li key={id}>
+									<img src={logoUri ?? defaultLogo} alt='logo' className='storagePackageLogo' />
 									<span className="storagePackageName">{name}</span>
 									<br />
 									<span className='packageItemHeader'>{`${localization.packageSubject}: `}</span>

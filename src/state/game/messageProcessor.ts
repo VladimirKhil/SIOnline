@@ -380,13 +380,12 @@ function onLayout(dispatch: Dispatch<AnyAction>, state: State, ...args: string[]
 
 const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataContext, args: string[]) => {
 	switch (args[0]) {
-		case 'ADS':
+		case GameMessages.Ads:
 			if (args.length === 1) {
 				break;
 			}
 
-			const adsMessage = args[1];
-			// TODO: show ad on screen
+			dispatch(tableActionCreators.showText(args[1], false));
 			break;
 
 		case 'APELLATION_ENABLES':
