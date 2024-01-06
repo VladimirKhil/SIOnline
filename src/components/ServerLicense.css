@@ -1,0 +1,46 @@
+.server__license {
+	width: 100%;
+	height: 100%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-size: 20px;
+}
+
+.server__license__body {
+	background-color: #000451;
+	max-width: 700px;
+	color: white;
+	border: 1px solid white;
+	padding: 20px;
+}
+
+.license__header {
+	font-size: 25px;
+	font-weight: bold;
+	text-align: center;
+	margin-bottom: 20px;
+}
+
+.server__license__body input {
+	margin-top: 25px;
+	margin-right: 8px;
+	cursor: pointer;
+}
+
+.license__button__area {
+	display: flex;
+	flex-direction: row;
+	justify-content: end;
+}
+
+.server__license__body label {
+	cursor: pointer;
+	font-size: 18px;
+}
+
+.server__license__body button {
+	margin-top: 20px;
+	padding: 7px 35px;
+	text-align: center;
+}

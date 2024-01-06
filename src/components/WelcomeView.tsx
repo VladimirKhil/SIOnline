@@ -6,9 +6,13 @@ import State from '../state/State';
 import Dialog from './common/Dialog';
 import uiActionCreators from '../state/ui/uiActionCreators';
 import onlineActionCreators from '../state/online/onlineActionCreators';
+import ServerLicense from './ServerLicense';
+import { getCookie, setCookie } from '../utils/CookieHelpers';
 
 import './WelcomeView.css';
 import exitImg from '../../assets/images/exit.png';
+
+const ACCEPT_LICENSE_KEY = 'ACCEPT_LICENSE';
 
 interface WelcomeViewProps {
 	isConnected: boolean;
@@ -49,9 +53,17 @@ const mapDispatchToProps = (dispatch: any) => ({
 });
 
 export function WelcomeView(props: WelcomeViewProps): JSX.Element {
+	const acceptLicense = getCookie(ACCEPT_LICENSE_KEY);
+
+	const [accepted, setAccepted] = React.useState(acceptLicense !== '');
 	const [showLicense, setShowLicense] = React.useState(false);
 
-	return (
+	function accept() {
+		setCookie(ACCEPT_LICENSE_KEY, '1', 365);
+		setAccepted(true);
+	}
+
+	return !accepted ? <ServerLicense accept={accept} /> : (
 		<section className="welcomeView">
 			<header>
 				<h1>
