@@ -121,7 +121,7 @@ function preprocessServerUri(uri: string, dataContext: DataContext) {
 }
 
 function unescapeNewLines(value: string): string {
-	return value.replace('\\n', '\n').replace('\\\\', '\\');
+	return value.replaceAll('\\n', '\n').replaceAll('\\\\', '\\');
 }
 
 function initGroup(group: ContentGroup) {
