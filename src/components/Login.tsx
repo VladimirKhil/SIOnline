@@ -12,7 +12,6 @@ import LanguageView from './LanguageView';
 import userActionCreators from '../state/user/userActionCreators';
 import uiActionCreators from '../state/ui/uiActionCreators';
 import { GameSound, gameSoundPlayer } from '../utils/GameSoundPlayer';
-import isWindowsOS from '../utils/isWindowsOS';
 
 import './Login.css';
 
