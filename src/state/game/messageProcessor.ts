@@ -159,11 +159,13 @@ function onScreenContent(dispatch: Dispatch<AnyAction>, dataContext: DataContext
 					group = null;
 				}
 
-				const textGroup: ContentGroup = { weight: 1.0, content: [], columnCount: 1 };
+				const text = unescapeNewLines(value);
+				const textWeight = Math.min(Constants.LARGE_CONTENT_WEIGHT, Math.max(1, text.length / 80));
+				const textGroup: ContentGroup = { weight: textWeight, content: [], columnCount: 1 };
 
 				textGroup.content.push({
 					type: ContentType.Text,
-					value: unescapeNewLines(value),
+					value: text,
 					read: groups.length === 0,
 					partial: false,
 				});
@@ -173,7 +175,7 @@ function onScreenContent(dispatch: Dispatch<AnyAction>, dataContext: DataContext
 
 			case 'image':
 				if (!group) {
-					group = { weight: 4.0, content: [], columnCount: 1 };
+					group = { weight: Constants.LARGE_CONTENT_WEIGHT, content: [], columnCount: 1 };
 				}
 
 				group.content.push({
@@ -186,7 +188,7 @@ function onScreenContent(dispatch: Dispatch<AnyAction>, dataContext: DataContext
 
 			case 'video':
 				if (!group) {
-					group = { weight: 4.0, content: [], columnCount: 1 };
+					group = { weight: Constants.LARGE_CONTENT_WEIGHT, content: [], columnCount: 1 };
 				}
 
 				group.content.push({
@@ -199,7 +201,7 @@ function onScreenContent(dispatch: Dispatch<AnyAction>, dataContext: DataContext
 
 			case 'html':
 				if (!group) {
-					group = { weight: 4.0, content: [], columnCount: 1 };
+					group = { weight: Constants.LARGE_CONTENT_WEIGHT, content: [], columnCount: 1 };
 				}
 
 				group.content.push({

@@ -14,6 +14,7 @@ import ContentGroup from '../../../model/ContentGroup';
 import LayoutMode from '../../../model/enums/LayoutMode';
 import AnswerOptions from '../AnswerOptions/AnswerOptions';
 import PartialTextContent from '../PartialTextContent';
+import Constants from '../../../model/enums/Constants';
 
 import './TableContent.css';
 
@@ -23,6 +24,7 @@ interface TableContentProps {
 	audio: string;
 	prependText: string;
 	appendText: string;
+	attachContentToTable: boolean;
 }
 
 const mapStateToProps = (state: State) => ({
@@ -31,6 +33,7 @@ const mapStateToProps = (state: State) => ({
 	layoutMode: state.table.layoutMode,
 	prependText: state.table.prependText,
 	appendText: state.table.appendText,
+	attachContentToTable: state.settings.attachContentToTable,
 });
 
 function getContent(content: ContentItem, key: React.Key, autoPlayEnabled: boolean): JSX.Element | null {
@@ -82,12 +85,19 @@ export function TableContent(props: TableContentProps): JSX.Element {
 
 	let { content } = props;
 
-	if (props.audio.length > 0
-		|| content.length === 1 && content[0].content.length === 1 && content[0].content[0].type !== ContentType.Text) {
+	if (props.attachContentToTable &&
+			((props.audio.length > 0 &&
+				content.length === 0) ||
+			(props.audio.length === 0 &&
+				content.length === 1 &&
+				content[0].content.length === 1 &&
+				content[0].content[0].type !== ContentType.Text))) {
 		if (props.appendText.length > 0) {
+			const textWeight = Math.min(Constants.LARGE_CONTENT_WEIGHT, Math.max(1, props.appendText.length / 80));
+
 			content = [...content, {
 				columnCount: 1,
-				weight: 1,
+				weight: textWeight,
 				content: [{
 					type: ContentType.Text,
 					value: props.appendText,
@@ -96,9 +106,11 @@ export function TableContent(props: TableContentProps): JSX.Element {
 				}]
 			}];
 		} else if (props.prependText.length > 0) {
+			const textWeight = Math.min(Constants.LARGE_CONTENT_WEIGHT, Math.max(1, props.prependText.length / 80));
+
 			content = [ {
 				columnCount: 1,
-				weight: 1,
+				weight: textWeight,
 				content: [{
 					type: ContentType.Text,
 					value: props.prependText,

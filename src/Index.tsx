@@ -106,7 +106,7 @@ function subscribeToExternalEvents(store: Store<State, any>) {
 			store.dispatch(uiActionCreators.isSettingGameButtonKeyChanged(false));
 		} else if (e.key === state.settings.gameButtonKey) {
 			store.dispatch(roomActionCreators.pressGameButton());
-		} else if (e.key === state.settings.nextButtonKey) {
+		} else if (e.key === state.settings.nextButtonKey && state.settings.bindNextButton) {
 			store.dispatch(roomActionCreators.moveNext());
 		}
 

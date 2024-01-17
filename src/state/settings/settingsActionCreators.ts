@@ -151,6 +151,16 @@ const onFloatingControlsChanged: ActionCreator<SettingsActions.FloatingControlsC
 	type: SettingsActions.SettingsActionTypes.FloatingControlsChanged, float
 });
 
+const onBindNextButtonChanged: ActionCreator<SettingsActions.BindNextButtonChangedAction> = (
+	bindNextButton: boolean) => ({
+	type: SettingsActions.SettingsActionTypes.BindNextButtonChanged, bindNextButton
+});
+
+const onAttachContentToTableChanged: ActionCreator<SettingsActions.AttachContentToTableChangedAction> = (
+	attachContentToTable: boolean) => ({
+	type: SettingsActions.SettingsActionTypes.AttachContentToTableChanged, attachContentToTable
+});
+
 const settingsActionCreators = {
 	onSoundVolumeChanged,
 	onSoundChanged,
@@ -181,6 +191,8 @@ const settingsActionCreators = {
 	onAllowEveryoneToPlayHiddenStakesChanged,
 	onDisplaySourcesChanged,
 	onFloatingControlsChanged,
+	onBindNextButtonChanged,
+	onAttachContentToTableChanged,
 };
 
 export default settingsActionCreators;

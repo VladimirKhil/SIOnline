@@ -229,9 +229,18 @@ const settingsReducer: Reducer<SettingsState> = (
 			return {
 				...state,
 				floatingControls: action.float,
-				appSettings: {
-					...state.appSettings,
-				}
+			};
+
+		case SettingsActionTypes.BindNextButtonChanged:
+			return {
+				...state,
+				bindNextButton: action.bindNextButton,
+			};
+
+		case SettingsActionTypes.AttachContentToTableChanged:
+			return {
+				...state,
+				attachContentToTable: action.attachContentToTable,
 			};
 
 		case SettingsActionTypes.ResetSettings:

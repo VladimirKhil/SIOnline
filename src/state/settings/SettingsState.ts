@@ -17,6 +17,8 @@ export default interface SettingsState {
 	nextButtonKey: string | null;
 	isLobbyChatHidden: boolean;
 	areValidationAnswersHidden: boolean;
+	bindNextButton: boolean;
+	attachContentToTable: boolean;
 }
 
 export const initialState: SettingsState = {
@@ -65,4 +67,6 @@ export const initialState: SettingsState = {
 	nextButtonKey: Constants.KEY_RIGHT,
 	isLobbyChatHidden: false,
 	areValidationAnswersHidden: false,
+	bindNextButton: true,
+	attachContentToTable: true,
 };

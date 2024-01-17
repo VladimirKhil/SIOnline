@@ -15,4 +15,6 @@
 
 	AVATAR_KEY: 'avatar',
 	AVATAR_NAME_KEY: 'avatarName',
+
+	LARGE_CONTENT_WEIGHT: 5,
 };

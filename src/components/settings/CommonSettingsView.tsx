@@ -19,6 +19,8 @@ interface CommonSettingsViewProps {
 	onShowPersonsAtBottomOnWideScreenChanged: (showPersonsAtBottomOnWideScreen: boolean) => void;
 	onFloatingControlsChanged: (float: boolean) => void;
 	isSettingGameButtonKeyChanged: (isSettingGameButtonKey: boolean) => void;
+	onBindNextButtonChanged: (bindNextButton: boolean) => void;
+	onAttachContentToTableChanged: (attachContentToTable: boolean) => void;
 }
 
 const mapStateToProps = (state: State) => ({
@@ -47,6 +49,12 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	},
 	isSettingGameButtonKeyChanged: (isSettingGameButtonKey: boolean) => {
 		dispatch(uiActionCreators.isSettingGameButtonKeyChanged(isSettingGameButtonKey));
+	},
+	onBindNextButtonChanged: (bindNextButton: boolean) => {
+		dispatch(settingsActionCreators.onBindNextButtonChanged(bindNextButton));
+	},
+	onAttachContentToTableChanged: (attachContentToTable: boolean) => {
+		dispatch(settingsActionCreators.onAttachContentToTableChanged(attachContentToTable));
 	},
 });
 
@@ -134,6 +142,28 @@ export function CommonSettingsView(props: CommonSettingsViewProps): JSX.Element 
 			>
 				{props.settings.gameButtonKey ?? localization.notSet}
 			</button>
+
+			<div className="settingItem">
+				<input
+					id="bindNextButton"
+					type="checkbox"
+					checked={props.settings.bindNextButton}
+					onChange={() => props.onBindNextButtonChanged(!props.settings.bindNextButton)}
+				/>
+
+				<label htmlFor="bindNextButton">{localization.bindNextButton}</label>
+			</div>
+
+			<div className="settingItem">
+				<input
+					id="attachContentToTable"
+					type="checkbox"
+					checked={props.settings.attachContentToTable}
+					onChange={() => props.onAttachContentToTableChanged(!props.settings.attachContentToTable)}
+				/>
+
+				<label htmlFor="attachContentToTable">{localization.attachContentToTable}</label>
+			</div>
 		</div>
 	);
 }
