@@ -35,6 +35,7 @@ import GameCreationResultCode from '../../client/contracts/GameCreationResultCod
 import LobbySideMode from '../../model/enums/LobbySideMode';
 import SIStatisticsClient from 'sistatistics-client';
 import GamePlatforms from 'sistatistics-client/dist/models/GamePlatforms';
+import StatisticFilter from 'sistatistics-client/dist/models/StatisticFilter';
 
 const selectGame: ActionCreator<OnlineActions.SelectGameAction> = (gameId: number) => ({
 	type: OnlineActions.OnlineActionTypes.SelectGame,
@@ -130,7 +131,12 @@ const navigateToLobby: ActionCreator<ThunkAction<void, State, DataContext, Actio
 		// Games filtering is performed on client
 		try {
 			await loadGamesAsync(dispatch, dataContext.gameClient);
-			await loadStatisticsAsync(dispatch, dataContext);
+
+			try {
+				await loadStatisticsAsync(dispatch, dataContext);
+			} catch (error) {
+				dispatch(receiveMessage(localization.errorHappened, getErrorMessage(error)));
+			}
 
 			const users = await dataContext.gameClient.getUsersAsync();
 			const sortedUsers = users.sort((user1: string, user2: string) => user1.localeCompare(user2));
@@ -262,10 +268,12 @@ async function loadStatisticsAsync(dispatch: Dispatch<OnlineActions.KnownOnlineA
 	const now = new Date();
 	const ONE_DAY = 24 * 60 * 60 * 1000;
 
-	const filter = {
+	const filter: StatisticFilter = {
 		platform: GamePlatforms.GameServer,
 		from: new Date(now.getTime() - ONE_DAY),
 		to: now,
+		count: 5,
+		languageCode: localization.getLanguage()
 	};
 
 	const packagesStatistics = await siStatisticsClient.getLatestTopPackagesAsync(filter);
@@ -274,7 +282,7 @@ async function loadStatisticsAsync(dispatch: Dispatch<OnlineActions.KnownOnlineA
 	const gamesStatistics = await siStatisticsClient.getLatestGamesStatisticAsync(filter);
 	dispatch({ type: OnlineActions.OnlineActionTypes.GamesStatisticLoaded, gamesStatistics });
 
-	const latestGames = await siStatisticsClient.getLatestGamesInfoAsync(filter);
+	const latestGames = await siStatisticsClient.getLatestGamesInfoAsync({ ...filter, count: 25 });
 	dispatch({ type: OnlineActions.OnlineActionTypes.LatestGamesLoaded, latestGames });
 }
 

@@ -32,12 +32,16 @@
 .storagePackageLogo {
 	float: left;
 	margin-right: 10px;
+    margin-bottom: 10px;
+    max-width: 100%;
+    max-height: 500px;
 }
 
 #siStorageDialog .storagePackageName {
 	font-weight: bold;
 	font-size: 20px;
 	vertical-align: top;
+	margin-top: 5px;
 }
 
 #siStorageDialog .breakable {

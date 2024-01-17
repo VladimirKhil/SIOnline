@@ -23,3 +23,8 @@
 	font-weight: bold;
 	font-size: 18px;
 }
+
+.hasContact {
+	color: rgb(222, 206, 108);
+	cursor: pointer;
+}

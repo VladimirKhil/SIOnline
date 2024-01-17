@@ -33,7 +33,7 @@
     "redux-thunk": "^2.4.1",
     "sicontent-client": "1.0.8",
     "sistorage-client": "1.0.3",
-    "sistatistics-client": "1.0.0"
+    "sistatistics-client": "1.1.1"
   },
   "overrides": {
     "@microsoft/signalr": {
