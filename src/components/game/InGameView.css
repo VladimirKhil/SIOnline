@@ -27,9 +27,12 @@
     height: 100%;
 }
 
+.progressArea {
+    display: none;
+}
+
 .showmanProgressArea > div {
     width: 100%;
-    display: flex;
     flex-direction: column;
     align-items: center;
 }
@@ -125,6 +128,10 @@
     .showmanProgressArea {
         flex: 0 0 280px;
         height: 100%;
+    }
+
+    .progressArea {
+        display: flex;
     }
 
     .showmanProgressArea .round_progress {

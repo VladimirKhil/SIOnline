@@ -101,7 +101,7 @@ export function InGameView(props: InGameViewProps) : JSX.Element {
 
 					<div className="showmanTableArea">
 						<div className="showmanProgressArea">
-							<div>
+							<div className='progressArea'>
 								<RoundProgress />
 								<GameProgress />
 							</div>
@@ -129,7 +129,7 @@ export function InGameView(props: InGameViewProps) : JSX.Element {
 				</div>
 			</div>
 
-			<div className={`game__mainArea ${props.floatingControls ? 'floatable' : ''}`}>
+			<div className={`game__mainArea ${props.floatingControls && isScreenWide ? 'floatable' : ''}`}>
 				{isScreenWide ? <GameChatView /> : null}
 				<SideControlPanel />
 			</div>
