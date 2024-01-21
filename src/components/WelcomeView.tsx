@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import localization from '../model/resources/localization';
-import actionCreators from '../state/actionCreators';
+import actionCreators from '../logic/actionCreators';
 import State from '../state/State';
 import Dialog from './common/Dialog';
 import uiActionCreators from '../state/ui/uiActionCreators';

@@ -5,8 +5,9 @@ import loginReducer from './loginSlice';
 import uiReducer from './uiSlice';
 import onlineReducer from './onlineSlice';
 import gameReducer from './gameSlice';
-import runReducer from './runSlice';
+import roomReducer from './roomSlice';
 import commonReducer from './commonSlice';
+import tableReducer from './tableSlice';
 import siPackagesReducer from './siPackagesSlice';
 import settingsReducer from './settingsSlice';
 import DataContext from '../../model/DataContext';
@@ -14,6 +15,7 @@ import Config from '../Config';
 import GameClient from '../../client/game/GameClient';
 import GameServerClient from '../../client/GameServerClient';
 import SIContentClient from 'sicontent-client';
+import { gameSoundPlayer } from '../../utils/GameSoundPlayer';
 
 /* New version of store. Not used yet */
 
@@ -38,6 +40,7 @@ const dataContext : DataContext = {
 	contentUris: null,
 	contentClient: new SIContentClient({ serviceUri: 'http://fake' }),
 	storageClient: null,
+	soundPlayer: gameSoundPlayer,
 };
 
 const store = configureStore({
@@ -47,10 +50,11 @@ const store = configureStore({
 		ui: uiReducer,
 		online: onlineReducer,
 		game: gameReducer,
-		run: runReducer,
+		room: roomReducer,
 		common: commonReducer,
 		siPackages: siPackagesReducer,
-		settings: settingsReducer
+		settings: settingsReducer,
+		table: tableReducer,
 	},
 	middleware: (getDefaultMiddleware) => getDefaultMiddleware({
 		thunk: {

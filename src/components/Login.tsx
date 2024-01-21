@@ -4,14 +4,15 @@ import { connect } from 'react-redux';
 import Constants from '../model/enums/Constants';
 import localization from '../model/resources/localization';
 import State from '../state/State';
-import actionCreators from '../state/actionCreators';
+import actionCreators from '../logic/actionCreators';
 import ProgressBar from './common/ProgressBar';
 import AvatarView from './AvatarView';
 import SexView from './SexView';
 import LanguageView from './LanguageView';
 import userActionCreators from '../state/user/userActionCreators';
 import uiActionCreators from '../state/ui/uiActionCreators';
-import { GameSound, gameSoundPlayer } from '../utils/GameSoundPlayer';
+import { gameSoundPlayer } from '../utils/GameSoundPlayer';
+import GameSound from '../model/enums/GameSound';
 
 import './Login.css';
 

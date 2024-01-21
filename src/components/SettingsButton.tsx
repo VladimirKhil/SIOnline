@@ -2,7 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { Action } from 'redux';
 import localization from '../model/resources/localization';
-import actionCreators from '../state/actionCreators';
+import actionCreators from '../logic/actionCreators';
 import uiActionCreators from '../state/ui/uiActionCreators';
 import FlyoutButton, { FlyoutHorizontalOrientation, FlyoutVerticalOrientation } from './common/FlyoutButton';
 

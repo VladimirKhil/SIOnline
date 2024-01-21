@@ -2,32 +2,33 @@
 import { ThunkAction } from 'redux-thunk';
 import * as signalR from '@microsoft/signalr';
 import * as signalRMsgPack from '@microsoft/signalr-protocol-msgpack';
-import State from './State';
+import State from '../state/State';
 import DataContext from '../model/DataContext';
 
 import 'es6-promise/auto';
-import { saveState } from './SavedState';
+import { saveState } from '../state/SavedState';
 import localization from '../model/resources/localization';
 
 import { attachListeners, detachListeners, activeConnections, removeConnection } from '../utils/ConnectionHelpers';
 import MainView from '../model/enums/MainView';
-import roomActionCreators from './room/roomActionCreators';
+import roomActionCreators from '../state/room/roomActionCreators';
 import Constants from '../model/enums/Constants';
 
 import GameServerClient from '../client/GameServerClient';
 import getErrorMessage from '../utils/ErrorHelpers';
 import { getFullCulture } from '../utils/StateHelpers';
-import settingsActionCreators from './settings/settingsActionCreators';
+import settingsActionCreators from '../state/settings/settingsActionCreators';
 import MessageLevel from '../model/enums/MessageLevel';
 import GameClient from '../client/game/GameClient';
-import userActionCreators from './user/userActionCreators';
-import loginActionCreators from './login/loginActionCreators';
-import commonActionCreators from './common/commonActionCreators';
-import onlineActionCreators from './online/onlineActionCreators';
+import userActionCreators from '../state/user/userActionCreators';
+import loginActionCreators from '../state/login/loginActionCreators';
+import commonActionCreators from '../state/common/commonActionCreators';
+import onlineActionCreators from '../state/online/onlineActionCreators';
 
 import SIContentClient from 'sicontent-client';
-import uiActionCreators from './ui/uiActionCreators';
+import uiActionCreators from '../state/ui/uiActionCreators';
 import SIStorageClient from 'sistorage-client';
+import ClientController from './ClientController';
 
 const onConnectionChanged: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 	(isConnected: boolean, message: string) => async (dispatch: Dispatch<any>, getState: () => State, dataContext: DataContext) => {
@@ -229,7 +230,8 @@ const login: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 						activeConnections.push(dataContext.connection.connectionId);
 					}
 
-					attachListeners(dataContext.gameClient, dataContext.connection, dispatch);
+					const controller = new ClientController(dispatch, getState, dataContext);
+					attachListeners(dataContext.gameClient, dataContext.connection, dispatch, controller);
 
 					const requestCulture = getFullCulture(state);
 

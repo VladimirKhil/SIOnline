@@ -5,6 +5,7 @@ import GamesFilter from '../../model/enums/GamesFilter';
 import localization from '../../model/resources/localization';
 import GameInfo from '../../client/contracts/GameInfo';
 import MessageLevel from '../../model/enums/MessageLevel';
+import LobbySideMode from '../../model/enums/LobbySideMode';
 
 interface OnlineState {
 	inProgress: boolean;
@@ -17,7 +18,7 @@ interface OnlineState {
 	currentMessage: string;
 	messages: ChatMessage[];
 	password: string;
-	chatMode: ChatMode;
+	chatMode: LobbySideMode;
 	newGameShown: boolean;
 	gameCreationProgress: boolean;
 	gameCreationError: string | null;
@@ -44,7 +45,7 @@ const initialState: OnlineState = {
 		}
 	],
 	password: '',
-	chatMode: ChatMode.Chat,
+	chatMode: LobbySideMode.Trends,
 	newGameShown: false,
 	gameCreationProgress: false,
 	gameCreationError: null,

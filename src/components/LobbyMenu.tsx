@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Dispatch, Action } from 'redux';
 import OnlineMode from '../model/enums/OnlineMode';
 import localization from '../model/resources/localization';
-import actionCreators from '../state/actionCreators';
+import actionCreators from '../logic/actionCreators';
 import FlyoutButton, { FlyoutHorizontalOrientation, FlyoutVerticalOrientation } from './common/FlyoutButton';
 import uiActionCreators from '../state/ui/uiActionCreators';
 import State from '../state/State';

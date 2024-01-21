@@ -1,0 +1,30 @@
+.showmanReplic {
+    width: 100%;
+    margin: 0;
+    padding: 5px;
+    text-align: center;
+    display: flex;
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    background-color: lightyellow;
+    transition: opacity 1s;
+}
+
+.showmanReplic.hidden {
+    opacity: 0;
+}
+
+@media screen and (min-width: 1100px) {
+    .showmanReplic {
+        padding: 7px;
+        flex: 1.5;
+    }
+}
+
+@media screen and (min-width: 1600px) {
+    .showmanReplic {
+        padding: 12px;
+    }
+}

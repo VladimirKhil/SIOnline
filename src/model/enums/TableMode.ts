@@ -1,4 +1,5 @@
 ﻿const enum TableMode {
+	Void,
 	Logo,
 	Text,
 	Answer,

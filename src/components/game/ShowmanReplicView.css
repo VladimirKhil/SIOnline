@@ -8,24 +8,6 @@
     align-items: stretch !important;
 }
 
-.showmanReplic {
-    width: 100%;
-    margin: 0;
-    padding: 5px;
-    text-align: center;
-    display: flex;
-    flex: 1;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
-    background-color: lightyellow;
-    transition: opacity 1s;
-}
-
-.showmanReplic.hidden {
-    opacity: 0;
-}
-
 .showmanArea.highlighted .showmanReplic {
     background-color: rgb(255, 188, 62);
 }
@@ -98,19 +80,10 @@
         width: 100%;
         max-height: 190px;
     }
-
-    .showmanReplic {
-        padding: 7px;
-        flex: 1.5;
-    }
 }
 
 @media screen and (min-width: 1600px) {
     .showmanAvatar img {
         max-height: 290px;
-    }
-
-    .showmanReplic {
-        padding: 12px;
     }
 }

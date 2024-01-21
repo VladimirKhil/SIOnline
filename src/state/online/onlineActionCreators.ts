@@ -28,7 +28,7 @@ import Sex from '../../model/enums/Sex';
 import tableActionCreators from '../table/tableActionCreators';
 import roomActionCreators from '../room/roomActionCreators';
 import * as GameErrorsHelper from '../../utils/GameErrorsHelper';
-import actionCreators from '../actionCreators';
+import actionCreators from '../../logic/actionCreators';
 import gameActionCreators from '../game/gameActionCreators';
 import ServerTimeSettings from '../../client/contracts/ServerTimeSettings';
 import GameCreationResultCode from '../../client/contracts/GameCreationResultCode';

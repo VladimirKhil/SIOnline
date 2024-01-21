@@ -7,7 +7,9 @@ interface UIState {
 	previousMainView: MainView;
 	onlineView: OnlineMode;
 	windowWidth: number;
+	windowHeight: number;
 	areSettingsVisible: boolean;
+	isSettingGameButtonKey: boolean;
 }
 
 const initialState: UIState = {
@@ -15,7 +17,9 @@ const initialState: UIState = {
 	previousMainView: MainView.Loading,
 	onlineView: OnlineMode.Games,
 	windowWidth: window.innerWidth,
-	areSettingsVisible: false
+	windowHeight: window.innerHeight,
+	areSettingsVisible: false,
+	isSettingGameButtonKey: false,
 };
 
 export const uiSlice = createSlice({

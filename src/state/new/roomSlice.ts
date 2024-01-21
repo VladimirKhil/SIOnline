@@ -9,10 +9,10 @@ import Persons from '../../model/Persons';
 import PlayerInfo from '../../model/PlayerInfo';
 import Timers from '../../model/Timers';
 import { AppDispatch, RootState } from './store';
-import TableState, { initialState as tableInitialState } from '../table/TableState';
 import TimerStates from '../../model/enums/TimeStates';
+import JoinMode from '../../client/game/JoinMode';
 
-interface RunState {
+interface RoomState {
 	persons: {
 		all: Persons;
 		showman: PersonInfo;
@@ -24,7 +24,9 @@ interface RunState {
 	lastReplic: ChatMessage | null;
 	stage: {
 		name: string;
+		roundIndex: number;
 		isGamePaused: boolean;
+		isEditEnabled: boolean;
 		isGameStarted: boolean;
 		isDecisionNeeded: boolean;
 		isAnswering: boolean;
@@ -35,7 +37,6 @@ interface RunState {
 	};
 	timers: Timers;
 	showMainTimer: boolean;
-	table: TableState;
 	selection: {
 		isEnabled: boolean;
 		message: string;
@@ -57,6 +58,7 @@ interface RunState {
 		message: string;
 		rightAnswers: string[];
 		wrongAnswers: string[];
+		showExtraRightButtons: boolean;
 	};
 	chat: {
 		isVisible: boolean;
@@ -69,13 +71,33 @@ interface RunState {
 	selectedTableIndex: number; // 0 for showman; {N} for player {N - 1}
 	personsVisible: boolean;
 	tablesVisible: boolean;
+	bannedVisible: boolean;
+	gameInfoVisible: boolean;
+	manageGameVisible: boolean;
 	isGameButtonEnabled: boolean;
 	areSumsEditable: boolean;
 	readingSpeed: number;
+	areApellationsEnabled: boolean;
 	hint: string | null;
+	roundsNames: string[] | null;
+	buttonBlockingTimeSeconds: number;
+
+	metadata: {
+		gameName: string | null;
+		packageName: string | null;
+		contactUri: string | null;
+		voiceChatUri: string | null;
+	};
+
+	banned: {
+		entries: Record<string, string>;
+		selectedIp: string | null;
+	};
+
+	joinMode: JoinMode;
 }
 
-const initialState: RunState = {
+const initialState: RoomState = {
 	persons: {
 		all: {},
 		showman: {
@@ -93,7 +115,9 @@ const initialState: RunState = {
 	lastReplic: null,
 	stage: {
 		name: '',
+		roundIndex: -1,
 		isGamePaused: false,
+		isEditEnabled: false,
 		isGameStarted: false,
 		isDecisionNeeded: false,
 		isAnswering: false,
@@ -108,7 +132,7 @@ const initialState: RunState = {
 			isPausedBySystem: true,
 			isPausedByUser: false,
 			value: 0,
-			maximum: 0
+			maximum: 0,
 		},
 		press: {
 			state: TimerStates.Stopped,
@@ -126,7 +150,6 @@ const initialState: RunState = {
 		}
 	},
 	showMainTimer: false,
-	table: tableInitialState,
 	selection: {
 		isEnabled: false,
 		message: ''
@@ -152,7 +175,8 @@ const initialState: RunState = {
 		name: '',
 		message: '',
 		rightAnswers: [],
-		wrongAnswers: []
+		wrongAnswers: [],
+		showExtraRightButtons: false,
 	},
 	chat: {
 		isVisible: false,
@@ -165,22 +189,41 @@ const initialState: RunState = {
 	selectedTableIndex: -1,
 	personsVisible: false,
 	tablesVisible: false,
+	bannedVisible: false,
+	gameInfoVisible: false,
+	manageGameVisible: false,
 	isGameButtonEnabled: true,
 	areSumsEditable: false,
 	readingSpeed: 20,
-	hint: null
+	areApellationsEnabled: true,
+	hint: null,
+	roundsNames: null,
+	buttonBlockingTimeSeconds: 3,
+
+	metadata: {
+		gameName: null,
+		packageName: null,
+		contactUri: null,
+		voiceChatUri: null,
+	},
+
+	banned: {
+		entries: {},
+		selectedIp: null,
+	},
+
+	joinMode: JoinMode.AnyRole,
 };
 
-export const runSlice = createSlice({
-	name: 'run',
+export const roomSlice = createSlice({
+	name: 'room',
 	initialState,
 	reducers: {
-		clearDecisions: (state: RunState) => {
+		clearDecisions: (state: RoomState) => {
 			state.persons.players.forEach(p => p.canBeSelected = false);
 			state.stage.isAnswering = false;
 			state.stage.isDecisionNeeded = false;
 			state.validation.isVisible = false;
-			state.table.isSelectable = false;
 			state.selection.isEnabled = false;
 			state.stakes.areSimple = false;
 			state.stakes.areVisible = false;
@@ -192,7 +235,7 @@ export const runSlice = createSlice({
 
 export const {
 	clearDecisions
-} = runSlice.actions;
+} = roomSlice.actions;
 
 export const sendStake = (stake: number) => async (dispatch: AppDispatch, _getState: () => RootState, dataContext: DataContext) : Promise<void> => {
 	if (await dataContext.gameClient.msgAsync('STAKE', stake)) {
@@ -200,4 +243,4 @@ export const sendStake = (stake: number) => async (dispatch: AppDispatch, _getSt
 	}
 };
 
-export default runSlice.reducer;
+export default roomSlice.reducer;

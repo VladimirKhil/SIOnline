@@ -30,6 +30,8 @@ const enum GameMessages {
 	/** Updates content state. */
 	ContentState = 'CONTENT_STATE',
 
+	EndTry = 'ENDTRY',
+
 	/** Game metadata: game name, package name, contact uri. */
 	GameMetadata = 'GAMEMETADATA',
 
@@ -44,6 +46,8 @@ const enum GameMessages {
 
 	/** Question has ended. */
 	QuestionEnd = 'QUESTION_END',
+
+	Replic = 'REPLIC',
 
 	/** Question right answer. */
 	RightAnswer = 'RIGHTANSWER',
@@ -65,6 +69,8 @@ const enum GameMessages {
 
 	/** Toggles (removes or restores a question). */
 	Toggle = 'TOGGLE',
+
+	Try = 'TRY',
 
 	/** Person has been unbanned. */
 	Unbanned = 'UNBANNED',

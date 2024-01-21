@@ -5,7 +5,9 @@ const WorkboxPlugin = require('workbox-webpack-plugin');
 
 module.exports = (env, argv) => {
 	return {
-		entry: {
+		entry: env.type === 'library' ? {
+			main: './src/Library.tsx',
+		} : {
 			config: './assets/config.js',
 			main: './src/Index.tsx',
 		},
@@ -58,12 +60,14 @@ module.exports = (env, argv) => {
 		},
 		output: {
 			filename: (pathData) => {
-				return pathData.chunk.name === 'config' || argv.mode === 'development' ? '[name].js': '[name].[contenthash].js';
+				return pathData.chunk.name === 'config' || argv.mode === 'development' || env.type === 'library' ? '[name].js': '[name].[contenthash].js';
 			},
 			chunkFilename: '[name].[contenthash].js',
 			path: path.resolve(__dirname, 'dist'),
 			publicPath: '',
-			crossOriginLoading: 'anonymous'
+			crossOriginLoading: 'anonymous',
+			library: env.type === 'library' ? 'sigame' : undefined,
+			libraryTarget: env.type === 'library' ? 'var' : undefined
 		},
 		optimization: {
 			splitChunks: {
@@ -84,14 +88,15 @@ module.exports = (env, argv) => {
 				filename: "./index.html",
 				favicon: './assets/images/favicon.ico'
 			})].concat(
-				argv.mode === 'development'
-					? []
-					: [new WorkboxPlugin.GenerateSW({
+				argv.mode === 'production' && env.type !== 'library'
+					?  [new WorkboxPlugin.GenerateSW({
 							// these options encourage the ServiceWorkers to get in there fast
 							// and not allow any straggling "old" SWs to hang around
 							clientsClaim: true,
 							skipWaiting: true,
 							maximumFileSizeToCacheInBytes: 6291456
-					})])
+					})]
+					: []
+			)
 	}
 };

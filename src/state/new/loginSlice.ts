@@ -13,6 +13,7 @@ import { saveStateToStorage } from './StateHelpers';
 import { AppDispatch, RootState } from './store';
 import { navigate } from './uiSlice';
 import { changeLogin } from './userSlice';
+import ClientController from '../../logic/clientController';
 
 interface LoginState {
 	inProgress: boolean;
@@ -31,7 +32,7 @@ export const loginSlice = createSlice({
 		startLogin: (state: LoginState) => {
 			state.inProgress = true;
 			state.errorMessage = '';
-		},		
+		},
 		endLogin: (state: LoginState, action: PayloadAction<string>) => {
 			state.inProgress = false;
 			state.errorMessage = action.payload;
@@ -110,7 +111,8 @@ export const login = () => async (dispatch: AppDispatch, getState: () => RootSta
 					activeConnections.push(dataContext.connection.connectionId);
 				}
 
-				attachListeners(dataContext.gameClient, dataContext.connection, dispatch);
+				const controller = new ClientController(dispatch, () => getState(), dataContext);
+				attachListeners(dataContext.gameClient, dataContext.connection, dispatch, controller);
 
 				const { culture } = state.settings.appSettings;
 				const requestCulture = culture == 'ru' ? 'ru-RU' : 'en-US'; // TODO: getFullCulture

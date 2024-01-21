@@ -6,6 +6,7 @@
   "scripts": {
     "build-dev": "webpack --mode development",
     "build-prod": "webpack --mode production",
+    "build-lib": "webpack --mode production --env type=library",
     "start": "webpack serve --mode development",
     "test": "jest",
     "lint": "eslint . --ext .ts --ext .tsx"

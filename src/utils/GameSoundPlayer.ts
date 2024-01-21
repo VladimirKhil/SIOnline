@@ -14,24 +14,10 @@ import roundBeginSfx from '../../assets/sounds/round_begin.mp3';
 import roundThemesSfx from '../../assets/sounds/round_themes.mp3';
 import roundTimeoutSfx from '../../assets/sounds/round_timeout.mp3';
 
-export enum GameSound {
-	ANSWER_WRONG = 'answer_wrong',
-	APPLAUSE_BIG = 'applause_big',
-	APPLAUSE_FINAL = 'applause_final',
-	APPLAUSE_SMALL = 'applause_small',
-	FINAL_DELETE = 'final_delete',
-	FINAL_THINK = 'final_think',
-	MAIN_MENU = 'main_menu',
-	QUESTION_NOANSWERS = 'question_noanswers',
-	QUESTION_NORISK = 'question_norisk',
-	QUESTION_SECRET = 'question_secret',
-	QUESTION_STAKE = 'question_stake',
-	ROUND_BEGIN = 'round_begin',
-	ROUND_THEMES = 'round_themes',
-	ROUND_TIMEOUT = 'round_timeout',
-}
+import IGameSoundPlayer from './IGameSoundPlayer';
+import GameSound from '../model/enums/GameSound';
 
-class GameSoundPlayer {
+class GameSoundPlayer implements IGameSoundPlayer {
 	private sounds: Map<GameSound, HTMLAudioElement>;
 
 	private current: HTMLAudioElement | null;

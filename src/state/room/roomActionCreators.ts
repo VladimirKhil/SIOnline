@@ -20,7 +20,6 @@ import Constants from '../../model/enums/Constants';
 import MessageLevel from '../../model/enums/MessageLevel';
 import uiActionCreators from '../ui/uiActionCreators';
 import Messages from '../../client/game/Messages';
-import { gameSoundPlayer } from '../../utils/GameSoundPlayer';
 import JoinMode from '../../client/game/JoinMode';
 
 let timerRef: number | null = null;
@@ -175,7 +174,7 @@ const exitGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (
 	dispatch(isPausedChanged(false));
 	dispatch(clearDecisionsAndMainTimer());
 
-	gameSoundPlayer.pause();
+	dataContext.soundPlayer.pause();
 
 	if (getState().ui.previousMainView === MainView.Lobby) {
 		onlineActionCreators.navigateToLobby(-1)(dispatch, getState, dataContext);

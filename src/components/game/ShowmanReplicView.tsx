@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import State from '../../state/State';
-import AutoSizedText from '../common/AutoSizedText';
+import ShowmanReplic from './ShowmanReplic';
 import Account from '../../model/Account';
 import ProgressBar from '../common/ProgressBar';
 import TimerInfo from '../../model/TimerInfo';
@@ -9,12 +9,10 @@ import { isRunning } from '../../utils/TimerInfoHelpers';
 import getAvatarClass from '../../utils/AccountHelpers';
 import Sex from '../../model/enums/Sex';
 import localization from '../../model/resources/localization';
-import Constants from '../../model/enums/Constants';
 
 import './ShowmanReplicView.css';
 
 interface ShowmanReplicViewProps {
-	replic: string | null;
 	isReady: boolean;
 	account: Account;
 	decisionNeeded: boolean;
@@ -23,11 +21,9 @@ interface ShowmanReplicViewProps {
 	hasGameStarted: boolean;
 	login: string;
 	avatar: string | null;
-	windowWidth: number;
 }
 
 const mapStateToProps = (state: State) => ({
-	replic: state.room.persons.showman.replic,
 	isReady: state.room.persons.showman.isReady,
 	account: state.room.persons.all[state.room.persons.showman.name],
 	decisionNeeded: state.room.stage.isDecisionNeeded,
@@ -36,7 +32,6 @@ const mapStateToProps = (state: State) => ({
 	hasGameStarted: state.room.stage.isGameStarted,
 	login: state.user.login,
 	avatar: state.user.avatar,
-	windowWidth: state.ui.windowWidth,
 });
 
 export function ShowmanReplicView(props: ShowmanReplicViewProps): JSX.Element {
@@ -54,7 +49,6 @@ export function ShowmanReplicView(props: ShowmanReplicViewProps): JSX.Element {
 		display: 'flex'
 	};
 
-	const isScreenWide = props.windowWidth >= Constants.WIDE_WINDOW_WIDTH;
 	const meClass = isMe ? 'me' : '';
 
 	return (
@@ -77,9 +71,7 @@ export function ShowmanReplicView(props: ShowmanReplicViewProps): JSX.Element {
 				</div>
 			</div>
 
-			<AutoSizedText className={`showmanReplic ${props.replic || !isScreenWide ? '' : 'hidden'}`} maxFontSize={48}>
-				{props.replic || ''}
-			</AutoSizedText>
+			<ShowmanReplic />
 
 			{props.isDeciding ? (
 				<ProgressBar

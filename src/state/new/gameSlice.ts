@@ -6,11 +6,13 @@ import Role from '../../model/Role';
 interface GameState {
 	name: string;
 	password: string;
+	voiceChat: string;
 	package: {
 		type: PackageType;
 		name: string;
 		data: File | null;
 		id: string | null;
+		uri: string | null;
 	};
 	type: GameType;
 	role: Role;
@@ -24,11 +26,13 @@ interface GameState {
 const initialState: GameState = {
 	name: '',
 	password: '',
+	voiceChat: '',
 	package: {
 		type: PackageType.Random,
 		name: '',
 		data: null,
-		id: null
+		id: null,
+		uri: null,
 	},
 	type: GameType.Simple,
 	role: Role.Player,
@@ -44,7 +48,7 @@ export const gameSlice = createSlice({
 	initialState,
 	reducers: {
 		setInProgress: (state: GameState, action: PayloadAction<boolean>) => {
-			
+
 		}
 	}
 });

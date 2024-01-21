@@ -9,7 +9,7 @@ import App from './components/App';
 import State, { initialState } from './state/State';
 import reducer from './state/reducer';
 import SavedState, { loadState } from './state/SavedState';
-import actionCreators from './state/actionCreators';
+import actionCreators from './logic/actionCreators';
 import DataContext from './model/DataContext';
 import Config from './state/Config';
 import roomActionCreators from './state/room/roomActionCreators';
@@ -31,6 +31,7 @@ import isSafari from './utils/isSafari';
 import GameServerClient from './client/GameServerClient';
 import SIContentClient from 'sicontent-client';
 import ButtonPressMode from './model/ButtonPressMode';
+import { gameSoundPlayer } from './utils/GameSoundPlayer';
 
 import './utils/polyfills';
 import './style.css';
@@ -221,6 +222,7 @@ async function run() {
 		contentUris: null,
 		contentClient: new SIContentClient({ serviceUri: 'http://fake' }),
 		storageClient: null,
+		soundPlayer: gameSoundPlayer,
 	};
 
 	const store = createStore<State, AnyAction, {}, {}>(

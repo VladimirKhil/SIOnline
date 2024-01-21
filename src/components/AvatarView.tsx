@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Dispatch, Action } from 'redux';
 import Constants from '../model/enums/Constants';
 import localization from '../model/resources/localization';
-import actionCreators from '../state/actionCreators';
+import actionCreators from '../logic/actionCreators';
 import State from '../state/State';
 import FlyoutButton from './common/FlyoutButton';
 

@@ -443,12 +443,6 @@ showman::after, player::after, viewer::after {
     width: 100%;
 }
 
-.inGameImg {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain;
-}
-
 video, audio {
     margin: 10px 0;
     max-width: 480px;
@@ -480,15 +474,6 @@ video, audio {
     to {
         transform: rotateY(90deg);
     }
-}
-
-.clef {
-    font-family: 'Clefs';
-    font-weight: normal;
-    font-style: normal;
-    color: #FFFFFF;
-    text-shadow: 1px 1px 0 #000;
-    font-size: 120px;
 }
 
 .rotate {

@@ -2,19 +2,24 @@ import * as signalR from '@microsoft/signalr';
 import { Dispatch, AnyAction } from 'redux';
 import localization from '../model/resources/localization';
 import roomActionCreators from '../state/room/roomActionCreators';
-import actionCreators from '../state/actionCreators';
+import actionCreators from '../logic/actionCreators';
 import Message from '../client/contracts/Message';
 import messageProcessor from '../state/game/messageProcessor';
 import GameInfo from '../client/contracts/GameInfo';
 import commonActionCreators from '../state/common/commonActionCreators';
 import onlineActionCreators from '../state/online/onlineActionCreators';
 import IGameServerClient from '../client/IGameServerClient';
+import ClientController from '../logic/ClientController';
 
 export const activeConnections: string[] = [];
 
 const detachedConnections: signalR.HubConnection[] = [];
 
-export function attachListeners(gameClient: IGameServerClient, connection: signalR.HubConnection, dispatch: Dispatch<AnyAction>): void {
+export function attachListeners(
+	gameClient: IGameServerClient,
+	connection: signalR.HubConnection,
+	dispatch: Dispatch<AnyAction>,
+	controller: ClientController): void {
 	connection.on('Joined', (login: string) => dispatch(onlineActionCreators.userJoined(login)));
 	connection.on('Leaved', (login: string) => dispatch(onlineActionCreators.userLeaved(login)));
 	connection.on('Say', (name: string, text: string) => dispatch(onlineActionCreators.receiveMessage(name, text)));
@@ -22,7 +27,7 @@ export function attachListeners(gameClient: IGameServerClient, connection: signa
 	connection.on('GameChanged', (game: GameInfo) => dispatch(onlineActionCreators.gameChanged(game)));
 	connection.on('GameDeleted', (id: number) => dispatch(onlineActionCreators.gameDeleted(id)));
 
-	connection.on('Receive', (message: Message) => messageProcessor(dispatch, message));
+	connection.on('Receive', (message: Message) => messageProcessor(controller, dispatch, message));
 
 	connection.on('Disconnect', () => {
 		alert(localization.youAreKicked);

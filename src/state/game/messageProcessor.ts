@@ -19,40 +19,44 @@ import Role from '../../model/Role';
 import localization from '../../model/resources/localization';
 import StakeTypes from '../../model/enums/StakeTypes';
 import stringFormat, { trimLength } from '../../utils/StringHelpers';
-import actionCreators from '../actionCreators';
+import actionCreators from '../../logic/actionCreators';
 import MessageLevel from '../../model/enums/MessageLevel';
 import GameStage from '../../model/enums/GameStage';
 import GameMessages from '../../client/game/GameMessages';
-import { GameSound, gameSoundPlayer } from '../../utils/GameSoundPlayer';
 import JoinMode from '../../client/game/JoinMode';
 import { getMeAsPlayer } from '../../utils/StateHelpers';
 import StakeTypes2, { parseStakeTypesFromString } from '../../client/game/StakeTypes';
-import ContentInfo from '../../model/ContentInfo';
 import ContentType from '../../model/enums/ContentType';
-import ContentGroup from '../../model/ContentGroup';
-import AnswerOption from '../../model/AnswerOption';
-import ItemState from '../../model/enums/ItemState';
 import LayoutMode from '../../model/enums/LayoutMode';
+import ClientController from '../../logic/ClientController';
+import ContentInfo from '../../model/ContentInfo';
+import ItemState from '../../model/enums/ItemState';
+import GameSound from '../../model/enums/GameSound';
 
-let lastReplicLock: number;
 const MAX_APPEND_TEXT_LENGTH = 150;
 
-export default function messageProcessor(dispatch: Dispatch<AnyAction>, message: Message) {
+let lastReplicLock: number;
+
+function unescapeNewLines(value: string): string {
+	return value.replaceAll('\\n', '\n').replaceAll('\\\\', '\\');
+}
+
+export default function messageProcessor(controller: ClientController, dispatch: Dispatch<AnyAction>, message: Message) {
 	if (message.IsSystem) {
-		dispatch((processSystemMessage(dispatch, message) as object) as AnyAction);
+		dispatch((processSystemMessage(controller, message) as object) as AnyAction);
 		return;
 	}
 
 	dispatch((userMessageReceived(message) as object) as AnyAction);
 }
 
-const processSystemMessage: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (dispatch: Dispatch<AnyAction>, message: Message) =>
+const processSystemMessage: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (controller: ClientController, message: Message) =>
 	(dispatch: Dispatch<RoomActions.KnownRoomAction>, getState: () => State, dataContext: DataContext) => {
 		const state = getState();
 		const { role } = state.room;
 		const args = message.Text.split('\n');
 
-		viewerHandler(dispatch, state, dataContext, args);
+		viewerHandler(controller, dispatch, state, dataContext, args);
 
 		if (role === Role.Player) {
 			playerHandler(dispatch, state, dataContext, args);
@@ -62,7 +66,7 @@ const processSystemMessage: ActionCreator<ThunkAction<void, State, DataContext, 
 	};
 
 const userMessageReceived: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (message: Message) =>
-	(dispatch: Dispatch<any>, getState: () => State, dataContext: DataContext) => {
+	(dispatch: Dispatch<any>, getState: () => State) => {
 		if (message.Sender === getState().user.login) {
 			return;
 		}
@@ -105,282 +109,7 @@ function onReady(personName: string, isReady: boolean, dispatch: Dispatch<any>, 
 	dispatch(roomActionCreators.isReadyChanged(personIndex, isReady));
 }
 
-function preprocessServerUri(uri: string, dataContext: DataContext) {
-	const result = uri.replace(
-		'<SERVERHOST>',
-		dataContext.contentUris && dataContext.contentUris.length > 0
-			? dataContext.contentUris[0]
-			: dataContext.serverUri
-	);
-
-	if (location.protocol === 'https:') {
-		return result.replace('http://', 'https://');
-	}
-
-	return result;
-}
-
-function unescapeNewLines(value: string): string {
-	return value.replaceAll('\\n', '\n').replaceAll('\\\\', '\\');
-}
-
-function initGroup(group: ContentGroup) {
-	let bestRowCount = 1;
-	let bestColumnCount = group.content.length / bestRowCount;
-	let bestItemSize = Math.min(9.0 / bestRowCount, 16.0 / bestColumnCount);
-
-	for	(let rowCount = 2; rowCount < group.content.length; rowCount++) {
-		const columnCount = Math.ceil(group.content.length / rowCount);
-		const itemSize = Math.min(9.0 / rowCount, 16.0 / columnCount);
-
-		if (itemSize > bestItemSize) {
-			bestItemSize = itemSize;
-			bestRowCount = rowCount;
-			bestColumnCount = columnCount;
-		}
-	}
-
-	group.columnCount = bestColumnCount;
-	group.weight *= bestRowCount;
-}
-
-function onScreenContent(dispatch: Dispatch<AnyAction>, dataContext: DataContext, content: ContentInfo[]) {
-	const groups: ContentGroup[] = [];
-	let group: ContentGroup | null = null;
-
-	for	(let i = 0; i < content.length; i++) {
-		const { type, value } = content[i];
-
-		switch (type) {
-			case 'text':
-				if (group) {
-					groups.push(group);
-					initGroup(group);
-					group = null;
-				}
-
-				const text = unescapeNewLines(value);
-				const textWeight = Math.min(Constants.LARGE_CONTENT_WEIGHT, Math.max(1, text.length / 80));
-				const textGroup: ContentGroup = { weight: textWeight, content: [], columnCount: 1 };
-
-				textGroup.content.push({
-					type: ContentType.Text,
-					value: text,
-					read: groups.length === 0,
-					partial: false,
-				});
-
-				groups.push(textGroup);
-				break;
-
-			case 'image':
-				if (!group) {
-					group = { weight: Constants.LARGE_CONTENT_WEIGHT, content: [], columnCount: 1 };
-				}
-
-				group.content.push({
-					type: ContentType.Image,
-					value: preprocessServerUri(value, dataContext),
-					read: false,
-					partial: false,
-				});
-				break;
-
-			case 'video':
-				if (!group) {
-					group = { weight: Constants.LARGE_CONTENT_WEIGHT, content: [], columnCount: 1 };
-				}
-
-				group.content.push({
-					type: ContentType.Video,
-					value: preprocessServerUri(value, dataContext),
-					read: false,
-					partial: false,
-				});
-				break;
-
-			case 'html':
-				if (!group) {
-					group = { weight: Constants.LARGE_CONTENT_WEIGHT, content: [], columnCount: 1 };
-				}
-
-				group.content.push({
-					type: ContentType.Html,
-					value: preprocessServerUri(value, dataContext),
-					read: false,
-					partial: false,
-				});
-				break;
-
-			default:
-				break;
-		}
-	}
-
-	if (group) {
-		groups.push(group);
-		initGroup(group);
-	}
-
-	dispatch(tableActionCreators.showContent(groups));
-}
-
-function onContent(dispatch: Dispatch<AnyAction>, state: State, dataContext: DataContext, ...args: string[]) {
-	if (args.length < 5) {
-		return;
-	}
-
-	const placement = args[1];
-	const { layoutMode, answerOptions } = state.table;
-	const content: ContentInfo[] = [];
-
-	for (let i = 2; i + 2 < args.length; i++) {
-		const layoutId = parseInt(args[i], 10);
-
-		if (layoutId === 0) {
-			content.push({
-				type: args[i + 1],
-				value: args[i + 2]
-			});
-
-			i += 2;
-		} else if (layoutMode === LayoutMode.AnswerOptions && i + 3 < args.length && layoutId - 1 < answerOptions.length) {
-			const label = args[i + 1];
-			const contentType = args[i + 2];
-			const contentValue = args[i + 3];
-
-			if (contentType === 'text' || contentType === 'image') {
-				dispatch(tableActionCreators.updateOption(
-					layoutId - 1,
-					label,
-					contentType === 'text' ? ContentType.Text : ContentType.Image,
-					contentValue
-				));
-			}
-
-			i += 3;
-		}
-	}
-
-	if (content.length === 0) {
-		return;
-	}
-
-	switch (placement) {
-		case 'screen':
-			onScreenContent(dispatch, dataContext, content);
-			break;
-
-		case 'replic':
-			const replic = content[0];
-
-			if (replic.type === 'text') {
-				// Not needed now. Replic is delivered via REPLIC message
-			}
-			break;
-
-		case 'background':
-			const backgroundContent = content[0];
-
-			if (backgroundContent.type === 'audio') {
-				const uri = preprocessServerUri(backgroundContent.value, dataContext);
-				dispatch(tableActionCreators.showBackgroundAudio(uri));
-			}
-			break;
-
-		default:
-			break;
-	}
-}
-
-function onContentAppend(dispatch: Dispatch<AnyAction>, state: State, dataContext: DataContext, ...args: string[]) {
-	if (args.length < 5) {
-		return;
-	}
-
-	const placement = args[1];
-	const layoutId = args[2];
-	const contentType = args[3];
-	const contentValue = args[4];
-
-	if (placement !== 'screen' || layoutId !== '0' || contentType !== 'text') {
-		return;
-	}
-
-	const text = unescapeNewLines(contentValue);
-
-	dispatch(tableActionCreators.appendPartialText(text));
-}
-
-function onContentShape(dispatch: Dispatch<AnyAction>, ...args: string[]) {
-	if (args.length < 5) {
-		return;
-	}
-
-	const text = unescapeNewLines(args[4]);
-	dispatch(tableActionCreators.showPartialText(text));
-
-	const groups: ContentGroup[] = [{
-		content: [
-			{
-				type: ContentType.Text,
-				value: '',
-				read: false,
-				partial: true
-			}
-		],
-		weight: 1,
-		columnCount: 1
-	}];
-
-	dispatch(tableActionCreators.showContent(groups));
-}
-
-function onContentState(dispatch: Dispatch<AnyAction>, state: State, ...args: string[]) {
-	if (args.length < 4) {
-		return;
-	}
-
-	const placement = args[1];
-	const layoutId = parseInt(args[2], 10);
-	const itemState = ItemState[args[3] as keyof typeof ItemState];
-
-	if (state.table.layoutMode === LayoutMode.AnswerOptions &&
-		placement === 'screen' &&
-		layoutId > 0 &&
-		layoutId <= state.table.answerOptions.length &&
-		itemState) {
-		dispatch(tableActionCreators.updateOptionState(layoutId - 1, itemState));
-	}
-}
-
-function onLayout(dispatch: Dispatch<AnyAction>, state: State, ...args: string[]) {
-	if (args.length < 5) {
-		return;
-	}
-
-	if (args[1] !== 'ANSWER_OPTIONS') {
-		return;
-	}
-
-	const questionHasScreenContent = args[2] === '+';
-
-	const options: AnswerOption[] = [];
-
-	for (let i = 3; i < args.length; i++) {
-		const typeName = args[i];
-
-		options.push({
-			label: '',
-			state: ItemState.Normal,
-			content: { type: ContentType[typeName as keyof typeof ContentType], value: '', read: false, partial: false }
-		});
-	}
-
-	dispatch(tableActionCreators.answerOptions(questionHasScreenContent, options));
-}
-
-const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataContext, args: string[]) => {
+const viewerHandler = (controller: ClientController, dispatch: Dispatch<any>, state: State, dataContext: DataContext, args: string[]) => {
 	switch (args[0]) {
 		case GameMessages.Ads:
 			if (args.length === 1) {
@@ -467,38 +196,103 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 			break;
 
 		case GameMessages.Content:
-			onContent(dispatch, state, dataContext, ...args);
+			if (args.length < 5) {
+				return;
+			}
+
+			const placement = args[1];
+			const { layoutMode, answerOptions } = state.table;
+			const content: ContentInfo[] = [];
+
+			for (let i = 2; i + 2 < args.length; i++) {
+				const layoutId = parseInt(args[i], 10);
+
+				if (layoutId === 0) {
+					content.push({
+						type: args[i + 1],
+						value: args[i + 1] === 'text' ? unescapeNewLines(args[i + 2]) : args[i + 2]
+					});
+
+					i += 2;
+				} else if (layoutMode === LayoutMode.AnswerOptions && i + 3 < args.length && layoutId - 1 < answerOptions.length) {
+					const label = args[i + 1];
+					const contentType = args[i + 2];
+					const contentValue = args[i + 3];
+
+					if (contentType === 'text' || contentType === 'image') {
+						controller.onAnswerOption(
+							layoutId - 1,
+							label,
+							contentType,
+							contentValue
+						);
+					}
+
+					i += 3;
+				}
+			}
+
+			if (content.length === 0) {
+				return;
+			}
+
+			controller.onContent(placement, content);
 			break;
 
-		case GameMessages.ContentAppend:
-			onContentAppend(dispatch, state, dataContext, ...args);
+		case GameMessages.ContentAppend: {
+			if (args.length < 5) {
+				return;
+			}
+
+			const placement = args[1];
+			const layoutId = args[2];
+			const contentType = args[3];
+			const contentValue = args[4];
+
+			if (placement !== 'screen' || layoutId !== '0' || contentType !== 'text') {
+				return;
+			}
+
+			const text = unescapeNewLines(contentValue);
+			controller.onContentAppend(placement, layoutId, contentType, text);
 			break;
+		}
 
 		case GameMessages.ContentShape:
-			onContentShape(dispatch, ...args);
+			if (args.length < 5) {
+				return;
+			}
+
+			const text = unescapeNewLines(args[4]);
+			controller.onContentShape(text);
 			break;
 
-		case GameMessages.ContentState:
-			onContentState(dispatch, state, ...args);
+		case GameMessages.ContentState: {
+			if (args.length < 4) {
+				return;
+			}
+
+			const placement = args[1];
+			const layoutId = parseInt(args[2], 10);
+			const itemState = ItemState[args[3] as keyof typeof ItemState];
+			controller.onContentState(placement, layoutId, itemState);
 			break;
+		}
 
 		case 'DISCONNECTED':
 			disconnected(dispatch, state, ...args);
 			break;
 
-		case 'ENDTRY':
-			{
-				dispatch(tableActionCreators.canPressChanged(false));
+		case GameMessages.EndTry: {
+			const index = (Number)(args[1]);
 
-				const index = (Number)(args[1]);
-				if (!isNaN(index) && index > -1 && index < state.room.persons.players.length) {
-					dispatch(roomActionCreators.playerStateChanged(index, PlayerStates.Press));
-				} else if (args[1] === 'A') { // This is ENDTRY for All
-					playGameSound(state.settings.appSound, GameSound.QUESTION_NOANSWERS);
-					dispatch(roomActionCreators.stopTimer(1));
-				}
+			if (!isNaN(index) && index > -1 && index < state.room.persons.players.length) {
+				controller.onEndPressButtonByPlayer(index);
+			} else if (args[1] === 'A') { // This is ENDTRY for All
+				controller.onEndPressButtonByTimeout();
 			}
 			break;
+		}
 
 		case 'FALSESTART':
 			// Not used - game button is always available
@@ -515,7 +309,7 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 			break;
 
 		case 'FINALTHINK':
-			playGameSound(state.settings.appSound, GameSound.FINAL_THINK, true);
+			playGameSound(dataContext, state.settings.appSound, GameSound.FINAL_THINK, true);
 			break;
 
 		case GameMessages.GameMetadata:
@@ -561,7 +355,16 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 			break;
 
 		case GameMessages.Layout:
-			onLayout(dispatch, state, ...args);
+			if (args.length < 5) {
+				return;
+			}
+
+			if (args[1] !== 'ANSWER_OPTIONS') {
+				return;
+			}
+
+			const questionHasScreenContent = args[2] === '+';
+			controller.onAnswerOptionsLayout(questionHasScreenContent, args.slice(3));
 			break;
 
 		case GameMessages.MediaLoaded:
@@ -586,7 +389,7 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 
 				const themeInfo = state.table.roundInfo[themeIndex];
 
-				playGameSound(state.settings.appSound, GameSound.FINAL_DELETE);
+				playGameSound(dataContext, state.settings.appSound, GameSound.FINAL_DELETE);
 
 				if (themeInfo) {
 					dispatch(tableActionCreators.blinkTheme(themeIndex));
@@ -640,7 +443,7 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 						? GameSound.APPLAUSE_BIG
 						: GameSound.APPLAUSE_SMALL;
 
-					playGameSound(state.settings.appSound, isRight ? rightApplause : GameSound.ANSWER_WRONG);
+					playGameSound(dataContext, state.settings.appSound, isRight ? rightApplause : GameSound.ANSWER_WRONG);
 				}
 			}
 			break;
@@ -717,7 +520,7 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 
 		case 'PICTURE': {
 			const personName = args[1];
-			const uri = preprocessServerUri(args[2], dataContext);
+			const uri = controller.preprocessServerUri(args[2]);
 
 			dispatch(roomActionCreators.personAvatarChanged(personName, uri));
 			break;
@@ -729,7 +532,7 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 			switch (qType) {
 				case 'auction':
 				case 'stake':
-					playGameSound(state.settings.appSound, GameSound.QUESTION_STAKE);
+					playGameSound(dataContext, state.settings.appSound, GameSound.QUESTION_STAKE);
 					dispatch(tableActionCreators.showSpecial(localization.questionTypeStake, state.table.activeThemeIndex));
 					break;
 
@@ -738,13 +541,13 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 				case 'secret':
 				case 'secretPublicPrice':
 				case 'secretNoQuestion':
-					playGameSound(state.settings.appSound, GameSound.QUESTION_SECRET);
+					playGameSound(dataContext, state.settings.appSound, GameSound.QUESTION_SECRET);
 					dispatch(tableActionCreators.showSpecial(localization.questionTypeSecret));
 					break;
 
 				case 'sponsored':
 				case 'noRisk':
-					playGameSound(state.settings.appSound, GameSound.QUESTION_NORISK);
+					playGameSound(dataContext, state.settings.appSound, GameSound.QUESTION_NORISK);
 					dispatch(tableActionCreators.showSpecial(localization.questionTypeNoRisk));
 					break;
 
@@ -791,13 +594,25 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 			onReady(args[1], args.length < 3 || args[2] === '+', dispatch, state);
 			break;
 
-		case 'REPLIC':
+		case GameMessages.Replic: {
 			if (args.length < 3) {
 				break;
 			}
 
-			onReplic(dispatch, state, args);
+			const personCode = args[1];
+			let text = '';
+
+			for (let i = 2; i < args.length; i++) {
+				if (text.length > 0) {
+					text += ' ';
+				}
+
+				text += args[i];
+			}
+
+			controller.onReplic(personCode, text);
 			break;
+		}
 
 		case 'RESUME':
 			dispatch(tableActionCreators.resumeMedia());
@@ -816,7 +631,8 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 
 		case GameMessages.RightAnswerStart:
 			if (args.length > 2) {
-				onRightAnswerStart(dispatch, args[2]);
+				const answer = trimLength(unescapeNewLines(args[2]), MAX_APPEND_TEXT_LENGTH);
+				controller.onRightAnswerStart(answer);
 			}
 			break;
 
@@ -833,7 +649,7 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 			// }
 
 			args.slice(1).forEach(url => {
-				const contentUri = preprocessServerUri(url, dataContext);
+				const contentUri = controller.preprocessServerUri(url);
 
 				// Straight but working method
 				// TODO: await
@@ -879,7 +695,7 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 			}
 
 			if (state.room.stage.name !== 'Final' && printThemes) {
-				playGameSound(state.settings.appSound, GameSound.ROUND_THEMES, true);
+				playGameSound(dataContext, state.settings.appSound, GameSound.ROUND_THEMES, true);
 			}
 
 			dispatch(tableActionCreators.showRoundThemes(roundThemes, state.room.stage.name === 'Final', printThemes));
@@ -911,7 +727,7 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 
 		case 'SHOWTABLO':
 			dispatch(tableActionCreators.showRoundTable());
-			gameSoundPlayer.pause();
+			dataContext.soundPlayer.pause();
 			break;
 
 		case 'STAGE':
@@ -925,7 +741,7 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 
 			if (stage === GameStage.Round || stage === GameStage.Final) {
 				// TODO: do not play music when STAGE was sent on INFO request
-				playGameSound(state.settings.appSound, GameSound.ROUND_BEGIN);
+				playGameSound(dataContext, state.settings.appSound, GameSound.ROUND_BEGIN);
 				dispatch(tableActionCreators.showRound(args[2]));
 				dispatch(roomActionCreators.playersStateCleared());
 
@@ -1004,7 +820,7 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 			break;
 
 		case 'TIMEOUT':
-			playGameSound(state.settings.appSound, GameSound.ROUND_TIMEOUT);
+			playGameSound(dataContext, state.settings.appSound, GameSound.ROUND_TIMEOUT);
 			break;
 
 		case 'TIMER':
@@ -1043,7 +859,7 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 
 						if (timerIndex === 2) {
 							dispatch(roomActionCreators.clearDecisionsAndMainTimer());
-							gameSoundPlayer.pause();
+							dataContext.soundPlayer.pause();
 						}
 						break;
 
@@ -1085,7 +901,8 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 
 		case GameMessages.ThemeComments:
 			if (args.length > 1) {
-				onThemeComments(dispatch, args[1]);
+				const comments = trimLength(unescapeNewLines(args[1]), MAX_APPEND_TEXT_LENGTH);
+				controller.onThemeComments(comments);
 			}
 			break;
 
@@ -1107,8 +924,8 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 			}
 			break;
 
-		case 'TRY':
-			dispatch(tableActionCreators.canPressChanged(true));
+		case GameMessages.Try:
+			controller.onBeginPressButton();
 			break;
 
 		case GameMessages.Unbanned:
@@ -1127,7 +944,7 @@ const viewerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 			break;
 
 		case 'WINNER':
-			playGameSound(state.settings.appSound, GameSound.APPLAUSE_FINAL);
+			playGameSound(dataContext, state.settings.appSound, GameSound.APPLAUSE_FINAL);
 			break;
 
 		case 'WRONGTRY':
@@ -1199,16 +1016,6 @@ function onStake2(dispatch: Dispatch<any>, _state: State, args: string[], maximu
 
 	dispatch(roomActionCreators.setStakes(allowedStakeTypes, minimum, maximum, minimum, step, 'STAKE', false));
 	dispatch(roomActionCreators.decisionNeededChanged(true));
-}
-
-function onThemeComments(dispatch: Dispatch<any>, themeComments: string) {
-	const comments = trimLength(unescapeNewLines(themeComments), MAX_APPEND_TEXT_LENGTH);
-	dispatch(tableActionCreators.prependTextChanged(comments));
-}
-
-function onRightAnswerStart(dispatch: Dispatch<any>, rightAnswer: string) {
-	const answer = trimLength(unescapeNewLines(rightAnswer), MAX_APPEND_TEXT_LENGTH);
-	dispatch(tableActionCreators.setAnswerView(answer));
 }
 
 const playerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataContext, args: string[]) => {
@@ -1511,36 +1318,6 @@ function info(dispatch: Dispatch<RoomActions.KnownRoomAction>, ...args: string[]
 	dispatch(actionCreators.sendAvatar() as any);
 }
 
-function onReplic(dispatch: Dispatch<RoomActions.KnownRoomAction>, state: State, args: string[]) {
-	const personCode = args[1];
-
-	let text = '';
-	for (let i = 2; i < args.length; i++) {
-		if (text.length > 0) {
-			text += ' ';
-		}
-
-		text += args[i];
-	}
-
-	if (personCode === 's') {
-		dispatch(roomActionCreators.showmanReplicChanged(text));
-		return;
-	}
-
-	if (personCode.startsWith('p') && personCode.length > 1) {
-		const index = parseInt(personCode.substring(1), 10);
-		dispatch(roomActionCreators.playerReplicChanged(index, text));
-		return;
-	}
-
-	if (personCode !== 'l') {
-		return;
-	}
-
-	dispatch(roomActionCreators.chatMessageAdded({ sender: null, text, level: MessageLevel.System }));
-}
-
 function connected(dispatch: Dispatch<RoomActions.KnownRoomAction>, state: State, ...args: string[]) {
 	const name = args[3];
 	if (name === state.user.login) {
@@ -1752,11 +1529,11 @@ function config(dispatch: Dispatch<RoomActions.KnownRoomAction>, state: State, .
 	}
 }
 
-function playGameSound(isSoundEnabled: boolean, sound: GameSound, loop = false): void {
+function playGameSound(dataContext: DataContext, isSoundEnabled: boolean, sound: GameSound, loop = false): void {
 	if (!isSoundEnabled) {
 		return;
 	}
 
-	gameSoundPlayer.play(sound, loop);
+	dataContext.soundPlayer.play(sound, loop);
 }
 
