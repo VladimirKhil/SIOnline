@@ -13,7 +13,7 @@ import { saveStateToStorage } from './StateHelpers';
 import { AppDispatch, RootState } from './store';
 import { navigate } from './uiSlice';
 import { changeLogin } from './userSlice';
-import ClientController from '../../logic/clientController';
+import ClientController from '../../logic/ClientController';
 
 interface LoginState {
 	inProgress: boolean;
