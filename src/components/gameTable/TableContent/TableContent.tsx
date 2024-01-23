@@ -18,6 +18,8 @@ import Constants from '../../../model/enums/Constants';
 
 import './TableContent.css';
 
+const globalAudioContext = new AudioContext();
+
 interface TableContentProps {
 	layoutMode: LayoutMode;
 	content: ContentGroup[];
@@ -25,6 +27,11 @@ interface TableContentProps {
 	prependText: string;
 	appendText: string;
 	attachContentToTable: boolean;
+}
+
+interface TableContentState {
+	canPlayAudio: boolean;
+	isVolumeControlVisible: boolean;
 }
 
 const mapStateToProps = (state: State) => ({
@@ -74,68 +81,118 @@ function getLayout(layoutMode: LayoutMode, mainContent: JSX.Element) {
 		: <div className='optionsLayout'>{mainContent}<AnswerOptions /></div>;
 }
 
-export function TableContent(props: TableContentProps): JSX.Element {
-	const [autoPlayEnabled, setAutoPlayEnabled] = React.useState(false);
+export class TableContent extends React.Component<TableContentProps, TableContentState> {
+	audioContextEventListener: () => void = () => {};
 
-	function getAudioContent(): React.ReactNode {
-		return props.audio.length > 0
+	constructor(props: TableContentProps) {
+		super(props);
+
+		this.state = {
+			canPlayAudio: globalAudioContext.state === 'running',
+			isVolumeControlVisible: false,
+		};
+	}
+
+	componentDidMount(): void {
+		this.audioContextEventListener = () => {
+			const canPlay = globalAudioContext.state === 'running';
+
+			this.setState({
+				canPlayAudio: canPlay
+			});
+
+			if (canPlay) {
+				globalAudioContext.removeEventListener('statechange', this.audioContextEventListener);
+			}
+		};
+
+		globalAudioContext.addEventListener('statechange', this.audioContextEventListener);
+		globalAudioContext.resume().then(this.audioContextEventListener);
+	}
+
+	componentWillUnmount(): void {
+		globalAudioContext.removeEventListener('statechange', this.audioContextEventListener);
+	}
+
+	toggleVisibility = () => {
+		if (!this.state.canPlayAudio) {
+			globalAudioContext.resume();
+			globalAudioContext.createGain();
+
+			this.setState({
+				canPlayAudio: true
+			});
+		} else {
+			this.setState((state) => ({ ...state, isVolumeControlVisible: !this.state.isVolumeControlVisible }));
+		}
+	};
+
+	getAudioContent(): React.ReactNode {
+		return this.props.audio.length > 0
 			? (<div className='centerBlock'><span className="clef rotate">&amp;</span></div>)
 			: null;
 	}
 
-	let { content } = props;
+	render() {
+		let { content } = this.props;
 
-	if (props.attachContentToTable &&
-			((props.audio.length > 0 &&
-				content.length === 0) ||
-			(props.audio.length === 0 &&
-				content.length === 1 &&
-				content[0].content.length === 1 &&
-				content[0].content[0].type !== ContentType.Text))) {
-		if (props.appendText.length > 0) {
-			const textWeight = Math.min(Constants.LARGE_CONTENT_WEIGHT, Math.max(1, props.appendText.length / 80));
+		if (this.props.attachContentToTable &&
+				((this.props.audio.length > 0 &&
+					content.length === 0) ||
+				(this.props.audio.length === 0 &&
+					content.length === 1 &&
+					content[0].content.length === 1 &&
+					content[0].content[0].type !== ContentType.Text))) {
+			if (this.props.appendText.length > 0) {
+				const textWeight = Math.min(Constants.LARGE_CONTENT_WEIGHT, Math.max(1, this.props.appendText.length / 80));
 
-			content = [...content, {
-				columnCount: 1,
-				weight: textWeight,
-				content: [{
-					type: ContentType.Text,
-					value: props.appendText,
-					read: false,
-					partial: false
-				}]
-			}];
-		} else if (props.prependText.length > 0) {
-			const textWeight = Math.min(Constants.LARGE_CONTENT_WEIGHT, Math.max(1, props.prependText.length / 80));
+				content = [...content, {
+					columnCount: 1,
+					weight: textWeight,
+					content: [{
+						type: ContentType.Text,
+						value: this.props.appendText,
+						read: false,
+						partial: false
+					}]
+				}];
+			} else if (this.props.prependText.length > 0) {
+				const textWeight = Math.min(Constants.LARGE_CONTENT_WEIGHT, Math.max(1, this.props.prependText.length / 80));
 
-			content = [ {
-				columnCount: 1,
-				weight: textWeight,
-				content: [{
-					type: ContentType.Text,
-					value: props.prependText,
-					read: false,
-					partial: false
-				}]
-			}, ...content];
+				content = [ {
+					columnCount: 1,
+					weight: textWeight,
+					content: [{
+						type: ContentType.Text,
+						value: this.props.prependText,
+						read: false,
+						partial: false
+					}]
+				}, ...content];
+			}
 		}
+
+		const hasSound = this.props.audio.length > 0 || content.some(g => g.content.some(c => c.type === ContentType.Video));
+
+		const mainContent = <div className='mainContent'>
+			{content.length > 0 ? content.map((c, i) => getGroupContent(c, i, this.state.canPlayAudio)) : this.getAudioContent()}
+		</div>;
+
+		return (
+			<TableBorder>
+				<div className='table-content'>
+					{getLayout(this.props.layoutMode, mainContent)}
+					{hasSound
+						? <VolumeButton
+							canPlayAudio={this.state.canPlayAudio}
+							isVolumeControlVisible={this.state.isVolumeControlVisible}
+							toggleVisibility={this.toggleVisibility} />
+						: null}
+					<AudioContent autoPlayEnabled={this.state.canPlayAudio} />
+				</div>
+			</TableBorder>
+		);
 	}
-
-	const hasSound = props.audio.length > 0 || content.some(g => g.content.some(c => c.type === ContentType.Video));
-
-	const mainContent = <div className='mainContent'>
-		{content.length > 0 ? content.map((c, i) => getGroupContent(c, i, autoPlayEnabled)) : getAudioContent()}
-	</div>;
-
-	return (
-		<TableBorder>
-			<div className='table-content'>
-				{getLayout(props.layoutMode, mainContent)}
-				{hasSound ? <VolumeButton onEnableAudioPlay={() => { setAutoPlayEnabled(true); }} /> : null}
-				<AudioContent />
-			</div>
-		</TableBorder>
-	);
 }
 
 export default connect(mapStateToProps)(TableContent);

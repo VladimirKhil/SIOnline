@@ -14,6 +14,7 @@ const EMPTY_WAV_SOUND =
 export const AUDIO_OBJECT = new Audio(EMPTY_WAV_SOUND);
 
 interface AudioContentProps {
+	autoPlayEnabled: boolean;
 	soundVolume: number;
 	audio: string;
 	isMediaStopped: boolean;
@@ -134,6 +135,10 @@ export class AudioContent extends React.Component<AudioContentProps> {
 			}
 		}
 
+		if (this.props.autoPlayEnabled !== prevProps.autoPlayEnabled && this.props.autoPlayEnabled) {
+			this.play();
+		}
+
 		audio.volume = this.props.soundVolume;
 	}
 
@@ -165,9 +170,7 @@ export class AudioContent extends React.Component<AudioContentProps> {
 	}
 
 	render() {
-		const { audio } = this.props;
-
-		return audio.length === 0 ? null : <></>;
+		return this.props.audio.length === 0 ? null : <></>;
 	}
 }
 
