@@ -10,14 +10,12 @@ import './GameButton.css';
 interface GameButtonProps {
 	isConnected: boolean;
 	isGameButtonEnabled: boolean;
-	windowWidth: number;
 	pressGameButton: () => void;
 }
 
 const mapStateToProps = (state: State) => ({
 	isConnected: state.common.isConnected,
 	isGameButtonEnabled: state.room.isGameButtonEnabled,
-	windowWidth: state.ui.windowWidth,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
@@ -29,11 +27,12 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 export function GameButton(props: GameButtonProps) {
 	return (
 		<button
+			type='button'
 			className="playerButton"
 			title={localization.gameButton}
 			disabled={!props.isConnected || !props.isGameButtonEnabled}
 			onClick={() => props.pressGameButton()}>
-			{props.windowWidth < 600 ? localization.answer : <span>&nbsp;</span> }
+			{localization.answer}
 		</button>
 	);
 }

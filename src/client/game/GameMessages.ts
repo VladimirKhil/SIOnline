@@ -35,6 +35,8 @@ const enum GameMessages {
 	/** Game metadata: game name, package name, contact uri. */
 	GameMetadata = 'GAMEMETADATA',
 
+	GameThemes = 'GAMETHEMES',
+
 	/** Table layout. */
 	Layout = 'LAYOUT',
 
@@ -60,6 +62,8 @@ const enum GameMessages {
 
 	/** Sets game join mode. */
 	SetJoinMode = 'SETJOINMODE',
+
+	Stage = 'STAGE',
 
 	/** Stake info. */
 	Stake2 = 'STAKE2',

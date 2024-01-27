@@ -13,6 +13,8 @@ import PlayerStates from '../model/enums/PlayerStates';
 import roomActionCreators from '../state/room/roomActionCreators';
 import MessageLevel from '../model/enums/MessageLevel';
 import GameSound from '../model/enums/GameSound';
+import ThemeInfo from '../model/ThemeInfo';
+import GameStage from '../model/enums/GameStage';
 
 function initGroup(group: ContentGroup) {
 	let bestRowCount = 1;
@@ -140,6 +142,52 @@ export default class ClientController {
 		}
 
 		this.dispatch(tableActionCreators.showContent(groups));
+	}
+
+	onGameThemes(gameThemes: string[]) {
+		this.dispatch(tableActionCreators.showGameThemes(gameThemes));
+	}
+
+	onRoundThemes(roundThemesNames: string[], display: boolean) {
+		const state = this.getState();
+
+		if (state.room.stage.name !== 'Final' && display) {
+			this.playGameSound(GameSound.ROUND_THEMES, true);
+		}
+
+		const roundThemes: ThemeInfo[] = roundThemesNames.map(t => ({ name: t, questions: [] }));
+
+		this.dispatch(tableActionCreators.showRoundThemes(roundThemes, state.room.stage.name === 'Final', display));
+		this.dispatch(tableActionCreators.questionReset());
+	}
+
+	onStage(stage: string, stageName: string, stageIndex: number) {
+		const state = this.getState();
+
+		this.dispatch(roomActionCreators.stageChanged(stage, stageIndex));
+
+		if (stage !== GameStage.Before) {
+			this.dispatch(roomActionCreators.gameStarted(true));
+		}
+
+		if (stage === GameStage.Round || stage === GameStage.Final) {
+			// TODO: do not play music when STAGE was sent on INFO request
+			this.playGameSound(GameSound.ROUND_BEGIN);
+			this.dispatch(tableActionCreators.showRound(stageName));
+			this.dispatch(roomActionCreators.playersStateCleared());
+
+			if (stage === GameStage.Round) {
+				for	(let i = 0; i < state.room.persons.players.length; i++) {
+					this.dispatch(roomActionCreators.playerInGameChanged(i, true));
+				}
+			}
+		} else if (stage === GameStage.After) {
+			this.dispatch(tableActionCreators.showLogo());
+		}
+
+		this.dispatch(roomActionCreators.gameStateCleared());
+		this.dispatch(tableActionCreators.isSelectableChanged(false));
+		this.dispatch(tableActionCreators.captionChanged(''));
 	}
 
 	onContent(placement: string, content: ContentInfo[]) {

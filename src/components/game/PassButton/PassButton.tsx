@@ -9,13 +9,11 @@ import './PassButton.css';
 
 interface PassButtonProps {
 	isConnected: boolean;
-	windowWidth: number;
 	onPass: () => void;
 }
 
 const mapStateToProps = (state: State) => ({
 	isConnected: state.common.isConnected,
-	windowWidth: state.ui.windowWidth,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
@@ -33,7 +31,7 @@ export function PassButton(props: PassButtonProps): JSX.Element | null {
 			disabled={!props.isConnected}
 			onClick={() => props.onPass()}
 		>
-			{props.windowWidth < 600 ? localization.pass : <span>&nbsp;</span> }
+			{localization.pass}
 		</button>
 	);
 }

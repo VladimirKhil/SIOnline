@@ -201,15 +201,77 @@
     border-style: solid;
 }
 
-@media screen and (min-width: 800px) {
+@media screen and (min-height: 700px), (max-width: 600px) {
     #playersPanel {
-        flex: 0.45 0 0 !important;
+        flex: 0 0 75px;
+    }
+
+    .gamePlayers .playerInfo .name, .gamePlayers .playerInfo .stakeHost {
+        display: none;
+    }
+
+    .gamePlayers .playerInfo .sum {
+        margin-top: 2px;
+    }
+
+    .gamePlayers li.me .sum {
+        color: darkorange;
+        text-shadow: 0.5px 0.5px 0 gray;
+    }
+
+    .gamePlayers {
+        flex-direction: row;
+    }
+
+    .gamePlayers .playerReplic {
+        top: 100%;
+        left: 50%;
+        transform: translate(-50%,0);
+        width: 100%;
+        min-width: 180px;
+        max-width: 360px;
+        height: 120px;
+    }
+
+    .gameMainView.reversed .gamePlayers .playerReplic {
+        bottom: initial;
+        top: 27px;
+    }
+
+    .gamePlayers .replicLink {
+        top: -10px;
+        left: initial;
+        width: 20px;
+        height: 20px;
+        transform: rotate(225deg);
+    }
+
+    .gameMainView.reversed .gamePlayers .replicLink {
+        top: -10px;
+        left: initial;
+        width: 20px;
+        height: 20px;
+        transform: rotate(225deg);
     }
 
     .playerAvatar {
-        min-width: 26px;
+        min-width: 28px;
+        flex: 3;
     }
 
+    .gamePlayers li {
+        height: initial;
+        margin: 0;
+        flex: 1;
+    }
+
+    .gamePlayers .playerCard {
+        padding: 3px 1px 0 1px;
+        flex-direction: column;
+    }
+}
+
+@media screen and (min-width: 800px) and (min-height: 700px) {
     .gamePlayers {
         justify-content: center;
     }
@@ -228,6 +290,18 @@
 }
 
 @media screen and (min-width: 1100px) and (min-height: 700px) {
+    #playersPanel {
+        flex: 0.45 0 0 !important;
+    }
+
+    .playerAvatar {
+        min-width: 26px;
+    }
+
+    #playersPanel .avatarMale, #playersPanel .avatarFemale {
+        background-size: cover;
+    }
+
     .chooserMark {
         width: 25px;
         height: 25px;
@@ -343,75 +417,5 @@
     .gamePlayers .playerInfo {
         font-size: 30px;
         padding: 3px;
-    }
-}
-
-@media screen and (min-height: 600px), (max-width: 600px) {
-    #playersPanel {
-        flex: 0 0 75px;
-    }
-
-    .gamePlayers .playerInfo .name, .gamePlayers .playerInfo .stakeHost {
-        display: none;
-    }
-
-    .gamePlayers .playerInfo .sum {
-        margin-top: 2px;
-    }
-
-    .gamePlayers li.me .sum {
-        color: darkorange;
-        text-shadow: 0.5px 0.5px 0 gray;
-    }
-
-    .gamePlayers {
-        flex-direction: row;
-    }
-
-    .gamePlayers .playerReplic {
-        top: 100%;
-        left: 50%;
-        transform: translate(-50%,0);
-        width: 100%;
-        min-width: 180px;
-        max-width: 360px;
-        height: 120px;
-    }
-
-    .gameMainView.reversed .gamePlayers .playerReplic {
-        bottom: initial;
-        top: 27px;
-    }
-
-    .gamePlayers .replicLink {
-        top: -10px;
-        left: initial;
-        width: 20px;
-        height: 20px;
-        transform: rotate(225deg);
-    }
-
-    .gameMainView.reversed .gamePlayers .replicLink {
-        top: -10px;
-        left: initial;
-        width: 20px;
-        height: 20px;
-        transform: rotate(225deg);
-    }
-
-    .playerAvatar {
-        min-width: 28px;
-        flex: 3;
-    }
-
-    .gamePlayers li {
-        height: initial;
-        margin: 0;
-        flex: 1;
-    }
-
-    .gamePlayers .playerCard {
-        padding: 3px 1px 0 1px;
-        flex-direction: column;
     }
 }

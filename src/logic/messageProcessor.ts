@@ -322,16 +322,8 @@ const viewerHandler = (controller: ClientController, dispatch: Dispatch<any>, st
 			}
 			break;
 
-		case 'GAMETHEMES':
-			{
-				const gameThemes = [];
-
-				for (let i = 1; i < args.length; i++) {
-					gameThemes.push(args[i]);
-				}
-
-				dispatch(tableActionCreators.showGameThemes(gameThemes));
-			}
+		case GameMessages.GameThemes:
+			controller.onGameThemes(args.slice(1));
 			break;
 
 		case 'HOSTNAME':
@@ -687,21 +679,17 @@ const viewerHandler = (controller: ClientController, dispatch: Dispatch<any>, st
 			dispatch(roomActionCreators.roundsNamesChanged(args.slice(1)));
 			break;
 
-		case GameMessages.RoundThemes:
+		case GameMessages.RoundThemes: {
 			const printThemes = args[1] === '+';
-			const roundThemes: ThemeInfo[] = [];
+			const roundThemes: string[] = [];
 
 			for (let i = 2; i < args.length; i++) {
-				roundThemes.push({ name: args[i], questions: [] });
+				roundThemes.push(args[i]);
 			}
 
-			if (state.room.stage.name !== 'Final' && printThemes) {
-				playGameSound(dataContext, state.settings.appSound, GameSound.ROUND_THEMES, true);
-			}
-
-			dispatch(tableActionCreators.showRoundThemes(roundThemes, state.room.stage.name === 'Final', printThemes));
-			dispatch(tableActionCreators.questionReset());
+			controller.onRoundThemes(roundThemes, printThemes);
 			break;
+		}
 
 		case 'SETCHOOSER':
 			const chooserIndex = parseInt(args[1], 10);
@@ -731,34 +719,13 @@ const viewerHandler = (controller: ClientController, dispatch: Dispatch<any>, st
 			dataContext.soundPlayer.pause();
 			break;
 
-		case 'STAGE':
+		case GameMessages.Stage: {
 			const stage = args[1];
-			const roundIndex = args.length > 3 ? parseInt(args[3], 10) : -1;
-			dispatch(roomActionCreators.stageChanged(stage, roundIndex));
-
-			if (stage !== GameStage.Before) {
-				dispatch(roomActionCreators.gameStarted(true));
-			}
-
-			if (stage === GameStage.Round || stage === GameStage.Final) {
-				// TODO: do not play music when STAGE was sent on INFO request
-				playGameSound(dataContext, state.settings.appSound, GameSound.ROUND_BEGIN);
-				dispatch(tableActionCreators.showRound(args[2]));
-				dispatch(roomActionCreators.playersStateCleared());
-
-				if (stage === GameStage.Round) {
-					for	(let i = 0; i < state.room.persons.players.length; i++) {
-						dispatch(roomActionCreators.playerInGameChanged(i, true));
-					}
-				}
-			} else if (stage === GameStage.After) {
-				dispatch(tableActionCreators.showLogo());
-			}
-
-			dispatch(roomActionCreators.gameStateCleared());
-			dispatch(tableActionCreators.isSelectableChanged(false));
-			dispatch(tableActionCreators.captionChanged(''));
+			const stageName = args[2];
+			const stageIndex = args.length > 3 ? parseInt(args[3], 10) : -1;
+			controller.onStage(stage, stageName, stageIndex);
 			break;
+		}
 
 		case 'STOP':
 			dispatch(roomActionCreators.stopTimer(0));
@@ -1537,4 +1504,3 @@ function playGameSound(dataContext: DataContext, isSoundEnabled: boolean, sound:
 
 	dataContext.soundPlayer.play(sound, loop);
 }
-
