@@ -1,37 +1,37 @@
 import { Action, ActionCreator, AnyAction, Dispatch } from 'redux';
 import { ThunkAction } from 'redux-thunk';
-import Message from '../../client/contracts/Message';
-import State from '../State';
-import DataContext from '../../model/DataContext';
-import * as RoomActions from '../room/RoomActions';
-import ChatMessage from '../../model/ChatMessage';
-import roomActionCreators from '../room/roomActionCreators';
-import Account from '../../model/Account';
-import Sex from '../../model/enums/Sex';
-import PlayerStates from '../../model/enums/PlayerStates';
-import tableActionCreators from '../table/tableActionCreators';
-import ThemeInfo from '../../model/ThemeInfo';
-import PersonInfo from '../../model/PersonInfo';
-import Persons from '../../model/Persons';
-import PlayerInfo from '../../model/PlayerInfo';
-import Constants from '../../model/enums/Constants';
-import Role from '../../model/Role';
-import localization from '../../model/resources/localization';
-import StakeTypes from '../../model/enums/StakeTypes';
-import stringFormat, { trimLength } from '../../utils/StringHelpers';
-import actionCreators from '../../logic/actionCreators';
-import MessageLevel from '../../model/enums/MessageLevel';
-import GameStage from '../../model/enums/GameStage';
-import GameMessages from '../../client/game/GameMessages';
-import JoinMode from '../../client/game/JoinMode';
-import { getMeAsPlayer } from '../../utils/StateHelpers';
-import StakeTypes2, { parseStakeTypesFromString } from '../../client/game/StakeTypes';
-import ContentType from '../../model/enums/ContentType';
-import LayoutMode from '../../model/enums/LayoutMode';
-import ClientController from '../../logic/ClientController';
-import ContentInfo from '../../model/ContentInfo';
-import ItemState from '../../model/enums/ItemState';
-import GameSound from '../../model/enums/GameSound';
+import Message from '../client/contracts/Message';
+import State from '../state/State';
+import DataContext from '../model/DataContext';
+import * as RoomActions from '../state/room/RoomActions';
+import ChatMessage from '../model/ChatMessage';
+import roomActionCreators from '../state/room/roomActionCreators';
+import Account from '../model/Account';
+import Sex from '../model/enums/Sex';
+import PlayerStates from '../model/enums/PlayerStates';
+import tableActionCreators from '../state/table/tableActionCreators';
+import ThemeInfo from '../model/ThemeInfo';
+import PersonInfo from '../model/PersonInfo';
+import Persons from '../model/Persons';
+import PlayerInfo from '../model/PlayerInfo';
+import Constants from '../model/enums/Constants';
+import Role from '../model/Role';
+import localization from '../model/resources/localization';
+import StakeTypes from '../model/enums/StakeTypes';
+import stringFormat, { trimLength } from '../utils/StringHelpers';
+import actionCreators from './actionCreators';
+import MessageLevel from '../model/enums/MessageLevel';
+import GameStage from '../model/enums/GameStage';
+import GameMessages from '../client/game/GameMessages';
+import JoinMode from '../client/game/JoinMode';
+import { getMeAsPlayer } from '../utils/StateHelpers';
+import StakeTypes2, { parseStakeTypesFromString } from '../client/game/StakeTypes';
+import ContentType from '../model/enums/ContentType';
+import LayoutMode from '../model/enums/LayoutMode';
+import ClientController from './ClientController';
+import ContentInfo from '../model/ContentInfo';
+import ItemState from '../model/enums/ItemState';
+import GameSound from '../model/enums/GameSound';
 
 const MAX_APPEND_TEXT_LENGTH = 150;
 
@@ -543,6 +543,7 @@ const viewerHandler = (controller: ClientController, dispatch: Dispatch<any>, st
 				case 'secretNoQuestion':
 					playGameSound(dataContext, state.settings.appSound, GameSound.QUESTION_SECRET);
 					dispatch(tableActionCreators.showSpecial(localization.questionTypeSecret));
+					dispatch(tableActionCreators.questionReset());
 					break;
 
 				case 'sponsored':

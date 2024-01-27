@@ -4,7 +4,7 @@ import localization from '../model/resources/localization';
 import roomActionCreators from '../state/room/roomActionCreators';
 import actionCreators from '../logic/actionCreators';
 import Message from '../client/contracts/Message';
-import messageProcessor from '../state/game/messageProcessor';
+import messageProcessor from '../logic/messageProcessor';
 import GameInfo from '../client/contracts/GameInfo';
 import commonActionCreators from '../state/common/commonActionCreators';
 import onlineActionCreators from '../state/online/onlineActionCreators';
