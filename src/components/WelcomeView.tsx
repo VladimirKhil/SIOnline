@@ -106,11 +106,9 @@ export function WelcomeView(props: WelcomeViewProps): JSX.Element {
 					{localization.anyonePlay}
 				</button>
 
-				{localization.getLanguage() === 'ru'
-					? <button type='button' className='standard welcomeRow left' disabled={!props.isConnected} onClick={() => props.joinLobby()}>
-						{localization.joinLobby}
-					</button>
-					: null}
+				<button type='button' className='standard welcomeRow left' disabled={!props.isConnected} onClick={() => props.joinLobby()}>
+					{localization.joinLobby}
+				</button>
 			</div>
 
 			{showLicense ? (

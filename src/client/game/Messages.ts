@@ -6,6 +6,8 @@ const enum Messages {
 	/** Answer version. Denotes a preliminary answer printed by player. */
 	AnswerVersion = 'ANSWER_VERSION',
 
+	I = 'I',
+
 	/** Validates player answer. */
 	IsRight = 'ISRIGHT',
 

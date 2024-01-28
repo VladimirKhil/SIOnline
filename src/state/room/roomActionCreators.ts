@@ -482,7 +482,9 @@ const pressGameButton: ActionCreator<ThunkAction<void, State, DataContext, Actio
 	getState: () => State,
 	dataContext: DataContext
 	) => {
-	if (!await dataContext.gameClient.msgAsync('I')) {
+	const deltaTime = Date.now() - getState().table.canPressUpdateTime;
+
+	if (!await dataContext.game.pressButton(deltaTime)) {
 		return;
 	}
 

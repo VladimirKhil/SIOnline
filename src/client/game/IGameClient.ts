@@ -5,6 +5,8 @@ export default interface IGameClient {
 	/** Notifies that the client has loaded the media. */
 	mediaLoaded(): Promise<boolean>;
 
+	pressButton(deltaTime: number): Promise<boolean>;
+
 	/** Sends answer version. */
 	sendAnswerVersion(answerVersion: string): Promise<boolean>;
 

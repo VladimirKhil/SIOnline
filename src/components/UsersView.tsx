@@ -56,23 +56,28 @@ export function UsersView(props: UsersViewProps): JSX.Element | null {
 					>
 						{localization.trends}
 					</h1>
-					<h1
-						className={props.chatMode === LobbySideMode.Chat ? 'activeTab' : ''}
-						onClick={() => chatModeChanged(LobbySideMode.Chat)}
-					>
-						{localization.chat}
-					</h1>
-					<h1
-						className={`playersTitle ${props.chatMode === LobbySideMode.Users ? 'activeTab' : ''}`}
-						onClick={() => chatModeChanged(LobbySideMode.Users)}
-					>
-						<div>
-							<span>{localization.users}</span>
-							<span> (</span>
-							<span>{props.usersCount}</span>
-							<span>)</span>
-						</div>
-					</h1>
+
+					{localization.getLanguage() === 'ru'
+						? <>
+							<h1
+								className={props.chatMode === LobbySideMode.Chat ? 'activeTab' : ''}
+								onClick={() => chatModeChanged(LobbySideMode.Chat)}
+							>
+								{localization.chat}
+							</h1>
+							<h1
+								className={`playersTitle ${props.chatMode === LobbySideMode.Users ? 'activeTab' : ''}`}
+								onClick={() => chatModeChanged(LobbySideMode.Users)}
+							>
+								<div>
+									<span>{localization.users}</span>
+									<span> (</span>
+									<span>{props.usersCount}</span>
+									<span>)</span>
+								</div>
+							</h1>
+						</>
+						: null}
 				</div>
 			</header>
 

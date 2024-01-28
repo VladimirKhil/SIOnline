@@ -1350,7 +1350,7 @@ function config(dispatch: Dispatch<RoomActions.KnownRoomAction>, state: State, .
 			dispatch(isPlayer
 				? roomActionCreators.playerChanged(index, Constants.ANY_NAME, null, false)
 				: roomActionCreators.showmanChanged(Constants.ANY_NAME, null, false));
-			
+
 			const account = isPlayer ? state.room.persons.players[index] : state.room.persons.showman;
 
 			if (account.name === state.user.login) {
@@ -1390,7 +1390,7 @@ function config(dispatch: Dispatch<RoomActions.KnownRoomAction>, state: State, .
 				dispatch(isPlayer
 					? roomActionCreators.playerChanged(index, replacer, null, false)
 					: roomActionCreators.showmanChanged(replacer, null, false));
-				
+
 				dispatch(roomActionCreators.personRemoved(person.name));
 
 				const newAccount: Account = {

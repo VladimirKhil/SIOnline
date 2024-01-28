@@ -88,7 +88,7 @@ export function CommonSettingsView(props: CommonSettingsViewProps): JSX.Element 
 
 			<div className="settingItem">
 				<input
-					id="mainMenusound"
+					id="mainMenuSound"
 					type="checkbox"
 					checked={props.settings.mainMenuSound}
 					onChange={() => props.onMainMenuSoundChange(!props.settings.mainMenuSound)}

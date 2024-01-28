@@ -16,6 +16,10 @@ export default class GameClient implements IGameClient {
 		return this.gameServerClient.msgAsync(Messages.MediaLoaded);
 	}
 
+	pressButton(deltaTime: number): Promise<boolean> {
+		return this.gameServerClient.msgAsync(Messages.I, deltaTime);
+	}
+
 	sendAnswerVersion(answerVersion: string): Promise<boolean> {
 		return this.gameServerClient.msgAsync(Messages.AnswerVersion, answerVersion);
 	}

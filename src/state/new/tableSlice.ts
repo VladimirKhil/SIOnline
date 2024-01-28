@@ -16,6 +16,7 @@ interface TableState {
 	audio: string;
 	animateReading: boolean;
 	canPress: boolean;
+	canPressUpdateTime: number;
 	gameThemes: string[];
 	roundInfo: ThemeInfo[];
 	isSelectable: boolean;
@@ -37,6 +38,7 @@ const initialState: TableState = {
 	audio: '',
 	animateReading: false,
 	canPress: false,
+	canPressUpdateTime: 0,
 	gameThemes: [],
 	roundInfo: [],
 	isSelectable: false,

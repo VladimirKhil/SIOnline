@@ -11,7 +11,6 @@ import SexView from './SexView';
 import LanguageView from './LanguageView';
 import userActionCreators from '../state/user/userActionCreators';
 import uiActionCreators from '../state/ui/uiActionCreators';
-import { gameSoundPlayer } from '../utils/GameSoundPlayer';
 import GameSound from '../model/enums/GameSound';
 
 import './Login.css';
@@ -25,6 +24,8 @@ interface LoginProps {
 	onLoginChanged: (newLogin: string) => void;
 	onHowToPlay: () => void;
 	onLogin: () => void;
+	onSoundPlay: (sound: GameSound) => void;
+	onSoundPause: () => void;
 }
 
 const mapStateToProps = (state: State) => ({
@@ -44,6 +45,12 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	onLogin: () => {
 		dispatch(actionCreators.login() as unknown as Action); // TODO: разобраться с типизацией
 	},
+	onSoundPlay: (sound: GameSound) => {
+		dispatch(actionCreators.onSoundPlay(sound, true) as unknown as Action);
+	},
+	onSoundPause: () => {
+		dispatch(actionCreators.onSoundPause() as unknown as Action);
+	},
 });
 
 export class Login extends React.Component<LoginProps> {
@@ -59,12 +66,12 @@ export class Login extends React.Component<LoginProps> {
 
 	componentDidMount() {
 		if (this.props.mainMenuSound) {
-			gameSoundPlayer.play(GameSound.MAIN_MENU);
+			this.props.onSoundPlay(GameSound.MAIN_MENU);
 		}
 	}
 
 	componentWillUnmount() {
-		gameSoundPlayer.pause();
+		this.props.onSoundPause();
 	}
 
 	render(): JSX.Element {

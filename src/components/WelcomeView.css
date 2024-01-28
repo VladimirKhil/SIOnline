@@ -50,8 +50,6 @@
 	font-weight: normal;
 	font-size: 18px;
 	overflow-y: auto;
-	-webkit-user-select: text;
-	user-select: text;
 }
 
 .licenseText header {

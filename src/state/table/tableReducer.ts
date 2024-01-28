@@ -152,6 +152,7 @@ const tableReducer: Reducer<TableState> = (state: TableState = initialState, any
 			return {
 				...state,
 				canPress: action.canPress,
+				canPressUpdateTime: action.updateTime,
 				isMediaStopped: action.canPress ? state.isMediaStopped : true,
 			};
 

@@ -16,6 +16,7 @@ import ShowmanReplic from './components/game/ShowmanReplic';
 import GameTable from './components/gameTable/GameTable';
 import ClientController from './logic/ClientController';
 import TableMode from './model/enums/TableMode';
+import PlayersView from './components/game/PlayersView';
 
 declare global {
     interface Window {
@@ -29,8 +30,7 @@ interface WebViewEventListenerObject {
     handleEvent(object: Event & { data?: any }): void;
 }
 
-interface WebViewEventListener
-{
+interface WebViewEventListener {
     (evt: Event & { data?: any }): void;
 }
 
@@ -89,7 +89,12 @@ function processMessage(controller: ClientController, payload: any) {
 	}
 }
 
-export function runTable(elementId: string): void {
+const enum TableRenderMode {
+	WithReplic,
+	WithPlayers,
+}
+
+export function runTable(elementId: string, renderMode: TableRenderMode): void {
 	const host = document.getElementById(elementId);
 
 	if (!host) {
@@ -145,10 +150,15 @@ export function runTable(elementId: string): void {
 
 	ReactDOM.render(
 		<Provider store={store}>
-			<div className='replicAndTable'>
-				<ShowmanReplic />
-				<GameTable />
-			</div>
+			{renderMode === TableRenderMode.WithReplic
+				? (<div className='replicAndTable'>
+					<ShowmanReplic />
+					<GameTable />
+				</div>)
+				: (<div className='playersAndTable'>
+					<PlayersView />
+					<GameTable />
+				</div>)}
 		</Provider>,
 		host
 	);

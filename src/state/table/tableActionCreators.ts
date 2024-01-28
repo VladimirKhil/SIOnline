@@ -82,7 +82,7 @@ const showSpecial: ActionCreator<TableActions.ShowSpecialAction> = (text: string
 });
 
 const canPressChanged: ActionCreator<TableActions.CanPressChangedAction> = (canPress: boolean) => ({
-	type: TableActions.TableActionTypes.CanPressChanged, canPress
+	type: TableActions.TableActionTypes.CanPressChanged, canPress, updateTime: Date.now()
 });
 
 const isSelectableChanged: ActionCreator<TableActions.IsSelectableChangedAction> = (isSelectable: boolean) => ({

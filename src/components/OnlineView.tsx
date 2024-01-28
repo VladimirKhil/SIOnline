@@ -93,10 +93,12 @@ export class OnlineView extends React.Component<OnlineViewProps> {
 			<div className="onlineView">
 				{this.props.inProgress ? <ProgressBar isIndeterminate /> : null}
 				<GamesList games={this.props.filteredGames} selectedGameId={this.props.selectedGameId} showInfo={false} />
+
 				<div className='gameInfoArea'>
 					<header />
 					<div className='gameInfoAreaContent'><GameInfoView game={this.props.selectedGame} showGameName /></div>
 				</div>
+
 				<UsersView />
 				<SettingsButton />
 				<LobbyChatVisibilityButton />
