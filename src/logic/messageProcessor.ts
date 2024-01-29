@@ -191,9 +191,22 @@ const viewerHandler = (controller: ClientController, dispatch: Dispatch<any>, st
 			config(dispatch, state, ...args);
 			break;
 
-		case 'CONNECTED':
-			connected(dispatch, state, ...args);
+		case GameMessages.Connected: {
+			const name = args[3];
+			const role = args[1];
+			const index = parseInt(args[2], 10);
+			const isMale = args[4] === 'm';
+
+			const account: Account = {
+				name,
+				sex: isMale ? Sex.Male : Sex.Female,
+				isHuman: true,
+				avatar: null
+			};
+
+			controller.onConnected(account, role, index);
 			break;
+		}
 
 		case GameMessages.Content:
 			if (args.length < 5) {
@@ -1284,39 +1297,6 @@ function info(dispatch: Dispatch<RoomActions.KnownRoomAction>, ...args: string[]
 
 	dispatch(roomActionCreators.infoChanged(all, showman, players));
 	dispatch(actionCreators.sendAvatar() as any);
-}
-
-function connected(dispatch: Dispatch<RoomActions.KnownRoomAction>, state: State, ...args: string[]) {
-	const name = args[3];
-	if (name === state.user.login) {
-		return;
-	}
-
-	const role = args[1];
-	const index = parseInt(args[2], 10);
-	const isMale = args[4] === '+';
-
-	const account: Account = {
-		name,
-		sex: isMale ? Sex.Male : Sex.Female,
-		isHuman: true,
-		avatar: null
-	};
-
-	dispatch(roomActionCreators.personAdded(account));
-
-	switch (role) {
-		case 'showman':
-			dispatch(roomActionCreators.showmanChanged(name, true, false));
-			break;
-
-		case 'player':
-			dispatch(roomActionCreators.playerChanged(index, name, true, false));
-			break;
-
-		default:
-			break;
-	}
 }
 
 function disconnected(dispatch: Dispatch<RoomActions.KnownRoomAction>, state: State, ...args: string[]) {

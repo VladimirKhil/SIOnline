@@ -15,6 +15,7 @@ import MessageLevel from '../model/enums/MessageLevel';
 import GameSound from '../model/enums/GameSound';
 import ThemeInfo from '../model/ThemeInfo';
 import GameStage from '../model/enums/GameStage';
+import Account from '../model/Account';
 
 function initGroup(group: ContentGroup) {
 	let bestRowCount = 1;
@@ -142,6 +143,27 @@ export default class ClientController {
 		}
 
 		this.dispatch(tableActionCreators.showContent(groups));
+	}
+
+	onConnected(account: Account, role: string, index: number) {
+		if (account.name === this.getState().user.login) {
+			return;
+		}
+
+		this.dispatch(roomActionCreators.personAdded(account));
+
+		switch (role) {
+			case 'showman':
+				this.dispatch(roomActionCreators.showmanChanged(account.name, true, false));
+				break;
+
+			case 'player':
+				this.dispatch(roomActionCreators.playerChanged(index, account.name, true, false));
+				break;
+
+			default:
+				break;
+		}
 	}
 
 	onGameThemes(gameThemes: string[]) {

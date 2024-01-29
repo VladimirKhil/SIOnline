@@ -1,4 +1,3 @@
-// @ts-nocheck
 import answerWrongSfx from '../../assets/sounds/answer_wrong.mp3';
 import applauseBigSfx from '../../assets/sounds/applause_big.mp3';
 import applauseFinalSfx from '../../assets/sounds/applause_final.mp3';
@@ -17,43 +16,57 @@ import roundTimeoutSfx from '../../assets/sounds/round_timeout.mp3';
 import IGameSoundPlayer from './IGameSoundPlayer';
 import GameSound from '../model/enums/GameSound';
 
-class GameSoundPlayer implements IGameSoundPlayer {
-	private sounds: Map<GameSound, HTMLAudioElement>;
+const audioContext = new AudioContext();
 
-	private current: HTMLAudioElement | null;
+class GameSoundPlayer implements IGameSoundPlayer {
+	private sounds: Map<GameSound, string>;
+
+	private audioSource: AudioBufferSourceNode | null = null;
 
 	constructor() {
-		this.sounds = new Map<GameSound, HTMLAudioElement>([
-			[GameSound.ANSWER_WRONG, new Audio(answerWrongSfx)],
-			[GameSound.APPLAUSE_BIG, new Audio(applauseBigSfx)],
-			[GameSound.APPLAUSE_FINAL, new Audio(applauseFinalSfx)],
-			[GameSound.APPLAUSE_SMALL, new Audio(applauseSmallSfx)],
-			[GameSound.FINAL_DELETE, new Audio(finalDeleteSfx)],
-			[GameSound.FINAL_THINK, new Audio(finalThinkSfx)],
-			[GameSound.MAIN_MENU, new Audio(mainMenuSfx)],
-			[GameSound.QUESTION_NOANSWERS, new Audio(questionNoAnswersSfx)],
-			[GameSound.QUESTION_NORISK, new Audio(questionNoRiskSfx)],
-			[GameSound.QUESTION_SECRET, new Audio(questionSecretSfx)],
-			[GameSound.QUESTION_STAKE, new Audio(questionStakeSfx)],
-			[GameSound.ROUND_BEGIN, new Audio(roundBeginSfx)],
-			[GameSound.ROUND_THEMES, new Audio(roundThemesSfx)],
-			[GameSound.ROUND_TIMEOUT, new Audio(roundTimeoutSfx)],
+		this.sounds = new Map<GameSound, string>([
+			[GameSound.ANSWER_WRONG, answerWrongSfx],
+			[GameSound.APPLAUSE_BIG, applauseBigSfx],
+			[GameSound.APPLAUSE_FINAL, applauseFinalSfx],
+			[GameSound.APPLAUSE_SMALL, applauseSmallSfx],
+			[GameSound.FINAL_DELETE, finalDeleteSfx],
+			[GameSound.FINAL_THINK, finalThinkSfx],
+			[GameSound.MAIN_MENU, mainMenuSfx],
+			[GameSound.QUESTION_NOANSWERS, questionNoAnswersSfx],
+			[GameSound.QUESTION_NORISK, questionNoRiskSfx],
+			[GameSound.QUESTION_SECRET, questionSecretSfx],
+			[GameSound.QUESTION_STAKE, questionStakeSfx],
+			[GameSound.ROUND_BEGIN, roundBeginSfx],
+			[GameSound.ROUND_THEMES, roundThemesSfx],
+			[GameSound.ROUND_TIMEOUT, roundTimeoutSfx],
 		]);
 	}
 
-	play(sound: GameSound, loop = false) {
-		this.current = this.sounds.get(sound);
-		this.current?.loop = loop;
-		this.current.play().catch((e) => console.log(e));
-	}
+	async play(sound: GameSound, loop = false): Promise<void> {
+		const audioSrc = this.sounds.get(sound);
 
-	pause() {
-		if (!this.current) {
+		if (!audioSrc) {
+			console.error('Sound not found: ' + sound)
 			return;
 		}
 
-		this.current.pause();
-		this.current = null;
+		const response = await fetch(audioSrc);
+		const arrayBuffer = await response.arrayBuffer();
+		const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+
+		this.audioSource = audioContext.createBufferSource();
+		this.audioSource.buffer = audioBuffer;
+
+		this.audioSource.connect(audioContext.destination);
+		this.audioSource.loop = loop;
+		this.audioSource.start();
+	}
+
+	pause() {
+		if (this.audioSource) {
+			this.audioSource.stop();
+			this.audioSource = null;
+		}
 	}
 }
 

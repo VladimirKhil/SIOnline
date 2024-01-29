@@ -18,7 +18,7 @@ import Constants from '../../../model/enums/Constants';
 
 import './TableContent.css';
 
-const globalAudioContext = new AudioContext();
+const audioContext = new AudioContext();
 
 interface TableContentProps {
 	layoutMode: LayoutMode;
@@ -88,36 +88,36 @@ export class TableContent extends React.Component<TableContentProps, TableConten
 		super(props);
 
 		this.state = {
-			canPlayAudio: globalAudioContext.state === 'running',
+			canPlayAudio: audioContext.state === 'running',
 			isVolumeControlVisible: false,
 		};
 	}
 
 	componentDidMount(): void {
 		this.audioContextEventListener = () => {
-			const canPlay = globalAudioContext.state === 'running';
+			const canPlay = audioContext.state === 'running';
 
 			this.setState({
 				canPlayAudio: canPlay
 			});
 
 			if (canPlay) {
-				globalAudioContext.removeEventListener('statechange', this.audioContextEventListener);
+				audioContext.removeEventListener('statechange', this.audioContextEventListener);
 			}
 		};
 
-		globalAudioContext.addEventListener('statechange', this.audioContextEventListener);
-		globalAudioContext.resume().then(this.audioContextEventListener);
+		audioContext.addEventListener('statechange', this.audioContextEventListener);
+		audioContext.resume().then(this.audioContextEventListener);
 	}
 
 	componentWillUnmount(): void {
-		globalAudioContext.removeEventListener('statechange', this.audioContextEventListener);
+		audioContext.removeEventListener('statechange', this.audioContextEventListener);
 	}
 
 	toggleVisibility = () => {
 		if (!this.state.canPlayAudio) {
-			globalAudioContext.resume();
-			globalAudioContext.createGain();
+			audioContext.resume();
+			audioContext.createGain();
 
 			this.setState({
 				canPlayAudio: true

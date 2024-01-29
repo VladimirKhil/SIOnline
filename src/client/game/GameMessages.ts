@@ -18,6 +18,8 @@ const enum GameMessages {
 	/** Question selection. */
 	Choice = 'CHOICE',
 
+	Connected = 'CONNECTED',
+
 	/** Table content. */
 	Content = 'CONTENT',
 
