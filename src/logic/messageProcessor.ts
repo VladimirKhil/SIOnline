@@ -21,12 +21,10 @@ import StakeTypes from '../model/enums/StakeTypes';
 import stringFormat, { trimLength } from '../utils/StringHelpers';
 import actionCreators from './actionCreators';
 import MessageLevel from '../model/enums/MessageLevel';
-import GameStage from '../model/enums/GameStage';
 import GameMessages from '../client/game/GameMessages';
 import JoinMode from '../client/game/JoinMode';
 import { getMeAsPlayer } from '../utils/StateHelpers';
 import StakeTypes2, { parseStakeTypesFromString } from '../client/game/StakeTypes';
-import ContentType from '../model/enums/ContentType';
 import LayoutMode from '../model/enums/LayoutMode';
 import ClientController from './ClientController';
 import ContentInfo from '../model/ContentInfo';
@@ -737,6 +735,14 @@ const viewerHandler = (controller: ClientController, dispatch: Dispatch<any>, st
 			const stageName = args[2];
 			const stageIndex = args.length > 3 ? parseInt(args[3], 10) : -1;
 			controller.onStage(stage, stageName, stageIndex);
+			break;
+		}
+
+		case GameMessages.StageInfo: {
+			const stage = args[1];
+			const stageName = args[2];
+			const stageIndex = args.length > 3 ? parseInt(args[3], 10) : -1;
+			controller.onStageInfo(stage, stageName, stageIndex);
 			break;
 		}
 

@@ -11,7 +11,8 @@
     "outDir": "dist",
     "module": "esnext",
     "moduleResolution": "node",
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true
   },
   "include": [
     "src"

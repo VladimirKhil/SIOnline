@@ -193,7 +193,6 @@ export default class ClientController {
 		}
 
 		if (stage === GameStage.Round || stage === GameStage.Final) {
-			// TODO: do not play music when STAGE was sent on INFO request
 			this.playGameSound(GameSound.ROUND_BEGIN);
 			this.dispatch(tableActionCreators.showRound(stageName));
 			this.dispatch(roomActionCreators.playersStateCleared());
@@ -210,6 +209,18 @@ export default class ClientController {
 		this.dispatch(roomActionCreators.gameStateCleared());
 		this.dispatch(tableActionCreators.isSelectableChanged(false));
 		this.dispatch(tableActionCreators.captionChanged(''));
+	}
+
+	onStageInfo(stage: string, _stageName: string, stageIndex: number) {
+		this.dispatch(roomActionCreators.stageChanged(stage, stageIndex));
+
+		if (stage !== GameStage.Before) {
+			this.dispatch(roomActionCreators.gameStarted(true));
+		}
+
+		if (stage === GameStage.After) {
+			this.dispatch(tableActionCreators.showLogo());
+		}
 	}
 
 	onContent(placement: string, content: ContentInfo[]) {

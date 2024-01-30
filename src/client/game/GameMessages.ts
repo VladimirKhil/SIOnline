@@ -67,6 +67,8 @@ const enum GameMessages {
 
 	Stage = 'STAGE',
 
+	StageInfo = 'STAGE_INFO',
+
 	/** Stake info. */
 	Stake2 = 'STAKE2',
 

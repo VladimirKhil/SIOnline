@@ -46,7 +46,7 @@ class GameSoundPlayer implements IGameSoundPlayer {
 		const audioSrc = this.sounds.get(sound);
 
 		if (!audioSrc) {
-			console.error('Sound not found: ' + sound)
+			console.error('Sound not found: ' + sound);
 			return;
 		}
 
