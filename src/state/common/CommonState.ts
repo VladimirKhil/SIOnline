@@ -6,6 +6,7 @@ export default interface CommonState {
 	maxPackageSizeMb: number;
 	error: string | null;
 	askForConsent: boolean;
+	emojiCultures?: string[];
 	avatarLoadProgress: boolean;
 	avatarLoadError: string | null;
 }

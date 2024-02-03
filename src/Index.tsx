@@ -11,7 +11,7 @@ import reducer from './state/reducer';
 import SavedState, { loadState } from './state/SavedState';
 import actionCreators from './logic/actionCreators';
 import DataContext from './model/DataContext';
-import Config from './state/Config';
+import Config from './Config';
 import roomActionCreators from './state/room/roomActionCreators';
 import localization from './model/resources/localization';
 import ServerInfo from './model/server/ServerInfo';
@@ -208,6 +208,7 @@ async function run() {
 	const state = setState(initialState, savedState, gameId);
 
 	state.common.askForConsent = !!config.askForConsent;
+	state.common.emojiCultures = config.emojiCultures;
 
 	const noOpHubConnection = new signalR.HubConnectionBuilder().withUrl('http://fake').build();
 

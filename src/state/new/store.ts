@@ -11,7 +11,7 @@ import tableReducer from './tableSlice';
 import siPackagesReducer from './siPackagesSlice';
 import settingsReducer from './settingsSlice';
 import DataContext from '../../model/DataContext';
-import Config from '../Config';
+import Config from '../../Config';
 import GameClient from '../../client/game/GameClient';
 import GameServerClient from '../../client/GameServerClient';
 import SIContentClient from 'sicontent-client';

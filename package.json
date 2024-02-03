@@ -21,7 +21,7 @@
     "@microsoft/signalr": "^6.0.5",
     "@microsoft/signalr-protocol-msgpack": "^6.0.5",
     "@reduxjs/toolkit": "^1.8.2",
-    "emoji-picker-react": "^4.4.8",
+    "emoji-picker-react": "^4.7.12",
     "es6-promise": "^4.2.8",
     "firebase": "^9.8.2",
     "localized-strings": "^0.2.4",

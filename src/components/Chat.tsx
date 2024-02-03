@@ -73,8 +73,8 @@ export class Chat extends React.Component<ChatProps> {
 			e.preventDefault();
 		}
 	};
-	
-	onEmojiClick = (emojiData: EmojiClickData, e: MouseEvent) => {
+
+	onEmojiClick = (emojiData: EmojiClickData) => {
 		this.props.onMessageChanged(this.props.currentMessage + emojiData.emoji);
 	};
 
@@ -95,17 +95,20 @@ export class Chat extends React.Component<ChatProps> {
 					message={this.props.currentMessage}
 					onNicknameClick={this.appendMentionedUser}
 				/>
-				<ChatInputEmojiPicker onEmojiClick={this.onEmojiClick} />
 
-				<input
-					ref={this.inputRef}
-					type='text'
-					className={`message ${this.props.isConnected ? '' : 'disconnected'}`}
-					value={this.props.currentMessage}
-					aria-label='Message'
-					onChange={this.onMessageChanged}
-					onKeyPress={this.onMessageKeyPress}
-				/>
+				<div className='chat_bottom'>
+					<ChatInputEmojiPicker onEmojiClick={this.onEmojiClick} />
+
+					<input
+						ref={this.inputRef}
+						type='text'
+						className={`message ${this.props.isConnected ? '' : 'disconnected'}`}
+						value={this.props.currentMessage}
+						aria-label='Message'
+						onChange={this.onMessageChanged}
+						onKeyPress={this.onMessageKeyPress}
+					/>
+				</div>
 			</div>
 		);
 	}

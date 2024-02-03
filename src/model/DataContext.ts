@@ -1,7 +1,7 @@
 ﻿import * as signalR from '@microsoft/signalr';
 import IGameClient from '../client/game/IGameClient';
 import IGameServerClient from '../client/IGameServerClient';
-import Config from '../state/Config';
+import Config from '../Config';
 import SIContentClient from 'sicontent-client';
 import SIStorageClient from 'sistorage-client';
 import IGameSoundPlayer from '../utils/IGameSoundPlayer';

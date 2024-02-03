@@ -107,6 +107,14 @@ function onReady(personName: string, isReady: boolean, dispatch: Dispatch<any>, 
 	dispatch(roomActionCreators.isReadyChanged(personIndex, isReady));
 }
 
+// Regular expression to match URLs
+const urlRegex = /((https?|ftp):\/\/[^\s/$.?#].[^\s]*)/gi;
+
+/** Replaces URLs with an empty string. */
+function clearUrls(text: string): string {
+    return text.replace(urlRegex, '');
+}
+
 const viewerHandler = (controller: ClientController, dispatch: Dispatch<any>, state: State, dataContext: DataContext, args: string[]) => {
 	switch (args[0]) {
 		case GameMessages.Ads:
@@ -114,7 +122,13 @@ const viewerHandler = (controller: ClientController, dispatch: Dispatch<any>, st
 				break;
 			}
 
-			dispatch(tableActionCreators.showText(args[1], false));
+			let ads = args[1];
+
+			if (dataContext.config.clearUrls) {
+				ads = clearUrls(ads);
+			}
+
+			dispatch(tableActionCreators.showText(ads, false));
 			break;
 
 		case 'APELLATION_ENABLES':
@@ -612,6 +626,10 @@ const viewerHandler = (controller: ClientController, dispatch: Dispatch<any>, st
 				}
 
 				text += args[i];
+			}
+
+			if (dataContext.config.clearUrls) {
+				text = clearUrls(text);
 			}
 
 			controller.onReplic(personCode, text);

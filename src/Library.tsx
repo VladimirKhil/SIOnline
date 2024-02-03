@@ -120,7 +120,7 @@ export function runTable(elementId: string, renderMode: TableRenderMode): void {
 		soundPlayer: {
 			play() { },
 			pause() { },
-		}
+		},
 	};
 
 	const store = createStore<State, AnyAction, {}, {}>(
