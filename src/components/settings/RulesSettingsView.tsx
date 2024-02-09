@@ -267,16 +267,6 @@ export function RulesSettingsView(props: RulesSettingsViewProps): JSX.Element {
 			</div>
 
 			<div className="settingItem">
-				<input
-					id="usePingPenalty"
-					type="checkbox"
-					checked={props.settings.appSettings.usePingPenalty}
-					onChange={() => props.onUsePingPenaltyChanged(!props.settings.appSettings.usePingPenalty)}
-				/>
-				<label htmlFor="usePingPenalty">{localization.usePingPenalty}</label>
-			</div>
-
-			<div className="settingItem">
 				<p className='gameTypeHeader'>{localization.buttonPressMode}</p>
 
 				<select

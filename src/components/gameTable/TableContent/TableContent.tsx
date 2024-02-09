@@ -188,7 +188,7 @@ export class TableContent extends React.Component<TableContentProps, TableConten
 							isVolumeControlVisible={this.state.isVolumeControlVisible}
 							toggleVisibility={this.toggleVisibility} />
 						: null}
-					<AudioContent autoPlayEnabled={this.state.canPlayAudio} />
+					<AudioContent audioContext={audioContext} autoPlayEnabled={this.state.canPlayAudio} />
 				</div>
 			</TableBorder>
 		);

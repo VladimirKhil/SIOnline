@@ -233,6 +233,7 @@ export class NewGameDialog extends React.Component<NewGameDialogProps, NewGameDi
 								<p>{localization.password}</p>
 
 								<input
+									aria-label='Password'
 									type="password"
 									value={this.props.gamePassword}
 									onChange={this.onGamePasswordChanged}
@@ -244,6 +245,7 @@ export class NewGameDialog extends React.Component<NewGameDialogProps, NewGameDi
 										<p>{localization.voiceChat}</p>
 
 										<input
+											aria-label='Voice chat url'
 											type="text"
 											value={this.props.gameVoiceChat}
 											onChange={this.onGameVoiceChatChanged}
@@ -273,6 +275,16 @@ export class NewGameDialog extends React.Component<NewGameDialogProps, NewGameDi
 													target='_blank'
 													rel='noopener noreferrer'>
 													{`${localization.userPackages}…`}
+												</a>
+											</li>
+
+											<li>
+												<a
+													className='simpleLink'
+													href="https://sigame.ru"
+													target='_blank'
+													rel='noopener noreferrer'>
+													{`${localization.library} sigame.ru…`}
 												</a>
 											</li>
 
@@ -320,16 +332,17 @@ export class NewGameDialog extends React.Component<NewGameDialogProps, NewGameDi
 								{getPackageName(this.props.gamePackageType, this.props.gamePackageName, this.props.gamePackageData)}
 							</span>
 
-							<input ref={this.fileRef} type="file" accept=".siq" onChange={this.onGamePackageDataChanged} />
+							<input
+								aria-label='Game package file'
+								ref={this.fileRef}
+								type="file"
+								accept=".siq"
+								onChange={this.onGamePackageDataChanged} />
 						</div>
-
-						{this.props.gamePackageType === PackageType.File
-							? (<div className="licenseAgreement">{localization.licenseAgreement}</div>)
-							: null}
 
 						<p className='newGameHeader'>{localization.role}</p>
 
-						<select value={this.props.gameRole} onChange={this.onGameRoleChanged}>
+						<select title='Game role' value={this.props.gameRole} onChange={this.onGameRoleChanged}>
 							<option value="0">{localization.viewer}</option>
 							<option value="1">{localization.player}</option>
 							<option value="2">{localization.showman}</option>
@@ -338,7 +351,9 @@ export class NewGameDialog extends React.Component<NewGameDialogProps, NewGameDi
 						{this.props.gameRole === Role.Showman || this.props.isSingleGame ? null : (
 							<>
 								<p>{localization.showman}</p>
+
 								<select
+									title='Showman type'
 									className="showmanTypeSelector"
 									value={this.props.isShowmanHuman ? 1 : 0}
 									onChange={this.onShowmanTypeChanged}
@@ -357,6 +372,7 @@ export class NewGameDialog extends React.Component<NewGameDialogProps, NewGameDi
 							<span className="playersCountValue">{this.props.playersCount}</span>
 
 							<input
+								aria-label='Players count'
 								type="range"
 								className="playersCount"
 								min={2}
@@ -373,6 +389,7 @@ export class NewGameDialog extends React.Component<NewGameDialogProps, NewGameDi
 									<span className="playersCountValue">{this.props.humanPlayersCount}</span>
 
 									<input
+										aria-label='Human players count'
 										type="range"
 										className="playersCount"
 										min={0}

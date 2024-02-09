@@ -14,7 +14,7 @@
 #newGameDialog p {
     margin-top: 13px;
     font-size: 16px;
-    margin-bottom: 8px;
+    margin-bottom: 7px;
 }
 
 #newGameDialog input, #newGameDialog select {
@@ -142,11 +142,6 @@
 
 .showmanTypeSelector {
     margin-right: 10px;
-}
-
-.licenseAgreement {
-    margin: 4px;
-    font-weight: bolder;
 }
 
 @media screen and (min-width: 800px) {

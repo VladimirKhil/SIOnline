@@ -3,17 +3,10 @@ import State from '../../state/State';
 import { Dispatch, Action } from 'redux';
 import { connect } from 'react-redux';
 import roomActionCreators from '../../state/room/roomActionCreators';
-import settingsActionCreators from '../../state/settings/settingsActionCreators';
 import getErrorMessage from '../../utils/ErrorHelpers';
-import getExtension from '../../utils/FileHelper';
-import localization from '../../model/resources/localization';
-
-const EMPTY_WAV_SOUND =
-	'data:audio/wav;base64,UklGRjIAAABXQVZFZm10IBIAAAABAAEAQB8AAEAfAAABAAgAAABmYWN0BAAAAAAAAABkYXRhAAAAAA==';
-
-export const AUDIO_OBJECT = new Audio(EMPTY_WAV_SOUND);
 
 interface AudioContentProps {
+	audioContext: AudioContext;
 	autoPlayEnabled: boolean;
 	soundVolume: number;
 	audio: string;
@@ -21,7 +14,6 @@ interface AudioContentProps {
 
 	mediaLoaded: () => void;
 	onMediaEnded: () => void;
-	onSoundVolumeChange: (volume: number) => void;
 	operationError: (error: string) => void;
 }
 
@@ -35,9 +27,6 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	onMediaEnded: () => {
 		dispatch(roomActionCreators.onMediaEnded() as object as Action);
 	},
-	onSoundVolumeChange: (volume: number) => {
-		dispatch(settingsActionCreators.onSoundVolumeChanged(volume));
-	},
 	operationError: (error: string) => {
 		dispatch(roomActionCreators.operationError(error) as object as Action);
 	},
@@ -47,130 +36,107 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 });
 
 export class AudioContent extends React.Component<AudioContentProps> {
-	private audioRef: HTMLAudioElement = AUDIO_OBJECT;
-
-	private playPromise: Promise<void> | null = null;
+	private startTime = 0;
 
 	private playTime: number | null = null;
 
 	private completed = false;
 
-	componentDidMount() {
-		const audio = this.audioRef;
+	private audioBuffer: AudioBuffer | null = null;
 
-		audio.onload = () => {
+	private audioSource: AudioBufferSourceNode | null = null;
+
+	private gainNode: GainNode;
+
+	constructor(props: AudioContentProps) {
+		super(props);
+
+		const { audioContext } = props;
+
+		this.gainNode = audioContext.createGain();
+		this.gainNode.connect(audioContext.destination);
+		this.gainNode.gain.value = props.soundVolume;
+	}
+
+	async load() {
+		const { audioContext } = this.props;
+
+		try {
+			const response = await fetch(this.props.audio);
+			const arrayBuffer = await response.arrayBuffer();
+			this.audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+
 			this.props.mediaLoaded();
+
+			this.play();
+			this.completed = false;
+		} catch (e) {
+			this.props.operationError(getErrorMessage(e));
+		}
+	}
+
+	play(offset = 0) {
+		this.audioSource = this.props.audioContext.createBufferSource();
+		this.audioSource.buffer = this.audioBuffer;
+		this.audioSource.loop = false;
+
+		this.audioSource.onended = () => {
+			if (!this.props.isMediaStopped) {
+				this.completed = true;
+				this.props.onMediaEnded();
+			}
 		};
 
-		audio.onended = () => {
-			this.completed = true;
-			this.props.onMediaEnded();
-		};
+		this.audioSource.connect(this.gainNode);
+		this.audioSource.start(0, offset);
+		this.startTime = this.props.audioContext.currentTime;
+	}
 
-		audio.volume = this.props.soundVolume;
-		audio.loop = false;
+	stop() {
+		if (this.audioSource && this.audioSource.context.state === 'running') {
+			this.playTime = this.props.audioContext.currentTime - this.startTime;
+			this.audioSource.onended = null;
+			this.audioSource.stop();
+		}
+	}
 
+	componentDidMount() {
 		if (this.props.audio.length === 0) {
 			return;
 		}
 
-		const ext = getExtension(this.props.audio);
-		const canPlay = ext && audio.canPlayType('audio/' + ext);
-
-		if (canPlay === '') {
-			this.props.operationError(`${localization.unsupportedMediaType}: ${ext}`);
-		} else {
-			this.completed = false;
-
-			audio.src = this.props.audio;
-			audio.load();
-
-			this.play();
-
-			if (audio.readyState >= 3) {
-				this.props.mediaLoaded();
-			}
-		}
+		this.load();
 	}
 
 	componentDidUpdate(prevProps: AudioContentProps) {
-		const audio = this.audioRef;
-
 		if (this.props.audio == '') {
 			return;
 		}
 
-		if (this.props.audio !== audio.currentSrc) {
-			const ext = getExtension(this.props.audio);
-			const canPlay = ext && audio.canPlayType('audio/' + ext);
-
-			if (canPlay === '') {
-				this.props.operationError(`${localization.unsupportedMediaType}: ${ext}`);
-			} else {
-				this.completed = false;
-				this.playTime = null;
-
-				audio.src = this.props.audio;
-				audio.load();
-
-				if (!this.props.isMediaStopped) {
-					this.play();
-				}
-
-				if (audio.readyState >= 3) {
-					this.props.mediaLoaded();
-				}
-			}
+		if (this.props.soundVolume !== prevProps.soundVolume) {
+			this.gainNode.gain.value = this.props.soundVolume;
 		}
 
-		if (this.props.isMediaStopped !== prevProps.isMediaStopped) {
-			if (this.props.isMediaStopped) {
-				this.pause();
-			} else if (!this.completed) {
-				if (this.playTime) {
-					audio.currentTime = this.playTime;
-				}
-
-				this.play();
-			}
-		}
-
-		if (this.props.autoPlayEnabled !== prevProps.autoPlayEnabled && this.props.autoPlayEnabled) {
+		if (this.props.audio !== prevProps.audio) {
+			this.stop();
+			this.load();
+		} else if (this.props.autoPlayEnabled !== prevProps.autoPlayEnabled && this.props.autoPlayEnabled) {
 			this.play();
-		}
-
-		audio.volume = this.props.soundVolume;
-	}
-
-	play = () => {
-		const audio = this.audioRef;
-		this.playPromise = audio.play().catch((e) => this.props.operationError(getErrorMessage(e)));
-	};
-
-	pause(): void {
-		const audio = this.audioRef;
-
-		if (audio.paused) {
-			return;
-		}
-
-		if (this.playPromise) {
-			this.playPromise.then(() => {
-				this.playTime = audio.currentTime;
-				audio.pause();
-			});
-		} else {
-			this.playTime = audio.currentTime;
-			audio.pause();
+		} else if (this.props.isMediaStopped !== prevProps.isMediaStopped) {
+			if (this.props.isMediaStopped) {
+				this.stop();
+			} else if (!this.completed) {
+				this.play(this.playTime ?? 0);
+			}
 		}
 	}
 
 	componentWillUnmount(): void {
-		this.pause();
+		this.stop();
 	}
 
-	render() {
-		return this.props.audio.length === 0 ? null : <></>;
+	render(): null {
+		return null;
 	}
 }
 
