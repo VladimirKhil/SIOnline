@@ -30,6 +30,8 @@ import uiActionCreators from '../state/ui/uiActionCreators';
 import SIStorageClient from 'sistorage-client';
 import ClientController from './ClientController';
 import GameSound from '../model/enums/GameSound';
+import PackageType from '../model/enums/PackageType';
+import gameActionCreators from '../state/game/gameActionCreators';
 
 const onConnectionChanged: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 	(isConnected: boolean, message: string) => async (dispatch: Dispatch<any>, getState: () => State, dataContext: DataContext) => {
@@ -247,9 +249,17 @@ const login: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 
 					const urlParams = new URLSearchParams(window.location.search);
 					const invite = urlParams.get('invite');
+					const packageUri = urlParams.get('packageUri');
+					const packageName = urlParams.get('packageName');
 
 					if (state.online.selectedGameId && invite == 'true') {
 						onlineActionCreators.friendsPlay()(dispatch, getState, dataContext);
+					} else if (packageUri) {
+						onlineActionCreators.friendsPlay()(dispatch, getState, dataContext);
+						dispatch(onlineActionCreators.newGame());
+						dispatch(gameActionCreators.runNewGame() as any as AnyAction);
+						dispatch(gameActionCreators.gamePackageTypeChanged(PackageType.SIStorage));
+						dispatch(gameActionCreators.gamePackageLibraryChanged('', packageName ?? packageUri, packageUri));
 					} else {
 						dispatch(uiActionCreators.navigateToWelcome());
 					}

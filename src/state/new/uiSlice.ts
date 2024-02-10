@@ -10,6 +10,7 @@ interface UIState {
 	windowHeight: number;
 	areSettingsVisible: boolean;
 	isSettingGameButtonKey: boolean;
+	isVisible: boolean;
 }
 
 const initialState: UIState = {
@@ -20,6 +21,7 @@ const initialState: UIState = {
 	windowHeight: window.innerHeight,
 	areSettingsVisible: false,
 	isSettingGameButtonKey: false,
+	isVisible: true,
 };
 
 export const uiSlice = createSlice({

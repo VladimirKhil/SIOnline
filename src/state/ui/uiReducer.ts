@@ -104,6 +104,13 @@ const uiReducer: Reducer<UIState> = (state: UIState = initialState, anyAction: A
 				isSettingGameButtonKey: action.isSettingGameButtonKey
 			};
 
+		case UIActionTypes.VisibilityChanged: {
+			return {
+				...state,
+				isVisible: action.isVisible,
+			};
+		}
+
 		default:
 			return state;
 	}

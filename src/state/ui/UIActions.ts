@@ -15,6 +15,7 @@ export const enum UIActionTypes {
 	WindowSizeChanged = 'WINDOW_SIZE_CHANGED',
 	OnlineModeChanged = 'ONLINE_MODE_CHANGED',
 	IsSettingGameButtonKeyChanged = 'IS_SETTING_GAME_BUTTON_KEY_CHANGED',
+	VisibilityChanged = 'VISIBILITY_CHANGED',
 }
 
 export type NavigateToLoginAction = { type: UIActionTypes.NavigateToLogin };
@@ -31,6 +32,7 @@ export type OnlineModeChangedAction = { type: UIActionTypes.OnlineModeChanged, m
 export type CloseGameInfoAction = { type: UIActionTypes.CloseGameInfo };
 export type WindowSizeChangedAction = { type: UIActionTypes.WindowSizeChanged, width: number, height: number };
 export type IsSettingGameButtonKeyChangedAction = { type: UIActionTypes.IsSettingGameButtonKeyChanged, isSettingGameButtonKey: boolean };
+export type VisibilityChangedAction = { type: UIActionTypes.VisibilityChanged, isVisible: boolean };
 
 export type KnownUIAction =
 	NavigateToLoginAction
@@ -46,4 +48,5 @@ export type KnownUIAction =
 	| OnlineModeChangedAction
 	| CloseGameInfoAction
 	| WindowSizeChangedAction
-	| IsSettingGameButtonKeyChangedAction;
+	| IsSettingGameButtonKeyChangedAction
+	| VisibilityChangedAction;

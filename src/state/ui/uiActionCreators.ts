@@ -62,6 +62,10 @@ const windowSizeChanged: ActionCreator<UIActions.WindowSizeChangedAction> = (wid
 	height
 });
 
+const visibilityChanged: ActionCreator<UIActions.VisibilityChangedAction> = (isVisible: boolean) => ({
+	type: UIActions.UIActionTypes.VisibilityChanged, isVisible
+});
+
 const uiActionCreators = {
 	navigateToLogin,
 	showSettings,
@@ -77,6 +81,7 @@ const uiActionCreators = {
 	navigateToGame,
 	navigateToLobbyInternal,
 	friendsPlayInternal,
+	visibilityChanged,
 };
 
 export default uiActionCreators;

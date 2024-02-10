@@ -11,6 +11,7 @@ interface AudioContentProps {
 	soundVolume: number;
 	audio: string;
 	isMediaStopped: boolean;
+	isVisible: boolean;
 
 	mediaLoaded: () => void;
 	onMediaEnded: () => void;
@@ -21,6 +22,7 @@ const mapStateToProps = (state: State) => ({
 	soundVolume: state.settings.soundVolume,
 	audio: state.table.audio,
 	isMediaStopped: state.room.stage.isGamePaused || state.table.isMediaStopped,
+	isVisible: state.ui.isVisible,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
@@ -38,7 +40,7 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 export class AudioContent extends React.Component<AudioContentProps> {
 	private startTime = 0;
 
-	private playTime: number | null = null;
+	private pauseTime = 0;
 
 	private completed = false;
 
@@ -68,6 +70,7 @@ export class AudioContent extends React.Component<AudioContentProps> {
 
 			this.props.mediaLoaded();
 
+			this.pauseTime = 0;
 			this.play();
 			this.completed = false;
 		} catch (e) {
@@ -75,26 +78,26 @@ export class AudioContent extends React.Component<AudioContentProps> {
 		}
 	}
 
-	play(offset = 0) {
+	play() {
 		this.audioSource = this.props.audioContext.createBufferSource();
 		this.audioSource.buffer = this.audioBuffer;
 		this.audioSource.loop = false;
 
 		this.audioSource.onended = () => {
-			if (!this.props.isMediaStopped) {
+			if (!this.props.isMediaStopped && this.props.isVisible) {
 				this.completed = true;
 				this.props.onMediaEnded();
 			}
 		};
 
 		this.audioSource.connect(this.gainNode);
-		this.audioSource.start(0, offset);
 		this.startTime = this.props.audioContext.currentTime;
+		this.audioSource.start(0, this.pauseTime);
 	}
 
 	stop() {
 		if (this.audioSource && this.audioSource.context.state === 'running') {
-			this.playTime = this.props.audioContext.currentTime - this.startTime;
+			this.pauseTime += this.props.audioContext.currentTime - this.startTime;
 			this.audioSource.onended = null;
 			this.audioSource.stop();
 		}
@@ -122,11 +125,11 @@ export class AudioContent extends React.Component<AudioContentProps> {
 			this.load();
 		} else if (this.props.autoPlayEnabled !== prevProps.autoPlayEnabled && this.props.autoPlayEnabled) {
 			this.play();
-		} else if (this.props.isMediaStopped !== prevProps.isMediaStopped) {
-			if (this.props.isMediaStopped) {
+		} else if (this.props.isMediaStopped !== prevProps.isMediaStopped || this.props.isVisible !== prevProps.isVisible) {
+			if (this.props.isMediaStopped || !this.props.isVisible) {
 				this.stop();
 			} else if (!this.completed) {
-				this.play(this.playTime ?? 0);
+				this.play();
 			}
 		}
 	}
@@ -135,6 +138,7 @@ export class AudioContent extends React.Component<AudioContentProps> {
 		this.stop();
 	}
 
+	// eslint-disable-next-line class-methods-use-this
 	render(): null {
 		return null;
 	}

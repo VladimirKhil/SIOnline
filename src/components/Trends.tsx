@@ -28,6 +28,7 @@ function isValidLink(link: string) {
 	return link.startsWith('https://vk.com/') ||
 		link.startsWith('https://t.me/') ||
 		link.startsWith('https://discord.com/') ||
+		link.startsWith('https://discord.gg/') ||
 		link.startsWith('https://www.twitch.tv/');
 }
 

@@ -12,9 +12,9 @@
 }
 
 #newGameDialog p {
-    margin-top: 13px;
+    margin-top: 11px;
     font-size: 16px;
-    margin-bottom: 7px;
+    margin-bottom: 6px;
 }
 
 #newGameDialog input, #newGameDialog select {

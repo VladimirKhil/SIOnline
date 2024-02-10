@@ -9,6 +9,7 @@ export default interface UIState {
 	windowHeight: number;
 	areSettingsVisible: boolean;
 	isSettingGameButtonKey: boolean;
+	isVisible: boolean;
 }
 
 export const initialState: UIState = {
@@ -19,4 +20,5 @@ export const initialState: UIState = {
 	windowHeight: window.innerHeight,
 	areSettingsVisible: false,
 	isSettingGameButtonKey: false,
+	isVisible: true,
 };
