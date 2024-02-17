@@ -79,6 +79,10 @@ export class AudioContent extends React.Component<AudioContentProps> {
 	}
 
 	play() {
+		if (!this.props.autoPlayEnabled || this.props.isMediaStopped || !this.props.isVisible) {
+			return;
+		}
+
 		this.audioSource = this.props.audioContext.createBufferSource();
 		this.audioSource.buffer = this.audioBuffer;
 		this.audioSource.loop = false;
@@ -100,6 +104,7 @@ export class AudioContent extends React.Component<AudioContentProps> {
 			this.pauseTime += this.props.audioContext.currentTime - this.startTime;
 			this.audioSource.onended = null;
 			this.audioSource.stop();
+			this.audioSource = null;
 		}
 	}
 
