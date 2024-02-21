@@ -95,6 +95,7 @@ export class SIStorageDialog extends React.Component<SIStorageDialogProps, SISto
 
 		this.state = {
 			filters: {
+				restrictionIds: [-1],
 				difficulty: {
 					compareMode: CompareMode.GreaterThan | CompareMode.EqualTo,
 					value: 1
@@ -306,7 +307,7 @@ export class SIStorageDialog extends React.Component<SIStorageDialogProps, SISto
 						<div>
 							<span className="selectorName">{localization.packageSubject}</span>
 
-							<select className="selector" value={tagId} onChange={e => this.onTagIdChanged(e.target.value)}>
+							<select aria-label='tag filter' className="selector" value={tagId} onChange={e => this.onTagIdChanged(e.target.value)}>
 								<option key={undefined} value={undefined}>
 									{localization.librarySearchAll}
 								</option>
@@ -327,6 +328,7 @@ export class SIStorageDialog extends React.Component<SIStorageDialogProps, SISto
 
 							<div className="selectorsGroup">
 								<select
+									aria-label='difficulty relation filter'
 									className="selectorDifRel"
 									value={this.state.filters.difficulty?.compareMode}
 									onChange={e => this.onDifficultyCompareModeChanged(e.target.value)}
@@ -336,6 +338,7 @@ export class SIStorageDialog extends React.Component<SIStorageDialogProps, SISto
 								</select>
 
 								<select
+									aria-label='difficulty value filter'
 									className="selectorDif"
 									value={this.state.filters.difficulty?.value}
 									onChange={e => this.onDifficultyValueChanged(e.target.value)}
@@ -355,6 +358,7 @@ export class SIStorageDialog extends React.Component<SIStorageDialogProps, SISto
 							<span className="selectorName">{localization.packagePublisher}</span>
 
 							<select
+								aria-label='publisher filter'
 								className="selector"
 								value={this.state.filters.publisherId}
 								onChange={e => this.onPublisherIdChanged(e.target.value)}
@@ -379,6 +383,7 @@ export class SIStorageDialog extends React.Component<SIStorageDialogProps, SISto
 							<span className="selectorName">{localization.packageAuthor}</span>
 
 							<select
+								aria-label='author filter'
 								className="selector"
 								value={this.state.filters.authorId}
 								onChange={e => this.onAuthorIdChanged(e.target.value)}
@@ -399,8 +404,13 @@ export class SIStorageDialog extends React.Component<SIStorageDialogProps, SISto
 						<div>
 							<span className="selectorName">{localization.packageRestriction}</span>
 
-							<select className="selector" value={restrictionId} onChange={e => this.onRestrictionIdChanged(e.target.value)}>
-								<option key={undefined} value={undefined}>{localization.librarySearchNotSet}</option>
+							<select
+								aria-label='restriction filter'
+								className="selector"
+								value={restrictionId}
+								onChange={e => this.onRestrictionIdChanged(e.target.value)}>
+								<option key={undefined} value={undefined}>{localization.librarySearchAll}</option>
+								<option key={-1} value={-1}>{localization.librarySearchNotSet}</option>
 
 								{keys(this.props.restrictions).map((id) => (
 									<option key={id} value={id}>
@@ -413,6 +423,7 @@ export class SIStorageDialog extends React.Component<SIStorageDialogProps, SISto
 							<span className="selectorName">{localization.filter}</span>
 
 							<input
+								aria-label='text filter'
 								className="textFilter"
 								type="text"
 								value={this.state.filters.searchText}
@@ -423,6 +434,7 @@ export class SIStorageDialog extends React.Component<SIStorageDialogProps, SISto
 
 							<div className="selectorsGroup">
 								<select
+									aria-label='sort mode'
 									className="selectorSortMode"
 									value={this.state.selectionParameters.sortMode}
 									onChange={e => this.onSortModeChanged(e.target.value)}
@@ -432,6 +444,7 @@ export class SIStorageDialog extends React.Component<SIStorageDialogProps, SISto
 								</select>
 
 								<select
+									aria-label='sort direction'
 									className="selectorSortDir"
 									value={this.state.selectionParameters.sortDirection}
 									onChange={e => this.onSortDirectionChanged(e.target.value)}
