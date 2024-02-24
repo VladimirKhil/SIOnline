@@ -15,7 +15,6 @@ import Config from '../../Config';
 import GameClient from '../../client/game/GameClient';
 import GameServerClient from '../../client/GameServerClient';
 import SIContentClient from 'sicontent-client';
-import { gameSoundPlayer } from '../../utils/GameSoundPlayer';
 
 /* New version of store. Not used yet */
 
@@ -40,7 +39,6 @@ const dataContext : DataContext = {
 	contentUris: null,
 	contentClient: new SIContentClient({ serviceUri: 'http://fake' }),
 	storageClient: null,
-	soundPlayer: gameSoundPlayer,
 };
 
 const store = configureStore({

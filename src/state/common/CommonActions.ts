@@ -6,6 +6,7 @@ export const enum CommonActionTypes {
 	AvatarLoadStart = 'AVATAR_LOAD_START',
 	AvatarLoadEnd = 'AVATAR_LOAD_END',
 	AvatarLoadError = 'AVATAR_LOAD_ERROR',
+	AudioChanged = 'AUDIO_CHANGED',
 }
 
 export type IsConnectedChangedAction = { type: CommonActionTypes.IsConnectedChanged, isConnected: boolean };
@@ -14,12 +15,13 @@ export type CommonErrorChangedAction = { type: CommonActionTypes.CommonErrorChan
 export type AvatarLoadStartAction = { type: CommonActionTypes.AvatarLoadStart };
 export type AvatarLoadEndAction = { type: CommonActionTypes.AvatarLoadEnd };
 export type AvatarLoadErrorAction = { type: CommonActionTypes.AvatarLoadError, error: string | null };
+export type AudioChangedAction = { type: CommonActionTypes.AudioChanged, audio: string | null, loop: boolean };
 
 export type ServerInfoChangedAction = {
 	type: CommonActionTypes.ServerInfoChanged,
 	serverName: string,
 	serverLicense: string,
-	maxPackageSizeMb: number
+	maxPackageSizeMb: number,
 };
 
 export type KnownCommonAction =
@@ -29,4 +31,5 @@ export type KnownCommonAction =
 	| CommonErrorChangedAction
 	| AvatarLoadStartAction
 	| AvatarLoadEndAction
-	| AvatarLoadErrorAction;
+	| AvatarLoadErrorAction
+	| AudioChangedAction;

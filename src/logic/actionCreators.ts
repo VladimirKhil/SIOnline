@@ -301,16 +301,6 @@ const onExit: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 		}
 	};
 
-const onSoundPlay: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
-	(sound: GameSound, loop: boolean) => async (_dispatch: Dispatch<Action>, _getState: () => State, dataContext: DataContext) => {
-	dataContext.soundPlayer.play(sound, loop);
-};
-
-const onSoundPause: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
-	() => async (_dispatch: Dispatch<Action>, _getState: () => State, dataContext: DataContext) => {
-	dataContext.soundPlayer.pause();
-};
-
 const actionCreators = {
 	reloadComputerAccounts,
 	saveStateToStorage,
@@ -320,8 +310,6 @@ const actionCreators = {
 	sendAvatar,
 	login,
 	onExit,
-	onSoundPlay,
-	onSoundPause,
 };
 
 export default actionCreators;

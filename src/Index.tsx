@@ -228,7 +228,6 @@ async function run() {
 		contentUris: null,
 		contentClient: new SIContentClient({ serviceUri: 'http://fake' }),
 		storageClient: null,
-		soundPlayer: gameSoundPlayer,
 	};
 
 	const store = createStore<State, AnyAction, {}, {}>(

@@ -3,6 +3,8 @@ import { ThunkAction } from 'redux-thunk';
 import DataContext from '../../model/DataContext';
 import State from '../State';
 import * as CommonActions from './CommonActions';
+import GameSound from '../../model/enums/GameSound';
+import { gameSoundPlayer } from '../../utils/GameSoundPlayer';
 
 const isConnectedChanged: ActionCreator<CommonActions.IsConnectedChangedAction> = (isConnected: boolean) => ({
 	type: CommonActions.CommonActionTypes.IsConnectedChanged,
@@ -49,6 +51,18 @@ const avatarLoadError: ActionCreator<CommonActions.AvatarLoadErrorAction> = (err
 	error
 });
 
+const playAudio: ActionCreator<CommonActions.AudioChangedAction> = (audio: GameSound, loop: boolean) => ({
+	type: CommonActions.CommonActionTypes.AudioChanged,
+	audio: gameSoundPlayer.getSound(audio) ?? null,
+	loop,
+});
+
+const stopAudio: ActionCreator<CommonActions.AudioChangedAction> = () => ({
+	type: CommonActions.CommonActionTypes.AudioChanged,
+	audio: null,
+	loop: false,
+});
+
 const commonActionCreators = {
 	isConnectedChanged,
 	computerAccountsChanged,
@@ -58,6 +72,8 @@ const commonActionCreators = {
 	avatarLoadStart,
 	avatarLoadEnd,
 	avatarLoadError,
+	playAudio,
+	stopAudio,
 };
 
 export default commonActionCreators;

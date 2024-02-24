@@ -117,10 +117,6 @@ export function runTable(elementId: string, renderMode: TableRenderMode): void {
 		contentUris: null,
 		contentClient: new SIContentClient({ serviceUri: 'http://fake' }),
 		storageClient: null,
-		soundPlayer: {
-			play() { },
-			pause() { },
-		},
 	};
 
 	const store = createStore<State, AnyAction, {}, {}>(

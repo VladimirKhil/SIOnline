@@ -16,6 +16,7 @@ import GameSound from '../model/enums/GameSound';
 import ThemeInfo from '../model/ThemeInfo';
 import GameStage from '../model/enums/GameStage';
 import Account from '../model/Account';
+import commonActionCreators from '../state/common/commonActionCreators';
 
 function initGroup(group: ContentGroup) {
 	let bestRowCount = 1;
@@ -62,7 +63,7 @@ export default class ClientController {
 			return;
 		}
 
-		this.dataContext.soundPlayer.play(sound, loop);
+		this.dispatch(commonActionCreators.playAudio(sound, loop));
 	}
 
 	private onScreenContent(content: ContentInfo[]) {

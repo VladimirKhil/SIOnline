@@ -15,6 +15,7 @@ import Games from './Games';
 import ErrorView from './ErrorView';
 import CookiesWarning from './CookiesWarning';
 import uiActionCreators from '../state/ui/uiActionCreators';
+import AudioController from './common/AudioController';
 
 import './App.css';
 
@@ -108,6 +109,7 @@ export class App extends React.Component<AppProps, AppState> {
 				{this.getContent()}
 				{this.props.areSettingsVisible ? <SettingsDialog /> : null}
 				{this.props.askForConsent ? <CookiesWarning /> : null}
+				<AudioController />
 			</div>
 		);
 	}

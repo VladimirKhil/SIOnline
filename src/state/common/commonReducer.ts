@@ -16,7 +16,7 @@ const commonReducer: Reducer<CommonState> = (state: CommonState = initialState, 
 			return {
 				...state,
 				computerAccounts: action.computerAccounts
-			};		
+			};
 
 		case CommonActionTypes.ServerInfoChanged:
 			return {
@@ -50,6 +50,13 @@ const commonReducer: Reducer<CommonState> = (state: CommonState = initialState, 
 				...state,
 				avatarLoadError: action.error,
 				avatarLoadProgress: false
+			};
+
+		case CommonActionTypes.AudioChanged:
+			return {
+				...state,
+				audio: action.audio,
+				audioLoop: action.loop,
 			};
 
 		default:

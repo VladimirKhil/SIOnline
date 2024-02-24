@@ -11,7 +11,6 @@ import SexView from './SexView';
 import LanguageView from './LanguageView';
 import userActionCreators from '../state/user/userActionCreators';
 import uiActionCreators from '../state/ui/uiActionCreators';
-import GameSound from '../model/enums/GameSound';
 
 import './Login.css';
 
@@ -20,19 +19,15 @@ interface LoginProps {
 	inProgress: boolean;
 	error: string | null;
 	ads?: string;
-	mainMenuSound: boolean;
 	onLoginChanged: (newLogin: string) => void;
 	onHowToPlay: () => void;
 	onLogin: () => void;
-	onSoundPlay: (sound: GameSound) => void;
-	onSoundPause: () => void;
 }
 
 const mapStateToProps = (state: State) => ({
 	login: state.user.login,
 	inProgress: state.login.inProgress,
 	error: state.login.errorMessage,
-	mainMenuSound: state.settings.mainMenuSound,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
@@ -43,13 +38,7 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 		dispatch(userActionCreators.onLoginChanged(newLogin));
 	},
 	onLogin: () => {
-		dispatch(actionCreators.login() as unknown as Action); // TODO: разобраться с типизацией
-	},
-	onSoundPlay: (sound: GameSound) => {
-		dispatch(actionCreators.onSoundPlay(sound, true) as unknown as Action);
-	},
-	onSoundPause: () => {
-		dispatch(actionCreators.onSoundPause() as unknown as Action);
+		dispatch(actionCreators.login() as unknown as Action); // TODO: fix typing
 	},
 });
 
@@ -63,16 +52,6 @@ export class Login extends React.Component<LoginProps> {
 			this.props.onLogin();
 		}
 	};
-
-	componentDidMount() {
-		if (this.props.mainMenuSound) {
-			this.props.onSoundPlay(GameSound.MAIN_MENU);
-		}
-	}
-
-	componentWillUnmount() {
-		this.props.onSoundPause();
-	}
 
 	render(): JSX.Element {
 		return (

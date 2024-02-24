@@ -10,6 +10,8 @@ interface CommonState {
 	askForConsent: boolean;
 	avatarLoadProgress: boolean;
 	avatarLoadError: string | null;
+	audio: string | null;
+	audioLoop: boolean;
 }
 
 const initialState: CommonState = {
@@ -22,6 +24,8 @@ const initialState: CommonState = {
 	askForConsent: true,
 	avatarLoadProgress: false,
 	avatarLoadError: null,
+	audio: null,
+	audioLoop: false,
 };
 
 export const commonSlice = createSlice({

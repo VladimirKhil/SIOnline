@@ -30,6 +30,7 @@ import ClientController from './ClientController';
 import ContentInfo from '../model/ContentInfo';
 import ItemState from '../model/enums/ItemState';
 import GameSound from '../model/enums/GameSound';
+import commonActionCreators from '../state/common/commonActionCreators';
 
 const MAX_APPEND_TEXT_LENGTH = 150;
 
@@ -334,7 +335,7 @@ const viewerHandler = (controller: ClientController, dispatch: Dispatch<any>, st
 			break;
 
 		case 'FINALTHINK':
-			playGameSound(dataContext, state.settings.appSound, GameSound.FINAL_THINK, true);
+			playGameSound(dispatch, state.settings.appSound, GameSound.FINAL_THINK, true);
 			break;
 
 		case GameMessages.GameMetadata:
@@ -406,7 +407,7 @@ const viewerHandler = (controller: ClientController, dispatch: Dispatch<any>, st
 
 				const themeInfo = state.table.roundInfo[themeIndex];
 
-				playGameSound(dataContext, state.settings.appSound, GameSound.FINAL_DELETE);
+				playGameSound(dispatch, state.settings.appSound, GameSound.FINAL_DELETE);
 
 				if (themeInfo) {
 					dispatch(tableActionCreators.blinkTheme(themeIndex));
@@ -460,7 +461,7 @@ const viewerHandler = (controller: ClientController, dispatch: Dispatch<any>, st
 						? GameSound.APPLAUSE_BIG
 						: GameSound.APPLAUSE_SMALL;
 
-					playGameSound(dataContext, state.settings.appSound, isRight ? rightApplause : GameSound.ANSWER_WRONG);
+					playGameSound(dispatch, state.settings.appSound, isRight ? rightApplause : GameSound.ANSWER_WRONG);
 				}
 			}
 			break;
@@ -549,7 +550,7 @@ const viewerHandler = (controller: ClientController, dispatch: Dispatch<any>, st
 			switch (qType) {
 				case 'auction':
 				case 'stake':
-					playGameSound(dataContext, state.settings.appSound, GameSound.QUESTION_STAKE);
+					playGameSound(dispatch, state.settings.appSound, GameSound.QUESTION_STAKE);
 					dispatch(tableActionCreators.showSpecial(localization.questionTypeStake, state.table.activeThemeIndex));
 					break;
 
@@ -558,14 +559,14 @@ const viewerHandler = (controller: ClientController, dispatch: Dispatch<any>, st
 				case 'secret':
 				case 'secretPublicPrice':
 				case 'secretNoQuestion':
-					playGameSound(dataContext, state.settings.appSound, GameSound.QUESTION_SECRET);
+					playGameSound(dispatch, state.settings.appSound, GameSound.QUESTION_SECRET);
 					dispatch(tableActionCreators.showSpecial(localization.questionTypeSecret));
 					dispatch(tableActionCreators.questionReset());
 					break;
 
 				case 'sponsored':
 				case 'noRisk':
-					playGameSound(dataContext, state.settings.appSound, GameSound.QUESTION_NORISK);
+					playGameSound(dispatch, state.settings.appSound, GameSound.QUESTION_NORISK);
 					dispatch(tableActionCreators.showSpecial(localization.questionTypeNoRisk));
 					break;
 
@@ -745,7 +746,7 @@ const viewerHandler = (controller: ClientController, dispatch: Dispatch<any>, st
 
 		case 'SHOWTABLO':
 			dispatch(tableActionCreators.showRoundTable());
-			dataContext.soundPlayer.pause();
+			dispatch(commonActionCreators.stopAudio());
 			break;
 
 		case GameMessages.Stage: {
@@ -825,7 +826,7 @@ const viewerHandler = (controller: ClientController, dispatch: Dispatch<any>, st
 			break;
 
 		case 'TIMEOUT':
-			playGameSound(dataContext, state.settings.appSound, GameSound.ROUND_TIMEOUT);
+			playGameSound(dispatch, state.settings.appSound, GameSound.ROUND_TIMEOUT);
 			break;
 
 		case 'TIMER':
@@ -864,7 +865,7 @@ const viewerHandler = (controller: ClientController, dispatch: Dispatch<any>, st
 
 						if (timerIndex === 2) {
 							dispatch(roomActionCreators.clearDecisionsAndMainTimer());
-							dataContext.soundPlayer.pause();
+							dispatch(commonActionCreators.stopAudio());
 						}
 						break;
 
@@ -949,7 +950,7 @@ const viewerHandler = (controller: ClientController, dispatch: Dispatch<any>, st
 			break;
 
 		case 'WINNER':
-			playGameSound(dataContext, state.settings.appSound, GameSound.APPLAUSE_FINAL);
+			playGameSound(dispatch, state.settings.appSound, GameSound.APPLAUSE_FINAL);
 			break;
 
 		case 'WRONGTRY':
@@ -1501,10 +1502,10 @@ function config(dispatch: Dispatch<RoomActions.KnownRoomAction>, state: State, .
 	}
 }
 
-function playGameSound(dataContext: DataContext, isSoundEnabled: boolean, sound: GameSound, loop = false): void {
+function playGameSound(dispatch: Dispatch<any>, isSoundEnabled: boolean, sound: GameSound, loop = false): void {
 	if (!isSoundEnabled) {
 		return;
 	}
 
-	dataContext.soundPlayer.play(sound, loop);
+	dispatch(commonActionCreators.playAudio(sound, loop));
 }

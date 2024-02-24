@@ -9,6 +9,8 @@ export default interface CommonState {
 	emojiCultures?: string[];
 	avatarLoadProgress: boolean;
 	avatarLoadError: string | null;
+	audio: string | null;
+	audioLoop: boolean;
 }
 
 export const initialState: CommonState = {
@@ -21,4 +23,6 @@ export const initialState: CommonState = {
 	askForConsent: true,
 	avatarLoadProgress: false,
 	avatarLoadError: null,
+	audio: null,
+	audioLoop: false,
 };

@@ -4,7 +4,6 @@ import IGameServerClient from '../client/IGameServerClient';
 import Config from '../Config';
 import SIContentClient from 'sicontent-client';
 import SIStorageClient from 'sistorage-client';
-import IGameSoundPlayer from '../utils/IGameSoundPlayer';
 
 /** Provides globally available Redux store data context. */
 export default interface DataContext {
@@ -31,7 +30,4 @@ export default interface DataContext {
 
 	/** SIStorageService client. */
 	storageClient: SIStorageClient | null;
-
-	/** Sound player. */
-	soundPlayer: IGameSoundPlayer;
 }

@@ -8,6 +8,8 @@ import uiActionCreators from '../state/ui/uiActionCreators';
 import onlineActionCreators from '../state/online/onlineActionCreators';
 import ServerLicense from './ServerLicense';
 import { getCookie, setCookie } from '../utils/CookieHelpers';
+import GameSound from '../model/enums/GameSound';
+import commonActionCreators from '../state/common/commonActionCreators';
 
 import './WelcomeView.css';
 import exitImg from '../../assets/images/exit.png';
@@ -19,19 +21,23 @@ interface WelcomeViewProps {
 	serverName: string | null;
 	serverLicense: string | null;
 	windowWidth: number;
+	mainMenuSound: boolean;
 
 	singlePlay: () => void;
 	friendsPlay: () => void;
 	anyonePlay: () => void;
 	joinLobby: () => void;
 	exit: () => void;
+	onSoundPlay: (sound: GameSound) => void;
+	onSoundPause: () => void;
 }
 
 const mapStateToProps = (state: State) => ({
 	isConnected: state.common.isConnected,
 	serverName: state.common.serverName,
 	serverLicense: state.common.serverLicense,
-	windowWidth: state.ui.windowWidth
+	windowWidth: state.ui.windowWidth,
+	mainMenuSound: state.settings.mainMenuSound,
 });
 
 const mapDispatchToProps = (dispatch: any) => ({
@@ -49,7 +55,13 @@ const mapDispatchToProps = (dispatch: any) => ({
 	},
 	exit: () => {
 		dispatch(actionCreators.onExit());
-	}
+	},
+	onSoundPlay: (sound: GameSound) => {
+		dispatch(commonActionCreators.playAudio(sound, true));
+	},
+	onSoundPause: () => {
+		dispatch(commonActionCreators.stopAudio());
+	},
 });
 
 export function WelcomeView(props: WelcomeViewProps): JSX.Element {
@@ -62,6 +74,13 @@ export function WelcomeView(props: WelcomeViewProps): JSX.Element {
 		setCookie(ACCEPT_LICENSE_KEY, '1', 365);
 		setAccepted(true);
 	}
+
+	React.useEffect(() => {
+		if (props.mainMenuSound) {
+			props.onSoundPlay(GameSound.MAIN_MENU);
+			return props.onSoundPause;
+		}
+	}, []);
 
 	return !accepted ? <ServerLicense accept={accept} /> : (
 		<section className="welcomeView">
