@@ -14,12 +14,16 @@ import FlyoutButton, { FlyoutTheme } from './common/FlyoutButton';
 import uiActionCreators from '../state/ui/uiActionCreators';
 import onlineActionCreators from '../state/online/onlineActionCreators';
 import isWindowsOS from '../utils/isWindowsOS';
+import PackageFileSelector from './PackageFileSelector';
+import { useLocation, useNavigate } from 'react-router-dom';
+import Path from '../model/enums/Path';
 
 import './NewGameDialog.css';
 
 interface NewGameDialogProps {
 	isConnected: boolean;
 	isSingleGame: boolean;
+	isLobby: boolean;
 	gameName: string;
 	gamePassword: string;
 	isOralGame: boolean;
@@ -46,13 +50,9 @@ interface NewGameDialogProps {
 	showmanTypeChanged: (isHuman: boolean) => void;
 	onPlayersCountChanged: (gamePlayersCount: number) => void;
 	onHumanPlayersCountChanged: (gameHumanPlayersCount: number) => void;
-	onCreate: (isSingleGame: boolean) => void;
+	onCreate: (isSingleGame: boolean, onNavigateToGame: (gameId: number) => void) => void;
 	onShowSettings: () => void;
 	onClose: () => void;
-}
-
-interface NewGameDialogState {
-	isSIStorageOpen: boolean;
 }
 
 const mapStateToProps = (state: State) => ({
@@ -108,8 +108,8 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	onShowSettings: () => {
 		dispatch(uiActionCreators.showSettings(true));
 	},
-	onCreate: (isSingleGame: boolean) => {
-		dispatch(onlineActionCreators.createNewGame(isSingleGame) as unknown as Action);
+	onCreate: (isSingleGame: boolean, onNavigateToGame: (gameId: number) => void) => {
+		dispatch(onlineActionCreators.createNewGame(isSingleGame, onNavigateToGame) as unknown as Action);
 	}
 });
 
@@ -126,334 +126,315 @@ function getPackageName(packageType: PackageType, packageName: string, packageDa
 	}
 }
 
-export class NewGameDialog extends React.Component<NewGameDialogProps, NewGameDialogState> {
-	private fileRef: React.RefObject<HTMLInputElement>;
+interface LocationState {
+	packageUri?: string;
+	packageName?: string;
+}
 
-	constructor(props: NewGameDialogProps) {
-		super(props);
+export function NewGameDialog(props: NewGameDialogProps) {
+	const [isSIStorageOpen, setIsSIStorageOpen] = React.useState(false);
+	const navigate = useNavigate();
+	const navigateToGame = (gameId: number) => navigate(Path.Room + '?gameId=' + gameId, { state: { isLobby: props.isLobby } });
+	const childRef = React.useRef<HTMLInputElement>(null);
+	const state = useLocation().state as LocationState;
 
-		this.fileRef = React.createRef<HTMLInputElement>();
+	React.useEffect(() => {
+		if (state && state.packageUri) {
+			props.onGamePackageTypeChanged(PackageType.SIStorage);
+			props.onGamePackageLibraryChanged('', state.packageName ?? state.packageUri, state.packageUri);
+		}
+	});
 
-		this.state = {
-			isSIStorageOpen: false
-		};
-	}
-
-	private onGameNameChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
-		this.props.onGameNameChanged(e.target.value);
+	const onFilePackageSelected = () => {
+		if (childRef.current) {
+			childRef.current.click();
+		}
 	};
 
-	private onGamePasswordChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
-		this.props.onGamePasswordChanged(e.target.value);
+	const onGameNameChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
+		props.onGameNameChanged(e.target.value);
 	};
 
-	private onGameVoiceChatChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
-		this.props.onGameVoiceChatChanged(e.target.value);
+	const onGamePasswordChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
+		props.onGamePasswordChanged(e.target.value);
 	};
 
-	private onKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+	const onGameVoiceChatChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
+		props.onGameVoiceChatChanged(e.target.value);
+	};
+
+	const onKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
 		if (e.key === Constants.KEY_ENTER_NEW) {
-			this.props.onCreate(this.props.isSingleGame);
+			props.onCreate(props.isSingleGame, navigateToGame);
 		}
 	};
 
-	private onRandomThemesSelected = () => {
-		this.props.onGamePackageTypeChanged(PackageType.Random);
+	const onRandomThemesSelected = () => {
+		props.onGamePackageTypeChanged(PackageType.Random);
 	};
 
-	private onFilePackageSelected = () => {
-		if (this.fileRef.current) {
-			this.fileRef.current.click();
-		}
+	const onGameRoleChanged = (e: React.ChangeEvent<HTMLSelectElement>) => {
+		props.onGameRoleChanged(parseInt(e.target.value, 10));
 	};
 
-	private onSIStorageSelected = () => {
-		this.setState({
-			isSIStorageOpen: true
-		});
+	const onShowmanTypeChanged = (e: React.ChangeEvent<HTMLSelectElement>) => {
+		props.showmanTypeChanged(parseInt(e.target.value, 10) === 1);
 	};
 
-	private onGamePackageDataChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
-		if (e.target.files && e.target.files.length > 0) {
-			this.props.onGamePackageDataChanged(e.target.value, e.target.files[0]);
-			this.props.onGamePackageTypeChanged(PackageType.File);
-		}
+	const onPlayersCountChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
+		props.onPlayersCountChanged(parseInt(e.target.value, 10));
 	};
 
-	private onGameRoleChanged = (e: React.ChangeEvent<HTMLSelectElement>) => {
-		this.props.onGameRoleChanged(parseInt(e.target.value, 10));
+	const onHumanPlayersCountChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
+		props.onHumanPlayersCountChanged(parseInt(e.target.value, 10));
 	};
 
-	private onShowmanTypeChanged = (e: React.ChangeEvent<HTMLSelectElement>) => {
-		this.props.showmanTypeChanged(parseInt(e.target.value, 10) === 1);
+	const onSelectSIPackage = async (id: string, name: string, uri: string) => {
+		setIsSIStorageOpen(false);
+
+		props.onGamePackageTypeChanged(PackageType.SIStorage);
+		props.onGamePackageLibraryChanged(id, name, uri);
 	};
 
-	private onPlayersCountChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
-		this.props.onPlayersCountChanged(parseInt(e.target.value, 10));
-	};
+	const humanPlayersMaxCount = props.playersCount - (props.gameRole === Role.Player ? 1 : 0);
+	const botsCount = Math.max(0, humanPlayersMaxCount - props.humanPlayersCount);
 
-	private onHumanPlayersCountChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
-		this.props.onHumanPlayersCountChanged(parseInt(e.target.value, 10));
-	};
-
-	private onSIPackageDialogClose = () => {
-		this.setState({
-			isSIStorageOpen: false
-		});
-	};
-
-	private onSelectSIPackage = async (id: string, name: string, uri: string) => {
-		this.setState({
-			isSIStorageOpen: false
-		});
-
-		this.props.onGamePackageTypeChanged(PackageType.SIStorage);
-		this.props.onGamePackageLibraryChanged(id, name, uri);
-	};
-
-	render(): JSX.Element {
-		const humanPlayersMaxCount = this.props.playersCount - (this.props.gameRole === Role.Player ? 1 : 0);
-		const botsCount = Math.max(0, humanPlayersMaxCount - this.props.humanPlayersCount);
-
-		return (
-			<>
-				<Dialog id="newGameDialog" title={localization.newGame} onClose={this.props.onClose}>
-					<div className="settings">
-						{this.props.isSingleGame ? null : (
-							<>
-								<p>{localization.gameName}</p>
-
-								<input
-									type="text"
-									value={this.props.gameName}
-									onChange={this.onGameNameChanged}
-									onKeyPress={this.onKeyPress}
-								/>
-
-								<p>{localization.password}</p>
-
-								<input
-									aria-label='Password'
-									type="password"
-									value={this.props.gamePassword}
-									onChange={this.onGamePasswordChanged}
-									onKeyPress={this.onKeyPress}
-								/>
-
-								{this.props.isOralGame ? (
-									<>
-										<p>{localization.voiceChat}</p>
-
-										<input
-											aria-label='Voice chat url'
-											type="text"
-											value={this.props.gameVoiceChat}
-											onChange={this.onGameVoiceChatChanged}
-										/>
-									</>
-								) : null}
-							</>
-						)}
-
-						<p className='newGameHeader'>{localization.questionPackage}</p>
-
-						<div className='packageSelector'>
-							<FlyoutButton
-								theme={FlyoutTheme.Dark}
-								flyout={
-									<ul className='packageSources'>
-										<li onClick={this.onRandomThemesSelected}>{localization.randomThemes}</li>
-										<li onClick={this.onFilePackageSelected}>{`${localization.file}…`}</li>
-										<li onClick={this.onSIStorageSelected}>{`${localization.libraryTitle}…`}</li>
-
-										{localization.userPackages.length > 0
-										? <>
-											<li>
-												<a
-													className='simpleLink'
-													href="https://vk.com/topic-135725718_34975471"
-													target='_blank'
-													rel='noopener noreferrer'>
-													{`${localization.userPackages}…`}
-												</a>
-											</li>
-
-											<li>
-												<a
-													className='simpleLink'
-													href="https://sigame.ru"
-													target='_blank'
-													rel='noopener noreferrer'>
-													{`${localization.library} sigame.ru…`}
-												</a>
-											</li>
-
-											<li>
-												<a
-													className='simpleLink'
-													href="https://sigame.xyz"
-													target='_blank'
-													rel='noopener noreferrer'>
-													{`${localization.library} sigame.xyz…`}
-												</a>
-											</li>
-
-											<li>
-												<a
-													className='simpleLink'
-													href="https://www.sibrowser.ru"
-													target='_blank'
-													rel='noopener noreferrer'>
-													{`${localization.library} sibrowser.ru…`}
-												</a>
-											</li>
-										</>
-										: null}
-
-										{isWindowsOS()
-											? <li>
-												<a
-													className='simpleLink'
-													href="https://vladimirkhil.com/si/siquester"
-													target='_blank'
-													rel='noopener noreferrer'>
-													{`${localization.createOwnPackage}…`}
-												</a>
-											</li>
-											: null}
-									</ul>
-								}
-								title={localization.select}
-							>
-								📂
-							</FlyoutButton>
-
-							<span className='packageName'>
-								{getPackageName(this.props.gamePackageType, this.props.gamePackageName, this.props.gamePackageData)}
-							</span>
+	return (
+		<>
+			<Dialog id="newGameDialog" title={localization.newGame} onClose={props.onClose}>
+				<div className="settings">
+					{props.isSingleGame ? null : (
+						<>
+							<p>{localization.gameName}</p>
 
 							<input
-								aria-label='Game package file'
-								ref={this.fileRef}
-								type="file"
-								accept=".siq"
-								onChange={this.onGamePackageDataChanged} />
-						</div>
-
-						<p className='newGameHeader'>{localization.role}</p>
-
-						<select title='Game role' value={this.props.gameRole} onChange={this.onGameRoleChanged}>
-							<option value="0">{localization.viewer}</option>
-							<option value="1">{localization.player}</option>
-							<option value="2">{localization.showman}</option>
-						</select>
-
-						{this.props.gameRole === Role.Showman || this.props.isSingleGame ? null : (
-							<>
-								<p>{localization.showman}</p>
-
-								<select
-									title='Showman type'
-									className="showmanTypeSelector"
-									value={this.props.isShowmanHuman ? 1 : 0}
-									onChange={this.onShowmanTypeChanged}
-								>
-									<option value="1">{localization.human}</option>
-									<option value="0">{localization.bot}</option>
-								</select>
-								{this.props.isShowmanHuman ? '👤' : '🖥️'}
-							</>
-						)}
-
-						<p className='newGameHeader'>{localization.players}</p>
-
-						<div className="playersBlock">
-							<span className="playersCountTitle">{`${localization.total} `}</span>
-							<span className="playersCountValue">{this.props.playersCount}</span>
-
-							<input
-								aria-label='Players count'
-								type="range"
-								className="playersCount"
-								min={2}
-								max={12}
-								value={this.props.playersCount}
-								onChange={this.onPlayersCountChanged}
+								type="text"
+								value={props.gameName}
+								onChange={onGameNameChanged}
+								onKeyPress={onKeyPress}
 							/>
-						</div>
 
-						{this.props.isSingleGame ? null : (
-							<>
-								<div className="playersBlock">
-									<span className="playersCountTitle">{`${localization.humanPlayers} `}</span>
-									<span className="playersCountValue">{this.props.humanPlayersCount}</span>
+							<p>{localization.password}</p>
+
+							<input
+								aria-label='Password'
+								type="password"
+								value={props.gamePassword}
+								onChange={onGamePasswordChanged}
+								onKeyPress={onKeyPress}
+							/>
+
+							{props.isOralGame ? (
+								<>
+									<p>{localization.voiceChat}</p>
 
 									<input
-										aria-label='Human players count'
-										type="range"
-										className="playersCount"
-										min={0}
-										max={humanPlayersMaxCount}
-										disabled={humanPlayersMaxCount === 0}
-										value={this.props.humanPlayersCount}
-										onChange={this.onHumanPlayersCountChanged}
+										aria-label='Voice chat url'
+										type="text"
+										value={props.gameVoiceChat}
+										onChange={onGameVoiceChatChanged}
 									/>
-								</div>
+								</>
+							) : null}
+						</>
+					)}
 
-								<div className="playersBlock">
-									<span className="playersCountTitle">{`${localization.computerPlayers} `}</span>
-									<span className="playersCountValue">{botsCount}</span>
-								</div>
+					<p className='newGameHeader'>{localization.questionPackage}</p>
 
-								<div className="playersBlock">
-									{this.props.gameRole === Role.Player ? '🧑' : null}
-									{Array.from(Array(this.props.humanPlayersCount).keys()).map(() => '👤')}
-									{Array.from(Array(botsCount).keys()).map(() => '🖥️')}
-								</div>
-							</>
-						)}
+					<div className='packageSelector'>
+						<FlyoutButton
+							theme={FlyoutTheme.Dark}
+							flyout={
+								<ul className='packageSources'>
+									<li onClick={onRandomThemesSelected}>{localization.randomThemes}</li>
+									<li onClick={onFilePackageSelected}>{`${localization.file}…`}</li>
+									<li onClick={() => setIsSIStorageOpen(true)}>{`${localization.libraryTitle}…`}</li>
+
+									{localization.userPackages.length > 0
+									? <>
+										<li>
+											<a
+												className='simpleLink'
+												href="https://vk.com/topic-135725718_34975471"
+												target='_blank'
+												rel='noopener noreferrer'>
+												{`${localization.userPackages}…`}
+											</a>
+										</li>
+
+										<li>
+											<a
+												className='simpleLink'
+												href="https://sigame.ru"
+												target='_blank'
+												rel='noopener noreferrer'>
+												{`${localization.library} sigame.ru…`}
+											</a>
+										</li>
+
+										<li>
+											<a
+												className='simpleLink'
+												href="https://sigame.xyz"
+												target='_blank'
+												rel='noopener noreferrer'>
+												{`${localization.library} sigame.xyz…`}
+											</a>
+										</li>
+
+										<li>
+											<a
+												className='simpleLink'
+												href="https://www.sibrowser.ru"
+												target='_blank'
+												rel='noopener noreferrer'>
+												{`${localization.library} sibrowser.ru…`}
+											</a>
+										</li>
+									</>
+									: null}
+
+									{isWindowsOS()
+										? <li>
+											<a
+												className='simpleLink'
+												href="https://vladimirkhil.com/si/siquester"
+												target='_blank'
+												rel='noopener noreferrer'>
+												{`${localization.createOwnPackage}…`}
+											</a>
+										</li>
+										: null}
+								</ul>
+							}
+							title={localization.select}
+						>
+							📂
+						</FlyoutButton>
+
+						<span className='packageName'>
+							{getPackageName(props.gamePackageType, props.gamePackageName, props.gamePackageData)}
+						</span>
+
+						<PackageFileSelector
+							ref={childRef}
+							onGamePackageTypeChanged={props.onGamePackageTypeChanged}
+							onGamePackageDataChanged={props.onGamePackageDataChanged} />
 					</div>
 
-					<div className="gameCreationError">{this.props.error}</div>
+					<p className='newGameHeader'>{localization.role}</p>
 
-					<div className="buttonsArea">
-						<button
-							type="button"
-							className="showSettings standard"
-							disabled={!this.props.isConnected || this.props.inProgress}
-							onClick={() => this.props.onShowSettings()}
-						>
-							{`${localization.settings}…`}
-						</button>
+					<select title='Game role' value={props.gameRole} onChange={onGameRoleChanged}>
+						<option value="0">{localization.viewer}</option>
+						<option value="1">{localization.player}</option>
+						<option value="2">{localization.showman}</option>
+					</select>
 
-						<button
-							type="button"
-							className="startGame standard"
-							disabled={!this.props.isConnected || this.props.inProgress}
-							onClick={() => this.props.onCreate(this.props.isSingleGame)}
-						>
-							{localization.startGame}
-						</button>
+					{props.gameRole === Role.Showman || props.isSingleGame ? null : (
+						<>
+							<p>{localization.showman}</p>
+
+							<select
+								title='Showman type'
+								className="showmanTypeSelector"
+								value={props.isShowmanHuman ? 1 : 0}
+								onChange={onShowmanTypeChanged}
+							>
+								<option value="1">{localization.human}</option>
+								<option value="0">{localization.bot}</option>
+							</select>
+							{props.isShowmanHuman ? '👤' : '🖥️'}
+						</>
+					)}
+
+					<p className='newGameHeader'>{localization.players}</p>
+
+					<div className="playersBlock">
+						<span className="playersCountTitle">{`${localization.total} `}</span>
+						<span className="playersCountValue">{props.playersCount}</span>
+
+						<input
+							aria-label='Players count'
+							type="range"
+							className="playersCount"
+							min={2}
+							max={12}
+							value={props.playersCount}
+							onChange={onPlayersCountChanged}
+						/>
 					</div>
 
-					{this.props.inProgress ? <ProgressBar isIndeterminate /> : null}
+					{props.isSingleGame ? null : (
+						<>
+							<div className="playersBlock">
+								<span className="playersCountTitle">{`${localization.humanPlayers} `}</span>
+								<span className="playersCountValue">{props.humanPlayersCount}</span>
 
-					{this.props.uploadPackageProgress ? (
-						<div className="uploadPackagePanel">
-							<div className="uploadPackageMessage">
-								<span>{localization.sendingPackage}</span>
-								<ProgressBar isIndeterminate={false} value={this.props.uploadPackagePercentage} />
+								<input
+									aria-label='Human players count'
+									type="range"
+									className="playersCount"
+									min={0}
+									max={humanPlayersMaxCount}
+									disabled={humanPlayersMaxCount === 0}
+									value={props.humanPlayersCount}
+									onChange={onHumanPlayersCountChanged}
+								/>
 							</div>
-						</div>
-					) : null}
-				</Dialog>
 
-				{this.state.isSIStorageOpen && (
-					<SIStorageDialog onClose={this.onSIPackageDialogClose} onSelect={this.onSelectSIPackage} />
-				)}
-			</>
-		);
-	}
+							<div className="playersBlock">
+								<span className="playersCountTitle">{`${localization.computerPlayers} `}</span>
+								<span className="playersCountValue">{botsCount}</span>
+							</div>
+
+							<div className="playersBlock">
+								{props.gameRole === Role.Player ? '🧑' : null}
+								{Array.from(Array(props.humanPlayersCount).keys()).map(() => '👤')}
+								{Array.from(Array(botsCount).keys()).map(() => '🖥️')}
+							</div>
+						</>
+					)}
+				</div>
+
+				<div className="gameCreationError">{props.error}</div>
+
+				<div className="buttonsArea">
+					<button
+						type="button"
+						className="showSettings standard"
+						disabled={!props.isConnected || props.inProgress}
+						onClick={() => props.onShowSettings()}
+					>
+						{`${localization.settings}…`}
+					</button>
+
+					<button
+						type="button"
+						className="startGame standard"
+						disabled={!props.isConnected || props.inProgress}
+						onClick={() => props.onCreate(props.isSingleGame, navigateToGame)}
+					>
+						{localization.startGame}
+					</button>
+				</div>
+
+				{props.inProgress ? <ProgressBar isIndeterminate /> : null}
+
+				{props.uploadPackageProgress ? (
+					<div className="uploadPackagePanel">
+						<div className="uploadPackageMessage">
+							<span>{localization.sendingPackage}</span>
+							<ProgressBar isIndeterminate={false} value={props.uploadPackagePercentage} />
+						</div>
+					</div>
+				) : null}
+			</Dialog>
+
+			{isSIStorageOpen && (
+				<SIStorageDialog onClose={() => setIsSIStorageOpen(false)} onSelect={onSelectSIPackage} />
+			)}
+		</>
+	);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(NewGameDialog);

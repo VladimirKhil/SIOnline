@@ -14,6 +14,8 @@ import GameInfoView from './GameInfoView';
 import uiActionCreators from '../state/ui/uiActionCreators';
 import onlineActionCreators from '../state/online/onlineActionCreators';
 import OnlineMode from '../model/enums/OnlineMode';
+import { useNavigate } from 'react-router-dom';
+import Path from '../model/enums/Path';
 
 import './Games.css';
 
@@ -34,7 +36,6 @@ interface GamesProps {
 	closeNewGame: () => void;
 	onSelectGame: (gameId: number, showInfo: boolean) => void;
 	unselectGame: () => void;
-	onClose: () => void;
 }
 
 const mapStateToProps = (state: State) => {
@@ -79,9 +80,6 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	unselectGame: () => {
 		dispatch(onlineActionCreators.unselectGame());
 	},
-	onClose: () => {
-		dispatch(uiActionCreators.navigateToWelcome());
-	}
 });
 
 function renderGameList(props: GamesProps): React.ReactNode {
@@ -109,8 +107,10 @@ function renderGameList(props: GamesProps): React.ReactNode {
 }
 
 export function Games(props: GamesProps): JSX.Element {
+	const navigate = useNavigate();
+
 	if (props.newGameShown) {
-		return <NewGameDialog isSingleGame={false} onClose={props.closeNewGame} />;
+		return <NewGameDialog isSingleGame={false} isLobby={false} onClose={props.closeNewGame} />;
 	}
 
 	return props.selectedGame ? (
@@ -119,7 +119,7 @@ export function Games(props: GamesProps): JSX.Element {
 		</Dialog>
 	) : (
 		<section className="games">
-			<button type="button" className="dialog_closeButton" onClick={props.onClose}>
+			<button type="button" className="dialog_closeButton" onClick={() => navigate(Path.Menu)}>
 				<img src={closeSvg} alt={localization.close} />
 			</button>
 			<div className="games_main">

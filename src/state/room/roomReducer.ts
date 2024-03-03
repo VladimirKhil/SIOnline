@@ -203,7 +203,8 @@ const roomReducer: Reducer<RoomState> = (state: RoomState = initialState, anyAct
 				stage: {
 					...state.stage,
 					isGameStarted: action.started
-				}
+				},
+				kicked: false,
 			};
 
 		case RoomActionTypes.StageChanged:
@@ -265,7 +266,8 @@ const roomReducer: Reducer<RoomState> = (state: RoomState = initialState, anyAct
 					...state.chat,
 					messages: [],
 					message: ''
-				}
+				},
+				kicked: false,
 			};
 
 		case RoomActionTypes.SumsChanged:
@@ -878,6 +880,12 @@ const roomReducer: Reducer<RoomState> = (state: RoomState = initialState, anyAct
 			return {
 				...state,
 				joinMode: action.joinMode,
+			};
+
+		case RoomActionTypes.Kicked:
+			return {
+				...state,
+				kicked: true,
 			};
 
 		default:

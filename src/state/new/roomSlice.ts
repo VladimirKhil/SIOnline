@@ -95,6 +95,7 @@ interface RoomState {
 	};
 
 	joinMode: JoinMode;
+	kicked: boolean;
 }
 
 const initialState: RoomState = {
@@ -213,6 +214,7 @@ const initialState: RoomState = {
 	},
 
 	joinMode: JoinMode.AnyRole,
+	kicked: false,
 };
 
 export const roomSlice = createSlice({

@@ -92,6 +92,7 @@ export default interface RoomState {
 	};
 
 	joinMode: JoinMode;
+	kicked: boolean;
 }
 
 export const initialState: RoomState = {
@@ -210,4 +211,5 @@ export const initialState: RoomState = {
 	},
 
 	joinMode: JoinMode.AnyRole,
+	kicked: false,
 };

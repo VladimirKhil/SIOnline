@@ -3,7 +3,6 @@ import * as signalRMsgPack from '@microsoft/signalr-protocol-msgpack';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import GameServerClient from '../../client/GameServerClient';
 import DataContext from '../../model/DataContext';
-import MainView from '../../model/enums/MainView';
 import localization from '../../model/resources/localization';
 import { activeConnections, attachListeners } from '../../utils/ConnectionHelpers';
 import getErrorMessage from '../../utils/ErrorHelpers';
@@ -11,18 +10,19 @@ import roomActionCreators from '../room/roomActionCreators';
 import { computerAccountsChanged, serverNameChanged } from './commonSlice';
 import { saveStateToStorage } from './StateHelpers';
 import { AppDispatch, RootState } from './store';
-import { navigate } from './uiSlice';
 import { changeLogin } from './userSlice';
 import ClientController from '../../logic/ClientController';
 
 interface LoginState {
 	inProgress: boolean;
 	errorMessage: string;
+	completed: boolean;
 }
 
 const initialState: LoginState = {
 	inProgress: false,
-	errorMessage: ''
+	errorMessage: '',
+	completed: false,
 };
 
 export const loginSlice = createSlice({
@@ -124,7 +124,6 @@ export const login = () => async (dispatch: AppDispatch, getState: () => RootSta
 				dispatch(changeLogin(state.user.login.trim())); // Normalize login
 
 				await loadHostInfoAsync(dispatch, dataContext, requestCulture);
-				dispatch(navigate(MainView.Welcome));
 			} catch (error) {
 				dispatch(endLogin(`${localization.cannotConnectToServer}: ${getErrorMessage(error)}`));
 			}

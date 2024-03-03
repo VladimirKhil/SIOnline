@@ -9,7 +9,7 @@ export const enum CommonActionTypes {
 	AudioChanged = 'AUDIO_CHANGED',
 }
 
-export type IsConnectedChangedAction = { type: CommonActionTypes.IsConnectedChanged, isConnected: boolean };
+export type IsConnectedChangedAction = { type: CommonActionTypes.IsConnectedChanged, isConnected: boolean, reason: string };
 export type ComputerAccountsChangedAction = { type: CommonActionTypes.ComputerAccountsChanged, computerAccounts: string[] };
 export type CommonErrorChangedAction = { type: CommonActionTypes.CommonErrorChanged, error: string };
 export type AvatarLoadStartAction = { type: CommonActionTypes.AvatarLoadStart };

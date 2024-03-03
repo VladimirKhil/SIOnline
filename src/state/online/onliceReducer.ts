@@ -21,6 +21,12 @@ const onlineReducer: Reducer<OnlineState> = (state: OnlineState = initialState, 
 				selectedGameId: -1,
 			};
 
+		case OnlineActionTypes.ReceiveGamesStart:
+			return {
+				...state,
+				inProgress: true,
+			};
+
 		case OnlineActionTypes.ResetLobby:
 			return {
 				...state,

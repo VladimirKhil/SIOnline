@@ -90,6 +90,7 @@ export const enum RoomActionTypes {
 	EditTable = 'EDIT_TABLE',
 	ClearRoomChat = 'ROOM_CHAT_CLEAR',
 	JoinModeChanged = 'JOIN_MODE_CHANGED',
+	Kicked = 'KICKED',
 }
 
 export type RunChatModeChangedAction = { type: RoomActionTypes.RoomChatModeChanged, chatMode: ChatMode };
@@ -139,6 +140,7 @@ export type IsGameButtonEnabledChangedAction = { type: RoomActionTypes.IsGameBut
 export type IsAnsweringAction = { type: RoomActionTypes.IsAnswering };
 export type AnswerChangedAction = { type: RoomActionTypes.AnswerChanged, answer: string };
 export type ClearRoomChatAction = { type: RoomActionTypes.ClearRoomChat };
+export type KickedAction = { type: RoomActionTypes.Kicked };
 
 export type ValidateAction = {
 	type: RoomActionTypes.Validate,
@@ -282,4 +284,5 @@ export type KnownRoomAction =
 	| PlayerMediaLoadedAction
 	| EditTableAction
 	| ClearRoomChatAction
-	| JoinModeChangedAction;
+	| JoinModeChangedAction
+	| KickedAction;

@@ -11,6 +11,8 @@ import ProgressBar from './common/ProgressBar';
 import { getReadableTimeSpan } from '../utils/TimeHelpers';
 import GameStage from '../client/contracts/GameStage';
 import GameRules, { parseRulesFromString } from '../client/contracts/GameRules';
+import { useNavigate } from 'react-router-dom';
+import Path from '../model/enums/Path';
 
 import './GameInfoView.css';
 
@@ -18,7 +20,7 @@ interface GameInfoViewOwnProps {
 	isConnected: boolean;
 	culture: string | null;
 	onPasswordChanged: (password: string) => void;
-	onJoin: (gameId: number, role: Role) => void;
+	onJoin: (gameId: number, role: Role, callback: (gameId: number) => void) => void;
 }
 
 interface GameInfoViewStateProps {
@@ -44,21 +46,26 @@ const mapDispatchToProps = (dispatch: any) => ({
 	onPasswordChanged: (newPassword: string) => {
 		dispatch(onlineActionCreators.passwordChanged(newPassword));
 	},
-	onJoin: (gameId: number, role: Role) => {
-		dispatch(onlineActionCreators.joinGame(gameId, role));
+	onJoin: (gameId: number, role: Role, callback: (gameId: number) => void) => {
+		dispatch(onlineActionCreators.joinGame(gameId, role, callback));
 	}
 });
 
 const buildStage = (stage: GameStage, stageName: string, progressCurrent: number, progressTotal: number) => {
 	switch (stage) {
+
 		case GameStage.Created:
 			return localization.created;
+
 		case GameStage.Started:
 			return localization.started;
+
 		case GameStage.Round:
 			return `${progressCurrent}/${progressTotal}: ${localization.round}: ${stageName}`;
+
 		case GameStage.Final:
 			return localization.final;
+
 		default:
 			return localization.gameFinished;
 	}
@@ -97,6 +104,9 @@ export function GameInfoView(props: GameInfoViewProps): JSX.Element {
 			</section>
 		);
 	}
+
+	const navigate = useNavigate();
+	const navigateToGame = (gameId: number) => navigate(Path.Room + '?gameId=' + gameId);
 
 	const language = localization.getLanguage();
 	const createdTime = new Date(props.game.StartTime).toLocaleString(language);
@@ -193,7 +203,7 @@ export function GameInfoView(props: GameInfoViewProps): JSX.Element {
 								<button
 									type="button"
 									className="join standard"
-									onClick={() => props.onJoin(game.GameID, Role.Showman)}
+									onClick={() => props.onJoin(game.GameID, Role.Showman, navigateToGame)}
 									title={localization.joinAsShowmanHint}
 									disabled={!props.isConnected ||
 										props.joinGameProgress ||
@@ -206,7 +216,7 @@ export function GameInfoView(props: GameInfoViewProps): JSX.Element {
 								<button
 									type="button"
 									className="join standard"
-									onClick={() => props.onJoin(game.GameID, Role.Player)}
+									onClick={() => props.onJoin(game.GameID, Role.Player, navigateToGame)}
 									title={localization.joinAsPlayerHint}
 									disabled={!props.isConnected ||
 										props.joinGameProgress ||
@@ -219,7 +229,7 @@ export function GameInfoView(props: GameInfoViewProps): JSX.Element {
 								<button
 									type="button"
 									className="join standard"
-									onClick={() => props.onJoin(game.GameID, Role.Viewer)}
+									onClick={() => props.onJoin(game.GameID, Role.Viewer, navigateToGame)}
 									title={localization.joinAsViewerHint}
 									disabled={!props.isConnected || props.joinGameProgress || (game.PasswordRequired && !props.password)}
 								>

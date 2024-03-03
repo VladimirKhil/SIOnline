@@ -9,7 +9,8 @@ const commonReducer: Reducer<CommonState> = (state: CommonState = initialState, 
 		case CommonActionTypes.IsConnectedChanged:
 			return {
 				...state,
-				isConnected: action.isConnected
+				isConnected: action.isConnected,
+				isConnectedReason: action.reason,
 			};
 
 		case CommonActionTypes.ComputerAccountsChanged:

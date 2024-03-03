@@ -3,7 +3,6 @@ export default interface Config {
 	serverDiscoveryUri?: string;
 	rootUri?: string;
 	ads?: string;
-	rewriteUrl?: boolean;
 	registerServiceWorker?: boolean;
 	enableNoSleep?: boolean;
 	askForConsent?: boolean;

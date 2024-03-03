@@ -15,7 +15,6 @@ import Role from '../../model/Role';
 import PlayerStates from '../../model/enums/PlayerStates';
 import tableActionCreators from '../table/tableActionCreators';
 import StakeTypes from '../../model/enums/StakeTypes';
-import MainView from '../../model/enums/MainView';
 import Constants from '../../model/enums/Constants';
 import MessageLevel from '../../model/enums/MessageLevel';
 import uiActionCreators from '../ui/uiActionCreators';
@@ -45,7 +44,7 @@ const runChatMessageSend: ActionCreator<ThunkAction<void, State, DataContext, Ac
 		dispatch(runChatMessageChanged(''));
 
 		// Temporary
-		dispatch(chatMessageAdded({ sender: state.user.login, text, level: MessageLevel.Information }));
+		dispatch(chatMessageAdded({ sender: state.user.login, text, level: MessageLevel.Information }) as unknown as Action);
 
 		if (!state.room.chat.isVisible) {
 			dispatch(activateChat());
@@ -149,10 +148,11 @@ const playerSelected: ActionCreator<ThunkAction<void, State, DataContext, Action
 	}
 };
 
-const exitGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
+const exitGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (onExit: () => void) => async (
 	dispatch: Dispatch<Action>,
-	getState: () => State,
-	dataContext: DataContext) => {
+	_getState: () => State,
+	dataContext: DataContext
+) => {
 	try {
 		// TODO: show progress bar
 		await dataContext.gameClient.leaveGameAsync();
@@ -176,17 +176,37 @@ const exitGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (
 	dispatch(clearDecisionsAndMainTimer());
 
 	dispatch(commonActionCreators.stopAudio());
-
-	if (getState().ui.previousMainView === MainView.Lobby) {
-		onlineActionCreators.navigateToLobby(-1)(dispatch, getState, dataContext);
-	} else {
-		dispatch(uiActionCreators.navigateToWelcome() as any);
-	}
+	onExit();
 };
 
-const chatMessageAdded: ActionCreator<RunActions.ChatMessageAddedAction> = (chatMessage: ChatMessage) => ({
+let lastReplicLock: number;
+
+const chatMessageAddedCore: ActionCreator<RunActions.ChatMessageAddedAction> = (chatMessage: ChatMessage) => ({
 	type: RunActions.RoomActionTypes.ChatMessageAdded, chatMessage
 });
+
+const chatMessageAdded: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (chatMessage: ChatMessage) => (
+	dispatch: Dispatch<Action>,
+	getState: () => State
+) => {
+	dispatch(chatMessageAddedCore(chatMessage));
+	const state = getState();
+
+	if (!state.room.chat.isVisible && state.ui.windowWidth < 800) {
+		dispatch(lastReplicChanged(chatMessage));
+
+		if (lastReplicLock) {
+			window.clearTimeout(lastReplicLock);
+		}
+
+		lastReplicLock = window.setTimeout(
+			() => {
+				dispatch(roomActionCreators.lastReplicChanged(null));
+			},
+			3000
+		);
+	}
+}
 
 const lastReplicChanged: ActionCreator<RunActions.LastReplicChangedAction> = (chatMessage: ChatMessage | null) => ({
 	type: RunActions.RoomActionTypes.LastReplicChanged, chatMessage
@@ -890,6 +910,18 @@ const setJoinMode: ActionCreator<ThunkAction<void, State, DataContext, Action>> 
 	}
 };
 
+const onKicked: ActionCreator<RunActions.KickedAction> = () => ({
+	type: RunActions.RoomActionTypes.Kicked
+});
+
+const onReconnect: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
+	_dispatch: Dispatch<any>,
+	_getState: () => State,
+	dataContext: DataContext
+) => {
+	await dataContext.gameClient.sendMessageToServerAsync('INFO');
+};
+
 const roomActionCreators = {
 	runChatModeChanged,
 	runChatMessageChanged,
@@ -1010,6 +1042,8 @@ const roomActionCreators = {
 	joinModeChanged,
 	setJoinMode,
 	selectAnswerOption,
+	onKicked,
+	onReconnect,
 };
 
 export default roomActionCreators;

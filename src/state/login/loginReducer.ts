@@ -17,7 +17,14 @@ const loginReducer: Reducer<LoginState> = (state: LoginState = initialState, any
 			return {
 				...state,
 				inProgress: false,
-				errorMessage: action.error
+				errorMessage: action.error,
+				completed: !action.error,
+			};
+
+		case LoginActionTypes.LogOut:
+			return {
+				...state,
+				completed: false,
 			};
 
 		default:

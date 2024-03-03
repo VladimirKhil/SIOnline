@@ -1,32 +1,37 @@
 ﻿import * as React from 'react';
 import { connect } from 'react-redux';
 import { Action, Dispatch } from 'redux';
-import MainView from '../model/enums/MainView';
 import State from '../state/State';
 import Login from './Login';
-import Loading from './Loading';
 import About from './About';
 import WelcomeView from './WelcomeView';
 import OnlineView from './OnlineView';
 import InGameView from './game/InGameView';
 import SettingsDialog from './settings/SettingsDialog';
-import NewGameDialog from './NewGameDialog';
 import Games from './Games';
 import ErrorView from './ErrorView';
 import CookiesWarning from './CookiesWarning';
-import uiActionCreators from '../state/ui/uiActionCreators';
 import AudioController from './common/AudioController';
+import { RouterProvider, createBrowserRouter } from 'react-router-dom';
+import Logout from './Logout';
+import actionCreators from '../logic/actionCreators';
+import onlineActionCreators from '../state/online/onlineActionCreators';
+import NewGame from './NewGame';
+import Path from '../model/enums/Path';
+import JoinRoom from './JoinRoom';
 
 import './App.css';
 
 interface AppProps {
 	ads?: string;
-	mainView: MainView;
 	areSettingsVisible: boolean;
 	commonError: string | null;
 	askForConsent: boolean;
 
-	closeNewGame: () => void;
+	onJoin: () => void;
+	onGames: () => void;
+	onLobby: () => void;
+	onLogout: () => void;
 }
 
 interface AppState {
@@ -34,25 +39,95 @@ interface AppState {
 }
 
 const mapStateToProps = (state: State) => ({
-	mainView: state.ui.mainView,
 	areSettingsVisible: state.ui.areSettingsVisible,
 	commonError: state.common.error,
 	askForConsent: state.common.askForConsent,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
-	closeNewGame: () => {
-		dispatch(uiActionCreators.navigateToWelcome());
-	}
+	onJoin: () => {
+		dispatch(onlineActionCreators.receiveGameStart());
+		dispatch(onlineActionCreators.friendsPlay() as unknown as Action);
+	},
+	onGames: () => {
+		dispatch(onlineActionCreators.friendsPlay() as unknown as Action);
+	},
+	onLobby: () => {
+		dispatch(onlineActionCreators.navigateToLobby() as unknown as Action);
+	},
+	onLogout: () => {
+		dispatch(actionCreators.onExit() as unknown as Action);
+	},
 });
 
 declare const onLoad: () => void;
 
 export class App extends React.Component<AppProps, AppState> {
+	private router: any;
+
 	constructor(props: AppProps) {
 		super(props);
 
 		this.state = { error: null };
+
+		this.router = createBrowserRouter([
+			{
+				path: Path.Root,
+				element: <Login ads={this.props.ads} />
+			},
+			{
+				path: Path.Login,
+				element: <Login ads={this.props.ads} />
+			},
+			{
+				path: Path.About,
+				element: <About />
+			},
+			{
+				path: Path.Menu,
+				element: <WelcomeView />
+			},
+			{
+				path: Path.NewRoom,
+				element: <NewGame />
+			},
+			{
+				path: Path.Rooms,
+				loader: () => {
+					this.props.onGames();
+					return true;
+				},
+				element: <Games />
+			},
+			{
+				path: Path.Lobby,
+				loader: () => {
+					this.props.onLobby();
+					return true;
+				},
+				element: <OnlineView />
+			},
+			{
+				path: Path.RoomJoin,
+				loader: () => {
+					this.props.onJoin();
+					return true;
+				},
+				element: <JoinRoom />
+			},
+			{
+				path: Path.Room,
+				element: <InGameView />
+			},
+			{
+				path: Path.Logout,
+				loader: () => {
+					this.props.onLogout();
+					return true;
+				},
+				element: <Logout />
+			},
+		]);
 	}
 
 	componentDidMount(): void {
@@ -69,44 +144,12 @@ export class App extends React.Component<AppProps, AppState> {
 		return { error: `${error.message}: ${error.stack}` };
 	}
 
-	getContent(): JSX.Element | null {
-		switch (this.props.mainView) {
-			case MainView.Loading:
-				return <Loading />;
-
-			case MainView.Login:
-				return <Login ads={this.props.ads} />;
-
-			case MainView.About:
-				return <About />;
-
-			case MainView.Welcome:
-				return <WelcomeView />;
-
-			case MainView.NewGame:
-				return <NewGameDialog isSingleGame onClose={this.props.closeNewGame} />;
-
-			case MainView.Games:
-				return <Games />;
-
-			case MainView.Lobby:
-				return <OnlineView />;
-
-			case MainView.Game:
-				return <InGameView />;
-
-			case MainView.Error:
-				return <ErrorView error={this.props.commonError} />;
-
-			default:
-				return null;
-		}
-	}
-
 	render(): JSX.Element {
-		return this.state.error ? <ErrorView error={this.state.error} /> : (
+		const error = this.props.commonError || this.state.error;
+
+		return error ? <ErrorView error={error} /> : (
 			<div className="app">
-				{this.getContent()}
+				<RouterProvider router={this.router} />
 				{this.props.areSettingsVisible ? <SettingsDialog /> : null}
 				{this.props.askForConsent ? <CookiesWarning /> : null}
 				<AudioController />

@@ -6,9 +6,10 @@ import * as CommonActions from './CommonActions';
 import GameSound from '../../model/enums/GameSound';
 import { gameSoundPlayer } from '../../utils/GameSoundPlayer';
 
-const isConnectedChanged: ActionCreator<CommonActions.IsConnectedChangedAction> = (isConnected: boolean) => ({
+const isConnectedChanged: ActionCreator<CommonActions.IsConnectedChangedAction> = (isConnected: boolean, reason: string) => ({
 	type: CommonActions.CommonActionTypes.IsConnectedChanged,
-	isConnected
+	isConnected,
+	reason,
 });
 
 const computerAccountsChanged: ActionCreator<CommonActions.ComputerAccountsChangedAction> = (computerAccounts: string[]) => ({

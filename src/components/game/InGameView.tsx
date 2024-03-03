@@ -11,7 +11,6 @@ import PersonsDialog from './PersonsDialog';
 import GameLogView from './GameLogView';
 import AnswerValidationDialog from './AnswerValidationDialog';
 import RoundProgress from './RoundProgress';
-import GameHint from './GameHint';
 import localization from '../../model/resources/localization';
 import roomActionCreators from '../../state/room/roomActionCreators';
 import uiActionCreators from '../../state/ui/uiActionCreators';
@@ -26,6 +25,10 @@ import TableContextView from './TableContextView/TableContextView';
 import ChatInput from './ChatInput';
 import PlayersListView from './PlayersListView/PlayersListView';
 import GameProgress from './GameProgress';
+import { useLocation, useNavigate } from 'react-router-dom';
+import Path from '../../model/enums/Path';
+import ChatMessage from '../../model/ChatMessage';
+import MessageLevel from '../../model/enums/MessageLevel';
 
 import './InGameView.css';
 
@@ -42,6 +45,9 @@ interface InGameViewProps {
 	isManageGameDialogVisible: boolean;
 	areSumsEditable: boolean;
 	floatingControls: boolean;
+	kicked: boolean;
+	isConnected: boolean;
+	isConnectedReason: string;
 
 	onPersonsDialogClose: () => void;
 	onTablesDialogClose: () => void;
@@ -50,6 +56,9 @@ interface InGameViewProps {
 	onManageGameDialogClose: () => void;
 	onCancelSumChange: () => void;
 	onShowSettings: () => void;
+	onExit: (callback: () => void) => void;
+	chatMessageAdded: (chatMessage: ChatMessage) => void;
+	onReconnect: () => void;
 }
 
 const mapStateToProps = (state: State) => ({
@@ -64,6 +73,9 @@ const mapStateToProps = (state: State) => ({
 	isAnswerValidationDialogVisible: state.room.validation.isVisible,
 	areSumsEditable: state.room.areSumsEditable,
 	floatingControls: state.settings.floatingControls,
+	kicked: state.room.kicked,
+	isConnected: state.common.isConnected,
+	isConnectedReason: state.common.isConnectedReason,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
@@ -88,9 +100,49 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	onShowSettings: () => {
 		dispatch(uiActionCreators.showSettings(true));
 	},
+	onExit: (callback: () => void) => {
+		dispatch(roomActionCreators.exitGame(callback) as unknown as Action);
+	},
+	chatMessageAdded: (chatMessage: ChatMessage) => {
+		dispatch(roomActionCreators.chatMessageAdded(chatMessage) as unknown as Action);
+	},
+	onReconnect: () => {
+		dispatch(roomActionCreators.onReconnect() as unknown as Action);
+	}
 });
 
+interface LocationState {
+	isLobby: boolean;
+}
+
 export function InGameView(props: InGameViewProps) : JSX.Element {
+	const navigate = useNavigate();
+	const state = useLocation().state as LocationState;
+
+	React.useEffect(() => {
+		if (props.kicked) {
+			alert(localization.youAreKicked);
+			props.onExit(() => navigate(state && state.isLobby ? Path.Lobby : Path.Menu));
+		}
+	}, [props.kicked]);
+
+	const prevPropsRef = React.useRef<InGameViewProps>();
+
+	React.useEffect(() => {
+		prevPropsRef.current = prevPropsRef.current || props;
+	});
+
+	React.useEffect(() => {
+		if (prevPropsRef.current && prevPropsRef.current.isConnected !== props.isConnected) {
+			prevPropsRef.current = props;
+			props.chatMessageAdded({ sender: '', text: props.isConnectedReason, level: MessageLevel.System });
+
+			if (props.isConnected) {
+				props.onReconnect();
+			}
+		}
+	}, [props.isConnected]);
+
 	const isScreenWide = props.windowWidth >= Constants.WIDE_WINDOW_WIDTH;
 
 	return (
@@ -135,7 +187,7 @@ export function InGameView(props: InGameViewProps) : JSX.Element {
 			</div>
 
 			{isScreenWide
-				? <button className='settingsOpener' onClick={props.onShowSettings} title={localization.settings}>
+				? <button type='button' className='settingsOpener' onClick={props.onShowSettings} title={localization.settings}>
 					<span>⚙</span>
 				</button>
 				: null}

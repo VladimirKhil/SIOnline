@@ -3,10 +3,11 @@ import { connect } from 'react-redux';
 import { Dispatch, Action } from 'redux';
 import OnlineMode from '../model/enums/OnlineMode';
 import localization from '../model/resources/localization';
-import actionCreators from '../logic/actionCreators';
 import FlyoutButton, { FlyoutHorizontalOrientation, FlyoutVerticalOrientation } from './common/FlyoutButton';
 import uiActionCreators from '../state/ui/uiActionCreators';
 import State from '../state/State';
+import { useNavigate } from 'react-router-dom';
+import Path from '../model/enums/Path';
 
 import './LobbyMenu.css';
 
@@ -15,9 +16,7 @@ interface LobbyMenuProps {
 
 	onShowGames: () => void;
 	onShowChat: () => void;
-	onHowToPlay: () => void;
 	onShowSettings: () => void;
-	onExit: () => void;
 }
 
 const mapStateToProps = (state: State) => ({
@@ -34,15 +33,11 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	onShowSettings: () => {
 		dispatch(uiActionCreators.showSettings(true));
 	},
-	onHowToPlay: () => {
-		dispatch(uiActionCreators.navigateToHowToPlay());
-	},
-	onExit: () => {
-		dispatch(actionCreators.onExit() as unknown as Action);
-	}
 });
 
 export function LobbyMenu(props: LobbyMenuProps): JSX.Element {
+	const navigate = useNavigate();
+
 	return (
 		<FlyoutButton
 			className="navButton"
@@ -57,8 +52,8 @@ export function LobbyMenu(props: LobbyMenuProps): JSX.Element {
 					</li>
 
 					<li onClick={props.onShowSettings}>{localization.settings}</li>
-					<li onClick={props.onHowToPlay}>{localization.aboutTitle}</li>
-					<li onClick={props.onExit}>{localization.exit}</li>
+					<li onClick={() => navigate(Path.About)}>{localization.aboutTitle}</li>
+					<li onClick={() => navigate(Path.Menu)}>{localization.exit}</li>
 				</ul>
 			)}
 			horizontalOrientation={FlyoutHorizontalOrientation.Right}

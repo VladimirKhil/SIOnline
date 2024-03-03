@@ -10,9 +10,12 @@ const loginEnd: ActionCreator<LoginActions.LoginEndAction> = (error: string | nu
 	error
 });
 
+const logOut: ActionCreator<LoginActions.LogOutAction> = () => ({ type: LoginActions.LoginActionTypes.LogOut });
+
 const loginActionCreators = {
 	loginStart,
 	loginEnd,
+	logOut,
 };
 
 export default loginActionCreators;

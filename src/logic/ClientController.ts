@@ -1,4 +1,4 @@
-import { AnyAction, Dispatch } from 'redux';
+import { Action, AnyAction, Dispatch } from 'redux';
 import State from '../state/State';
 import DataContext from '../model/DataContext';
 import ContentGroup from '../model/ContentGroup';
@@ -351,6 +351,6 @@ export default class ClientController {
 			return;
 		}
 
-		this.dispatch(roomActionCreators.chatMessageAdded({ sender: null, text, level: MessageLevel.System }));
+		this.dispatch(roomActionCreators.chatMessageAdded({ sender: null, text, level: MessageLevel.System }) as unknown as Action);
 	}
 }

@@ -1,4 +1,4 @@
-import { Action, ActionCreator, Dispatch } from 'redux';
+import { Action, ActionCreator, AnyAction, Dispatch } from 'redux';
 import * as OnlineActions from './OnlineActions';
 import IGameServerClient from '../../client/IGameServerClient';
 import Slice from '../../client/contracts/Slice';
@@ -80,14 +80,17 @@ const dropSelectedGame: ActionCreator<OnlineActions.DropSelectedGameAction> = ()
 	type: OnlineActions.OnlineActionTypes.DropSelectedGame
 });
 
+const receiveGameStart: ActionCreator<OnlineActions.ReceiveGamesStartAction> = () => ({
+	type: OnlineActions.OnlineActionTypes.ReceiveGamesStart
+});
+
 const friendsPlay: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 	() => async (dispatch: Dispatch<Action>, getState: () => State, dataContext: DataContext) => {
 	const state = getState();
 	const { selectedGameId } = state.online;
 
-	dispatch(uiActionCreators.friendsPlayInternal());
 	dispatch(dropSelectedGame());
-
+	dispatch(receiveGameStart());
 
 	try {
 		await loadGamesAsync(dispatch, dataContext.gameClient);
@@ -114,8 +117,6 @@ const navigateToLobby: ActionCreator<ThunkAction<void, State, DataContext, Actio
 		const requestCulture = getFullCulture(state);
 
 		await dataContext.gameClient.joinLobbyAsync(requestCulture);
-
-		dispatch(uiActionCreators.navigateToLobbyInternal());
 		dispatch(resetLobby());
 
 		if (gameId > -1) {
@@ -124,8 +125,6 @@ const navigateToLobby: ActionCreator<ThunkAction<void, State, DataContext, Actio
 			if (showInfo) {
 				dispatch(uiActionCreators.onOnlineModeChanged(OnlineMode.GameInfo));
 			}
-		} else if (dataContext.config.rewriteUrl) {
-			window.history.pushState({}, '', dataContext.config.rootUri);
 		}
 
 		// Games filtering is performed on client
@@ -316,9 +315,14 @@ function getRandomValue(): number {
 	return array[0];
 }
 
-const initGameAsync = async (dispatch: Dispatch<any>, dataContext: DataContext, gameId: number, role: Role, isAutomatic: boolean) => {
+const initGameAsync = async (
+	dispatch: Dispatch<any>,
+	dataContext: DataContext,
+	gameId: number,
+	role: Role,
+	isAutomatic: boolean,
+	onNavigateToGame: (gameId: number) => void) => {
 	dispatch(gameActionCreators.gameSet(gameId, isAutomatic));
-	dispatch(uiActionCreators.navigateToGame());
 	dispatch(tableActionCreators.tableReset());
 	dispatch(tableActionCreators.showText(localization.tableHint, false));
 	dispatch(roomActionCreators.roleChanged(role));
@@ -328,10 +332,15 @@ const initGameAsync = async (dispatch: Dispatch<any>, dataContext: DataContext, 
 	dispatch(roomActionCreators.gameStarted(false));
 
 	await gameInit(gameId, dataContext, role);
+	onNavigateToGame(gameId);
 };
 
 const joinGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
-	(gameId: number, role: Role) => async (dispatch: Dispatch<any>, getState: () => State, dataContext: DataContext) => {
+	(gameId: number, role: Role, onNavigateToGame: (gameId: number) => void) => async (
+		dispatch: Dispatch<any>,
+		getState: () => State,
+		dataContext: DataContext
+) => {
 	dispatch(joinGameStarted());
 
 	try {
@@ -349,7 +358,7 @@ const joinGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 			return;
 		}
 
-		await initGameAsync(dispatch, dataContext, gameId, role, false);
+		await initGameAsync(dispatch, dataContext, gameId, role, false, onNavigateToGame);
 
 		actionCreators.saveStateToStorage(state);
 		dispatch(joinGameFinished(null));
@@ -359,7 +368,7 @@ const joinGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 };
 
 const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
-	(isSingleGame: boolean) => async (dispatch: Dispatch<any>, getState: () => State, dataContext: DataContext) => {
+	(isSingleGame: boolean, onNavigateToGame: (gameId: number) => void) => async (dispatch: Dispatch<any>, getState: () => State, dataContext: DataContext) => {
 		const state = getState();
 
 		if (!isSingleGame && state.game.name.length === 0) {
@@ -540,8 +549,8 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 			if (result.Code !== GameCreationResultCode.Ok) {
 				dispatch(gameCreationEnd(GameErrorsHelper.getMessage(result.Code) + (result.ErrorMessage || '')));
 			} else {
+				await initGameAsync(dispatch, dataContext, result.GameId, role, false, onNavigateToGame);
 				dispatch(newGameCancel());
-				await initGameAsync(dispatch, dataContext, result.GameId, role, false);
 			}
 		} catch (error) {
 			dispatch(gameCreationEnd(getErrorMessage(error)));
@@ -549,7 +558,7 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 	};
 
 const createNewAutoGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
-	() => async (dispatch: Dispatch<any>, getState: () => State, dataContext: DataContext) => {
+	(onNavigateToGame: (gameId: number) => void) => async (dispatch: Dispatch<any>, getState: () => State, dataContext: DataContext) => {
 		const state = getState();
 
 		dispatch(gameCreationStart());
@@ -567,7 +576,7 @@ const createNewAutoGame: ActionCreator<ThunkAction<void, State, DataContext, Act
 			if (result.Code !== GameCreationResultCode.Ok) {
 				alert(GameErrorsHelper.getMessage(result.Code) + (result.ErrorMessage || ''));
 			} else {
-				await initGameAsync(dispatch, dataContext, result.GameId, Role.Player, true);
+				await initGameAsync(dispatch, dataContext, result.GameId, Role.Player, true, onNavigateToGame);
 			}
 		} catch (message) {
 			dispatch(gameCreationEnd(message));
@@ -575,10 +584,6 @@ const createNewAutoGame: ActionCreator<ThunkAction<void, State, DataContext, Act
 	};
 
 async function gameInit(gameId: number, dataContext: DataContext, role: Role) {
-	if (dataContext.config.rewriteUrl) {
-		window.history.pushState({}, `${localization.game} ${gameId}`, `${dataContext.config.rootUri}?gameId=${gameId}`);
-	}
-
 	await dataContext.gameClient.sendMessageToServerAsync('INFO');
 
 	if (role === Role.Player || role === Role.Showman) {
@@ -596,6 +601,7 @@ const joinGameFinished: ActionCreator<OnlineActions.JoinGameFinishedAction> = (e
 });
 
 const onlineActionCreators = {
+	receiveGameStart,
 	friendsPlay,
 	navigateToLobby,
 	onGamesFilterToggle,

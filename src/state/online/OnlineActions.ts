@@ -10,6 +10,7 @@ export const enum OnlineActionTypes {
 	DropSelectedGame = 'DROP_SELECTED_GAME',
 	ResetLobby = 'RESET_LOBBY',
 	ClearGames = 'CLEAR_GAMES',
+	ReceiveGamesStart = 'RECEIVE_GAMES_START',
 	ReceiveGames = 'RECEIVE_GAMES',
 	ReceiveUsers = 'RECEIVE_USERS',
 	ReceiveMessage = 'RECEIVE_MESSAGE',
@@ -41,6 +42,7 @@ export const enum OnlineActionTypes {
 }
 
 export type ClearGamesAction = { type: OnlineActionTypes.ClearGames };
+export type ReceiveGamesStartAction = { type: OnlineActionTypes.ReceiveGamesStart };
 export type ReceiveGamesAction = { type: OnlineActionTypes.ReceiveGames, games: GameInfo[] };
 export type ReceiveUsersAction = { type: OnlineActionTypes.ReceiveUsers, users: string[] };
 export type ReceiveMessageAction = { type: OnlineActionTypes.ReceiveMessage, sender: string, message: string };
@@ -76,6 +78,7 @@ export type PackagesStatisticsLoadedAction = { type: OnlineActionTypes.PackagesS
 export type KnownOnlineAction =
 	ClearGamesAction
 	| DropSelectedGameAction
+	| ReceiveGamesStartAction
 	| ReceiveGamesAction
 	| ReceiveUsersAction
 	| ReceiveMessageAction

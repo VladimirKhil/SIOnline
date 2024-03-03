@@ -3,6 +3,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 interface CommonState {
 	computerAccounts: string[] | null;
 	isConnected: boolean;
+	isConnectedReason: string;
 	serverName: string | null;
 	serverLicense: string | null;
 	maxPackageSizeMb: number;
@@ -17,6 +18,7 @@ interface CommonState {
 const initialState: CommonState = {
 	computerAccounts: null,
 	isConnected: true,
+	isConnectedReason: '',
 	serverName: null,
 	serverLicense: null,
 	maxPackageSizeMb: 100,

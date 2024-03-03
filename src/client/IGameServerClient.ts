@@ -32,6 +32,9 @@ export default interface IGameServerClient {
 	/** Gets server news string. */
 	getNewsAsync(): Promise<string | null>;
 
+	/** Gets user login. */
+	getLoginAsync(): Promise<string>;
+
 	/** Sends a message to the lobby chat. */
 	sayInLobbyAsync(text: string): Promise<any>;
 

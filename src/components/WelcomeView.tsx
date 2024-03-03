@@ -1,15 +1,15 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import localization from '../model/resources/localization';
-import actionCreators from '../logic/actionCreators';
 import State from '../state/State';
 import Dialog from './common/Dialog';
-import uiActionCreators from '../state/ui/uiActionCreators';
-import onlineActionCreators from '../state/online/onlineActionCreators';
 import ServerLicense from './ServerLicense';
 import { getCookie, setCookie } from '../utils/CookieHelpers';
 import GameSound from '../model/enums/GameSound';
 import commonActionCreators from '../state/common/commonActionCreators';
+import { useNavigate } from 'react-router-dom';
+import onlineActionCreators from '../state/online/onlineActionCreators';
+import Path from '../model/enums/Path';
 
 import './WelcomeView.css';
 import exitImg from '../../assets/images/exit.png';
@@ -23,11 +23,7 @@ interface WelcomeViewProps {
 	windowWidth: number;
 	mainMenuSound: boolean;
 
-	singlePlay: () => void;
-	friendsPlay: () => void;
-	anyonePlay: () => void;
-	joinLobby: () => void;
-	exit: () => void;
+	anyonePlay: (callback: (gameId: number) => void) => void;
 	onSoundPlay: (sound: GameSound) => void;
 	onSoundPause: () => void;
 }
@@ -41,20 +37,8 @@ const mapStateToProps = (state: State) => ({
 });
 
 const mapDispatchToProps = (dispatch: any) => ({
-	singlePlay: () => {
-		dispatch(uiActionCreators.singlePlay());
-	},
-	friendsPlay: () => {
-		dispatch(onlineActionCreators.friendsPlay());
-	},
-	anyonePlay: () => {
-		dispatch(onlineActionCreators.createNewAutoGame());
-	},
-	joinLobby: () => {
-		dispatch(onlineActionCreators.navigateToLobby(-1));
-	},
-	exit: () => {
-		dispatch(actionCreators.onExit());
+	anyonePlay: (callback: (gameId: number) => void) => {
+		dispatch(onlineActionCreators.createNewAutoGame(callback));
 	},
 	onSoundPlay: (sound: GameSound) => {
 		dispatch(commonActionCreators.playAudio(sound, true));
@@ -65,6 +49,8 @@ const mapDispatchToProps = (dispatch: any) => ({
 });
 
 export function WelcomeView(props: WelcomeViewProps): JSX.Element {
+	const navigate = useNavigate();
+
 	const acceptLicense = getCookie(ACCEPT_LICENSE_KEY);
 
 	const [accepted, setAccepted] = React.useState(acceptLicense !== '');
@@ -103,7 +89,7 @@ export function WelcomeView(props: WelcomeViewProps): JSX.Element {
 						type='button'
 						className='standard imageButton welcomeExit'
 						disabled={!props.isConnected}
-						onClick={() => props.exit()}
+						onClick={() => navigate(Path.Logout) }
 						title={localization.exitFromGame}>
 						<img src={exitImg} alt='Exit' />
 					</button>
@@ -113,19 +99,26 @@ export function WelcomeView(props: WelcomeViewProps): JSX.Element {
 			</header>
 
 			<div className={`welcomeViewActions ${props.isConnected ? '' : 'disconnected'}`}>
-				<button type='button' className='standard welcomeRow right' disabled={!props.isConnected} onClick={() => props.singlePlay()}>
+				<button
+					type='button'
+					className='standard welcomeRow right'
+					disabled={!props.isConnected} onClick={() => navigate(Path.NewRoom, { state: { mode: 'single' } })}>
 					{localization.singlePlay}
 				</button>
 
-				<button type='button' className='standard welcomeRow left' disabled={!props.isConnected} onClick={() => props.friendsPlay()}>
+				<button type='button' className='standard welcomeRow left' disabled={!props.isConnected} onClick={() => navigate(Path.Rooms)}>
 					{localization.friendsPlay}
 				</button>
 
-				<button type='button' className='standard welcomeRow right' disabled={!props.isConnected} onClick={() => props.anyonePlay()}>
+				<button
+					type='button'
+					className='standard welcomeRow right'
+					disabled={!props.isConnected}
+					onClick={() => props.anyonePlay((gameId) => navigate(Path.Room + '?gameId=' + gameId))}>
 					{localization.anyonePlay}
 				</button>
 
-				<button type='button' className='standard welcomeRow left' disabled={!props.isConnected} onClick={() => props.joinLobby()}>
+				<button type='button' className='standard welcomeRow left' disabled={!props.isConnected} onClick={() => navigate(Path.Lobby)}>
 					{localization.joinLobby}
 				</button>
 			</div>

@@ -10,7 +10,6 @@ import { saveState } from '../state/SavedState';
 import localization from '../model/resources/localization';
 
 import { attachListeners, detachListeners, activeConnections, removeConnection } from '../utils/ConnectionHelpers';
-import MainView from '../model/enums/MainView';
 import roomActionCreators from '../state/room/roomActionCreators';
 import Constants from '../model/enums/Constants';
 
@@ -18,44 +17,14 @@ import GameServerClient from '../client/GameServerClient';
 import getErrorMessage from '../utils/ErrorHelpers';
 import { getFullCulture } from '../utils/StateHelpers';
 import settingsActionCreators from '../state/settings/settingsActionCreators';
-import MessageLevel from '../model/enums/MessageLevel';
 import GameClient from '../client/game/GameClient';
 import userActionCreators from '../state/user/userActionCreators';
 import loginActionCreators from '../state/login/loginActionCreators';
 import commonActionCreators from '../state/common/commonActionCreators';
-import onlineActionCreators from '../state/online/onlineActionCreators';
 
 import SIContentClient from 'sicontent-client';
-import uiActionCreators from '../state/ui/uiActionCreators';
 import SIStorageClient from 'sistorage-client';
 import ClientController from './ClientController';
-import GameSound from '../model/enums/GameSound';
-import PackageType from '../model/enums/PackageType';
-import gameActionCreators from '../state/game/gameActionCreators';
-
-const onConnectionChanged: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
-	(isConnected: boolean, message: string) => async (dispatch: Dispatch<any>, getState: () => State, dataContext: DataContext) => {
-		dispatch(commonActionCreators.isConnectedChanged(isConnected));
-
-		const state = getState();
-
-		if (state.ui.mainView === MainView.Game) {
-			dispatch(roomActionCreators.chatMessageAdded({ sender: '', text: message, level: MessageLevel.System }));
-		} else {
-			dispatch(onlineActionCreators.receiveMessage('', message));
-		}
-
-		if (!isConnected) {
-			return;
-		}
-
-		// Need to restore lobby/game previous state
-		if (state.ui.mainView === MainView.Game) {
-			await dataContext.gameClient.sendMessageToServerAsync('INFO');
-		} else if (state.ui.mainView === MainView.Lobby) {
-			onlineActionCreators.navigateToLobby(-1)(dispatch, getState, dataContext);
-		}
-	};
 
 const onAvatarSelectedLocal: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 	(avatar: File) => async (dispatch: Dispatch<Action>) => {
@@ -115,18 +84,22 @@ async function uploadAvatarAsync(dispatch: Dispatch<Action>, dataContext: DataCo
 }
 
 const sendAvatar: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
-	() => async (dispatch: Dispatch<AnyAction>, getState: () => State, dataContext: DataContext) => {
+	() => async (_dispatch: Dispatch<AnyAction>, getState: () => State, dataContext: DataContext) => {
 	await dataContext.gameClient.msgAsync('PICTURE', getState().user.avatar);
 };
 
 const reloadComputerAccounts: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 	() => async (dispatch: Dispatch<Action>, getState: () => State, dataContext: DataContext) => {
-		const state = getState();
+	if (!dataContext.connection) {
+		return;
+	}
 
-		const requestCulture = getFullCulture(state);
+	const state = getState();
 
-		const computerAccounts = await dataContext.gameClient.getComputerAccountsAsync(requestCulture);
-		dispatch(commonActionCreators.computerAccountsChanged(computerAccounts));
+	const requestCulture = getFullCulture(state);
+
+	const computerAccounts = await dataContext.gameClient.getComputerAccountsAsync(requestCulture);
+	dispatch(commonActionCreators.computerAccountsChanged(computerAccounts));
 };
 
 const saveStateToStorage = (state: State) => {
@@ -205,19 +178,18 @@ const login: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 			if (response.ok) {
 				saveStateToStorage(state);
 
-				const token = await response.text();
-				const queryString = `?token=${encodeURIComponent(token)}`;
-
 				const connectionBuilder = new signalR.HubConnectionBuilder()
 					.withAutomaticReconnect({
 						nextRetryDelayInMilliseconds: (retryContext: signalR.RetryContext) => 1000 * (retryContext.previousRetryCount + 1)
 					})
-					.withUrl(`${dataContext.serverUri}/sionline${queryString}`)
+					.withUrl(`${dataContext.serverUri}/sionline`)
 					.withHubProtocol(new signalRMsgPack.MessagePackHubProtocol());
 
 				const connection = connectionBuilder.build();
+
 				// eslint-disable-next-line no-param-reassign
 				dataContext.connection = connection;
+
 				// eslint-disable-next-line no-param-reassign
 				dataContext.gameClient = new GameServerClient(
 					connection,
@@ -244,25 +216,8 @@ const login: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 					await loadHostInfoAsync(dispatch, dataContext, requestCulture);
 					await uploadAvatarAsync(dispatch, dataContext);
 
-					dispatch(loginActionCreators.loginEnd());
 					dispatch(userActionCreators.onLoginChanged(state.user.login.trim())); // Normalize login
-
-					const urlParams = new URLSearchParams(window.location.search);
-					const invite = urlParams.get('invite');
-					const packageUri = urlParams.get('packageUri');
-					const packageName = urlParams.get('packageName');
-
-					if (state.online.selectedGameId && invite == 'true') {
-						onlineActionCreators.friendsPlay()(dispatch, getState, dataContext);
-					} else if (packageUri) {
-						onlineActionCreators.friendsPlay()(dispatch, getState, dataContext);
-						dispatch(onlineActionCreators.newGame());
-						dispatch(gameActionCreators.runNewGame() as any as AnyAction);
-						dispatch(gameActionCreators.gamePackageTypeChanged(PackageType.SIStorage));
-						dispatch(gameActionCreators.gamePackageLibraryChanged('', packageName ?? packageUri, packageUri));
-					} else {
-						dispatch(uiActionCreators.navigateToWelcome());
-					}
+					dispatch(loginActionCreators.loginEnd());
 				} catch (error) {
 					dispatch(loginActionCreators.loginEnd(`${localization.cannotConnectToServer}: ${getErrorMessage(error)}`));
 				}
@@ -275,9 +230,8 @@ const login: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 		}
 	};
 
-
 const onExit: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
-	() => async (dispatch: Dispatch<Action>, getState: () => State, dataContext: DataContext) => {
+	() => async (dispatch: Dispatch<Action>, _getState: () => State, dataContext: DataContext) => {
 		const server = dataContext.connection;
 
 		if (!server) {
@@ -287,6 +241,8 @@ const onExit: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 		try {
 			await dataContext.gameClient.logOutAsync();
 
+			dispatch(loginActionCreators.logOut());
+
 			if (server.connectionId) {
 				activeConnections.splice(activeConnections.indexOf(server.connectionId), 1);
 			}
@@ -294,8 +250,6 @@ const onExit: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 			detachListeners(server);
 			await server.stop();
 			removeConnection(server);
-
-			dispatch(uiActionCreators.navigateToLogin());
 		} catch (error) {
 			alert(getErrorMessage(error)); // TODO: normal error message
 		}
@@ -304,7 +258,6 @@ const onExit: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 const actionCreators = {
 	reloadComputerAccounts,
 	saveStateToStorage,
-	onConnectionChanged,
 	onAvatarSelectedLocal,
 	onAvatarDeleted,
 	sendAvatar,

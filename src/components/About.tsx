@@ -1,26 +1,17 @@
 ﻿import * as React from 'react';
-import { connect } from 'react-redux';
-import { Dispatch, Action } from 'redux';
 import localization from '../model/resources/localization';
 import Dialog from './common/Dialog';
-import uiActionCreators from '../state/ui/uiActionCreators';
+import { useNavigate } from 'react-router-dom';
 
 import './About.css';
 
-interface AboutProps {
-	onClose: () => void;
-}
-
-const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
-	onClose: () => {
-		dispatch(uiActionCreators.navigateBack());
-	}
-});
-
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export function About(props: AboutProps): JSX.Element {
+export default function About(): JSX.Element {
+	const navigate = useNavigate();
+	const navigateBack = () => navigate(-1);
+
 	return (
-		<Dialog className="helpDialog" title={localization.aboutTitle} onClose={props.onClose}>
+		<Dialog className="helpDialog" title={localization.aboutTitle} onClose={navigateBack}>
 			<div className="helpText">
 				<section>
 					{localization.about.map(text => (<p key={text}>{text}</p>))}
@@ -73,5 +64,3 @@ export function About(props: AboutProps): JSX.Element {
 		</Dialog>
 	);
 }
-
-export default connect(null, mapDispatchToProps)(About);

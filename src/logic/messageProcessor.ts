@@ -34,8 +34,6 @@ import commonActionCreators from '../state/common/commonActionCreators';
 
 const MAX_APPEND_TEXT_LENGTH = 150;
 
-let lastReplicLock: number;
-
 function unescapeNewLines(value: string): string {
 	return value.replaceAll('\\n', '\n').replaceAll('\\\\', '\\');
 }
@@ -77,21 +75,6 @@ const userMessageReceived: ActionCreator<ThunkAction<void, State, DataContext, A
 		};
 
 		dispatch(roomActionCreators.chatMessageAdded(replic));
-
-		if (!getState().room.chat.isVisible && getState().ui.windowWidth < 800) {
-			dispatch(roomActionCreators.lastReplicChanged(replic));
-
-			if (lastReplicLock) {
-				window.clearTimeout(lastReplicLock);
-			}
-
-			lastReplicLock = window.setTimeout(
-				() => {
-					dispatch(roomActionCreators.lastReplicChanged(null));
-				},
-				3000
-			);
-		}
 	};
 
 function onReady(personName: string, isReady: boolean, dispatch: Dispatch<any>, state: State): void {

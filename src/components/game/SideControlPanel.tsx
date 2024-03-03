@@ -10,6 +10,8 @@ import ChatMessage from '../../model/ChatMessage';
 import { isHost } from '../../utils/StateHelpers';
 import uiActionCreators from '../../state/ui/uiActionCreators';
 import isWellFormedUri from '../../utils/isWellFormedUri';
+import { useLocation, useNavigate } from 'react-router-dom';
+import Path from '../../model/enums/Path';
 
 import './SideControlPanel.css';
 import nextImg from '../../../assets/images/next.png';
@@ -40,7 +42,7 @@ interface SideControlPanelProps {
 	onPause: () => void;
 	onEditTable: () => void;
 	onGiveTurn: () => void;
-	onExit: () => void;
+	onExit: (callback: () => void) => void;
 	onEditSums: (enable: boolean) => void;
 	onMoveNext: () => void;
 	showGameManageDialog: () => void;
@@ -93,8 +95,8 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	onGiveTurn: () => {
 		dispatch(roomActionCreators.giveTurn() as unknown as Action);
 	},
-	onExit: () => {
-		dispatch(roomActionCreators.exitGame() as unknown as Action);
+	onExit: (callback: () => void) => {
+		dispatch(roomActionCreators.exitGame(callback) as unknown as Action);
 	},
 	onEditSums: (enable: boolean) => {
 		dispatch(roomActionCreators.areSumsEditableChanged(enable) as unknown as Action);
@@ -116,7 +118,14 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	},
 });
 
+interface LocationState {
+    isLobby: boolean;
+}
+
 export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
+	const navigate = useNavigate();
+	const state = useLocation().state as LocationState;
+
 	const chatButtonStyle: React.CSSProperties = props.isChatActive ? {
 		backgroundColor: 'lightyellow'
 	} : {};
@@ -211,7 +220,7 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 							disabled={!props.isConnected || !props.hasGameStarted}
 							onClick={() => props.onPause()}
 						>
-							<img src={pauseImg} />
+							<img alt='pause' src={pauseImg} />
 						</button>
 					) : null}
 
@@ -233,7 +242,11 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 								<div id="exitMenuPopup" className="gameMenuPopup">
 									<p>{localization.exitConfirmation}</p>
 									<ul>
-										<li className={enabledClass} onClick={() => props.onExit()}>{localization.exitFromGame}</li>
+										<li
+											className={enabledClass}
+											onClick={() => props.onExit(() => navigate(state && state.isLobby ? Path.Lobby : Path.Menu))}>
+											{localization.exitFromGame}
+										</li>
 									</ul>
 								</div>
 							</div>
@@ -243,7 +256,7 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 						verticalOrientation={FlyoutVerticalOrientation.Top}
 						horizontalOrientation={FlyoutHorizontalOrientation.Left}
 					>
-						<img src={exitImg} />
+						<img alt='exit' src={exitImg} />
 					</FlyoutButton>
 				</div>
 			</div>

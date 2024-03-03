@@ -1,6 +1,4 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import MainView from '../../model/enums/MainView';
-import OnlineMode from '../../model/enums/OnlineMode';
+import { createSlice } from '@reduxjs/toolkit';
 import AnswerOption from '../../model/AnswerOption';
 import ContentGroup from '../../model/ContentGroup';
 import ThemeInfo from '../../model/ThemeInfo';

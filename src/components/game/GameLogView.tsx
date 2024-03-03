@@ -6,6 +6,7 @@ import ChatLog from '../common/ChatLog';
 import hasUserMentioned from '../../utils/MentionHelpers';
 import roomActionCreators from '../../state/room/roomActionCreators';
 import { Action, Dispatch } from 'redux';
+
 import './GameLogView.css';
 
 interface GameLogViewProps {

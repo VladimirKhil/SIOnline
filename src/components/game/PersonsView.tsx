@@ -73,7 +73,7 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => ({
 const tooltipRef: React.RefObject<HTMLDivElement> = React.createRef();
 
 function inviteLink() {
-	const link = window.location.href + '&invite=true';
+	const link = window.location.href.replace('/room', '') + '&invite=true';
 
 	if (navigator.clipboard) {
 		navigator.clipboard.writeText(link);

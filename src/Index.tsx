@@ -3,7 +3,6 @@ import * as ReactDOM from 'react-dom';
 import * as signalR from '@microsoft/signalr';
 import { AnyAction, applyMiddleware, createStore, Store } from 'redux';
 import { Provider } from 'react-redux';
-import { BrowserRouter } from 'react-router-dom';
 import reduxThunk from 'redux-thunk';
 import App from './components/App';
 import State, { initialState } from './state/State';
@@ -21,7 +20,6 @@ import { Analytics, getAnalytics } from 'firebase/analytics';
 import { ErrorView } from './components/ErrorView';
 import Constants from './model/enums/Constants';
 import settingsActionCreators from './state/settings/settingsActionCreators';
-import MainView from './model/enums/MainView';
 import getErrorMessage from './utils/ErrorHelpers';
 import commonActionCreators from './state/common/commonActionCreators';
 import enableNoSleep from './utils/NoSleepHelper';
@@ -31,7 +29,6 @@ import isSafari from './utils/isSafari';
 import GameServerClient from './client/GameServerClient';
 import SIContentClient from 'sicontent-client';
 import ButtonPressMode from './model/ButtonPressMode';
-import { gameSoundPlayer } from './utils/GameSoundPlayer';
 
 import './utils/polyfills';
 import './style.css';
@@ -122,13 +119,11 @@ function subscribeToExternalEvents(store: Store<State, any>) {
 
 	window.addEventListener('error', (e: ErrorEvent) => {
 		store.dispatch(commonActionCreators.commonErrorChanged(`${e.type} ${e.message} ${e.filename} ${e.lineno}:${e.colno}`));
-		store.dispatch(uiActionCreators.navigateToError());
 		return false;
 	});
 
 	window.addEventListener('unhandledrejection', (e: PromiseRejectionEvent) => {
 		store.dispatch(commonActionCreators.commonErrorChanged(`${e.reason.message}: ${e.reason.stack}`));
-		store.dispatch(uiActionCreators.navigateToError());
 		return false;
 	});
 
@@ -168,8 +163,6 @@ async function run() {
 	if (!validateBrowser()) {
 		return;
 	}
-
-	document.title = localization.appName;
 
 	try {
 		if (firebaseConfig) {
@@ -246,12 +239,7 @@ async function run() {
 			if (newSettings.appSettings.culture !== currentSettings.appSettings.culture) {
 				localization.setLanguage(newSettings.appSettings.culture || localization.getInterfaceLanguage());
 				document.title = localization.appName;
-
-				if (newState.ui.mainView === MainView.Login) {
-					window.location.reload();
-				} else {
-					store.dispatch(actionCreators.reloadComputerAccounts() as any);
-				}
+				store.dispatch(actionCreators.reloadComputerAccounts() as any);
 			}
 
 			currentSettings = newSettings;
@@ -263,21 +251,22 @@ async function run() {
 
 	if (state.settings.appSettings.culture) {
 		localization.setLanguage(state.settings.appSettings.culture);
-		document.title = localization.appName;
 	}
 
+	document.title = localization.appName;
+
 	ReactDOM.render(
-		(
-			<BrowserRouter>
-				<Provider store={store}>
-					<App ads={config.ads} />
-				</Provider>
-			</BrowserRouter>
-		),
+		<React.StrictMode>
+			<Provider store={store}>
+				<App ads={config.ads} />
+			</Provider>
+		</React.StrictMode>,
 		document.getElementById('reactHost')
 	);
 
-	store.dispatch(uiActionCreators.navigateToLogin() as any);
+	if (window.location.pathname != '/') {
+		window.location.pathname = '/';
+	}
 
 	const deviceType = getDeviceType();
 
