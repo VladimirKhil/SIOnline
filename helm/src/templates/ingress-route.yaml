@@ -9,6 +9,7 @@ metadata:
   labels:
     {{- include "sionline.labels" . | nindent 4 }}
   annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
     {{- if .Values.ingress.annotations -}}
     {{- toYaml .Values.ingress.annotations | nindent 4 }}
     {{- end }}
