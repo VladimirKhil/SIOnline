@@ -29,7 +29,7 @@ spec:
     - http:
         paths:
           {{- range .paths }}
-          - path: {{ . }}/(login|menu|lobby|rooms|room|join|create|about|logout)
+          - path: {{ . }}(login|menu|lobby|rooms|room|join|create|about|logout)
             pathType: {{ $pathType }}
             backend:
               service:
