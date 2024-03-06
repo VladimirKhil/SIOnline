@@ -10,8 +10,8 @@ import AvatarView from './AvatarView';
 import SexView from './SexView';
 import LanguageView from './LanguageView';
 import userActionCreators from '../state/user/userActionCreators';
-import { useNavigate } from 'react-router-dom';
 import Path from '../model/enums/Path';
+import uiActionCreators from '../state/ui/uiActionCreators';
 
 import './Login.css';
 
@@ -19,21 +19,21 @@ interface LoginProps {
 	login: string;
 	inProgress: boolean;
 	error: string | null;
-	completed: boolean;
 	ads?: string;
 	culture: string;
 
 	selectedGameId: number;
 	onLoginChanged: (newLogin: string) => void;
 	onLogin: () => void;
+	navigate: (path: Path) => void;
 }
 
 const mapStateToProps = (state: State) => ({
 	login: state.user.login,
 	inProgress: state.login.inProgress,
 	error: state.login.errorMessage,
-	completed: state.login.completed,
 	culture: state.settings.appSettings.culture || localization.getLanguage(),
+	navigation: state.ui.navigation,
 
 	selectedGameId: state.online.selectedGameId,
 });
@@ -43,8 +43,11 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 		dispatch(userActionCreators.onLoginChanged(newLogin));
 	},
 	onLogin: () => {
-		dispatch(actionCreators.login() as unknown as Action); // TODO: fix typing
+		dispatch(actionCreators.login() as unknown as Action);
 	},
+	navigate: (path: Path) => {
+		dispatch(uiActionCreators.navigate({ path: path }) as unknown as Action);
+	}
 });
 
 export function Login(props: LoginProps) {
@@ -58,25 +61,7 @@ export function Login(props: LoginProps) {
 		}
 	};
 
-	const navigate = useNavigate();
-	const navigateToAbout = () => navigate(Path.About);
-
-	React.useEffect(() => {
-		if (props.completed) {
-			const urlParams = new URLSearchParams(window.location.search);
-			const invite = urlParams.get('invite');
-			const packageUri = urlParams.get('packageUri');
-			const packageName = urlParams.get('packageName');
-
-			if (props.selectedGameId && invite) {
-				navigate(Path.RoomJoin, { state: { gameId: props.selectedGameId } });
-			} else if (packageUri) {
-				navigate(Path.NewRoom, { state: { mode: 'multi', packageUri: packageUri, packageName: packageName } });
-			} else {
-				navigate(Path.Menu);
-			}
-		}
-	}, [props.completed]);
+	const navigateToAbout = () => props.navigate(Path.About);
 
 	const prevPropsRef = React.useRef<LoginProps>();
 

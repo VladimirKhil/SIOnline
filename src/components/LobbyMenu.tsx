@@ -6,7 +6,6 @@ import localization from '../model/resources/localization';
 import FlyoutButton, { FlyoutHorizontalOrientation, FlyoutVerticalOrientation } from './common/FlyoutButton';
 import uiActionCreators from '../state/ui/uiActionCreators';
 import State from '../state/State';
-import { useNavigate } from 'react-router-dom';
 import Path from '../model/enums/Path';
 
 import './LobbyMenu.css';
@@ -17,6 +16,7 @@ interface LobbyMenuProps {
 	onShowGames: () => void;
 	onShowChat: () => void;
 	onShowSettings: () => void;
+	navigate: (path: Path) => void;
 }
 
 const mapStateToProps = (state: State) => ({
@@ -33,11 +33,12 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	onShowSettings: () => {
 		dispatch(uiActionCreators.showSettings(true));
 	},
+	navigate: (path: Path) => {
+		dispatch(uiActionCreators.navigate({ path: path }) as unknown as Action);
+	}
 });
 
 export function LobbyMenu(props: LobbyMenuProps): JSX.Element {
-	const navigate = useNavigate();
-
 	return (
 		<FlyoutButton
 			className="navButton"
@@ -52,8 +53,8 @@ export function LobbyMenu(props: LobbyMenuProps): JSX.Element {
 					</li>
 
 					<li onClick={props.onShowSettings}>{localization.settings}</li>
-					<li onClick={() => navigate(Path.About)}>{localization.aboutTitle}</li>
-					<li onClick={() => navigate(Path.Menu)}>{localization.exit}</li>
+					<li onClick={() => props.navigate(Path.About)}>{localization.aboutTitle}</li>
+					<li onClick={() => props.navigate(Path.Menu)}>{localization.exit}</li>
 				</ul>
 			)}
 			horizontalOrientation={FlyoutHorizontalOrientation.Right}

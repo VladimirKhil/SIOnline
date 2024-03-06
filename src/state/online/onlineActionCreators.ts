@@ -36,6 +36,7 @@ import LobbySideMode from '../../model/enums/LobbySideMode';
 import SIStatisticsClient from 'sistatistics-client';
 import GamePlatforms from 'sistatistics-client/dist/models/GamePlatforms';
 import StatisticFilter from 'sistatistics-client/dist/models/StatisticFilter';
+import Path from '../../model/enums/Path';
 
 const selectGame: ActionCreator<OnlineActions.SelectGameAction> = (gameId: number) => ({
 	type: OnlineActions.OnlineActionTypes.SelectGame,
@@ -320,8 +321,7 @@ const initGameAsync = async (
 	dataContext: DataContext,
 	gameId: number,
 	role: Role,
-	isAutomatic: boolean,
-	onNavigateToGame: (gameId: number) => void) => {
+	isAutomatic: boolean) => {
 	dispatch(gameActionCreators.gameSet(gameId, isAutomatic));
 	dispatch(tableActionCreators.tableReset());
 	dispatch(tableActionCreators.showText(localization.tableHint, false));
@@ -332,11 +332,11 @@ const initGameAsync = async (
 	dispatch(roomActionCreators.gameStarted(false));
 
 	await gameInit(gameId, dataContext, role);
-	onNavigateToGame(gameId);
+	dispatch(uiActionCreators.navigate({ path: Path.Room }));
 };
 
 const joinGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
-	(gameId: number, role: Role, onNavigateToGame: (gameId: number) => void) => async (
+	(gameId: number, role: Role) => async (
 		dispatch: Dispatch<any>,
 		getState: () => State,
 		dataContext: DataContext
@@ -358,7 +358,7 @@ const joinGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 			return;
 		}
 
-		await initGameAsync(dispatch, dataContext, gameId, role, false, onNavigateToGame);
+		await initGameAsync(dispatch, dataContext, gameId, role, false);
 
 		actionCreators.saveStateToStorage(state);
 		dispatch(joinGameFinished(null));
@@ -368,7 +368,7 @@ const joinGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 };
 
 const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
-	(isSingleGame: boolean, onNavigateToGame: (gameId: number) => void) => async (dispatch: Dispatch<any>, getState: () => State, dataContext: DataContext) => {
+	(isSingleGame: boolean) => async (dispatch: Dispatch<any>, getState: () => State, dataContext: DataContext) => {
 		const state = getState();
 
 		if (!isSingleGame && state.game.name.length === 0) {
@@ -549,7 +549,7 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 			if (result.Code !== GameCreationResultCode.Ok) {
 				dispatch(gameCreationEnd(GameErrorsHelper.getMessage(result.Code) + (result.ErrorMessage || '')));
 			} else {
-				await initGameAsync(dispatch, dataContext, result.GameId, role, false, onNavigateToGame);
+				await initGameAsync(dispatch, dataContext, result.GameId, role, false);
 				dispatch(newGameCancel());
 			}
 		} catch (error) {
@@ -558,7 +558,7 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 	};
 
 const createNewAutoGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
-	(onNavigateToGame: (gameId: number) => void) => async (dispatch: Dispatch<any>, getState: () => State, dataContext: DataContext) => {
+	() => async (dispatch: Dispatch<any>, getState: () => State, dataContext: DataContext) => {
 		const state = getState();
 
 		dispatch(gameCreationStart());
@@ -576,7 +576,7 @@ const createNewAutoGame: ActionCreator<ThunkAction<void, State, DataContext, Act
 			if (result.Code !== GameCreationResultCode.Ok) {
 				alert(GameErrorsHelper.getMessage(result.Code) + (result.ErrorMessage || ''));
 			} else {
-				await initGameAsync(dispatch, dataContext, result.GameId, Role.Player, true, onNavigateToGame);
+				await initGameAsync(dispatch, dataContext, result.GameId, Role.Player, true);
 			}
 		} catch (message) {
 			dispatch(gameCreationEnd(message));
@@ -584,6 +584,11 @@ const createNewAutoGame: ActionCreator<ThunkAction<void, State, DataContext, Act
 	};
 
 async function gameInit(gameId: number, dataContext: DataContext, role: Role) {
+	if (dataContext.config.rewriteUrl) {
+		const host = '';
+		window.history.pushState({}, `${localization.game} ${gameId}`, `${dataContext.config.rootUri}?gameId=${gameId}&host=${host}`);
+	}
+
 	await dataContext.gameClient.sendMessageToServerAsync('INFO');
 
 	if (role === Role.Player || role === Role.Showman) {

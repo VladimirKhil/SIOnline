@@ -1,6 +1,12 @@
-import { ActionCreator } from 'redux';
+import { Action, ActionCreator, Dispatch } from 'redux';
 import * as UIActions from './UIActions';
 import OnlineMode from '../../model/enums/OnlineMode';
+import { INavigationState } from './UIState';
+import { ThunkAction } from 'redux-thunk';
+import State from '../State';
+import DataContext from '../../model/DataContext';
+import Path from '../../model/enums/Path';
+import onlineActionCreators from '../online/onlineActionCreators';
 
 const showSettings: ActionCreator<UIActions.ShowSettingsAction> = (show: boolean) => ({
 	type: UIActions.UIActionTypes.ShowSettings,
@@ -30,6 +36,53 @@ const visibilityChanged: ActionCreator<UIActions.VisibilityChangedAction> = (isV
 	type: UIActions.UIActionTypes.VisibilityChanged, isVisible
 });
 
+const navigateCore: ActionCreator<UIActions.NavigateAction> = (navigation: INavigationState) => ({
+	type: UIActions.UIActionTypes.Navigate, navigation
+});
+
+const handleNavigation = (navigation: INavigationState, dispatch: Dispatch<Action>, getState: () => State) => {
+	let nav: INavigationState;
+
+	if (navigation.path === Path.Room) {
+		nav = { ...navigation, returnToLobby: getState().ui.navigation.path === Path.Lobby };
+	} else if (navigation.path === Path.RoomJoin) {
+		dispatch(onlineActionCreators.receiveGameStart());
+		nav = navigation;
+	} else {
+		nav = navigation;
+	}
+
+	dispatch(navigateCore(nav));
+
+	switch (nav.path) {
+		case Path.Rooms:
+			dispatch(onlineActionCreators.friendsPlay() as unknown as Action);
+			break;
+
+		case Path.RoomJoin:
+			dispatch(onlineActionCreators.friendsPlay() as unknown as Action);
+			break;
+
+		case Path.Lobby:
+			dispatch(onlineActionCreators.navigateToLobby() as unknown as Action);
+			break;
+
+		default:
+			break;
+	}
+};
+
+const navigate: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
+	(navigation: INavigationState) => async (dispatch: Dispatch<Action>, getState: () => State) => {
+	window.history.pushState(navigation, '');
+	handleNavigation(navigation, dispatch, getState);
+};
+
+const onNavigated: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
+	(navigation: INavigationState) => async (dispatch: Dispatch<Action>, getState: () => State) => {
+	handleNavigation(navigation, dispatch, getState);
+};
+
 const uiActionCreators = {
 	showSettings,
 	onOnlineModeChanged,
@@ -37,6 +90,8 @@ const uiActionCreators = {
 	windowSizeChanged,
 	isSettingGameButtonKeyChanged,
 	visibilityChanged,
+	navigate,
+	onNavigated,
 };
 
 export default uiActionCreators;

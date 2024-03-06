@@ -63,7 +63,7 @@ export class OnlineView extends React.Component<OnlineViewProps> {
 	render() {
 		const newGame = (
 			<div className={`newGameArea ${this.props.isLobbyChatHidden ? 'newWide' : null}`}>
-				<NewGameDialog isSingleGame={false} isLobby={true} onClose={this.props.closeNewGame} />
+				<NewGameDialog isSingleGame={false} onClose={this.props.closeNewGame} />
 			</div>
 		);
 

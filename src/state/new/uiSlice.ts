@@ -1,5 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import OnlineMode from '../../model/enums/OnlineMode';
+import { INavigationState } from '../ui/UIState';
+import Path from '../../model/enums/Path';
 
 interface UIState {
 	onlineView: OnlineMode;
@@ -8,6 +10,7 @@ interface UIState {
 	areSettingsVisible: boolean;
 	isSettingGameButtonKey: boolean;
 	isVisible: boolean;
+	navigation: INavigationState;
 }
 
 const initialState: UIState = {
@@ -17,6 +20,9 @@ const initialState: UIState = {
 	areSettingsVisible: false,
 	isSettingGameButtonKey: false,
 	isVisible: true,
+	navigation: {
+		path: Path.Login,
+	},
 };
 
 export const uiSlice = createSlice({

@@ -21,6 +21,7 @@ import uiActionCreators from '../ui/uiActionCreators';
 import Messages from '../../client/game/Messages';
 import JoinMode from '../../client/game/JoinMode';
 import commonActionCreators from '../common/commonActionCreators';
+import Path from '../../model/enums/Path';
 
 let timerRef: number | null = null;
 
@@ -148,9 +149,9 @@ const playerSelected: ActionCreator<ThunkAction<void, State, DataContext, Action
 	}
 };
 
-const exitGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (onExit: () => void) => async (
+const exitGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
 	dispatch: Dispatch<Action>,
-	_getState: () => State,
+	getState: () => State,
 	dataContext: DataContext
 ) => {
 	try {
@@ -176,7 +177,9 @@ const exitGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (
 	dispatch(clearDecisionsAndMainTimer());
 
 	dispatch(commonActionCreators.stopAudio());
-	onExit();
+
+	const state = getState();
+	dispatch(uiActionCreators.navigate({ path: state.ui.navigation.returnToLobby ? Path.Lobby : Path.Menu }) as unknown as Action);
 };
 
 let lastReplicLock: number;

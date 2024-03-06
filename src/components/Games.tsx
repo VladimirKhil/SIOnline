@@ -14,7 +14,6 @@ import GameInfoView from './GameInfoView';
 import uiActionCreators from '../state/ui/uiActionCreators';
 import onlineActionCreators from '../state/online/onlineActionCreators';
 import OnlineMode from '../model/enums/OnlineMode';
-import { useNavigate } from 'react-router-dom';
 import Path from '../model/enums/Path';
 
 import './Games.css';
@@ -36,6 +35,7 @@ interface GamesProps {
 	closeNewGame: () => void;
 	onSelectGame: (gameId: number, showInfo: boolean) => void;
 	unselectGame: () => void;
+	navigate: (path: Path) => void;
 }
 
 const mapStateToProps = (state: State) => {
@@ -80,6 +80,9 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	unselectGame: () => {
 		dispatch(onlineActionCreators.unselectGame());
 	},
+	navigate: (path: Path) => {
+		dispatch(uiActionCreators.navigate({ path: path }) as unknown as Action); // TODO: fix typing
+	},
 });
 
 function renderGameList(props: GamesProps): React.ReactNode {
@@ -107,10 +110,8 @@ function renderGameList(props: GamesProps): React.ReactNode {
 }
 
 export function Games(props: GamesProps): JSX.Element {
-	const navigate = useNavigate();
-
 	if (props.newGameShown) {
-		return <NewGameDialog isSingleGame={false} isLobby={false} onClose={props.closeNewGame} />;
+		return <NewGameDialog isSingleGame={false} onClose={props.closeNewGame} />;
 	}
 
 	return props.selectedGame ? (
@@ -119,11 +120,13 @@ export function Games(props: GamesProps): JSX.Element {
 		</Dialog>
 	) : (
 		<section className="games">
-			<button type="button" className="dialog_closeButton" onClick={() => navigate(Path.Menu)}>
+			<button type="button" className="dialog_closeButton" onClick={() => props.navigate(Path.Menu)}>
 				<img src={closeSvg} alt={localization.close} />
 			</button>
+
 			<div className="games_main">
 				<h2>{localization.gamesTitle}</h2>
+
 				<div className="games_controls">
 					<input
 						id="gamesSearch"
@@ -134,6 +137,7 @@ export function Games(props: GamesProps): JSX.Element {
 						autoFocus
 						onChange={e => props.onGamesSearchChanged(e.target.value)}
 					/>
+
 					<button type="button" className='standard' id="newGame" disabled={!props.isConnected} onClick={props.onNewGame}>
 						{localization.newGame.toLocaleUpperCase()}
 					</button>

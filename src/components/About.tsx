@@ -1,17 +1,13 @@
 ﻿import * as React from 'react';
 import localization from '../model/resources/localization';
 import Dialog from './common/Dialog';
-import { useNavigate } from 'react-router-dom';
 
 import './About.css';
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export default function About(): JSX.Element {
-	const navigate = useNavigate();
-	const navigateBack = () => navigate(-1);
-
 	return (
-		<Dialog className="helpDialog" title={localization.aboutTitle} onClose={navigateBack}>
+		<Dialog className="helpDialog" title={localization.aboutTitle} onClose={() => window.history.back()}>
 			<div className="helpText">
 				<section>
 					{localization.about.map(text => (<p key={text}>{text}</p>))}

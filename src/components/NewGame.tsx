@@ -1,15 +1,20 @@
 import * as React from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
 import NewGameDialog from './NewGameDialog';
+import State from '../state/State';
+import { INavigationState } from '../state/ui/UIState';
+import { connect } from 'react-redux';
 
-interface LocationState {
-	mode: 'single' | 'multi';
+interface NewGameProps {
+	navigation: INavigationState;
 }
+
+const mapStateToProps = (state: State) => ({
+	navigation: state.ui.navigation,
+});
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export default function NewGame(): JSX.Element | null {
-	const navigate = useNavigate();
-	const state = useLocation().state as LocationState;
-
-	return <NewGameDialog isSingleGame={state.mode === 'single'} isLobby={false} onClose={() => navigate(-1)} />;
+export function NewGame(props: NewGameProps): JSX.Element | null {
+	return <NewGameDialog isSingleGame={props.navigation.newGameMode === 'single'} onClose={() => window.history.back()} />;
 }
+
+export default connect(mapStateToProps)(NewGame);

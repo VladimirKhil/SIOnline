@@ -7,12 +7,15 @@ import ServerLicense from './ServerLicense';
 import { getCookie, setCookie } from '../utils/CookieHelpers';
 import GameSound from '../model/enums/GameSound';
 import commonActionCreators from '../state/common/commonActionCreators';
-import { useNavigate } from 'react-router-dom';
 import onlineActionCreators from '../state/online/onlineActionCreators';
 import Path from '../model/enums/Path';
+import { Action } from 'redux';
+import { INavigationState } from '../state/ui/UIState';
 
 import './WelcomeView.css';
 import exitImg from '../../assets/images/exit.png';
+import uiActionCreators from '../state/ui/uiActionCreators';
+import actionCreators from '../logic/actionCreators';
 
 const ACCEPT_LICENSE_KEY = 'ACCEPT_LICENSE';
 
@@ -23,9 +26,11 @@ interface WelcomeViewProps {
 	windowWidth: number;
 	mainMenuSound: boolean;
 
-	anyonePlay: (callback: (gameId: number) => void) => void;
+	anyonePlay: () => void;
 	onSoundPlay: (sound: GameSound) => void;
 	onSoundPause: () => void;
+	navigate: (navigation: INavigationState) => void;
+	exit: () => void;
 }
 
 const mapStateToProps = (state: State) => ({
@@ -37,8 +42,8 @@ const mapStateToProps = (state: State) => ({
 });
 
 const mapDispatchToProps = (dispatch: any) => ({
-	anyonePlay: (callback: (gameId: number) => void) => {
-		dispatch(onlineActionCreators.createNewAutoGame(callback));
+	anyonePlay: () => {
+		dispatch(onlineActionCreators.createNewAutoGame());
 	},
 	onSoundPlay: (sound: GameSound) => {
 		dispatch(commonActionCreators.playAudio(sound, true));
@@ -46,11 +51,15 @@ const mapDispatchToProps = (dispatch: any) => ({
 	onSoundPause: () => {
 		dispatch(commonActionCreators.stopAudio());
 	},
+	navigate: (navigation: INavigationState) => {
+		dispatch(uiActionCreators.navigate(navigation) as unknown as Action); // TODO: fix typing
+	},
+	exit: () => {
+		dispatch(actionCreators.onExit());
+	},
 });
 
 export function WelcomeView(props: WelcomeViewProps): JSX.Element {
-	const navigate = useNavigate();
-
 	const acceptLicense = getCookie(ACCEPT_LICENSE_KEY);
 
 	const [accepted, setAccepted] = React.useState(acceptLicense !== '');
@@ -89,7 +98,7 @@ export function WelcomeView(props: WelcomeViewProps): JSX.Element {
 						type='button'
 						className='standard imageButton welcomeExit'
 						disabled={!props.isConnected}
-						onClick={() => navigate(Path.Logout) }
+						onClick={props.exit}
 						title={localization.exitFromGame}>
 						<img src={exitImg} alt='Exit' />
 					</button>
@@ -102,11 +111,15 @@ export function WelcomeView(props: WelcomeViewProps): JSX.Element {
 				<button
 					type='button'
 					className='standard welcomeRow right'
-					disabled={!props.isConnected} onClick={() => navigate(Path.NewRoom, { state: { mode: 'single' } })}>
+					disabled={!props.isConnected} onClick={() => props.navigate({ path: Path.NewRoom, newGameMode: 'single' })}>
 					{localization.singlePlay}
 				</button>
 
-				<button type='button' className='standard welcomeRow left' disabled={!props.isConnected} onClick={() => navigate(Path.Rooms)}>
+				<button
+					type='button'
+					className='standard welcomeRow left'
+					disabled={!props.isConnected}
+					onClick={() => props.navigate({ path: Path.Rooms })}>
 					{localization.friendsPlay}
 				</button>
 
@@ -114,11 +127,15 @@ export function WelcomeView(props: WelcomeViewProps): JSX.Element {
 					type='button'
 					className='standard welcomeRow right'
 					disabled={!props.isConnected}
-					onClick={() => props.anyonePlay((gameId) => navigate(Path.Room + '?gameId=' + gameId))}>
+					onClick={props.anyonePlay}>
 					{localization.anyonePlay}
 				</button>
 
-				<button type='button' className='standard welcomeRow left' disabled={!props.isConnected} onClick={() => navigate(Path.Lobby)}>
+				<button
+					type='button'
+					className='standard welcomeRow left'
+					disabled={!props.isConnected}
+					onClick={() => props.navigate({ path: Path.Lobby })}>
 					{localization.joinLobby}
 				</button>
 			</div>

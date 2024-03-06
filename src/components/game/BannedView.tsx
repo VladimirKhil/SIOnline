@@ -40,7 +40,7 @@ export function BannedView(props: BannedViewProps): JSX.Element {
 					<li
 						className={`bannedItem ${ip === props.selectedInfoIp ? 'selected' : ''}`}
 						onClick={() => props.selectItem(ip)}>
-						<span>{ip} ({props.banned[ip]})</span>
+						<span>{props.banned[ip]}</span>
 					</li>
 				))}
 			</ul>

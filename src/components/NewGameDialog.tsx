@@ -15,7 +15,7 @@ import uiActionCreators from '../state/ui/uiActionCreators';
 import onlineActionCreators from '../state/online/onlineActionCreators';
 import isWindowsOS from '../utils/isWindowsOS';
 import PackageFileSelector from './PackageFileSelector';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { INavigationState } from '../state/ui/UIState';
 import Path from '../model/enums/Path';
 
 import './NewGameDialog.css';
@@ -23,7 +23,6 @@ import './NewGameDialog.css';
 interface NewGameDialogProps {
 	isConnected: boolean;
 	isSingleGame: boolean;
-	isLobby: boolean;
 	gameName: string;
 	gamePassword: string;
 	isOralGame: boolean;
@@ -39,6 +38,7 @@ interface NewGameDialogProps {
 	error: string | null;
 	uploadPackageProgress: boolean;
 	uploadPackagePercentage: number;
+	navigation: INavigationState;
 
 	onGameNameChanged: (newGameName: string) => void;
 	onGamePasswordChanged: (newGamePassword: string) => void;
@@ -50,7 +50,7 @@ interface NewGameDialogProps {
 	showmanTypeChanged: (isHuman: boolean) => void;
 	onPlayersCountChanged: (gamePlayersCount: number) => void;
 	onHumanPlayersCountChanged: (gameHumanPlayersCount: number) => void;
-	onCreate: (isSingleGame: boolean, onNavigateToGame: (gameId: number) => void) => void;
+	onCreate: (isSingleGame: boolean) => void;
 	onShowSettings: () => void;
 	onClose: () => void;
 }
@@ -71,7 +71,8 @@ const mapStateToProps = (state: State) => ({
 	inProgress: state.online.gameCreationProgress,
 	error: state.online.gameCreationError,
 	uploadPackageProgress:  state.online.uploadPackageProgress,
-	uploadPackagePercentage: state.online.uploadPackagePercentage
+	uploadPackagePercentage: state.online.uploadPackagePercentage,
+	navigation: state.ui.navigation,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
@@ -108,9 +109,9 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	onShowSettings: () => {
 		dispatch(uiActionCreators.showSettings(true));
 	},
-	onCreate: (isSingleGame: boolean, onNavigateToGame: (gameId: number) => void) => {
-		dispatch(onlineActionCreators.createNewGame(isSingleGame, onNavigateToGame) as unknown as Action);
-	}
+	onCreate: (isSingleGame: boolean) => {
+		dispatch(onlineActionCreators.createNewGame(isSingleGame) as unknown as Action);
+	},
 });
 
 function getPackageName(packageType: PackageType, packageName: string, packageData: File | null): string {
@@ -126,22 +127,14 @@ function getPackageName(packageType: PackageType, packageName: string, packageDa
 	}
 }
 
-interface LocationState {
-	packageUri?: string;
-	packageName?: string;
-}
-
 export function NewGameDialog(props: NewGameDialogProps) {
 	const [isSIStorageOpen, setIsSIStorageOpen] = React.useState(false);
-	const navigate = useNavigate();
-	const navigateToGame = (gameId: number) => navigate(Path.Room + '?gameId=' + gameId, { state: { isLobby: props.isLobby } });
 	const childRef = React.useRef<HTMLInputElement>(null);
-	const state = useLocation().state as LocationState;
 
 	React.useEffect(() => {
-		if (state && state.packageUri) {
+		if (props.navigation.packageUri) {
 			props.onGamePackageTypeChanged(PackageType.SIStorage);
-			props.onGamePackageLibraryChanged('', state.packageName ?? state.packageUri, state.packageUri);
+			props.onGamePackageLibraryChanged('', props.navigation.packageName ?? props.navigation.packageUri, props.navigation.packageUri);
 		}
 	});
 
@@ -165,7 +158,7 @@ export function NewGameDialog(props: NewGameDialogProps) {
 
 	const onKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
 		if (e.key === Constants.KEY_ENTER_NEW) {
-			props.onCreate(props.isSingleGame, navigateToGame);
+			props.onCreate(props.isSingleGame);
 		}
 	};
 
@@ -412,7 +405,7 @@ export function NewGameDialog(props: NewGameDialogProps) {
 						type="button"
 						className="startGame standard"
 						disabled={!props.isConnected || props.inProgress}
-						onClick={() => props.onCreate(props.isSingleGame, navigateToGame)}
+						onClick={() => props.onCreate(props.isSingleGame)}
 					>
 						{localization.startGame}
 					</button>

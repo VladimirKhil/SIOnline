@@ -25,8 +25,6 @@ import TableContextView from './TableContextView/TableContextView';
 import ChatInput from './ChatInput';
 import PlayersListView from './PlayersListView/PlayersListView';
 import GameProgress from './GameProgress';
-import { useLocation, useNavigate } from 'react-router-dom';
-import Path from '../../model/enums/Path';
 import ChatMessage from '../../model/ChatMessage';
 import MessageLevel from '../../model/enums/MessageLevel';
 
@@ -56,7 +54,7 @@ interface InGameViewProps {
 	onManageGameDialogClose: () => void;
 	onCancelSumChange: () => void;
 	onShowSettings: () => void;
-	onExit: (callback: () => void) => void;
+	onExit: () => void;
 	chatMessageAdded: (chatMessage: ChatMessage) => void;
 	onReconnect: () => void;
 }
@@ -100,8 +98,8 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	onShowSettings: () => {
 		dispatch(uiActionCreators.showSettings(true));
 	},
-	onExit: (callback: () => void) => {
-		dispatch(roomActionCreators.exitGame(callback) as unknown as Action);
+	onExit: () => {
+		dispatch(roomActionCreators.exitGame() as unknown as Action);
 	},
 	chatMessageAdded: (chatMessage: ChatMessage) => {
 		dispatch(roomActionCreators.chatMessageAdded(chatMessage) as unknown as Action);
@@ -111,18 +109,11 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	}
 });
 
-interface LocationState {
-	isLobby: boolean;
-}
-
 export function InGameView(props: InGameViewProps) : JSX.Element {
-	const navigate = useNavigate();
-	const state = useLocation().state as LocationState;
-
 	React.useEffect(() => {
 		if (props.kicked) {
 			alert(localization.youAreKicked);
-			props.onExit(() => navigate(state && state.isLobby ? Path.Lobby : Path.Menu));
+			props.onExit();
 		}
 	}, [props.kicked]);
 

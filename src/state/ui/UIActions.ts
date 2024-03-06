@@ -1,4 +1,5 @@
 import OnlineMode from '../../model/enums/OnlineMode';
+import { INavigationState } from './UIState';
 
 export const enum UIActionTypes {
 	ShowSettings = 'SHOW_SETTINGS',
@@ -7,6 +8,7 @@ export const enum UIActionTypes {
 	OnlineModeChanged = 'ONLINE_MODE_CHANGED',
 	IsSettingGameButtonKeyChanged = 'IS_SETTING_GAME_BUTTON_KEY_CHANGED',
 	VisibilityChanged = 'VISIBILITY_CHANGED',
+	Navigate = 'NAVIGATE',
 }
 
 export type ShowSettingsAction = { type: UIActionTypes.ShowSettings, show: boolean };
@@ -15,6 +17,7 @@ export type CloseGameInfoAction = { type: UIActionTypes.CloseGameInfo };
 export type WindowSizeChangedAction = { type: UIActionTypes.WindowSizeChanged, width: number, height: number };
 export type IsSettingGameButtonKeyChangedAction = { type: UIActionTypes.IsSettingGameButtonKeyChanged, isSettingGameButtonKey: boolean };
 export type VisibilityChangedAction = { type: UIActionTypes.VisibilityChanged, isVisible: boolean };
+export type NavigateAction = { type: UIActionTypes.Navigate, navigation: INavigationState };
 
 export type KnownUIAction =
 	ShowSettingsAction
@@ -22,4 +25,5 @@ export type KnownUIAction =
 	| CloseGameInfoAction
 	| WindowSizeChangedAction
 	| IsSettingGameButtonKeyChangedAction
-	| VisibilityChangedAction;
+	| VisibilityChangedAction
+	| NavigateAction;

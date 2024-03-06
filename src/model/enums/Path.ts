@@ -8,7 +8,6 @@ const enum Path {
 	Lobby = '/lobby',
 	Room = '/room',
 	RoomJoin = '/join',
-	Logout = '/logout',
 }
 
 export default Path;

@@ -1,7 +1,7 @@
 ﻿import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import * as signalR from '@microsoft/signalr';
-import { AnyAction, applyMiddleware, createStore, Store } from 'redux';
+import { Action, AnyAction, applyMiddleware, createStore, Store } from 'redux';
 import { Provider } from 'react-redux';
 import reduxThunk from 'redux-thunk';
 import App from './components/App';
@@ -29,6 +29,8 @@ import isSafari from './utils/isSafari';
 import GameServerClient from './client/GameServerClient';
 import SIContentClient from 'sicontent-client';
 import ButtonPressMode from './model/ButtonPressMode';
+import Path from './model/enums/Path';
+import { INavigationState } from './state/ui/UIState';
 
 import './utils/polyfills';
 import './style.css';
@@ -94,7 +96,7 @@ function setState(state: State, savedState: SavedState | null, gameId: string | 
 
 function subscribeToExternalEvents(store: Store<State, any>) {
 	window.onresize = () => store.dispatch(uiActionCreators.windowSizeChanged(window.innerWidth, window.innerHeight));
-	window.onpopstate = () => true;
+	window.onpopstate = (e) => { store.dispatch(uiActionCreators.onNavigated(e.state)); };
 
 	window.onkeydown = (e: KeyboardEvent) => {
 		const state = store.getState();
@@ -201,6 +203,19 @@ async function run() {
 
 	const urlParams = new URLSearchParams(window.location.search);
 	const gameId = urlParams.get('gameId');
+	const invite = urlParams.get('invite');
+	const packageUri = urlParams.get('packageUri');
+	const packageName = urlParams.get('packageName');
+
+	let initialView: INavigationState;
+
+	if (gameId && invite) {
+		initialView = { path: Path.RoomJoin, gameId: parseInt(gameId, 10) };
+	} else if (packageUri) {
+		initialView = { path: Path.NewRoom, newGameMode: 'multi', packageUri: packageUri, packageName: packageName ?? undefined };
+	} else {
+		initialView = { path: Path.Menu };
+	}
 
 	const savedState = loadState();
 	const state = setState(initialState, savedState, gameId);
@@ -264,9 +279,7 @@ async function run() {
 		document.getElementById('reactHost')
 	);
 
-	if (window.location.pathname != '/') {
-		window.location.pathname = '/';
-	}
+	store.dispatch(uiActionCreators.navigate({ path: Path.Login, callbackState: initialView }) as unknown as Action);
 
 	const deviceType = getDeviceType();
 

@@ -25,6 +25,8 @@ import commonActionCreators from '../state/common/commonActionCreators';
 import SIContentClient from 'sicontent-client';
 import SIStorageClient from 'sistorage-client';
 import ClientController from './ClientController';
+import uiActionCreators from '../state/ui/uiActionCreators';
+import Path from '../model/enums/Path';
 
 const onAvatarSelectedLocal: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 	(avatar: File) => async (dispatch: Dispatch<Action>) => {
@@ -218,6 +220,7 @@ const login: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 
 					dispatch(userActionCreators.onLoginChanged(state.user.login.trim())); // Normalize login
 					dispatch(loginActionCreators.loginEnd());
+					dispatch(uiActionCreators.navigate(state.ui.navigation.callbackState ?? { path: Path.Menu }) as unknown as Action);
 				} catch (error) {
 					dispatch(loginActionCreators.loginEnd(`${localization.cannotConnectToServer}: ${getErrorMessage(error)}`));
 				}
@@ -241,8 +244,6 @@ const onExit: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 		try {
 			await dataContext.gameClient.logOutAsync();
 
-			dispatch(loginActionCreators.logOut());
-
 			if (server.connectionId) {
 				activeConnections.splice(activeConnections.indexOf(server.connectionId), 1);
 			}
@@ -250,6 +251,8 @@ const onExit: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 			detachListeners(server);
 			await server.stop();
 			removeConnection(server);
+
+			dispatch(uiActionCreators.navigate({ path: Path.Login }) as unknown as Action);
 		} catch (error) {
 			alert(getErrorMessage(error)); // TODO: normal error message
 		}

@@ -48,6 +48,13 @@ const uiReducer: Reducer<UIState> = (state: UIState = initialState, anyAction: A
 			};
 		}
 
+		case UIActionTypes.Navigate: {
+			return {
+				...state,
+				navigation: action.navigation,
+			};
+		}
+
 		default:
 			return state;
 	}
