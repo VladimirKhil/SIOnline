@@ -21,7 +21,7 @@
     border-left-width: 0.5px;
 }
 
-.logo {
+#logon .logo {
     width: 100px;
     height: 100px;
     background-image: url('../../assets/images/sigame.png');

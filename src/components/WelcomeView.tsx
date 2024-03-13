@@ -25,6 +25,8 @@ interface WelcomeViewProps {
 	serverLicense: string | null;
 	windowWidth: number;
 	mainMenuSound: boolean;
+	userName: string;
+	avatar: string | null;
 
 	anyonePlay: () => void;
 	onSoundPlay: (sound: GameSound) => void;
@@ -39,6 +41,8 @@ const mapStateToProps = (state: State) => ({
 	serverLicense: state.common.serverLicense,
 	windowWidth: state.ui.windowWidth,
 	mainMenuSound: state.settings.mainMenuSound,
+	userName: state.user.login,
+	avatar: state.user.avatar,
 });
 
 const mapDispatchToProps = (dispatch: any) => ({
@@ -80,6 +84,8 @@ export function WelcomeView(props: WelcomeViewProps): JSX.Element {
 	return !accepted ? <ServerLicense accept={accept} /> : (
 		<section className="welcomeView">
 			<header>
+				<div className='logo' />
+
 				<h1>
 					<span>{localization.server}</span>
 					<span>: </span>
@@ -104,7 +110,10 @@ export function WelcomeView(props: WelcomeViewProps): JSX.Element {
 					</button>
 				</h1>
 
-				<h1>{localization.welcomeTitle}</h1>
+				<h1>
+					{props.avatar ? <img className='userAvatar' src={props.avatar} alt='Avatar' /> : null}
+					<span className='user'>{props.userName}</span>
+				</h1>
 			</header>
 
 			<div className={`welcomeViewActions ${props.isConnected ? '' : 'disconnected'}`}>

@@ -1,5 +1,7 @@
+import Role from '../../model/Role';
 import OnlineMode from '../../model/enums/OnlineMode';
 import Path from '../../model/enums/Path';
+import Sex from '../../model/enums/Sex';
 
 export interface INavigationState {
 	path: Path;
@@ -9,6 +11,10 @@ export interface INavigationState {
 	gameId?: number;
 	newGameMode?: 'single' | 'multi';
 	callbackState?: INavigationState;
+	role?: Role;
+	sex?: Sex;
+	password?: string;
+	isAutomatic?: boolean;
 }
 
 export default interface UIState {
@@ -29,6 +35,6 @@ export const initialState: UIState = {
 	isSettingGameButtonKey: false,
 	isVisible: true,
 	navigation: {
-		path: Path.Login,
+		path: Path.Root,
 	}
 };

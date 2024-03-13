@@ -37,6 +37,7 @@ import SIStatisticsClient from 'sistatistics-client';
 import GamePlatforms from 'sistatistics-client/dist/models/GamePlatforms';
 import StatisticFilter from 'sistatistics-client/dist/models/StatisticFilter';
 import Path from '../../model/enums/Path';
+import { INavigationState } from '../ui/UIState';
 
 const selectGame: ActionCreator<OnlineActions.SelectGameAction> = (gameId: number) => ({
 	type: OnlineActions.OnlineActionTypes.SelectGame,
@@ -321,7 +322,11 @@ const initGameAsync = async (
 	dataContext: DataContext,
 	gameId: number,
 	role: Role,
-	isAutomatic: boolean) => {
+	sex: Sex,
+	password: string,
+	isAutomatic: boolean,
+	navigate: boolean,
+) => {
 	dispatch(gameActionCreators.gameSet(gameId, isAutomatic));
 	dispatch(tableActionCreators.tableReset());
 	dispatch(tableActionCreators.showText(localization.tableHint, false));
@@ -331,8 +336,15 @@ const initGameAsync = async (
 	dispatch(roomActionCreators.stopTimer(2));
 	dispatch(roomActionCreators.gameStarted(false));
 
-	await gameInit(gameId, dataContext, role);
-	dispatch(uiActionCreators.navigate({ path: Path.Room }));
+	await gameInit(dataContext, role);
+
+	const navigaionState: INavigationState = { path: Path.Room, gameId: gameId, role: role, sex: sex, password: password, isAutomatic: isAutomatic };
+
+	if (navigate) {
+		dispatch(uiActionCreators.navigate(navigaionState));
+	} else {
+		dispatch(uiActionCreators.onNavigated(navigaionState));
+	}
 };
 
 const joinGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
@@ -358,7 +370,7 @@ const joinGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 			return;
 		}
 
-		await initGameAsync(dispatch, dataContext, gameId, role, false);
+		await initGameAsync(dispatch, dataContext, gameId, role, state.settings.sex, state.online.password, false, true);
 
 		actionCreators.saveStateToStorage(state);
 		dispatch(joinGameFinished(null));
@@ -549,7 +561,7 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 			if (result.Code !== GameCreationResultCode.Ok) {
 				dispatch(gameCreationEnd(GameErrorsHelper.getMessage(result.Code) + (result.ErrorMessage || '')));
 			} else {
-				await initGameAsync(dispatch, dataContext, result.GameId, role, false);
+				await initGameAsync(dispatch, dataContext, result.GameId, role, state.settings.sex, game.password, false, true);
 				dispatch(newGameCancel());
 			}
 		} catch (error) {
@@ -576,19 +588,14 @@ const createNewAutoGame: ActionCreator<ThunkAction<void, State, DataContext, Act
 			if (result.Code !== GameCreationResultCode.Ok) {
 				alert(GameErrorsHelper.getMessage(result.Code) + (result.ErrorMessage || ''));
 			} else {
-				await initGameAsync(dispatch, dataContext, result.GameId, Role.Player, true);
+				await initGameAsync(dispatch, dataContext, result.GameId, Role.Player, state.settings.sex, '', true, true);
 			}
 		} catch (message) {
 			dispatch(gameCreationEnd(message));
 		}
 	};
 
-async function gameInit(gameId: number, dataContext: DataContext, role: Role) {
-	if (dataContext.config.rewriteUrl) {
-		const host = '';
-		window.history.pushState({}, `${localization.game} ${gameId}`, `${dataContext.config.rootUri}?gameId=${gameId}&host=${host}`);
-	}
-
+async function gameInit(dataContext: DataContext, role: Role) {
 	await dataContext.gameClient.sendMessageToServerAsync('INFO');
 
 	if (role === Role.Player || role === Role.Showman) {
@@ -628,6 +635,7 @@ const onlineActionCreators = {
 	receiveMessage,
 	createNewGame,
 	createNewAutoGame,
+	initGameAsync,
 };
 
 export default onlineActionCreators;

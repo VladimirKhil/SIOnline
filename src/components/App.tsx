@@ -62,7 +62,7 @@ export class App extends React.Component<AppProps, AppState> {
 	getContent(): JSX.Element | null {
 		switch (this.props.path) {
 			case Path.Root:
-				return <Login ads={this.props.ads} />;
+				return <WelcomeView />;
 
 			case Path.Login:
 				return <Login ads={this.props.ads} />;

@@ -41,7 +41,7 @@ declare const firebaseConfig: FirebaseOptions | undefined;
 export let app: FirebaseApp | null = null;
 export let analytics: Analytics | null = null;
 
-function setState(state: State, savedState: SavedState | null, gameId: string | null): State {
+function setState(state: State, savedState: SavedState | null, initialView: INavigationState): State {
 	if (!savedState) {
 		return state;
 	}
@@ -87,9 +87,9 @@ function setState(state: State, savedState: SavedState | null, gameId: string | 
 			},
 			gameButtonKey: savedState.settings.gameButtonKey || Constants.KEY_CTRL
 		} : state.settings,
-		online: {
-			...state.online,
-			selectedGameId: gameId ? parseInt(gameId, 10) : -1
+		ui: {
+			...state.ui,
+			navigation: initialView,
 		}
 	};
 }
@@ -209,16 +209,20 @@ async function run() {
 
 	let initialView: INavigationState;
 
-	if (gameId && invite) {
+	const historyState = window.history.state as INavigationState;
+
+	if (historyState && historyState.path) {
+		initialView = historyState;
+	} else if (gameId && invite) {
 		initialView = { path: Path.RoomJoin, gameId: parseInt(gameId, 10) };
 	} else if (packageUri) {
 		initialView = { path: Path.NewRoom, newGameMode: 'multi', packageUri: packageUri, packageName: packageName ?? undefined };
 	} else {
-		initialView = { path: Path.Menu };
+		initialView = { path: Path.Root };
 	}
 
 	const savedState = loadState();
-	const state = setState(initialState, savedState, gameId);
+	const state = setState(initialState, savedState, initialView);
 
 	state.common.askForConsent = !!config.askForConsent;
 	state.common.emojiCultures = config.emojiCultures;
@@ -279,7 +283,7 @@ async function run() {
 		document.getElementById('reactHost')
 	);
 
-	store.dispatch(uiActionCreators.navigate({ path: Path.Login, callbackState: initialView }) as unknown as Action);
+	store.dispatch(actionCreators.init(initialView) as unknown as Action);
 
 	const deviceType = getDeviceType();
 

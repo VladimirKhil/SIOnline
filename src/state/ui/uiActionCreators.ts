@@ -7,6 +7,7 @@ import State from '../State';
 import DataContext from '../../model/DataContext';
 import Path from '../../model/enums/Path';
 import onlineActionCreators from '../online/onlineActionCreators';
+import localization from '../../model/resources/localization';
 
 const showSettings: ActionCreator<UIActions.ShowSettingsAction> = (show: boolean) => ({
 	type: UIActions.UIActionTypes.ShowSettings,
@@ -73,8 +74,19 @@ const handleNavigation = (navigation: INavigationState, dispatch: Dispatch<Actio
 };
 
 const navigate: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
-	(navigation: INavigationState) => async (dispatch: Dispatch<Action>, getState: () => State) => {
-	window.history.pushState(navigation, '');
+	(navigation: INavigationState) => async (dispatch: Dispatch<Action>, getState: () => State, dataContext: DataContext) => {
+	if (navigation.path === Path.Room && navigation.gameId) {
+		const host = '';
+
+		window.history.pushState(
+			navigation,
+			'',
+			dataContext.config.rewriteUrl ? `${dataContext.config.rootUri}?gameId=${navigation.gameId}&host=${host}` : null
+		);
+	} else {
+		window.history.pushState(navigation, '', dataContext.config.rewriteUrl ? dataContext.config.rootUri : null);
+	}
+
 	handleNavigation(navigation, dispatch, getState);
 };
 
