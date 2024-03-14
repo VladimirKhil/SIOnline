@@ -6,8 +6,10 @@ import './Loading.css';
 export default function Loading(): JSX.Element {
 	return (
 		<div className="loadingGame">
-			<div className="roundProgress" />
-			<span>{localization.gameLoading}</span>
+			<div className="loadingHost">
+				<div className="roundProgress" />
+				<span>{localization.gameLoading}</span>
+			</div>
 		</div>
 	);
 }

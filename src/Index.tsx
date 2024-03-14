@@ -41,7 +41,7 @@ declare const firebaseConfig: FirebaseOptions | undefined;
 export let app: FirebaseApp | null = null;
 export let analytics: Analytics | null = null;
 
-function setState(state: State, savedState: SavedState | null, initialView: INavigationState): State {
+function setState(state: State, savedState: SavedState | null): State {
 	if (!savedState) {
 		return state;
 	}
@@ -87,10 +87,6 @@ function setState(state: State, savedState: SavedState | null, initialView: INav
 			},
 			gameButtonKey: savedState.settings.gameButtonKey || Constants.KEY_CTRL
 		} : state.settings,
-		ui: {
-			...state.ui,
-			navigation: initialView,
-		}
 	};
 }
 
@@ -222,7 +218,7 @@ async function run() {
 	}
 
 	const savedState = loadState();
-	const state = setState(initialState, savedState, initialView);
+	const state = setState(initialState, savedState);
 
 	state.common.askForConsent = !!config.askForConsent;
 	state.common.emojiCultures = config.emojiCultures;

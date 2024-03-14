@@ -14,6 +14,7 @@ import AudioController from './common/AudioController';
 import NewGame from './NewGame';
 import Path from '../model/enums/Path';
 import JoinRoom from './JoinRoom';
+import Loading from './Loading';
 
 import './App.css';
 
@@ -61,6 +62,9 @@ export class App extends React.Component<AppProps, AppState> {
 
 	getContent(): JSX.Element | null {
 		switch (this.props.path) {
+			case Path.Loading:
+				return <Loading />;
+
 			case Path.Root:
 				return <WelcomeView />;
 

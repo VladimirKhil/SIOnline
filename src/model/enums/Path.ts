@@ -1,4 +1,5 @@
 const enum Path {
+	Loading = '/loading',
 	Root = '/',
 	Login = '/login',
 	About = '/about',

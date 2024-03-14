@@ -35,6 +35,6 @@ export const initialState: UIState = {
 	isSettingGameButtonKey: false,
 	isVisible: true,
 	navigation: {
-		path: Path.Root,
+		path: Path.Loading,
 	}
 };
