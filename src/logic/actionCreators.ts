@@ -234,7 +234,7 @@ const navigate = async (view: INavigationState, dispatch: Dispatch<Action>, data
 
 			if (result.ErrorMessage) {
 				alert(`${localization.joinError}: ${result.ErrorMessage}`);
-				dispatch(uiActionCreators.onNavigated({ path: Path.Root }) as unknown as Action);
+				dispatch(uiActionCreators.navigate({ path: Path.Root }) as unknown as Action);
 				return;
 			}
 
@@ -251,7 +251,7 @@ const navigate = async (view: INavigationState, dispatch: Dispatch<Action>, data
 		}
 	}
 
-	dispatch(uiActionCreators.onNavigated(view) as unknown as Action);
+	dispatch(uiActionCreators.navigate(view) as unknown as Action);
 };
 
 const init: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
@@ -259,7 +259,7 @@ const init: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 		if (await connectAsync(dispatch, getState, dataContext)) {
 			await navigate(initialView, dispatch, dataContext);
 		} else {
-			dispatch(uiActionCreators.onNavigated({ path: Path.Login, callbackState: initialView }) as unknown as Action);
+			dispatch(uiActionCreators.navigate({ path: Path.Login, callbackState: initialView }) as unknown as Action);
 		}
 	};
 

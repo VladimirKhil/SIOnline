@@ -96,7 +96,7 @@ function setState(state: State, savedState: SavedState | null, initialView: INav
 
 function subscribeToExternalEvents(store: Store<State, any>) {
 	window.onresize = () => store.dispatch(uiActionCreators.windowSizeChanged(window.innerWidth, window.innerHeight));
-	window.onpopstate = (e) => { store.dispatch(uiActionCreators.onNavigated(e.state)); };
+	window.onpopstate = (e) => { if (e.state) { store.dispatch(uiActionCreators.onNavigated(e.state)); } };
 
 	window.onkeydown = (e: KeyboardEvent) => {
 		const state = store.getState();
