@@ -29,9 +29,9 @@
     height: 0;
 }
 
-@media screen and (min-width: 800px) {
+@media screen and (min-width: 1100px) {
     .newGameArea {
-        right: 300px;
+        right: 400px;
     }
 
     .newGameArea.newWide {
@@ -47,12 +47,6 @@
     .gameInfoAreaContent {
         height: 100%;
         display: flex;
-    }
-}
-
-@media screen and (min-width: 1100px) {
-    .newGameArea {
-        right: 400px;
     }
 }
 

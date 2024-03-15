@@ -57,16 +57,16 @@ const onAvatarDeleted: ActionCreator<ThunkAction<void, State, DataContext, Actio
 	};
 
 async function uploadAvatarAsync(dispatch: Dispatch<Action>, dataContext: DataContext) {
+	const base64 = localStorage.getItem(Constants.AVATAR_KEY);
+	const fileName = localStorage.getItem(Constants.AVATAR_NAME_KEY);
+
+	if (!base64 || !fileName) {
+		return;
+	}
+
 	dispatch(commonActionCreators.avatarLoadStart(null));
 
 	try {
-		const base64 = localStorage.getItem(Constants.AVATAR_KEY);
-		const fileName = localStorage.getItem(Constants.AVATAR_NAME_KEY);
-
-		if (!base64 || !fileName) {
-			return;
-		}
-
 		const data = Uint8Array.from(window.atob(base64), c => c.charCodeAt(0));
 
 		const { buffer } = data;

@@ -67,7 +67,7 @@ export class OnlineView extends React.Component<OnlineViewProps> {
 			</div>
 		);
 
-		if (this.props.windowWidth < 800) {
+		if (this.props.windowWidth < 1100) { // TODO: this should be solved purely in CSS
 			if (this.props.mode === OnlineMode.GameInfo && this.props.selectedGame) {
 				return (
 					<Dialog id="gameInfoDialog" title={this.props.selectedGame.GameName} onClose={() => this.props.closeGameInfo()}>

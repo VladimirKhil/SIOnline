@@ -6,7 +6,8 @@
 
 .playersTitle {
     margin-left: 8px;
-    width: 175px;
+    width: 160px;
+    overflow: hidden;
 }
 
     .playersTitle:hover {

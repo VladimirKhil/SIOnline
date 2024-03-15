@@ -91,6 +91,8 @@ function setState(state: State, savedState: SavedState | null): State {
 }
 
 function subscribeToExternalEvents(store: Store<State, any>) {
+	// TODO use ResizeObserver for body element instead of this as app could be hosted inside iframe
+	// and window dimensions will be irrelevant
 	window.onresize = () => store.dispatch(uiActionCreators.windowSizeChanged(window.innerWidth, window.innerHeight));
 	window.onpopstate = (e) => { if (e.state) { store.dispatch(uiActionCreators.onNavigated(e.state)); } };
 

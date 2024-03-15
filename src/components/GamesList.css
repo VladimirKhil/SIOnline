@@ -138,16 +138,10 @@ ul.gamesFilter > li.disabled {
     text-align: center;
 }
 
-@media screen and (min-width: 800px) {
-    .gameslistHost {
-        flex: 0 0 300px;
-        width: 300px;
-    }
-}
-
 @media screen and (min-width: 1100px) {
     .gameslistHost {
         flex: 0 0 400px;
+        width: 300px;
     }
 
     #newGame, #newAutoGame {
