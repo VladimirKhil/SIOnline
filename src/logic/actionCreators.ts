@@ -19,7 +19,6 @@ import { getFullCulture } from '../utils/StateHelpers';
 import settingsActionCreators from '../state/settings/settingsActionCreators';
 import GameClient from '../client/game/GameClient';
 import userActionCreators from '../state/user/userActionCreators';
-import loginActionCreators from '../state/login/loginActionCreators';
 import commonActionCreators from '../state/common/commonActionCreators';
 
 import SIContentClient from 'sicontent-client';
@@ -30,6 +29,8 @@ import Path from '../model/enums/Path';
 import { INavigationState } from '../state/ui/UIState';
 import Sex from '../model/enums/Sex';
 import onlineActionCreators from '../state/online/onlineActionCreators';
+import { endLogin, startLogin } from '../state/new/loginSlice';
+import { AppDispatch } from '../state/new/store';
 
 const onAvatarSelectedLocal: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 	(avatar: File) => async (dispatch: Dispatch<Action>) => {
@@ -44,7 +45,7 @@ const onAvatarSelectedLocal: ActionCreator<ThunkAction<void, State, DataContext,
 
 			dispatch(settingsActionCreators.onAvatarKeyChanged(key) as any);
 		} catch (error) {
-			dispatch(loginActionCreators.loginEnd(error));
+			alert(getErrorMessage(error));
 		}
 	};
 
@@ -264,8 +265,8 @@ const init: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 	};
 
 const login: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
-	() => async (dispatch: Dispatch<Action>, getState: () => State, dataContext: DataContext) => {
-		dispatch(loginActionCreators.loginStart());
+	(appDispatch: AppDispatch) => async (dispatch: Dispatch<Action>, getState: () => State, dataContext: DataContext) => {
+		appDispatch(startLogin());
 		const state = getState();
 
 		try {
@@ -280,7 +281,7 @@ const login: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 
 			if (!response.ok){
 				const errorText = getLoginErrorByCode(response);
-				dispatch(loginActionCreators.loginEnd(errorText));
+				appDispatch(endLogin(errorText));
 				return;
 			}
 
@@ -288,13 +289,13 @@ const login: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 
 			if (await connectAsync(dispatch, getState, dataContext)) {
 				dispatch(userActionCreators.onLoginChanged(state.user.login.trim())); // Normalize login
-				dispatch(loginActionCreators.loginEnd());
+				appDispatch(endLogin(null));
 				await navigate(state.ui.navigation.callbackState ?? { path: Path.Root }, dispatch, dataContext);
 			} else {
-				dispatch(loginActionCreators.loginEnd(localization.errorHappened));
+				appDispatch(endLogin(localization.errorHappened));
 			}
 		} catch (err) {
-			dispatch(loginActionCreators.loginEnd(`${localization.cannotConnectToServer}: ${getErrorMessage(err)}`));
+			appDispatch(endLogin(`${localization.cannotConnectToServer}: ${getErrorMessage(err)}`));
 		}
 	};
 

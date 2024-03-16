@@ -8,7 +8,7 @@ import tableReducer from './table/tableReducer';
 import { KnownTableAction } from './table/TableActions';
 import userReducer from './user/userReducer';
 import { KnownUserAction } from './user/UserActions';
-import loginReducer from './login/loginReducer';
+import loginReducer from './new/loginSlice';
 import { KnownLoginAction } from './login/LoginActions';
 import commonReducer from './common/commonReducer';
 import { KnownCommonAction } from './common/CommonActions';

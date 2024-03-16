@@ -20,7 +20,7 @@
   "dependencies": {
     "@microsoft/signalr": "^6.0.5",
     "@microsoft/signalr-protocol-msgpack": "^6.0.5",
-    "@reduxjs/toolkit": "^1.8.2",
+    "@reduxjs/toolkit": "^2.2.1",
     "emoji-picker-react": "^4.7.12",
     "es6-promise": "^4.2.8",
     "firebase": "^9.8.2",

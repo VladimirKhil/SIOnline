@@ -12,26 +12,24 @@ import LanguageView from './LanguageView';
 import userActionCreators from '../state/user/userActionCreators';
 import Path from '../model/enums/Path';
 import uiActionCreators from '../state/ui/uiActionCreators';
+import { useAppDispatch, useAppSelector } from '../state/new/hooks';
+import { AppDispatch, RootState } from '../state/new/store';
 
 import './Login.css';
 
 interface LoginProps {
 	login: string;
-	inProgress: boolean;
-	error: string | null;
 	ads?: string;
 	culture: string;
 
 	selectedGameId: number;
 	onLoginChanged: (newLogin: string) => void;
-	onLogin: () => void;
+	onLogin: (appDispatch: AppDispatch) => void;
 	navigate: (path: Path) => void;
 }
 
 const mapStateToProps = (state: State) => ({
 	login: state.user.login,
-	inProgress: state.login.inProgress,
-	error: state.login.errorMessage,
 	culture: state.settings.appSettings.culture || localization.getLanguage(),
 	navigation: state.ui.navigation,
 
@@ -42,8 +40,8 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	onLoginChanged: (newLogin: string) => {
 		dispatch(userActionCreators.onLoginChanged(newLogin));
 	},
-	onLogin: () => {
-		dispatch(actionCreators.login() as unknown as Action);
+	onLogin: (appDispatch: AppDispatch) => {
+		dispatch(actionCreators.login(appDispatch) as unknown as Action);
 	},
 	navigate: (path: Path) => {
 		dispatch(uiActionCreators.navigate({ path: path }) as unknown as Action);
@@ -51,13 +49,18 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 });
 
 export function Login(props: LoginProps) {
+	const state = useAppSelector((rootState: RootState) => rootState.login);
+	const appDispatch = useAppDispatch();
+
 	const onLoginChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
 		props.onLoginChanged(e.target.value);
 	};
 
+	const login = () => props.onLogin(appDispatch);
+
 	const onLoginKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
 		if (e.key === Constants.KEY_ENTER_NEW) {
-			props.onLogin();
+			login();
 		}
 	};
 
@@ -78,12 +81,12 @@ export function Login(props: LoginProps) {
 	return (
 		<div id="logon">
 			<div className="main">
-				{props.inProgress ? <ProgressBar isIndeterminate /> : null}
+				{state.inProgress ? <ProgressBar isIndeterminate /> : null}
 				<div className='logo' />
 
 				<div className="logonHost">
 					<div className='loginUser'>
-						<AvatarView disabled={props.inProgress} />
+						<AvatarView disabled={state.inProgress} />
 
 						<div className='userArea'>
 							<input
@@ -96,28 +99,28 @@ export function Login(props: LoginProps) {
 								value={props.login}
 								autoComplete='on'
 								maxLength={30}
-								disabled={props.inProgress}
+								disabled={state.inProgress}
 								onChange={onLoginChanged}
 								onKeyPress={onLoginKeyPress}
 							/>
 
 							<div className='loginOptions'>
-								<LanguageView disabled={props.inProgress} />
-								<SexView disabled={props.inProgress} />
+								<LanguageView disabled={state.inProgress} />
+								<SexView disabled={state.inProgress} />
 							</div>
 						</div>
 					</div>
 
 					<div className="siAdHost" dangerouslySetInnerHTML={{ __html: props.ads ? props.ads : '' }} />
 
-					{props.error ? <p id="logonerror">{props.error}</p> : null}
+					{state.errorMessage ? <p id="logonerror">{state.errorMessage}</p> : null}
 
 					<div id="logonButtons">
 						<button
 							id="howToPlay"
 							className='standard'
 							type="button"
-							disabled={props.inProgress}
+							disabled={state.inProgress}
 							onClick={navigateToAbout}
 						>
 							{localization.aboutTitle}
@@ -127,8 +130,8 @@ export function Login(props: LoginProps) {
 							id="enter"
 							className='standard'
 							type="button"
-							disabled={props.inProgress || props.login.length === 0}
-							onClick={props.onLogin}
+							disabled={state.inProgress || props.login.length === 0}
+							onClick={login}
 						>
 							{localization.enter}
 						</button>

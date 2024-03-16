@@ -2,7 +2,7 @@
 import SettingsState, { initialState as settingsInitialState } from './settings/SettingsState';
 import TableState, { initialState as tableInitialState } from './table/TableState';
 import UserState, { initialState as userInitialState } from './user/UserState';
-import LoginState, { initialState as loginInitialState } from './login/LoginState';
+import * as login from './new/loginSlice';
 import CommonState, { initialState as commonInitialState } from './common/CommonState';
 import SIPackagesState, { initialState as siPackagesInitialState } from './siPackages/SIPackagesState';
 import UIState, { initialState as uiInitialState } from './ui/UIState';
@@ -11,7 +11,7 @@ import GameState, { initialState as gameInitialState } from './game/GameState';
 
 export default interface State {
 	user: UserState;
-	login: LoginState;
+	login: login.LoginState;
 	ui: UIState;
 	online: OnlineState;
 	game: GameState;
@@ -24,7 +24,7 @@ export default interface State {
 
 export const initialState: State = {
 	user: userInitialState,
-	login: loginInitialState,
+	login: login.loginSlice.getInitialState(),
 	ui: uiInitialState,
 	online: onlineInitialState,
 	game: gameInitialState,
