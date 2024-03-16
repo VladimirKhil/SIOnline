@@ -187,6 +187,7 @@ export default class ClientController {
 	onStage(stage: string, stageName: string, stageIndex: number) {
 		const state = this.getState();
 
+		this.dispatch(commonActionCreators.stopAudio());
 		this.dispatch(roomActionCreators.stageChanged(stage, stageIndex));
 
 		if (stage !== GameStage.Before) {

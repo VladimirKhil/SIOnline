@@ -59,6 +59,8 @@ export class AudioController extends React.Component<AudioControllerProps> {
 			return;
 		}
 
+		this.stop();
+
 		this.audioSource = this.audioContext.createBufferSource();
 		this.audioSource.buffer = this.audioBuffer;
 		this.audioSource.loop = this.props.loop;
@@ -72,16 +74,17 @@ export class AudioController extends React.Component<AudioControllerProps> {
 		this.audioSource.connect(this.gainNode);
 		this.startTime = this.audioContext.currentTime;
 		this.audioSource.start(0, this.pauseTime);
-		console.log('start');
 	}
 
 	stop() {
-		if (this.audioSource && this.audioSource.context.state === 'running') {
-			this.pauseTime += this.audioContext.currentTime - this.startTime;
+		if (this.audioSource) {
+			if (this.audioSource.context.state === 'running') {
+				this.pauseTime += this.audioContext.currentTime - this.startTime;
+			}
+
 			this.audioSource.onended = null;
 			this.audioSource.stop();
 			this.audioSource = null;
-			console.log('stop');
 		}
 	}
 
