@@ -257,7 +257,9 @@ const navigate = async (view: INavigationState, dispatch: Dispatch<Action>, data
 
 const init: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 	(initialView: INavigationState) => async (dispatch: Dispatch<Action>, getState: () => State, dataContext: DataContext) => {
-		if (await connectAsync(dispatch, getState, dataContext)) {
+		if (initialView.path === Path.Login) {
+			dispatch(uiActionCreators.navigate({ path: Path.Login, callbackState: { path: Path.Root } }) as unknown as Action);
+		} else if (await connectAsync(dispatch, getState, dataContext)) {
 			await navigate(initialView, dispatch, dataContext);
 		} else {
 			dispatch(uiActionCreators.navigate({ path: Path.Login, callbackState: initialView }) as unknown as Action);
