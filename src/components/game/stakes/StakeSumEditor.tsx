@@ -33,8 +33,17 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 export function StakeSumEditor(props: StakeSumEditorProps) {
 	const canSendStake = props.allowedStakeTypes[StakeTypes.Sum];
 
+	const onStakeChanged = (stake: number) => {
+		if (stake <= 0 || stake > props.maximum) { // Can be < minimum as user could be printing a larger value
+			return;
+		}
+
+		props.onStakeChanged(stake);
+	};
+
 	return (
 		<input
+			aria-label='Stake'
 			type={props.type}
 			className={props.className}
 			disabled={!canSendStake}
@@ -42,7 +51,7 @@ export function StakeSumEditor(props: StakeSumEditorProps) {
 			max={props.maximum}
 			step={props.step}
 			value={props.stake}
-			onChange={e => props.onStakeChanged(parseInt(e.target.value, 10))}
+			onChange={e => onStakeChanged(parseInt(e.target.value, 10))}
 		/>
 	);
 }

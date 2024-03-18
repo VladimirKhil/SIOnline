@@ -27,17 +27,16 @@
 
 .answerValidationDialog #answersPanel {
     margin: 13px;
-    max-height: calc(100% - 183px);
+    height: calc(100% - 183px);
+    display: flex;
 }
 
 .answerValidationDialog .answers {
-    display: inline-flex;
+    display: flex;
     flex-direction: column;
     align-items: center;
-    width: calc(50% - 6px);
     margin: 0 2px;
-    vertical-align: top;
-    height: 100%;
+    flex: 1;
 }
 
 .answerValidationDialog .answers p {
@@ -48,11 +47,11 @@
 }
 
 .answerValidationDialog .answers ul {
-    max-height: calc(100% - 70px);
     overflow-y: auto;
     overflow-x: hidden;
     scrollbar-width: thin;
     width: 100%;
+    flex: 1;
 }
 
 .answerValidationDialog .answers li {
@@ -121,6 +120,14 @@
 }
 
 @media screen and (min-width: 800px) {
+    .answerValidationDialog {
+        height: 50%;
+        top: 200px;
+        bottom: 200px;
+    }
+}
+
+@media screen and (min-width: 1600px) {
     .answerValidationDialog {
         height: 40%;
         top: 250px;

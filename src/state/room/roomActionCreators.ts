@@ -475,6 +475,7 @@ const selectTheme: ActionCreator<ThunkAction<void, State, DataContext, Action>> 
 	}
 
 	const theme = getState().table.roundInfo[themeIndex];
+
 	if (theme) {
 		if (await dataContext.gameClient.msgAsync('DELETE', themeIndex)) {
 			dispatch(tableActionCreators.isSelectableChanged(false));

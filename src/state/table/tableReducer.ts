@@ -185,6 +185,7 @@ const tableReducer: Reducer<TableState> = (state: TableState = initialState, any
 				appendText: '',
 				audio: '',
 				layoutMode: LayoutMode.Simple,
+				isSelectable: false,
 			};
 
 		case TableActionTypes.AnswerOptions:
