@@ -84,7 +84,7 @@ async function uploadAvatarAsync(dispatch: Dispatch<Action>, dataContext: DataCo
 		dispatch(userActionCreators.avatarChanged(fullAvatarUri2));
 	} catch (err) {
 		const errorMessage = getErrorMessage(err);
-		console.log(errorMessage);
+		alert(localization.avatarLoadError + ': ' + (errorMessage === '413 {"errorCode":3}' ? localization.avatarIsTooBig : errorMessage));
 		dispatch(commonActionCreators.avatarLoadError(errorMessage));
 	}
 }

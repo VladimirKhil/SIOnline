@@ -23,7 +23,7 @@ const mapStateToProps = (state: State) => ({
 	avatarLoadProgress: state.common.avatarLoadProgress,
 });
 
-const MaxAvatarSizeMb = 2;
+const MaxAvatarSizeMb = 1;
 
 function onAvatarChanged(e: React.ChangeEvent<HTMLInputElement>, props: AvatarViewProps) {
 	if (e.target.files && e.target.files.length > 0) {
