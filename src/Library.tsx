@@ -17,6 +17,7 @@ import GameTable from './components/gameTable/GameTable';
 import ClientController from './logic/ClientController';
 import TableMode from './model/enums/TableMode';
 import PlayersView from './components/game/PlayersView';
+import StateManager from './utils/StateManager';
 
 declare global {
     interface Window {
@@ -117,6 +118,7 @@ export function runTable(elementId: string, renderMode: TableRenderMode): void {
 		contentUris: null,
 		contentClient: new SIContentClient({ serviceUri: 'http://fake' }),
 		storageClient: null,
+		state: new StateManager(),
 	};
 
 	const store = createStore<State, AnyAction, {}, {}>(

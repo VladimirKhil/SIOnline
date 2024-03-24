@@ -14,8 +14,6 @@
     padding-right: 13px;
     overflow-y: auto;
     scrollbar-width: thin;
-    -webkit-user-select: text;
-	user-select: text;
 }
 
 .dialog section header {

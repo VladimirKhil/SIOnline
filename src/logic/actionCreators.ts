@@ -255,12 +255,17 @@ const navigate = async (view: INavigationState, dispatch: Dispatch<Action>, data
 	dispatch(uiActionCreators.navigate(view) as unknown as Action);
 };
 
+const checkLicense = async (view: INavigationState, dispatch: Dispatch<Action>, dataContext: DataContext) => {
+	const licenseAccepted = dataContext.state.isLicenseAccepted();
+	navigate(licenseAccepted ? view : { path: Path.AcceptLicense, callbackState: view }, dispatch, dataContext);
+};
+
 const init: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 	(initialView: INavigationState) => async (dispatch: Dispatch<Action>, getState: () => State, dataContext: DataContext) => {
 		if (initialView.path === Path.Login) {
 			dispatch(uiActionCreators.navigate({ path: Path.Login, callbackState: { path: Path.Root } }) as unknown as Action);
 		} else if (await connectAsync(dispatch, getState, dataContext)) {
-			await navigate(initialView, dispatch, dataContext);
+			await checkLicense(initialView, dispatch, dataContext);
 		} else {
 			dispatch(uiActionCreators.navigate({ path: Path.Login, callbackState: initialView }) as unknown as Action);
 		}
@@ -292,7 +297,7 @@ const login: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 			if (await connectAsync(dispatch, getState, dataContext)) {
 				dispatch(userActionCreators.onLoginChanged(state.user.login.trim())); // Normalize login
 				appDispatch(endLogin(null));
-				await navigate(state.ui.navigation.callbackState ?? { path: Path.Root }, dispatch, dataContext);
+				await checkLicense(state.ui.navigation.callbackState ?? { path: Path.Root }, dispatch, dataContext);
 			} else {
 				appDispatch(endLogin(localization.errorHappened));
 			}

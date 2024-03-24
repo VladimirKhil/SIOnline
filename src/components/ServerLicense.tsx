@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { useState } from 'react';
 import localization from '../model/resources/localization';
 import State from '../state/State';
+import userActionCreators from '../state/user/userActionCreators';
 
 import './ServerLicense.css';
 
@@ -13,6 +14,12 @@ interface ServerLicenseProps {
 
 const mapStateToProps = (state: State) => ({
 	serverLicense: state.common.serverLicense,
+});
+
+const mapDispatchToProps = (dispatch: any) => ({
+	accept: () => {
+		dispatch(userActionCreators.acceptLicense());
+	},
 });
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
@@ -41,4 +48,4 @@ export function ServerLicense(props: ServerLicenseProps): JSX.Element | null {
 	);
 }
 
-export default connect(mapStateToProps)(ServerLicense);
+export default connect(mapStateToProps, mapDispatchToProps)(ServerLicense);

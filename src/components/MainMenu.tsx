@@ -3,23 +3,19 @@ import { connect } from 'react-redux';
 import localization from '../model/resources/localization';
 import State from '../state/State';
 import Dialog from './common/Dialog';
-import ServerLicense from './ServerLicense';
-import { getCookie, setCookie } from '../utils/CookieHelpers';
 import GameSound from '../model/enums/GameSound';
 import commonActionCreators from '../state/common/commonActionCreators';
 import onlineActionCreators from '../state/online/onlineActionCreators';
 import Path from '../model/enums/Path';
 import { Action } from 'redux';
 import { INavigationState } from '../state/ui/UIState';
-
-import './WelcomeView.css';
-import exitImg from '../../assets/images/exit.png';
 import uiActionCreators from '../state/ui/uiActionCreators';
 import actionCreators from '../logic/actionCreators';
 
-const ACCEPT_LICENSE_KEY = 'ACCEPT_LICENSE';
+import './MainMenu.css';
+import exitImg from '../../assets/images/exit.png';
 
-interface WelcomeViewProps {
+interface MainMenuProps {
 	isConnected: boolean;
 	serverName: string | null;
 	serverLicense: string | null;
@@ -63,16 +59,8 @@ const mapDispatchToProps = (dispatch: any) => ({
 	},
 });
 
-export function WelcomeView(props: WelcomeViewProps): JSX.Element {
-	const acceptLicense = getCookie(ACCEPT_LICENSE_KEY);
-
-	const [accepted, setAccepted] = React.useState(acceptLicense !== '');
+export function MainMenu(props: MainMenuProps): JSX.Element {
 	const [showLicense, setShowLicense] = React.useState(false);
-
-	function accept() {
-		setCookie(ACCEPT_LICENSE_KEY, '1', 365);
-		setAccepted(true);
-	}
 
 	React.useEffect(() => {
 		if (props.mainMenuSound) {
@@ -81,7 +69,7 @@ export function WelcomeView(props: WelcomeViewProps): JSX.Element {
 		}
 	}, []);
 
-	return !accepted ? <ServerLicense accept={accept} /> : (
+	return (
 		<section className="welcomeView">
 			<header>
 				<div className='logo' />
@@ -161,4 +149,4 @@ export function WelcomeView(props: WelcomeViewProps): JSX.Element {
 	);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(WelcomeView);
+export default connect(mapStateToProps, mapDispatchToProps)(MainMenu);

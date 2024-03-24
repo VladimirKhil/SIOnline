@@ -31,6 +31,7 @@ import SIContentClient from 'sicontent-client';
 import ButtonPressMode from './model/ButtonPressMode';
 import Path from './model/enums/Path';
 import { INavigationState } from './state/ui/UIState';
+import StateManager from './utils/StateManager';
 
 import './utils/polyfills';
 import './style.css';
@@ -199,26 +200,6 @@ async function run() {
 		serverUri = serverUris[0].uri;
 	}
 
-	const urlParams = new URLSearchParams(window.location.search);
-	const gameId = urlParams.get('gameId');
-	const invite = urlParams.get('invite');
-	const packageUri = urlParams.get('packageUri');
-	const packageName = urlParams.get('packageName');
-
-	let initialView: INavigationState;
-
-	const historyState = window.history.state as INavigationState;
-
-	if (historyState && historyState.path) {
-		initialView = historyState;
-	} else if (gameId && invite) {
-		initialView = { path: Path.RoomJoin, gameId: parseInt(gameId, 10) };
-	} else if (packageUri) {
-		initialView = { path: Path.NewRoom, newGameMode: 'multi', packageUri: packageUri, packageName: packageName ?? undefined };
-	} else {
-		initialView = { path: Path.Root };
-	}
-
 	const savedState = loadState();
 	const state = setState(initialState, savedState);
 
@@ -238,6 +219,7 @@ async function run() {
 		contentUris: null,
 		contentClient: new SIContentClient({ serviceUri: 'http://fake' }),
 		storageClient: null,
+		state: new StateManager(),
 	};
 
 	const store = createStore<State, AnyAction, {}, {}>(
@@ -281,11 +263,10 @@ async function run() {
 		document.getElementById('reactHost')
 	);
 
+	const initialView = getInitialView(dataContext.state.loadNavigationState() as INavigationState);
 	store.dispatch(actionCreators.init(initialView) as unknown as Action);
 
 	const deviceType = getDeviceType();
-
-	console.log('Device type: ' + deviceType);
 
 	if (config.enableNoSleep && deviceType == 'mobile' && !isSafari()) {
 		enableNoSleep();
@@ -296,4 +277,26 @@ run();
 
 if ('serviceWorker' in navigator && config && config.registerServiceWorker) {
 	window.addEventListener('load', registerServiceWorker2);
+}
+
+function getInitialView(historyState: INavigationState): INavigationState {
+	const urlParams = new URLSearchParams(window.location.search);
+	const gameId = urlParams.get('gameId');
+	const invite = urlParams.get('invite');
+	const packageUri = urlParams.get('packageUri');
+	const packageName = urlParams.get('packageName');
+
+	if (historyState && historyState.path) {
+		return historyState;
+	}
+
+	if (gameId && invite) {
+		return { path: Path.RoomJoin, gameId: parseInt(gameId, 10) };
+	}
+
+	if (packageUri) {
+		return { path: Path.NewRoom, newGameMode: 'multi', packageUri: packageUri, packageName: packageName ?? undefined };
+	}
+
+	return { path: Path.Root };
 }

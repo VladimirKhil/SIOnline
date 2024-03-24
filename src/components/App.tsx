@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import State from '../state/State';
 import Login from './Login';
 import About from './About';
-import WelcomeView from './WelcomeView';
+import MainMenu from './MainMenu';
 import OnlineView from './OnlineView';
 import InGameView from './game/InGameView';
 import SettingsDialog from './settings/SettingsDialog';
@@ -15,6 +15,7 @@ import NewGame from './NewGame';
 import Path from '../model/enums/Path';
 import JoinRoom from './JoinRoom';
 import Loading from './Loading';
+import ServerLicense from './ServerLicense';
 
 import './App.css';
 
@@ -65,8 +66,11 @@ export class App extends React.Component<AppProps, AppState> {
 			case Path.Loading:
 				return <Loading />;
 
+			case Path.AcceptLicense:
+				return <ServerLicense />;
+
 			case Path.Root:
-				return <WelcomeView />;
+				return <MainMenu />;
 
 			case Path.Login:
 				return <Login ads={this.props.ads} />;
@@ -75,7 +79,7 @@ export class App extends React.Component<AppProps, AppState> {
 				return <About />;
 
 			case Path.Menu:
-				return <WelcomeView />;
+				return <MainMenu />;
 
 			case Path.NewRoom:
 				return <NewGame />;

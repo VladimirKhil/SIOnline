@@ -78,13 +78,12 @@ const navigate: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 		if (navigation.path === Path.Room && navigation.gameId) {
 			const host = '';
 
-			window.history.pushState(
+			dataContext.state.saveNavigationState(
 				navigation,
-				'',
 				dataContext.config.rewriteUrl ? `${dataContext.config.rootUri}?gameId=${navigation.gameId}&host=${host}` : null
 			);
 		} else {
-			window.history.pushState(navigation, '', dataContext.config.rewriteUrl ? dataContext.config.rootUri : null);
+			dataContext.state.saveNavigationState(navigation, dataContext.config.rewriteUrl ? dataContext.config.rootUri : null);
 		}
 	}
 
