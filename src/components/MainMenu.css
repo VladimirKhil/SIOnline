@@ -130,6 +130,20 @@
 	height: 30px;
 }
 
+@media screen and (max-height: 400px) {
+	.welcomeView .logo {
+		display: none;
+	}
+
+	.welcomeView header h1 {
+		font-size: 16px;
+	}
+
+	.welcomeViewActions {
+		font-size: 20px;
+	}
+}
+
 @media screen and (min-width: 800px) {
 	.welcomeViewActions {
 		width: initial;

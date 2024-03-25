@@ -34,8 +34,10 @@
 
 .logonHost {
     display: flex;
+    justify-content: space-between;
     flex-direction: column;
     flex: 1 0 0;
+    overflow: hidden;
 }
 
 .loginUser {
@@ -120,6 +122,16 @@
 #logonerror {
     width: 100%;
     color: darkred;
+}
+
+#logonButtons {
+    flex: 0 0 45px;
+}
+
+@media screen and (max-height: 400px) {
+    #logon .logo, .siAdHost {
+        display: none;
+    }
 }
 
 @media screen and (min-width: 470px) and (min-height: 600px) {
