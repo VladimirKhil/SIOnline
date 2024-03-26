@@ -8,6 +8,7 @@ export interface INavigationState {
 	returnToLobby?: boolean;
 	packageUri?: string;
 	packageName?: string;
+	hostUri?: string;
 	gameId?: number;
 	newGameMode?: 'single' | 'multi';
 	callbackState?: INavigationState;

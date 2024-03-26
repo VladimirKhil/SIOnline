@@ -3,6 +3,7 @@
 	KEY_ENTER_NEW: 'Enter',
 	KEY_CTRL: 'Control',
 	KEY_RIGHT: 'ArrowRight',
+	KEY_SPACE: ' ',
 	KEY_ESCAPE: 27,
 
 	ANY_NAME: ' ',

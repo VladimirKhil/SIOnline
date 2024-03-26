@@ -7,6 +7,7 @@ import SettingsState from '../../state/settings/SettingsState';
 import settingsActionCreators from '../../state/settings/settingsActionCreators';
 import LanguageView from '../LanguageView';
 import uiActionCreators from '../../state/ui/uiActionCreators';
+import Constants from '../../model/enums/Constants';
 
 interface CommonSettingsViewProps {
 	settings: SettingsState;
@@ -58,6 +59,21 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	},
 });
 
+function getKeyName(key: string) {
+	switch (key) {
+		case Constants.KEY_CTRL:
+			return 'Ctrl';
+
+		case Constants.KEY_SPACE:
+			return localization.keySpace;
+
+		case Constants.KEY_RIGHT:
+			return localization.keyRight;
+
+		default:
+			return key;
+	}
+}
 
 export function CommonSettingsView(props: CommonSettingsViewProps): JSX.Element {
 	return (
@@ -101,6 +117,7 @@ export function CommonSettingsView(props: CommonSettingsViewProps): JSX.Element 
 			<div className="settingItem">
 				<input
 					id="soundVolume"
+					aria-label={localization.soundVolume}
 					type="range"
 					min={0}
 					max={1}
@@ -135,12 +152,13 @@ export function CommonSettingsView(props: CommonSettingsViewProps): JSX.Element 
 			<p className="header">{localization.gameButtonKey}</p>
 
 			<button
+				type='button'
 				className={`gameButtonKey standard ${props.isSettingGameButtonKey ? 'active' : ''}`}
 				title={localization.set}
 				disabled={props.isSettingGameButtonKey}
 				onClick={() => props.isSettingGameButtonKeyChanged(true)}
 			>
-				{props.settings.gameButtonKey ?? localization.notSet}
+				{getKeyName(props.settings.gameButtonKey ?? localization.notSet)}
 			</button>
 
 			<div className="settingItem">

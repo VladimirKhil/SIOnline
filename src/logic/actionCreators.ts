@@ -191,12 +191,13 @@ const connectAsync = async (dispatch: Dispatch<Action>, getState: () => State, d
 	dataContext.connection = connection;
 
 	// eslint-disable-next-line no-param-reassign
-	dataContext.gameClient = new GameServerClient(
+	const gameServerClient = new GameServerClient(
 		connection,
 		e => dispatch(roomActionCreators.operationError(getErrorMessage(e)) as object as AnyAction)
 	);
 
-	dataContext.game = new GameClient(dataContext.gameClient);
+	dataContext.gameClient = gameServerClient;
+	dataContext.game = new GameClient(gameServerClient);
 
 	try {
 		await dataContext.connection.start();
@@ -284,6 +285,7 @@ const navigate = async (view: INavigationState, dispatch: Dispatch<Action>, data
 			await onlineActionCreators.initGameAsync(
 				dispatch,
 				dataContext.game,
+				view.hostUri ?? '',
 				result.GameId,
 				view.role,
 				view.sex ?? Sex.Female,

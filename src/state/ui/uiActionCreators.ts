@@ -76,11 +76,11 @@ const navigate: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 	(navigation: INavigationState) => async (dispatch: Dispatch<Action>, getState: () => State, dataContext: DataContext) => {
 	if (window.history.length === 0 || !window.history.state || (window.history.state as INavigationState).path !== navigation.path) {
 		if (navigation.path === Path.Room && navigation.gameId) {
-			const host = '';
-
 			dataContext.state.saveNavigationState(
 				navigation,
-				dataContext.config.rewriteUrl ? `${dataContext.config.rootUri}?gameId=${navigation.gameId}&host=${host}` : null
+				dataContext.config.rewriteUrl
+					? `${dataContext.config.rootUri}?gameId=${navigation.gameId}&host=${encodeURIComponent(navigation.hostUri ?? '')}`
+					: null
 			);
 		} else {
 			dataContext.state.saveNavigationState(navigation, dataContext.config.rewriteUrl ? dataContext.config.rootUri : null);

@@ -323,6 +323,7 @@ function getRandomValue(): number {
 const initGameAsync = async (
 	dispatch: Dispatch<any>,
 	gameClient: IGameClient,
+	hostUri: string,
 	gameId: number,
 	role: Role,
 	sex: Sex,
@@ -341,7 +342,15 @@ const initGameAsync = async (
 
 	await gameInit(gameClient, role);
 
-	const navigaionState: INavigationState = { path: Path.Room, gameId: gameId, role: role, sex: sex, password: password, isAutomatic: isAutomatic };
+	const navigaionState: INavigationState = {
+		path: Path.Room,
+		hostUri: hostUri,
+		gameId: gameId,
+		role: role,
+		sex: sex,
+		password: password,
+		isAutomatic: isAutomatic
+	};
 
 	if (navigate) {
 		dispatch(uiActionCreators.navigate(navigaionState));
@@ -388,7 +397,7 @@ const joinGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 			return;
 		}
 
-		await initGameAsync(dispatch, dataContext.game, gameId, role, state.settings.sex, state.online.password, false, true);
+		await initGameAsync(dispatch, dataContext.game, hostUri, gameId, role, state.settings.sex, state.online.password, false, true);
 
 		actionCreators.saveStateToStorage(state);
 		dispatch(joinGameFinished(null));
@@ -579,7 +588,7 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 			if (result.Code !== GameCreationResultCode.Ok) {
 				dispatch(gameCreationEnd(GameErrorsHelper.getMessage(result.Code) + (result.ErrorMessage || '')));
 			} else {
-				await initGameAsync(dispatch, dataContext.game, result.GameId, role, state.settings.sex, game.password, false, true);
+				await initGameAsync(dispatch, dataContext.game, '', result.GameId, role, state.settings.sex, game.password, false, true);
 				dispatch(newGameCancel());
 			}
 		} catch (error) {
@@ -606,7 +615,7 @@ const createNewAutoGame: ActionCreator<ThunkAction<void, State, DataContext, Act
 			if (result.Code !== GameCreationResultCode.Ok) {
 				alert(GameErrorsHelper.getMessage(result.Code) + (result.ErrorMessage || ''));
 			} else {
-				await initGameAsync(dispatch, dataContext.game, result.GameId, Role.Player, state.settings.sex, '', true, true);
+				await initGameAsync(dispatch, dataContext.game, '', result.GameId, Role.Player, state.settings.sex, '', true, true);
 			}
 		} catch (message) {
 			dispatch(gameCreationEnd(message));

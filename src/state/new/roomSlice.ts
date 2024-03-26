@@ -240,7 +240,7 @@ export const {
 } = roomSlice.actions;
 
 export const sendStake = (stake: number) => async (dispatch: AppDispatch, _getState: () => RootState, dataContext: DataContext) : Promise<void> => {
-	if (await dataContext.gameClient.msgAsync('STAKE', stake)) {
+	if (await dataContext.game.gameServerClient.msgAsync('STAKE', stake)) {
 		dispatch(clearDecisions());
 	}
 };

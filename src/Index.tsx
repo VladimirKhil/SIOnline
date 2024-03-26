@@ -156,6 +156,45 @@ async function registerServiceWorker2() {
 	}
 }
 
+async function getServerUri(serverDiscoveryUri: string) {
+	// Using random number to prevent serverUri caching
+	const serverUrisResponse = await fetch(`${serverDiscoveryUri}?r=${Math.random()}`); // throwing TypeError here is ok
+
+	if (!serverUrisResponse.ok) {
+		throw new Error(`Server discovery is broken: ${serverUrisResponse.status} ${await serverUrisResponse.text()}`);
+	}
+
+	const serverUris = (await serverUrisResponse.json()) as ServerInfo[];
+
+	if (!serverUris || serverUris.length === 0) {
+		throw new Error('Server uris object is broken');
+	}
+
+	return serverUris[0].uri;
+}
+
+function getInitialView(historyState: INavigationState): INavigationState {
+	const urlParams = new URLSearchParams(window.location.search);
+	const gameId = urlParams.get('gameId');
+	const invite = urlParams.get('invite');
+	const packageUri = urlParams.get('packageUri');
+	const packageName = urlParams.get('packageName');
+
+	if (historyState && historyState.path) {
+		return historyState;
+	}
+
+	if (gameId && invite) {
+		return { path: Path.RoomJoin, gameId: parseInt(gameId, 10) };
+	}
+
+	if (packageUri) {
+		return { path: Path.NewRoom, newGameMode: 'multi', packageUri: packageUri, packageName: packageName ?? undefined };
+	}
+
+	return { path: Path.Root };
+}
+
 async function run() {
 	if (!config) {
 		throw new Error('Config is undefined!');
@@ -184,20 +223,7 @@ async function run() {
 			throw new Error('Server uri is undefined');
 		}
 
-		// Using random number to prevent serverUri caching
-		const serverUrisResponse = await fetch(`${serverDiscoveryUri}?r=${Math.random()}`); // throwing TypeError here is ok
-
-		if (!serverUrisResponse.ok) {
-			throw new Error(`Server discovery is broken: ${serverUrisResponse.status} ${await serverUrisResponse.text()}`);
-		}
-
-		const serverUris = (await serverUrisResponse.json()) as ServerInfo[];
-
-		if (!serverUris || serverUris.length === 0) {
-			throw new Error('Server uris object is broken');
-		}
-
-		serverUri = serverUris[0].uri;
+		serverUri = await getServerUri(serverDiscoveryUri);
 	}
 
 	const savedState = loadState();
@@ -277,26 +303,4 @@ run();
 
 if ('serviceWorker' in navigator && config && config.registerServiceWorker) {
 	window.addEventListener('load', registerServiceWorker2);
-}
-
-function getInitialView(historyState: INavigationState): INavigationState {
-	const urlParams = new URLSearchParams(window.location.search);
-	const gameId = urlParams.get('gameId');
-	const invite = urlParams.get('invite');
-	const packageUri = urlParams.get('packageUri');
-	const packageName = urlParams.get('packageName');
-
-	if (historyState && historyState.path) {
-		return historyState;
-	}
-
-	if (gameId && invite) {
-		return { path: Path.RoomJoin, gameId: parseInt(gameId, 10) };
-	}
-
-	if (packageUri) {
-		return { path: Path.NewRoom, newGameMode: 'multi', packageUri: packageUri, packageName: packageName ?? undefined };
-	}
-
-	return { path: Path.Root };
 }

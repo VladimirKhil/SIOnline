@@ -8,7 +8,7 @@ export default class GameClient implements IGameClient {
 	 * Initializes a new instance of {@link GameClient}.
 	 * @param gameServerClient Underlying SIGameServer client.
 	 */
-	constructor(private gameServerClient: IClientBase) {
+	constructor(public gameServerClient: IClientBase) {
 
 	}
 

@@ -55,4 +55,9 @@ export default class SIHostClient implements ISIHostClient, IClientBase {
 			await this.joinGameAsync(this.joinInfo);
 		}
 	}
+
+	/** Leaves game and returns to lobby. */
+	async leaveGameAsync(): Promise<any> {
+		this.joinInfo = null;
+	}
 }
