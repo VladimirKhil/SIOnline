@@ -7,6 +7,7 @@ import Slice from './contracts/Slice';
 import IGameServerClient from './IGameServerClient';
 import PackageInfo from './contracts/PackageInfo';
 import Role from '../model/Role';
+import IClientBase from './IClientBase';
 
 const enum State { None, Lobby, Game }
 
@@ -18,7 +19,7 @@ interface JoinInfo {
 }
 
 /** Represents a connection to a SIGame Server. */
-export default class GameServerClient implements IGameServerClient {
+export default class GameServerClient implements IGameServerClient, IClientBase {
 	private state: State = State.None;
 
 	private culture = '';
@@ -29,7 +30,7 @@ export default class GameServerClient implements IGameServerClient {
 	 * Initializes a new instance of {@link GameServerClient}.
 	 * @param connection Underlying SignalR connection.
 	 */
-	constructor(private connection: signalR.HubConnection, private errorHandler: (error : any) => void) {
+	constructor(private connection: signalR.HubConnection, private errorHandler: (error: any) => void) {
 
 	}
 

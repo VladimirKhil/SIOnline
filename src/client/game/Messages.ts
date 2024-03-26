@@ -8,11 +8,25 @@ const enum Messages {
 
 	I = 'I',
 
+	Info = 'INFO',
+
 	/** Validates player answer. */
 	IsRight = 'ISRIGHT',
 
+	Mark = 'MARK',
+
 	/** Notifies that media has been successfully loaded. */
 	MediaLoaded = 'MEDIALOADED',
+
+	Moveable = 'MOVEABLE',
+
+	Pass = 'PASS',
+
+	Pause = 'PAUSE',
+
+	Picture = 'PICTURE',
+
+	Ready = 'READY',
 
 	/** Gives turn to player. */
 	SetChooser = 'SETCHOOSER',

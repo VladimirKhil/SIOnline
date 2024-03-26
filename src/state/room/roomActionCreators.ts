@@ -57,7 +57,7 @@ const markQuestion: ActionCreator<ThunkAction<void, State, DataContext, Action>>
 	_getState: () => State,
 	dataContext: DataContext
 	) => {
-		await dataContext.gameClient.msgAsync('MARK');
+		await dataContext.game.markQuestion();
 	};
 
 const onPass: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
@@ -65,7 +65,7 @@ const onPass: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () 
 	_getState: () => State,
 	dataContext: DataContext
 	) => {
-		await dataContext.gameClient.msgAsync('PASS');
+		await dataContext.game.pass();
 	};
 
 const pause: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
@@ -73,7 +73,7 @@ const pause: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () =
 	getState: () => State,
 	dataContext: DataContext
 	) => {
-		await dataContext.gameClient.msgAsync('PAUSE', getState().room.stage.isGamePaused ? '-' : '+');
+		await dataContext.game.pause(!getState().room.stage.isGamePaused);
 	};
 
 const editTable: ActionCreator<RunActions.EditTableAction> = () => ({
@@ -923,7 +923,7 @@ const onReconnect: ActionCreator<ThunkAction<void, State, DataContext, Action>> 
 	_getState: () => State,
 	dataContext: DataContext
 ) => {
-	await dataContext.gameClient.sendMessageToServerAsync('INFO');
+	await dataContext.game.info();
 };
 
 const roomActionCreators = {

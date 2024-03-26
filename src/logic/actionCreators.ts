@@ -31,6 +31,9 @@ import Sex from '../model/enums/Sex';
 import onlineActionCreators from '../state/online/onlineActionCreators';
 import { endLogin, startLogin } from '../state/new/loginSlice';
 import { AppDispatch } from '../state/new/store';
+import SIHostClient from '../client/SIHostClient';
+import { activeSIHostConnections, attachSIHostListeners } from '../utils/SIHostConnectionHelpers';
+import ISIHostClient from '../client/ISIHostClient';
 
 const onAvatarSelectedLocal: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 	(avatar: File) => async (dispatch: Dispatch<Action>) => {
@@ -91,7 +94,11 @@ async function uploadAvatarAsync(dispatch: Dispatch<Action>, dataContext: DataCo
 
 const sendAvatar: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 	() => async (_dispatch: Dispatch<AnyAction>, getState: () => State, dataContext: DataContext) => {
-	await dataContext.gameClient.msgAsync('PICTURE', getState().user.avatar);
+	const { avatar } = getState().user;
+
+	if (avatar) {
+		await dataContext.game.sendAvatar(avatar);
+	}
 };
 
 const reloadComputerAccounts: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
@@ -223,6 +230,41 @@ const connectAsync = async (dispatch: Dispatch<Action>, getState: () => State, d
 	}
 };
 
+const connectToSIHostAsync = async (
+	siHostUri: string,
+	dispatch: Dispatch<Action>,
+	getState: () => State,
+	dataContext: DataContext
+): Promise<ISIHostClient> => {
+	const connectionBuilder = new signalR.HubConnectionBuilder()
+		.withAutomaticReconnect({
+			nextRetryDelayInMilliseconds: (retryContext: signalR.RetryContext) => 1000 * (retryContext.previousRetryCount + 1)
+		})
+		.withUrl(siHostUri)
+		.withHubProtocol(new signalRMsgPack.MessagePackHubProtocol());
+
+	const connection = connectionBuilder.build();
+
+	const siHostClient = new SIHostClient(
+		connection,
+		e => dispatch(roomActionCreators.operationError(getErrorMessage(e)) as object as AnyAction)
+	);
+
+	await connection.start();
+
+	if (connection.connectionId) {
+		activeSIHostConnections.push(connection.connectionId);
+	}
+
+	const controller = new ClientController(dispatch, getState, dataContext);
+
+	attachSIHostListeners(siHostClient, connection, dispatch, controller);
+
+	dataContext.game = new GameClient(siHostClient);
+
+	return siHostClient;
+};
+
 const navigate = async (view: INavigationState, dispatch: Dispatch<Action>, dataContext: DataContext) => {
 	if (view.path === Path.Room) {
 		if (view.gameId && view.role) {
@@ -241,7 +283,7 @@ const navigate = async (view: INavigationState, dispatch: Dispatch<Action>, data
 
 			await onlineActionCreators.initGameAsync(
 				dispatch,
-				dataContext,
+				dataContext.game,
 				result.GameId,
 				view.role,
 				view.sex ?? Sex.Female,
@@ -341,6 +383,7 @@ const actionCreators = {
 	onAvatarDeleted,
 	sendAvatar,
 	login,
+	connectToSIHostAsync,
 	onExit,
 };
 

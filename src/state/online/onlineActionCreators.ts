@@ -38,6 +38,9 @@ import GamePlatforms from 'sistatistics-client/dist/models/GamePlatforms';
 import StatisticFilter from 'sistatistics-client/dist/models/StatisticFilter';
 import Path from '../../model/enums/Path';
 import { INavigationState } from '../ui/UIState';
+import ServerSex from '../../client/contracts/ServerSex';
+import IGameClient from '../../client/game/IGameClient';
+import ServerRole from '../../client/contracts/ServerRole';
 
 const selectGame: ActionCreator<OnlineActions.SelectGameAction> = (gameId: number) => ({
 	type: OnlineActions.OnlineActionTypes.SelectGame,
@@ -319,7 +322,7 @@ function getRandomValue(): number {
 
 const initGameAsync = async (
 	dispatch: Dispatch<any>,
-	dataContext: DataContext,
+	gameClient: IGameClient,
 	gameId: number,
 	role: Role,
 	sex: Sex,
@@ -336,7 +339,7 @@ const initGameAsync = async (
 	dispatch(roomActionCreators.stopTimer(2));
 	dispatch(roomActionCreators.gameStarted(false));
 
-	await gameInit(dataContext, role);
+	await gameInit(gameClient, role);
 
 	const navigaionState: INavigationState = { path: Path.Room, gameId: gameId, role: role, sex: sex, password: password, isAutomatic: isAutomatic };
 
@@ -348,7 +351,7 @@ const initGameAsync = async (
 };
 
 const joinGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
-	(gameId: number, role: Role) => async (
+	(hostUri: string, gameId: number, role: Role) => async (
 		dispatch: Dispatch<any>,
 		getState: () => State,
 		dataContext: DataContext
@@ -356,7 +359,22 @@ const joinGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 	dispatch(joinGameStarted());
 
 	try {
+		//const siHostClient = await actionCreators.connectToSIHostAsync(hostUri, dispatch, getState, dataContext);
+
 		const state = getState();
+
+		// const result = await siHostClient.joinGameAsync({
+		// 	GameId: gameId,
+		// 	UserName: state.user.login,
+		// 	Role: role === Role.Viewer ? ServerRole.Viewer : role === Role.Player ? ServerRole.Player : ServerRole.Showman,
+		// 	Sex: state.settings.sex === Sex.Male ? ServerSex.Male : ServerSex.Female,
+		// 	Password: state.online.password,
+		// });
+
+		// if (!result.isSuccess) {
+		// 	dispatch(joinGameFinished(`${localization.joinError}: ${result.errorType} ${result.message}`));
+		// 	return;
+		// }
 
 		const result = await dataContext.gameClient.joinGameAsync(
 			gameId,
@@ -370,7 +388,7 @@ const joinGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 			return;
 		}
 
-		await initGameAsync(dispatch, dataContext, gameId, role, state.settings.sex, state.online.password, false, true);
+		await initGameAsync(dispatch, dataContext.game, gameId, role, state.settings.sex, state.online.password, false, true);
 
 		actionCreators.saveStateToStorage(state);
 		dispatch(joinGameFinished(null));
@@ -561,7 +579,7 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 			if (result.Code !== GameCreationResultCode.Ok) {
 				dispatch(gameCreationEnd(GameErrorsHelper.getMessage(result.Code) + (result.ErrorMessage || '')));
 			} else {
-				await initGameAsync(dispatch, dataContext, result.GameId, role, state.settings.sex, game.password, false, true);
+				await initGameAsync(dispatch, dataContext.game, result.GameId, role, state.settings.sex, game.password, false, true);
 				dispatch(newGameCancel());
 			}
 		} catch (error) {
@@ -588,18 +606,19 @@ const createNewAutoGame: ActionCreator<ThunkAction<void, State, DataContext, Act
 			if (result.Code !== GameCreationResultCode.Ok) {
 				alert(GameErrorsHelper.getMessage(result.Code) + (result.ErrorMessage || ''));
 			} else {
-				await initGameAsync(dispatch, dataContext, result.GameId, Role.Player, state.settings.sex, '', true, true);
+				await initGameAsync(dispatch, dataContext.game, result.GameId, Role.Player, state.settings.sex, '', true, true);
 			}
 		} catch (message) {
 			dispatch(gameCreationEnd(message));
 		}
 	};
 
-async function gameInit(dataContext: DataContext, role: Role) {
-	await dataContext.gameClient.sendMessageToServerAsync('INFO');
+async function gameInit(gameClient: IGameClient, role: Role) {
+	await gameClient.info();
+	await gameClient.moveable();
 
 	if (role === Role.Player || role === Role.Showman) {
-		await dataContext.gameClient.sendMessageToServerAsync('READY');
+		await gameClient.ready();
 	}
 }
 

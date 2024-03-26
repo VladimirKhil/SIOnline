@@ -11,7 +11,6 @@ import ProgressBar from './common/ProgressBar';
 import { getReadableTimeSpan } from '../utils/TimeHelpers';
 import GameStage from '../client/contracts/GameStage';
 import GameRules, { parseRulesFromString } from '../client/contracts/GameRules';
-import Path from '../model/enums/Path';
 
 import './GameInfoView.css';
 
@@ -19,7 +18,7 @@ interface GameInfoViewOwnProps {
 	isConnected: boolean;
 	culture: string | null;
 	onPasswordChanged: (password: string) => void;
-	onJoin: (gameId: number, role: Role) => void;
+	onJoin: (hostUri: string, gameId: number, role: Role) => void;
 }
 
 interface GameInfoViewStateProps {
@@ -45,8 +44,8 @@ const mapDispatchToProps = (dispatch: any) => ({
 	onPasswordChanged: (newPassword: string) => {
 		dispatch(onlineActionCreators.passwordChanged(newPassword));
 	},
-	onJoin: (gameId: number, role: Role) => {
-		dispatch(onlineActionCreators.joinGame(gameId, role));
+	onJoin: (hostUri: string, gameId: number, role: Role) => {
+		dispatch(onlineActionCreators.joinGame(hostUri, gameId, role));
 	}
 });
 
@@ -199,7 +198,7 @@ export function GameInfoView(props: GameInfoViewProps): JSX.Element {
 								<button
 									type="button"
 									className="join standard"
-									onClick={() => props.onJoin(game.GameID, Role.Showman)}
+									onClick={() => props.onJoin(game.HostUri, game.GameID, Role.Showman)}
 									title={localization.joinAsShowmanHint}
 									disabled={!props.isConnected ||
 										props.joinGameProgress ||
@@ -212,7 +211,7 @@ export function GameInfoView(props: GameInfoViewProps): JSX.Element {
 								<button
 									type="button"
 									className="join standard"
-									onClick={() => props.onJoin(game.GameID, Role.Player)}
+									onClick={() => props.onJoin(game.HostUri, game.GameID, Role.Player)}
 									title={localization.joinAsPlayerHint}
 									disabled={!props.isConnected ||
 										props.joinGameProgress ||
@@ -225,7 +224,7 @@ export function GameInfoView(props: GameInfoViewProps): JSX.Element {
 								<button
 									type="button"
 									className="join standard"
-									onClick={() => props.onJoin(game.GameID, Role.Viewer)}
+									onClick={() => props.onJoin(game.HostUri, game.GameID, Role.Viewer)}
 									title={localization.joinAsViewerHint}
 									disabled={!props.isConnected || props.joinGameProgress || (game.PasswordRequired && !props.password)}
 								>

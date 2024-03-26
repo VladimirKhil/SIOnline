@@ -4,6 +4,7 @@ import GameStage from './GameStage';
 
 /** Defines a server game info. */
 export default interface GameInfo {
+	HostUri: string;
 	GameID: number;
 	GameName: string;
 	Language: string;

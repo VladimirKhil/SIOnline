@@ -1,5 +1,5 @@
 import IGameClient from './IGameClient';
-import IGameServerClient from '../IGameServerClient';
+import IClientBase from '../IClientBase';
 import Messages from './Messages';
 import JoinMode from './JoinMode';
 
@@ -8,20 +8,48 @@ export default class GameClient implements IGameClient {
 	 * Initializes a new instance of {@link GameClient}.
 	 * @param gameServerClient Underlying SIGameServer client.
 	 */
-	constructor(private gameServerClient: IGameServerClient) {
+	constructor(private gameServerClient: IClientBase) {
 
+	}
+
+	info(): Promise<boolean> {
+		return this.gameServerClient.msgAsync(Messages.Info);
+	}
+
+	markQuestion(): Promise<boolean> {
+		return this.gameServerClient.msgAsync(Messages.Mark);
 	}
 
 	mediaLoaded(): Promise<boolean> {
 		return this.gameServerClient.msgAsync(Messages.MediaLoaded);
 	}
 
+	moveable(): Promise<boolean> {
+		return this.gameServerClient.msgAsync(Messages.Moveable);
+	}
+
+	pass(): Promise<boolean> {
+		return this.gameServerClient.msgAsync(Messages.Pass);
+	}
+
+	pause(enable: boolean): Promise<boolean> {
+		return this.gameServerClient.msgAsync(Messages.Pause, enable ? '+' : '-');
+	}
+
 	pressButton(deltaTime: number): Promise<boolean> {
 		return this.gameServerClient.msgAsync(Messages.I, deltaTime);
 	}
 
+	ready(): Promise<boolean> {
+		return this.gameServerClient.msgAsync(Messages.Ready);
+	}
+
 	sendAnswerVersion(answerVersion: string): Promise<boolean> {
 		return this.gameServerClient.msgAsync(Messages.AnswerVersion, answerVersion);
+	}
+
+	sendAvatar(avatarUri: string): Promise<boolean> {
+		return this.gameServerClient.msgAsync(Messages.Picture, avatarUri);
 	}
 
 	setChooser(playerIndex: number): Promise<boolean> {
