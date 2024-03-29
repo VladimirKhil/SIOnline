@@ -3,6 +3,7 @@ export const enum CommonActionTypes {
 	ComputerAccountsChanged = 'COMPUTER_ACCOUNTS_CHANGED',
 	ServerInfoChanged = 'SERVER_INFO_CHANGED',
 	CommonErrorChanged = 'COMMON_ERROR_CHANGED',
+	UserErrorChanged = 'USER_ERROR_CHANGED',
 	AvatarLoadStart = 'AVATAR_LOAD_START',
 	AvatarLoadEnd = 'AVATAR_LOAD_END',
 	AvatarLoadError = 'AVATAR_LOAD_ERROR',
@@ -12,6 +13,7 @@ export const enum CommonActionTypes {
 export type IsConnectedChangedAction = { type: CommonActionTypes.IsConnectedChanged, isConnected: boolean, reason: string };
 export type ComputerAccountsChangedAction = { type: CommonActionTypes.ComputerAccountsChanged, computerAccounts: string[] };
 export type CommonErrorChangedAction = { type: CommonActionTypes.CommonErrorChanged, error: string };
+export type UserErrorChangedAction = { type: CommonActionTypes.UserErrorChanged, error: string | null };
 export type AvatarLoadStartAction = { type: CommonActionTypes.AvatarLoadStart };
 export type AvatarLoadEndAction = { type: CommonActionTypes.AvatarLoadEnd };
 export type AvatarLoadErrorAction = { type: CommonActionTypes.AvatarLoadError, error: string | null };
@@ -29,6 +31,7 @@ export type KnownCommonAction =
 	| IsConnectedChangedAction
 	| ServerInfoChangedAction
 	| CommonErrorChangedAction
+	| UserErrorChangedAction
 	| AvatarLoadStartAction
 	| AvatarLoadEndAction
 	| AvatarLoadErrorAction

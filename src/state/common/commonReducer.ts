@@ -33,6 +33,12 @@ const commonReducer: Reducer<CommonState> = (state: CommonState = initialState, 
 				error: action.error,
 			};
 
+		case CommonActionTypes.UserErrorChanged:
+			return {
+				...state,
+				userError: action.error,
+			};
+
 		case CommonActionTypes.AvatarLoadStart:
 			return {
 				...state,

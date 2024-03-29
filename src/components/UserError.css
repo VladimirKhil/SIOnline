@@ -1,0 +1,14 @@
+.userError {
+	position: absolute;
+    color: white;
+    bottom: 45px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 30px;
+    background: darkred;
+	border: 1px solid rgba(211, 211, 211, 0.24);
+    padding: 8px;
+	transition: opacity 0.5s ease;
+	z-index: 100;
+}

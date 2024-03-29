@@ -51,7 +51,7 @@ const onAvatarSelectedLocal: ActionCreator<ThunkAction<void, State, DataContext,
 
 			dispatch(settingsActionCreators.onAvatarKeyChanged(key) as any);
 		} catch (error) {
-			alert(getErrorMessage(error));
+			dispatch(commonActionCreators.onUserError(getErrorMessage(error)) as any);
 		}
 	};
 
@@ -90,7 +90,10 @@ async function uploadAvatarAsync(dispatch: Dispatch<Action>, dataContext: DataCo
 		dispatch(userActionCreators.avatarChanged(fullAvatarUri2));
 	} catch (err) {
 		const errorMessage = getErrorMessage(err);
-		alert(localization.avatarLoadError + ': ' + (errorMessage === '413 {"errorCode":3}' ? localization.avatarIsTooBig : errorMessage));
+
+		dispatch(commonActionCreators.onUserError(
+			localization.avatarLoadError + ': ' + (errorMessage === '413 {"errorCode":3}' ? localization.avatarIsTooBig : errorMessage)) as any);
+
 		dispatch(commonActionCreators.avatarLoadError(errorMessage));
 	}
 }
@@ -270,7 +273,7 @@ const connectToSIHostAsync = async (
 	return siHostClient;
 };
 
-const closeSIHostClientAsync = async (dataContext: DataContext) => {
+const closeSIHostClientAsync = async (dispatch: Dispatch<Action>, dataContext: DataContext) => {
 	const { connection } = dataContext.game.gameServerClient;
 
 	if (!connection) {
@@ -288,11 +291,11 @@ const closeSIHostClientAsync = async (dataContext: DataContext) => {
 		await connection.stop();
 		removeSIHostConnection(connection);
 	} catch (error) {
-		alert(getErrorMessage(error)); // TODO: normal error message
+		dispatch(commonActionCreators.onUserError(getErrorMessage(error)) as any);
 	}
 };
 
-const disconnectAsync = async (dataContext: DataContext) => {
+const disconnectAsync = async (dispatch: Dispatch<Action>, dataContext: DataContext) => {
 	const { connection } = dataContext;
 
 	if (!connection) {
@@ -312,7 +315,7 @@ const disconnectAsync = async (dataContext: DataContext) => {
 
 		dataContext.connection = null;
 	} catch (error) {
-		alert(getErrorMessage(error)); // TODO: normal error message
+		dispatch(commonActionCreators.onUserError(getErrorMessage(error)) as any); // TODO: normal error message
 	}
 };
 
@@ -341,7 +344,7 @@ const navigateAsync = async (view: INavigationState, dispatch: Dispatch<Action>,
 			});
 
 			if (!result.IsSuccess) {
-				alert(`${localization.joinError}: ${result.ErrorType} ${result.Message}`);
+				dispatch(commonActionCreators.onUserError(`${localization.joinError}: ${result.ErrorType} ${result.Message}`) as any);
 				dispatch(uiActionCreators.navigate({ path: Path.Root }) as unknown as Action);
 				return;
 			}
@@ -358,7 +361,7 @@ const navigateAsync = async (view: INavigationState, dispatch: Dispatch<Action>,
 				false
 			);
 
-			await disconnectAsync(dataContext);
+			await disconnectAsync(dispatch, dataContext);
 		}
 	}
 
@@ -418,7 +421,7 @@ const login: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 
 const onExit: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 	() => async (dispatch: Dispatch<Action>, _getState: () => State, dataContext: DataContext) => {
-	await disconnectAsync(dataContext);
+	await disconnectAsync(dispatch, dataContext);
 	dispatch(uiActionCreators.navigate({ path: Path.Login }) as unknown as Action);
 };
 

@@ -6,6 +6,7 @@ import localization from '../model/resources/localization';
 import actionCreators from '../logic/actionCreators';
 import State from '../state/State';
 import FlyoutButton from './common/FlyoutButton';
+import commonActionCreators from '../state/common/commonActionCreators';
 
 import './AvatarView.css';
 
@@ -16,6 +17,7 @@ interface AvatarViewProps {
 
 	onAvatarSelected: (avatar: File) => void;
 	onAvatarDeleted: () => void;
+	onUserError: (error: string) => void;
 }
 
 const mapStateToProps = (state: State) => ({
@@ -31,7 +33,7 @@ function onAvatarChanged(e: React.ChangeEvent<HTMLInputElement>, props: AvatarVi
 		const targetFile = e.target.files[0];
 
 		if (targetFile.size > MaxAvatarSizeMb * 1024 * 1024) {
-			alert(`${localization.avatarIsTooBig} (${MaxAvatarSizeMb} MB)`);
+			props.onUserError(`${localization.avatarIsTooBig} (${MaxAvatarSizeMb} MB)`);
 			return;
 		}
 
@@ -46,6 +48,9 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	onAvatarDeleted: () => {
 		dispatch(actionCreators.onAvatarDeleted() as any);
 	},
+	onUserError: (error: string) => {
+		dispatch(commonActionCreators.onUserError(error) as any);
+	}
 });
 
 function renderEmpty() {

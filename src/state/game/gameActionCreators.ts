@@ -7,6 +7,7 @@ import Role from '../../model/Role';
 import GameType from '../../model/GameType';
 import PackageType from '../../model/enums/PackageType';
 import { ThunkAction } from 'redux-thunk';
+import commonActionCreators from '../common/commonActionCreators';
 
 const gameSet: ActionCreator<GameActions.GameSetAction> = (id: number, isAutomatic: boolean) => ({
 	type: GameActions.GameActionTypes.GameSet,
@@ -50,7 +51,7 @@ const gamePackageDataChangedRequest: ActionCreator<ThunkAction<void, State, Data
 		const { maxPackageSizeMb } = state.common;
 
 		if (packageData && packageData.size > maxPackageSizeMb * 1024 * 1024) {
-			alert(`${localization.packageIsTooBig} (${maxPackageSizeMb} MB)`);
+			dispatch(commonActionCreators.onUserError(`${localization.packageIsTooBig} (${maxPackageSizeMb} MB)`) as any);
 			return;
 		}
 

@@ -7,12 +7,14 @@ import { connect } from 'react-redux';
 import Path from '../model/enums/Path';
 import uiActionCreators from '../state/ui/uiActionCreators';
 import { Action } from 'redux';
+import commonActionCreators from '../state/common/commonActionCreators';
 
 interface JoinRoomProps {
 	inProgress: boolean;
 	games: Record<number, GameInfo>;
 	gameId?: number;
 	navigate: (path: Path) => void;
+	onUserError: (error: string) => void;
 }
 
 const mapStateToProps = (state: State) => ({
@@ -25,6 +27,9 @@ const mapDispatchToProps = (dispatch: React.Dispatch<Action>) => ({
 	navigate: (path: Path) => {
 		dispatch(uiActionCreators.navigate({ path: path }) as unknown as Action); // TODO: fix typing
 	},
+	onUserError: (error: string) => {
+		dispatch(commonActionCreators.onUserError(error) as any);
+	}
 });
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
@@ -33,7 +38,7 @@ export function JoinRoom(props: JoinRoomProps): JSX.Element | null {
 
 	React.useEffect(() => {
 		if (!props.inProgress && !selectedGame) {
-			alert('Game not found');
+			props.onUserError('Game not found');
 			props.navigate(Path.Menu);
 		}
 	}, [props.inProgress]);

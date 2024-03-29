@@ -158,12 +158,12 @@ const exitGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (
 	try {
 		// TODO: show progress bar
 		if (dataContext.game.shouldClose) {
-			await actionCreators.closeSIHostClientAsync(dataContext);
+			await actionCreators.closeSIHostClientAsync(dispatch, dataContext);
 		} else {
 			await dataContext.game.gameServerClient.leaveGameAsync();
 		}
 	} catch (e) {
-		alert(localization.exitError);
+		dispatch(commonActionCreators.onUserError(localization.exitError) as any);
 	}
 
 	if (timerRef) {

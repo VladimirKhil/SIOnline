@@ -43,6 +43,7 @@ import IGameClient from '../../client/game/IGameClient';
 import ServerRole from '../../client/contracts/ServerRole';
 import clearUrls from '../../utils/clearUrls';
 import GameClient from '../../client/game/GameClient';
+import commonActionCreators from '../common/commonActionCreators';
 
 const selectGame: ActionCreator<OnlineActions.SelectGameAction> = (gameId: number) => ({
 	type: OnlineActions.OnlineActionTypes.SelectGame,
@@ -406,7 +407,7 @@ const joinGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 		}
 
 		await initGameAsync(dispatch, dataContext.game, hostUri, gameId, role, state.settings.sex, state.online.password, false, true);
-		await actionCreators.disconnectAsync(dataContext);
+		await actionCreators.disconnectAsync(dispatch, dataContext);
 
 		actionCreators.saveStateToStorage(state);
 		dispatch(joinGameFinished(null));
@@ -623,7 +624,7 @@ const createNewAutoGame: ActionCreator<ThunkAction<void, State, DataContext, Act
 			dispatch(gameCreationEnd());
 
 			if (result.Code !== GameCreationResultCode.Ok) {
-				alert(GameErrorsHelper.getMessage(result.Code) + (result.ErrorMessage || ''));
+				dispatch(commonActionCreators.onUserError(GameErrorsHelper.getMessage(result.Code) + (result.ErrorMessage || '')) as any);
 			} else {
 				dataContext.game = new GameClient(dataContext.gameClient, false);
 				await initGameAsync(dispatch, dataContext.game, '', result.GameId, Role.Player, state.settings.sex, '', true, true);

@@ -17,11 +17,24 @@ const computerAccountsChanged: ActionCreator<CommonActions.ComputerAccountsChang
 	computerAccounts
 });
 
+const userErrorChanged: ActionCreator<CommonActions.UserErrorChangedAction> = (error: string | null) => ({
+	type: CommonActions.CommonActionTypes.UserErrorChanged, error
+});
+
+const onUserError: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
+	(error: string) => async (dispatch: Dispatch<Action>) => {
+		dispatch(userErrorChanged(error));
+
+		window.setTimeout(
+			() => dispatch(userErrorChanged(null)),
+			3000
+		);
+	};
+
 const onConnectionClosed: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 	(message: string) => async (dispatch: Dispatch<any>) => {
 		dispatch(isConnectedChanged(false));
-
-		alert(message);
+		dispatch(onUserError(message));
 		window.location.reload();
 	};
 
@@ -70,6 +83,7 @@ const commonActionCreators = {
 	onConnectionClosed,
 	serverInfoChanged,
 	commonErrorChanged,
+	onUserError,
 	avatarLoadStart,
 	avatarLoadEnd,
 	avatarLoadError,

@@ -16,6 +16,7 @@ import Path from '../model/enums/Path';
 import JoinRoom from './JoinRoom';
 import Loading from './Loading';
 import ServerLicense from './ServerLicense';
+import UserError from './UserError';
 
 import './App.css';
 
@@ -23,6 +24,7 @@ interface AppProps {
 	ads?: string;
 	areSettingsVisible: boolean;
 	commonError: string | null;
+	userError: string | null;
 	askForConsent: boolean;
 	path: Path;
 }
@@ -34,6 +36,7 @@ interface AppState {
 const mapStateToProps = (state: State) => ({
 	areSettingsVisible: state.ui.areSettingsVisible,
 	commonError: state.common.error,
+	userError: state.common.userError,
 	askForConsent: state.common.askForConsent,
 	path: state.ui.navigation.path,
 });
@@ -109,6 +112,7 @@ export class App extends React.Component<AppProps, AppState> {
 				{this.getContent()}
 				{this.props.areSettingsVisible ? <SettingsDialog /> : null}
 				{this.props.askForConsent ? <CookiesWarning /> : null}
+				{this.props.userError ? <UserError error={this.props.userError} /> : null}
 				<AudioController />
 			</div>
 		);

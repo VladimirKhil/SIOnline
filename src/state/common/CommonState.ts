@@ -6,6 +6,7 @@ export default interface CommonState {
 	serverLicense: string | null;
 	maxPackageSizeMb: number;
 	error: string | null;
+	userError: string | null;
 	askForConsent: boolean;
 	emojiCultures?: string[];
 	avatarLoadProgress: boolean;
@@ -22,6 +23,7 @@ export const initialState: CommonState = {
 	serverLicense: null,
 	maxPackageSizeMb: 100,
 	error: null,
+	userError: null,
 	askForConsent: true,
 	avatarLoadProgress: false,
 	avatarLoadError: null,

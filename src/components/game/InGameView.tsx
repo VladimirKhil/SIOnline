@@ -27,6 +27,7 @@ import PlayersListView from './PlayersListView/PlayersListView';
 import GameProgress from './GameProgress';
 import ChatMessage from '../../model/ChatMessage';
 import MessageLevel from '../../model/enums/MessageLevel';
+import commonActionCreators from '../../state/common/commonActionCreators';
 
 import './InGameView.css';
 
@@ -57,6 +58,7 @@ interface InGameViewProps {
 	onExit: () => void;
 	chatMessageAdded: (chatMessage: ChatMessage) => void;
 	onReconnect: () => void;
+	onUserError: (error: string) => void;
 }
 
 const mapStateToProps = (state: State) => ({
@@ -106,13 +108,16 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	},
 	onReconnect: () => {
 		dispatch(roomActionCreators.onReconnect() as unknown as Action);
+	},
+	onUserError: (error: string) => {
+		dispatch(commonActionCreators.onUserError(error) as any);
 	}
 });
 
 export function InGameView(props: InGameViewProps) : JSX.Element {
 	React.useEffect(() => {
 		if (props.kicked) {
-			alert(localization.youAreKicked);
+			props.onUserError(localization.youAreKicked);
 			props.onExit();
 		}
 	}, [props.kicked]);
