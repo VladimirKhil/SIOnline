@@ -32,8 +32,11 @@ import onlineActionCreators from '../state/online/onlineActionCreators';
 import { endLogin, startLogin } from '../state/new/loginSlice';
 import { AppDispatch } from '../state/new/store';
 import SIHostClient from '../client/SIHostClient';
-import { activeSIHostConnections, attachSIHostListeners } from '../utils/SIHostConnectionHelpers';
+import { activeSIHostConnections, attachSIHostListeners, detachSIHostListeners, removeSIHostConnection } from '../utils/SIHostConnectionHelpers';
 import ISIHostClient from '../client/ISIHostClient';
+import Role from '../model/Role';
+import ServerRole from '../client/contracts/ServerRole';
+import ServerSex from '../client/contracts/ServerSex';
 
 const onAvatarSelectedLocal: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 	(avatar: File) => async (dispatch: Dispatch<Action>) => {
@@ -197,7 +200,6 @@ const connectAsync = async (dispatch: Dispatch<Action>, getState: () => State, d
 	);
 
 	dataContext.gameClient = gameServerClient;
-	dataContext.game = new GameClient(gameServerClient);
 
 	try {
 		await dataContext.connection.start();
@@ -237,11 +239,13 @@ const connectToSIHostAsync = async (
 	getState: () => State,
 	dataContext: DataContext
 ): Promise<ISIHostClient> => {
+	const siHostUriChecked = siHostUri.endsWith('/') ? siHostUri : siHostUri + '/';
+
 	const connectionBuilder = new signalR.HubConnectionBuilder()
 		.withAutomaticReconnect({
 			nextRetryDelayInMilliseconds: (retryContext: signalR.RetryContext) => 1000 * (retryContext.previousRetryCount + 1)
 		})
-		.withUrl(siHostUri)
+		.withUrl(siHostUriChecked + 'sihost')
 		.withHubProtocol(new signalRMsgPack.MessagePackHubProtocol());
 
 	const connection = connectionBuilder.build();
@@ -261,23 +265,83 @@ const connectToSIHostAsync = async (
 
 	attachSIHostListeners(siHostClient, connection, dispatch, controller);
 
-	dataContext.game = new GameClient(siHostClient);
+	dataContext.game = new GameClient(siHostClient, true);
 
 	return siHostClient;
 };
 
-const navigate = async (view: INavigationState, dispatch: Dispatch<Action>, dataContext: DataContext) => {
-	if (view.path === Path.Room) {
-		if (view.gameId && view.role) {
-			const result = await dataContext.gameClient.joinGameAsync(
-				view.gameId,
-				view.role,
-				view.sex === Sex.Male,
-				view.password ?? ''
-			);
+const closeSIHostClientAsync = async (dataContext: DataContext) => {
+	const { connection } = dataContext.game.gameServerClient;
 
-			if (result.ErrorMessage) {
-				alert(`${localization.joinError}: ${result.ErrorMessage}`);
+	if (!connection) {
+		return;
+	}
+
+	try {
+		await dataContext.game.gameServerClient.leaveGameAsync();
+
+		if (connection.connectionId) {
+			activeSIHostConnections.splice(activeSIHostConnections.indexOf(connection.connectionId), 1);
+		}
+
+		detachSIHostListeners(connection);
+		await connection.stop();
+		removeSIHostConnection(connection);
+	} catch (error) {
+		alert(getErrorMessage(error)); // TODO: normal error message
+	}
+};
+
+const disconnectAsync = async (dataContext: DataContext) => {
+	const { connection } = dataContext;
+
+	if (!connection) {
+		return;
+	}
+
+	try {
+		await dataContext.gameClient.logOutAsync();
+
+		if (connection.connectionId) {
+			activeConnections.splice(activeConnections.indexOf(connection.connectionId), 1);
+		}
+
+		detachListeners(connection);
+		await connection.stop();
+		removeConnection(connection);
+
+		dataContext.connection = null;
+	} catch (error) {
+		alert(getErrorMessage(error)); // TODO: normal error message
+	}
+};
+
+function getServerRole(role: Role) {
+	if (role === Role.Viewer) {
+		return ServerRole.Viewer;
+	}
+
+	return role === Role.Player ? ServerRole.Player : ServerRole.Showman;
+}
+
+const navigateAsync = async (view: INavigationState, dispatch: Dispatch<Action>, getState: () => State, dataContext: DataContext) => {
+	if (view.path === Path.Room) {
+		if (view.gameId && view.role && view.hostUri) {
+			const siHostClient = await connectToSIHostAsync(view.hostUri, dispatch, getState, dataContext);
+
+			const state = getState();
+			const serverRole = getServerRole(view.role);
+
+			const result = await siHostClient.joinGameAsync({
+				GameId: view.gameId,
+				UserName: state.user.login,
+				Role: serverRole,
+				Sex: view.sex === Sex.Male ? ServerSex.Male : ServerSex.Female,
+				Password: view.password ?? '',
+			});
+
+			if (!result.IsSuccess) {
+				alert(`${localization.joinError}: ${result.ErrorType} ${result.Message}`);
 				dispatch(uiActionCreators.navigate({ path: Path.Root }) as unknown as Action);
 				return;
 			}
@@ -286,22 +350,24 @@ const navigate = async (view: INavigationState, dispatch: Dispatch<Action>, data
 				dispatch,
 				dataContext.game,
 				view.hostUri ?? '',
-				result.GameId,
+				view.gameId,
 				view.role,
 				view.sex ?? Sex.Female,
 				view.password ?? '',
 				view.isAutomatic ?? false,
 				false
 			);
+
+			await disconnectAsync(dataContext);
 		}
 	}
 
 	dispatch(uiActionCreators.navigate(view) as unknown as Action);
 };
 
-const checkLicense = async (view: INavigationState, dispatch: Dispatch<Action>, dataContext: DataContext) => {
+const checkLicenseAsync = async (view: INavigationState, dispatch: Dispatch<Action>, getState: () => State, dataContext: DataContext) => {
 	const licenseAccepted = dataContext.state.isLicenseAccepted();
-	navigate(licenseAccepted ? view : { path: Path.AcceptLicense, callbackState: view }, dispatch, dataContext);
+	await navigateAsync(licenseAccepted ? view : { path: Path.AcceptLicense, callbackState: view }, dispatch, getState, dataContext);
 };
 
 const init: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
@@ -309,7 +375,7 @@ const init: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 		if (initialView.path === Path.Login) {
 			dispatch(uiActionCreators.navigate({ path: Path.Login, callbackState: { path: Path.Root } }) as unknown as Action);
 		} else if (await connectAsync(dispatch, getState, dataContext)) {
-			await checkLicense(initialView, dispatch, dataContext);
+			await checkLicenseAsync(initialView, dispatch, getState, dataContext);
 		} else {
 			dispatch(uiActionCreators.navigate({ path: Path.Login, callbackState: initialView }) as unknown as Action);
 		}
@@ -341,7 +407,7 @@ const login: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 			if (await connectAsync(dispatch, getState, dataContext)) {
 				dispatch(userActionCreators.onLoginChanged(state.user.login.trim())); // Normalize login
 				appDispatch(endLogin(null));
-				await checkLicense(state.ui.navigation.callbackState ?? { path: Path.Root }, dispatch, dataContext);
+				await checkLicenseAsync(state.ui.navigation.callbackState ?? { path: Path.Root }, dispatch, getState, dataContext);
 			} else {
 				appDispatch(endLogin(localization.errorHappened));
 			}
@@ -352,30 +418,9 @@ const login: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 
 const onExit: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 	() => async (dispatch: Dispatch<Action>, _getState: () => State, dataContext: DataContext) => {
-		const server = dataContext.connection;
-
-		if (!server) {
-			return;
-		}
-
-		try {
-			await dataContext.gameClient.logOutAsync();
-
-			if (server.connectionId) {
-				activeConnections.splice(activeConnections.indexOf(server.connectionId), 1);
-			}
-
-			detachListeners(server);
-			await server.stop();
-			removeConnection(server);
-
-			dataContext.connection = null;
-
-			dispatch(uiActionCreators.navigate({ path: Path.Login }) as unknown as Action);
-		} catch (error) {
-			alert(getErrorMessage(error)); // TODO: normal error message
-		}
-	};
+	await disconnectAsync(dataContext);
+	dispatch(uiActionCreators.navigate({ path: Path.Login }) as unknown as Action);
+};
 
 const actionCreators = {
 	init,
@@ -386,6 +431,8 @@ const actionCreators = {
 	sendAvatar,
 	login,
 	connectToSIHostAsync,
+	closeSIHostClientAsync,
+	disconnectAsync,
 	onExit,
 };
 

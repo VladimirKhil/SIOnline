@@ -6,9 +6,10 @@ import PackageKey from './contracts/PackageKey';
 import Slice from './contracts/Slice';
 import PackageInfo from './contracts/PackageInfo';
 import Role from '../model/Role';
+import IClientBase from './IClientBase';
 
 /** Defines the SIGame Server client. */
-export default interface IGameServerClient {
+export default interface IGameServerClient extends IClientBase {
 	/** Gets default computer accounts names. */
 	getComputerAccountsAsync(culture: string): Promise<string[]>;
 

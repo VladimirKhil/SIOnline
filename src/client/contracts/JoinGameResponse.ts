@@ -7,15 +7,15 @@ export default interface JoinGameResponse {
     /**
      * Indicates if the join operation was successful.
      */
-    isSuccess: boolean;
+    IsSuccess: boolean;
 
     /**
      * Error type for failed joins.
      */
-    errorType: JoinGameErrorType;
+    ErrorType: JoinGameErrorType;
 
     /**
      * Optional message.
      */
-    message?: string | null;
+    Message?: string | null;
 }

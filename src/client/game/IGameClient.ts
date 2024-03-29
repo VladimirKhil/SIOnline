@@ -5,6 +5,8 @@ import JoinMode from './JoinMode';
 export default interface IGameClient {
 	gameServerClient: IClientBase;
 
+	shouldClose: boolean;
+
 	info(): Promise<boolean>;
 
 	markQuestion(): Promise<boolean>;

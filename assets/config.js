@@ -8,6 +8,7 @@ config = {
     enableNoSleep: false,
     askForConsent: false,
     siStatisticsServiceUri: 'https://vladimirkhil.com/sistatistics',
+    clearUrls: false,
 };
 
 firebaseConfig = null;

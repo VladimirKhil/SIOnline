@@ -41,6 +41,8 @@ import { INavigationState } from '../ui/UIState';
 import ServerSex from '../../client/contracts/ServerSex';
 import IGameClient from '../../client/game/IGameClient';
 import ServerRole from '../../client/contracts/ServerRole';
+import clearUrls from '../../utils/clearUrls';
+import GameClient from '../../client/game/GameClient';
 
 const selectGame: ActionCreator<OnlineActions.SelectGameAction> = (gameId: number) => ({
 	type: OnlineActions.OnlineActionTypes.SelectGame,
@@ -56,7 +58,7 @@ const receiveGames: ActionCreator<OnlineActions.ReceiveGamesAction> = (games: an
 	games
 });
 
-async function loadGamesAsync(dispatch: Dispatch<OnlineActions.KnownOnlineAction>, gameClient: IGameServerClient) {
+async function loadGamesAsync(dispatch: Dispatch<OnlineActions.KnownOnlineAction>, gameClient: IGameServerClient, clear: boolean | undefined) {
 	dispatch(clearGames());
 
 	let gamesSlice: Slice<GameInfo> = { Data: [], IsLastSlice: false };
@@ -66,7 +68,7 @@ async function loadGamesAsync(dispatch: Dispatch<OnlineActions.KnownOnlineAction
 
 		gamesSlice = await gameClient.getGamesSliceAsync(fromId);
 
-		dispatch(receiveGames(gamesSlice.Data));
+		dispatch(receiveGames(clear ? gamesSlice.Data.map(d => ({ ...d, PackageName: clearUrls(d.PackageName) })) : gamesSlice.Data));
 
 		whileGuard--;
 	} while (!gamesSlice.IsLastSlice && whileGuard > 0);
@@ -98,7 +100,7 @@ const friendsPlay: ActionCreator<ThunkAction<void, State, DataContext, Action>> 
 	dispatch(receiveGameStart());
 
 	try {
-		await loadGamesAsync(dispatch, dataContext.gameClient);
+		await loadGamesAsync(dispatch, dataContext.gameClient, dataContext.config.clearUrls);
 
 		const state2 = getState();
 
@@ -134,7 +136,7 @@ const navigateToLobby: ActionCreator<ThunkAction<void, State, DataContext, Actio
 
 		// Games filtering is performed on client
 		try {
-			await loadGamesAsync(dispatch, dataContext.gameClient);
+			await loadGamesAsync(dispatch, dataContext.gameClient, dataContext.config.clearUrls);
 
 			try {
 				await loadStatisticsAsync(dispatch, dataContext);
@@ -359,45 +361,52 @@ const initGameAsync = async (
 	}
 };
 
+const joinGameStarted: ActionCreator<OnlineActions.JoinGameStartedAction> = () => ({
+	type: OnlineActions.OnlineActionTypes.JoinGameStarted
+});
+
+const joinGameFinished: ActionCreator<OnlineActions.JoinGameFinishedAction> = (error: string | null) => ({
+	type: OnlineActions.OnlineActionTypes.JoinGameFinished,
+	error
+});
+
+function getServerRole(role: Role) {
+	if (role === Role.Viewer) {
+		return ServerRole.Viewer;
+	}
+
+	return role === Role.Player ? ServerRole.Player : ServerRole.Showman;
+}
+
 const joinGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 	(hostUri: string, gameId: number, role: Role) => async (
-		dispatch: Dispatch<any>,
-		getState: () => State,
-		dataContext: DataContext
+	dispatch: Dispatch<any>,
+	getState: () => State,
+	dataContext: DataContext
 ) => {
 	dispatch(joinGameStarted());
 
 	try {
-		//const siHostClient = await actionCreators.connectToSIHostAsync(hostUri, dispatch, getState, dataContext);
+		const siHostClient = await actionCreators.connectToSIHostAsync(hostUri, dispatch, getState, dataContext);
 
 		const state = getState();
+		const serverRole = getServerRole(role);
 
-		// const result = await siHostClient.joinGameAsync({
-		// 	GameId: gameId,
-		// 	UserName: state.user.login,
-		// 	Role: role === Role.Viewer ? ServerRole.Viewer : role === Role.Player ? ServerRole.Player : ServerRole.Showman,
-		// 	Sex: state.settings.sex === Sex.Male ? ServerSex.Male : ServerSex.Female,
-		// 	Password: state.online.password,
-		// });
+		const result = await siHostClient.joinGameAsync({
+			GameId: gameId,
+			UserName: state.user.login,
+			Role: serverRole,
+			Sex: state.settings.sex === Sex.Male ? ServerSex.Male : ServerSex.Female,
+			Password: state.online.password,
+		});
 
-		// if (!result.isSuccess) {
-		// 	dispatch(joinGameFinished(`${localization.joinError}: ${result.errorType} ${result.message}`));
-		// 	return;
-		// }
-
-		const result = await dataContext.gameClient.joinGameAsync(
-			gameId,
-			role,
-			state.settings.sex === Sex.Male,
-			state.online.password
-		);
-
-		if (result.ErrorMessage) {
-			dispatch(joinGameFinished(`${localization.joinError}: ${result.ErrorMessage}`));
+		if (!result.IsSuccess) {
+			dispatch(joinGameFinished(`${localization.joinError}: ${result.ErrorType} ${result.Message}`));
 			return;
 		}
 
 		await initGameAsync(dispatch, dataContext.game, hostUri, gameId, role, state.settings.sex, state.online.password, false, true);
+		await actionCreators.disconnectAsync(dataContext);
 
 		actionCreators.saveStateToStorage(state);
 		dispatch(joinGameFinished(null));
@@ -588,6 +597,7 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 			if (result.Code !== GameCreationResultCode.Ok) {
 				dispatch(gameCreationEnd(GameErrorsHelper.getMessage(result.Code) + (result.ErrorMessage || '')));
 			} else {
+				dataContext.game = new GameClient(dataContext.gameClient, false);
 				await initGameAsync(dispatch, dataContext.game, '', result.GameId, role, state.settings.sex, game.password, false, true);
 				dispatch(newGameCancel());
 			}
@@ -615,6 +625,7 @@ const createNewAutoGame: ActionCreator<ThunkAction<void, State, DataContext, Act
 			if (result.Code !== GameCreationResultCode.Ok) {
 				alert(GameErrorsHelper.getMessage(result.Code) + (result.ErrorMessage || ''));
 			} else {
+				dataContext.game = new GameClient(dataContext.gameClient, false);
 				await initGameAsync(dispatch, dataContext.game, '', result.GameId, Role.Player, state.settings.sex, '', true, true);
 			}
 		} catch (message) {
@@ -630,15 +641,6 @@ async function gameInit(gameClient: IGameClient, role: Role) {
 		await gameClient.ready();
 	}
 }
-
-const joinGameStarted: ActionCreator<OnlineActions.JoinGameStartedAction> = () => ({
-	type: OnlineActions.OnlineActionTypes.JoinGameStarted
-});
-
-const joinGameFinished: ActionCreator<OnlineActions.JoinGameFinishedAction> = (error: string | null) => ({
-	type: OnlineActions.OnlineActionTypes.JoinGameFinished,
-	error
-});
 
 const onlineActionCreators = {
 	receiveGameStart,

@@ -1,4 +1,6 @@
 export default interface IClientBase {
+	connection: signalR.HubConnection;
+
 	/**
 	 * Sends a message inside game.
 	 * @param args Arguments to construct a message.

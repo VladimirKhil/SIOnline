@@ -22,6 +22,7 @@ import Messages from '../../client/game/Messages';
 import JoinMode from '../../client/game/JoinMode';
 import commonActionCreators from '../common/commonActionCreators';
 import Path from '../../model/enums/Path';
+import actionCreators from '../../logic/actionCreators';
 
 let timerRef: number | null = null;
 
@@ -156,7 +157,11 @@ const exitGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (
 ) => {
 	try {
 		// TODO: show progress bar
-		await dataContext.game.gameServerClient.leaveGameAsync();
+		if (dataContext.game.shouldClose) {
+			await actionCreators.closeSIHostClientAsync(dataContext);
+		} else {
+			await dataContext.game.gameServerClient.leaveGameAsync();
+		}
 	} catch (e) {
 		alert(localization.exitError);
 	}
@@ -179,7 +184,7 @@ const exitGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (
 	dispatch(commonActionCreators.stopAudio());
 
 	const state = getState();
-	dispatch(uiActionCreators.navigate({ path: state.ui.navigation.returnToLobby ? Path.Lobby : Path.Menu }) as unknown as Action);
+	dispatch(actionCreators.init({ path: state.ui.navigation.returnToLobby ? Path.Lobby : Path.Menu }) as unknown as Action);
 };
 
 let lastReplicLock: number;

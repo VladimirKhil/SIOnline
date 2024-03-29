@@ -31,6 +31,7 @@ import ContentInfo from '../model/ContentInfo';
 import ItemState from '../model/enums/ItemState';
 import GameSound from '../model/enums/GameSound';
 import commonActionCreators from '../state/common/commonActionCreators';
+import clearUrls from '../utils/clearUrls';
 
 const MAX_APPEND_TEXT_LENGTH = 150;
 
@@ -89,14 +90,6 @@ function onReady(personName: string, isReady: boolean, dispatch: Dispatch<any>, 
 	}
 
 	dispatch(roomActionCreators.isReadyChanged(personIndex, isReady));
-}
-
-// Regular expression to match URLs
-const urlRegex = /((https?|ftp):\/\/[^\s/$.?#].[^\s]*)/gi;
-
-/** Replaces URLs with an empty string. */
-function clearUrls(text: string): string {
-    return text.replace(urlRegex, '');
 }
 
 const viewerHandler = (controller: ClientController, dispatch: Dispatch<any>, state: State, dataContext: DataContext, args: string[]) => {

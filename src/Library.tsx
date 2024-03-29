@@ -114,7 +114,7 @@ export function runTable(elementId: string, renderMode: TableRenderMode): void {
 		serverUri: '',
 		connection: null,
 		gameClient,
-		game: new GameClient(gameClient),
+		game: new GameClient(gameClient, false),
 		contentUris: null,
 		contentClient: new SIContentClient({ serviceUri: 'http://fake' }),
 		storageClient: null,

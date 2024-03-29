@@ -30,9 +30,7 @@ export default class GameServerClient implements IGameServerClient, IClientBase 
 	 * Initializes a new instance of {@link GameServerClient}.
 	 * @param connection Underlying SignalR connection.
 	 */
-	constructor(private connection: signalR.HubConnection, private errorHandler: (error: any) => void) {
-
-	}
+	constructor(public connection: signalR.HubConnection, private errorHandler: (error: any) => void) { }
 
 	getComputerAccountsAsync(culture: string): Promise<string[]> {
 		return this.connection.invoke<string[]>('GetComputerAccountsNew', culture);

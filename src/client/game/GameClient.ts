@@ -8,9 +8,7 @@ export default class GameClient implements IGameClient {
 	 * Initializes a new instance of {@link GameClient}.
 	 * @param gameServerClient Underlying SIGameServer client.
 	 */
-	constructor(public gameServerClient: IClientBase) {
-
-	}
+	constructor(public gameServerClient: IClientBase, public shouldClose: boolean) { }
 
 	info(): Promise<boolean> {
 		return this.gameServerClient.msgAsync(Messages.Info);

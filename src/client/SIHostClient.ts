@@ -11,12 +11,12 @@ export default class SIHostClient implements ISIHostClient, IClientBase {
 	 * @param connection Underlying SignalR connection.
 	 * @param errorHandler General error handler.
 	 */
-	constructor(private connection: signalR.HubConnection, private errorHandler: (error: any) => void) { }
+	constructor(public connection: signalR.HubConnection, private errorHandler: (error: any) => void) { }
 
 	async joinGameAsync(joinGameRequest: JoinGameRequest): Promise<JoinGameResponse> {
 		const result = await this.connection.invoke<JoinGameResponse>('JoinGame', joinGameRequest);
 
-		if (result.isSuccess) {
+		if (result.IsSuccess) {
 			this.joinInfo = joinGameRequest;
 		}
 
@@ -28,6 +28,7 @@ export default class SIHostClient implements ISIHostClient, IClientBase {
 			await this.connection.invoke('SendMessage', {
 				Text: message,
 				IsSystem: true,
+				Sender: this.joinInfo?.UserName,
 				Receiver: '@'
 			});
 
@@ -46,6 +47,7 @@ export default class SIHostClient implements ISIHostClient, IClientBase {
 		return this.connection.invoke('SendMessage', {
 			Text: message,
 			IsSystem: false,
+			Sender: this.joinInfo?.UserName,
 			Receiver: '*'
 		});
 	}

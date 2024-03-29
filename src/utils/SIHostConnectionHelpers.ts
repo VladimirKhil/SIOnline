@@ -16,7 +16,8 @@ export function attachSIHostListeners(
 	gameClient: ISIHostClient,
 	connection: signalR.HubConnection,
 	dispatch: Dispatch<AnyAction>,
-	controller: ClientController): void {
+	controller: ClientController
+): void {
 	connection.on('Receive', (message: Message) => messageProcessor(controller, dispatch, message));
 
 	connection.on('Disconnect', () => {
