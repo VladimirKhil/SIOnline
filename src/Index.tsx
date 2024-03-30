@@ -289,6 +289,8 @@ async function run() {
 		document.getElementById('reactHost')
 	);
 
+	await dataContext.state.initAsync();
+
 	const initialView = getInitialView(dataContext.state.loadNavigationState() as INavigationState);
 	store.dispatch(actionCreators.init(initialView) as unknown as Action);
 

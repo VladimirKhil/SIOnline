@@ -665,7 +665,7 @@ const viewerHandler = (controller: ClientController, dispatch: Dispatch<any>, st
 					.catch((e : TypeError) => {
 						dispatch(roomActionCreators.chatMessageAdded({
 							sender: '',
-							text: e.message,
+							text: url + ' ' + e.message,
 							level: MessageLevel.System,
 						}));
 					});

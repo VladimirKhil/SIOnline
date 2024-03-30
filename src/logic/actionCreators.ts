@@ -38,6 +38,11 @@ import Role from '../model/Role';
 import ServerRole from '../client/contracts/ServerRole';
 import ServerSex from '../client/contracts/ServerSex';
 
+interface ConnectResult {
+	success: boolean;
+	error?: string;
+}
+
 const onAvatarSelectedLocal: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 	(avatar: File) => async (dispatch: Dispatch<Action>) => {
 		try {
@@ -179,9 +184,9 @@ async function loadHostInfoAsync(dispatch: Dispatch<any>, dataContext: DataConte
 	dispatch(commonActionCreators.serverInfoChanged(hostInfo.Name, hostInfo.License, hostInfo.MaxPackageSizeMb));
 }
 
-const connectAsync = async (dispatch: Dispatch<Action>, getState: () => State, dataContext: DataContext): Promise<boolean> => {
+const tryConnectAsync = async (dispatch: Dispatch<Action>, getState: () => State, dataContext: DataContext): Promise<ConnectResult> => {
 	if (dataContext.connection) {
-		return true;
+		return { success: true };
 	}
 
 	const connectionBuilder = new signalR.HubConnectionBuilder()
@@ -224,15 +229,10 @@ const connectAsync = async (dispatch: Dispatch<Action>, getState: () => State, d
 		await loadHostInfoAsync(dispatch, dataContext, requestCulture);
 		await uploadAvatarAsync(dispatch, dataContext);
 
-		return true;
+		return { success: true };
 	} catch (error) {
 		dataContext.connection = null;
-
-		if (error) {
-			return false;
-		}
-
-		throw error;
+		return { success: false, error: getErrorMessage(error) };
 	}
 };
 
@@ -377,7 +377,7 @@ const init: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 	(initialView: INavigationState) => async (dispatch: Dispatch<Action>, getState: () => State, dataContext: DataContext) => {
 		if (initialView.path === Path.Login) {
 			dispatch(uiActionCreators.navigate({ path: Path.Login, callbackState: { path: Path.Root } }) as unknown as Action);
-		} else if (await connectAsync(dispatch, getState, dataContext)) {
+		} else if ((await tryConnectAsync(dispatch, getState, dataContext)).success) {
 			await checkLicenseAsync(initialView, dispatch, getState, dataContext);
 		} else {
 			dispatch(uiActionCreators.navigate({ path: Path.Login, callbackState: initialView }) as unknown as Action);
@@ -406,13 +406,14 @@ const login: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 			}
 
 			saveStateToStorage(state);
+			const connectResult = await tryConnectAsync(dispatch, getState, dataContext);
 
-			if (await connectAsync(dispatch, getState, dataContext)) {
+			if (connectResult.success) {
 				dispatch(userActionCreators.onLoginChanged(state.user.login.trim())); // Normalize login
 				appDispatch(endLogin(null));
 				await checkLicenseAsync(state.ui.navigation.callbackState ?? { path: Path.Root }, dispatch, getState, dataContext);
 			} else {
-				appDispatch(endLogin(localization.errorHappened));
+				appDispatch(endLogin(connectResult.error ?? localization.errorHappened));
 			}
 		} catch (err) {
 			appDispatch(endLogin(`${localization.cannotConnectToServer}: ${getErrorMessage(err)}`));

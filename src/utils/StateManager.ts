@@ -3,6 +3,10 @@ import { getCookie, setCookie } from './CookieHelpers';
 const ACCEPT_LICENSE_KEY = 'ACCEPT_LICENSE';
 
 export default class StateManager {
+	initAsync(): Promise<void> {
+		return Promise.resolve();
+	}
+
 	isLicenseAccepted() {
 		return getCookie(ACCEPT_LICENSE_KEY) !== '';
 	}
