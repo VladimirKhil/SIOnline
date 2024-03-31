@@ -345,7 +345,7 @@ const initGameAsync = async (
 
 	await gameInit(gameClient, role);
 
-	const navigaionState: INavigationState = {
+	const navigationState: INavigationState = {
 		path: Path.Room,
 		hostUri: hostUri,
 		gameId: gameId,
@@ -356,9 +356,9 @@ const initGameAsync = async (
 	};
 
 	if (navigate) {
-		dispatch(uiActionCreators.navigate(navigaionState));
+		dispatch(uiActionCreators.navigate(navigationState));
 	} else {
-		dispatch(uiActionCreators.onNavigated(navigaionState));
+		dispatch(uiActionCreators.onNavigated(navigationState));
 	}
 };
 

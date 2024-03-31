@@ -1,13 +1,15 @@
+import { Store } from 'redux';
 import { getCookie, setCookie } from './CookieHelpers';
+import IStateManager from './IStateManager';
 
 const ACCEPT_LICENSE_KEY = 'ACCEPT_LICENSE';
 
-export default class StateManager {
-	initAsync(): Promise<void> {
+export default class StateManager implements IStateManager {
+	initAsync(store: Store): Promise<void> {
 		return Promise.resolve();
 	}
 
-	isLicenseAccepted() {
+	isLicenseAccepted(): boolean {
 		return getCookie(ACCEPT_LICENSE_KEY) !== '';
 	}
 

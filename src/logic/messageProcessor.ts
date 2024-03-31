@@ -663,11 +663,7 @@ const viewerHandler = (controller: ClientController, dispatch: Dispatch<any>, st
 						}
 					})
 					.catch((e : TypeError) => {
-						dispatch(roomActionCreators.chatMessageAdded({
-							sender: '',
-							text: url + ' ' + e.message,
-							level: MessageLevel.System,
-						}));
+						console.error(url + ' ' + e.message);
 					});
 
 				// Chrome does not support audio and video preload

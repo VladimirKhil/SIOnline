@@ -60,6 +60,7 @@ export class PartialTextContent extends React.Component<PartialTextContentProps,
 				<div ref={this.divRef} className="tableText nonAligned">
 					<span>
 						{this.props.text.split('').map((c, i) => <span
+							key={i}
 							className={i < this.state.visibleLength ? 'animatablePartialCharacter' : 'invisible'}
 							>{c}</span>)}
 					</span>

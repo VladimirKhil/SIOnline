@@ -32,15 +32,17 @@ import ButtonPressMode from './model/ButtonPressMode';
 import Path from './model/enums/Path';
 import { INavigationState } from './state/ui/UIState';
 import StateManager from './utils/StateManager';
+import YAStateManager from './utils/YAStateManager';
 
 import './utils/polyfills';
 import './style.css';
-
 declare const config: Config | undefined;
 declare const firebaseConfig: FirebaseOptions | undefined;
 
 export let app: FirebaseApp | null = null;
 export let analytics: Analytics | null = null;
+
+const OriginYandex = 'https://yandex.ru';
 
 function setState(state: State, savedState: SavedState | null): State {
 	if (!savedState) {
@@ -236,6 +238,14 @@ async function run() {
 
 	const gameClient = new GameServerClient(noOpHubConnection, () => { });
 
+	const urlParams = new URLSearchParams(window.location.hash.substring(1));
+	const origin = urlParams.get('origin');
+
+	if (origin === OriginYandex) {
+		// ads: '', rewriteUrl: false, emojiCultures: ['en'], clearUrls: true
+		console.log('Loading from Yandex');
+	}
+
 	const dataContext: DataContext = {
 		config,
 		serverUri,
@@ -245,7 +255,7 @@ async function run() {
 		contentUris: null,
 		contentClient: new SIContentClient({ serviceUri: 'http://fake' }),
 		storageClient: null,
-		state: new StateManager(),
+		state: origin === OriginYandex ? new YAStateManager() : new StateManager(),
 	};
 
 	const store = createStore<State, AnyAction, {}, {}>(
@@ -289,7 +299,7 @@ async function run() {
 		document.getElementById('reactHost')
 	);
 
-	await dataContext.state.initAsync();
+	await dataContext.state.initAsync(store);
 
 	const initialView = getInitialView(dataContext.state.loadNavigationState() as INavigationState);
 	store.dispatch(actionCreators.init(initialView) as unknown as Action);

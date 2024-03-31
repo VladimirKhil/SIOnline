@@ -329,39 +329,71 @@ function getServerRole(role: Role) {
 
 const navigateAsync = async (view: INavigationState, dispatch: Dispatch<Action>, getState: () => State, dataContext: DataContext) => {
 	if (view.path === Path.Room) {
-		if (view.gameId && view.role && view.hostUri) {
-			const siHostClient = await connectToSIHostAsync(view.hostUri, dispatch, getState, dataContext);
+		if (view.gameId && view.role) {
+			if (view.hostUri) {
+				const siHostClient = await connectToSIHostAsync(view.hostUri, dispatch, getState, dataContext);
 
-			const state = getState();
-			const serverRole = getServerRole(view.role);
+				const state = getState();
+				const serverRole = getServerRole(view.role);
 
-			const result = await siHostClient.joinGameAsync({
-				GameId: view.gameId,
-				UserName: state.user.login,
-				Role: serverRole,
-				Sex: view.sex === Sex.Male ? ServerSex.Male : ServerSex.Female,
-				Password: view.password ?? '',
-			});
+				const result = await siHostClient.joinGameAsync({
+					GameId: view.gameId,
+					UserName: state.user.login,
+					Role: serverRole,
+					Sex: view.sex === Sex.Male ? ServerSex.Male : ServerSex.Female,
+					Password: view.password ?? '',
+				});
 
-			if (!result.IsSuccess) {
-				dispatch(commonActionCreators.onUserError(`${localization.joinError}: ${result.ErrorType} ${result.Message}`) as any);
-				dispatch(uiActionCreators.navigate({ path: Path.Root }) as unknown as Action);
-				return;
+				if (!result.IsSuccess) {
+					dispatch(commonActionCreators.onUserError(`${localization.joinError}: ${result.ErrorType} ${result.Message}`) as any);
+					dispatch(uiActionCreators.navigate({ path: Path.Root }) as unknown as Action);
+					return;
+				}
+
+				await onlineActionCreators.initGameAsync(
+					dispatch,
+					dataContext.game,
+					view.hostUri ?? '',
+					view.gameId,
+					view.role,
+					view.sex ?? Sex.Female,
+					view.password ?? '',
+					view.isAutomatic ?? false,
+					false
+				);
+
+				await disconnectAsync(dispatch, dataContext);
+			} else {
+				const result = await dataContext.gameClient.joinGameAsync(
+					view.gameId,
+					view.role,
+					view.sex === Sex.Male,
+					view.password ?? ''
+				);
+
+				if (result.ErrorMessage) {
+					dispatch(commonActionCreators.onUserError(`${localization.joinError}: ${result.ErrorMessage}`) as any);
+					dispatch(uiActionCreators.navigate({ path: Path.Root }) as unknown as Action);
+					return;
+				}
+
+				dataContext.game = new GameClient(dataContext.gameClient, false);
+
+				await onlineActionCreators.initGameAsync(
+					dispatch,
+					dataContext.game,
+					view.hostUri ?? '',
+					result.GameId,
+					view.role,
+					view.sex ?? Sex.Female,
+					view.password ?? '',
+					view.isAutomatic ?? false,
+					false
+				);
 			}
-
-			await onlineActionCreators.initGameAsync(
-				dispatch,
-				dataContext.game,
-				view.hostUri ?? '',
-				view.gameId,
-				view.role,
-				view.sex ?? Sex.Female,
-				view.password ?? '',
-				view.isAutomatic ?? false,
-				false
-			);
-
-			await disconnectAsync(dispatch, dataContext);
+		} else {
+			dispatch(uiActionCreators.navigate({ path: Path.Root }) as unknown as Action);
+			return;
 		}
 	}
 
