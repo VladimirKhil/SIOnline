@@ -16,7 +16,6 @@ import onlineActionCreators from '../state/online/onlineActionCreators';
 import isWindowsOS from '../utils/isWindowsOS';
 import PackageFileSelector from './PackageFileSelector';
 import { INavigationState } from '../state/ui/UIState';
-import Path from '../model/enums/Path';
 
 import './NewGameDialog.css';
 
@@ -39,6 +38,7 @@ interface NewGameDialogProps {
 	uploadPackageProgress: boolean;
 	uploadPackagePercentage: number;
 	navigation: INavigationState;
+	clearUrls?: boolean;
 
 	onGameNameChanged: (newGameName: string) => void;
 	onGamePasswordChanged: (newGamePassword: string) => void;
@@ -73,6 +73,7 @@ const mapStateToProps = (state: State) => ({
 	uploadPackageProgress:  state.online.uploadPackageProgress,
 	uploadPackagePercentage: state.online.uploadPackagePercentage,
 	navigation: state.ui.navigation,
+	clearUrls: state.common.clearUrls,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
@@ -243,7 +244,7 @@ export function NewGameDialog(props: NewGameDialogProps) {
 									<li onClick={onFilePackageSelected}>{`${localization.file}…`}</li>
 									<li onClick={() => setIsSIStorageOpen(true)}>{`${localization.libraryTitle}…`}</li>
 
-									{localization.userPackages.length > 0
+									{!props.clearUrls && localization.userPackages.length > 0
 									? <>
 										<li>
 											<a
@@ -287,7 +288,7 @@ export function NewGameDialog(props: NewGameDialogProps) {
 									</>
 									: null}
 
-									{isWindowsOS()
+									{!props.clearUrls && isWindowsOS()
 										? <li>
 											<a
 												className='simpleLink'

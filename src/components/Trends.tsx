@@ -5,6 +5,7 @@ import GamesResponse from 'sistatistics-client/dist/models/GamesResponse';
 import PackagesStatistic from 'sistatistics-client/dist/models/PackagesStatistic';
 import GamesStatistic from 'sistatistics-client/dist/models/GamesStatistic';
 import localization from '../model/resources/localization';
+import Link from './common/Link';
 
 import './Trends.css';
 
@@ -12,12 +13,14 @@ interface TrendsProps {
 	latestGames?: GamesResponse;
 	gamesStatistics?: GamesStatistic;
 	packagesStatistics?: PackagesStatistic;
+	clearUrls?: boolean;
 }
 
 const mapStateToProps: MapStateToProps<TrendsProps, unknown, State> = (state: State) => ({
 	latestGames: state.online.latestGames,
 	gamesStatistics: state.online.gamesStatistics,
 	packagesStatistics: state.online.packagesStatistics,
+	clearUrls: state.common.clearUrls,
 });
 
 function print(value: any) {
@@ -43,9 +46,9 @@ export function Trends(props: TrendsProps): JSX.Element {
 							<div><span className='packageName'>{p.package.name}</span> ({localization.ofGames}: {p.gameCount})</div>
 							<div>{localization.by} <span className='packageAuthors'>
 								{isValidLink(p.package.authorsContacts)
-									? <a href={p.package.authorsContacts} target='_blank' rel='noopener noreferrer'>{p.package.authors}</a>
+									? <Link href={p.package.authorsContacts} target='_blank' rel='noopener noreferrer'>{p.package.authors}</Link>
 									: <span
-										title={p.package.authorsContacts}
+										title={props.clearUrls ? undefined : p.package.authorsContacts}
 										className={p.package.authorsContacts && p.package.authorsContacts.length > 0 ? 'hasContact' : ''}>
 										{p.package.authors}
 									</span>}

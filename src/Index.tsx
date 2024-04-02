@@ -231,9 +231,6 @@ async function run() {
 	const savedState = loadState();
 	const state = setState(initialState, savedState);
 
-	state.common.askForConsent = !!config.askForConsent;
-	state.common.emojiCultures = config.emojiCultures;
-
 	const noOpHubConnection = new signalR.HubConnectionBuilder().withUrl('http://fake').build();
 
 	const gameClient = new GameServerClient(noOpHubConnection, () => { });
@@ -242,9 +239,17 @@ async function run() {
 	const origin = urlParams.get('origin');
 
 	if (origin === OriginYandex) {
-		// ads: '', rewriteUrl: false, emojiCultures: ['en'], clearUrls: true
 		console.log('Loading from Yandex');
+		config.askForConsent = false;
+		config.emojiCultures = ['en'];
+		config.rewriteUrl = false;
+		config.clearUrls = true;
+		config.ads = '';
 	}
+
+	state.common.askForConsent = !!config.askForConsent;
+	state.common.emojiCultures = config.emojiCultures;
+	state.common.clearUrls = config.clearUrls;
 
 	const dataContext: DataContext = {
 		config,

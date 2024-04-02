@@ -9,6 +9,7 @@ export default interface CommonState {
 	userError: string | null;
 	askForConsent: boolean;
 	emojiCultures?: string[];
+	clearUrls?: boolean;
 	avatarLoadProgress: boolean;
 	avatarLoadError: string | null;
 	audio: string | null;

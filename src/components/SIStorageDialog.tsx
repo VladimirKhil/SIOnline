@@ -40,6 +40,7 @@ interface StateProps {
 	error: string | null;
 	culture: string;
 	languageId?: number;
+	clearUrls?: boolean;
 }
 
 interface OwnProps {
@@ -66,6 +67,7 @@ const mapStateToProps = (state: State): StateProps => ({
 	error: state.siPackages.error,
 	culture: getFullCulture(state),
 	languageId: state.siPackages.languageId,
+	clearUrls: state.common.clearUrls,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>): DispatchProps => ({
@@ -402,24 +404,27 @@ export class SIStorageDialog extends React.Component<SIStorageDialogProps, SISto
 						</div>
 
 						<div>
-							<span className="selectorName">{localization.packageRestriction}</span>
+							{this.props.clearUrls ? null
+							: <>
+								<span className="selectorName">{localization.packageRestriction}</span>
 
-							<select
-								aria-label='restriction filter'
-								className="selector"
-								value={restrictionId}
-								onChange={e => this.onRestrictionIdChanged(e.target.value)}>
-								<option key={undefined} value={undefined}>{localization.librarySearchAll}</option>
-								<option key={-1} value={-1}>{localization.librarySearchNotSet}</option>
+								<select
+									aria-label='restriction filter'
+									className="selector"
+									value={restrictionId}
+									onChange={e => this.onRestrictionIdChanged(e.target.value)}>
+									<option key={undefined} value={undefined}>{localization.librarySearchAll}</option>
+									<option key={-1} value={-1}>{localization.librarySearchNotSet}</option>
 
-								{keys(this.props.restrictions).map((id) => (
-									<option key={id} value={id}>
-										{this.props.restrictions[id].value}
-									</option>
-								))}
-							</select>
+									{keys(this.props.restrictions).map((id) => (
+										<option key={id} value={id}>
+											{this.props.restrictions[id].value}
+										</option>
+									))}
+								</select>
 
-							<br />
+								<br />
+							</>}
 							<span className="selectorName">{localization.filter}</span>
 
 							<input

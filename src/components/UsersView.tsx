@@ -16,6 +16,7 @@ interface UsersViewStateProps {
 	chatMode: LobbySideMode;
 	usersCount: number;
 	isLobbyChatHidden: boolean;
+	clearUrls?: boolean;
 }
 
 interface UsersViewOwnProps {
@@ -29,7 +30,8 @@ interface UsersViewProps extends UsersViewOwnProps, UsersViewStateProps {
 const mapStateToProps = (state: State) => ({
 	chatMode: state.online.chatMode,
 	usersCount: state.online.users.length,
-	isLobbyChatHidden: state.settings.isLobbyChatHidden
+	isLobbyChatHidden: state.settings.isLobbyChatHidden,
+	clearUrls: state.common.clearUrls,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
@@ -49,6 +51,7 @@ export function UsersView(props: UsersViewProps): JSX.Element | null {
 		<section className="chatHost gamesblock">
 			<header>
 				<LobbyMenu />
+
 				<div id="chatHostTitle" className="tabHeader">
 					<h1
 						className={props.chatMode === LobbySideMode.Trends ? 'activeTab' : ''}
@@ -57,7 +60,7 @@ export function UsersView(props: UsersViewProps): JSX.Element | null {
 						{localization.trends}
 					</h1>
 
-					{localization.getLanguage() === 'ru'
+					{!props.clearUrls && localization.getLanguage() === 'ru'
 						? <>
 							<h1
 								className={props.chatMode === LobbySideMode.Chat ? 'activeTab' : ''}
