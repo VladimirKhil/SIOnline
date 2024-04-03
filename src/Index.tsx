@@ -33,9 +33,11 @@ import Path from './model/enums/Path';
 import { INavigationState } from './state/ui/UIState';
 import StateManager from './utils/StateManager';
 import YAStateManager from './utils/YAStateManager';
+import IStateManager from './utils/IStateManager';
 
 import './utils/polyfills';
 import './style.css';
+
 declare const config: Config | undefined;
 declare const firebaseConfig: FirebaseOptions | undefined;
 
@@ -43,6 +45,10 @@ export let app: FirebaseApp | null = null;
 export let analytics: Analytics | null = null;
 
 const OriginYandex = 'https://yandex.ru';
+
+if (!config) {
+	throw new Error('Config is undefined!');
+}
 
 function setState(state: State, savedState: SavedState | null): State {
 	if (!savedState) {
@@ -197,7 +203,7 @@ function getInitialView(historyState: INavigationState): INavigationState {
 	return { path: Path.Root };
 }
 
-async function run() {
+async function run(stateManager: IStateManager) {
 	if (!config) {
 		throw new Error('Config is undefined!');
 	}
@@ -235,18 +241,6 @@ async function run() {
 
 	const gameClient = new GameServerClient(noOpHubConnection, () => { });
 
-	const urlParams = new URLSearchParams(window.location.hash.substring(1));
-	const origin = urlParams.get('origin');
-
-	if (origin === OriginYandex) {
-		console.log('Loading from Yandex');
-		config.askForConsent = false;
-		config.emojiCultures = ['en'];
-		config.rewriteUrl = false;
-		config.clearUrls = true;
-		config.ads = '';
-	}
-
 	state.common.askForConsent = !!config.askForConsent;
 	state.common.emojiCultures = config.emojiCultures;
 	state.common.clearUrls = config.clearUrls;
@@ -260,7 +254,7 @@ async function run() {
 		contentUris: null,
 		contentClient: new SIContentClient({ serviceUri: 'http://fake' }),
 		storageClient: null,
-		state: origin === OriginYandex ? new YAStateManager() : new StateManager(),
+		state: stateManager,
 	};
 
 	const store = createStore<State, AnyAction, {}, {}>(
@@ -308,16 +302,30 @@ async function run() {
 
 	const initialView = getInitialView(dataContext.state.loadNavigationState() as INavigationState);
 	store.dispatch(actionCreators.init(initialView) as unknown as Action);
-
-	const deviceType = getDeviceType();
-
-	if (config.enableNoSleep && deviceType == 'mobile' && !isSafari()) {
-		enableNoSleep();
-	}
 }
 
-run();
+const urlParams = new URLSearchParams(window.location.hash.substring(1));
+const origin = urlParams.get('origin');
+
+if (origin === OriginYandex) {
+	console.log('Loading from Yandex');
+	config.askForConsent = false;
+	config.enableNoSleep = false;
+	config.registerServiceWorker = false;
+	config.emojiCultures = ['en'];
+	config.rewriteUrl = false;
+	config.clearUrls = true;
+	config.ads = '';
+}
+
+run(origin === OriginYandex ? new YAStateManager() : new StateManager());
 
 if ('serviceWorker' in navigator && config && config.registerServiceWorker) {
 	window.addEventListener('load', registerServiceWorker2);
+}
+
+const deviceType = getDeviceType();
+
+if (config.enableNoSleep && deviceType == 'mobile' && !isSafari()) {
+	enableNoSleep();
 }
