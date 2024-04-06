@@ -4,7 +4,7 @@ import * as signalR from '@microsoft/signalr';
 import { Action, AnyAction, applyMiddleware, createStore, Store } from 'redux';
 import { Provider } from 'react-redux';
 import reduxThunk from 'redux-thunk';
-import App from './components/App';
+import App from './components/App/App';
 import State, { initialState } from './state/State';
 import reducer from './state/reducer';
 import SavedState, { loadState } from './state/SavedState';
@@ -17,7 +17,7 @@ import ServerInfo from './model/server/ServerInfo';
 import GameClient from './client/game/GameClient';
 import { FirebaseApp, FirebaseOptions, initializeApp } from 'firebase/app';
 import { Analytics, getAnalytics } from 'firebase/analytics';
-import { ErrorView } from './components/ErrorView';
+import { ErrorView } from './components/views/Error/ErrorView';
 import Constants from './model/enums/Constants';
 import settingsActionCreators from './state/settings/settingsActionCreators';
 import getErrorMessage from './utils/ErrorHelpers';
@@ -193,7 +193,7 @@ function getInitialView(historyState: INavigationState): INavigationState {
 	}
 
 	if (gameId && invite) {
-		return { path: Path.RoomJoin, gameId: parseInt(gameId, 10) };
+		return { path: Path.JoinRoom, gameId: parseInt(gameId, 10) };
 	}
 
 	if (packageUri) {

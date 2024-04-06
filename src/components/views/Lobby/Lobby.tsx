@@ -1,24 +1,24 @@
 ﻿import * as React from 'react';
 import { connect } from 'react-redux';
-import GamesList from './GamesList';
-import State from '../state/State';
-import GameInfoView from './GameInfoView';
-import UsersView from './UsersView';
-import OnlineMode from '../model/enums/OnlineMode';
-import NewGameDialog from './NewGameDialog';
-import GameInfo from '../client/contracts/GameInfo';
-import Dialog from './common/Dialog';
-import onlineActionCreators from '../state/online/onlineActionCreators';
+import GamesList from '../../GamesList';
+import State from '../../../state/State';
+import GameInfoView from '../../GameInfoView';
+import UsersView from '../../UsersView';
+import OnlineMode from '../../../model/enums/OnlineMode';
+import NewGameDialog from '../../NewGameDialog';
+import GameInfo from '../../../client/contracts/GameInfo';
+import Dialog from '../../common/Dialog';
+import onlineActionCreators from '../../../state/online/onlineActionCreators';
 import { Dispatch, Action } from 'redux';
-import ProgressBar from './common/ProgressBar';
-import { filterGames } from '../utils/GamesHelpers';
-import SettingsButton from './SettingsButton';
-import LobbyChatVisibilityButton from './LobbyChatVisibilityButton';
-import uiActionCreators from '../state/ui/uiActionCreators';
+import ProgressBar from '../../common/ProgressBar';
+import { filterGames } from '../../../utils/GamesHelpers';
+import SettingsButton from '../../SettingsButton';
+import LobbyChatVisibilityButton from '../../LobbyChatVisibilityButton';
+import uiActionCreators from '../../../state/ui/uiActionCreators';
 
-import './OnlineView.css';
+import './Lobby.css';
 
-interface OnlineViewProps {
+interface LobbyProps {
 	inProgress: boolean;
 	filteredGames: GameInfo[];
 	selectedGameId: number;
@@ -59,7 +59,7 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	}
 });
 
-export class OnlineView extends React.Component<OnlineViewProps> {
+export class Lobby extends React.Component<LobbyProps> {
 	render() {
 		const newGame = (
 			<div className={`newGameArea ${this.props.isLobbyChatHidden ? 'newWide' : null}`}>
@@ -108,4 +108,4 @@ export class OnlineView extends React.Component<OnlineViewProps> {
 	}
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(OnlineView);
+export default connect(mapStateToProps, mapDispatchToProps)(Lobby);

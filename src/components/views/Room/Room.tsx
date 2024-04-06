@@ -1,37 +1,37 @@
 ﻿import * as React from 'react';
 import { connect } from 'react-redux';
 import { Action, Dispatch } from 'redux';
-import State from '../../state/State';
-import PlayersView from './PlayersView';
-import GameTable from '../gameTable/GameTable';
-import GameChatView from './GameChatView';
-import SideControlPanel from './SideControlPanel';
-import ShowmanReplicView from './ShowmanReplicView';
-import PersonsDialog from './PersonsDialog';
-import GameLogView from './GameLogView';
-import AnswerValidationDialog from './AnswerValidationDialog';
-import RoundProgress from './RoundProgress';
-import localization from '../../model/resources/localization';
-import roomActionCreators from '../../state/room/roomActionCreators';
-import uiActionCreators from '../../state/ui/uiActionCreators';
-import PersonsView from './PersonsView';
-import TablesView from './TablesView';
-import Dialog from '../common/Dialog';
-import ManageGameView from './ManageGameView';
-import Constants from '../../model/enums/Constants';
-import GameMetadataView from './GameMetadataView';
-import BannedView from './BannedView';
-import TableContextView from './TableContextView/TableContextView';
-import ChatInput from './ChatInput';
-import PlayersListView from './PlayersListView/PlayersListView';
-import GameProgress from './GameProgress';
-import ChatMessage from '../../model/ChatMessage';
-import MessageLevel from '../../model/enums/MessageLevel';
-import commonActionCreators from '../../state/common/commonActionCreators';
+import State from '../../../state/State';
+import PlayersView from '../../game/PlayersView';
+import GameTable from '../../gameTable/GameTable';
+import GameChatView from '../../game/GameChatView';
+import SideControlPanel from '../../game/SideControlPanel';
+import ShowmanReplicView from '../../game/ShowmanReplicView';
+import PersonsDialog from '../../game/PersonsDialog';
+import GameLogView from '../../game/GameLogView';
+import AnswerValidationDialog from '../../game/AnswerValidationDialog';
+import RoundProgress from '../../game/RoundProgress';
+import localization from '../../../model/resources/localization';
+import roomActionCreators from '../../../state/room/roomActionCreators';
+import uiActionCreators from '../../../state/ui/uiActionCreators';
+import PersonsView from '../../game/PersonsView';
+import TablesView from '../../game/TablesView';
+import Dialog from '../../common/Dialog';
+import ManageGameView from '../../game/ManageGameView';
+import Constants from '../../../model/enums/Constants';
+import GameMetadataView from '../../game/GameMetadataView';
+import BannedView from '../../game/BannedView';
+import TableContextView from '../../game/TableContextView/TableContextView';
+import ChatInput from '../../game/ChatInput';
+import PlayersListView from '../../game/PlayersListView/PlayersListView';
+import GameProgress from '../../game/GameProgress';
+import ChatMessage from '../../../model/ChatMessage';
+import MessageLevel from '../../../model/enums/MessageLevel';
+import commonActionCreators from '../../../state/common/commonActionCreators';
 
-import './InGameView.css';
+import './Room.css';
 
-interface InGameViewProps {
+interface RoomProps {
 	windowWidth: number;
 	// eslint-disable-next-line react/no-unused-prop-types
 	isChatOpen: boolean;
@@ -114,7 +114,7 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	}
 });
 
-export function InGameView(props: InGameViewProps) : JSX.Element {
+export function Room(props: RoomProps) : JSX.Element {
 	React.useEffect(() => {
 		if (props.kicked) {
 			props.onUserError(localization.youAreKicked);
@@ -122,7 +122,7 @@ export function InGameView(props: InGameViewProps) : JSX.Element {
 		}
 	}, [props.kicked]);
 
-	const prevPropsRef = React.useRef<InGameViewProps>();
+	const prevPropsRef = React.useRef<RoomProps>();
 
 	React.useEffect(() => {
 		prevPropsRef.current = prevPropsRef.current || props;
@@ -231,4 +231,4 @@ export function InGameView(props: InGameViewProps) : JSX.Element {
 	);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(InGameView);
+export default connect(mapStateToProps, mapDispatchToProps)(Room);

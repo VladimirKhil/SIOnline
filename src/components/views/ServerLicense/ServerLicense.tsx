@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { useState } from 'react';
-import localization from '../model/resources/localization';
-import State from '../state/State';
-import userActionCreators from '../state/user/userActionCreators';
+import localization from '../../../model/resources/localization';
+import State from '../../../state/State';
+import userActionCreators from '../../../state/user/userActionCreators';
 
 import './ServerLicense.css';
 

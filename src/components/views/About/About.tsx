@@ -1,8 +1,8 @@
 ﻿import * as React from 'react';
-import localization from '../model/resources/localization';
-import Dialog from './common/Dialog';
-import Link from './common/Link';
-import State from '../state/State';
+import localization from '../../../model/resources/localization';
+import Dialog from '../../common/Dialog';
+import Link from '../../common/Link';
+import State from '../../../state/State';
 import { connect } from 'react-redux';
 
 import './About.css';

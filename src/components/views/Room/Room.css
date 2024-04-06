@@ -111,7 +111,7 @@
 @media screen and (min-width: 1100px) {
     .gameMain {
         flex-direction: row;
-        background-image: url('../../../assets/images/studia.jpg');
+        background-image: url('../../../../assets/images/studia.jpg');
         background-size: cover;
         background-repeat: no-repeat;
     }

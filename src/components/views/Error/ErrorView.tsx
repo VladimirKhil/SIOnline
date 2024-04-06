@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import localization from '../model/resources/localization';
+import localization from '../../../model/resources/localization';
 
 import './ErrorView.css';
 

@@ -2,23 +2,23 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch, Action, AnyAction } from 'redux';
-import gameActionCreators from '../state/game/gameActionCreators';
-import localization from '../model/resources/localization';
-import State from '../state/State';
-import GameInfo from '../client/contracts/GameInfo';
-import { filterGames } from '../utils/GamesHelpers';
-import GamesFilter from '../model/enums/GamesFilter';
-import NewGameDialog from './NewGameDialog';
-import Dialog from './common/Dialog';
-import GameInfoView from './GameInfoView';
-import uiActionCreators from '../state/ui/uiActionCreators';
-import onlineActionCreators from '../state/online/onlineActionCreators';
-import OnlineMode from '../model/enums/OnlineMode';
-import Path from '../model/enums/Path';
+import gameActionCreators from '../../../state/game/gameActionCreators';
+import localization from '../../../model/resources/localization';
+import State from '../../../state/State';
+import GameInfo from '../../../client/contracts/GameInfo';
+import { filterGames } from '../../../utils/GamesHelpers';
+import GamesFilter from '../../../model/enums/GamesFilter';
+import NewGameDialog from '../../NewGameDialog';
+import Dialog from '../../common/Dialog';
+import GameInfoView from '../../GameInfoView';
+import uiActionCreators from '../../../state/ui/uiActionCreators';
+import onlineActionCreators from '../../../state/online/onlineActionCreators';
+import OnlineMode from '../../../model/enums/OnlineMode';
+import Path from '../../../model/enums/Path';
 
 import './Games.css';
 
-import closeSvg from '../../assets/images/close.svg';
+import closeSvg from '../../../../assets/images/close.svg';
 
 interface GamesProps {
 	isConnected: boolean;

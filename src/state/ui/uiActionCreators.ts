@@ -45,7 +45,7 @@ const handleNavigation = (navigation: INavigationState, dispatch: Dispatch<Actio
 
 	if (navigation.path === Path.Room) {
 		nav = { ...navigation, returnToLobby: getState().ui.navigation.path === Path.Lobby };
-	} else if (navigation.path === Path.RoomJoin) {
+	} else if (navigation.path === Path.JoinRoom) {
 		dispatch(onlineActionCreators.receiveGameStart());
 		nav = navigation;
 	} else {
@@ -59,7 +59,7 @@ const handleNavigation = (navigation: INavigationState, dispatch: Dispatch<Actio
 			dispatch(onlineActionCreators.friendsPlay() as unknown as Action);
 			break;
 
-		case Path.RoomJoin:
+		case Path.JoinRoom:
 			dispatch(onlineActionCreators.friendsPlay() as unknown as Action);
 			break;
 

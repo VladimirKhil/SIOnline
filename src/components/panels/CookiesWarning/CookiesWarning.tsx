@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useState } from 'react';
-import localization from '../model/resources/localization';
-import { getCookie, setCookie } from '../utils/CookieHelpers';
+import localization from '../../../model/resources/localization';
+import { getCookie, setCookie } from '../../../utils/CookieHelpers';
 
 import './CookiesWarning.css';
 

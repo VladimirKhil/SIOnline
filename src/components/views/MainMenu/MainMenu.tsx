@@ -1,19 +1,19 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import localization from '../model/resources/localization';
-import State from '../state/State';
-import Dialog from './common/Dialog';
-import GameSound from '../model/enums/GameSound';
-import commonActionCreators from '../state/common/commonActionCreators';
-import onlineActionCreators from '../state/online/onlineActionCreators';
-import Path from '../model/enums/Path';
+import localization from '../../../model/resources/localization';
+import State from '../../../state/State';
+import Dialog from '../../common/Dialog';
+import GameSound from '../../../model/enums/GameSound';
+import commonActionCreators from '../../../state/common/commonActionCreators';
+import onlineActionCreators from '../../../state/online/onlineActionCreators';
+import Path from '../../../model/enums/Path';
 import { Action } from 'redux';
-import { INavigationState } from '../state/ui/UIState';
-import uiActionCreators from '../state/ui/uiActionCreators';
-import actionCreators from '../logic/actionCreators';
+import { INavigationState } from '../../../state/ui/UIState';
+import uiActionCreators from '../../../state/ui/uiActionCreators';
+import actionCreators from '../../../logic/actionCreators';
 
 import './MainMenu.css';
-import exitImg from '../../assets/images/exit.png';
+import exitImg from '../../../../assets/images/exit.png';
 
 interface MainMenuProps {
 	isConnected: boolean;

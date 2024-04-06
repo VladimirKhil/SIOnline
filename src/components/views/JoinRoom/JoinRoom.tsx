@@ -1,13 +1,13 @@
 import * as React from 'react';
-import GameInfo from '../client/contracts/GameInfo';
-import State from '../state/State';
-import Dialog from './common/Dialog';
-import GameInfoView from './GameInfoView';
+import GameInfo from '../../../client/contracts/GameInfo';
+import State from '../../../state/State';
+import Dialog from '../../common/Dialog';
+import GameInfoView from '../../GameInfoView';
 import { connect } from 'react-redux';
-import Path from '../model/enums/Path';
-import uiActionCreators from '../state/ui/uiActionCreators';
+import Path from '../../../model/enums/Path';
+import uiActionCreators from '../../../state/ui/uiActionCreators';
 import { Action } from 'redux';
-import commonActionCreators from '../state/common/commonActionCreators';
+import commonActionCreators from '../../../state/common/commonActionCreators';
 
 interface JoinRoomProps {
 	inProgress: boolean;

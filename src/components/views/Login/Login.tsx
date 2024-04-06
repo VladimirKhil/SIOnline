@@ -1,19 +1,19 @@
 ﻿import * as React from 'react';
 import { Action, Dispatch } from 'redux';
 import { connect } from 'react-redux';
-import Constants from '../model/enums/Constants';
-import localization from '../model/resources/localization';
-import State from '../state/State';
-import actionCreators from '../logic/actionCreators';
-import ProgressBar from './common/ProgressBar';
-import AvatarView from './AvatarView';
-import SexView from './SexView';
-import LanguageView from './LanguageView';
-import userActionCreators from '../state/user/userActionCreators';
-import Path from '../model/enums/Path';
-import uiActionCreators from '../state/ui/uiActionCreators';
-import { useAppDispatch, useAppSelector } from '../state/new/hooks';
-import { AppDispatch, RootState } from '../state/new/store';
+import Constants from '../../../model/enums/Constants';
+import localization from '../../../model/resources/localization';
+import State from '../../../state/State';
+import actionCreators from '../../../logic/actionCreators';
+import ProgressBar from '../../common/ProgressBar';
+import AvatarView from '../../AvatarView';
+import SexView from '../../SexView';
+import LanguageView from '../../LanguageView';
+import userActionCreators from '../../../state/user/userActionCreators';
+import Path from '../../../model/enums/Path';
+import uiActionCreators from '../../../state/ui/uiActionCreators';
+import { useAppDispatch, useAppSelector } from '../../../state/new/hooks';
+import { AppDispatch, RootState } from '../../../state/new/store';
 
 import './Login.css';
 

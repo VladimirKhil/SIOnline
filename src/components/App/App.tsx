@@ -1,22 +1,22 @@
 ﻿import * as React from 'react';
 import { connect } from 'react-redux';
-import State from '../state/State';
-import Login from './Login';
-import About from './About';
-import MainMenu from './MainMenu';
-import OnlineView from './OnlineView';
-import InGameView from './game/InGameView';
-import SettingsDialog from './settings/SettingsDialog';
-import Games from './Games';
-import ErrorView from './ErrorView';
-import CookiesWarning from './CookiesWarning';
-import AudioController from './common/AudioController';
-import NewGame from './NewGame';
-import Path from '../model/enums/Path';
-import JoinRoom from './JoinRoom';
-import Loading from './Loading';
-import ServerLicense from './ServerLicense';
-import UserError from './UserError';
+import State from '../../state/State';
+import Login from '../views/Login/Login';
+import About from '../views/About/About';
+import MainMenu from '../views/MainMenu/MainMenu';
+import Lobby from '../views/Lobby/Lobby';
+import Room from '../views/Room/Room';
+import SettingsDialog from '../settings/SettingsDialog';
+import Games from '../views/Games/Games';
+import ErrorView from '../views/Error/ErrorView';
+import CookiesWarning from '../panels/CookiesWarning/CookiesWarning';
+import AudioController from '../common/AudioController';
+import NewGame from '../views/NewGame/NewGame';
+import Path from '../../model/enums/Path';
+import JoinRoom from '../views/JoinRoom/JoinRoom';
+import Loading from '../views/Loading/Loading';
+import ServerLicense from '../views/ServerLicense/ServerLicense';
+import UserError from '../panels/UserError/UserError';
 
 import './App.css';
 
@@ -91,12 +91,12 @@ export class App extends React.Component<AppProps, AppState> {
 				return <Games />;
 
 			case Path.Lobby:
-				return <OnlineView />;
+				return <Lobby />;
 
 			case Path.Room:
-				return <InGameView />;
+				return <Room />;
 
-			case Path.RoomJoin:
+			case Path.JoinRoom:
 				return <JoinRoom />;
 
 			default:

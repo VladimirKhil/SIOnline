@@ -1,5 +1,5 @@
 ﻿import * as React from 'react';
-import localization from '../model/resources/localization';
+import localization from '../../../model/resources/localization';
 
 import './Loading.css';
 
