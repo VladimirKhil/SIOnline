@@ -2,7 +2,6 @@ import GameCreationResult from './contracts/GameCreationResult';
 import GameInfo from './contracts/GameInfo';
 import GameSettings from './contracts/GameSettings';
 import HostInfo from './contracts/HostInfo';
-import PackageKey from './contracts/PackageKey';
 import Slice from './contracts/Slice';
 import IGameServerClient from './IGameServerClient';
 import PackageInfo from './contracts/PackageInfo';
@@ -67,16 +66,6 @@ export default class GameServerClient implements IGameServerClient, IClientBase 
 
 	sayInLobbyAsync(text: string): Promise<any> {
 		return this.connection.invoke('Say', text);
-	}
-
-	createAndJoinGameAsync(gameSettings: GameSettings, packageKey: PackageKey, isMale: boolean): Promise<GameCreationResult> {
-		return this.connection.invoke<GameCreationResult>(
-			'CreateAndJoinGameNew',
-			gameSettings,
-			packageKey,
-			[],
-			isMale
-		);
 	}
 
 	createAndJoinGame2Async(gameSettings: GameSettings, packageInfo: PackageInfo, isMale: boolean): Promise<GameCreationResult> {

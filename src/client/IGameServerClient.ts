@@ -2,7 +2,6 @@ import GameCreationResult from './contracts/GameCreationResult';
 import GameInfo from './contracts/GameInfo';
 import GameSettings from './contracts/GameSettings';
 import HostInfo from './contracts/HostInfo';
-import PackageKey from './contracts/PackageKey';
 import Slice from './contracts/Slice';
 import PackageInfo from './contracts/PackageInfo';
 import Role from '../model/Role';
@@ -38,14 +37,6 @@ export default interface IGameServerClient extends IClientBase {
 
 	/** Sends a message to the lobby chat. */
 	sayInLobbyAsync(text: string): Promise<any>;
-
-	/**
-	 * Creates a new game and joins it as a host.
-	 * @param gameSettings Game settings.
-	 * @param packageKey Package key to use.
-	 * @param isMale If host is a male person (or female otherwise).
-	 */
-	createAndJoinGameAsync(gameSettings: GameSettings, packageKey: PackageKey, isMale: boolean): Promise<GameCreationResult>;
 
 	/**
 	 * Creates a new game and joins it as a host.
