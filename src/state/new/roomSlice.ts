@@ -74,6 +74,7 @@ interface RoomState {
 	bannedVisible: boolean;
 	gameInfoVisible: boolean;
 	manageGameVisible: boolean;
+	avatarViewVivible: boolean;
 	isGameButtonEnabled: boolean;
 	areSumsEditable: boolean;
 	readingSpeed: number;
@@ -96,6 +97,7 @@ interface RoomState {
 
 	joinMode: JoinMode;
 	kicked: boolean;
+	webCameraUrl: string;
 }
 
 const initialState: RoomState = {
@@ -193,6 +195,7 @@ const initialState: RoomState = {
 	bannedVisible: false,
 	gameInfoVisible: false,
 	manageGameVisible: false,
+	avatarViewVivible: false,
 	isGameButtonEnabled: true,
 	areSumsEditable: false,
 	readingSpeed: 20,
@@ -215,6 +218,7 @@ const initialState: RoomState = {
 
 	joinMode: JoinMode.AnyRole,
 	kicked: false,
+	webCameraUrl: '',
 };
 
 export const roomSlice = createSlice({

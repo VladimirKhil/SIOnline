@@ -358,6 +358,10 @@ const personAvatarChanged: ActionCreator<RunActions.PersonAvatarChangedAction> =
 	type: RunActions.RoomActionTypes.PersonAvatarChanged, personName, avatarUri
 });
 
+const personAvatarVideoChanged: ActionCreator<RunActions.PersonAvatarVideoChangedAction> = (personName: string, avatarUri: string) => ({
+	type: RunActions.RoomActionTypes.PersonAvatarVideoChanged, personName, avatarUri
+});
+
 const gameStarted: ActionCreator<RunActions.GameStartedAction> = (started: boolean) => ({ type: RunActions.RoomActionTypes.GameStarted, started });
 
 const stageChanged: ActionCreator<RunActions.StageChangedAction> = (stageName: string, roundIndex: number) => ({
@@ -929,6 +933,23 @@ const onReconnect: ActionCreator<ThunkAction<void, State, DataContext, Action>> 
 	await dataContext.game.info();
 };
 
+const avatarVisibleChanged: ActionCreator<RunActions.AvatarVisibleChangedAction> = (isVisible: boolean) => ({
+	type: RunActions.RoomActionTypes.AvatarVisibleChanged, isVisible
+});
+
+const webCameraUrlChanged: ActionCreator<RunActions.WebCameraUrlChangedAction> = (webCameraUrl: string) => ({
+	type: RunActions.RoomActionTypes.WebCameraUrlChanged, webCameraUrl
+});
+
+const setWebCamera: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (webCameraUrl: string) => async (
+	dispatch: Dispatch<any>,
+	_getState: () => State,
+	dataContext: DataContext
+) => {
+	dispatch(webCameraUrlChanged(webCameraUrl));
+	await dataContext.game.sendVideoAvatar(webCameraUrl);
+};
+
 const roomActionCreators = {
 	runChatModeChanged,
 	runChatMessageChanged,
@@ -968,6 +989,7 @@ const roomActionCreators = {
 	banPerson,
 	setHost,
 	personAvatarChanged,
+	personAvatarVideoChanged,
 	gameStarted,
 	stageChanged,
 	playersStateCleared,
@@ -1051,6 +1073,8 @@ const roomActionCreators = {
 	selectAnswerOption,
 	onKicked,
 	onReconnect,
+	avatarVisibleChanged,
+	setWebCamera,
 };
 
 export default roomActionCreators;

@@ -120,6 +120,19 @@ const viewerHandler = (controller: ClientController, dispatch: Dispatch<any>, st
 			// TODO
 			break;
 
+		case GameMessages.Avatar: {
+			if (args.length < 4) {
+				break;
+			}
+
+			const personName = args[1];
+			const contentType = args[2];
+			const uri = controller.preprocessServerUri(args[3]);
+
+			controller.onAvatarChanged(personName, contentType, uri);
+			break;
+		}
+
 		case GameMessages.Banned:
 			if (args.length < 3) {
 				break;

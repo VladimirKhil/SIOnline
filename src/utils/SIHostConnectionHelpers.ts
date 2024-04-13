@@ -7,6 +7,7 @@ import commonActionCreators from '../state/common/commonActionCreators';
 import ClientController from '../logic/ClientController';
 import roomActionCreators from '../state/room/roomActionCreators';
 import ISIHostClient from '../client/ISIHostClient';
+import getErrorMessage from './ErrorHelpers';
 
 export const activeSIHostConnections: string[] = [];
 
@@ -46,12 +47,16 @@ export function attachSIHostListeners(
 			return;
 		}
 
-		try {
-			await connection.start();
-			await gameClient.reconnectAsync();
-			return;
-		} catch {
-			// empty
+		if (e) {
+			console.log('Connection close error: ' + getErrorMessage(e));
+
+			try {
+				await connection.start();
+				await gameClient.reconnectAsync();
+				return;
+			} catch {
+				// empty
+			}
 		}
 
 		dispatch(commonActionCreators.onConnectionClosed(`${localization.connectionClosed} ${e?.message || ''}`) as object as AnyAction);

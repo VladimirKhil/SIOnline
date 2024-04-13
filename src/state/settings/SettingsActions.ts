@@ -34,6 +34,7 @@ export const enum SettingsActionTypes {
 	FloatingControlsChanged = 'FLOATING_CONTROLS_CHANGED',
 	BindNextButtonChanged = 'BIND_NEXT_BUTTON_CHANGED',
 	AttachContentToTableChanged = 'ATTACH_CONTENT_TO_TABLE_CHANGED',
+	ShowVideoAvatarsChanged = 'SHOW_VIDEO_AVATARS_CHANGED',
 }
 
 export type SoundVolumeChangeAction = { type: SettingsActionTypes.SoundVolumeChanged; volume: number };
@@ -92,6 +93,7 @@ export type DisplaySourcesChangedAction = { type: SettingsActionTypes.DisplaySou
 export type FloatingControlsChangedAction = { type: SettingsActionTypes.FloatingControlsChanged, float: boolean };
 export type BindNextButtonChangedAction = { type: SettingsActionTypes.BindNextButtonChanged, bindNextButton: boolean };
 export type AttachContentToTableChangedAction = { type: SettingsActionTypes.AttachContentToTableChanged, attachContentToTable: boolean };
+export type ShowVideoAvatarsChangedAction = { type: SettingsActionTypes.ShowVideoAvatarsChanged, showVideoAvatars: boolean };
 
 export type KnownSettingsAction =
 	| SoundVolumeChangeAction
@@ -124,4 +126,5 @@ export type KnownSettingsAction =
 	| DisplaySourcesChangedAction
 	| FloatingControlsChangedAction
 	| BindNextButtonChangedAction
-	| AttachContentToTableChangedAction;
+	| AttachContentToTableChangedAction
+	| ShowVideoAvatarsChangedAction;

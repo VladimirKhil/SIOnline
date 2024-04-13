@@ -9,6 +9,9 @@ const enum GameMessages {
 	/** Small hint fragment. Displayed separately from the main content. */
 	AtomHint = 'ATOM_HINT',
 
+	/** Person avatar. */
+	Avatar = 'AVATAR',
+
 	/** Person has been banned. */
 	Banned = 'BANNED',
 

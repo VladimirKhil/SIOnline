@@ -127,6 +127,14 @@
     overflow: hidden;
     min-width: 10px;
     flex: 0.3;
+    position: relative;
+}
+
+.playerAvatar iframe {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 100%;
 }
 
 .gamePlayer {
@@ -277,7 +285,7 @@
     }
 
     .gamePlayers li {
-        max-width: 200px;
+        max-width: 250px;
     }
 
     .readyMark {
@@ -328,14 +336,14 @@
     }
 
     .gamePlayers li {
-        height: 100%;
+        height: calc(100% - 10px);
         flex: 1;
         flex-flow: column;
-        margin: 10px 1px !important;
+        margin: 5px 1px !important;
     }
 
     .gamePlayers .playerCard {
-        padding: 10px;
+        padding: 5px;
         flex-direction: column;
     }
 
@@ -398,6 +406,7 @@
     .gamePlayers li {
         height: 100%;
         margin: 5px !important;
+        max-width: 350px;
     }
 
     .gamePlayers .playerCard {

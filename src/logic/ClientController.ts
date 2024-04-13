@@ -146,6 +146,21 @@ export default class ClientController {
 		this.dispatch(tableActionCreators.showContent(groups));
 	}
 
+	onAvatarChanged(personName: string, contentType: string, uri: string) {
+		switch (contentType) {
+			case 'image':
+				this.dispatch(roomActionCreators.personAvatarChanged(personName, uri));
+				break;
+
+			case 'video':
+				this.dispatch(roomActionCreators.personAvatarVideoChanged(personName, uri));
+				break;
+
+			default:
+				break;
+		}
+	}
+
 	onConnected(account: Account, role: string, index: number) {
 		if (account.name === this.getState().user.login) {
 			return;
@@ -235,7 +250,7 @@ export default class ClientController {
 				const replic = content[0];
 
 				if (replic.type === 'text') {
-					// Not needed now. Replic is delivered via REPLIC message
+					this.onReplic('s', replic.value);
 				}
 				break;
 

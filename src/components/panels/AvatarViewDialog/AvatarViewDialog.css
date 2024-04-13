@@ -1,0 +1,60 @@
+.avatarViewDialog {
+    background-color: #000451;
+    color: white;
+    z-index: 4;
+    overflow-y: hidden;
+}
+
+.avatarViewDialog .option {
+	margin: 10px;
+	font-size: 20px;
+}
+
+.avatarViewDialog input {
+	display: block;
+	width: 100%;
+	margin: 10px 0;
+	font-size: 20px;
+	color: black !important;
+}
+
+.avatarViewDialog .buttons {
+	display: flex;
+	justify-content: end;
+	flex-direction: row;
+}
+
+.avatarViewDialog button.set {
+	background-color: #2c7be1;
+	text-align: center;
+	padding: 5px 30px;
+    flex: 1;
+}
+
+.avatarViewDialog button.set:first-child {
+	margin-right: 5px;
+}
+
+.avatarViewDialog button.set:hover:enabled {
+	background-color: #98B9FF;
+}
+
+@media screen and (min-width: 800px) {
+    .avatarViewDialog {
+        width: 300px;
+        left: initial;
+        border-left: 1px solid #FFFFFF;
+    }
+}
+
+@media screen and (min-width: 1100px) {
+    .avatarViewDialog {
+        width: 400px;
+    }
+}
+
+@media screen and (min-width: 1600px) {
+    .avatarViewDialog {
+        width: 550px;
+    }
+}

@@ -20,6 +20,7 @@ export interface SettingsState {
 	areValidationAnswersHidden: boolean;
 	bindNextButton: boolean;
 	attachContentToTable: boolean;
+	showVideoAvatars: boolean;
 }
 
 const initialState: SettingsState = {
@@ -70,6 +71,7 @@ const initialState: SettingsState = {
 	areValidationAnswersHidden: false,
 	bindNextButton: true,
 	attachContentToTable: true,
+	showVideoAvatars: true,
 };
 
 export const settingsSlice = createSlice({

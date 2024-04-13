@@ -9,6 +9,7 @@ import onlineActionCreators from '../state/online/onlineActionCreators';
 import IGameServerClient from '../client/IGameServerClient';
 import ClientController from '../logic/ClientController';
 import roomActionCreators from '../state/room/roomActionCreators';
+import getErrorMessage from './ErrorHelpers';
 
 export const activeConnections: string[] = [];
 
@@ -54,12 +55,16 @@ export function attachListeners(
 			return;
 		}
 
-		try {
-			await connection.start();
-			await gameClient.reconnectAsync();
-			return;
-		} catch {
-			// empty
+		if (e) {
+			console.log('Connection close error: ' + getErrorMessage(e));
+
+			try {
+				await connection.start();
+				await gameClient.reconnectAsync();
+				return;
+			} catch {
+				// empty
+			}
 		}
 
 		dispatch(commonActionCreators.onConnectionClosed(`${localization.connectionClosed} ${e?.message || ''}`) as object as AnyAction);

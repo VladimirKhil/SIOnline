@@ -22,6 +22,7 @@ const mapStateToProps = (state: State) => ({
 	selectedPersonName: state.room.chat.selectedPersonName,
 	login: state.user.login,
 	avatar: state.user.avatar,
+	avatarVideo: state.user.avatar,
 	hostName: state.room.persons.hostName
 });
 
@@ -48,13 +49,16 @@ export function PersonView(props: PersonViewProps): JSX.Element {
 			<span title={props.account.isHuman ? localization.human : localization.computer}>
 				{props.account.isHuman ? humanImage : '🖥️'}
 			</span>
+
 			<div
 				className="personItem_avatar"
 				style={{ backgroundImage: avatar ? `url("${avatar}")` : undefined }}
 			/>
+
 			<span>
 				{props.account.name}
 			</span>
+
 			{isHost ? (<span className="personItem_host" role="img" aria-label="star" title={localization.host}>⭐</span>) : null}
 		</li>
 	);

@@ -22,6 +22,7 @@ interface CommonSettingsViewProps {
 	isSettingGameButtonKeyChanged: (isSettingGameButtonKey: boolean) => void;
 	onBindNextButtonChanged: (bindNextButton: boolean) => void;
 	onAttachContentToTableChanged: (attachContentToTable: boolean) => void;
+	onShowVideoAvatarsChanged: (showVideoAvatars: boolean) => void;
 }
 
 const mapStateToProps = (state: State) => ({
@@ -56,6 +57,9 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	},
 	onAttachContentToTableChanged: (attachContentToTable: boolean) => {
 		dispatch(settingsActionCreators.onAttachContentToTableChanged(attachContentToTable));
+	},
+	onShowVideoAvatarsChanged: (showVideoAvatars: boolean) => {
+		dispatch(settingsActionCreators.showVideoAvatarsChanged(showVideoAvatars));
 	},
 });
 
@@ -181,6 +185,17 @@ export function CommonSettingsView(props: CommonSettingsViewProps): JSX.Element 
 				/>
 
 				<label htmlFor="attachContentToTable">{localization.attachContentToTable}</label>
+			</div>
+
+			<div className="settingItem">
+				<input
+					id="showVideoAvatars"
+					type="checkbox"
+					checked={props.settings.showVideoAvatars}
+					onChange={() => props.onShowVideoAvatarsChanged(!props.settings.showVideoAvatars)}
+				/>
+
+				<label htmlFor="showVideoAvatars">{localization.showVideoAvatars}</label>
 			</div>
 		</div>
 	);

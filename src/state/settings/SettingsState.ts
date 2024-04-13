@@ -19,6 +19,7 @@ export default interface SettingsState {
 	areValidationAnswersHidden: boolean;
 	bindNextButton: boolean;
 	attachContentToTable: boolean;
+	showVideoAvatars: boolean;
 }
 
 export const initialState: SettingsState = {
@@ -69,4 +70,5 @@ export const initialState: SettingsState = {
 	areValidationAnswersHidden: false,
 	bindNextButton: true,
 	attachContentToTable: true,
+	showVideoAvatars: true,
 };

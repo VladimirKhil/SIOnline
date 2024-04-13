@@ -283,6 +283,8 @@ async function run(stateManager: IStateManager) {
 
 	subscribeToExternalEvents(store);
 
+	store.dispatch(uiActionCreators.windowSizeChanged(window.innerWidth, window.innerHeight));
+
 	if (state.settings.appSettings.culture) {
 		localization.setLanguage(state.settings.appSettings.culture);
 	}

@@ -50,6 +50,10 @@ export default class GameClient implements IGameClient {
 		return this.gameServerClient.msgAsync(Messages.Picture, avatarUri);
 	}
 
+	sendVideoAvatar(avatarUri: string): Promise<boolean> {
+		return this.gameServerClient.msgAsync(Messages.Avatar, 'video', avatarUri);
+	}
+
 	setChooser(playerIndex: number): Promise<boolean> {
 		return this.gameServerClient.msgAsync(Messages.SetChooser, playerIndex);
 	}

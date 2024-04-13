@@ -5,4 +5,5 @@ export default interface Account {
 	sex: Sex;
 	isHuman: boolean;
 	avatar: string | null;
+	avatarVideo?: string;
 }

@@ -243,6 +243,12 @@ const settingsReducer: Reducer<SettingsState> = (
 				attachContentToTable: action.attachContentToTable,
 			};
 
+		case SettingsActionTypes.ShowVideoAvatarsChanged:
+			return {
+				...state,
+				showVideoAvatars: action.showVideoAvatars,
+			};
+
 		case SettingsActionTypes.ResetSettings:
 			return initialState;
 

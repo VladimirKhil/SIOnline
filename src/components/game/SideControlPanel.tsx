@@ -47,6 +47,7 @@ interface SideControlPanelProps {
 	onStart: () => void;
 	onPass: () => void;
 	onShowSettings: () => void;
+	onShowAvatars: () => void;
 }
 
 const mapStateToProps = (state: State) => ({
@@ -113,6 +114,9 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	},
 	onShowSettings: () => {
 		dispatch(uiActionCreators.showSettings(true));
+	},
+	onShowAvatars: () => {
+		dispatch(roomActionCreators.avatarVisibleChanged(true));
 	},
 });
 
@@ -183,6 +187,7 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 									) : null}
 
 									<li onClick={() => props.onShowSettings()}>{localization.settings}</li>
+									<li onClick={() => props.onShowAvatars()}>{localization.avatar}</li>
 								</ul>
 							)}
 							theme={FlyoutTheme.Dark}

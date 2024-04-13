@@ -30,6 +30,7 @@ interface PlayersViewProps {
 	windowWidth: number;
 	windowHeight: number;
 	showPersonsAtBottomOnWideScreen: boolean;
+	showVideoAvatars: boolean;
 
 	onPlayerSelected: (playerIndex: number) => void;
 	onSumChanged: (playerIndex: number, sum: number) => void;
@@ -49,6 +50,7 @@ const mapStateToProps = (state: State) => ({
 	windowWidth: state.ui.windowWidth,
 	windowHeight: state.ui.windowHeight,
 	showPersonsAtBottomOnWideScreen: state.settings.showPersonsAtBottomOnWideScreen,
+	showVideoAvatars: state.settings.showVideoAvatars,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
@@ -178,7 +180,13 @@ export class PlayersView extends React.Component<PlayersViewProps> {
 								onClick={(e) => player.canBeSelected ? onPlayerClicked(index, e) : null}
 							>
 								<div className="playerCard">
-									<div className={`playerAvatar ${avatarClass}`} style={avatarStyle} title={`${player.name} ${player.sum}`} />
+									{this.props.showVideoAvatars && account.avatarVideo
+										? <div className='playerAvatar'><iframe title='Video avatar' src={account.avatarVideo} /></div>
+										: <div
+											className={`playerAvatar ${avatarClass}`}
+											style={avatarStyle}
+											title={`${player.name} ${player.sum}`}
+										/> }
 
 									<div className="playerInfo">
 										<div className="name" title={player.name}>

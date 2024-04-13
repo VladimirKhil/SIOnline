@@ -32,6 +32,7 @@ export const enum RoomActionTypes {
 	ChatPersonSelected = 'CHAT_PERSON_SELECTED',
 	TableSelected = 'TABLE_SELECTED',
 	PersonAvatarChanged = 'PERSON_AVATAR_CHANGED',
+	PersonAvatarVideoChanged = 'PERSON_AVATAR_VIDEO_CHANGED',
 	GameStarted = 'GAME_STARTED',
 	StageChanged = 'STAGE_CHANGED',
 	PlayersStateCleared = 'PLAYERS_STATE_CLEARED',
@@ -91,6 +92,8 @@ export const enum RoomActionTypes {
 	ClearRoomChat = 'ROOM_CHAT_CLEAR',
 	JoinModeChanged = 'JOIN_MODE_CHANGED',
 	Kicked = 'KICKED',
+	AvatarVisibleChanged = 'AVATAR_VISIBLE_CHANGED',
+	WebCameraUrlChanged = 'WEB_CAMERA_URL_CHANGED',
 }
 
 export type RunChatModeChangedAction = { type: RoomActionTypes.RoomChatModeChanged, chatMode: ChatMode };
@@ -115,6 +118,7 @@ export type InfoChangedAction = { type: RoomActionTypes.InfoChanged, all: Person
 export type ChatPersonSelectedAction = { type: RoomActionTypes.ChatPersonSelected, personName: string };
 export type TableSelectedAction = { type: RoomActionTypes.TableSelected, tableIndex: number };
 export type PersonAvatarChangedAction = { type: RoomActionTypes.PersonAvatarChanged, personName: string, avatarUri: string };
+export type PersonAvatarVideoChangedAction = { type: RoomActionTypes.PersonAvatarVideoChanged, personName: string, avatarUri: string };
 export type GameStartedAction = { type: RoomActionTypes.GameStarted, started: boolean };
 export type StageChangedAction = { type: RoomActionTypes.StageChanged, stageName: string, roundIndex: number };
 export type PlayersStateClearedAction = { type: RoomActionTypes.PlayersStateCleared };
@@ -141,6 +145,7 @@ export type IsAnsweringAction = { type: RoomActionTypes.IsAnswering };
 export type AnswerChangedAction = { type: RoomActionTypes.AnswerChanged, answer: string };
 export type ClearRoomChatAction = { type: RoomActionTypes.ClearRoomChat };
 export type KickedAction = { type: RoomActionTypes.Kicked };
+export type AvatarVisibleChangedAction = { type: RoomActionTypes.AvatarVisibleChanged, isVisible: boolean };
 
 export type ValidateAction = {
 	type: RoomActionTypes.Validate,
@@ -203,6 +208,7 @@ export type SelectBannedItemAction = { type: RoomActionTypes.SelectBannedItem, i
 export type PlayerMediaLoadedAction = { type: RoomActionTypes.PlayerMediaLoaded, playerIndex: number };
 export type EditTableAction = { type: RoomActionTypes.EditTable };
 export type JoinModeChangedAction = { type: RoomActionTypes.JoinModeChanged, joinMode: JoinMode };
+export type WebCameraUrlChangedAction = { type: RoomActionTypes.WebCameraUrlChanged, webCameraUrl: string };
 
 export type KnownRoomAction =
 	RunChatModeChangedAction
@@ -227,6 +233,7 @@ export type KnownRoomAction =
 	| ChatPersonSelectedAction
 	| TableSelectedAction
 	| PersonAvatarChangedAction
+	| PersonAvatarVideoChangedAction
 	| GameStartedAction
 	| StageChangedAction
 	| PlayersStateClearedAction
@@ -285,4 +292,6 @@ export type KnownRoomAction =
 	| EditTableAction
 	| ClearRoomChatAction
 	| JoinModeChangedAction
-	| KickedAction;
+	| KickedAction
+	| AvatarVisibleChangedAction
+	| WebCameraUrlChangedAction;

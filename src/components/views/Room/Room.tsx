@@ -28,6 +28,8 @@ import GameProgress from '../../game/GameProgress';
 import ChatMessage from '../../../model/ChatMessage';
 import MessageLevel from '../../../model/enums/MessageLevel';
 import commonActionCreators from '../../../state/common/commonActionCreators';
+import RoomSettingsButton from '../../RoomSettingsButton/RoomSettingsButton';
+import AvatarViewDialog from '../../panels/AvatarViewDialog/AvatarViewDialog';
 
 import './Room.css';
 
@@ -47,6 +49,7 @@ interface RoomProps {
 	kicked: boolean;
 	isConnected: boolean;
 	isConnectedReason: string;
+	avatarViewVisible: boolean;
 
 	onPersonsDialogClose: () => void;
 	onTablesDialogClose: () => void;
@@ -76,6 +79,7 @@ const mapStateToProps = (state: State) => ({
 	kicked: state.room.kicked,
 	isConnected: state.common.isConnected,
 	isConnectedReason: state.common.isConnectedReason,
+	avatarViewVisible: state.room.avatarViewVivible,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
@@ -139,7 +143,7 @@ export function Room(props: RoomProps) : JSX.Element {
 		}
 	}, [props.isConnected]);
 
-	const isScreenWide = props.windowWidth >= Constants.WIDE_WINDOW_WIDTH;
+	const isScreenWide = props.windowWidth >= Constants.WIDE_WINDOW_WIDTH; // TODO: try to replace with CSS
 
 	return (
 		<section className="gameMain">
@@ -182,11 +186,7 @@ export function Room(props: RoomProps) : JSX.Element {
 				<SideControlPanel />
 			</div>
 
-			{isScreenWide
-				? <button type='button' className='settingsOpener' onClick={props.onShowSettings} title={localization.settings}>
-					<span>⚙</span>
-				</button>
-				: null}
+			{isScreenWide ? <RoomSettingsButton /> : null}
 
 			{/* TODO: Switch to a single enum here */}
 
@@ -227,6 +227,7 @@ export function Room(props: RoomProps) : JSX.Element {
 			) : null}
 
 			{props.isAnswerValidationDialogVisible ? <AnswerValidationDialog /> : null}
+			{props.avatarViewVisible ? <AvatarViewDialog /> : null}
 		</section>
 	);
 }

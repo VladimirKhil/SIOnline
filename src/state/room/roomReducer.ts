@@ -197,6 +197,22 @@ const roomReducer: Reducer<RoomState> = (state: RoomState = initialState, anyAct
 				}
 			};
 
+		case RoomActionTypes.PersonAvatarVideoChanged:
+			if (Object.keys(state.persons.all).indexOf(action.personName) === -1) {
+				return state;
+			}
+
+			return {
+				...state,
+				persons: {
+					...state.persons,
+					all: {
+						...state.persons.all,
+						[action.personName]: { ...state.persons.all[action.personName], avatarVideo: action.avatarUri }
+					}
+				}
+			};
+
 		case RoomActionTypes.GameStarted:
 			return {
 				...state,
@@ -886,6 +902,18 @@ const roomReducer: Reducer<RoomState> = (state: RoomState = initialState, anyAct
 			return {
 				...state,
 				kicked: true,
+			};
+
+		case RoomActionTypes.AvatarVisibleChanged:
+			return {
+				...state,
+				avatarViewVivible: action.isVisible,
+			};
+
+		case RoomActionTypes.WebCameraUrlChanged:
+			return {
+				...state,
+				webCameraUrl: action.webCameraUrl,
 			};
 
 		default:

@@ -16,9 +16,11 @@ export default interface RoomState {
 		players: PlayerInfo[];
 		hostName: string | null;
 	};
+
 	role: Role;
 	answer: string | null;
 	lastReplic: ChatMessage | null;
+
 	stage: {
 		name: string;
 		roundIndex: number;
@@ -32,12 +34,15 @@ export default interface RoomState {
 		currentPrice: number;
 		themeName: string;
 	};
+
 	timers: Timers;
 	showMainTimer: boolean;
+
 	selection: {
 		isEnabled: boolean;
 		message: string;
 	};
+
 	stakes: {
 		areVisible: boolean;
 		areSimple: boolean;
@@ -48,6 +53,7 @@ export default interface RoomState {
 		stake: number;
 		message: string;
 	};
+
 	validation: {
 		isVisible: boolean;
 		header: string;
@@ -57,6 +63,7 @@ export default interface RoomState {
 		wrongAnswers: string[];
 		showExtraRightButtons: boolean;
 	};
+
 	chat: {
 		isVisible: boolean;
 		isActive: boolean;
@@ -65,12 +72,14 @@ export default interface RoomState {
 		messages: ChatMessage[];
 		selectedPersonName: string | null;
 	};
+
 	selectedTableIndex: number; // 0 for showman; {N} for player {N - 1}
 	personsVisible: boolean;
 	tablesVisible: boolean;
 	bannedVisible: boolean;
 	gameInfoVisible: boolean;
 	manageGameVisible: boolean;
+	avatarViewVivible: boolean;
 	isGameButtonEnabled: boolean;
 	areSumsEditable: boolean;
 	readingSpeed: number;
@@ -93,11 +102,13 @@ export default interface RoomState {
 
 	joinMode: JoinMode;
 	kicked: boolean;
+	webCameraUrl: string;
 }
 
 export const initialState: RoomState = {
 	persons: {
 		all: {},
+
 		showman: {
 			name: '',
 			isReady: false,
@@ -105,12 +116,15 @@ export const initialState: RoomState = {
 			isDeciding: false,
 			isHuman: true
 		},
+
 		players: [],
 		hostName: null
 	},
+
 	role: Role.Player,
 	answer: null,
 	lastReplic: null,
+
 	stage: {
 		name: '',
 		roundIndex: -1,
@@ -124,6 +138,7 @@ export const initialState: RoomState = {
 		currentPrice: 0,
 		themeName: ''
 	},
+
 	timers: {
 		round: {
 			state: TimerStates.Stopped,
@@ -132,6 +147,7 @@ export const initialState: RoomState = {
 			value: 0,
 			maximum: 0,
 		},
+
 		press: {
 			state: TimerStates.Stopped,
 			isPausedBySystem: true,
@@ -139,6 +155,7 @@ export const initialState: RoomState = {
 			value: 0,
 			maximum: 0
 		},
+
 		decision: {
 			state: TimerStates.Stopped,
 			isPausedBySystem: true,
@@ -147,11 +164,14 @@ export const initialState: RoomState = {
 			maximum: 0
 		}
 	},
+
 	showMainTimer: false,
+
 	selection: {
 		isEnabled: false,
 		message: ''
 	},
+
 	stakes: {
 		areVisible: false,
 		areSimple: false,
@@ -167,6 +187,7 @@ export const initialState: RoomState = {
 		stake: 0,
 		message: ''
 	},
+
 	validation: {
 		isVisible: false,
 		header: '',
@@ -176,6 +197,7 @@ export const initialState: RoomState = {
 		wrongAnswers: [],
 		showExtraRightButtons: false,
 	},
+
 	chat: {
 		isVisible: false,
 		isActive: false,
@@ -184,12 +206,14 @@ export const initialState: RoomState = {
 		messages: [],
 		selectedPersonName: null
 	},
+
 	selectedTableIndex: -1,
 	personsVisible: false,
 	tablesVisible: false,
 	bannedVisible: false,
 	gameInfoVisible: false,
 	manageGameVisible: false,
+	avatarViewVivible: false,
 	isGameButtonEnabled: true,
 	areSumsEditable: false,
 	readingSpeed: 20,
@@ -212,4 +236,5 @@ export const initialState: RoomState = {
 
 	joinMode: JoinMode.AnyRole,
 	kicked: false,
+	webCameraUrl: '',
 };

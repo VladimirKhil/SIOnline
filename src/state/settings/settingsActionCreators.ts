@@ -161,6 +161,11 @@ const onAttachContentToTableChanged: ActionCreator<SettingsActions.AttachContent
 	type: SettingsActions.SettingsActionTypes.AttachContentToTableChanged, attachContentToTable
 });
 
+const showVideoAvatarsChanged: ActionCreator<SettingsActions.ShowVideoAvatarsChangedAction> = (
+	showVideoAvatars: boolean) => ({
+	type: SettingsActions.SettingsActionTypes.ShowVideoAvatarsChanged, showVideoAvatars
+});
+
 const settingsActionCreators = {
 	onSoundVolumeChanged,
 	onSoundChanged,
@@ -193,6 +198,7 @@ const settingsActionCreators = {
 	onFloatingControlsChanged,
 	onBindNextButtonChanged,
 	onAttachContentToTableChanged,
+	showVideoAvatarsChanged,
 };
 
 export default settingsActionCreators;

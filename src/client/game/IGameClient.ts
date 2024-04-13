@@ -29,6 +29,8 @@ export default interface IGameClient {
 
 	sendAvatar(avatarUri: string): Promise<boolean>;
 
+	sendVideoAvatar(avatarUri: string): Promise<boolean>;
+
 	/** Gives turn to player. */
 	setChooser(playerIndex: number): Promise<boolean>;
 
