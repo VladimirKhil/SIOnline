@@ -21,6 +21,7 @@ interface ShowmanReplicViewProps {
 	hasGameStarted: boolean;
 	login: string;
 	avatar: string | null;
+	showVideoAvatars: boolean;
 }
 
 const mapStateToProps = (state: State) => ({
@@ -32,6 +33,7 @@ const mapStateToProps = (state: State) => ({
 	hasGameStarted: state.room.stage.isGameStarted,
 	login: state.user.login,
 	avatar: state.user.avatar,
+	showVideoAvatars: state.settings.showVideoAvatars,
 });
 
 export function ShowmanReplicView(props: ShowmanReplicViewProps): JSX.Element {
@@ -54,7 +56,9 @@ export function ShowmanReplicView(props: ShowmanReplicViewProps): JSX.Element {
 	return (
 		<div className={`showmanArea ${props.decisionNeeded ? 'highlighted' : ''}`}>
 			<div className="showmanInfo" style={showmanInfoStyle}>
-				<div className={`showmanAvatar ${avatarClass}`} style={avatarStyle} />
+				{props.showVideoAvatars && props.account.avatarVideo
+					? <div className='showmanAvatar'><iframe title='Video avatar' src={props.account.avatarVideo} /></div>
+					: <div className={`showmanAvatar ${avatarClass}`} style={avatarStyle} />}
 
 				<div className="showmanName">
 					{props.isReady && !props.hasGameStarted ? (

@@ -39,6 +39,10 @@
 	background-color: #98B9FF;
 }
 
+.videoSiteUrl {
+    color: rgb(222, 206, 108);
+}
+
 @media screen and (min-width: 800px) {
     .avatarViewDialog {
         width: 300px;

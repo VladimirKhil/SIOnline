@@ -10,6 +10,7 @@ import './AvatarViewDialog.css';
 
 interface AvatarViewDialogProps {
 	webCameraUrl: string;
+	clearUrls?: boolean;
 
 	onAvatarClose: () => void;
 	onSetWebCamera: (webCameraUrl: string) => void;
@@ -18,6 +19,7 @@ interface AvatarViewDialogProps {
 
 const mapStateToProps = (state: State) => ({
 	webCameraUrl: state.room.webCameraUrl,
+	clearUrls: state.common.clearUrls,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
@@ -66,7 +68,14 @@ export function AvatarViewDialog(props: AvatarViewDialogProps): JSX.Element {
 			title={localization.avatar}
 			onClose={props.onAvatarClose}>
 			<div className='option'>
-				<label htmlFor='videoUrl'>{localization.webCameraUrl}</label>
+				<label htmlFor='videoUrl'>
+					<span>{localization.webCameraUrl} </span>
+
+					{props.clearUrls
+						? null
+						: <a className='videoSiteUrl' href='https://vdo.ninja' target='_blank' rel='noopener noreferrer'>vdo.ninja</a>}
+				</label>
+
 				<input id='videoUrl' type='text' value={webCameraUrl} onChange={onCameraChanged} />
 
 				<div className='buttons'>

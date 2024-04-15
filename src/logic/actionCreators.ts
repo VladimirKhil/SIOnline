@@ -152,6 +152,9 @@ function getLoginErrorByCode(response: Response): string {
 		case 409:
 			return localization.duplicateUserName;
 
+		case 429:
+			return localization.tooManyRequests;
+
 		default:
 			return response.statusText;
 	}
