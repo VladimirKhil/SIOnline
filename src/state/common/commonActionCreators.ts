@@ -35,7 +35,6 @@ const onConnectionClosed: ActionCreator<ThunkAction<void, State, DataContext, Ac
 	(message: string) => async (dispatch: Dispatch<any>) => {
 		dispatch(isConnectedChanged(false));
 		dispatch(onUserError(message));
-		window.location.reload();
 	};
 
 const serverInfoChanged: ActionCreator<CommonActions.ServerInfoChangedAction> = (

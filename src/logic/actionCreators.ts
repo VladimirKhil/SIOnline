@@ -41,6 +41,7 @@ import ServerSex from '../client/contracts/ServerSex';
 interface ConnectResult {
 	success: boolean;
 	error?: string;
+	authenticationRequired: boolean;
 }
 
 const onAvatarSelectedLocal: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
@@ -189,7 +190,7 @@ async function loadHostInfoAsync(dispatch: Dispatch<any>, dataContext: DataConte
 
 const tryConnectAsync = async (dispatch: Dispatch<Action>, getState: () => State, dataContext: DataContext): Promise<ConnectResult> => {
 	if (dataContext.connection) {
-		return { success: true };
+		return { success: true, authenticationRequired: false };
 	}
 
 	const connectionBuilder = new signalR.HubConnectionBuilder()
@@ -214,12 +215,20 @@ const tryConnectAsync = async (dispatch: Dispatch<Action>, getState: () => State
 
 	try {
 		await dataContext.connection.start();
+	} catch (error: any) {
+		dataContext.connection = null;
 
+		return {
+			success: false,
+			error: getErrorMessage(error),
+			authenticationRequired: error.errorType === 'FailedToNegotiateWithServerError' && error.message?.includes('401')
+		};
+	}
+
+	try {
 		if (dataContext.connection.connectionId) {
 			activeConnections.push(dataContext.connection.connectionId);
 		}
-
-		const controller = new ClientController(dispatch, getState, dataContext);
 
 		const state = getState();
 		const requestCulture = getFullCulture(state);
@@ -227,15 +236,18 @@ const tryConnectAsync = async (dispatch: Dispatch<Action>, getState: () => State
 		const computerAccounts = await dataContext.gameClient.getComputerAccountsAsync(requestCulture);
 		dispatch(commonActionCreators.computerAccountsChanged(computerAccounts));
 
+		// Listeners should be attached after first successfull request to be sure that connection is working
+		const controller = new ClientController(dispatch, getState, dataContext);
 		attachListeners(dataContext.gameClient, dataContext.connection, dispatch, controller);
 
 		await loadHostInfoAsync(dispatch, dataContext, requestCulture);
 		await uploadAvatarAsync(dispatch, dataContext);
 
-		return { success: true };
+		return { success: true, authenticationRequired: false };
 	} catch (error) {
+		const authenticationRequired = dataContext.connection.state === signalR.HubConnectionState.Disconnected;
 		dataContext.connection = null;
-		return { success: false, error: getErrorMessage(error) };
+		return { success: false, error: getErrorMessage(error), authenticationRequired: authenticationRequired };
 	}
 };
 
@@ -412,10 +424,17 @@ const init: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 	(initialView: INavigationState) => async (dispatch: Dispatch<Action>, getState: () => State, dataContext: DataContext) => {
 		if (initialView.path === Path.Login) {
 			dispatch(uiActionCreators.navigate({ path: Path.Login, callbackState: { path: Path.Root } }) as unknown as Action);
-		} else if ((await tryConnectAsync(dispatch, getState, dataContext)).success) {
+			return;
+		}
+
+		const connectResult = await tryConnectAsync(dispatch, getState, dataContext);
+
+		if (connectResult.success) {
 			await checkLicenseAsync(initialView, dispatch, getState, dataContext);
-		} else {
+		} else if (connectResult.authenticationRequired) {
 			dispatch(uiActionCreators.navigate({ path: Path.Login, callbackState: initialView }) as unknown as Action);
+		} else {
+			dispatch(commonActionCreators.commonErrorChanged(connectResult.error));
 		}
 	};
 
@@ -447,8 +466,10 @@ const login: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 				dispatch(userActionCreators.onLoginChanged(state.user.login.trim())); // Normalize login
 				appDispatch(endLogin(null));
 				await checkLicenseAsync(state.ui.navigation.callbackState ?? { path: Path.Root }, dispatch, getState, dataContext);
-			} else {
+			} else if (connectResult.authenticationRequired) {
 				appDispatch(endLogin(connectResult.error ?? localization.errorHappened));
+			} else {
+				dispatch(commonActionCreators.commonErrorChanged(connectResult.error));
 			}
 		} catch (err) {
 			appDispatch(endLogin(`${localization.cannotConnectToServer}: ${getErrorMessage(err)}`));
