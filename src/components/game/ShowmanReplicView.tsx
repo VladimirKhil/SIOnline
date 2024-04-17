@@ -56,8 +56,8 @@ export function ShowmanReplicView(props: ShowmanReplicViewProps): JSX.Element {
 	return (
 		<div className={`showmanArea ${props.decisionNeeded ? 'highlighted' : ''}`}>
 			<div className="showmanInfo" style={showmanInfoStyle}>
-				{props.showVideoAvatars && props.account.avatarVideo
-					? <div className='showmanAvatar'><iframe title='Video avatar' src={props.account.avatarVideo} /></div>
+				{props.showVideoAvatars && props.account?.avatarVideo
+					? <div className='showmanAvatar'><iframe title='Video avatar' src={props.account?.avatarVideo} /></div>
 					: <div className={`showmanAvatar ${avatarClass}`} style={avatarStyle} />}
 
 				<div className="showmanName">

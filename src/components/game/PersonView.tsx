@@ -22,7 +22,6 @@ const mapStateToProps = (state: State) => ({
 	selectedPersonName: state.room.chat.selectedPersonName,
 	login: state.user.login,
 	avatar: state.user.avatar,
-	avatarVideo: state.user.avatar,
 	hostName: state.room.persons.hostName
 });
 

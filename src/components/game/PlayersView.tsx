@@ -180,8 +180,8 @@ export class PlayersView extends React.Component<PlayersViewProps> {
 								onClick={(e) => player.canBeSelected ? onPlayerClicked(index, e) : null}
 							>
 								<div className="playerCard">
-									{this.props.showVideoAvatars && account.avatarVideo
-										? <div className='playerAvatar'><iframe title='Video avatar' src={account.avatarVideo} /></div>
+									{this.props.showVideoAvatars && account?.avatarVideo
+										? <div className='playerAvatar'><iframe title='Video avatar' src={account?.avatarVideo} /></div>
 										: <div
 											className={`playerAvatar ${avatarClass}`}
 											style={avatarStyle}
