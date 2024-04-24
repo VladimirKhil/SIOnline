@@ -41,7 +41,7 @@ export function Trends(props: TrendsProps): JSX.Element {
 			{props.packagesStatistics
 				? <div>
 					<div className='trendCategory'>{localization.topPackages}</div>
-					{props.packagesStatistics.packages.map(
+					{props.packagesStatistics.packages.filter(p => p.package.name !== '@{random}').map(
 						(p, i) => <div key={i} className='trendPackage'>
 							<div><span className='packageName'>{p.package.name}</span> ({localization.ofGames}: {p.gameCount})</div>
 							<div>{localization.by} <span className='packageAuthors'>

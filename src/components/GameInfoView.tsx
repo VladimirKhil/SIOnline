@@ -18,13 +18,13 @@ interface GameInfoViewOwnProps {
 	isConnected: boolean;
 	culture: string | null;
 	onPasswordChanged: (password: string) => void;
-	onJoin: (hostUri: string, gameId: number, role: Role) => void;
+	onJoin: (hostUri: string, gameId: number, name: string, role: Role) => void;
 }
 
 interface GameInfoViewStateProps {
+	login: string;
 	password: string;
 	joinGameProgress: boolean;
-	joinGameError: string | null;
 }
 
 interface GameInfoViewProps extends GameInfoViewOwnProps, GameInfoViewStateProps {
@@ -35,17 +35,17 @@ interface GameInfoViewProps extends GameInfoViewOwnProps, GameInfoViewStateProps
 const mapStateToProps = (state: State) => ({
 	isConnected: state.common.isConnected,
 	culture: state.settings.appSettings.culture,
+	login: state.user.login,
 	password: state.online.password,
 	joinGameProgress: state.online.joinGameProgress,
-	joinGameError: state.online.joingGameError
 });
 
 const mapDispatchToProps = (dispatch: any) => ({
 	onPasswordChanged: (newPassword: string) => {
 		dispatch(onlineActionCreators.passwordChanged(newPassword));
 	},
-	onJoin: (hostUri: string, gameId: number, role: Role) => {
-		dispatch(onlineActionCreators.joinGame(hostUri, gameId, role));
+	onJoin: (hostUri: string, gameId: number, name: string, role: Role) => {
+		dispatch(onlineActionCreators.joinGame(hostUri, gameId, name, role));
 	}
 });
 
@@ -102,6 +102,8 @@ export function GameInfoView(props: GameInfoViewProps): JSX.Element {
 			</section>
 		);
 	}
+
+	const [userName, setUserName] = React.useState(props.login);
 
 	const language = localization.getLanguage();
 	const createdTime = new Date(props.game.StartTime).toLocaleString(language);
@@ -176,29 +178,42 @@ export function GameInfoView(props: GameInfoViewProps): JSX.Element {
 							</dl>
 						</div>
 
-						{game.PasswordRequired ? (
-							<div className="passwordInfo">
-								<span>{localization.password}</span>
+						<div className='gameInfoBlocks'>
+							<div className="gameInfoBlock">
+								<span>{localization.name}</span>
 
 								<input
-									id="password"
-									type="password"
-									aria-label='Password'
+									id="name"
+									type="text"
+									aria-label='Name'
 									disabled={props.joinGameProgress}
-									value={props.password}
-									onChange={e => props.onPasswordChanged(e.target.value)}
+									value={userName}
+									onChange={e => setUserName(e.target.value)}
 								/>
 							</div>
-						) : null}
 
-						<div className="joinGameError">{props.joinGameError}</div>
+							{game.PasswordRequired ? (
+								<div className="gameInfoBlock">
+									<span>{localization.password}</span>
+
+									<input
+										id="password"
+										type="password"
+										aria-label='Password'
+										disabled={props.joinGameProgress}
+										value={props.password}
+										onChange={e => props.onPasswordChanged(e.target.value)}
+									/>
+								</div>
+							) : null}
+						</div>
 
 						<div className="actions">
 							<div id="actionsHost">
 								<button
 									type="button"
 									className="join standard"
-									onClick={() => props.onJoin(game.HostUri, game.GameID, Role.Showman)}
+									onClick={() => props.onJoin(game.HostUri, game.GameID, userName, Role.Showman)}
 									title={localization.joinAsShowmanHint}
 									disabled={!props.isConnected ||
 										props.joinGameProgress ||
@@ -211,7 +226,7 @@ export function GameInfoView(props: GameInfoViewProps): JSX.Element {
 								<button
 									type="button"
 									className="join standard"
-									onClick={() => props.onJoin(game.HostUri, game.GameID, Role.Player)}
+									onClick={() => props.onJoin(game.HostUri, game.GameID, userName, Role.Player)}
 									title={localization.joinAsPlayerHint}
 									disabled={!props.isConnected ||
 										props.joinGameProgress ||
@@ -224,7 +239,7 @@ export function GameInfoView(props: GameInfoViewProps): JSX.Element {
 								<button
 									type="button"
 									className="join standard"
-									onClick={() => props.onJoin(game.HostUri, game.GameID, Role.Viewer)}
+									onClick={() => props.onJoin(game.HostUri, game.GameID, userName, Role.Viewer)}
 									title={localization.joinAsViewerHint}
 									disabled={!props.isConnected || props.joinGameProgress || (game.PasswordRequired && !props.password)}
 								>

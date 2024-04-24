@@ -49,7 +49,7 @@ const mapStateToProps = (state: State) => {
 		showman,
 		players,
 		viewers,
-		login: state.user.login,
+		login: state.room.name,
 		selectedPerson: selectedPersonName ? state.room.persons.all[selectedPersonName] : null,
 		joinMode: state.room.joinMode,
 	};

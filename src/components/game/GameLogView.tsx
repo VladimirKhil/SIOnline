@@ -18,7 +18,7 @@ interface GameLogViewProps {
 
 const mapStateToProps = (state: State) => ({
 	messages: state.room.chat.messages,
-	user: state.user.login,
+	user: state.room.name,
 	message: state.room.chat.message,
 });
 

@@ -11,7 +11,7 @@ interface UsersListProps {
 
 const mapStateToProps: MapStateToProps<UsersListProps, unknown, State> = (state: State) => ({
 	users: state.online.users,
-	login: state.user.login
+	login: state.user.login,
 });
 
 export function UsersList(props: UsersListProps): JSX.Element {

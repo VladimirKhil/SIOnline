@@ -31,7 +31,7 @@ const mapStateToProps = (state: State) => ({
 	isDeciding: state.room.persons.showman.isDeciding,
 	decisionTimer: state.room.timers.decision,
 	hasGameStarted: state.room.stage.isGameStarted,
-	login: state.user.login,
+	login: state.room.name,
 	avatar: state.user.avatar,
 	showVideoAvatars: state.settings.showVideoAvatars,
 });

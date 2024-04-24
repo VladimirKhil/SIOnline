@@ -15,7 +15,7 @@ import siPackagesReducer from './siPackages/siPackagesReducer';
 import { KnownSIPackagesAction } from './siPackages/SIPackagesActions';
 import uiReducer from './ui/uiReducer';
 import { KnownUIAction } from './ui/UIActions';
-import onlineReducer from './online/onliceReducer';
+import onlineReducer from './online/onlineReducer';
 import { KnownOnlineAction } from './online/OnlineActions';
 import gameReducer from './game/gameReducer';
 import { KnownGameAction } from './game/GameActions';

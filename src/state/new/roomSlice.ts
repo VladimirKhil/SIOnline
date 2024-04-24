@@ -19,9 +19,12 @@ interface RoomState {
 		players: PlayerInfo[];
 		hostName: string | null;
 	};
+
+	name: string;
 	role: Role;
 	answer: string | null;
 	lastReplic: ChatMessage | null;
+
 	stage: {
 		name: string;
 		roundIndex: number;
@@ -35,12 +38,15 @@ interface RoomState {
 		currentPrice: number;
 		themeName: string;
 	};
+
 	timers: Timers;
 	showMainTimer: boolean;
+
 	selection: {
 		isEnabled: boolean;
 		message: string;
 	};
+
 	stakes: {
 		areVisible: boolean;
 		areSimple: boolean;
@@ -51,6 +57,7 @@ interface RoomState {
 		stake: number;
 		message: string;
 	};
+
 	validation: {
 		isVisible: boolean;
 		header: string;
@@ -60,6 +67,7 @@ interface RoomState {
 		wrongAnswers: string[];
 		showExtraRightButtons: boolean;
 	};
+
 	chat: {
 		isVisible: boolean;
 		isActive: boolean;
@@ -68,6 +76,7 @@ interface RoomState {
 		messages: ChatMessage[];
 		selectedPersonName: string | null;
 	};
+
 	selectedTableIndex: number; // 0 for showman; {N} for player {N - 1}
 	personsVisible: boolean;
 	tablesVisible: boolean;
@@ -113,9 +122,12 @@ const initialState: RoomState = {
 		players: [],
 		hostName: null
 	},
+
+	name: '',
 	role: Role.Player,
 	answer: null,
 	lastReplic: null,
+
 	stage: {
 		name: '',
 		roundIndex: -1,
@@ -129,6 +141,7 @@ const initialState: RoomState = {
 		currentPrice: 0,
 		themeName: ''
 	},
+
 	timers: {
 		round: {
 			state: TimerStates.Stopped,
@@ -152,11 +165,14 @@ const initialState: RoomState = {
 			maximum: 0
 		}
 	},
+
 	showMainTimer: false,
+
 	selection: {
 		isEnabled: false,
 		message: ''
 	},
+
 	stakes: {
 		areVisible: false,
 		areSimple: false,
@@ -172,6 +188,7 @@ const initialState: RoomState = {
 		stake: 0,
 		message: ''
 	},
+
 	validation: {
 		isVisible: false,
 		header: '',
@@ -181,6 +198,7 @@ const initialState: RoomState = {
 		wrongAnswers: [],
 		showExtraRightButtons: false,
 	},
+
 	chat: {
 		isVisible: false,
 		isActive: false,
@@ -189,6 +207,7 @@ const initialState: RoomState = {
 		messages: [],
 		selectedPersonName: null
 	},
+
 	selectedTableIndex: -1,
 	personsVisible: false,
 	tablesVisible: false,

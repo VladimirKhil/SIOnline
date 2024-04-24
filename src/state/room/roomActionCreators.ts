@@ -44,7 +44,7 @@ const runChatMessageSend: ActionCreator<ThunkAction<void, State, DataContext, Ac
 		dispatch(runChatMessageChanged(''));
 
 		// Temporary
-		dispatch(chatMessageAdded({ sender: state.user.login, text, level: MessageLevel.Information }) as unknown as Action);
+		dispatch(chatMessageAdded({ sender: state.room.name, text, level: MessageLevel.Information }) as unknown as Action);
 
 		if (!state.room.chat.isVisible) {
 			dispatch(activateChat());
@@ -414,6 +414,10 @@ const playerDeleted: ActionCreator<RunActions.PlayerDeletedAction> = (index: num
 
 const playersSwap: ActionCreator<RunActions.PlayersSwapAction> = (index1: number, index2: number) => ({
 	type: RunActions.RoomActionTypes.PlayersSwap, index1, index2
+});
+
+const nameChanged: ActionCreator<RunActions.NameChangedAction> = (name: string) => ({
+	type: RunActions.RoomActionTypes.NameChanged, name
 });
 
 const roleChanged: ActionCreator<RunActions.RoleChangedAction> = (role: Role) => ({
@@ -1004,6 +1008,7 @@ const roomActionCreators = {
 	playerChanged,
 	playerDeleted,
 	playersSwap,
+	nameChanged,
 	roleChanged,
 	playerStateChanged,
 	playerLostStateDropped,

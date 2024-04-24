@@ -41,7 +41,7 @@ interface PlayersViewProps {
 const mapStateToProps = (state: State) => ({
 	players: state.room.persons.players,
 	all: state.room.persons.all,
-	login: state.user.login,
+	login: state.room.name,
 	avatar: state.user.avatar,
 	isSelectionEnabled: state.room.selection.isEnabled,
 	isSumEditable: state.room.areSumsEditable,

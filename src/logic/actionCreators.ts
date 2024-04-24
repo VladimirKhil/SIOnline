@@ -21,7 +21,7 @@ import GameClient from '../client/game/GameClient';
 import userActionCreators from '../state/user/userActionCreators';
 import commonActionCreators from '../state/common/commonActionCreators';
 
-import SIContentClient from 'sicontent-client';
+import SIContentClient, { SIContentServiceError } from 'sicontent-client';
 import SIStorageClient from 'sistorage-client';
 import ClientController from './ClientController';
 import uiActionCreators from '../state/ui/uiActionCreators';
@@ -37,6 +37,7 @@ import ISIHostClient from '../client/ISIHostClient';
 import Role from '../model/Role';
 import ServerRole from '../client/contracts/ServerRole';
 import ServerSex from '../client/contracts/ServerSex';
+import WellKnownSIContentServiceErrorCode from 'sicontent-client/dist/models/WellKnownSIContentServiceErrorCode';
 
 interface ConnectResult {
 	success: boolean;
@@ -97,9 +98,11 @@ async function uploadAvatarAsync(dispatch: Dispatch<Action>, dataContext: DataCo
 	} catch (err) {
 		const errorMessage = getErrorMessage(err);
 
-		dispatch(commonActionCreators.onUserError(
-			localization.avatarLoadError + ': ' + (errorMessage === '413 {"errorCode":3}' ? localization.avatarIsTooBig : errorMessage)) as any);
+		const userError = (err as SIContentServiceError).errorCode === WellKnownSIContentServiceErrorCode.FileTooLarge
+			? localization.avatarIsTooBig
+			: errorMessage;
 
+		dispatch(commonActionCreators.onUserError(localization.avatarLoadError + ': ' + userError) as any);
 		dispatch(commonActionCreators.avatarLoadError(errorMessage));
 	}
 }
@@ -370,6 +373,7 @@ const navigateAsync = async (view: INavigationState, dispatch: Dispatch<Action>,
 					dataContext.game,
 					view.hostUri ?? '',
 					view.gameId,
+					state.user.login,
 					view.role,
 					view.sex ?? Sex.Female,
 					view.password ?? '',
@@ -379,6 +383,8 @@ const navigateAsync = async (view: INavigationState, dispatch: Dispatch<Action>,
 
 				await disconnectAsync(dispatch, dataContext);
 			} else {
+				const state = getState();
+
 				const result = await dataContext.gameClient.joinGameAsync(
 					view.gameId,
 					view.role,
@@ -399,6 +405,7 @@ const navigateAsync = async (view: INavigationState, dispatch: Dispatch<Action>,
 					dataContext.game,
 					view.hostUri ?? '',
 					result.GameId,
+					state.user.login,
 					view.role,
 					view.sex ?? Sex.Female,
 					view.password ?? '',

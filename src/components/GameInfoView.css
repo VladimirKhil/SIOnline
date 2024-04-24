@@ -50,29 +50,31 @@
     margin-top: 10px;
 }
 
-.passwordInfo {
+.gameInfoBlocks {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+}
+
+.gameInfoBlock {
     text-align: center;
     display: block;
     width: 100%;
     margin-top: 10px;
 }
 
-#password {
-    font-size: 15pt;
+.gameInfoBlock span {
+    width: 60px;
+    display: inline-block;
+}
+
+.gameInfoBlock input {
+    font-size: 20px;
     width: calc(100% - 30px);
     max-width: initial;
     display: block;
     margin: 5px 15px;
     padding: 2px 5px;
-}
-
-.joinGameError {
-    color: red;
-    height: 40px;
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
 .joinGameProgress {
@@ -109,12 +111,17 @@
         display: none;
     }
 
-    .passwordInfo {
+    .gameInfoBlocks {
+        display: flex;
+        flex-direction: row;
+    }
+
+    .gameInfoBlock {
         left: 300px;
         right: 295px;
     }
 
-    #password {
+    .gameInfoBlock input {
         display: inline;
         width: initial; /* Эффект есть */
     }

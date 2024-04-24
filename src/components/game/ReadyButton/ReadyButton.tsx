@@ -25,7 +25,8 @@ const getIsReady = (state: State) => {
 	}
 
 	if (role === Role.Player) {
-		const me = persons.players.find(p => p.name === state.user.login);
+		const me = persons.players.find(p => p.name === state.room.name);
+
 		if (me) {
 			return me.isReady;
 		}

@@ -82,7 +82,6 @@
 .welcomeViewActions {
 	width: 100%;
 	flex: 1;
-	font-size: 30px;
 	display: flex;
 	flex-direction: column;
 	overflow-x: hidden;
@@ -95,6 +94,7 @@
 	align-items: center;
 	justify-content: center;
 	padding: 0 15px;
+	font-size: 30px;
 }
 
 @keyframes welcomeRows {
@@ -172,7 +172,7 @@
 	}
 
 	.welcomeViewActions {
-		font-size: 35px;
+		font-size: 25px;
 		margin-top: 30px;
 	}
 
@@ -188,15 +188,15 @@
 	}
 
 	.welcomeView header h1 {
-		font-size: 35px;
+		font-size: 30px;
 	}
 
 	.welcomeViewActions {
-		font-size: 35px;
 		margin-top: 40px;
 	}
 
 	.welcomeViewActions button {
 		padding: 17px 50px;
+		font-size: 35px;
 	}
 }

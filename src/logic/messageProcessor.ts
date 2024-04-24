@@ -65,7 +65,7 @@ const processSystemMessage: ActionCreator<ThunkAction<void, State, DataContext, 
 
 const userMessageReceived: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (message: Message) =>
 	(dispatch: Dispatch<any>, getState: () => State) => {
-		if (message.Sender === getState().user.login) {
+		if (message.Sender === getState().room.name) {
 			return;
 		}
 
@@ -1343,7 +1343,7 @@ function config(dispatch: Dispatch<RoomActions.KnownRoomAction>, state: State, .
 
 			const account = isPlayer ? state.room.persons.players[index] : state.room.persons.showman;
 
-			if (account.name === state.user.login) {
+			if (account.name === state.room.name) {
 				dispatch(roomActionCreators.roleChanged(Role.Viewer));
 			}
 
@@ -1359,7 +1359,7 @@ function config(dispatch: Dispatch<RoomActions.KnownRoomAction>, state: State, .
 
 			if (person && !person.isHuman) {
 				dispatch(roomActionCreators.personRemoved(person.name));
-			} else if (player.name === state.user.login) {
+			} else if (player.name === state.room.name) {
 				dispatch(roomActionCreators.roleChanged(Role.Viewer));
 			}
 
@@ -1398,9 +1398,9 @@ function config(dispatch: Dispatch<RoomActions.KnownRoomAction>, state: State, .
 				dispatch(roomActionCreators.showmanChanged(account.name, true, account.isReady));
 				dispatch(roomActionCreators.playerChanged(index, replacer, true, state.room.persons.showman.isReady));
 
-				if (account.name === state.user.login) {
+				if (account.name === state.room.name) {
 					dispatch(roomActionCreators.roleChanged(Role.Showman));
-				} else if (replacer === state.user.login) {
+				} else if (replacer === state.room.name) {
 					dispatch(roomActionCreators.roleChanged(Role.Player));
 				}
 
@@ -1417,9 +1417,9 @@ function config(dispatch: Dispatch<RoomActions.KnownRoomAction>, state: State, .
 						dispatch(roomActionCreators.playerChanged(i, account.name, null, account.isReady));
 						dispatch(roomActionCreators.showmanChanged(replacer, null, isReady));
 
-						if (state.room.persons.showman.name === state.user.login) {
+						if (state.room.persons.showman.name === state.room.name) {
 							dispatch(roomActionCreators.roleChanged(Role.Player));
-						} else if (replacer === state.user.login) {
+						} else if (replacer === state.room.name) {
 							dispatch(roomActionCreators.roleChanged(Role.Showman));
 						}
 					}
@@ -1432,9 +1432,9 @@ function config(dispatch: Dispatch<RoomActions.KnownRoomAction>, state: State, .
 				? roomActionCreators.playerChanged(index, replacer, null, false)
 				: roomActionCreators.showmanChanged(replacer, null, false));
 
-			if (account.name === state.user.login) {
+			if (account.name === state.room.name) {
 				dispatch(roomActionCreators.roleChanged(Role.Viewer));
-			} else if (replacer === state.user.login) {
+			} else if (replacer === state.room.name) {
 				dispatch(roomActionCreators.roleChanged(isPlayer ? Role.Player : Role.Showman));
 			}
 
@@ -1475,7 +1475,7 @@ function config(dispatch: Dispatch<RoomActions.KnownRoomAction>, state: State, .
 				dispatch(roomActionCreators.personRemoved(person.name));
 			}
 
-			if (person.name === state.user.login) {
+			if (person.name === state.room.name) {
 				dispatch(roomActionCreators.roleChanged(Role.Viewer));
 			}
 

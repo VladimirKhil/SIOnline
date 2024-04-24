@@ -91,7 +91,6 @@ export function MainMenu(props: MainMenuProps): JSX.Element {
 					<button
 						type='button'
 						className='standard imageButton welcomeExit'
-						disabled={!props.isConnected}
 						onClick={props.exit}
 						title={localization.exitFromGame}>
 						<img src={exitImg} alt='Exit' />

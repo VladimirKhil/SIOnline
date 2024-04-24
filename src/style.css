@@ -381,10 +381,6 @@ h1.activeTab {
     min-height: 20px;
 }
 
-#name {
-    margin-left: 5px;
-}
-
 #gameLogHost {
     flex: 0 0 130px;
     margin: 0;

@@ -417,6 +417,12 @@ const roomReducer: Reducer<RoomState> = (state: RoomState = initialState, anyAct
 				}
 			};
 
+		case RoomActionTypes.NameChanged:
+			return {
+				...state,
+				name: action.name
+			};
+
 		case RoomActionTypes.RoleChanged:
 			return {
 				...state,

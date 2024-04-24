@@ -212,7 +212,6 @@ const onlineReducer: Reducer<OnlineState> = (state: OnlineState = initialState, 
 			return {
 				...state,
 				joinGameProgress: true,
-				joingGameError: null
 			};
 		}
 
@@ -220,7 +219,6 @@ const onlineReducer: Reducer<OnlineState> = (state: OnlineState = initialState, 
 			return {
 				...state,
 				joinGameProgress: false,
-				joingGameError: action.error
 			};
 		}
 

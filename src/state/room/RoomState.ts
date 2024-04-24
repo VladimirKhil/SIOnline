@@ -17,6 +17,7 @@ export default interface RoomState {
 		hostName: string | null;
 	};
 
+	name: string;
 	role: Role;
 	answer: string | null;
 	lastReplic: ChatMessage | null;
@@ -121,6 +122,7 @@ export const initialState: RoomState = {
 		hostName: null
 	},
 
+	name: '',
 	role: Role.Player,
 	answer: null,
 	lastReplic: null,

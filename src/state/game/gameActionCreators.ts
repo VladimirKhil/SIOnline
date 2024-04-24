@@ -46,7 +46,8 @@ const gamePackageDataChanged: ActionCreator<GameActions.GamePackageDataChangedAc
 
 const gamePackageDataChangedRequest: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (
 	packageName: string,
-	packageData: File | null) => (dispatch: Dispatch<AnyAction>, getState: () => State, dataContext: DataContext) => {
+	packageData: File | null
+) => (dispatch: Dispatch<AnyAction>, getState: () => State, dataContext: DataContext) => {
 		const state = getState();
 		const { maxPackageSizeMb } = state.common;
 

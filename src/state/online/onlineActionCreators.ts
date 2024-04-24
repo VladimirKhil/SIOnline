@@ -10,7 +10,7 @@ import getErrorMessage from '../../utils/ErrorHelpers';
 import OnlineMode from '../../model/enums/OnlineMode';
 import localization from '../../model/resources/localization';
 import GamesFilter from '../../model/enums/GamesFilter';
-import SIContentClient from 'sicontent-client';
+import SIContentClient, { SIContentServiceError } from 'sicontent-client';
 import PackageInfo from '../../client/contracts/PackageInfo';
 import { ThunkAction } from 'redux-thunk';
 import AccountSettings from '../../client/contracts/AccountSettings';
@@ -43,6 +43,7 @@ import clearUrls from '../../utils/clearUrls';
 import GameClient from '../../client/game/GameClient';
 import commonActionCreators from '../common/commonActionCreators';
 import GameState from '../game/GameState';
+import WellKnownSIContentServiceErrorCode from 'sicontent-client/dist/models/WellKnownSIContentServiceErrorCode';
 
 const selectGame: ActionCreator<OnlineActions.SelectGameAction> = (gameId: number) => ({
 	type: OnlineActions.OnlineActionTypes.SelectGame,
@@ -282,7 +283,7 @@ async function loadStatisticsAsync(dispatch: Dispatch<OnlineActions.KnownOnlineA
 		languageCode: localization.getLanguage()
 	};
 
-	const packagesStatistics = await siStatisticsClient.getLatestTopPackagesAsync(filter);
+	const packagesStatistics = await siStatisticsClient.getLatestTopPackagesAsync({ ...filter, count: 6 });
 	dispatch({ type: OnlineActions.OnlineActionTypes.PackagesStatisticsLoaded, packagesStatistics });
 
 	const gamesStatistics = await siStatisticsClient.getLatestGamesStatisticAsync(filter);
@@ -327,6 +328,7 @@ const initGameAsync = async (
 	gameClient: IGameClient,
 	hostUri: string,
 	gameId: number,
+	name: string,
 	role: Role,
 	sex: Sex,
 	password: string,
@@ -336,6 +338,7 @@ const initGameAsync = async (
 	dispatch(gameActionCreators.gameSet(gameId, isAutomatic));
 	dispatch(tableActionCreators.tableReset());
 	dispatch(tableActionCreators.showText(localization.tableHint, false));
+	dispatch(roomActionCreators.nameChanged(name));
 	dispatch(roomActionCreators.roleChanged(role));
 	dispatch(roomActionCreators.stopTimer(0));
 	dispatch(roomActionCreators.stopTimer(1));
@@ -365,9 +368,8 @@ const joinGameStarted: ActionCreator<OnlineActions.JoinGameStartedAction> = () =
 	type: OnlineActions.OnlineActionTypes.JoinGameStarted
 });
 
-const joinGameFinished: ActionCreator<OnlineActions.JoinGameFinishedAction> = (error: string | null) => ({
+const joinGameFinished: ActionCreator<OnlineActions.JoinGameFinishedAction> = () => ({
 	type: OnlineActions.OnlineActionTypes.JoinGameFinished,
-	error
 });
 
 function getServerRole(role: Role) {
@@ -379,7 +381,7 @@ function getServerRole(role: Role) {
 }
 
 const joinGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
-	(hostUri: string, gameId: number, role: Role) => async (
+	(hostUri: string, gameId: number, userName: string, role: Role) => async (
 	dispatch: Dispatch<any>,
 	getState: () => State,
 	dataContext: DataContext
@@ -394,24 +396,25 @@ const joinGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 
 		const result = await siHostClient.joinGameAsync({
 			GameId: gameId,
-			UserName: state.user.login,
+			UserName: userName,
 			Role: serverRole,
 			Sex: state.settings.sex === Sex.Male ? ServerSex.Male : ServerSex.Female,
 			Password: state.online.password,
 		});
 
 		if (!result.IsSuccess) {
-			dispatch(joinGameFinished(`${localization.joinError}: ${result.ErrorType} ${result.Message}`));
+			dispatch(commonActionCreators.onUserError(`${localization.joinError}: ${result.Message}`));
 			return;
 		}
 
-		await initGameAsync(dispatch, dataContext.game, hostUri, gameId, role, state.settings.sex, state.online.password, false, true);
+		await initGameAsync(dispatch, dataContext.game, hostUri, gameId, userName, role, state.settings.sex, state.online.password, false, true);
 		await actionCreators.disconnectAsync(dispatch, dataContext);
 
 		actionCreators.saveStateToStorage(state);
-		dispatch(joinGameFinished(null));
 	} catch (error) {
-		dispatch(joinGameFinished(getErrorMessage(error)));
+		dispatch(commonActionCreators.onUserError(getErrorMessage(error)));
+	} finally {
+		dispatch(joinGameFinished());
 	}
 };
 
@@ -620,11 +623,28 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 				dispatch(gameCreationEnd(GameErrorsHelper.getMessage(result.Code) + (result.ErrorMessage || '')));
 			} else {
 				dataContext.game = new GameClient(dataContext.gameClient, false);
-				await initGameAsync(dispatch, dataContext.game, '', result.GameId, role, state.settings.sex, game.password, false, true);
+
+				await initGameAsync(
+					dispatch,
+					dataContext.game,
+					'',
+					result.GameId,
+					state.user.login,
+					role,
+					state.settings.sex,
+					game.password,
+					false,
+					true,
+				);
+
 				dispatch(newGameCancel());
 			}
 		} catch (error) {
-			dispatch(gameCreationEnd(getErrorMessage(error)));
+			const userError = (error as SIContentServiceError)?.errorCode === WellKnownSIContentServiceErrorCode.BadPackageFile
+				? localization.badPackage
+				: getErrorMessage(error);
+
+			dispatch(gameCreationEnd(userError));
 		}
 	};
 
@@ -648,7 +668,7 @@ const createNewAutoGame: ActionCreator<ThunkAction<void, State, DataContext, Act
 				dispatch(commonActionCreators.onUserError(GameErrorsHelper.getMessage(result.Code) + (result.ErrorMessage || '')) as any);
 			} else {
 				dataContext.game = new GameClient(dataContext.gameClient, false);
-				await initGameAsync(dispatch, dataContext.game, '', result.GameId, Role.Player, state.settings.sex, '', true, true);
+				await initGameAsync(dispatch, dataContext.game, '', result.GameId, state.user.login, Role.Player, state.settings.sex, '', true, true);
 			}
 		} catch (message) {
 			dispatch(gameCreationEnd(message));

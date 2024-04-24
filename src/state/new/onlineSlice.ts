@@ -23,7 +23,6 @@ interface OnlineState {
 	gameCreationProgress: boolean;
 	gameCreationError: string | null;
 	joinGameProgress: boolean;
-	joingGameError: string | null;
 	uploadPackageProgress: boolean;
 	uploadPackagePercentage: number;
 }
@@ -50,7 +49,6 @@ const initialState: OnlineState = {
 	gameCreationProgress: false,
 	gameCreationError: null,
 	joinGameProgress: false,
-	joingGameError: null,
 	uploadPackageProgress: false,
 	uploadPackagePercentage: 0
 };

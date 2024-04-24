@@ -47,6 +47,7 @@ export const enum RoomActionTypes {
 	PlayerChanged = 'PLAYER_CHANGED',
 	PlayerDeleted = 'PLAYER_DELETED',
 	PlayersSwap = 'PLAYERS_SWAP',
+	NameChanged = 'NAME_CHANGED',
 	RoleChanged = 'ROLE_CHANGED',
 	PlayerStateChanged = 'PLAYER_STATE_CHANGED',
 	PlayerLostStateDropped = 'PLAYER_LOST_STATE_DROPPED',
@@ -133,6 +134,7 @@ export type PlayerAddedAction = { type: RoomActionTypes.PlayerAdded };
 export type PlayerChangedAction = { type: RoomActionTypes.PlayerChanged, index: number, name: string, isHuman?: boolean, isReady?: boolean };
 export type PlayerDeletedAction = { type: RoomActionTypes.PlayerDeleted, index: number };
 export type PlayersSwapAction = { type: RoomActionTypes.PlayersSwap, index1: number, index2: number };
+export type NameChangedAction = { type: RoomActionTypes.NameChanged, name: string };
 export type RoleChangedAction = { type: RoomActionTypes.RoleChanged, role: Role };
 export type PlayerStateChangedAction = { type: RoomActionTypes.PlayerStateChanged, index: number, state: PlayerStates };
 export type PlayerLostStateDroppedAction = { type: RoomActionTypes.PlayerLostStateDropped, index: number };
@@ -248,6 +250,7 @@ export type KnownRoomAction =
 	| PlayerChangedAction
 	| PlayerDeletedAction
 	| PlayersSwapAction
+	| NameChangedAction
 	| RoleChangedAction
 	| PlayerStateChangedAction
 	| PlayerLostStateDroppedAction

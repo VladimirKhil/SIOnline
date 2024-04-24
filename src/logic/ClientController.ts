@@ -162,7 +162,7 @@ export default class ClientController {
 	}
 
 	onConnected(account: Account, role: string, index: number) {
-		if (account.name === this.getState().user.login) {
+		if (account.name === this.getState().room.name) {
 			return;
 		}
 

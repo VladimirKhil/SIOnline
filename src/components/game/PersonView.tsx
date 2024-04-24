@@ -20,7 +20,7 @@ interface PersonViewProps {
 
 const mapStateToProps = (state: State) => ({
 	selectedPersonName: state.room.chat.selectedPersonName,
-	login: state.user.login,
+	login: state.room.name,
 	avatar: state.user.avatar,
 	hostName: state.room.persons.hostName
 });
