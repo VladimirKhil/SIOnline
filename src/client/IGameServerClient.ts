@@ -6,6 +6,8 @@ import Slice from './contracts/Slice';
 import PackageInfo from './contracts/PackageInfo';
 import Role from '../model/Role';
 import IClientBase from './IClientBase';
+import RunGameRequest from './contracts/RunGameRequest';
+import RunGameResponse from './contracts/RunGameResponse';
 
 /** Defines the SIGame Server client. */
 export default interface IGameServerClient extends IClientBase {
@@ -39,12 +41,10 @@ export default interface IGameServerClient extends IClientBase {
 	sayInLobbyAsync(text: string): Promise<any>;
 
 	/**
-	 * Creates a new game and joins it as a host.
-	 * @param gameSettings Game settings.
-	 * @param packageInfo Package info.
-	 * @param isMale If host is a male person (or female otherwise).
+	 * Runs a new game.
+	 * @param runGameRequest Game options.
 	 */
-	createAndJoinGame2Async(gameSettings: GameSettings, packageInfo: PackageInfo, isMale: boolean): Promise<GameCreationResult>;
+	runGameAsync(runGameRequest: RunGameRequest): Promise<RunGameResponse>;
 
 	/**
 	 * Creates an automatic game to play with anybody and joins it.

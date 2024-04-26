@@ -403,7 +403,9 @@ const joinGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 		});
 
 		if (!result.IsSuccess) {
-			dispatch(commonActionCreators.onUserError(`${localization.joinError}: ${result.Message}`));
+			dispatch(commonActionCreators.onUserError(
+				`${localization.joinError}: ${GameErrorsHelper.getJoinErrorMessage(result.ErrorType)} ${result.Message}`));
+
 			return;
 		}
 
@@ -415,6 +417,7 @@ const joinGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 		dispatch(commonActionCreators.onUserError(getErrorMessage(error)));
 	} finally {
 		dispatch(joinGameFinished());
+		dispatch(newGameCancel());
 	}
 };
 
@@ -610,41 +613,28 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 		try {
 			const packageInfo = await getPackageInfoAsync(game, dataContext, dispatch);
 
-			const result = await dataContext.gameClient.createAndJoinGame2Async(
-				gameSettings,
-				packageInfo,
-				state.settings.sex === Sex.Male
-			);
+			const result = await dataContext.gameClient.runGameAsync({
+				GameSettings: gameSettings,
+				PackageInfo: packageInfo,
+				ComputerAccounts: []
+			});
 
 			actionCreators.saveStateToStorage(state);
-			dispatch(gameCreationEnd());
 
-			if (result.Code !== GameCreationResultCode.Ok) {
-				dispatch(gameCreationEnd(GameErrorsHelper.getMessage(result.Code) + (result.ErrorMessage || '')));
+			if (!result.IsSuccess) {
+				dispatch(commonActionCreators.onUserError(GameErrorsHelper.getMessage(result.ErrorType)));
 			} else {
-				dataContext.game = new GameClient(dataContext.gameClient, false);
-
-				await initGameAsync(
-					dispatch,
-					dataContext.game,
-					'',
-					result.GameId,
-					state.user.login,
-					role,
-					state.settings.sex,
-					game.password,
-					false,
-					true,
-				);
-
-				dispatch(newGameCancel());
+				dispatch(passwordChanged(gameSettings.NetworkGamePassword));
+				dispatch(joinGame(result.HostUri, result.GameId, state.user.login, role));
 			}
 		} catch (error) {
 			const userError = (error as SIContentServiceError)?.errorCode === WellKnownSIContentServiceErrorCode.BadPackageFile
 				? localization.badPackage
 				: getErrorMessage(error);
 
-			dispatch(gameCreationEnd(userError));
+			dispatch(commonActionCreators.onUserError(userError));
+		} finally {
+			dispatch(gameCreationEnd());
 		}
 	};
 

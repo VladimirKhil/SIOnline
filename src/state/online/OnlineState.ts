@@ -22,7 +22,6 @@ export default interface OnlineState {
 	chatMode: LobbySideMode;
 	newGameShown: boolean;
 	gameCreationProgress: boolean;
-	gameCreationError: string | null;
 	joinGameProgress: boolean;
 	uploadPackageProgress: boolean;
 	uploadPackagePercentage: number;
@@ -51,7 +50,6 @@ export const initialState: OnlineState = {
 	chatMode: LobbySideMode.Trends,
 	newGameShown: false,
 	gameCreationProgress: false,
-	gameCreationError: null,
 	joinGameProgress: false,
 	uploadPackageProgress: false,
 	uploadPackagePercentage: 0,

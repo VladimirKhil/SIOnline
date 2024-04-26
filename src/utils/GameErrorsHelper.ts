@@ -1,4 +1,5 @@
 import GameCreationResultCode from '../client/contracts/GameCreationResultCode';
+import JoinGameErrorType from '../client/contracts/JoinGameErrorType';
 import localization from '../model/resources/localization';
 
 export function getMessage(code: GameCreationResultCode): string {
@@ -41,5 +42,21 @@ export function getMessage(code: GameCreationResultCode): string {
 
 		default:
 			return localization.errorUnknownError;
+	}
+}
+
+export function getJoinErrorMessage(error: JoinGameErrorType): string {
+	switch (error) {
+		case JoinGameErrorType.GameNotFound:
+			return localization.gameNotFound;
+
+		case JoinGameErrorType.InternalServerError:
+			return localization.errorInternalServerError;
+
+		case JoinGameErrorType.Forbidden:
+			return localization.youAreKicked;
+
+		default:
+			return '';
 	}
 }

@@ -160,7 +160,6 @@ const onlineReducer: Reducer<OnlineState> = (state: OnlineState = initialState, 
 				...state,
 				newGameShown: true,
 				gameCreationProgress: false,
-				gameCreationError: null
 			};
 		}
 
@@ -168,7 +167,6 @@ const onlineReducer: Reducer<OnlineState> = (state: OnlineState = initialState, 
 			return {
 				...state,
 				newGameShown: false,
-				gameCreationError: null,
 				gameCreationProgress: false
 			};
 		}
@@ -177,7 +175,6 @@ const onlineReducer: Reducer<OnlineState> = (state: OnlineState = initialState, 
 			return {
 				...state,
 				gameCreationProgress: true,
-				gameCreationError: null
 			};
 		}
 
@@ -185,7 +182,6 @@ const onlineReducer: Reducer<OnlineState> = (state: OnlineState = initialState, 
 			return {
 				...state,
 				gameCreationProgress: false,
-				gameCreationError: action.error
 			};
 		}
 

@@ -34,7 +34,6 @@ interface NewGameDialogProps {
 	playersCount: number;
 	humanPlayersCount: number;
 	inProgress: boolean;
-	error: string | null;
 	uploadPackageProgress: boolean;
 	uploadPackagePercentage: number;
 	navigation: INavigationState;
@@ -69,7 +68,6 @@ const mapStateToProps = (state: State) => ({
 	playersCount: state.game.playersCount,
 	humanPlayersCount: state.game.humanPlayersCount,
 	inProgress: state.online.gameCreationProgress,
-	error: state.online.gameCreationError,
 	uploadPackageProgress:  state.online.uploadPackageProgress,
 	uploadPackagePercentage: state.online.uploadPackagePercentage,
 	navigation: state.ui.navigation,
@@ -389,8 +387,6 @@ export function NewGameDialog(props: NewGameDialogProps) {
 						</>
 					)}
 				</div>
-
-				<div className="gameCreationError">{props.error}</div>
 
 				<div className="buttonsArea">
 					<button

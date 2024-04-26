@@ -38,6 +38,7 @@ import Role from '../model/Role';
 import ServerRole from '../client/contracts/ServerRole';
 import ServerSex from '../client/contracts/ServerSex';
 import WellKnownSIContentServiceErrorCode from 'sicontent-client/dist/models/WellKnownSIContentServiceErrorCode';
+import { getJoinErrorMessage } from '../utils/GameErrorsHelper';
 
 interface ConnectResult {
 	success: boolean;
@@ -363,7 +364,9 @@ const navigateAsync = async (view: INavigationState, dispatch: Dispatch<Action>,
 				});
 
 				if (!result.IsSuccess) {
-					dispatch(commonActionCreators.onUserError(`${localization.joinError}: ${result.ErrorType} ${result.Message}`) as any);
+					dispatch(commonActionCreators.onUserError(
+						`${localization.joinError}: ${getJoinErrorMessage(result.ErrorType)} ${result.Message}`) as any);
+
 					dispatch(uiActionCreators.navigate({ path: Path.Root }) as unknown as Action);
 					return;
 				}

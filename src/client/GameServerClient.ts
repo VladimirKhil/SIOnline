@@ -7,6 +7,8 @@ import IGameServerClient from './IGameServerClient';
 import PackageInfo from './contracts/PackageInfo';
 import Role from '../model/Role';
 import IClientBase from './IClientBase';
+import RunGameResponse from './contracts/RunGameResponse';
+import RunGameRequest from './contracts/RunGameRequest';
 
 const enum State { None, Lobby, Game }
 
@@ -68,13 +70,10 @@ export default class GameServerClient implements IGameServerClient, IClientBase 
 		return this.connection.invoke('Say', text);
 	}
 
-	createAndJoinGame2Async(gameSettings: GameSettings, packageInfo: PackageInfo, isMale: boolean): Promise<GameCreationResult> {
-		return this.connection.invoke<GameCreationResult>(
-			'CreateAndJoinGame2',
-			gameSettings,
-			packageInfo,
-			[],
-			isMale
+	runGameAsync(runGameRequest: RunGameRequest): Promise<RunGameResponse> {
+		return this.connection.invoke<RunGameResponse>(
+			'RunGame',
+			runGameRequest
 		);
 	}
 

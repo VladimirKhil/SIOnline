@@ -6,6 +6,7 @@
 }
 
 #newGameDialog .settings {
+    flex: 1;
     padding-left: 13px;
     overflow-y: auto;
     scrollbar-width: thin;
@@ -42,15 +43,6 @@
     height: 45px;
     flex: 1;
     margin-top: 5px;
-}
-
-#newGameDialog .gameCreationError {
-    color: darkred;
-    text-align: center;
-    margin: auto;
-    margin-top: 5px;
-    width: calc(100% - 10px);
-    max-height: 100px;
 }
 
 .newGameHeader {
