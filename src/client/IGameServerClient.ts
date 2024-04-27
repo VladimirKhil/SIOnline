@@ -1,13 +1,10 @@
-import GameCreationResult from './contracts/GameCreationResult';
 import GameInfo from './contracts/GameInfo';
-import GameSettings from './contracts/GameSettings';
 import HostInfo from './contracts/HostInfo';
 import Slice from './contracts/Slice';
-import PackageInfo from './contracts/PackageInfo';
-import Role from '../model/Role';
 import IClientBase from './IClientBase';
 import RunGameRequest from './contracts/RunGameRequest';
 import RunGameResponse from './contracts/RunGameResponse';
+import RunAutoGameRequest from './contracts/RunAutoGameRequest';
 
 /** Defines the SIGame Server client. */
 export default interface IGameServerClient extends IClientBase {
@@ -47,20 +44,10 @@ export default interface IGameServerClient extends IClientBase {
 	runGameAsync(runGameRequest: RunGameRequest): Promise<RunGameResponse>;
 
 	/**
-	 * Creates an automatic game to play with anybody and joins it.
-	 * @param login User login.
-	 * @param isMale If person is a male (or female otherwise).
+	 * Runs a new automatic game.
+	 * @param runAutoGameRequest Automatic game options.
 	 */
-	createAutomaticGameAsync(login: string, isMale: boolean): Promise<GameCreationResult>;
-
-	/**
-	 * Joins an existsing game.
-	 * @param gameId Game identifier to join.
-	 * @param role Role to use.
-	 * @param isMale If person is a male (or female otherwise).
-	 * @param password Game password.
-	 */
-	joinGameAsync(gameId: number, role: Role, isMale: boolean, password: string): Promise<GameCreationResult>;
+	runAutoGameAsync(runAutoGameRequest: RunAutoGameRequest): Promise<RunGameResponse>;
 
 	/** Logs out from the server. */
 	logOutAsync(): Promise<any>;

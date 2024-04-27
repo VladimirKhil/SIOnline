@@ -1,31 +1,19 @@
-import GameCreationResult from './contracts/GameCreationResult';
 import GameInfo from './contracts/GameInfo';
-import GameSettings from './contracts/GameSettings';
 import HostInfo from './contracts/HostInfo';
 import Slice from './contracts/Slice';
 import IGameServerClient from './IGameServerClient';
-import PackageInfo from './contracts/PackageInfo';
-import Role from '../model/Role';
 import IClientBase from './IClientBase';
 import RunGameResponse from './contracts/RunGameResponse';
 import RunGameRequest from './contracts/RunGameRequest';
+import RunAutoGameRequest from './contracts/RunAutoGameRequest';
 
 const enum State { None, Lobby, Game }
-
-interface JoinInfo {
-	gameId: number;
-	role: Role;
-	isMale: boolean;
-	password: string;
-}
 
 /** Represents a connection to a SIGame Server. */
 export default class GameServerClient implements IGameServerClient, IClientBase {
 	private state: State = State.None;
 
 	private culture = '';
-
-	private joinInfo: JoinInfo | null = null;
 
 	/**
 	 * Initializes a new instance of {@link GameServerClient}.
@@ -77,29 +65,11 @@ export default class GameServerClient implements IGameServerClient, IClientBase 
 		);
 	}
 
-	createAutomaticGameAsync(login: string, isMale: boolean): Promise<GameCreationResult> {
-		return this.connection.invoke<GameCreationResult>(
-			'CreateAutomaticGameNew',
-			login,
-			isMale
+	runAutoGameAsync(runAutoGameRequest: RunAutoGameRequest): Promise<RunGameResponse> {
+		return this.connection.invoke<RunGameResponse>(
+			'RunAutoGame',
+			runAutoGameRequest
 		);
-	}
-
-	async joinGameAsync(gameId: number, role: Role, isMale: boolean, password: string): Promise<GameCreationResult> {
-		const result = await this.connection.invoke<GameCreationResult>(
-			'JoinGameNew',
-			gameId,
-			role,
-			isMale,
-			password
-		);
-
-		if (!result.ErrorMessage) {
-			this.state = State.Game;
-			this.joinInfo = { gameId, role, isMale, password };
-		}
-
-		return result;
 	}
 
 	async sendMessageToServerAsync(message: string): Promise<boolean> {
@@ -142,8 +112,6 @@ export default class GameServerClient implements IGameServerClient, IClientBase 
 	async reconnectAsync(): Promise<any> {
 		if (this.state === State.Lobby) {
 			await this.joinLobbyAsync(this.culture);
-		} else if (this.state === State.Game && this.joinInfo) {
-			await this.joinGameAsync(this.joinInfo.gameId, this.joinInfo.role, this.joinInfo.isMale, this.joinInfo.password);
 		}
 	}
 }

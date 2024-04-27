@@ -645,23 +645,21 @@ const createNewAutoGame: ActionCreator<ThunkAction<void, State, DataContext, Act
 		dispatch(gameCreationStart());
 
 		try {
-			const result = await dataContext.gameClient.createAutomaticGameAsync(
-				state.user.login,
-				state.settings.sex === Sex.Male
-			);
+			const result = await dataContext.gameClient.runAutoGameAsync({
+				Culture: getFullCulture(state)
+			});
 
 			actionCreators.saveStateToStorage(state);
 
-			dispatch(gameCreationEnd());
-
-			if (result.Code !== GameCreationResultCode.Ok) {
-				dispatch(commonActionCreators.onUserError(GameErrorsHelper.getMessage(result.Code) + (result.ErrorMessage || '')) as any);
+			if (!result.IsSuccess) {
+				dispatch(commonActionCreators.onUserError(GameErrorsHelper.getMessage(result.ErrorType)));
 			} else {
-				dataContext.game = new GameClient(dataContext.gameClient, false);
-				await initGameAsync(dispatch, dataContext.game, '', result.GameId, state.user.login, Role.Player, state.settings.sex, '', true, true);
+				dispatch(joinGame(result.HostUri, result.GameId, state.user.login, Role.Player));
 			}
-		} catch (message) {
-			dispatch(gameCreationEnd(message));
+		} catch (error) {
+			dispatch(commonActionCreators.onUserError(getErrorMessage(error)));
+		} finally {
+			dispatch(gameCreationEnd());
 		}
 	};
 
