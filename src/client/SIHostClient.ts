@@ -6,6 +6,8 @@ import JoinGameResponse from './contracts/JoinGameResponse';
 export default class SIHostClient implements ISIHostClient, IClientBase {
 	private joinInfo: JoinGameRequest | null = null;
 
+	private completed = false;
+
 	/**
 	 * Initializes a new instance of {@link SIHostClient}.
 	 * @param connection Underlying SignalR connection.
@@ -34,7 +36,10 @@ export default class SIHostClient implements ISIHostClient, IClientBase {
 
 			return true;
 		} catch (e) {
-			this.errorHandler(e);
+			if (!this.completed) {
+				this.errorHandler(e);
+			}
+
 			return false;
 		}
 	}
@@ -58,8 +63,9 @@ export default class SIHostClient implements ISIHostClient, IClientBase {
 		}
 	}
 
-	/** Leaves game and returns to lobby. */
+	/** Leaves game and finishes processing. */
 	async leaveGameAsync(): Promise<any> {
 		this.joinInfo = null;
+		this.completed = true;
 	}
 }

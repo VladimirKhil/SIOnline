@@ -18,7 +18,7 @@ interface AnswerInputProps {
 }
 
 const mapStateToProps = (state: State) => ({
-	isConnected: state.common.isConnected,
+	isConnected: state.common.isSIHostConnected,
 	isAnswering: state.room.stage.isAnswering,
 	answer: state.room.answer || ''
 });

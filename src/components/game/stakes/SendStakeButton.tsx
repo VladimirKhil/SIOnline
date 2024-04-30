@@ -15,7 +15,7 @@ interface SendStakeButtonProps {
 }
 
 const mapStateToProps = (state: State) => ({
-	isConnected: state.common.isConnected,
+	isConnected: state.common.isSIHostConnected,
 	allowedStakeTypes: state.room.stakes.allowedStakeTypes,
 });
 

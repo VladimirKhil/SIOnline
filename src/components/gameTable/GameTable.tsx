@@ -2,7 +2,7 @@
 import { connect } from 'react-redux';
 import State from '../../state/State';
 import TableMode from '../../model/enums/TableMode';
-import TableLogo from './TableLogo';
+import TableLogo from './TableLogo/TableLogo';
 import TableText from './TableText';
 import TableAnswer from './TableAnswer';
 import TableGameThemes from './TableGameThemes';
@@ -32,7 +32,7 @@ interface GameTableProps {
 }
 
 const mapStateToProps = (state: State) => ({
-	isConnected: state.common.isConnected,
+	isConnected: state.common.isSIHostConnected,
 	mode: state.table.mode,
 	isPaused: state.room.stage.isGamePaused,
 	isEditEnabled: state.room.stage.isEditEnabled,

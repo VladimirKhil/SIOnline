@@ -44,7 +44,7 @@ const mapStateToProps = (state: State) => {
 	const { selectedPersonName } = state.room.chat;
 
 	return {
-		isConnected: state.common.isConnected,
+		isConnected: state.common.isSIHostConnected,
 		isHost: isHost(state),
 		showman,
 		players,

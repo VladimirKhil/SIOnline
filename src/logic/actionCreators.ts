@@ -364,7 +364,7 @@ const navigateAsync = async (view: INavigationState, dispatch: Dispatch<Action>,
 
 			if (!result.IsSuccess) {
 				dispatch(commonActionCreators.onUserError(
-					`${localization.joinError}: ${getJoinErrorMessage(result.ErrorType)} ${result.Message}`) as any);
+					`${localization.joinError}: ${getJoinErrorMessage(result.ErrorType)} ${result.Message ?? ''}`) as any);
 
 				dispatch(uiActionCreators.navigate({ path: Path.Root }) as unknown as Action);
 				return;

@@ -2,19 +2,14 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import State from '../../../state/State';
 import TableBorder from '../TableBorder';
-import ContentItem from '../../../model/ContentItem';
 import ContentType from '../../../model/enums/ContentType';
-import TextContent from '../TextContent';
-import ImageContent from '../ImageContent';
-import VideoContent from '../VideoContent';
-import HtmlContent from '../HtmlContent';
 import AudioContent from '../AudioContent';
 import VolumeButton from '../../common/VolumeButton';
 import ContentGroup from '../../../model/ContentGroup';
 import LayoutMode from '../../../model/enums/LayoutMode';
 import AnswerOptions from '../AnswerOptions/AnswerOptions';
-import PartialTextContent from '../PartialTextContent';
 import Constants from '../../../model/enums/Constants';
+import StackedContent from '../StackedContent/StackedContent';
 
 import './TableContent.css';
 
@@ -42,38 +37,6 @@ const mapStateToProps = (state: State) => ({
 	appendText: state.table.appendText,
 	attachContentToTable: state.settings.attachContentToTable,
 });
-
-function getContent(content: ContentItem, key: React.Key, autoPlayEnabled: boolean): JSX.Element | null {
-	switch (content.type) {
-		case ContentType.Text:
-			return content.partial
-				? <PartialTextContent key={key} />
-				: <TextContent key={key} text={content.value} animateReading={content.read} />;
-
-		case ContentType.Image:
-			return <ImageContent key={key} uri={content.value} />;
-
-		case ContentType.Video:
-			return <VideoContent key={key} uri={content.value} autoPlayEnabled={autoPlayEnabled} />;
-
-		case ContentType.Html:
-			return <HtmlContent key={key} uri={content.value} />;
-
-		default:
-			return null;
-	}
-}
-
-function getGroupContent(group: ContentGroup, key: React.Key, autoPlayEnabled: boolean): JSX.Element | null {
-	return (
-		<div
-			key={key}
-			className='table-content-group'
-			style={{ flex: `${group.weight}`, gridTemplateColumns: `repeat(${group.columnCount}, 1fr)` }}>
-			{group.content.map((c, i) => getContent(c, i, autoPlayEnabled))}
-		</div>
-	);
-}
 
 function getLayout(layoutMode: LayoutMode, mainContent: JSX.Element) {
 	return layoutMode === LayoutMode.Simple
@@ -174,9 +137,9 @@ export class TableContent extends React.Component<TableContentProps, TableConten
 
 		const hasSound = this.props.audio.length > 0 || content.some(g => g.content.some(c => c.type === ContentType.Video));
 
-		const mainContent = <div className='mainContent'>
-			{content.length > 0 ? content.map((c, i) => getGroupContent(c, i, this.state.canPlayAudio)) : this.getAudioContent()}
-		</div>;
+		const mainContent = content.length > 0
+			? <StackedContent content={content} canPlayAudio={this.state.canPlayAudio} />
+			: <div className='mainContent'>{this.getAudioContent()}</div>;
 
 		return (
 			<TableBorder>

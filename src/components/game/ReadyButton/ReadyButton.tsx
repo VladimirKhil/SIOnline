@@ -36,7 +36,7 @@ const getIsReady = (state: State) => {
 };
 
 const mapStateToProps = (state: State) => ({
-	isConnected: state.common.isConnected,
+	isConnected: state.common.isSIHostConnected,
 	sex: state.settings.sex,
 	isReady: getIsReady(state),
 });

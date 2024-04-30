@@ -24,7 +24,7 @@ interface AnswerValidationDialogProps {
 }
 
 const mapStateToProps = (state: State) => ({
-	isConnected: state.common.isConnected,
+	isConnected: state.common.isSIHostConnected,
 	header: state.room.validation.header,
 	message: state.room.validation.message,
 	rightAnswers: state.room.validation.rightAnswers,

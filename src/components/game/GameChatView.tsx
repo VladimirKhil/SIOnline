@@ -44,7 +44,7 @@ interface GameChatViewProps {
 }
 
 const mapStateToProps = (state: State) => ({
-	isConnected: state.common.isConnected,
+	isConnected: state.common.isSIHostConnected,
 	chatMode: state.room.chat.mode,
 	personsCount: Object.values(state.room.persons.all).length,
 	role: state.room.role,

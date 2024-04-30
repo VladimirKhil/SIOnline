@@ -12,6 +12,12 @@ const isConnectedChanged: ActionCreator<CommonActions.IsConnectedChangedAction> 
 	reason,
 });
 
+const isSIHostConnectedChanged: ActionCreator<CommonActions.IsSIHostConnectedChangedAction> = (isConnected: boolean, reason: string) => ({
+	type: CommonActions.CommonActionTypes.IsSIHostConnectedChanged,
+	isConnected,
+	reason,
+});
+
 const computerAccountsChanged: ActionCreator<CommonActions.ComputerAccountsChangedAction> = (computerAccounts: string[]) => ({
 	type: CommonActions.CommonActionTypes.ComputerAccountsChanged,
 	computerAccounts
@@ -34,6 +40,12 @@ const onUserError: ActionCreator<ThunkAction<void, State, DataContext, Action>> 
 const onConnectionClosed: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 	(message: string) => async (dispatch: Dispatch<any>) => {
 		dispatch(isConnectedChanged(false));
+		dispatch(onUserError(message));
+	};
+
+const onSIHostConnectionClosed: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
+	(message: string) => async (dispatch: Dispatch<any>) => {
+		dispatch(isSIHostConnectedChanged(false));
 		dispatch(onUserError(message));
 	};
 
@@ -78,8 +90,10 @@ const stopAudio: ActionCreator<CommonActions.AudioChangedAction> = () => ({
 
 const commonActionCreators = {
 	isConnectedChanged,
+	isSIHostConnectedChanged,
 	computerAccountsChanged,
 	onConnectionClosed,
+	onSIHostConnectionClosed,
 	serverInfoChanged,
 	commonErrorChanged,
 	onUserError,

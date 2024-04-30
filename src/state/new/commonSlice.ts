@@ -4,6 +4,8 @@ interface CommonState {
 	computerAccounts: string[] | null;
 	isConnected: boolean;
 	isConnectedReason: string;
+	isSIHostConnected: boolean;
+	isSIHostConnectedReason: string;
 	serverName: string | null;
 	serverLicense: string | null;
 	maxPackageSizeMb: number;
@@ -22,6 +24,8 @@ const initialState: CommonState = {
 	computerAccounts: null,
 	isConnected: true,
 	isConnectedReason: '',
+	isSIHostConnected: true,
+	isSIHostConnectedReason: '',
 	serverName: null,
 	serverLicense: null,
 	maxPackageSizeMb: 100,

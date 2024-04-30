@@ -632,8 +632,8 @@ const viewerHandler = (controller: ClientController, dispatch: Dispatch<any>, st
 
 		case GameMessages.RightAnswer:
 			if (state.table.layoutMode === LayoutMode.Simple) {
-				dispatch(tableActionCreators.showAnswer(args[2]));
-				dispatch(tableActionCreators.captionChanged(''));
+				dispatch(tableActionCreators.showText(args[2], false));
+				dispatch(tableActionCreators.captionChanged(localization.rightAnswer));
 			} else {
 				dispatch(tableActionCreators.rightOption(args[2]));
 			}
@@ -645,6 +645,7 @@ const viewerHandler = (controller: ClientController, dispatch: Dispatch<any>, st
 			if (args.length > 2) {
 				const answer = trimLength(unescapeNewLines(args[2]), MAX_APPEND_TEXT_LENGTH);
 				controller.onRightAnswerStart(answer);
+				dispatch(tableActionCreators.captionChanged(localization.rightAnswer));
 			}
 			break;
 

@@ -1,0 +1,5 @@
+.tablelogo {
+	margin: 10px;
+	height: calc(100% - 10px) !important;
+	width: calc(100% - 10px) !important;
+}

@@ -2,7 +2,6 @@ import GameInfo from './contracts/GameInfo';
 import HostInfo from './contracts/HostInfo';
 import Slice from './contracts/Slice';
 import IGameServerClient from './IGameServerClient';
-import IClientBase from './IClientBase';
 import RunGameResponse from './contracts/RunGameResponse';
 import RunGameRequest from './contracts/RunGameRequest';
 import RunAutoGameRequest from './contracts/RunAutoGameRequest';
@@ -10,7 +9,7 @@ import RunAutoGameRequest from './contracts/RunAutoGameRequest';
 const enum State { None, Lobby, Game }
 
 /** Represents a connection to a SIGame Server. */
-export default class GameServerClient implements IGameServerClient, IClientBase {
+export default class GameServerClient implements IGameServerClient {
 	private state: State = State.None;
 
 	private culture = '';
@@ -70,39 +69,6 @@ export default class GameServerClient implements IGameServerClient, IClientBase 
 			'RunAutoGame',
 			runAutoGameRequest
 		);
-	}
-
-	async sendMessageToServerAsync(message: string): Promise<boolean> {
-		try {
-			await this.connection.invoke('SendMessage', {
-				Text: message,
-				IsSystem: true,
-				Receiver: '@'
-			});
-
-			return true;
-		} catch (e) {
-			this.errorHandler(e);
-			return false;
-		}
-	}
-
-	msgAsync(...args: any[]): Promise<boolean> {
-		return this.sendMessageToServerAsync(args.join('\n'));
-	}
-
-	sayAsync(message: string): Promise<any> {
-		return this.connection.invoke('SendMessage', {
-			Text: message,
-			IsSystem: false,
-			Receiver: '*'
-		});
-	}
-
-	/** Leaves game and returns to lobby. */
-	async leaveGameAsync(): Promise<any> {
-		await this.connection.invoke('LeaveGame');
-		this.state = State.None;
 	}
 
 	logOutAsync(): Promise<any> {

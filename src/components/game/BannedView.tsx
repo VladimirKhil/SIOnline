@@ -17,7 +17,7 @@ interface BannedViewProps {
 }
 
 const mapStateToProps = (state: State) => ({
-	isConnected: state.common.isConnected,
+	isConnected: state.common.isSIHostConnected,
 	banned: state.room.banned.entries,
 	selectedInfoIp: state.room.banned.selectedIp,
 });

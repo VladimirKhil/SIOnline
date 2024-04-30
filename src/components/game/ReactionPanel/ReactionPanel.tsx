@@ -20,7 +20,7 @@ interface ReactionPanelProps {
 }
 
 const mapStateToProps = (state: State) => ({
-	isConnected: state.common.isConnected,
+	isConnected: state.common.isSIHostConnected,
 	sex: state.settings.sex,
 	areApellationsEnabled: state.room.areApellationsEnabled,
 	playersCount: state.room.persons.players.length,

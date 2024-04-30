@@ -18,7 +18,7 @@ interface ChatInputProps {
 }
 
 const mapStateToProps = (state: State) => ({
-	isConnected: state.common.isConnected,
+	isConnected: state.common.isSIHostConnected,
 	message: state.room.chat.message,
 });
 

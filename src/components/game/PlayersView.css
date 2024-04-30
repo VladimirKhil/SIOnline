@@ -304,10 +304,11 @@
 
     .playerAvatar {
         min-width: 26px;
+        background-color: rgba(0, 0, 0, 0.10);
     }
 
     #playersPanel .avatarMale, #playersPanel .avatarFemale {
-        background-size: cover;
+        background-size: contain;
     }
 
     .chooserMark {

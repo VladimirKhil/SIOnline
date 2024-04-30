@@ -13,6 +13,13 @@ const commonReducer: Reducer<CommonState> = (state: CommonState = initialState, 
 				isConnectedReason: action.reason,
 			};
 
+		case CommonActionTypes.IsSIHostConnectedChanged:
+			return {
+				...state,
+				isSIHostConnected: action.isConnected,
+				isSIHostConnectedReason: action.reason,
+			};
+
 		case CommonActionTypes.ComputerAccountsChanged:
 			return {
 				...state,

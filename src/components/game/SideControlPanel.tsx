@@ -51,7 +51,7 @@ interface SideControlPanelProps {
 }
 
 const mapStateToProps = (state: State) => ({
-	isConnected: state.common.isConnected,
+	isConnected: state.common.isSIHostConnected,
 	role: state.room.role,
 	isChatVisible: state.room.chat.isVisible,
 	isChatActive: state.room.chat.isActive,

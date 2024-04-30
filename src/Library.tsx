@@ -18,6 +18,7 @@ import ClientController from './logic/ClientController';
 import TableMode from './model/enums/TableMode';
 import PlayersView from './components/game/PlayersView';
 import StateManager from './utils/StateManager';
+import SIHostClient from './client/SIHostClient';
 
 declare global {
     interface Window {
@@ -114,7 +115,7 @@ export function runTable(elementId: string, renderMode: TableRenderMode): void {
 		serverUri: '',
 		connection: null,
 		gameClient,
-		game: new GameClient(gameClient, false),
+		game: new GameClient(new SIHostClient(noOpHubConnection, () => { }), false),
 		contentUris: null,
 		contentClient: new SIContentClient({ serviceUri: 'http://fake' }),
 		storageClient: null,

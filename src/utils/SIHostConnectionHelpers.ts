@@ -31,7 +31,11 @@ export function attachSIHostListeners(
 		}
 
 		const errorMessage = e ? ` (${e.message})` : '';
-		dispatch(commonActionCreators.isConnectedChanged(false, `${localization.connectionReconnecting}${errorMessage}`) as object as AnyAction);
+
+		dispatch(commonActionCreators.isSIHostConnectedChanged(
+			false,
+			`${localization.connectionReconnecting}${errorMessage}`
+		) as object as AnyAction);
 	});
 
 	connection.onreconnected(() => {
@@ -39,7 +43,7 @@ export function attachSIHostListeners(
 			return;
 		}
 
-		dispatch(commonActionCreators.isConnectedChanged(true, localization.connectionReconnected) as object as AnyAction);
+		dispatch(commonActionCreators.isSIHostConnectedChanged(true, localization.connectionReconnected) as object as AnyAction);
 	});
 
 	connection.onclose(async (e) => {
@@ -59,7 +63,7 @@ export function attachSIHostListeners(
 			}
 		}
 
-		dispatch(commonActionCreators.onConnectionClosed(`${localization.connectionClosed} ${e?.message || ''}`) as object as AnyAction);
+		dispatch(commonActionCreators.onSIHostConnectionClosed(`${localization.connectionClosed} ${e?.message || ''}`) as object as AnyAction);
 	});
 }
 

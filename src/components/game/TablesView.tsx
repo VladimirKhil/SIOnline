@@ -32,7 +32,7 @@ interface TablesViewProps {
 }
 
 const mapStateToProps = (state: State) => ({
-	isConnected: state.common.isConnected,
+	isConnected: state.common.isSIHostConnected,
 	showman: state.room.persons.showman,
 	players: state.room.persons.players,
 	persons: state.room.persons.all,
@@ -96,13 +96,11 @@ export function TablesView(props: TablesViewProps): JSX.Element {
 		isPlayerSelected &&
 		(!props.isGameStarted || !selectedAccount || !selectedAccount.isHuman);
 
-	const canFree = !props.isGameStarted && selectedAccount && selectedAccount.isHuman;
-
-	const canChangeType = !props.isGameStarted && selectedPerson;
+	const canFree = selectedAccount && selectedAccount.isHuman;
 
 	const replacementList: string[] = loadPersonReplacementList(selectedPerson, props, isPlayerSelected);
 
-	const canSet = !props.isGameStarted && replacementList.length > 0;
+	const canSet = replacementList.length > 0;
 
 	return (
 		<>
@@ -144,7 +142,7 @@ export function TablesView(props: TablesViewProps): JSX.Element {
 					className='replacePersonButton standard'
 					type="button"
 					onClick={() => props.changeType()}
-					disabled={!props.isConnected || !canChangeType}>
+					disabled={!props.isConnected || !selectedPerson}>
 					{selectedPerson && selectedPerson.isHuman ? localization.changeToBot : localization.changeToHuman}
 				</button>
 

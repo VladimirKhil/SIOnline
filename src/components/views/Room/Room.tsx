@@ -77,8 +77,8 @@ const mapStateToProps = (state: State) => ({
 	areSumsEditable: state.room.areSumsEditable,
 	floatingControls: state.settings.floatingControls,
 	kicked: state.room.kicked,
-	isConnected: state.common.isConnected,
-	isConnectedReason: state.common.isConnectedReason,
+	isConnected: state.common.isSIHostConnected,
+	isConnectedReason: state.common.isSIHostConnectedReason,
 	avatarViewVisible: state.room.avatarViewVivible,
 });
 

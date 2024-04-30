@@ -13,7 +13,7 @@ interface PassButtonProps {
 }
 
 const mapStateToProps = (state: State) => ({
-	isConnected: state.common.isConnected,
+	isConnected: state.common.isSIHostConnected,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({

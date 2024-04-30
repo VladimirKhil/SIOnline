@@ -1,13 +1,12 @@
 import GameInfo from './contracts/GameInfo';
 import HostInfo from './contracts/HostInfo';
 import Slice from './contracts/Slice';
-import IClientBase from './IClientBase';
 import RunGameRequest from './contracts/RunGameRequest';
 import RunGameResponse from './contracts/RunGameResponse';
 import RunAutoGameRequest from './contracts/RunAutoGameRequest';
 
 /** Defines the SIGame Server client. */
-export default interface IGameServerClient extends IClientBase {
+export default interface IGameServerClient {
 	/** Gets default computer accounts names. */
 	getComputerAccountsAsync(culture: string): Promise<string[]>;
 

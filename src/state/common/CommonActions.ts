@@ -1,5 +1,6 @@
 export const enum CommonActionTypes {
 	IsConnectedChanged = 'IS_CONNECTED_CHANGED',
+	IsSIHostConnectedChanged = 'IS_CONNECTED_CHANGED',
 	ComputerAccountsChanged = 'COMPUTER_ACCOUNTS_CHANGED',
 	ServerInfoChanged = 'SERVER_INFO_CHANGED',
 	CommonErrorChanged = 'COMMON_ERROR_CHANGED',
@@ -11,6 +12,7 @@ export const enum CommonActionTypes {
 }
 
 export type IsConnectedChangedAction = { type: CommonActionTypes.IsConnectedChanged, isConnected: boolean, reason: string };
+export type IsSIHostConnectedChangedAction = { type: CommonActionTypes.IsSIHostConnectedChanged, isConnected: boolean, reason: string };
 export type ComputerAccountsChangedAction = { type: CommonActionTypes.ComputerAccountsChanged, computerAccounts: string[] };
 export type CommonErrorChangedAction = { type: CommonActionTypes.CommonErrorChanged, error: string };
 export type UserErrorChangedAction = { type: CommonActionTypes.UserErrorChanged, error: string | null };
@@ -29,6 +31,7 @@ export type ServerInfoChangedAction = {
 export type KnownCommonAction =
 	ComputerAccountsChangedAction
 	| IsConnectedChangedAction
+	| IsSIHostConnectedChangedAction
 	| ServerInfoChangedAction
 	| CommonErrorChangedAction
 	| UserErrorChangedAction

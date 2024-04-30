@@ -404,7 +404,7 @@ const joinGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 
 		if (!result.IsSuccess) {
 			dispatch(commonActionCreators.onUserError(
-				`${localization.joinError}: ${GameErrorsHelper.getJoinErrorMessage(result.ErrorType)} ${result.Message}`));
+				`${localization.joinError}: ${GameErrorsHelper.getJoinErrorMessage(result.ErrorType)} ${result.Message ?? ''}`));
 
 			return;
 		}
