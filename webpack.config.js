@@ -5,8 +5,10 @@ const WorkboxPlugin = require('workbox-webpack-plugin');
 
 module.exports = (env, argv) => {
 	return {
-		entry: env.type === 'library' ? {
-			main: './src/Library.tsx',
+		entry: env.type === 'library-table' ? {
+			main: './src/LibraryTable.tsx',
+		} : env.type === 'library-quest' ? {
+			main: './src/LibraryQuestion.tsx',
 		} : {
 			config: './assets/config.js',
 			main: './src/Index.tsx',
@@ -60,14 +62,14 @@ module.exports = (env, argv) => {
 		},
 		output: {
 			filename: (pathData) => {
-				return pathData.chunk.name === 'config' || argv.mode === 'development' || env.type === 'library' ? '[name].js': '[name].[contenthash].js';
+				return pathData.chunk.name === 'config' || argv.mode === 'development' || env.type.startsWith('library') ? '[name].js': '[name].[contenthash].js';
 			},
 			chunkFilename: '[name].[contenthash].js',
 			path: path.resolve(__dirname, 'dist'),
 			publicPath: '',
 			crossOriginLoading: 'anonymous',
-			library: env.type === 'library' ? 'sigame' : undefined,
-			libraryTarget: env.type === 'library' ? 'var' : undefined
+			library: env.type.startsWith('library') ? 'sigame' : undefined,
+			libraryTarget: env.type.startsWith('library') ? 'var' : undefined
 		},
 		optimization: {
 			splitChunks: {
@@ -88,7 +90,7 @@ module.exports = (env, argv) => {
 				filename: "./index.html",
 				favicon: './assets/images/favicon.ico'
 			})].concat(
-				argv.mode === 'production' && env.type !== 'library'
+				argv.mode === 'production' && !env.type.startsWith('library')
 					?  [new WorkboxPlugin.GenerateSW({
 							// these options encourage the ServiceWorkers to get in there fast
 							// and not allow any straggling "old" SWs to hang around

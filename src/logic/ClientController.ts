@@ -369,4 +369,42 @@ export default class ClientController {
 
 		this.dispatch(roomActionCreators.chatMessageAdded({ sender: null, text, level: MessageLevel.System }) as unknown as Action);
 	}
+
+	onTable(table: ThemeInfo[], isFinal: boolean) {
+		this.dispatch(tableActionCreators.showRoundThemes(table, isFinal, false));
+	}
+
+	onShowTable() {
+		this.dispatch(tableActionCreators.showRoundTable());
+		this.dispatch(commonActionCreators.stopAudio());
+	}
+
+	onTableCaption(caption: string) {
+		this.dispatch(tableActionCreators.captionChanged(caption));
+	}
+
+	onQuestionSelected(themeIndex: number, questionIndex: number) {
+		this.dispatch(roomActionCreators.playersStateCleared());
+		this.dispatch(roomActionCreators.afterQuestionStateChanged(false));
+		this.dispatch(tableActionCreators.questionReset());
+
+		const themeInfo = this.getState().table.roundInfo[themeIndex];
+
+		if (themeInfo) {
+			const price = themeInfo.questions[questionIndex];
+
+			if (price) {
+				this.dispatch(roomActionCreators.currentPriceChanged(price));
+				this.dispatch(tableActionCreators.captionChanged(`${themeInfo.name}, ${price}`));
+				this.dispatch(tableActionCreators.blinkQuestion(themeIndex, questionIndex));
+
+				setTimeout(
+					() => {
+						this.dispatch(tableActionCreators.updateQuestion(themeIndex, questionIndex, -1));
+					},
+					5000
+				);
+			}
+		}
+	}
 }

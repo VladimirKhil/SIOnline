@@ -51,6 +51,8 @@ const enum GameMessages {
 	/** Current question price. */
 	Question = 'QUESTION',
 
+	QuestionCaption = 'QUESTIONCAPTION',
+
 	/** Question has ended. */
 	QuestionEnd = 'QUESTION_END',
 
@@ -68,12 +70,16 @@ const enum GameMessages {
 	/** Sets game join mode. */
 	SetJoinMode = 'SETJOINMODE',
 
+	ShowTable = 'SHOWTABLO',
+
 	Stage = 'STAGE',
 
 	StageInfo = 'STAGE_INFO',
 
 	/** Stake info. */
 	Stake2 = 'STAKE2',
+
+	Table = 'TABLO2',
 
 	/** Theme comments. */
 	ThemeComments = 'THEME_COMMENTS',

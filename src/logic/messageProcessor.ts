@@ -161,31 +161,14 @@ const viewerHandler = (controller: ClientController, dispatch: Dispatch<any>, st
 
 		case GameMessages.Choice:
 			{
+				if (args.length < 3) {
+					return;
+				}
+
 				const themeIndex = parseInt(args[1], 10);
 				const questIndex = parseInt(args[2], 10);
 
-				dispatch(roomActionCreators.playersStateCleared());
-				dispatch(roomActionCreators.afterQuestionStateChanged(false));
-				dispatch(tableActionCreators.questionReset());
-
-				const themeInfo = state.table.roundInfo[themeIndex];
-
-				if (themeInfo) {
-					const price = themeInfo.questions[questIndex];
-
-					if (price) {
-						dispatch(roomActionCreators.currentPriceChanged(price));
-						dispatch(tableActionCreators.captionChanged(`${themeInfo.name}, ${price}`));
-						dispatch(tableActionCreators.blinkQuestion(themeIndex, questIndex));
-
-						setTimeout(
-							() => {
-								dispatch(tableActionCreators.updateQuestion(themeIndex, questIndex, -1));
-							},
-							5000
-						);
-					}
-				}
+				controller.onQuestionSelected(themeIndex, questIndex);
 			}
 			break;
 
@@ -575,9 +558,9 @@ const viewerHandler = (controller: ClientController, dispatch: Dispatch<any>, st
 			}
 			break;
 
-		case 'QUESTIONCAPTION':
+		case GameMessages.QuestionCaption:
 			if (args.length > 1) {
-				dispatch(tableActionCreators.captionChanged(args[1]));
+				controller.onTableCaption(args[1]);
 			}
 			break;
 
@@ -730,9 +713,8 @@ const viewerHandler = (controller: ClientController, dispatch: Dispatch<any>, st
 			dispatch(roomActionCreators.joinModeChanged(joinMode));
 			break;
 
-		case 'SHOWTABLO':
-			dispatch(tableActionCreators.showRoundTable());
-			dispatch(commonActionCreators.stopAudio());
+		case GameMessages.ShowTable:
+			controller.onShowTable();
 			break;
 
 		case GameMessages.Stage: {
@@ -767,10 +749,9 @@ const viewerHandler = (controller: ClientController, dispatch: Dispatch<any>, st
 			}
 
 			dispatch(roomActionCreators.sumsChanged(sums));
-
 			break;
 
-		case 'TABLO2':
+		case GameMessages.Table:
 			const { roundInfo } = state.table;
 			const areQuestionsFilled = roundInfo.some(theme => theme.questions.length > 0);
 
@@ -788,7 +769,8 @@ const viewerHandler = (controller: ClientController, dispatch: Dispatch<any>, st
 				}
 
 				const questions: number[] = [];
-				while (index < args.length && args[index].length > 0) { // пустой параметр разделяет темы
+
+				while (index < args.length && args[index].length > 0) { // empty argument separates themes
 					questions.push(parseInt(args[index++], 10));
 				}
 
@@ -803,12 +785,13 @@ const viewerHandler = (controller: ClientController, dispatch: Dispatch<any>, st
 			// Align number of questions in each theme
 			newRoundInfo.forEach((themeInfo) => {
 				const questionsCount = themeInfo.questions.length;
+
 				for (let i = 0; i < maxQuestionsInTheme - questionsCount; i++) {
 					themeInfo.questions.push(-1);
 				}
 			});
 
-			dispatch(tableActionCreators.showRoundThemes(newRoundInfo, state.room.stage.name === 'Final', false));
+			controller.onTable(newRoundInfo, state.room.stage.name === 'Final');
 			break;
 
 		case 'TIMEOUT':

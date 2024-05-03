@@ -1,22 +1,16 @@
 // Special entry file for using SIGame Online as a embedded library
 
-import ReactDOM from 'react-dom';
-import { Provider } from 'react-redux';
-import { AnyAction, applyMiddleware, createStore } from 'redux';
+import { AnyAction, Store, applyMiddleware, createStore } from 'redux';
 import State, { initialState } from './state/State';
 import reducer from './state/reducer';
 import reduxThunk from 'redux-thunk';
-import React from 'react';
 import { HubConnectionBuilder } from '@microsoft/signalr';
 import GameServerClient from './client/GameServerClient';
 import SIContentClient from 'sicontent-client';
 import GameClient from './client/game/GameClient';
 import DataContext from './model/DataContext';
-import ShowmanReplic from './components/game/ShowmanReplic';
-import GameTable from './components/gameTable/GameTable';
 import ClientController from './logic/ClientController';
 import TableMode from './model/enums/TableMode';
-import PlayersView from './components/game/PlayersView';
 import StateManager from './utils/StateManager';
 import SIHostClient from './client/SIHostClient';
 
@@ -58,32 +52,60 @@ interface WebView extends EventTarget {
 
 function processMessage(controller: ClientController, payload: any) {
 	switch (payload.type) {
-		case 'answerOptionsLayout':
-			controller.onAnswerOptionsLayout(payload.questionHasScreenContent, payload.typeNames);
-			break;
-
-		case 'content':
-			controller.onContent(payload.placement, payload.content);
-			break;
-
-		case 'replic':
-			controller.onReplic(payload.personCode, payload.text);
-			break;
-
 		case 'answerOption':
 			controller.onAnswerOption(payload.index, payload.label, payload.contentType, payload.contentValue);
+			break;
+
+		case 'answerOptionsLayout':
+			controller.onAnswerOptionsLayout(payload.questionHasScreenContent, payload.typeNames);
 			break;
 
 		case 'beginPressButton':
 			controller.onBeginPressButton();
 			break;
 
-		case 'endPressButtonByTimeout':
-			controller.onEndPressButtonByTimeout();
+		case 'content':
+			controller.onContent(payload.placement, payload.content);
 			break;
 
 		case 'contentState':
 			controller.onContentState(payload.placement, payload.layoutId, payload.itemState);
+			break;
+
+		case 'endPressButtonByTimeout':
+			controller.onEndPressButtonByTimeout();
+			break;
+
+		case 'gameThemes':
+			controller.onGameThemes(payload.themes);
+			break;
+
+		case 'questionSelected':
+			controller.onQuestionSelected(payload.themeIndex, payload.questionIndex);
+			break;
+
+		case 'replic':
+			controller.onReplic(payload.personCode, payload.text);
+			break;
+
+		case 'roundThemes':
+			controller.onRoundThemes(payload.themes, payload.print);
+			break;
+
+		case 'showTable':
+			controller.onShowTable();
+			break;
+
+		case 'stage':
+			controller.onStage(payload.stage, payload.stageName, payload.stageIndex);
+			break;
+
+		case 'table':
+			controller.onTable(payload.table, payload.isFinal);
+			break;
+
+		case 'tableCaption':
+			controller.onTableCaption(payload.caption);
 			break;
 
 		default:
@@ -91,19 +113,7 @@ function processMessage(controller: ClientController, payload: any) {
 	}
 }
 
-const enum TableRenderMode {
-	WithReplic,
-	WithPlayers,
-}
-
-export function runTable(elementId: string, renderMode: TableRenderMode): void {
-	const host = document.getElementById(elementId);
-
-	if (!host) {
-		console.error('host element not found!');
-		return;
-	}
-
+export default function runCore(): Store<State, AnyAction> {
 	const noOpHubConnection = new HubConnectionBuilder().withUrl('http://fake').build();
 
 	const gameClient = new GameServerClient(noOpHubConnection, () => { });
@@ -147,18 +157,5 @@ export function runTable(elementId: string, renderMode: TableRenderMode): void {
 		}
 	}
 
-	ReactDOM.render(
-		<Provider store={store}>
-			{renderMode === TableRenderMode.WithReplic
-				? (<div className='replicAndTable'>
-					<ShowmanReplic />
-					<GameTable />
-				</div>)
-				: (<div className='playersAndTable'>
-					<PlayersView />
-					<GameTable />
-				</div>)}
-		</Provider>,
-		host
-	);
+	return store;
 }

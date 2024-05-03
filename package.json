@@ -6,7 +6,8 @@
   "scripts": {
     "build-dev": "webpack --mode development",
     "build-prod": "webpack --mode production",
-    "build-lib": "webpack --mode production --env type=library",
+    "build-lib-table": "webpack --mode production --env type=library-table",
+    "build-lib-quest": "webpack --mode production --env type=library-quest",
     "start": "webpack serve --mode development",
     "test": "jest",
     "lint": "eslint . --ext .ts --ext .tsx"
@@ -32,8 +33,8 @@
     "redux": "^4.1.2",
     "redux-thunk": "^2.4.1",
     "sicontent-client": "1.0.15",
-    "sistorage-client": "1.1.0",
-    "sistatistics-client": "1.1.1"
+    "sistatistics-client": "1.1.1",
+    "sistorage-client": "1.1.0"
   },
   "overrides": {
     "@microsoft/signalr": {
