@@ -62,14 +62,14 @@ module.exports = (env, argv) => {
 		},
 		output: {
 			filename: (pathData) => {
-				return pathData.chunk.name === 'config' || argv.mode === 'development' || env.type.startsWith('library') ? '[name].js': '[name].[contenthash].js';
+				return pathData.chunk.name === 'config' || argv.mode === 'development' || env.type && env.type.startsWith('library') ? '[name].js': '[name].[contenthash].js';
 			},
 			chunkFilename: '[name].[contenthash].js',
 			path: path.resolve(__dirname, 'dist'),
 			publicPath: '',
 			crossOriginLoading: 'anonymous',
-			library: env.type.startsWith('library') ? 'sigame' : undefined,
-			libraryTarget: env.type.startsWith('library') ? 'var' : undefined
+			library: env.type && env.type.startsWith('library') ? 'sigame' : undefined,
+			libraryTarget: env.type && env.type.startsWith('library') ? 'var' : undefined
 		},
 		optimization: {
 			splitChunks: {
@@ -90,7 +90,7 @@ module.exports = (env, argv) => {
 				filename: "./index.html",
 				favicon: './assets/images/favicon.ico'
 			})].concat(
-				argv.mode === 'production' && !env.type.startsWith('library')
+				argv.mode === 'production' && (!env.type || !env.type.startsWith('library'))
 					?  [new WorkboxPlugin.GenerateSW({
 							// these options encourage the ServiceWorkers to get in there fast
 							// and not allow any straggling "old" SWs to hang around
