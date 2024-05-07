@@ -550,11 +550,7 @@ const viewerHandler = (controller: ClientController, dispatch: Dispatch<any>, st
 
 		case GameMessages.Question:
 			if (args.length > 1) {
-				dispatch(roomActionCreators.playersStateCleared());
-				dispatch(tableActionCreators.showText(args[1], false));
-				dispatch(roomActionCreators.afterQuestionStateChanged(false));
-				dispatch(roomActionCreators.updateCaption(args[1]));
-				dispatch(tableActionCreators.questionReset());
+				controller.onQuestion(args[1]);
 			}
 			break;
 
@@ -798,7 +794,7 @@ const viewerHandler = (controller: ClientController, dispatch: Dispatch<any>, st
 			playGameSound(dispatch, state.settings.appSound, GameSound.ROUND_TIMEOUT);
 			break;
 
-		case 'TIMER':
+		case GameMessages.Timer:
 			// Special case for automatic game
 			if (!state.room.stage.isGameStarted
 				&& state.game.isAutomatic
@@ -816,17 +812,7 @@ const viewerHandler = (controller: ClientController, dispatch: Dispatch<any>, st
 
 				switch (timerCommand) {
 					case 'GO':
-						dispatch(roomActionCreators.runTimer(timerIndex, timerArgument, false));
-
-						if (timerIndex === 2 && timerPersonIndex !== null) {
-							if (timerPersonIndex === -1) {
-								dispatch(roomActionCreators.activateShowmanDecision());
-							} else if (timerPersonIndex === -2) {
-								dispatch(roomActionCreators.showMainTimer());
-							} else if (timerPersonIndex > -1 && timerPersonIndex < state.room.persons.players.length) {
-								dispatch(roomActionCreators.activatePlayerDecision(timerPersonIndex));
-							}
-						}
+						controller.onTimerRun(timerIndex, timerArgument, timerPersonIndex);
 						break;
 
 					case 'STOP':
@@ -847,7 +833,7 @@ const viewerHandler = (controller: ClientController, dispatch: Dispatch<any>, st
 						break;
 
 					case 'RESUME':
-						dispatch(roomActionCreators.resumeTimer(timerIndex, false));
+						controller.onTimerResume(timerIndex);
 						break;
 
 					case 'USER_RESUME':
@@ -855,7 +841,7 @@ const viewerHandler = (controller: ClientController, dispatch: Dispatch<any>, st
 						break;
 
 					case 'MAXTIME':
-						dispatch(roomActionCreators.timerMaximumChanged(timerIndex, timerArgument));
+						controller.onTimerMaximumChanged(timerIndex, timerArgument);
 						break;
 
 					default:
@@ -864,13 +850,9 @@ const viewerHandler = (controller: ClientController, dispatch: Dispatch<any>, st
 			}
 			break;
 
-		case 'THEME':
+		case GameMessages.Theme:
 			if (args.length > 1) {
-				dispatch(roomActionCreators.playersStateCleared());
-				dispatch(roomActionCreators.showmanReplicChanged(''));
-				dispatch(tableActionCreators.showText(`${localization.theme}: ${args[1]}`, false));
-				dispatch(roomActionCreators.afterQuestionStateChanged(false));
-				dispatch(roomActionCreators.themeNameChanged(args[1]));
+				controller.onTheme(args[1]);
 			}
 			break;
 

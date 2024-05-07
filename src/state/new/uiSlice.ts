@@ -11,6 +11,7 @@ interface UIState {
 	isSettingGameButtonKey: boolean;
 	isVisible: boolean;
 	navigation: INavigationState;
+	showPlayers: boolean;
 }
 
 const initialState: UIState = {
@@ -23,6 +24,7 @@ const initialState: UIState = {
 	navigation: {
 		path: Path.Login,
 	},
+	showPlayers: true,
 };
 
 export const uiSlice = createSlice({

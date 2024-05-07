@@ -55,6 +55,13 @@ const uiReducer: Reducer<UIState> = (state: UIState = initialState, anyAction: A
 			};
 		}
 
+		case UIActionTypes.PlayersVisibilityChanged: {
+			return {
+				...state,
+				showPlayers: action.isVisible,
+			};
+		}
+
 		default:
 			return state;
 	}

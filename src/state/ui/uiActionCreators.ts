@@ -95,6 +95,10 @@ const onNavigated: ActionCreator<ThunkAction<void, State, DataContext, Action>> 
 	handleNavigation(navigation, dispatch, getState);
 };
 
+const playersVisibilityChanged: ActionCreator<UIActions.PlayersVisibilityChangedAction> = (isVisible: boolean) => ({
+	type: UIActions.UIActionTypes.PlayersVisibilityChanged, isVisible
+});
+
 const uiActionCreators = {
 	showSettings,
 	onOnlineModeChanged,
@@ -104,6 +108,7 @@ const uiActionCreators = {
 	visibilityChanged,
 	navigate,
 	onNavigated,
+	playersVisibilityChanged,
 };
 
 export default uiActionCreators;

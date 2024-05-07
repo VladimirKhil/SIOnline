@@ -80,6 +80,14 @@ function processMessage(controller: ClientController, payload: any) {
 			controller.onGameThemes(payload.themes);
 			break;
 
+		case 'playersVisibilityChanged':
+			controller.onPlayersVisibilityChanged(payload.isVisible);
+			break;
+
+		case 'question':
+			controller.onQuestion(payload.questionPrice);
+			break;
+
 		case 'questionSelected':
 			controller.onQuestionSelected(payload.themeIndex, payload.questionIndex);
 			break;
@@ -106,6 +114,18 @@ function processMessage(controller: ClientController, payload: any) {
 
 		case 'tableCaption':
 			controller.onTableCaption(payload.caption);
+			break;
+
+		case 'theme':
+			controller.onTheme(payload.themeName);
+			break;
+
+		case 'timerMaximum':
+			controller.onTimerMaximumChanged(payload.timerIndex, payload.maximum);
+			break;
+
+		case 'timerResume':
+			controller.onTimerResume(payload.timerIndex);
 			break;
 
 		default:

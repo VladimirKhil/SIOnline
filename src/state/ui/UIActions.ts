@@ -9,6 +9,7 @@ export const enum UIActionTypes {
 	IsSettingGameButtonKeyChanged = 'IS_SETTING_GAME_BUTTON_KEY_CHANGED',
 	VisibilityChanged = 'VISIBILITY_CHANGED',
 	Navigate = 'NAVIGATE',
+	PlayersVisibilityChanged = 'PLAYERS_VISIBILITY_CHANGED',
 }
 
 export type ShowSettingsAction = { type: UIActionTypes.ShowSettings, show: boolean };
@@ -18,6 +19,7 @@ export type WindowSizeChangedAction = { type: UIActionTypes.WindowSizeChanged, w
 export type IsSettingGameButtonKeyChangedAction = { type: UIActionTypes.IsSettingGameButtonKeyChanged, isSettingGameButtonKey: boolean };
 export type VisibilityChangedAction = { type: UIActionTypes.VisibilityChanged, isVisible: boolean };
 export type NavigateAction = { type: UIActionTypes.Navigate, navigation: INavigationState };
+export type PlayersVisibilityChangedAction = { type: UIActionTypes.PlayersVisibilityChanged, isVisible: boolean };
 
 export type KnownUIAction =
 	ShowSettingsAction
@@ -26,4 +28,5 @@ export type KnownUIAction =
 	| WindowSizeChangedAction
 	| IsSettingGameButtonKeyChangedAction
 	| VisibilityChangedAction
-	| NavigateAction;
+	| NavigateAction
+	| PlayersVisibilityChangedAction;

@@ -81,8 +81,12 @@ const enum GameMessages {
 
 	Table = 'TABLO2',
 
+	Theme = 'THEME',
+
 	/** Theme comments. */
 	ThemeComments = 'THEME_COMMENTS',
+
+	Timer = 'TIMER',
 
 	/** Toggles (removes or restores a question). */
 	Toggle = 'TOGGLE',

@@ -31,6 +31,7 @@ interface PlayersViewProps {
 	windowHeight: number;
 	showPersonsAtBottomOnWideScreen: boolean;
 	showVideoAvatars: boolean;
+	isVisible: boolean;
 
 	onPlayerSelected: (playerIndex: number) => void;
 	onSumChanged: (playerIndex: number, sum: number) => void;
@@ -51,6 +52,7 @@ const mapStateToProps = (state: State) => ({
 	windowHeight: state.ui.windowHeight,
 	showPersonsAtBottomOnWideScreen: state.settings.showPersonsAtBottomOnWideScreen,
 	showVideoAvatars: state.settings.showVideoAvatars,
+	isVisible: state.ui.showPlayers,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
@@ -129,6 +131,10 @@ export class PlayersView extends React.Component<PlayersViewProps> {
 	};
 
 	render() {
+		if (!this.props.isVisible) {
+			return null;
+		}
+
 		const playersCount = Object.keys(this.props.players).length;
 		const fontSizeMultiplier = this.props.windowWidth < 800 ? 2.5 : 1.0;
 

@@ -17,6 +17,8 @@ import ThemeInfo from '../model/ThemeInfo';
 import GameStage from '../model/enums/GameStage';
 import Account from '../model/Account';
 import commonActionCreators from '../state/common/commonActionCreators';
+import localization from '../model/resources/localization';
+import uiActionCreators from '../state/ui/uiActionCreators';
 
 function initGroup(group: ContentGroup) {
 	let bestRowCount = 1;
@@ -406,5 +408,47 @@ export default class ClientController {
 				);
 			}
 		}
+	}
+
+	onTheme(themeName: string) {
+		this.dispatch(roomActionCreators.playersStateCleared());
+		this.dispatch(roomActionCreators.showmanReplicChanged(''));
+		this.dispatch(tableActionCreators.showText(`${localization.theme}: ${themeName}`, false));
+		this.dispatch(roomActionCreators.afterQuestionStateChanged(false));
+		this.dispatch(roomActionCreators.themeNameChanged(themeName));
+	}
+
+	onQuestion(questionPrice: string) {
+		this.dispatch(roomActionCreators.playersStateCleared());
+		this.dispatch(tableActionCreators.showText(questionPrice, false));
+		this.dispatch(roomActionCreators.afterQuestionStateChanged(false));
+		this.dispatch(roomActionCreators.updateCaption(questionPrice) as any);
+		this.dispatch(tableActionCreators.questionReset());
+	}
+
+	onTimerMaximumChanged(timerIndex: number, maximum: number) {
+		this.dispatch(roomActionCreators.timerMaximumChanged(timerIndex, maximum));
+	}
+
+	onPlayersVisibilityChanged(isVisible: boolean) {
+		this.dispatch(uiActionCreators.playersVisibilityChanged(isVisible));
+	}
+
+	onTimerRun(timerIndex: number, timerArgument: number, timerPersonIndex: number | null) {
+		this.dispatch(roomActionCreators.runTimer(timerIndex, timerArgument, false));
+
+		if (timerIndex === 2 && timerPersonIndex !== null) {
+			if (timerPersonIndex === -1) {
+				this.dispatch(roomActionCreators.activateShowmanDecision());
+			} else if (timerPersonIndex === -2) {
+				this.dispatch(roomActionCreators.showMainTimer());
+			} else if (timerPersonIndex > -1 && timerPersonIndex < this.getState().room.persons.players.length) {
+				this.dispatch(roomActionCreators.activatePlayerDecision(timerPersonIndex));
+			}
+		}
+	}
+
+	onTimerResume(timerIndex: number) {
+		this.dispatch(roomActionCreators.resumeTimer(timerIndex, false));
 	}
 }

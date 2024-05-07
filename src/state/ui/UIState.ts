@@ -26,6 +26,7 @@ export default interface UIState {
 	isSettingGameButtonKey: boolean;
 	isVisible: boolean;
 	navigation: INavigationState;
+	showPlayers: boolean;
 }
 
 export const initialState: UIState = {
@@ -37,5 +38,6 @@ export const initialState: UIState = {
 	isVisible: true,
 	navigation: {
 		path: Path.Loading,
-	}
+	},
+	showPlayers: true,
 };
