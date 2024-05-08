@@ -13,9 +13,11 @@
 	display: flex;
 	flex-flow: column;
 	align-items: center;
-	justify-content: center;
+	justify-content: space-between;
 	background-color: #5A95E2;
 	overflow: hidden;
+	width: 100%;
+	height: 100%;
 }
 
 .errorTitle {
@@ -41,17 +43,30 @@
 	align-items: center;
 	justify-content: center;
 	margin-top: 20px;
+	flex-direction: column;
 }
 
 .errorView .buttons button {
 	flex: 1;
-	height: 40px;
-	font-size: 12px;
+	font-size: 18px;
+	width: 100%;
+	padding: 15px;
 }
 
 @media screen and (min-width: 800px) {
+	.errorView .buttons {
+		flex-direction: row;
+	}
+
 	.errorView .buttons button {
-		font-size: 18px;
 		width: 300px;
+		height: 40px;
+		padding: initial;
+	}
+
+	.errorBox {
+		width: initial;
+		height: initial;
+		justify-content: center;
 	}
 }

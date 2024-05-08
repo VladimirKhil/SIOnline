@@ -18,4 +18,6 @@
 	AVATAR_NAME_KEY: 'avatarName',
 
 	LARGE_CONTENT_WEIGHT: 5,
+
+	RANDOM_PACKAGE: '@{random}'
 };

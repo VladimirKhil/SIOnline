@@ -441,7 +441,6 @@ showman::after, player::after, viewer::after {
 
 video, audio {
     margin: 10px 0;
-    max-width: 480px;
     width: calc(100% - 20px);
 }
 

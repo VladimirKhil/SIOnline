@@ -44,6 +44,7 @@ import GameClient from '../../client/game/GameClient';
 import commonActionCreators from '../common/commonActionCreators';
 import GameState from '../game/GameState';
 import WellKnownSIContentServiceErrorCode from 'sicontent-client/dist/models/WellKnownSIContentServiceErrorCode';
+import RandomPackageParameters from 'sistorage-client/dist/models/RandomPackageParameters';
 
 const selectGame: ActionCreator<OnlineActions.SelectGameAction> = (gameId: number) => ({
 	type: OnlineActions.OnlineActionTypes.SelectGame,
@@ -512,7 +513,7 @@ function createGameSettings(
 	return gameSettings;
 }
 
-async function getPackageInfoAsync(game: GameState, dataContext: DataContext, dispatch: Dispatch<any>): Promise<PackageInfo> {
+async function getPackageInfoAsync(state: State, game: GameState, dataContext: DataContext, dispatch: Dispatch<any>): Promise<PackageInfo> {
 	switch (game.package.type) {
 		case PackageType.File:
 			if (!game.package.data) {
@@ -539,7 +540,17 @@ async function getPackageInfoAsync(game: GameState, dataContext: DataContext, di
 				throw new Error('Storage client not found');
 			}
 
-			const randomPackage = await dataContext.storageClient?.packages.getRandomPackageAsync({ restrictionIds: [-1] });
+			const languages = await dataContext.storageClient.facets.getLanguagesAsync();
+			const currentLanguage = getFullCulture(state);
+			const language = languages.find(l => l.code === currentLanguage);
+
+			const randomPackageParameters: RandomPackageParameters = { restrictionIds: [-1] };
+
+			if (language) {
+				randomPackageParameters.languageId = language.id;
+			}
+
+			const randomPackage = await dataContext.storageClient?.packages.getRandomPackageAsync(randomPackageParameters);
 
 			if (!randomPackage || !randomPackage.directContentUri) {
 				throw new Error('Random package creation error');
@@ -611,7 +622,7 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 		);
 
 		try {
-			const packageInfo = await getPackageInfoAsync(game, dataContext, dispatch);
+			const packageInfo = await getPackageInfoAsync(state, game, dataContext, dispatch);
 
 			const result = await dataContext.gameClient.runGameAsync({
 				GameSettings: gameSettings,

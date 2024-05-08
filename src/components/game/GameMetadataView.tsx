@@ -2,6 +2,7 @@ import * as React from 'react';
 import { connect, MapStateToProps } from 'react-redux';
 import localization from '../../model/resources/localization';
 import State from '../../state/State';
+import Constants from '../../model/enums/Constants';
 
 import './GameMetadataView.css';
 
@@ -24,7 +25,7 @@ export function GameMetadataView(props: GameMetadataViewProps): JSX.Element {
 				<dt>{localization.gameName}</dt>
 				<dd>{props.gameName}</dd>
 				<dt>{localization.questionPackage}</dt>
-				<dd>{props.packageName}</dd>
+				<dd>{props.packageName === Constants.RANDOM_PACKAGE ? localization.randomThemes : props.packageName}</dd>
 				<dt>{localization.contactUri}</dt>
 				<dd>{props.contactUri}</dd>
 			</dl>

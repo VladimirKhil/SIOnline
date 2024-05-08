@@ -11,6 +11,7 @@ import ProgressBar from './common/ProgressBar';
 import { getReadableTimeSpan } from '../utils/TimeHelpers';
 import GameStage from '../client/contracts/GameStage';
 import GameRules, { parseRulesFromString } from '../client/contracts/GameRules';
+import Constants from '../model/enums/Constants';
 
 import './GameInfoView.css';
 
@@ -156,7 +157,7 @@ export function GameInfoView(props: GameInfoViewProps): JSX.Element {
 								<dt>{localization.host}</dt>
 								<dd>{game.Owner}</dd>
 								<dt>{localization.questionPackage}</dt>
-								<dd>{game.PackageName}</dd>
+								<dd>{game.PackageName == Constants.RANDOM_PACKAGE ? localization.randomThemes : game.PackageName}</dd>
 								<dt>{localization.rules}</dt>
 								<dd>{rules.map(name => <div className='personName' key={name}>{name}</div>)}</dd>
 								<dt>{localization.showman}</dt>
