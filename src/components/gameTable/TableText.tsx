@@ -2,7 +2,6 @@
 import State from '../../state/State';
 import { connect } from 'react-redux';
 import AutoSizedText from '../common/AutoSizedText';
-import TableBorder from './TableBorder';
 
 import './TableText.css';
 
@@ -20,9 +19,7 @@ const mapStateToProps = (state: State) => ({
 
 export function TableText(props: TableTextProps) {
 	return (
-		<TableBorder>
-			<AutoSizedText className="tableText tableTextCenter" maxFontSize={144}>{props.text}</AutoSizedText>
-		</TableBorder>
+		<AutoSizedText className="tableText tableTextCenter" maxFontSize={144}>{props.text}</AutoSizedText>
 	);
 }
 

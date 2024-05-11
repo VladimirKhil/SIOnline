@@ -48,6 +48,8 @@ const enum GameMessages {
 	/** Notifies that the client has loaded the media. */
 	MediaLoaded = 'MEDIALOADED',
 
+	QType = 'QTYPE',
+
 	/** Current question price. */
 	Question = 'QUESTION',
 

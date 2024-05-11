@@ -32,6 +32,7 @@ import ItemState from '../model/enums/ItemState';
 import GameSound from '../model/enums/GameSound';
 import commonActionCreators from '../state/common/commonActionCreators';
 import clearUrls from '../utils/clearUrls';
+import ThemesPlayMode from '../model/enums/ThemesPlayMode';
 
 const MAX_APPEND_TEXT_LENGTH = 150;
 
@@ -516,36 +517,10 @@ const viewerHandler = (controller: ClientController, dispatch: Dispatch<any>, st
 			break;
 		}
 
-		case 'QTYPE':
-			const qType = args[1];
-
-			switch (qType) {
-				case 'auction':
-				case 'stake':
-					playGameSound(dispatch, state.settings.appSound, GameSound.QUESTION_STAKE);
-					dispatch(tableActionCreators.showSpecial(localization.questionTypeStake, state.table.activeThemeIndex));
-					break;
-
-				case 'cat':
-				case 'bagcat':
-				case 'secret':
-				case 'secretPublicPrice':
-				case 'secretNoQuestion':
-					playGameSound(dispatch, state.settings.appSound, GameSound.QUESTION_SECRET);
-					dispatch(tableActionCreators.showSpecial(localization.questionTypeSecret));
-					dispatch(tableActionCreators.questionReset());
-					break;
-
-				case 'sponsored':
-				case 'noRisk':
-					playGameSound(dispatch, state.settings.appSound, GameSound.QUESTION_NORISK);
-					dispatch(tableActionCreators.showSpecial(localization.questionTypeNoRisk));
-					break;
-
-				default:
-					break;
+		case GameMessages.QType:
+			if (args.length > 1) {
+				controller.onQuestionType(args[1]);
 			}
-
 			break;
 
 		case GameMessages.Question:
@@ -682,7 +657,10 @@ const viewerHandler = (controller: ClientController, dispatch: Dispatch<any>, st
 				roundThemes.push(args[i]);
 			}
 
-			controller.onRoundThemes(roundThemes, printThemes);
+			controller.onRoundThemes(
+				roundThemes,
+				printThemes ? (state.room.stage.name !== 'Final' ? ThemesPlayMode.OneByOne : ThemesPlayMode.AllTogether) : ThemesPlayMode.None);
+
 			break;
 		}
 
@@ -816,12 +794,7 @@ const viewerHandler = (controller: ClientController, dispatch: Dispatch<any>, st
 						break;
 
 					case 'STOP':
-						dispatch(roomActionCreators.stopTimer(timerIndex));
-
-						if (timerIndex === 2) {
-							dispatch(roomActionCreators.clearDecisionsAndMainTimer());
-							dispatch(commonActionCreators.stopAudio());
-						}
+						controller.onTimerStop(timerIndex);
 						break;
 
 					case 'PAUSE':

@@ -92,12 +92,16 @@ function processMessage(controller: ClientController, payload: any) {
 			controller.onQuestionSelected(payload.themeIndex, payload.questionIndex);
 			break;
 
+		case 'questionType':
+			controller.onQuestionType(payload.questionType);
+			break;
+
 		case 'replic':
 			controller.onReplic(payload.personCode, payload.text);
 			break;
 
 		case 'roundThemes':
-			controller.onRoundThemes(payload.themes, payload.print);
+			controller.onRoundThemes(payload.themes, payload.playMode);
 			break;
 
 		case 'showTable':
@@ -126,6 +130,10 @@ function processMessage(controller: ClientController, payload: any) {
 
 		case 'timerResume':
 			controller.onTimerResume(payload.timerIndex);
+			break;
+
+		case 'timerStop':
+			controller.onTimerStop(payload.timerIndex);
 			break;
 
 		default:

@@ -19,6 +19,7 @@ import Account from '../model/Account';
 import commonActionCreators from '../state/common/commonActionCreators';
 import localization from '../model/resources/localization';
 import uiActionCreators from '../state/ui/uiActionCreators';
+import ThemesPlayMode from '../model/enums/ThemesPlayMode';
 
 function initGroup(group: ContentGroup) {
 	let bestRowCount = 1;
@@ -188,16 +189,19 @@ export default class ClientController {
 		this.dispatch(tableActionCreators.showGameThemes(gameThemes));
 	}
 
-	onRoundThemes(roundThemesNames: string[], display: boolean) {
-		const state = this.getState();
-
-		if (state.room.stage.name !== 'Final' && display) {
+	onRoundThemes(roundThemesNames: string[], playMode: ThemesPlayMode) {
+		if (playMode === ThemesPlayMode.OneByOne) {
 			this.playGameSound(GameSound.ROUND_THEMES, true);
 		}
 
 		const roundThemes: ThemeInfo[] = roundThemesNames.map(t => ({ name: t, questions: [] }));
 
-		this.dispatch(tableActionCreators.showRoundThemes(roundThemes, state.room.stage.name === 'Final', display));
+		this.dispatch(tableActionCreators.showRoundThemes(
+			roundThemes,
+			playMode === ThemesPlayMode.AllTogether,
+			playMode !== ThemesPlayMode.None
+		));
+
 		this.dispatch(tableActionCreators.questionReset());
 	}
 
@@ -349,8 +353,8 @@ export default class ClientController {
 
 	onEndPressButtonByTimeout() {
 		this.dispatch(tableActionCreators.canPressChanged(false));
-		this.playGameSound(GameSound.QUESTION_NOANSWERS);
 		this.dispatch(roomActionCreators.stopTimer(1));
+		this.playGameSound(GameSound.QUESTION_NOANSWERS);
 	}
 
 	onReplic(personCode: string, text: string) {
@@ -379,6 +383,8 @@ export default class ClientController {
 	onShowTable() {
 		this.dispatch(tableActionCreators.showRoundTable());
 		this.dispatch(commonActionCreators.stopAudio());
+		this.dispatch(tableActionCreators.canPressChanged(false));
+		this.dispatch(roomActionCreators.stopTimer(1));
 	}
 
 	onTableCaption(caption: string) {
@@ -416,6 +422,8 @@ export default class ClientController {
 		this.dispatch(tableActionCreators.showText(`${localization.theme}: ${themeName}`, false));
 		this.dispatch(roomActionCreators.afterQuestionStateChanged(false));
 		this.dispatch(roomActionCreators.themeNameChanged(themeName));
+		this.dispatch(tableActionCreators.canPressChanged(false));
+		this.dispatch(roomActionCreators.stopTimer(1));
 	}
 
 	onQuestion(questionPrice: string) {
@@ -450,5 +458,39 @@ export default class ClientController {
 
 	onTimerResume(timerIndex: number) {
 		this.dispatch(roomActionCreators.resumeTimer(timerIndex, false));
+	}
+
+	onTimerStop(timerIndex: number) {
+		this.dispatch(roomActionCreators.stopTimer(timerIndex));
+
+		if (timerIndex === 2) {
+			this.dispatch(roomActionCreators.clearDecisionsAndMainTimer());
+			this.dispatch(commonActionCreators.stopAudio());
+		}
+	}
+
+	onQuestionType(qType: string) {
+		switch (qType) {
+			case 'stake':
+				this.playGameSound(GameSound.QUESTION_STAKE);
+				this.dispatch(tableActionCreators.showSpecial(localization.questionTypeStake, this.getState().table.activeThemeIndex));
+				break;
+
+			case 'secret':
+			case 'secretPublicPrice':
+			case 'secretNoQuestion':
+				this.playGameSound(GameSound.QUESTION_SECRET);
+				this.dispatch(tableActionCreators.showSpecial(localization.questionTypeSecret));
+				this.dispatch(tableActionCreators.questionReset());
+				break;
+
+			case 'noRisk':
+				this.playGameSound(GameSound.QUESTION_NORISK);
+				this.dispatch(tableActionCreators.showSpecial(localization.questionTypeNoRisk));
+				break;
+
+			default:
+				break;
+		}
 	}
 }
