@@ -10,6 +10,10 @@ export default class GameClient implements IGameClient {
 	 */
 	constructor(public gameServerClient: IClientBase, public shouldClose: boolean) { }
 
+	deleteTheme(themeIndex: number): Promise<boolean> {
+		return this.gameServerClient.msgAsync(Messages.Delete, themeIndex);
+	}
+
 	info(): Promise<boolean> {
 		return this.gameServerClient.msgAsync(Messages.Info);
 	}
@@ -40,6 +44,10 @@ export default class GameClient implements IGameClient {
 
 	ready(): Promise<boolean> {
 		return this.gameServerClient.msgAsync(Messages.Ready);
+	}
+
+	selectQuestion(themeIndex: number, questionIndex: number): Promise<boolean> {
+		return this.gameServerClient.msgAsync(Messages.Choice, themeIndex, questionIndex);
 	}
 
 	sendAnswerVersion(answerVersion: string): Promise<boolean> {

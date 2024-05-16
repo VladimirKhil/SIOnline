@@ -13,6 +13,9 @@ import ClientController from './logic/ClientController';
 import TableMode from './model/enums/TableMode';
 import StateManager from './utils/StateManager';
 import SIHostClient from './client/SIHostClient';
+import localization from './model/resources/localization';
+import Role from './model/Role';
+import IGameClient from './client/game/IGameClient';
 
 declare global {
     interface Window {
@@ -64,6 +67,10 @@ function processMessage(controller: ClientController, payload: any) {
 			controller.onBeginPressButton();
 			break;
 
+		case 'choose':
+			controller.onChoose();
+			break;
+
 		case 'content':
 			controller.onContent(payload.placement, payload.content);
 			break;
@@ -100,8 +107,20 @@ function processMessage(controller: ClientController, payload: any) {
 			controller.onReplic(payload.personCode, payload.text);
 			break;
 
+		case 'rightAnswer':
+			controller.onRightAnswer(payload.answer);
+			break;
+
+		case 'rightAnswerStart':
+			controller.onRightAnswerStart(payload.answer);
+			break;
+
 		case 'roundThemes':
 			controller.onRoundThemes(payload.themes, payload.playMode);
+			break;
+
+		case 'setLanguage':
+			localization.setLanguage(payload.language);
 			break;
 
 		case 'showTable':
@@ -110,6 +129,10 @@ function processMessage(controller: ClientController, payload: any) {
 
 		case 'stage':
 			controller.onStage(payload.stage, payload.stageName, payload.stageIndex);
+			break;
+
+		case 'stop':
+			controller.onStop();
 			break;
 
 		case 'table':
@@ -122,6 +145,10 @@ function processMessage(controller: ClientController, payload: any) {
 
 		case 'theme':
 			controller.onTheme(payload.themeName);
+			break;
+
+		case 'themeDeleted':
+			controller.onThemeDeleted(payload.themeIndex);
 			break;
 
 		case 'timerMaximum':
@@ -141,7 +168,7 @@ function processMessage(controller: ClientController, payload: any) {
 	}
 }
 
-export default function runCore(): Store<State, AnyAction> {
+export default function runCore(game?: IGameClient): Store<State, AnyAction> {
 	const noOpHubConnection = new HubConnectionBuilder().withUrl('http://fake').build();
 
 	const gameClient = new GameServerClient(noOpHubConnection, () => { });
@@ -153,7 +180,7 @@ export default function runCore(): Store<State, AnyAction> {
 		serverUri: '',
 		connection: null,
 		gameClient,
-		game: new GameClient(new SIHostClient(noOpHubConnection, () => { }), false),
+		game: game ?? new GameClient(new SIHostClient(noOpHubConnection, () => { }), false),
 		contentUris: null,
 		contentClient: new SIContentClient({ serviceUri: 'http://fake' }),
 		storageClient: null,
@@ -167,6 +194,10 @@ export default function runCore(): Store<State, AnyAction> {
 			table: {
 				...initialState.table,
 				mode: TableMode.Void,
+			},
+			room: {
+				...initialState.room,
+				role: Role.Showman,
 			}
 		},
 		applyMiddleware(reduxThunk.withExtraArgument(dataContext))

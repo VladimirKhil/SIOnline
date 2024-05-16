@@ -419,7 +419,7 @@ export default class ClientController {
 	onTheme(themeName: string) {
 		this.dispatch(roomActionCreators.playersStateCleared());
 		this.dispatch(roomActionCreators.showmanReplicChanged(''));
-		this.dispatch(tableActionCreators.showText(`${localization.theme}: ${themeName}`, false));
+		this.dispatch(tableActionCreators.showText(themeName, false));
 		this.dispatch(roomActionCreators.afterQuestionStateChanged(false));
 		this.dispatch(roomActionCreators.themeNameChanged(themeName));
 		this.dispatch(tableActionCreators.canPressChanged(false));
@@ -492,5 +492,47 @@ export default class ClientController {
 			default:
 				break;
 		}
+	}
+
+	onThemeDeleted(themeIndex: number) {
+		const themeInfo = this.getState().table.roundInfo[themeIndex];
+
+		if (!themeInfo) {
+			return;
+		}
+
+		this.playGameSound(GameSound.FINAL_DELETE);
+		this.dispatch(tableActionCreators.blinkTheme(themeIndex));
+
+		setTimeout(
+			() => {
+				this.dispatch(tableActionCreators.removeTheme(themeIndex));
+			},
+			600
+		);
+	}
+
+	onRightAnswer(answer: string) {
+		if (this.getState().table.layoutMode === LayoutMode.Simple) {
+			this.dispatch(tableActionCreators.showText(answer, false));
+			this.dispatch(tableActionCreators.captionChanged(localization.rightAnswer));
+		} else {
+			this.dispatch(tableActionCreators.rightOption(answer));
+		}
+
+		this.dispatch(roomActionCreators.afterQuestionStateChanged(true));
+	}
+
+	onChoose() {
+		this.dispatch(roomActionCreators.decisionNeededChanged(true));
+		this.dispatch(tableActionCreators.isSelectableChanged(true));
+	}
+
+	onStop() {
+		this.dispatch(roomActionCreators.stopTimer(0));
+		this.dispatch(roomActionCreators.stopTimer(1));
+		this.dispatch(roomActionCreators.stopTimer(2));
+
+		this.dispatch(tableActionCreators.showLogo());
 	}
 }

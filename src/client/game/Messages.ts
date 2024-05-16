@@ -9,6 +9,11 @@ const enum Messages {
 	/** User avatar info. */
 	Avatar = 'AVATAR',
 
+	/** Question selection. */
+	Choice = 'CHOICE',
+
+	Delete = 'DELETE',
+
 	I = 'I',
 
 	Info = 'INFO',

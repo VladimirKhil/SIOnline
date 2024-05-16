@@ -458,7 +458,7 @@ const selectQuestion: ActionCreator<ThunkAction<void, State, DataContext, Action
 		const question = theme.questions[questionIndex];
 
 		if (question > -1) {
-			if (await dataContext.game.gameServerClient.msgAsync('CHOICE', themeIndex, questionIndex)) {
+			if (await dataContext.game.selectQuestion(themeIndex, questionIndex)) {
 				dispatch(tableActionCreators.isSelectableChanged(false));
 				dispatch(decisionNeededChanged(false));
 			}
@@ -488,7 +488,7 @@ const selectTheme: ActionCreator<ThunkAction<void, State, DataContext, Action>> 
 	const theme = getState().table.roundInfo[themeIndex];
 
 	if (theme) {
-		if (await dataContext.game.gameServerClient.msgAsync('DELETE', themeIndex)) {
+		if (await dataContext.game.deleteTheme(themeIndex)) {
 			dispatch(tableActionCreators.isSelectableChanged(false));
 			dispatch(decisionNeededChanged(false));
 		}

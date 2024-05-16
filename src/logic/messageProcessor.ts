@@ -58,9 +58,9 @@ const processSystemMessage: ActionCreator<ThunkAction<void, State, DataContext, 
 		viewerHandler(controller, dispatch, state, dataContext, args);
 
 		if (role === Role.Player) {
-			playerHandler(dispatch, state, dataContext, args);
+			playerHandler(controller, dispatch, state, dataContext, args);
 		} else if (role === Role.Showman) {
-			showmanHandler(dispatch, state, dataContext, args);
+			showmanHandler(controller, dispatch, state, dataContext, args);
 		}
 	};
 
@@ -374,24 +374,10 @@ const viewerHandler = (controller: ClientController, dispatch: Dispatch<any>, st
 
 			break;
 
-		case 'OUT':
-			{
+		case GameMessages.Out:
+			if (args.length > 1) {
 				const themeIndex = parseInt(args[1], 10);
-
-				const themeInfo = state.table.roundInfo[themeIndex];
-
-				playGameSound(dispatch, state.settings.appSound, GameSound.FINAL_DELETE);
-
-				if (themeInfo) {
-					dispatch(tableActionCreators.blinkTheme(themeIndex));
-
-					setTimeout(
-						() => {
-							dispatch(tableActionCreators.removeTheme(themeIndex));
-						},
-						600
-					);
-				}
+				controller.onThemeDeleted(themeIndex);
 			}
 			break;
 
@@ -585,14 +571,9 @@ const viewerHandler = (controller: ClientController, dispatch: Dispatch<any>, st
 			break;
 
 		case GameMessages.RightAnswer:
-			if (state.table.layoutMode === LayoutMode.Simple) {
-				dispatch(tableActionCreators.showText(args[2], false));
-				dispatch(tableActionCreators.captionChanged(localization.rightAnswer));
-			} else {
-				dispatch(tableActionCreators.rightOption(args[2]));
+			if (args.length > 3) {
+				controller.onRightAnswer(args[2]);
 			}
-
-			dispatch(roomActionCreators.afterQuestionStateChanged(true));
 			break;
 
 		case GameMessages.RightAnswerStart:
@@ -707,12 +688,8 @@ const viewerHandler = (controller: ClientController, dispatch: Dispatch<any>, st
 			break;
 		}
 
-		case 'STOP':
-			dispatch(roomActionCreators.stopTimer(0));
-			dispatch(roomActionCreators.stopTimer(1));
-			dispatch(roomActionCreators.stopTimer(2));
-
-			dispatch(tableActionCreators.showLogo());
+		case GameMessages.Stop:
+			controller.onStop();
 			break;
 
 		case 'SUMS':
@@ -922,11 +899,6 @@ function onCatCost(dispatch: Dispatch<any>, args: string[]) {
 	dispatch(roomActionCreators.decisionNeededChanged(true));
 }
 
-function onChoose(dispatch: Dispatch<any>) {
-	dispatch(roomActionCreators.decisionNeededChanged(true));
-	dispatch(tableActionCreators.isSelectableChanged(true));
-}
-
 function onStake2(dispatch: Dispatch<any>, _state: State, args: string[], maximum: number) {
 	if (args.length < 4) {
 		return;
@@ -948,7 +920,7 @@ function onStake2(dispatch: Dispatch<any>, _state: State, args: string[], maximu
 	dispatch(roomActionCreators.decisionNeededChanged(true));
 }
 
-const playerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataContext, args: string[]) => {
+const playerHandler = (controller: ClientController, dispatch: Dispatch<any>, state: State, dataContext: DataContext, args: string[]) => {
 	switch (args[0]) {
 		case GameMessages.Answer:
 			if (state.table.layoutMode === LayoutMode.Simple) {
@@ -971,8 +943,8 @@ const playerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 			onCatCost(dispatch, args);
 			break;
 
-		case 'CHOOSE':
-			onChoose(dispatch);
+		case GameMessages.Choose:
+			controller.onChoose();
 			break;
 
 		case 'FINALSTAKE':
@@ -1024,7 +996,7 @@ const playerHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataC
 	}
 };
 
-const showmanHandler = (dispatch: Dispatch<any>, state: State, dataContext: DataContext, args: string[]) => {
+const showmanHandler = (controller: ClientController, dispatch: Dispatch<any>, state: State, dataContext: DataContext, args: string[]) => {
 	switch (args[0]) {
 		case 'CANCEL':
 			dispatch(roomActionCreators.clearDecisions());
@@ -1083,8 +1055,8 @@ const showmanHandler = (dispatch: Dispatch<any>, state: State, dataContext: Data
 			onCatCost(dispatch, args);
 			break;
 
-		case 'CHOOSE':
-			onChoose(dispatch);
+		case GameMessages.Choose:
+			controller.onChoose();
 			break;
 
 		case GameMessages.Stake2:

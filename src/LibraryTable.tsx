@@ -4,11 +4,12 @@ import runCore from './LibraryCore';
 import React from 'react';
 import PlayersView from './components/game/PlayersView';
 import GameTable from './components/gameTable/GameTable';
+import tableActionCreators from './state/table/tableActionCreators';
+import IGameClient from './client/game/IGameClient';
 
 import './style.css';
-import tableActionCreators from './state/table/tableActionCreators';
 
-export function run(elementId: string): void {
+export function run(elementId: string, game?: IGameClient): void {
 	const host = document.getElementById(elementId);
 
 	if (!host) {
@@ -16,7 +17,7 @@ export function run(elementId: string): void {
 		return;
 	}
 
-	const store = runCore();
+	const store = runCore(game);
 
 	store.dispatch(tableActionCreators.showLogo());
 

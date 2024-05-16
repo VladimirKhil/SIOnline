@@ -21,6 +21,8 @@ const enum GameMessages {
 	/** Question selection. */
 	Choice = 'CHOICE',
 
+	Choose = 'CHOOSE',
+
 	Connected = 'CONNECTED',
 
 	/** Table content. */
@@ -47,6 +49,8 @@ const enum GameMessages {
 
 	/** Notifies that the client has loaded the media. */
 	MediaLoaded = 'MEDIALOADED',
+
+	Out = 'OUT',
 
 	QType = 'QTYPE',
 
@@ -80,6 +84,8 @@ const enum GameMessages {
 
 	/** Stake info. */
 	Stake2 = 'STAKE2',
+
+	Stop = 'STOP',
 
 	Table = 'TABLO2',
 
