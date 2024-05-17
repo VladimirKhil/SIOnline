@@ -217,7 +217,9 @@ export default class ClientController {
 
 		if (stage === GameStage.Round || stage === GameStage.Final) {
 			this.playGameSound(GameSound.ROUND_BEGIN);
-			this.dispatch(tableActionCreators.showRound(stageName));
+			const { roundTail } = localization;
+			const roundName = stageName.endsWith(roundTail) ? stageName.substring(0, stageName.length - roundTail.length) : stageName;
+			this.dispatch(tableActionCreators.showObject(localization.round, roundName, '', false));
 			this.dispatch(roomActionCreators.playersStateCleared());
 
 			if (stage === GameStage.Round) {
@@ -225,13 +227,15 @@ export default class ClientController {
 					this.dispatch(roomActionCreators.playerInGameChanged(i, true));
 				}
 			}
-		} else if (stage === GameStage.After) {
+
+			this.dispatch(tableActionCreators.captionChanged(''));
+		} else if (stage === GameStage.Begin || stage === GameStage.After) {
 			this.dispatch(tableActionCreators.showLogo());
+			this.dispatch(tableActionCreators.captionChanged(stage === GameStage.Begin ? localization.gameStarted : localization.gameFinished));
 		}
 
 		this.dispatch(roomActionCreators.gameStateCleared());
 		this.dispatch(tableActionCreators.isSelectableChanged(false));
-		this.dispatch(tableActionCreators.captionChanged(''));
 	}
 
 	onStageInfo(stage: string, _stageName: string, stageIndex: number) {
@@ -419,7 +423,7 @@ export default class ClientController {
 	onTheme(themeName: string) {
 		this.dispatch(roomActionCreators.playersStateCleared());
 		this.dispatch(roomActionCreators.showmanReplicChanged(''));
-		this.dispatch(tableActionCreators.showText(themeName, false));
+		this.dispatch(tableActionCreators.showObject(localization.theme, themeName, '', false));
 		this.dispatch(roomActionCreators.afterQuestionStateChanged(false));
 		this.dispatch(roomActionCreators.themeNameChanged(themeName));
 		this.dispatch(tableActionCreators.canPressChanged(false));
@@ -428,7 +432,7 @@ export default class ClientController {
 
 	onQuestion(questionPrice: string) {
 		this.dispatch(roomActionCreators.playersStateCleared());
-		this.dispatch(tableActionCreators.showText(questionPrice, false));
+		this.dispatch(tableActionCreators.showObject(this.getState().room.stage.themeName, questionPrice, '', false));
 		this.dispatch(roomActionCreators.afterQuestionStateChanged(false));
 		this.dispatch(roomActionCreators.updateCaption(questionPrice) as any);
 		this.dispatch(tableActionCreators.questionReset());
@@ -471,22 +475,26 @@ export default class ClientController {
 
 	onQuestionType(qType: string) {
 		switch (qType) {
+			case 'auction': // deprecated
 			case 'stake':
 				this.playGameSound(GameSound.QUESTION_STAKE);
-				this.dispatch(tableActionCreators.showSpecial(localization.questionTypeStake, this.getState().table.activeThemeIndex));
+				this.dispatch(tableActionCreators.showObject(localization.question, localization.questionTypeStake, '', true));
 				break;
 
+			case 'cat': // deprecated
+			case 'bagcat': // deprecated
 			case 'secret':
 			case 'secretPublicPrice':
 			case 'secretNoQuestion':
 				this.playGameSound(GameSound.QUESTION_SECRET);
-				this.dispatch(tableActionCreators.showSpecial(localization.questionTypeSecret));
+				this.dispatch(tableActionCreators.showObject(localization.question, localization.questionTypeSecret, '', true));
 				this.dispatch(tableActionCreators.questionReset());
 				break;
 
+			case 'sponsored': // deprecated
 			case 'noRisk':
 				this.playGameSound(GameSound.QUESTION_NORISK);
-				this.dispatch(tableActionCreators.showSpecial(localization.questionTypeNoRisk));
+				this.dispatch(tableActionCreators.showObject(localization.question, localization.questionTypeNoRisk, '', true));
 				break;
 
 			default:

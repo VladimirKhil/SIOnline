@@ -475,7 +475,7 @@ video, audio {
     animation-name: spinner;
     animation-timing-function: linear;
     animation-iteration-count: infinite;
-    animation-duration: 2s;
+    animation-duration: 3s;
 }
 
 #lastReplic {

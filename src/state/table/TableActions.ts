@@ -7,7 +7,7 @@ import ItemState from '../../model/enums/ItemState';
 export const enum TableActionTypes {
 	ShowLogo = 'SHOW_LOGO',
 	ShowGameThemes = 'SHOW_GAME_THEMES',
-	ShowRound = 'SHOW_ROUND',
+	ShowObject = 'SHOW_OBJECT',
 	ShowRoundThemes = 'SHOW_ROUND_THEMES',
 	ShowText = 'SHOW_TEXT',
 	ShowAnswer = 'SHOW_ANSWER',
@@ -20,7 +20,6 @@ export const enum TableActionTypes {
 	AppendPartialText = 'APPEND_PARTIAL_TEXT',
 	ShowBackgroundAudio = 'SHOW_BACKGROUND_AUDIO',
 	ShowContent = 'SHOW_CONTENT',
-	ShowSpecial = 'SHOW_SPECIAL',
 	CanPressChanged = 'CAN_PRESS_CHANGED',
 	IsSelectableChanged = 'IS_SELECTABLE_CHANGED',
 	ResumeMedia = 'RESUME_MEDIA',
@@ -38,7 +37,7 @@ export const enum TableActionTypes {
 
 export type ShowLogoAction = { type: TableActionTypes.ShowLogo };
 export type ShowGameThemesAction = { type: TableActionTypes.ShowGameThemes, gameThemes: string[] };
-export type ShowRoundAction = { type: TableActionTypes.ShowRound, roundName: string };
+export type ShowObjectAction = { type: TableActionTypes.ShowObject, header: string, text: string, hint: string, rotate: boolean };
 
 export type ShowRoundThemesAction = {
 	type: TableActionTypes.ShowRoundThemes,
@@ -58,7 +57,6 @@ export type ShowPartialTextAction = { type: TableActionTypes.ShowPartialText, te
 export type AppendPartialTextAction = { type: TableActionTypes.AppendPartialText, text: string };
 export type ShowBackgroundAudioAction = { type: TableActionTypes.ShowBackgroundAudio, uri: string };
 export type ShowContentAction = { type: TableActionTypes.ShowContent, content: ContentGroup[] };
-export type ShowSpecialAction = { type: TableActionTypes.ShowSpecial, text: string, activeThemeIndex: number };
 export type CanPressChangedAction = { type: TableActionTypes.CanPressChanged, canPress: boolean, updateTime: number };
 export type IsSelectableChangedAction = { type: TableActionTypes.IsSelectableChanged, isSelectable: boolean };
 export type ResumeMediaAction = { type: TableActionTypes.ResumeMedia };
@@ -76,7 +74,7 @@ export type SetAnswerViewAction = { type: TableActionTypes.SetAnswerView, rightA
 export type KnownTableAction =
 	ShowLogoAction
 	| ShowGameThemesAction
-	| ShowRoundAction
+	| ShowObjectAction
 	| ShowRoundThemesAction
 	| ShowTextAction
 	| ShowAnswerAction
@@ -89,7 +87,6 @@ export type KnownTableAction =
 	| AppendPartialTextAction
 	| ShowBackgroundAudioAction
 	| ShowContentAction
-	| ShowSpecialAction
 	| CanPressChangedAction
 	| IsSelectableChangedAction
 	| ResumeMediaAction

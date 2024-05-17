@@ -8,15 +8,14 @@ import TableAnswer from './TableAnswer';
 import TableGameThemes from './TableGameThemes';
 import TableRoundThemes from './TableRoundThemes';
 import RoundTable from './RoundTable';
-import TableSpecial from './TableSpecial';
 import FinalTable from './FinalTable';
 import AutoSizedText from '../common/AutoSizedText';
 import localization from '../../model/resources/localization';
 import TimerInfo from '../../model/TimerInfo';
 import ProgressBar from '../common/ProgressBar';
 import { isRunning } from '../../utils/TimerInfoHelpers';
-import TableRound from './TableRound';
 import TableContent from './TableContent/TableContent';
+import ObjectView from './ObjectView/ObjectView';
 
 import './GameTable.css';
 
@@ -47,9 +46,6 @@ function getContent(mode: TableMode) {
 		case TableMode.Logo:
 			return <TableLogo />;
 
-		case TableMode.Round:
-			return <TableRound />;
-
 		case TableMode.Text:
 			return <TableText />;
 
@@ -68,11 +64,11 @@ function getContent(mode: TableMode) {
 		case TableMode.RoundTable:
 			return <RoundTable />;
 
-		case TableMode.Special:
-			return <TableSpecial />;
-
 		case TableMode.Final:
 			return <FinalTable />;
+
+		case TableMode.Object:
+			return <ObjectView />;
 
 		default:
 			return null;
@@ -81,6 +77,13 @@ function getContent(mode: TableMode) {
 
 function getCaption(props: GameTableProps): string | null {
 	switch (props.mode) {
+		case TableMode.GameThemes:
+			return localization.gameThemes;
+
+		case TableMode.RoundThemes:
+			return localization.roundThemes;
+
+		case TableMode.Logo:
 		case TableMode.Text:
 		case TableMode.Content:
 			return props.caption;

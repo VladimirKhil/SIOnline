@@ -8,9 +8,12 @@ export default interface TableState {
 	mode: TableMode;
 	layoutMode: LayoutMode;
 	caption: string;
+	header: string;
 	text: string;
 	tail: string;
+	hint: string;
 	audio: string;
+	rotate: boolean;
 	animateReading: boolean;
 	canPress: boolean;
 	canPressUpdateTime: number;
@@ -30,9 +33,12 @@ export const initialState: TableState = {
 	mode: TableMode.Logo,
 	layoutMode: LayoutMode.Simple,
 	caption: '',
+	header: '',
 	text: '',
 	tail: '',
+	hint: '',
 	audio: '',
+	rotate: false,
 	animateReading: false,
 	canPress: false,
 	canPressUpdateTime: 0,

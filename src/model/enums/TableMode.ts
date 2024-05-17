@@ -4,12 +4,11 @@
 	Text,
 	Answer,
 	GameThemes,
-	Round,
 	RoundThemes,
 	RoundTable,
-	Special,
 	Final,
 	Content,
+	Object,
 }
 
 export default TableMode;

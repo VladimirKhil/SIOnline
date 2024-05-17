@@ -50,11 +50,14 @@ const tableReducer: Reducer<TableState> = (state: TableState = initialState, any
 				gameThemes: action.gameThemes
 			};
 
-		case TableActionTypes.ShowRound:
+		case TableActionTypes.ShowObject:
 			return {
 				...state,
-				mode: TableMode.Round,
-				text: action.roundName,
+				mode: TableMode.Object,
+				header: action.header,
+				text: action.text,
+				hint: action.hint,
+				rotate: action.rotate,
 				animateReading: false,
 				content: [],
 				appendText: '',
@@ -138,14 +141,6 @@ const tableReducer: Reducer<TableState> = (state: TableState = initialState, any
 				...state,
 				mode: TableMode.Content,
 				content: action.content,
-			};
-
-		case TableActionTypes.ShowSpecial:
-			return {
-				...state,
-				mode: TableMode.Special,
-				text: action.text,
-				activeThemeIndex: action.activeThemeIndex
 			};
 
 		case TableActionTypes.CanPressChanged:

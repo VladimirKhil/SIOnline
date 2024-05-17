@@ -14,8 +14,8 @@ const showGameThemes: ActionCreator<TableActions.ShowGameThemesAction> = (gameTh
 	type: TableActions.TableActionTypes.ShowGameThemes, gameThemes
 });
 
-const showRound: ActionCreator<TableActions.ShowRoundAction> = (roundName: string) => ({
-	type: TableActions.TableActionTypes.ShowRound, roundName
+const showObject: ActionCreator<TableActions.ShowObjectAction> = (header: string, text: string, hint: string, rotate: boolean) => ({
+	type: TableActions.TableActionTypes.ShowObject, header, text, hint, rotate,
 });
 
 const showRoundThemes: ActionCreator<TableActions.ShowRoundThemesAction> = (
@@ -77,10 +77,6 @@ const showContent: ActionCreator<TableActions.ShowContentAction> = (content: Con
 	type: TableActions.TableActionTypes.ShowContent, content
 });
 
-const showSpecial: ActionCreator<TableActions.ShowSpecialAction> = (text: string, activeThemeIndex = -1) => ({
-	type: TableActions.TableActionTypes.ShowSpecial, text, activeThemeIndex
-});
-
 const canPressChanged: ActionCreator<TableActions.CanPressChangedAction> = (canPress: boolean) => ({
 	type: TableActions.TableActionTypes.CanPressChanged, canPress, updateTime: Date.now()
 });
@@ -136,7 +132,7 @@ const setAnswerView: ActionCreator<TableActions.SetAnswerViewAction> = (rightAns
 const tableActionCreators = {
 	showLogo,
 	showGameThemes,
-	showRound,
+	showObject,
 	showRoundThemes,
 	showText,
 	showAnswer,
@@ -149,7 +145,6 @@ const tableActionCreators = {
 	appendPartialText,
 	showBackgroundAudio,
 	showContent,
-	showSpecial,
 	canPressChanged,
 	isSelectableChanged,
 	resumeMedia,

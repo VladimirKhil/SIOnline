@@ -571,7 +571,7 @@ const viewerHandler = (controller: ClientController, dispatch: Dispatch<any>, st
 			break;
 
 		case GameMessages.RightAnswer:
-			if (args.length > 3) {
+			if (args.length > 2) {
 				controller.onRightAnswer(args[2]);
 			}
 			break;

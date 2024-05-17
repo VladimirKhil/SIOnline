@@ -98,8 +98,9 @@
     #table .scaleText {
         transform: scale(0);
         transition: transform .2s linear;
-        width: 100%;
-        height: 100%;
+        width: calc(100% - 10px);
+        height: calc(100% - 10px);
+        margin: 5px;
     }
 
 @keyframes blink {
@@ -118,44 +119,11 @@
     color: darkblue;
 }
 
-#table .specialTable {
-    color: #FFFFFF;
-    text-shadow: 1px 1px 0 #000;
-    font-family: SI;
-    width: calc(100% + 1px);
-    height: calc(100% + 2px);
-    display: flex;
-    flex-direction: row;
-    margin: 0 -1px -1px 0;
-    text-align: center;
-}
-
 #table .specialThemes {
     flex: 0 0 40%;
     height: 100%;
     display: flex;
     flex-direction: column;
-}
-
-#table .specialTheme {
-    flex: 1 0 0;
-    border: 1px solid #FFFFFF;
-    margin: -1px 0 0 -1px;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 7px;
-}
-
-    #table .specialTheme.active {
-        background: lightyellow;
-        color: darkblue;
-    }
-
-#table .specialHost {
-    flex: 1 0 0;
-    padding: 10px;
 }
 
 #table .finalTable {
