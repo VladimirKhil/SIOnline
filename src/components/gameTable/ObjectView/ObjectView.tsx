@@ -30,7 +30,7 @@ export function ObjectView(props: ObjectViewProps) {
 				{props.text}
 			</AutoSizedText>
 
-			<div className='objectHint'>{props.hint}</div>
+			<div className={`objectHint ${props.hint.length === 0 ? 'empty' : ''} `}>{props.hint}</div>
 		</div>
 	);
 }

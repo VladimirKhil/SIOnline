@@ -5,6 +5,7 @@
     width: 100%;
     height: 100%;
     color: white;
+    padding: 10px;
 }
 
 .objectHeader, .objectHint {
@@ -21,6 +22,10 @@
 .objectHint {
     align-items: start;
     font-size: 15px;
+}
+
+.objectHint.empty {
+    flex: 0;
 }
 
 .objectName {

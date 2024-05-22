@@ -23,6 +23,8 @@ const enum GameMessages {
 
 	Choose = 'CHOOSE',
 
+	Config = 'CONFIG',
+
 	Connected = 'CONNECTED',
 
 	/** Table content. */
@@ -51,6 +53,8 @@ const enum GameMessages {
 	MediaLoaded = 'MEDIALOADED',
 
 	Out = 'OUT',
+
+	Pause = 'PAUSE',
 
 	QType = 'QTYPE',
 

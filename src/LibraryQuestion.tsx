@@ -5,6 +5,8 @@ import React from 'react';
 import GameTable from './components/gameTable/GameTable';
 import ShowmanReplic from './components/game/ShowmanReplic';
 
+import './style.css';
+
 export function run(elementId: string): void {
 	const host = document.getElementById(elementId);
 

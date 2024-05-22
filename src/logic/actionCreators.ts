@@ -225,7 +225,7 @@ const tryConnectAsync = async (dispatch: Dispatch<Action>, getState: () => State
 		return {
 			success: false,
 			error: getErrorMessage(error),
-			authenticationRequired: error.errorType === 'FailedToNegotiateWithServerError' && error.message?.includes('401')
+			authenticationRequired: !error.errorCode || (error.errorType === 'FailedToNegotiateWithServerError' && error.message?.includes('401'))
 		};
 	}
 

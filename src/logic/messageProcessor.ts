@@ -81,6 +81,7 @@ const userMessageReceived: ActionCreator<ThunkAction<void, State, DataContext, A
 
 function onReady(personName: string, isReady: boolean, dispatch: Dispatch<any>, state: State): void {
 	let personIndex: number;
+
 	if (personName === state.room.persons.showman.name) {
 		personIndex = -1;
 	} else {
@@ -91,6 +92,52 @@ function onReady(personName: string, isReady: boolean, dispatch: Dispatch<any>, 
 	}
 
 	dispatch(roomActionCreators.isReadyChanged(personIndex, isReady));
+}
+
+function onConfig(controller: ClientController, ...args: string[]) {
+	switch (args[1]) {
+		case 'ADDTABLE':
+			controller.addPlayerTable();
+			break;
+
+		case 'FREE': {
+			const role = args[2];
+			const index = parseInt(args[3], 10);
+
+			controller.onTableFree(role, index);
+			break;
+		}
+
+		case 'DELETETABLE': {
+			const index = parseInt(args[2], 10);
+			controller.deletePlayerTable(index);
+			break;
+		}
+
+		case 'SET': {
+			const role = args[2];
+			const index = parseInt(args[3], 10);
+			const replacer = args[4];
+			const replacerSex = args[5] === '+' ? Sex.Male : Sex.Female;
+
+			controller.onTableSet(role, index, replacer, replacerSex);
+			break;
+		}
+
+		case 'CHANGETYPE': {
+			const role = args[2];
+			const index = parseInt(args[3], 10);
+			const isHuman = args[4] === '+';
+			const name = args[5];
+			const sex = args[6] === '+' ? Sex.Male : Sex.Female;
+
+			controller.onTableChangeType(role, index, isHuman, name, sex);
+			break;
+		}
+
+		default:
+			break;
+	}
 }
 
 const viewerHandler = (controller: ClientController, dispatch: Dispatch<any>, state: State, dataContext: DataContext, args: string[]) => {
@@ -173,8 +220,8 @@ const viewerHandler = (controller: ClientController, dispatch: Dispatch<any>, st
 			}
 			break;
 
-		case 'CONFIG':
-			config(dispatch, state, ...args);
+		case GameMessages.Config:
+			onConfig(controller, ...args);
 			break;
 
 		case GameMessages.Connected: {
@@ -391,21 +438,9 @@ const viewerHandler = (controller: ClientController, dispatch: Dispatch<any>, st
 			}
 			break;
 
-		case 'PAUSE':
+		case GameMessages.Pause:
 			const isPaused = args[1] === '+';
-			dispatch(roomActionCreators.isPausedChanged(isPaused));
-
-			if (args.length > 4) {
-				if (isPaused) {
-					dispatch(roomActionCreators.pauseTimer(0, args[2], true));
-					dispatch(roomActionCreators.pauseTimer(1, args[3], true));
-					dispatch(roomActionCreators.pauseTimer(2, args[4], true));
-				} else {
-					dispatch(roomActionCreators.resumeTimer(0, true));
-					dispatch(roomActionCreators.resumeTimer(1, true));
-					dispatch(roomActionCreators.resumeTimer(2, true));
-				}
-			}
+			controller.onPause(isPaused, args.slice(2).map(v => parseInt(v, 10)));
 			break;
 
 		case 'PERSON':
@@ -522,8 +557,7 @@ const viewerHandler = (controller: ClientController, dispatch: Dispatch<any>, st
 			break;
 
 		case GameMessages.QuestionEnd:
-			dispatch(roomActionCreators.afterQuestionStateChanged(true));
-			dispatch(tableActionCreators.endQuestion());
+			controller.onQuestionEnd();
 			break;
 
 		case 'READINGSPEED':
@@ -775,7 +809,7 @@ const viewerHandler = (controller: ClientController, dispatch: Dispatch<any>, st
 						break;
 
 					case 'PAUSE':
-						dispatch(roomActionCreators.pauseTimer(timerIndex, timerArgument, false));
+						controller.onTimerPause(timerIndex, timerArgument);
 						break;
 
 					case 'USER_PAUSE':
@@ -819,15 +853,7 @@ const viewerHandler = (controller: ClientController, dispatch: Dispatch<any>, st
 				const questionIndex = parseInt(args[2], 10);
 				const price = parseInt(args[3], 10);
 
-				const themeInfo = state.table.roundInfo[themeIndex];
-
-				if (themeInfo) {
-					const existingPrice = themeInfo.questions[questionIndex];
-
-					if (existingPrice) {
-						dispatch(tableActionCreators.updateQuestion(themeIndex, questionIndex, price));
-					}
-				}
+				controller.onToggle(themeIndex, questionIndex, price);
 			}
 			break;
 
@@ -858,8 +884,10 @@ const viewerHandler = (controller: ClientController, dispatch: Dispatch<any>, st
 			{
 				const index = parseInt(args[1], 10);
 				const { players } = state.room.persons;
+
 				if (index > -1 && index < players.length) {
 					const player = players[index];
+
 					if (player.state === PlayerStates.None) {
 						dispatch(roomActionCreators.playerStateChanged(index, PlayerStates.Lost));
 						setTimeout(
@@ -1234,167 +1262,6 @@ function disconnected(dispatch: Dispatch<RoomActions.KnownRoomAction>, state: St
 				break;
 			}
 		}
-	}
-}
-
-function config(dispatch: Dispatch<RoomActions.KnownRoomAction>, state: State, ...args: string[]) {
-	switch (args[1]) {
-		case 'ADDTABLE':
-			dispatch(roomActionCreators.playerAdded());
-			break;
-
-		case 'FREE': {
-			const personType = args[2];
-			const index = parseInt(args[3], 10);
-
-			const isPlayer = personType === 'player';
-			dispatch(isPlayer
-				? roomActionCreators.playerChanged(index, Constants.ANY_NAME, null, false)
-				: roomActionCreators.showmanChanged(Constants.ANY_NAME, null, false));
-
-			const account = isPlayer ? state.room.persons.players[index] : state.room.persons.showman;
-
-			if (account.name === state.room.name) {
-				dispatch(roomActionCreators.roleChanged(Role.Viewer));
-			}
-
-			break;
-		}
-
-		case 'DELETETABLE': {
-			const index = parseInt(args[2], 10);
-			const player = state.room.persons.players[index];
-			const person = state.room.persons.all[player.name];
-
-			dispatch(roomActionCreators.playerDeleted(index));
-
-			if (person && !person.isHuman) {
-				dispatch(roomActionCreators.personRemoved(person.name));
-			} else if (player.name === state.room.name) {
-				dispatch(roomActionCreators.roleChanged(Role.Viewer));
-			}
-
-			break;
-		}
-
-		case 'SET': {
-			const personType = args[2];
-			const index = parseInt(args[3], 10);
-			const replacer = args[4];
-			const replacerSex = args[5] === '+' ? Sex.Male : Sex.Female;
-
-			const isPlayer = personType === 'player';
-			const account = isPlayer ? state.room.persons.players[index] : state.room.persons.showman;
-			const person = state.room.persons.all[account.name];
-
-			if (person && !person.isHuman) {
-				dispatch(isPlayer
-					? roomActionCreators.playerChanged(index, replacer, null, false)
-					: roomActionCreators.showmanChanged(replacer, null, false));
-
-				dispatch(roomActionCreators.personRemoved(person.name));
-
-				const newAccount: Account = {
-					name: replacer,
-					isHuman: false,
-					sex: replacerSex,
-					avatar: null
-				};
-
-				dispatch(roomActionCreators.personAdded(newAccount));
-				break;
-			}
-
-			if (state.room.persons.showman.name === replacer) { // isPlayer
-				dispatch(roomActionCreators.showmanChanged(account.name, true, account.isReady));
-				dispatch(roomActionCreators.playerChanged(index, replacer, true, state.room.persons.showman.isReady));
-
-				if (account.name === state.room.name) {
-					dispatch(roomActionCreators.roleChanged(Role.Showman));
-				} else if (replacer === state.room.name) {
-					dispatch(roomActionCreators.roleChanged(Role.Player));
-				}
-
-				break;
-			}
-
-			for (let i = 0; i < state.room.persons.players.length; i++) {
-				if (state.room.persons.players[i].name === replacer) {
-					if (isPlayer) {
-						dispatch(roomActionCreators.playersSwap(index, i));
-					} else {
-						const { isReady } = state.room.persons.players[i];
-
-						dispatch(roomActionCreators.playerChanged(i, account.name, null, account.isReady));
-						dispatch(roomActionCreators.showmanChanged(replacer, null, isReady));
-
-						if (state.room.persons.showman.name === state.room.name) {
-							dispatch(roomActionCreators.roleChanged(Role.Player));
-						} else if (replacer === state.room.name) {
-							dispatch(roomActionCreators.roleChanged(Role.Showman));
-						}
-					}
-
-					return;
-				}
-			}
-
-			dispatch(isPlayer
-				? roomActionCreators.playerChanged(index, replacer, null, false)
-				: roomActionCreators.showmanChanged(replacer, null, false));
-
-			if (account.name === state.room.name) {
-				dispatch(roomActionCreators.roleChanged(Role.Viewer));
-			} else if (replacer === state.room.name) {
-				dispatch(roomActionCreators.roleChanged(isPlayer ? Role.Player : Role.Showman));
-			}
-
-			break;
-		}
-
-		case 'CHANGETYPE': {
-			const personType = args[2];
-			const index = parseInt(args[3], 10);
-			const newType = args[4] === '+';
-			const newName = args[5];
-			const newSex = args[6] === '+' ? Sex.Male : Sex.Female;
-
-			const isPlayer = personType === 'player';
-			const account = isPlayer ? state.room.persons.players[index] : state.room.persons.showman;
-			const person = state.room.persons.all[account.name];
-
-			if (person && person.isHuman === newType) {
-				break;
-			}
-
-			if (!newType) {
-				const newAccount: Account = {
-					name: newName,
-					isHuman: false,
-					sex: newSex,
-					avatar: null
-				};
-
-				dispatch(roomActionCreators.personAdded(newAccount));
-			}
-
-			dispatch(isPlayer
-				? roomActionCreators.playerChanged(index, newName, newType, false)
-				: roomActionCreators.showmanChanged(newName, newType, false));
-
-			if (newType) {
-				dispatch(roomActionCreators.personRemoved(person.name));
-			}
-
-			if (person.name === state.room.name) {
-				dispatch(roomActionCreators.roleChanged(Role.Viewer));
-			}
-
-			break;
-		}
-
-		default:
-			break;
 	}
 }
 

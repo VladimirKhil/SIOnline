@@ -55,6 +55,10 @@ interface WebView extends EventTarget {
 
 function processMessage(controller: ClientController, payload: any) {
 	switch (payload.type) {
+		case 'addPlayerTable':
+			controller.addPlayerTable();
+			break;
+
 		case 'answerOption':
 			controller.onAnswerOption(payload.index, payload.label, payload.contentType, payload.contentValue);
 			break;
@@ -79,6 +83,10 @@ function processMessage(controller: ClientController, payload: any) {
 			controller.onContentState(payload.placement, payload.layoutId, payload.itemState);
 			break;
 
+		case 'deletePlayerTable':
+			controller.deletePlayerTable(payload.index);
+			break;
+
 		case 'endPressButtonByTimeout':
 			controller.onEndPressButtonByTimeout();
 			break;
@@ -87,12 +95,20 @@ function processMessage(controller: ClientController, payload: any) {
 			controller.onGameThemes(payload.themes);
 			break;
 
+		case 'pause':
+			controller.onPause(payload.isPaused, payload.currentTime);
+			break;
+
 		case 'playersVisibilityChanged':
 			controller.onPlayersVisibilityChanged(payload.isVisible);
 			break;
 
 		case 'question':
 			controller.onQuestion(payload.questionPrice);
+			break;
+
+		case 'questionEnd':
+			controller.onQuestionEnd();
 			break;
 
 		case 'questionSelected':
@@ -119,7 +135,7 @@ function processMessage(controller: ClientController, payload: any) {
 			controller.onRoundThemes(payload.themes, payload.playMode);
 			break;
 
-		case 'setLanguage':
+		case 'setLanguage': // non-SIHost compatible API
 			localization.setLanguage(payload.language);
 			break;
 
@@ -143,6 +159,14 @@ function processMessage(controller: ClientController, payload: any) {
 			controller.onTableCaption(payload.caption);
 			break;
 
+		case 'tableChangeType':
+			controller.onTableChangeType(payload.role, payload.index, payload.isHuman, payload.name, payload.sex);
+			break;
+
+		case 'tableSet':
+			controller.onTableSet(payload.role, payload.index, payload.replacer, payload.replacerSex);
+			break;
+
 		case 'theme':
 			controller.onTheme(payload.themeName);
 			break;
@@ -155,12 +179,20 @@ function processMessage(controller: ClientController, payload: any) {
 			controller.onTimerMaximumChanged(payload.timerIndex, payload.maximum);
 			break;
 
+		case 'timerPause':
+			controller.onTimerPause(payload.timerIndex, payload.currentTime);
+			break;
+
 		case 'timerResume':
 			controller.onTimerResume(payload.timerIndex);
 			break;
 
 		case 'timerStop':
 			controller.onTimerStop(payload.timerIndex);
+			break;
+
+		case 'toggle':
+			controller.onToggle(payload.themeIndex, payload.questionIndex, payload.price);
 			break;
 
 		default:

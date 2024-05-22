@@ -20,6 +20,9 @@ import commonActionCreators from '../state/common/commonActionCreators';
 import localization from '../model/resources/localization';
 import uiActionCreators from '../state/ui/uiActionCreators';
 import ThemesPlayMode from '../model/enums/ThemesPlayMode';
+import TableMode from '../model/enums/TableMode';
+import Role from '../model/Role';
+import Sex from '../model/enums/Sex';
 
 function initGroup(group: ContentGroup) {
 	let bestRowCount = 1;
@@ -413,8 +416,12 @@ export default class ClientController {
 				setTimeout(
 					() => {
 						this.dispatch(tableActionCreators.updateQuestion(themeIndex, questionIndex, -1));
+
+						if (this.getState().table.mode === TableMode.RoundTable) {
+							this.dispatch(tableActionCreators.showObject(themeInfo.name, price, '', false));
+						}
 					},
-					5000
+					500
 				);
 			}
 		}
@@ -458,6 +465,10 @@ export default class ClientController {
 				this.dispatch(roomActionCreators.activatePlayerDecision(timerPersonIndex));
 			}
 		}
+	}
+
+	onTimerPause(timerIndex: number, currentTime: number) {
+		this.dispatch(roomActionCreators.pauseTimer(timerIndex, currentTime, false));
 	}
 
 	onTimerResume(timerIndex: number) {
@@ -542,5 +553,174 @@ export default class ClientController {
 		this.dispatch(roomActionCreators.stopTimer(2));
 
 		this.dispatch(tableActionCreators.showLogo());
+	}
+
+	onToggle(themeIndex: number, questionIndex: number, price: number) {
+		const themeInfo = this.getState().table.roundInfo[themeIndex];
+
+		if (themeInfo) {
+			const existingPrice = themeInfo.questions[questionIndex];
+
+			if (existingPrice) {
+				this.dispatch(tableActionCreators.updateQuestion(themeIndex, questionIndex, price));
+			}
+		}
+	}
+
+	onQuestionEnd() {
+		this.dispatch(roomActionCreators.afterQuestionStateChanged(true));
+		this.dispatch(tableActionCreators.endQuestion());
+	}
+
+	addPlayerTable() {
+		this.dispatch(roomActionCreators.playerAdded());
+	}
+
+	deletePlayerTable(index: number) {
+		const state = this.getState();
+		const player = state.room.persons.players[index];
+		const person = state.room.persons.all[player.name];
+
+		this.dispatch(roomActionCreators.playerDeleted(index));
+
+		if (person && !person.isHuman) {
+			this.dispatch(roomActionCreators.personRemoved(person.name));
+		} else if (player.name === state.room.name) {
+			this.dispatch(roomActionCreators.roleChanged(Role.Viewer));
+		}
+	}
+
+	onPause(isPaused: boolean, currentTime: number[]) {
+		this.dispatch(roomActionCreators.isPausedChanged(isPaused));
+
+		if (currentTime.length > 2) {
+			if (isPaused) {
+				this.dispatch(roomActionCreators.pauseTimer(0, currentTime[1], true));
+				this.dispatch(roomActionCreators.pauseTimer(1, currentTime[2], true));
+				this.dispatch(roomActionCreators.pauseTimer(2, currentTime[3], true));
+			} else {
+				this.dispatch(roomActionCreators.resumeTimer(0, true));
+				this.dispatch(roomActionCreators.resumeTimer(1, true));
+				this.dispatch(roomActionCreators.resumeTimer(2, true));
+			}
+		}
+	}
+
+	onTableChangeType(personType: string, index: number, isHuman: boolean, name: string, sex: Sex) {
+		const state = this.getState();
+		const isPlayer = personType === 'player';
+		const account = isPlayer ? state.room.persons.players[index] : state.room.persons.showman;
+		const person = state.room.persons.all[account.name];
+
+		if (person && person.isHuman === isHuman) {
+			return;
+		}
+
+		if (!isHuman) {
+			const newAccount: Account = {
+				name: name,
+				isHuman: false,
+				sex: sex,
+				avatar: null
+			};
+
+			this.dispatch(roomActionCreators.personAdded(newAccount));
+		}
+
+		this.dispatch(isPlayer
+			? roomActionCreators.playerChanged(index, name, isHuman, false)
+			: roomActionCreators.showmanChanged(name, isHuman, false));
+
+		if (isHuman) {
+			this.dispatch(roomActionCreators.personRemoved(person.name));
+		}
+
+		if (person.name === state.room.name) {
+			this.dispatch(roomActionCreators.roleChanged(Role.Viewer));
+		}
+	}
+
+	onTableSet(role: string, index: number, replacer: string, replacerSex: Sex) {
+		const state = this.getState();
+		const isPlayer = role === 'player';
+		const account = isPlayer ? state.room.persons.players[index] : state.room.persons.showman;
+		const person = state.room.persons.all[account.name];
+
+		if (person && !person.isHuman) {
+			this.dispatch(isPlayer
+				? roomActionCreators.playerChanged(index, replacer, null, false)
+				: roomActionCreators.showmanChanged(replacer, null, false));
+
+				this.dispatch(roomActionCreators.personRemoved(person.name));
+
+			const newAccount: Account = {
+				name: replacer,
+				isHuman: false,
+				sex: replacerSex,
+				avatar: null
+			};
+
+			this.dispatch(roomActionCreators.personAdded(newAccount));
+			return;
+		}
+
+		if (state.room.persons.showman.name === replacer) { // isPlayer
+			this.dispatch(roomActionCreators.showmanChanged(account.name, true, account.isReady));
+			this.dispatch(roomActionCreators.playerChanged(index, replacer, true, state.room.persons.showman.isReady));
+
+			if (account.name === state.room.name) {
+				this.dispatch(roomActionCreators.roleChanged(Role.Showman));
+			} else if (replacer === state.room.name) {
+				this.dispatch(roomActionCreators.roleChanged(Role.Player));
+			}
+
+			return;
+		}
+
+		for (let i = 0; i < state.room.persons.players.length; i++) {
+			if (state.room.persons.players[i].name === replacer) {
+				if (isPlayer) {
+					this.dispatch(roomActionCreators.playersSwap(index, i));
+				} else {
+					const { isReady } = state.room.persons.players[i];
+
+					this.dispatch(roomActionCreators.playerChanged(i, account.name, null, account.isReady));
+					this.dispatch(roomActionCreators.showmanChanged(replacer, null, isReady));
+
+					if (state.room.persons.showman.name === state.room.name) {
+						this.dispatch(roomActionCreators.roleChanged(Role.Player));
+					} else if (replacer === state.room.name) {
+						this.dispatch(roomActionCreators.roleChanged(Role.Showman));
+					}
+				}
+
+				return;
+			}
+		}
+
+		this.dispatch(isPlayer
+			? roomActionCreators.playerChanged(index, replacer, null, false)
+			: roomActionCreators.showmanChanged(replacer, null, false));
+
+		if (account.name === state.room.name) {
+			this.dispatch(roomActionCreators.roleChanged(Role.Viewer));
+		} else if (replacer === state.room.name) {
+			this.dispatch(roomActionCreators.roleChanged(isPlayer ? Role.Player : Role.Showman));
+		}
+	}
+
+	onTableFree(personType: string, index: number) {
+		const state = this.getState();
+		const isPlayer = personType === 'player';
+
+		this.dispatch(isPlayer
+			? roomActionCreators.playerChanged(index, Constants.ANY_NAME, null, false)
+			: roomActionCreators.showmanChanged(Constants.ANY_NAME, null, false));
+
+		const account = isPlayer ? state.room.persons.players[index] : state.room.persons.showman;
+
+		if (account.name === state.room.name) {
+			this.dispatch(roomActionCreators.roleChanged(Role.Viewer));
+		}
 	}
 }

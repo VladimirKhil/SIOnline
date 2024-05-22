@@ -11,3 +11,9 @@
 	width: 100%;
 	flex: 1 0 0;
 }
+
+#table .tableText.margined {
+	margin: 10px;
+	width: calc(100% - 20px);
+	height: calc(100% - 20px);
+}
