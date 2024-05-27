@@ -41,6 +41,8 @@ const enum GameMessages {
 
 	EndTry = 'ENDTRY',
 
+	FinalThink = 'FINALTHINK',
+
 	/** Game metadata: game name, package name, contact uri. */
 	GameMetadata = 'GAMEMETADATA',
 

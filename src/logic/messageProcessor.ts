@@ -354,8 +354,8 @@ const viewerHandler = (controller: ClientController, dispatch: Dispatch<any>, st
 			dispatch(roomActionCreators.afterQuestionStateChanged(false));
 			break;
 
-		case 'FINALTHINK':
-			playGameSound(dispatch, state.settings.appSound, GameSound.FINAL_THINK, true);
+		case GameMessages.FinalThink:
+			controller.onFinalThink();
 			break;
 
 		case GameMessages.GameMetadata:

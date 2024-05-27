@@ -93,6 +93,10 @@ function processMessage(controller: ClientController, payload: any) {
 			controller.onEndPressButtonByTimeout();
 			break;
 
+		case 'finalThink':
+			controller.onFinalThink();
+			break;
+
 		case 'gameThemes':
 			controller.onGameThemes(payload.themes);
 			break;

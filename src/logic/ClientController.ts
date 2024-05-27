@@ -239,6 +239,7 @@ export default class ClientController {
 
 		this.dispatch(roomActionCreators.gameStateCleared());
 		this.dispatch(tableActionCreators.isSelectableChanged(false));
+		this.dispatch(tableActionCreators.canPressChanged(false));
 	}
 
 	onStageInfo(stage: string, _stageName: string, stageIndex: number) {
@@ -752,5 +753,9 @@ export default class ClientController {
 
 			this.playGameSound(isRight ? rightApplause : GameSound.ANSWER_WRONG);
 		}
+	}
+
+	onFinalThink() {
+		this.playGameSound(GameSound.FINAL_THINK, true);
 	}
 }
