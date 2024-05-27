@@ -635,7 +635,7 @@ export default class ClientController {
 			this.dispatch(roomActionCreators.personRemoved(person.name));
 		}
 
-		if (person.name === state.room.name) {
+		if (person && person.name === state.room.name) {
 			this.dispatch(roomActionCreators.roleChanged(Role.Viewer));
 		}
 	}
@@ -721,6 +721,36 @@ export default class ClientController {
 
 		if (account.name === state.room.name) {
 			this.dispatch(roomActionCreators.roleChanged(Role.Viewer));
+		}
+	}
+
+	onSetChooser(chooserIndex: number, setActive: boolean) {
+		this.dispatch(roomActionCreators.chooserChanged(chooserIndex));
+
+		if (setActive) {
+			this.dispatch(roomActionCreators.playerStateChanged(chooserIndex, PlayerStates.Press));
+		}
+	}
+
+	onSum(playerIndex: number, value: number) {
+		this.dispatch(roomActionCreators.playerSumChanged(playerIndex, value));
+	}
+
+	onSums(sums: number[]) {
+		this.dispatch(roomActionCreators.sumsChanged(sums));
+	}
+
+	onPerson(playerIndex: number, isRight: boolean) {
+		const state = this.getState();
+
+		if (playerIndex > -1 && playerIndex < state.room.persons.players.length) {
+			this.dispatch(roomActionCreators.playerStateChanged(playerIndex, isRight ? PlayerStates.Right : PlayerStates.Wrong));
+
+			const rightApplause = state.room.stage.currentPrice >= 2000
+				? GameSound.APPLAUSE_BIG
+				: GameSound.APPLAUSE_SMALL;
+
+			this.playGameSound(isRight ? rightApplause : GameSound.ANSWER_WRONG);
 		}
 	}
 }

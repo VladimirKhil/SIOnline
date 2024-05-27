@@ -45,6 +45,7 @@ export const enum RoomActionTypes {
 	ShowmanChanged = 'SHOWMAN_CHANGED',
 	PlayerAdded = 'PLAYER_ADDED',
 	PlayerChanged = 'PLAYER_CHANGED',
+	PlayerSumChanged = 'PLAYER_SUM_CHANGED',
 	PlayerDeleted = 'PLAYER_DELETED',
 	PlayersSwap = 'PLAYERS_SWAP',
 	NameChanged = 'NAME_CHANGED',
@@ -132,6 +133,7 @@ export type PersonRemovedAction = { type: RoomActionTypes.PersonRemoved, name: s
 export type ShowmanChangedAction = { type: RoomActionTypes.ShowmanChanged, name: string, isHuman?: boolean, isReady?: boolean };
 export type PlayerAddedAction = { type: RoomActionTypes.PlayerAdded };
 export type PlayerChangedAction = { type: RoomActionTypes.PlayerChanged, index: number, name: string, isHuman?: boolean, isReady?: boolean };
+export type PlayerSumChangedAction = { type: RoomActionTypes.PlayerSumChanged, index: number, value: number };
 export type PlayerDeletedAction = { type: RoomActionTypes.PlayerDeleted, index: number };
 export type PlayersSwapAction = { type: RoomActionTypes.PlayersSwap, index1: number, index2: number };
 export type NameChangedAction = { type: RoomActionTypes.NameChanged, name: string };
@@ -248,6 +250,7 @@ export type KnownRoomAction =
 	| ShowmanChangedAction
 	| PlayerAddedAction
 	| PlayerChangedAction
+	| PlayerSumChangedAction
 	| PlayerDeletedAction
 	| PlayersSwapAction
 	| NameChangedAction

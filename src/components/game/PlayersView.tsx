@@ -135,13 +135,6 @@ export class PlayersView extends React.Component<PlayersViewProps> {
 			return null;
 		}
 
-		const playersCount = Object.keys(this.props.players).length;
-		const fontSizeMultiplier = this.props.windowWidth < 800 ? 2.5 : 1.0;
-
-		const mainStyle: React.CSSProperties = {
-			fontSize: `${15.5 - playersCount * 0.2 * fontSizeMultiplier}px`
-		};
-
 		const buildPlayerClasses = (player: PlayerInfo, isMe: boolean, canBeSelected: boolean) => {
 			const stateClass = `state_${(PlayerStates[player.state] ?? '').toLowerCase()}`;
 			const meClass = isMe ? 'me' : '';
@@ -162,7 +155,7 @@ export class PlayersView extends React.Component<PlayersViewProps> {
 
 		return (
 			<div id="playersPanel">
-				<ul className="gamePlayers" style={mainStyle} ref={this.listRef}>
+				<ul className="gamePlayers" ref={this.listRef}>
 					{this.props.players.map((player, index) => {
 						const account = this.props.all[player.name];
 						const isMe = player.name === this.props.login;

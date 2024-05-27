@@ -443,20 +443,12 @@ const viewerHandler = (controller: ClientController, dispatch: Dispatch<any>, st
 			controller.onPause(isPaused, args.slice(2).map(v => parseInt(v, 10)));
 			break;
 
-		case 'PERSON':
+		case GameMessages.Person:
 			{
 				const isRight = args[1] === '+';
 				const index = parseInt(args[2], 10);
 
-				if (index > -1 && index < state.room.persons.players.length) {
-					dispatch(roomActionCreators.playerStateChanged(index, isRight ? PlayerStates.Right : PlayerStates.Wrong));
-
-					const rightApplause = state.room.stage.currentPrice >= 2000
-						? GameSound.APPLAUSE_BIG
-						: GameSound.APPLAUSE_SMALL;
-
-					playGameSound(dispatch, state.settings.appSound, isRight ? rightApplause : GameSound.ANSWER_WRONG);
-				}
+				controller.onPerson(index, isRight);
 			}
 			break;
 
@@ -679,13 +671,9 @@ const viewerHandler = (controller: ClientController, dispatch: Dispatch<any>, st
 			break;
 		}
 
-		case 'SETCHOOSER':
+		case GameMessages.SetChooser:
 			const chooserIndex = parseInt(args[1], 10);
-			dispatch(roomActionCreators.chooserChanged(chooserIndex));
-
-			if (args.length > 2) {
-				dispatch(roomActionCreators.playerStateChanged(chooserIndex, PlayerStates.Press));
-			}
+			controller.onSetChooser(chooserIndex, args.length > 2);
 			break;
 
 		case GameMessages.SetJoinMode:
@@ -726,14 +714,15 @@ const viewerHandler = (controller: ClientController, dispatch: Dispatch<any>, st
 			controller.onStop();
 			break;
 
-		case 'SUMS':
+		case GameMessages.Sums:
 			const max = Math.min(args.length - 1, Object.keys(state.room.persons.players).length);
 			const sums: number[] = [];
+
 			for (let i = 0; i < max; i++) {
 				sums.push(parseInt(args[i + 1], 10));
 			}
 
-			dispatch(roomActionCreators.sumsChanged(sums));
+			controller.onSums(sums);
 			break;
 
 		case GameMessages.Table:

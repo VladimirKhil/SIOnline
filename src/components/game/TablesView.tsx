@@ -163,7 +163,11 @@ export function TablesView(props: TablesViewProps): JSX.Element {
 			</div>
 
 			<div className="buttonsPanel sidePanel">
-				<button type="button" className='standard' onClick={() => props.freeTable()} disabled={!props.isConnected || !canFree}>
+				<button
+					type="button"
+					className='freeTableButton standard'
+					onClick={() => props.freeTable()}
+					disabled={!props.isConnected || !canFree}>
 					{localization.freeTable}
 				</button>
 

@@ -408,6 +408,10 @@ const playerChanged: ActionCreator<RunActions.PlayerChangedAction> = (index: num
 	type: RunActions.RoomActionTypes.PlayerChanged, index, name, isHuman, isReady
 });
 
+const playerSumChanged: ActionCreator<RunActions.PlayerSumChangedAction> = (index: number, value: number) => ({
+	type: RunActions.RoomActionTypes.PlayerSumChanged, index, value
+});
+
 const playerDeleted: ActionCreator<RunActions.PlayerDeletedAction> = (index: number) => ({
 	type: RunActions.RoomActionTypes.PlayerDeleted, index
 });
@@ -1006,6 +1010,7 @@ const roomActionCreators = {
 	showmanChanged,
 	playerAdded,
 	playerChanged,
+	playerSumChanged,
 	playerDeleted,
 	playersSwap,
 	nameChanged,

@@ -56,6 +56,8 @@ const enum GameMessages {
 
 	Pause = 'PAUSE',
 
+	Person = 'PERSON',
+
 	QType = 'QTYPE',
 
 	/** Current question price. */
@@ -77,6 +79,8 @@ const enum GameMessages {
 	/** Round themes names. */
 	RoundThemes = 'ROUNDTHEMES',
 
+	SetChooser = 'SETCHOOSER',
+
 	/** Sets game join mode. */
 	SetJoinMode = 'SETJOINMODE',
 
@@ -90,6 +94,8 @@ const enum GameMessages {
 	Stake2 = 'STAKE2',
 
 	Stop = 'STOP',
+
+	Sums = 'SUMS',
 
 	Table = 'TABLO2',
 

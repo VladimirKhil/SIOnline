@@ -394,6 +394,27 @@ const roomReducer: Reducer<RoomState> = (state: RoomState = initialState, anyAct
 				}
 			};
 
+		case RoomActionTypes.PlayerSumChanged:
+			if (action.index < 0 || action.index >= state.persons.players.length) {
+				console.log(`PlayerChanged: Wrong index ${action.index}!`);
+				return state;
+			}
+
+			return {
+				...state,
+				persons: {
+					...state.persons,
+					players: replace(
+						state.persons.players,
+						action.index,
+						{
+							...state.persons.players[action.index],
+							sum: action.value
+						}
+					)
+				}
+			};
+
 		case RoomActionTypes.PlayerDeleted:
 			if (action.index < 0 || action.index >= state.persons.players.length) {
 				console.log(`PlayerDeleted: Wrong index ${action.index}!`);

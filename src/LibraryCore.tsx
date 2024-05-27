@@ -16,6 +16,8 @@ import SIHostClient from './client/SIHostClient';
 import localization from './model/resources/localization';
 import Role from './model/Role';
 import IGameClient from './client/game/IGameClient';
+import { gameSoundPlayer } from './utils/GameSoundPlayer';
+import GameSound from './model/enums/GameSound';
 
 declare global {
     interface Window {
@@ -99,6 +101,10 @@ function processMessage(controller: ClientController, payload: any) {
 			controller.onPause(payload.isPaused, payload.currentTime);
 			break;
 
+		case 'person':
+			controller.onPerson(payload.playerIndex, payload.isRight);
+			break;
+
 		case 'playersVisibilityChanged':
 			controller.onPlayersVisibilityChanged(payload.isVisible);
 			break;
@@ -135,8 +141,19 @@ function processMessage(controller: ClientController, payload: any) {
 			controller.onRoundThemes(payload.themes, payload.playMode);
 			break;
 
+		case 'setChooser':
+			controller.onSetChooser(payload.chooserIndex, payload.setAnswerer);
+			break;
+
 		case 'setLanguage': // non-SIHost compatible API
 			localization.setLanguage(payload.language);
+			break;
+
+		case 'setSoundMap': // non-SIHost compatible API
+			Object.keys(payload.soundMap).forEach((key: string) => gameSoundPlayer.setSound(
+				key as any as GameSound,
+				payload.soundMap[key]
+			));
 			break;
 
 		case 'showTable':
@@ -149,6 +166,14 @@ function processMessage(controller: ClientController, payload: any) {
 
 		case 'stop':
 			controller.onStop();
+			break;
+
+		case 'sum': // non-SIHost compatible API
+			controller.onSum(payload.playerIndex, payload.value);
+			break;
+
+		case 'sums':
+			controller.onSums(payload.sums);
 			break;
 
 		case 'table':

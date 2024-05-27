@@ -40,7 +40,12 @@ class GameSoundPlayer {
 	getSound(sound: GameSound) {
 		return this.sounds.get(sound);
 	}
+
+	setSound(sound: GameSound, uri: string) {
+		this.sounds.set(sound, uri);
+	}
 }
 
 const gameSoundPlayer = new GameSoundPlayer();
+
 export { gameSoundPlayer };
