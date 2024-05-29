@@ -14,8 +14,12 @@ const showGameThemes: ActionCreator<TableActions.ShowGameThemesAction> = (gameTh
 	type: TableActions.TableActionTypes.ShowGameThemes, gameThemes
 });
 
-const showObject: ActionCreator<TableActions.ShowObjectAction> = (header: string, text: string, hint: string, rotate: boolean) => ({
-	type: TableActions.TableActionTypes.ShowObject, header, text, hint, rotate,
+const showObject: ActionCreator<TableActions.ShowObjectAction> = (header: string, text: string, hint: string) => ({
+	type: TableActions.TableActionTypes.ShowObject, header, text, hint,
+});
+
+const showQuestionType: ActionCreator<TableActions.ShowQuestionTypeAction> = (header: string, text: string, hint: string) => ({
+	type: TableActions.TableActionTypes.ShowQuestionType, header, text, hint,
 });
 
 const showRoundThemes: ActionCreator<TableActions.ShowRoundThemesAction> = (
@@ -133,6 +137,7 @@ const tableActionCreators = {
 	showLogo,
 	showGameThemes,
 	showObject,
+	showQuestionType,
 	showRoundThemes,
 	showText,
 	showAnswer,

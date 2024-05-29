@@ -68,6 +68,7 @@ function getContent(mode: TableMode) {
 			return <FinalTable />;
 
 		case TableMode.Object:
+		case TableMode.QuestionType:
 			return <ObjectView />;
 
 		default:
@@ -86,6 +87,7 @@ function getCaption(props: GameTableProps): string | null {
 		case TableMode.Logo:
 		case TableMode.Text:
 		case TableMode.Content:
+		case TableMode.QuestionType:
 			return props.caption;
 
 		default:

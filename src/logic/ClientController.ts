@@ -23,6 +23,7 @@ import ThemesPlayMode from '../model/enums/ThemesPlayMode';
 import TableMode from '../model/enums/TableMode';
 import Role from '../model/Role';
 import Sex from '../model/enums/Sex';
+import RoundRules from '../model/enums/RoundRules';
 
 function initGroup(group: ContentGroup) {
 	let bestRowCount = 1;
@@ -42,6 +43,22 @@ function initGroup(group: ContentGroup) {
 
 	group.columnCount = bestColumnCount;
 	group.weight *= bestRowCount;
+}
+
+function getRuleString(rules: string) {
+	switch (rules) {
+		case RoundRules.SelectByPlayer:
+			return localization.rulesClassic;
+
+		case RoundRules.Sequential:
+			return localization.rulesSequential;
+
+		case RoundRules.RemoveOtherThemes:
+			return localization.rulesRemoveThemes;
+
+		default:
+			return '';
+	}
 }
 
 export default class ClientController {
@@ -192,6 +209,22 @@ export default class ClientController {
 		this.dispatch(tableActionCreators.showGameThemes(gameThemes));
 	}
 
+	onPackage(packageName: string, packageLogo: string | null) {
+		if (packageLogo) {
+			this.dispatch(tableActionCreators.captionChanged(localization.package));
+
+			this.onContent('screen', [{
+				type: 'image',
+				value: packageLogo
+			}, {
+				type: 'text',
+				value: packageName
+			}]);
+		} else {
+			this.dispatch(tableActionCreators.showObject(localization.package, packageName, ''));
+		}
+	}
+
 	onRoundThemes(roundThemesNames: string[], playMode: ThemesPlayMode) {
 		if (playMode === ThemesPlayMode.OneByOne) {
 			this.playGameSound(GameSound.ROUND_THEMES, true);
@@ -208,7 +241,7 @@ export default class ClientController {
 		this.dispatch(tableActionCreators.questionReset());
 	}
 
-	onStage(stage: string, stageName: string, stageIndex: number) {
+	onStage(stage: string, stageName: string, stageIndex: number, rules: string) {
 		const state = this.getState();
 
 		this.dispatch(commonActionCreators.stopAudio());
@@ -222,7 +255,7 @@ export default class ClientController {
 			this.playGameSound(GameSound.ROUND_BEGIN);
 			const { roundTail } = localization;
 			const roundName = stageName.endsWith(roundTail) ? stageName.substring(0, stageName.length - roundTail.length) : stageName;
-			this.dispatch(tableActionCreators.showObject(localization.round, roundName, '', false));
+			this.dispatch(tableActionCreators.showObject(localization.round, roundName, getRuleString(rules)));
 			this.dispatch(roomActionCreators.playersStateCleared());
 
 			if (stage === GameStage.Round) {
@@ -419,7 +452,7 @@ export default class ClientController {
 						this.dispatch(tableActionCreators.updateQuestion(themeIndex, questionIndex, -1));
 
 						if (this.getState().table.mode === TableMode.RoundTable) {
-							this.dispatch(tableActionCreators.showObject(themeInfo.name, price, '', false));
+							this.dispatch(tableActionCreators.showObject(themeInfo.name, price, ''));
 						}
 					},
 					500
@@ -431,7 +464,7 @@ export default class ClientController {
 	onTheme(themeName: string) {
 		this.dispatch(roomActionCreators.playersStateCleared());
 		this.dispatch(roomActionCreators.showmanReplicChanged(''));
-		this.dispatch(tableActionCreators.showObject(localization.theme, themeName, '', false));
+		this.dispatch(tableActionCreators.showObject(localization.theme, themeName, ''));
 		this.dispatch(roomActionCreators.afterQuestionStateChanged(false));
 		this.dispatch(roomActionCreators.themeNameChanged(themeName));
 		this.dispatch(tableActionCreators.canPressChanged(false));
@@ -440,7 +473,7 @@ export default class ClientController {
 
 	onQuestion(questionPrice: string) {
 		this.dispatch(roomActionCreators.playersStateCleared());
-		this.dispatch(tableActionCreators.showObject(this.getState().room.stage.themeName, questionPrice, '', false));
+		this.dispatch(tableActionCreators.showObject(this.getState().room.stage.themeName, questionPrice, ''));
 		this.dispatch(roomActionCreators.afterQuestionStateChanged(false));
 		this.dispatch(roomActionCreators.updateCaption(questionPrice) as any);
 		this.dispatch(tableActionCreators.questionReset());
@@ -487,26 +520,40 @@ export default class ClientController {
 
 	onQuestionType(qType: string) {
 		switch (qType) {
-			case 'auction': // deprecated
 			case 'stake':
 				this.playGameSound(GameSound.QUESTION_STAKE);
-				this.dispatch(tableActionCreators.showObject(localization.question, localization.questionTypeStake, '', true));
+
+				this.dispatch(tableActionCreators.showQuestionType(
+					localization.question,
+					localization.questionTypeStake,
+					localization.questionTypeStakeHint,
+				));
+
 				break;
 
-			case 'cat': // deprecated
-			case 'bagcat': // deprecated
 			case 'secret':
 			case 'secretPublicPrice':
 			case 'secretNoQuestion':
 				this.playGameSound(GameSound.QUESTION_SECRET);
-				this.dispatch(tableActionCreators.showObject(localization.question, localization.questionTypeSecret, '', true));
+
+				this.dispatch(tableActionCreators.showQuestionType(
+					localization.question,
+					localization.questionTypeSecret,
+					localization.questionTypeSecretHint,
+				));
+
 				this.dispatch(tableActionCreators.questionReset());
 				break;
 
-			case 'sponsored': // deprecated
 			case 'noRisk':
 				this.playGameSound(GameSound.QUESTION_NORISK);
-				this.dispatch(tableActionCreators.showObject(localization.question, localization.questionTypeNoRisk, '', true));
+
+				this.dispatch(tableActionCreators.showQuestionType(
+					localization.question,
+					localization.questionTypeNoRisk,
+					localization.questionTypeNoRiskHint,
+				));
+
 				break;
 
 			default:

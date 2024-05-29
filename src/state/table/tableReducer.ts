@@ -57,7 +57,21 @@ const tableReducer: Reducer<TableState> = (state: TableState = initialState, any
 				header: action.header,
 				text: action.text,
 				hint: action.hint,
-				rotate: action.rotate,
+				rotate: false,
+				animateReading: false,
+				content: [],
+				appendText: '',
+				prependText: '',
+			};
+
+		case TableActionTypes.ShowQuestionType:
+			return {
+				...state,
+				mode: TableMode.QuestionType,
+				header: action.header,
+				text: action.text,
+				hint: action.hint,
+				rotate: true,
 				animateReading: false,
 				content: [],
 				appendText: '',

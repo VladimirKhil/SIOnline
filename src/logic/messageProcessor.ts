@@ -438,6 +438,16 @@ const viewerHandler = (controller: ClientController, dispatch: Dispatch<any>, st
 			}
 			break;
 
+		case GameMessages.Package:
+			if (args.length < 2) {
+				break;
+			}
+
+			const packageName = args[1];
+			const packageLogo = args.length > 3 ? args[3] : null;
+			controller.onPackage(packageName, packageLogo);
+			break;
+
 		case GameMessages.Pause:
 			const isPaused = args[1] === '+';
 			controller.onPause(isPaused, args.slice(2).map(v => parseInt(v, 10)));
@@ -698,7 +708,8 @@ const viewerHandler = (controller: ClientController, dispatch: Dispatch<any>, st
 			const stage = args[1];
 			const stageName = args[2];
 			const stageIndex = args.length > 3 ? parseInt(args[3], 10) : -1;
-			controller.onStage(stage, stageName, stageIndex);
+			const rules = args.length > 4 ? args[4] : '';
+			controller.onStage(stage, stageName, stageIndex, rules);
 			break;
 		}
 
@@ -1050,7 +1061,7 @@ const showmanHandler = (controller: ClientController, dispatch: Dispatch<any>, s
 			dispatch(roomActionCreators.hintChanged(null));
 			break;
 
-		case 'STAGE':
+		case GameMessages.Stage:
 			dispatch(roomActionCreators.decisionNeededChanged(false));
 			dispatch(roomActionCreators.hintChanged(null));
 			break;

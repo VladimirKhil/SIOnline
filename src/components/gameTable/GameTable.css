@@ -34,8 +34,9 @@
 	right: 0;
 	top: 0;
 	bottom: 0;
-	background-color: #00000066;
+	background-color: #00000050;
 	text-shadow: 2px 2px 0 #000;
+    opacity: 0.85;
 }
 
 #table .pauseLogo.warning {

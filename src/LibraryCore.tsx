@@ -165,7 +165,7 @@ function processMessage(controller: ClientController, payload: any) {
 			break;
 
 		case 'stage':
-			controller.onStage(payload.stage, payload.stageName, payload.stageIndex);
+			controller.onStage(payload.stage, payload.stageName, payload.stageIndex, payload.rules);
 			break;
 
 		case 'stop':

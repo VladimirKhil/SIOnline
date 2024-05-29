@@ -9,6 +9,7 @@
 	Final,
 	Content,
 	Object,
+	QuestionType,
 }
 
 export default TableMode;

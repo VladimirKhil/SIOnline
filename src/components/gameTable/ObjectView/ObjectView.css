@@ -21,7 +21,8 @@
 
 .objectHint {
     align-items: start;
-    font-size: 15px;
+    font-size: 20px;
+    text-align: center;
 }
 
 .objectHint.empty {
@@ -30,24 +31,33 @@
 
 .objectName {
     flex: 2.5;
+    overflow: hidden;
 }
 
 @media screen and (min-width: 1100px) {
+    .objectView {
+        padding: 20px;
+    }
+
     .objectHeader {
         font-size: 45px;
     }
 
     .objectHint {
-        font-size: 20px;
+        font-size: 23px;
     }
 }
 
 @media screen and (min-width: 1600px) {
+    .objectView {
+        padding: 30px;
+    }
+
     .objectHeader {
         font-size: 65px;
     }
 
     .objectHint {
-        font-size: 40px;
+        font-size: 45px;
     }
 }

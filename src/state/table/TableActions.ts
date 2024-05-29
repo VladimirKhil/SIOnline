@@ -8,6 +8,7 @@ export const enum TableActionTypes {
 	ShowLogo = 'SHOW_LOGO',
 	ShowGameThemes = 'SHOW_GAME_THEMES',
 	ShowObject = 'SHOW_OBJECT',
+	ShowQuestionType = 'SHOW_QUESTION_TYPE',
 	ShowRoundThemes = 'SHOW_ROUND_THEMES',
 	ShowText = 'SHOW_TEXT',
 	ShowAnswer = 'SHOW_ANSWER',
@@ -37,7 +38,8 @@ export const enum TableActionTypes {
 
 export type ShowLogoAction = { type: TableActionTypes.ShowLogo };
 export type ShowGameThemesAction = { type: TableActionTypes.ShowGameThemes, gameThemes: string[] };
-export type ShowObjectAction = { type: TableActionTypes.ShowObject, header: string, text: string, hint: string, rotate: boolean };
+export type ShowObjectAction = { type: TableActionTypes.ShowObject, header: string, text: string, hint: string };
+export type ShowQuestionTypeAction = { type: TableActionTypes.ShowQuestionType, header: string, text: string, hint: string };
 
 export type ShowRoundThemesAction = {
 	type: TableActionTypes.ShowRoundThemes,
@@ -75,6 +77,7 @@ export type KnownTableAction =
 	ShowLogoAction
 	| ShowGameThemesAction
 	| ShowObjectAction
+	| ShowQuestionTypeAction
 	| ShowRoundThemesAction
 	| ShowTextAction
 	| ShowAnswerAction

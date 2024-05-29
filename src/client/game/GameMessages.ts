@@ -56,6 +56,8 @@ const enum GameMessages {
 
 	Out = 'OUT',
 
+	Package = 'PACKAGE',
+
 	Pause = 'PAUSE',
 
 	Person = 'PERSON',
