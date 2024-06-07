@@ -7,6 +7,8 @@ export default interface IGameClient {
 
 	shouldClose: boolean;
 
+	approveAnswer(factor: number): Promise<boolean>;
+
 	deleteTheme(themeIndex: number): Promise<boolean>;
 
 	info(): Promise<boolean>;
@@ -25,6 +27,8 @@ export default interface IGameClient {
 	pressButton(deltaTime: number): Promise<boolean>;
 
 	ready(): Promise<boolean>;
+
+	rejectAnswer(factor: number): Promise<boolean>;
 
 	selectQuestion(themeIndex: number, questionIndex: number): Promise<boolean>;
 

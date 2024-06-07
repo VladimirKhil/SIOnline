@@ -19,7 +19,7 @@ interface AnswerValidationDialogProps {
 	showExtraRightButtons: boolean;
 	areAnswersVisible: boolean;
 	onApprove: (factor: number) => void;
-	onReject: () => void;
+	onReject: (factor: number) => void;
 	onAnswersVisibilityChanged: (areAnswersVisible: boolean) => void;
 }
 
@@ -37,8 +37,8 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	onApprove: (factor: number) => {
 		dispatch(roomActionCreators.approveAnswer(factor) as unknown as Action);
 	},
-	onReject: () => {
-		dispatch(roomActionCreators.rejectAnswer() as unknown as Action);
+	onReject: (factor: number) => {
+		dispatch(roomActionCreators.rejectAnswer(factor) as unknown as Action);
 	},
 	onAnswersVisibilityChanged: (areAnswersVisible: boolean) => {
 		dispatch(settingsActionCreators.onValidationAnswersVisibilityChanged(areAnswersVisible));
@@ -50,17 +50,29 @@ export function AnswerValidationDialog(props: AnswerValidationDialogProps): JSX.
 		<Dialog
 			className={`answerValidationDialog ${props.areAnswersVisible ? '' : 'short'}`}
 			title={props.header}
-			onClose={props.onReject}>
+			onClose={() => props.onReject(1.0)}>
 			<div className='validationHeader'>
 				<p>{props.message}</p>
 
-				<button
-					className='validationAnswersVisibilityButton'
-					title={props.areAnswersVisible ? localization.hideAnswers : localization.showAnswers}
-					onClick={() => props.onAnswersVisibilityChanged(!props.areAnswersVisible)}
-				>
-					👁
-				</button>
+				<div className='mainValidationPanel'>
+					{props.showExtraRightButtons ? <button
+						type='button'
+						className='cancelAnswer'
+						title={localization.cancelAnswer}
+						onClick={() => props.onReject(0)}
+					>
+						−0
+					</button> : null}
+
+					<button
+						type='button'
+						className='validationAnswersVisibilityButton'
+						title={props.areAnswersVisible ? localization.hideAnswers : localization.showAnswers}
+						onClick={() => props.onAnswersVisibilityChanged(!props.areAnswersVisible)}
+					>
+						👁
+					</button>
+				</div>
 			</div>
 
 			{props.areAnswersVisible
@@ -85,7 +97,7 @@ export function AnswerValidationDialog(props: AnswerValidationDialogProps): JSX.
 				: null}
 
 			<div className="buttonsPanel">
-				<div className='rightPanel'>
+				<div className='buttonsArea'>
 					<button
 						type="button"
 						className='standard validationButton'
@@ -113,13 +125,33 @@ export function AnswerValidationDialog(props: AnswerValidationDialogProps): JSX.
 					</>) : null}
 				</div>
 
-				<button
-					type="button"
-					className='standard validationButton'
-					disabled={!props.isConnected}
-					onClick={() => props.onReject()}>
-					{localization.no}
-				</button>
+				<div className='buttonsArea'>
+					<button
+						type="button"
+						className='standard validationButton'
+						disabled={!props.isConnected}
+						onClick={() => props.onReject(1.0)}>
+						{localization.no}
+					</button>
+
+					{props.showExtraRightButtons ? (<>
+						<button
+							type="button"
+							className='standard halfPrice extraButton'
+							disabled={!props.isConnected}
+							onClick={() => props.onReject(0.5)}>
+							×0.5
+						</button>
+
+						<button
+							type="button"
+							className='standard doublePrice extraButton'
+							disabled={!props.isConnected}
+							onClick={() => props.onReject(2.0)}>
+							×2
+						</button>
+					</>) : null}
+				</div>
 			</div>
 		</Dialog>
 	);

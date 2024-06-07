@@ -147,7 +147,7 @@ const tableReducer: Reducer<TableState> = (state: TableState = initialState, any
 				...state,
 				mode: TableMode.Content,
 				audio: action.uri,
-				isMediaStopped: false
+				isMediaStopped: false,
 			};
 
 		case TableActionTypes.ShowContent:
@@ -155,6 +155,7 @@ const tableReducer: Reducer<TableState> = (state: TableState = initialState, any
 				...state,
 				mode: TableMode.Content,
 				content: action.content,
+				isMediaStopped: false,
 			};
 
 		case TableActionTypes.CanPressChanged:

@@ -14,6 +14,7 @@ interface VideoContentProps {
 	uri: string;
 	isMediaStopped: boolean;
 	autoPlayEnabled: boolean;
+	isVisible: boolean;
 
 	mediaLoaded: () => void;
 	onMediaEnded: () => void;
@@ -23,6 +24,7 @@ interface VideoContentProps {
 const mapStateToProps = (state: State) => ({
 	soundVolume: state.settings.soundVolume,
 	isMediaStopped: state.room.stage.isGamePaused || state.table.isMediaStopped,
+	isVisible: state.ui.isVisible,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
@@ -74,8 +76,8 @@ export class VideoContent extends React.Component<VideoContentProps> {
 			video.load();
 		}
 
-		if (this.props.isMediaStopped !== prevProps.isMediaStopped) {
-			if (this.props.isMediaStopped) {
+		if (this.props.isMediaStopped !== prevProps.isMediaStopped || this.props.isVisible !== prevProps.isVisible) {
+			if (this.props.isMediaStopped || !this.props.isVisible) {
 				if (this.playPromise) {
 					this.playPromise.then(() => video.pause());
 				} else {
@@ -103,11 +105,15 @@ export class VideoContent extends React.Component<VideoContentProps> {
 	};
 
 	render() {
-		const { onMediaEnded, uri } = this.props;
+		const { onMediaEnded, uri, isMediaStopped, isVisible } = this.props;
 
 		return (
 			<div className='video-host'>
-				<video ref={this.videoRef} autoPlay onEnded={onMediaEnded} onLoadedData={() => this.props.mediaLoaded()}>
+				<video
+					ref={this.videoRef}
+					autoPlay={!isMediaStopped && isVisible}
+					onEnded={onMediaEnded}
+					onLoadedData={() => this.props.mediaLoaded()}>
 					<source src={uri} />
 				</video>
 			</div>

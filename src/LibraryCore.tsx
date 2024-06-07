@@ -101,6 +101,10 @@ function processMessage(controller: ClientController, payload: any) {
 			controller.onGameThemes(payload.themes);
 			break;
 
+		case 'package':
+			controller.onPackage(payload.packageName, payload.packageLogo);
+			break;
+
 		case 'pause':
 			controller.onPause(payload.isPaused, payload.currentTime);
 			break;

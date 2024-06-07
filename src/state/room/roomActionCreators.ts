@@ -621,17 +621,17 @@ const approveAnswer: ActionCreator<ThunkAction<void, State, DataContext, Action>
 	_getState: () => State,
 	dataContext: DataContext
 	) => {
-		if (await dataContext.game.gameServerClient.msgAsync(Messages.IsRight, '+', factor)) {
+		if (await dataContext.game.approveAnswer(factor)) {
 			dispatch(clearDecisions());
 		}
 	};
 
-const rejectAnswer: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
+const rejectAnswer: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (factor: number) => async (
 	dispatch: Dispatch<any>,
 	_getState: () => State,
 	dataContext: DataContext
 	) => {
-		if (await dataContext.game.gameServerClient.msgAsync(Messages.IsRight, '-')) {
+		if (await dataContext.game.rejectAnswer(factor)) {
 			dispatch(clearDecisions());
 		}
 	};

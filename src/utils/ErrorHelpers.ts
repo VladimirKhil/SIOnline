@@ -1,9 +1,11 @@
 import localization from '../model/resources/localization';
 
-function getLocalizedError(error: string): string {
-	return error === 'Failed to fetch' ? localization.failedToFetch : error;
+function getLocalizedError(error: Error): string {
+	return error.message === 'Failed to fetch'
+		? localization.failedToFetch
+		: (error.name === 'NotReadableError' ? localization.fileNonReadable : error.message);
 }
 
 export default function getErrorMessage(e: unknown): string {
-	return e instanceof Error ? getLocalizedError(e.message) : (e as Record<string, unknown>).toString();
+	return e instanceof Error ? getLocalizedError(e) : (e as Record<string, unknown>).toString();
 }
