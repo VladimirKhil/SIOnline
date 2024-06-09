@@ -13,4 +13,5 @@ export default interface ServerTimeSettings {
 	TimeForRightAnswer: number;
 	TimeForMediaDelay: number;
 	TimeForBlockingButton: number;
+	PartialImageTime: number;
 }

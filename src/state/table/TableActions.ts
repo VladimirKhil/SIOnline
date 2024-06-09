@@ -11,7 +11,6 @@ export const enum TableActionTypes {
 	ShowQuestionType = 'SHOW_QUESTION_TYPE',
 	ShowRoundThemes = 'SHOW_ROUND_THEMES',
 	ShowText = 'SHOW_TEXT',
-	ShowAnswer = 'SHOW_ANSWER',
 	ShowRoundTable = 'SHOW_ROUND_TABLE',
 	BlinkQuestion = 'BLINK_QUESTION',
 	BlinkTheme = 'BLINK_THEME',
@@ -48,8 +47,7 @@ export type ShowRoundThemesAction = {
 	display: boolean
 };
 
-export type ShowTextAction = { type: TableActionTypes.ShowText, text: string, animateReading: boolean };
-export type ShowAnswerAction = { type: TableActionTypes.ShowAnswer, text: string };
+export type ShowTextAction = { type: TableActionTypes.ShowText, text: string };
 export type ShowRoundTableAction = { type: TableActionTypes.ShowRoundTable };
 export type BlinkQuestionAction = { type: TableActionTypes.BlinkQuestion, themeIndex: number, questionIndex: number };
 export type BlinkThemeAction = { type: TableActionTypes.BlinkTheme, themeIndex: number };
@@ -80,7 +78,6 @@ export type KnownTableAction =
 	| ShowQuestionTypeAction
 	| ShowRoundThemesAction
 	| ShowTextAction
-	| ShowAnswerAction
 	| ShowRoundTableAction
 	| BlinkQuestionAction
 	| BlinkThemeAction

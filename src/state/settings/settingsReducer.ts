@@ -83,7 +83,16 @@ const settingsReducer: Reducer<SettingsState> = (
 				...state,
 				appSettings: {
 					...state.appSettings,
-					partialText: action.partialText
+					partialText: action.partialText,
+				}
+			};
+
+		case SettingsActionTypes.PartialImagesChanged:
+			return {
+				...state,
+				appSettings: {
+					...state.appSettings,
+					partialImages: action.partialImages,
 				}
 			};
 
@@ -249,8 +258,32 @@ const settingsReducer: Reducer<SettingsState> = (
 				showVideoAvatars: action.showVideoAvatars,
 			};
 
+		case SettingsActionTypes.DisplayAnswerOptionsOneByOneChanged:
+			return {
+				...state,
+				appSettings: {
+					...state.appSettings,
+					displayAnswerOptionsOneByOne: action.displayAnswerOptionsOneByOne,
+				}
+			};
+
+		case SettingsActionTypes.DisplayAnswerOptionsLabelsChanged:
+			return {
+				...state,
+				appSettings: {
+					...state.appSettings,
+					displayAnswerOptionsLabels: action.displayAnswerOptionsLabels,
+				}
+			};
+
 		case SettingsActionTypes.ResetSettings:
-			return initialState;
+			return {
+				...initialState,
+				appSettings: {
+					...initialState.appSettings,
+					culture: state.appSettings.culture,
+				}
+			};
 
 		default:
 			return state;

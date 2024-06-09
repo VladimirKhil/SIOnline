@@ -8,6 +8,7 @@ import Role from '../../model/Role';
 import PlayerStates from '../../model/enums/PlayerStates';
 import StakeTypes from '../../model/enums/StakeTypes';
 import JoinMode from '../../client/game/JoinMode';
+import AppSettings from '../../model/AppSettings';
 
 export const enum RoomActionTypes {
 	RoomChatModeChanged = 'ROOM_CHAT_MODE_CHANGED',
@@ -96,6 +97,8 @@ export const enum RoomActionTypes {
 	Kicked = 'KICKED',
 	AvatarVisibleChanged = 'AVATAR_VISIBLE_CHANGED',
 	WebCameraUrlChanged = 'WEB_CAMERA_URL_CHANGED',
+	SettingsChanged = 'SettingsChanged',
+	IsQuestionChanged = 'IsQuestionChanged',
 }
 
 export type RunChatModeChangedAction = { type: RoomActionTypes.RoomChatModeChanged, chatMode: ChatMode };
@@ -213,6 +216,8 @@ export type PlayerMediaLoadedAction = { type: RoomActionTypes.PlayerMediaLoaded,
 export type EditTableAction = { type: RoomActionTypes.EditTable };
 export type JoinModeChangedAction = { type: RoomActionTypes.JoinModeChanged, joinMode: JoinMode };
 export type WebCameraUrlChangedAction = { type: RoomActionTypes.WebCameraUrlChanged, webCameraUrl: string };
+export type SettingsChangedAction = { type: RoomActionTypes.SettingsChanged, settings: AppSettings };
+export type IsQuestionChangedAction = { type: RoomActionTypes.IsQuestionChanged, isQuestion: boolean };
 
 export type KnownRoomAction =
 	RunChatModeChangedAction
@@ -300,4 +305,6 @@ export type KnownRoomAction =
 	| JoinModeChangedAction
 	| KickedAction
 	| AvatarVisibleChangedAction
-	| WebCameraUrlChangedAction;
+	| WebCameraUrlChangedAction
+	| SettingsChangedAction
+	| IsQuestionChangedAction;

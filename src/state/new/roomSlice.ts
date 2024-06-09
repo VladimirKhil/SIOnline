@@ -37,6 +37,7 @@ interface RoomState {
 		themeIndex: number;
 		currentPrice: number;
 		themeName: string;
+		isQuestion: boolean;
 	};
 
 	timers: Timers;
@@ -139,7 +140,8 @@ const initialState: RoomState = {
 		isAfterQuestion: false,
 		themeIndex: -1,
 		currentPrice: 0,
-		themeName: ''
+		themeName: '',
+		isQuestion: false,
 	},
 
 	timers: {

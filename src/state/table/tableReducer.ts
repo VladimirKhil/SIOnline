@@ -58,7 +58,6 @@ const tableReducer: Reducer<TableState> = (state: TableState = initialState, any
 				text: action.text,
 				hint: action.hint,
 				rotate: false,
-				animateReading: false,
 				content: [],
 				appendText: '',
 				prependText: '',
@@ -72,7 +71,6 @@ const tableReducer: Reducer<TableState> = (state: TableState = initialState, any
 				text: action.text,
 				hint: action.hint,
 				rotate: true,
-				animateReading: false,
 				content: [],
 				appendText: '',
 				prependText: '',
@@ -91,14 +89,6 @@ const tableReducer: Reducer<TableState> = (state: TableState = initialState, any
 				mode: TableMode.Text,
 				text: action.text,
 				audio: '',
-				animateReading: action.animateReading
-			};
-
-		case TableActionTypes.ShowAnswer:
-			return {
-				...state,
-				mode: TableMode.Answer,
-				text: action.text
 			};
 
 		case TableActionTypes.ShowRoundTable:
@@ -196,6 +186,7 @@ const tableReducer: Reducer<TableState> = (state: TableState = initialState, any
 				audio: '',
 				layoutMode: LayoutMode.Simple,
 				isSelectable: false,
+				isAnswer: false,
 			};
 
 		case TableActionTypes.AnswerOptions:
@@ -242,7 +233,7 @@ const tableReducer: Reducer<TableState> = (state: TableState = initialState, any
 		case TableActionTypes.PrependTextChanged:
 			return {
 				...state,
-				prependText: action.text
+				prependText: action.text,
 			};
 
 		case TableActionTypes.QuestionReset:
@@ -250,15 +241,16 @@ const tableReducer: Reducer<TableState> = (state: TableState = initialState, any
 				...state,
 				prependText: '',
 				appendText: '',
+				isAnswer: false,
 			};
 
 		case TableActionTypes.SetAnswerView:
 			return {
 				...state,
 				prependText: '',
-				animateReading: false,
 				content: [],
 				appendText: action.rightAnswer,
+				isAnswer: true,
 			};
 
 		default:

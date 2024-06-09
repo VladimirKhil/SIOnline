@@ -41,7 +41,7 @@ export default function TimeSettingItem(props: TimeSettingItemProps): JSX.Elemen
 					max={props.maximum}
 					onChange={onChange}
 				/>
-				
+
 				<span>{localization.sec}</span>
 			</div>
 		</div>

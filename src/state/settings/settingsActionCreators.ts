@@ -61,6 +61,11 @@ const onPartialTextChanged: ActionCreator<SettingsActions.PartialTextChangedActi
 	partialText
 });
 
+const onPartialImagesChanged: ActionCreator<SettingsActions.PartialImagesChangedAction> = (partialImages: boolean) => ({
+	type: SettingsActions.SettingsActionTypes.PartialImagesChanged,
+	partialImages
+});
+
 const onReadingSpeedChanged: ActionCreator<SettingsActions.ReadingSpeedChangedAction> = (readingSpeed: number) => ({
 	type: SettingsActions.SettingsActionTypes.ReadingSpeedChanged,
 	readingSpeed
@@ -166,6 +171,16 @@ const showVideoAvatarsChanged: ActionCreator<SettingsActions.ShowVideoAvatarsCha
 	type: SettingsActions.SettingsActionTypes.ShowVideoAvatarsChanged, showVideoAvatars
 });
 
+const onDisplayAnswerOptionsOneByOneChanged: ActionCreator<SettingsActions.DisplayAnswerOptionsOneByOneChangedAction> = (
+	displayAnswerOptionsOneByOne: boolean) => ({
+	type: SettingsActions.SettingsActionTypes.DisplayAnswerOptionsOneByOneChanged, displayAnswerOptionsOneByOne
+});
+
+const onDisplayAnswerOptionsLabelsChanged: ActionCreator<SettingsActions.DisplayAnswerOptionsLabelsChangedAction> = (
+	displayAnswerOptionsLabels: boolean) => ({
+	type: SettingsActions.SettingsActionTypes.DisplayAnswerOptionsLabelsChanged, displayAnswerOptionsLabels
+});
+
 const settingsActionCreators = {
 	onSoundVolumeChanged,
 	onSoundChanged,
@@ -178,6 +193,7 @@ const settingsActionCreators = {
 	onFalseStartsChanged,
 	onHintShowmanChanged,
 	onPartialTextChanged,
+	onPartialImagesChanged,
 	onReadingSpeedChanged,
 	onManagedChanged,
 	onUseApellationsChanged,
@@ -199,6 +215,8 @@ const settingsActionCreators = {
 	onBindNextButtonChanged,
 	onAttachContentToTableChanged,
 	showVideoAvatarsChanged,
+	onDisplayAnswerOptionsOneByOneChanged,
+	onDisplayAnswerOptionsLabelsChanged,
 };
 
 export default settingsActionCreators;

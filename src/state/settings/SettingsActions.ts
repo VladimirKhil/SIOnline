@@ -14,6 +14,7 @@ export const enum SettingsActionTypes {
 	FalseStartsChanged = 'FALSE_STARTS_CHANGED',
 	HintShowmanChanged = 'HINT_SHOWMAN_CHANGED',
 	PartialTextChanged = 'PARTIAL_TEXT_CHANGED',
+	PartialImagesChanged = 'PartialImagesChanged',
 	ReadingSpeedChanged = 'READING_SPEED_CHANGED',
 	ManagedChanged = 'MANAGED_CHANGED',
 	UseApellationsChanged = 'USE_APELLATIONS_CHANGED',
@@ -35,6 +36,8 @@ export const enum SettingsActionTypes {
 	BindNextButtonChanged = 'BIND_NEXT_BUTTON_CHANGED',
 	AttachContentToTableChanged = 'ATTACH_CONTENT_TO_TABLE_CHANGED',
 	ShowVideoAvatarsChanged = 'SHOW_VIDEO_AVATARS_CHANGED',
+	DisplayAnswerOptionsOneByOneChanged = 'DisplayAnswerOptionsOneByOneChanged',
+	DisplayAnswerOptionsLabelsChanged = 'DisplayAnswerOptionsLabelsChanged',
 }
 
 export type SoundVolumeChangeAction = { type: SettingsActionTypes.SoundVolumeChanged; volume: number };
@@ -53,6 +56,7 @@ export type FalseStartsChangedAction = { type: SettingsActionTypes.FalseStartsCh
 export type OralChangedAction = { type: SettingsActionTypes.OralChanged; oral: boolean };
 export type HintShowmanChangedAction = { type: SettingsActionTypes.HintShowmanChanged; hintShowman: boolean };
 export type PartialTextChangedAction = { type: SettingsActionTypes.PartialTextChanged; partialText: boolean };
+export type PartialImagesChangedAction = { type: SettingsActionTypes.PartialImagesChanged; partialImages: boolean };
 export type ReadingSpeedChangedAction = { type: SettingsActionTypes.ReadingSpeedChanged; readingSpeed: number };
 export type ManagedChangedAction = { type: SettingsActionTypes.ManagedChanged; managed: boolean };
 export type UseApellationsChangedAction = { type: SettingsActionTypes.UseApellationsChanged; useApellations: boolean };
@@ -95,6 +99,15 @@ export type BindNextButtonChangedAction = { type: SettingsActionTypes.BindNextBu
 export type AttachContentToTableChangedAction = { type: SettingsActionTypes.AttachContentToTableChanged, attachContentToTable: boolean };
 export type ShowVideoAvatarsChangedAction = { type: SettingsActionTypes.ShowVideoAvatarsChanged, showVideoAvatars: boolean };
 
+export type DisplayAnswerOptionsOneByOneChangedAction = {
+	type: SettingsActionTypes.DisplayAnswerOptionsOneByOneChanged,
+	displayAnswerOptionsOneByOne: boolean };
+
+export type DisplayAnswerOptionsLabelsChangedAction = {
+	type: SettingsActionTypes.DisplayAnswerOptionsLabelsChanged,
+	displayAnswerOptionsLabels: boolean
+};
+
 export type KnownSettingsAction =
 	| SoundVolumeChangeAction
 	| SoundChangedAction
@@ -106,6 +119,7 @@ export type KnownSettingsAction =
 	| OralChangedAction
 	| FalseStartsChangedAction
 	| PartialTextChangedAction
+	| PartialImagesChangedAction
 	| ReadingSpeedChangedAction
 	| HintShowmanChangedAction
 	| ManagedChangedAction
@@ -127,4 +141,6 @@ export type KnownSettingsAction =
 	| FloatingControlsChangedAction
 	| BindNextButtonChangedAction
 	| AttachContentToTableChangedAction
-	| ShowVideoAvatarsChangedAction;
+	| ShowVideoAvatarsChangedAction
+	| DisplayAnswerOptionsOneByOneChangedAction
+	| DisplayAnswerOptionsLabelsChangedAction;

@@ -7,13 +7,11 @@ import './TableText.css';
 
 interface TableTextProps {
 	text: string;
-	animateReading: boolean;
 	readingSpeed: number;
 }
 
 const mapStateToProps = (state: State) => ({
 	text: state.table.text,
-	animateReading: state.table.animateReading,
 	readingSpeed: state.room.readingSpeed,
 });
 

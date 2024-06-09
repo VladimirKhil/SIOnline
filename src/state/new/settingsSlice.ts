@@ -1,8 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import AppSettings from '../../model/AppSettings';
+import AppSettings, { initialState as initialAppSettings } from '../../model/AppSettings';
 import Constants from '../../model/enums/Constants';
 import Sex from '../../model/enums/Sex';
-import ButtonPressMode from '../../model/ButtonPressMode';
 
 export interface SettingsState {
 	soundVolume: number;
@@ -32,39 +31,7 @@ const initialState: SettingsState = {
 	floatingControls: false,
 	sex: Sex.Male,
 	avatarKey: null,
-	appSettings: {
-		culture: null,
-		oral: false,
-		oralPlayersActions: true,
-		falseStart: true,
-		hintShowman: false,
-		partialText: false,
-		allowEveryoneToPlayHiddenStakes: true,
-		playAllQuestionsInFinalRound: false,
-		displaySources: false,
-		readingSpeed: 20,
-		managed: false,
-		ignoreWrong: false,
-		timeSettings: {
-			timeForChoosingQuestion: 30,
-			timeForThinkingOnQuestion: 5,
-			timeForPrintingAnswer: 25,
-			timeForGivingACat: 30,
-			timeForMakingStake: 30,
-			timeForThinkingOnSpecial: 25,
-			timeOfRound: 660,
-			timeForChoosingFinalTheme: 30,
-			timeForFinalThinking: 45,
-			timeForShowmanDecisions: 30,
-			timeForRightAnswer: 2,
-			timeForMediaDelay: 0,
-			timeForBlockingButton: 3
-		},
-		usePingPenalty: false,
-		buttonPressMode: ButtonPressMode.RandomWithinInterval,
-		preloadRoundContent: true,
-		useApellations: true
-	},
+	appSettings: initialAppSettings,
 	gameButtonKey: Constants.KEY_CTRL,
 	nextButtonKey: Constants.KEY_RIGHT,
 	isLobbyChatHidden: false,

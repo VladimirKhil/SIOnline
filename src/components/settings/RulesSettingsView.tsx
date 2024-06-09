@@ -27,10 +27,13 @@ interface RulesSettingsViewProps {
 	onPreloadRoundContentChanged: (preloadRoundContent: boolean) => void;
 	onUsePingPenaltyChanged: (usePingPenalty: boolean) => void;
 	onButtonPressModeChanged: (buttonPressMode: number) => void;
-	onPartialTextChanged: (hintShowman: boolean) => void;
+	onPartialTextChanged: (partialText: boolean) => void;
+	onPartialImagesChanged: (partialImages: boolean) => void;
 	onAllowEveryoneToPlayHiddenStakesChanged: (allowEveryoneToPlayHiddenStakes: boolean) => void;
 	onDisplaySourcesChanged: (displaySources: boolean) => void;
 	onGameTypeChanged: (newGameType: number) => void;
+	onDisplayAnswerOptionsOneByOneChanged: (displayAnswerOptionsOneByOne: boolean) => void;
+	onDisplayAnswerOptionsLabelsChanged: (displayAnswerOptionsLabels: boolean) => void;
 }
 
 const mapStateToProps = (state: State) => ({
@@ -78,6 +81,9 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	onPartialTextChanged: (partialText: boolean) => {
 		dispatch(settingsActionCreators.onPartialTextChanged(partialText));
 	},
+	onPartialImagesChanged: (partialImages: boolean) => {
+		dispatch(settingsActionCreators.onPartialImagesChanged(partialImages));
+	},
 	onAllowEveryoneToPlayHiddenStakesChanged: (allowEveryoneToPlayHiddenStakes: boolean) => {
 		dispatch(settingsActionCreators.onAllowEveryoneToPlayHiddenStakesChanged(allowEveryoneToPlayHiddenStakes));
 	},
@@ -86,6 +92,12 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	},
 	onGameTypeChanged: (newGameType: number) => {
 		dispatch(gameActionCreators.gameTypeChanged(newGameType));
+	},
+	onDisplayAnswerOptionsOneByOneChanged: (displayAnswerOptionsOneByOne: boolean) => {
+		dispatch(settingsActionCreators.onDisplayAnswerOptionsOneByOneChanged(displayAnswerOptionsOneByOne));
+	},
+	onDisplayAnswerOptionsLabelsChanged: (displayAnswerOptionsLabels: boolean) => {
+		dispatch(settingsActionCreators.onDisplayAnswerOptionsLabelsChanged(displayAnswerOptionsLabels));
 	},
 });
 
@@ -184,6 +196,19 @@ export function RulesSettingsView(props: RulesSettingsViewProps): JSX.Element {
 
 			<div className="settingItem">
 				<input
+					id="partialImages"
+					type="checkbox"
+					disabled={props.settings.appSettings.falseStart}
+					checked={props.settings.appSettings.partialImages}
+					onChange={() => props.onPartialImagesChanged(!props.settings.appSettings.partialImages)}
+				/>
+
+				<label htmlFor="partialImages">{localization.partialImages}</label>
+				<span className="hint">{localization.partialImagesHint}</span>
+			</div>
+
+			<div className="settingItem">
+				<input
 					id="allowEveryoneToPlayHiddenStakes"
 					type="checkbox"
 					checked={props.settings.appSettings.allowEveryoneToPlayHiddenStakes}
@@ -258,6 +283,28 @@ export function RulesSettingsView(props: RulesSettingsViewProps): JSX.Element {
 
 			<div className="settingItem">
 				<input
+					id="displayAnswerOptionsOneByOne"
+					type="checkbox"
+					checked={props.settings.appSettings.displayAnswerOptionsOneByOne}
+					onChange={() => props.onDisplayAnswerOptionsOneByOneChanged(!props.settings.appSettings.displayAnswerOptionsOneByOne)}
+				/>
+
+				<label htmlFor="displayAnswerOptionsOneByOne">{localization.displayAnswerOptionsOneByOne}</label>
+			</div>
+
+			<div className="settingItem">
+				<input
+					id="displayAnswerOptionsLabels"
+					type="checkbox"
+					checked={props.settings.appSettings.displayAnswerOptionsLabels}
+					onChange={() => props.onDisplayAnswerOptionsLabelsChanged(!props.settings.appSettings.displayAnswerOptionsLabels)}
+				/>
+
+				<label htmlFor="displayAnswerOptionsLabels">{localization.displayAnswerOptionsLabels}</label>
+			</div>
+
+			<div className="settingItem">
+				<input
 					id="ignoreWrong"
 					type="checkbox"
 					checked={props.settings.appSettings.ignoreWrong}
@@ -276,6 +323,7 @@ export function RulesSettingsView(props: RulesSettingsViewProps): JSX.Element {
 					onChange={onButtonPressModeChanged}>
 					<option value={ButtonPressMode.RandomWithinInterval}>{localization.buttonPressModeRandomWithinInterval}</option>
 					<option value={ButtonPressMode.FirstWins}>{localization.buttonPressModeFirstWins}</option>
+					<option value={ButtonPressMode.FirstWinsClient}>{localization.buttonPressModeFirstWinsClient}</option>
 				</select>
 			</div>
 

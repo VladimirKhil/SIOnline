@@ -338,7 +338,7 @@ const initGameAsync = async (
 ) => {
 	dispatch(gameActionCreators.gameSet(gameId, isAutomatic));
 	dispatch(tableActionCreators.tableReset());
-	dispatch(tableActionCreators.showText(localization.tableHint, false));
+	dispatch(tableActionCreators.showText(localization.tableHint));
 	dispatch(roomActionCreators.nameChanged(name));
 	dispatch(roomActionCreators.roleChanged(role));
 	dispatch(roomActionCreators.stopTimer(0));
@@ -470,6 +470,7 @@ function createGameSettings(
 		TimeForRightAnswer: ts.timeForRightAnswer,
 		TimeForMediaDelay: ts.timeForMediaDelay,
 		TimeForBlockingButton: ts.timeForBlockingButton,
+		PartialImageTime: ts.partialImageTime,
 	};
 
 	const appSettings: ServerAppSettings = {
@@ -483,6 +484,7 @@ function createGameSettings(
 		Managed: state.settings.appSettings.managed,
 		GameMode: gameMode.toString(),
 		PartialText: state.settings.appSettings.partialText,
+		PartialImages: state.settings.appSettings.partialImages,
 		PlayAllQuestionsInFinalRound: state.settings.appSettings.playAllQuestionsInFinalRound,
 		AllowEveryoneToPlayHiddenStakes: state.settings.appSettings.allowEveryoneToPlayHiddenStakes,
 		DisplaySources: state.settings.appSettings.displaySources,
@@ -494,6 +496,8 @@ function createGameSettings(
 		ButtonPressMode: state.settings.appSettings.buttonPressMode.toString(),
 		PreloadRoundContent: state.settings.appSettings.preloadRoundContent,
 		UseApellations: state.settings.appSettings.useApellations,
+		DisplayAnswerOptionsOneByOne: state.settings.appSettings.displayAnswerOptionsOneByOne,
+		DisplayAnswerOptionsLabels: state.settings.appSettings.displayAnswerOptionsLabels,
 	};
 
 	const gameSettings: GameSettings = {

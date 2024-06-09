@@ -8,6 +8,9 @@ export default interface ServerAppSettings {
 	HintShowman: boolean;
 
 	PartialText: boolean;
+
+	PartialImages: boolean;
+
 	/** Play all questions in final round. */
 	PlayAllQuestionsInFinalRound: boolean;
 
@@ -37,4 +40,7 @@ export default interface ServerAppSettings {
 
 	PreloadRoundContent: boolean;
 	UseApellations: boolean;
+
+	DisplayAnswerOptionsLabels: boolean;
+	DisplayAnswerOptionsOneByOne: boolean;
 }

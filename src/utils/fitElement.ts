@@ -1,4 +1,4 @@
-const TEXT_MARGIN = 3;
+const TEXT_MARGIN = 0;
 
 const fitCache: { [key: string]: number } = {};
 
@@ -42,6 +42,6 @@ export default function fitElement(element: HTMLElement, maxFont: number) {
 	} while ((innerHeight + TEXT_MARGIN > boxHeight || innerWidth > boxWidth + 1) && font > 0);
 
 	if (content.innerHTML.length < 15) {
-		fitCache[cacheKey] = font;
+		fitCache[cacheKey] = font + 1;
 	}
 }

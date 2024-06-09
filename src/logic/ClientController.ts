@@ -93,6 +93,8 @@ export default class ClientController {
 		const groups: ContentGroup[] = [];
 		let group: ContentGroup | null = null;
 
+		let runContentLoadTimer = false;
+
 		for	(let i = 0; i < content.length; i++) {
 			const { type, value } = content[i];
 
@@ -128,6 +130,17 @@ export default class ClientController {
 						read: false,
 						partial: false,
 					});
+
+					const state = this.getState();
+
+					if (state.room.stage.isQuestion &&
+						!state.table.isAnswer &&
+						!state.room.settings.falseStart &&
+						state.room.settings.partialImages &&
+						state.room.settings.timeSettings.partialImageTime > 0) {
+						runContentLoadTimer = true;
+					}
+
 					break;
 
 				case 'video':
@@ -167,6 +180,10 @@ export default class ClientController {
 		}
 
 		this.dispatch(tableActionCreators.showContent(groups));
+
+		if (runContentLoadTimer) {
+			// TODO
+		}
 	}
 
 	onAvatarChanged(personName: string, contentType: string, uri: string) {
@@ -207,6 +224,50 @@ export default class ClientController {
 
 	onGameThemes(gameThemes: string[]) {
 		this.dispatch(tableActionCreators.showGameThemes(gameThemes));
+	}
+
+	onOptionChanged(name: string, value: string) {
+		const { settings } = this.getState().room;
+
+		switch (name) {
+			case 'DisplayAnswerOptionsLabels':
+				this.dispatch(roomActionCreators.settingsChanged({
+					...settings,
+					displayAnswerOptionsLabels: value.toLowerCase() === 'true'
+				}));
+
+				break;
+
+			case 'FalseStart':
+				this.dispatch(roomActionCreators.settingsChanged({
+					...settings,
+					falseStart: value.toLowerCase() === 'true'
+				}));
+
+			break;
+
+			case 'PartialImages':
+				this.dispatch(roomActionCreators.settingsChanged({
+					...settings,
+					partialImages: value.toLowerCase() === 'true'
+				}));
+
+			break;
+
+			case 'PartialImageTime':
+				this.dispatch(roomActionCreators.settingsChanged({
+					...settings,
+					timeSettings: {
+						...settings.timeSettings,
+						partialImageTime: parseInt(value, 10)
+					}
+				}));
+
+			break;
+
+			default:
+				break;
+		}
 	}
 
 	onPackage(packageName: string, packageLogo: string | null) {
@@ -559,6 +620,8 @@ export default class ClientController {
 			default:
 				break;
 		}
+
+		this.dispatch(roomActionCreators.isQuestionChanged(true));
 	}
 
 	onThemeDeleted(themeIndex: number) {
@@ -581,7 +644,7 @@ export default class ClientController {
 
 	onRightAnswer(answer: string) {
 		if (this.getState().table.layoutMode === LayoutMode.Simple) {
-			this.dispatch(tableActionCreators.showText(answer, false));
+			this.dispatch(tableActionCreators.showText(answer));
 			this.dispatch(tableActionCreators.captionChanged(localization.rightAnswer));
 		} else {
 			this.dispatch(tableActionCreators.rightOption(answer));
@@ -617,6 +680,7 @@ export default class ClientController {
 
 	onQuestionEnd() {
 		this.dispatch(roomActionCreators.afterQuestionStateChanged(true));
+		this.dispatch(roomActionCreators.isQuestionChanged(false));
 		this.dispatch(tableActionCreators.endQuestion());
 	}
 

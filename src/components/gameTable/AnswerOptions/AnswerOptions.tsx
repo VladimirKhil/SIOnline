@@ -9,18 +9,22 @@ import ImageContent from '../ImageContent';
 import ItemState from '../../../model/enums/ItemState';
 import { Action, Dispatch } from 'redux';
 import roomActionCreators from '../../../state/room/roomActionCreators';
+import AutoSizedText from '../../common/AutoSizedText';
 
 import './AnswerOptions.css';
 
 interface AnswerOptionsProps {
 	options: AnswerOption[];
 	isSelectable: boolean;
+	displayAnswerOptionsLabels: boolean;
+
 	onSelectAnswerOption: (label: string) => void;
 }
 
 const mapStateToProps = (state: State) => ({
 	options: state.table.answerOptions,
 	isSelectable: state.table.isSelectable,
+	displayAnswerOptionsLabels: state.room.settings.displayAnswerOptionsLabels,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
@@ -63,7 +67,9 @@ export function AnswerOptions(props: AnswerOptionsProps) {
 		<div className={`answerOptions ${props.isSelectable ? 'selectable' : ''}`}>
 			{props.options.map((o, i) => (
 				<div key={i} className={`answerOption ${getOptionClass(o.state)}`} onClick={() => props.onSelectAnswerOption(o.label)}>
-					<div className='optionLabel'>{o.label}</div>
+					{props.displayAnswerOptionsLabels ? <div className='optionLabel'>
+						<AutoSizedText maxFontSize={50}>{o.label}</AutoSizedText>
+					</div> : null}
 
 					<div className='optionContent'>
 						{getContent(o.content)}

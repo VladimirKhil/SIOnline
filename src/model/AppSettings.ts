@@ -6,6 +6,7 @@ export default interface AppSettings {
 	falseStart: boolean;
 	hintShowman: boolean;
 	partialText: boolean;
+	partialImages: boolean;
 
 	/** Play all questions in final round. */
 	playAllQuestionsInFinalRound: boolean;
@@ -32,5 +33,48 @@ export default interface AppSettings {
 	buttonPressMode: ButtonPressMode;
 
 	preloadRoundContent: boolean;
+
 	useApellations: boolean;
+
+	displayAnswerOptionsOneByOne: boolean;
+
+	displayAnswerOptionsLabels: boolean;
 }
+
+export const initialState: AppSettings = {
+	culture: null,
+	oral: false,
+	oralPlayersActions: true,
+	falseStart: true,
+	hintShowman: false,
+	partialText: false,
+	partialImages: true,
+	allowEveryoneToPlayHiddenStakes: true,
+	playAllQuestionsInFinalRound: false,
+	displaySources: false,
+	readingSpeed: 20,
+	managed: false,
+	ignoreWrong: false,
+	timeSettings: {
+		timeForChoosingQuestion: 30,
+		timeForThinkingOnQuestion: 5,
+		timeForPrintingAnswer: 25,
+		timeForGivingACat: 30,
+		timeForMakingStake: 30,
+		timeForThinkingOnSpecial: 25,
+		timeOfRound: 660,
+		timeForChoosingFinalTheme: 30,
+		timeForFinalThinking: 45,
+		timeForShowmanDecisions: 30,
+		timeForRightAnswer: 2,
+		timeForMediaDelay: 0,
+		timeForBlockingButton: 3,
+		partialImageTime: 3,
+	},
+	usePingPenalty: false,
+	buttonPressMode: ButtonPressMode.RandomWithinInterval,
+	preloadRoundContent: true,
+	useApellations: true,
+	displayAnswerOptionsLabels: true,
+	displayAnswerOptionsOneByOne: true,
+};

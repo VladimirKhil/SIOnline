@@ -54,6 +54,8 @@ const enum GameMessages {
 	/** Notifies that the client has loaded the media. */
 	MediaLoaded = 'MEDIALOADED',
 
+	Options = 'OPTIONS',
+
 	Out = 'OUT',
 
 	Package = 'PACKAGE',

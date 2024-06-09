@@ -4,7 +4,6 @@ import State from '../../state/State';
 import TableMode from '../../model/enums/TableMode';
 import TableLogo from './TableLogo/TableLogo';
 import TableText from './TableText';
-import TableAnswer from './TableAnswer';
 import TableGameThemes from './TableGameThemes';
 import TableRoundThemes from './TableRoundThemes';
 import RoundTable from './RoundTable';
@@ -51,9 +50,6 @@ function getContent(mode: TableMode) {
 
 		case TableMode.Content:
 			return <TableContent />;
-
-		case TableMode.Answer:
-			return <TableAnswer />;
 
 		case TableMode.GameThemes:
 			return <TableGameThemes />;

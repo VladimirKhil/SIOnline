@@ -2,7 +2,6 @@
 	Void,
 	Logo,
 	Text,
-	Answer,
 	GameThemes,
 	RoundThemes,
 	RoundTable,

@@ -153,7 +153,7 @@ const viewerHandler = (controller: ClientController, dispatch: Dispatch<any>, st
 				ads = clearUrls(ads);
 			}
 
-			dispatch(tableActionCreators.showText(ads, false));
+			dispatch(tableActionCreators.showText(ads));
 			break;
 
 		case 'APELLATION_ENABLES':
@@ -304,14 +304,23 @@ const viewerHandler = (controller: ClientController, dispatch: Dispatch<any>, st
 			break;
 		}
 
-		case GameMessages.ContentShape:
+		case GameMessages.ContentShape: {
 			if (args.length < 5) {
+				return;
+			}
+
+			const placement = args[1];
+			const layoutId = args[2];
+			const contentType = args[3];
+
+			if (placement !== 'screen' || layoutId !== '0' || contentType !== 'text') {
 				return;
 			}
 
 			const text = unescapeNewLines(args[4]);
 			controller.onContentShape(text);
 			break;
+		}
 
 		case GameMessages.ContentState: {
 			if (args.length < 4) {
@@ -417,6 +426,16 @@ const viewerHandler = (controller: ClientController, dispatch: Dispatch<any>, st
 					dispatch(roomActionCreators.playerMediaLoaded(i));
 					break;
 				}
+			}
+
+			break;
+
+		case GameMessages.Options:
+			for (let i = 1; i + 1 < args.length; i += 2) {
+				const argName = args[i];
+				const value = args[i + 1];
+
+				controller.onOptionChanged(argName, value);
 			}
 
 			break;
@@ -540,7 +559,7 @@ const viewerHandler = (controller: ClientController, dispatch: Dispatch<any>, st
 			break;
 		}
 
-		case GameMessages.QType:
+		case GameMessages.QType: // = Question start
 			if (args.length > 1) {
 				controller.onQuestionType(args[1]);
 			}

@@ -6,8 +6,8 @@ const enum ButtonPressMode {
 	/** First to press wins the button. */
 	FirstWins = 1,
 
-	/** Players with good ping get penalty. */
-	UsePingPenalty = 2,
+	/** First to press wins the button. Reaction value is calculated on the client side. */
+	FirstWinsClient = 2,
 }
 
 export default ButtonPressMode;

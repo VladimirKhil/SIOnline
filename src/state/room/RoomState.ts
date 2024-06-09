@@ -8,6 +8,7 @@ import StakeTypes from '../../model/enums/StakeTypes';
 import Timers from '../../model/Timers';
 import TimerStates from '../../model/enums/TimeStates';
 import JoinMode from '../../client/game/JoinMode';
+import AppSettings, { initialState as initialAppSettings } from '../../model/AppSettings';
 
 export default interface RoomState {
 	persons: {
@@ -34,6 +35,7 @@ export default interface RoomState {
 		themeIndex: number;
 		currentPrice: number;
 		themeName: string;
+		isQuestion: boolean;
 	};
 
 	timers: Timers;
@@ -104,6 +106,8 @@ export default interface RoomState {
 	joinMode: JoinMode;
 	kicked: boolean;
 	webCameraUrl: string;
+
+	settings: AppSettings;
 }
 
 export const initialState: RoomState = {
@@ -138,7 +142,8 @@ export const initialState: RoomState = {
 		isAfterQuestion: false,
 		themeIndex: -1,
 		currentPrice: 0,
-		themeName: ''
+		themeName: '',
+		isQuestion: false,
 	},
 
 	timers: {
@@ -239,4 +244,6 @@ export const initialState: RoomState = {
 	joinMode: JoinMode.AnyRole,
 	kicked: false,
 	webCameraUrl: '',
+
+	settings: initialAppSettings,
 };

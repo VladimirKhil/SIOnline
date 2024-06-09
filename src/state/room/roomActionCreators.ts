@@ -21,6 +21,7 @@ import JoinMode from '../../client/game/JoinMode';
 import commonActionCreators from '../common/commonActionCreators';
 import Path from '../../model/enums/Path';
 import actionCreators from '../../logic/actionCreators';
+import AppSettings from '../../model/AppSettings';
 
 let timerRef: number | null = null;
 
@@ -212,7 +213,7 @@ const chatMessageAdded: ActionCreator<ThunkAction<void, State, DataContext, Acti
 			3000
 		);
 	}
-}
+};
 
 const lastReplicChanged: ActionCreator<RunActions.LastReplicChangedAction> = (chatMessage: ChatMessage | null) => ({
 	type: RunActions.RoomActionTypes.LastReplicChanged, chatMessage
@@ -382,6 +383,10 @@ const sumsChanged: ActionCreator<RunActions.SumsChangedAction> = (sums: number[]
 
 const afterQuestionStateChanged: ActionCreator<RunActions.AfterQuestionStateChangedAction> = (isAfterQuestion: boolean) => ({
 	type: RunActions.RoomActionTypes.AfterQuestionStateChanged, isAfterQuestion
+});
+
+const isQuestionChanged: ActionCreator<RunActions.IsQuestionChangedAction> = (isQuestion: boolean) => ({
+	type: RunActions.RoomActionTypes.IsQuestionChanged, isQuestion
 });
 
 const currentPriceChanged: ActionCreator<RunActions.CurrentPriceChangedAction> = (currentPrice: number) => ({
@@ -958,6 +963,10 @@ const setWebCamera: ActionCreator<ThunkAction<void, State, DataContext, Action>>
 	await dataContext.game.sendVideoAvatar(webCameraUrl);
 };
 
+const settingsChanged: ActionCreator<RunActions.SettingsChangedAction> = (settings: AppSettings) => ({
+	type: RunActions.RoomActionTypes.SettingsChanged, settings
+});
+
 const roomActionCreators = {
 	runChatModeChanged,
 	runChatMessageChanged,
@@ -1004,6 +1013,7 @@ const roomActionCreators = {
 	gameStateCleared,
 	sumsChanged,
 	afterQuestionStateChanged,
+	isQuestionChanged,
 	currentPriceChanged,
 	personAdded,
 	personRemoved,
@@ -1085,6 +1095,7 @@ const roomActionCreators = {
 	onReconnect,
 	avatarVisibleChanged,
 	setWebCamera,
+	settingsChanged,
 };
 
 export default roomActionCreators;

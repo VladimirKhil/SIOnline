@@ -14,7 +14,6 @@ export default interface TableState {
 	hint: string;
 	audio: string;
 	rotate: boolean;
-	animateReading: boolean;
 	canPress: boolean;
 	canPressUpdateTime: number;
 	gameThemes: string[];
@@ -27,6 +26,8 @@ export default interface TableState {
 	answerOptions: AnswerOption[];
 	prependText: string;
 	appendText: string;
+	contentLoadProgress: number;
+	isAnswer: boolean;
 }
 
 export const initialState: TableState = {
@@ -39,7 +40,6 @@ export const initialState: TableState = {
 	hint: '',
 	audio: '',
 	rotate: false,
-	animateReading: false,
 	canPress: false,
 	canPressUpdateTime: 0,
 	gameThemes: [],
@@ -52,4 +52,6 @@ export const initialState: TableState = {
 	answerOptions: [],
 	prependText: '',
 	appendText: '',
+	contentLoadProgress: 1,
+	isAnswer: false,
 };

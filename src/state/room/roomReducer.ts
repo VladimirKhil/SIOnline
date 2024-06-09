@@ -943,6 +943,21 @@ const roomReducer: Reducer<RoomState> = (state: RoomState = initialState, anyAct
 				webCameraUrl: action.webCameraUrl,
 			};
 
+		case RoomActionTypes.SettingsChanged:
+			return {
+				...state,
+				settings: action.settings
+			};
+
+		case RoomActionTypes.IsQuestionChanged:
+			return {
+				...state,
+				stage: {
+					...state.stage,
+					isQuestion: action.isQuestion,
+				}
+			};
+
 		default:
 			return state;
 	}
