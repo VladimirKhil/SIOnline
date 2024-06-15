@@ -1,63 +1,54 @@
 import * as React from 'react';
-import State from '../../state/State';
 import { Dispatch, Action } from 'redux';
 import { connect } from 'react-redux';
 import AutoSizedText from '../common/AutoSizedText';
-import ThemeInfo from '../../model/ThemeInfo';
 import roomActionCreators from '../../state/room/roomActionCreators';
+import { AppDispatch, RootState } from '../../state/new/store';
+import { useAppDispatch, useAppSelector } from '../../state/new/hooks';
 
 interface FinalTableProps {
-	roundInfo: ThemeInfo[];
-	isSelectable: boolean;
-	activeThemeIndex: number;
-
-	onSelectTheme: (themeIndex: number) => void;
+	onSelectTheme: (themeIndex: number, appDispatch: AppDispatch) => void;
 }
 
-const mapStateToProps = (state: State) => ({
-	roundInfo: state.table.roundInfo,
-	isSelectable: state.table.isSelectable,
-	activeThemeIndex: state.table.activeThemeIndex,
-});
-
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
-	onSelectTheme: (themeIndex: number) => {
-		dispatch(roomActionCreators.selectTheme(themeIndex) as object as Action);
+	onSelectTheme: (themeIndex: number, appDispatch: AppDispatch) => {
+		dispatch(roomActionCreators.selectTheme(themeIndex, appDispatch) as object as Action);
 	},
 });
 
-export class FinalTable extends React.Component<FinalTableProps> {
-	onSelectTheme(themeIndex: number) {
-		if (!this.props.isSelectable) {
+export function FinalTable(props: FinalTableProps) {
+	const state = useAppSelector((rootState: RootState) => rootState.table);
+	const appDispatch = useAppDispatch();
+
+	const onSelectTheme = (themeIndex: number) => {
+		if (!state.isSelectable) {
 			return;
 		}
 
-		const theme = this.props.roundInfo[themeIndex];
+		const theme = state.roundInfo[themeIndex];
 		if (theme.name.length === 0) {
 			return;
 		}
 
-		this.props.onSelectTheme(themeIndex);
-	}
+		props.onSelectTheme(themeIndex, appDispatch);
+	};
 
-	render() {
-		return (
-			<div className={`finalTable ${this.props.isSelectable ? 'selectable' : ''}`}>
-				{this.props.roundInfo.map((theme, themeIndex) => {
-					const isActive = theme.name.length > 0;
-					const isBlinking = this.props.activeThemeIndex === themeIndex;
+	return (
+		<div className={`finalTable ${state.isSelectable ? 'selectable' : ''}`}>
+			{state.roundInfo.map((theme, themeIndex) => {
+				const isActive = theme.name.length > 0;
+				const isBlinking = state.activeThemeIndex === themeIndex;
 
-					return (
-						<AutoSizedText key={themeIndex} maxFontSize={144}
-							className={`finalTableCell  ${isActive ? 'active' : ''} ${isBlinking ? 'blink' : ''}`}
-							onClick={() => this.onSelectTheme(themeIndex)}>
-							{isActive ? theme.name : ''}
-						</AutoSizedText>
-					);
-				})}
-			</div>
-		);
-	}
+				return (
+					<AutoSizedText key={themeIndex} maxFontSize={144}
+						className={`finalTableCell  ${isActive ? 'active' : ''} ${isBlinking ? 'blink' : ''}`}
+						onClick={() => onSelectTheme(themeIndex)}>
+						{isActive ? theme.name : ''}
+					</AutoSizedText>
+				);
+			})}
+		</div>
+	);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(FinalTable);
+export default connect(null, mapDispatchToProps)(FinalTable);

@@ -2,13 +2,14 @@ import * as React from 'react';
 import State from '../../state/State';
 import { Dispatch, Action } from 'redux';
 import { connect } from 'react-redux';
-import tableActionCreators from '../../state/table/tableActionCreators';
 import AutoSizedText from '../common/AutoSizedText';
 import commonActionCreators from '../../state/common/commonActionCreators';
+import { showRoundTable } from '../../state/new/tableSlice';
 
 interface TableRoundThemesProps {
 	roundThemes: string[];
-	onShowRoundTable: () => void;
+	stopAudio: () => void;
+	showRoundTable: () => void;
 }
 
 interface TableRoundThemesState {
@@ -20,10 +21,10 @@ const mapStateToProps = (state: State) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
-	onShowRoundTable: () => {
-		dispatch(tableActionCreators.showRoundTable());
+	stopAudio: () => {
 		dispatch(commonActionCreators.stopAudio());
 	},
+	showRoundTable,
 });
 
 export class TableRoundThemes extends React.Component<TableRoundThemesProps, TableRoundThemesState> {
@@ -53,7 +54,8 @@ export class TableRoundThemes extends React.Component<TableRoundThemesProps, Tab
 					window.clearInterval(this.timerRef);
 				}
 
-				this.props.onShowRoundTable();
+				this.props.stopAudio();
+				this.props.showRoundTable();
 				return;
 			}
 

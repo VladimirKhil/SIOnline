@@ -22,8 +22,8 @@ export function TableBorder(props: TableBorderProps) {
 	const animatingClass = isTimerRunning ? ' animate' : '';
 	const animationDuration = `${(props.pressTimer.maximum - props.pressTimer.value) / 10}s`;
 
-	const initialSize = props.pressTimer.maximum > 0 ?
-		100 * (props.pressTimer.maximum - props.pressTimer.value) / props.pressTimer.maximum
+	const initialSize = props.pressTimer.maximum > 0
+		? 100 * (props.pressTimer.maximum - props.pressTimer.value) / props.pressTimer.maximum
 		: 100;
 
 	const styleHorizontal: React.CSSProperties = {

@@ -268,7 +268,8 @@ export default function runCore(game?: IGameClient): Store<State, AnyAction> {
 		applyMiddleware(reduxThunk.withExtraArgument(dataContext))
 	);
 
-	const controller = new ClientController(store.dispatch, store.getState, dataContext);
+	const appDispatch = store.dispatch;
+	const controller = new ClientController(store.dispatch, appDispatch, store.getState, dataContext);
 
 	if (window.chrome) {
 		const { webview } = window.chrome;

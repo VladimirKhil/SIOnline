@@ -1,38 +1,24 @@
 ﻿import * as React from 'react';
 import AutoSizedText from '../../common/AutoSizedText';
-import { connect } from 'react-redux';
-import State from '../../../state/State';
+import { useAppSelector } from '../../../state/new/hooks';
+import { RootState } from '../../../state/new/store';
 
 import './ObjectView.css';
 
-interface ObjectViewProps {
-	header: string;
-	text: string;
-	hint: string;
-	rotate: boolean;
-}
+export default function ObjectView() {
+	const state = useAppSelector((rootState: RootState) => rootState.table);
 
-const mapStateToProps = (state: State) => ({
-	header: state.table.header,
-	text: state.table.text,
-	hint: state.table.hint,
-	rotate: state.table.rotate,
-});
-
-export function ObjectView(props: ObjectViewProps) {
 	return (
 		<div className='objectView'>
-			<div className='objectHeader'>{props.header}</div>
+			<div className='objectHeader'>{state.header}</div>
 
 			<AutoSizedText
-				className={`tableText tableTextCenter objectName ${props.rotate ? 'rotate' : ''}`}
+				className={`tableText tableTextCenter objectName ${state.rotate ? 'rotate' : ''}`}
 				maxFontSize={288}>
-				{props.text}
+				{state.text}
 			</AutoSizedText>
 
-			<div className={`objectHint ${props.hint.length === 0 ? 'empty' : ''} `}>{props.hint}</div>
+			<div className={`objectHint ${state.hint.length === 0 ? 'empty' : ''} `}>{state.hint}</div>
 		</div>
 	);
 }
-
-export default connect(mapStateToProps)(ObjectView);

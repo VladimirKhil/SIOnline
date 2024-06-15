@@ -241,8 +241,7 @@ const tryConnectAsync = async (dispatch: Dispatch<Action>, getState: () => State
 		dispatch(commonActionCreators.computerAccountsChanged(computerAccounts));
 
 		// Listeners should be attached after first successfull request to be sure that connection is working
-		const controller = new ClientController(dispatch, getState, dataContext);
-		attachListeners(dataContext.gameClient, dataContext.connection, dispatch, controller);
+		attachListeners(dataContext.gameClient, dataContext.connection, dispatch);
 
 		await loadHostInfoAsync(dispatch, dataContext, requestCulture);
 		await uploadAvatarAsync(dispatch, dataContext);
@@ -258,6 +257,7 @@ const tryConnectAsync = async (dispatch: Dispatch<Action>, getState: () => State
 const connectToSIHostAsync = async (
 	siHostUri: string,
 	dispatch: Dispatch<Action>,
+	appDispatch: AppDispatch,
 	getState: () => State,
 	dataContext: DataContext
 ): Promise<ISIHostClient> => {
@@ -283,9 +283,9 @@ const connectToSIHostAsync = async (
 		activeSIHostConnections.push(connection.connectionId);
 	}
 
-	const controller = new ClientController(dispatch, getState, dataContext);
+	const controller = new ClientController(dispatch, appDispatch, getState, dataContext);
 
-	attachSIHostListeners(siHostClient, connection, dispatch, controller);
+	attachSIHostListeners(siHostClient, connection, dispatch, appDispatch, controller);
 
 	dataContext.game = new GameClient(siHostClient, true);
 
@@ -346,10 +346,15 @@ function getServerRole(role: Role) {
 	return role === Role.Player ? ServerRole.Player : ServerRole.Showman;
 }
 
-const navigateAsync = async (view: INavigationState, dispatch: Dispatch<Action>, getState: () => State, dataContext: DataContext) => {
+const navigateAsync = async (
+	view: INavigationState,
+	dispatch: Dispatch<Action>,
+	appDispatch: AppDispatch,
+	getState: () => State,
+	dataContext: DataContext) => {
 	if (view.path === Path.Room) {
 		if (view.gameId && view.role && view.hostUri) {
-			const siHostClient = await connectToSIHostAsync(view.hostUri, dispatch, getState, dataContext);
+			const siHostClient = await connectToSIHostAsync(view.hostUri, dispatch, appDispatch, getState, dataContext);
 
 			const state = getState();
 			const serverRole = getServerRole(view.role);
@@ -372,6 +377,7 @@ const navigateAsync = async (view: INavigationState, dispatch: Dispatch<Action>,
 
 			await onlineActionCreators.initGameAsync(
 				dispatch,
+				appDispatch,
 				dataContext.game,
 				view.hostUri ?? '',
 				view.gameId,
@@ -393,13 +399,22 @@ const navigateAsync = async (view: INavigationState, dispatch: Dispatch<Action>,
 	dispatch(uiActionCreators.navigate(view) as unknown as Action);
 };
 
-const checkLicenseAsync = async (view: INavigationState, dispatch: Dispatch<Action>, getState: () => State, dataContext: DataContext) => {
+const checkLicenseAsync = async (
+	view: INavigationState,
+	dispatch: Dispatch<Action>,
+	appDispatch: AppDispatch,
+	getState: () => State,
+	dataContext: DataContext) => {
 	const licenseAccepted = dataContext.state.isLicenseAccepted();
-	await navigateAsync(licenseAccepted ? view : { path: Path.AcceptLicense, callbackState: view }, dispatch, getState, dataContext);
+	await navigateAsync(licenseAccepted ? view : { path: Path.AcceptLicense, callbackState: view }, dispatch, appDispatch, getState, dataContext);
 };
 
 const init: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
-	(initialView: INavigationState) => async (dispatch: Dispatch<Action>, getState: () => State, dataContext: DataContext) => {
+	(initialView: INavigationState, appDispatch: AppDispatch) => async (
+		dispatch: Dispatch<Action>,
+		getState: () => State,
+		dataContext: DataContext
+	) => {
 		if (initialView.path === Path.Login) {
 			dispatch(uiActionCreators.navigate({ path: Path.Login, callbackState: { path: Path.Root } }) as unknown as Action);
 			return;
@@ -408,7 +423,7 @@ const init: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 		const connectResult = await tryConnectAsync(dispatch, getState, dataContext);
 
 		if (connectResult.success) {
-			await checkLicenseAsync(initialView, dispatch, getState, dataContext);
+			await checkLicenseAsync(initialView, dispatch, appDispatch, getState, dataContext);
 		} else if (connectResult.authenticationRequired) {
 			dispatch(uiActionCreators.navigate({ path: Path.Login, callbackState: initialView }) as unknown as Action);
 		} else {
@@ -443,7 +458,7 @@ const login: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 			if (connectResult.success) {
 				dispatch(userActionCreators.onLoginChanged(state.user.login.trim())); // Normalize login
 				appDispatch(endLogin(null));
-				await checkLicenseAsync(state.ui.navigation.callbackState ?? { path: Path.Root }, dispatch, getState, dataContext);
+				await checkLicenseAsync(state.ui.navigation.callbackState ?? { path: Path.Root }, dispatch, appDispatch, getState, dataContext);
 			} else if (connectResult.authenticationRequired) {
 				appDispatch(endLogin(connectResult.error ?? localization.errorHappened));
 			} else {

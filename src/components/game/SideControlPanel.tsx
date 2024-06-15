@@ -10,6 +10,8 @@ import ChatMessage from '../../model/ChatMessage';
 import { isHost } from '../../utils/StateHelpers';
 import uiActionCreators from '../../state/ui/uiActionCreators';
 import isWellFormedUri from '../../utils/isWellFormedUri';
+import { useAppDispatch } from '../../state/new/hooks';
+import { AppDispatch } from '../../state/new/store';
 
 import './SideControlPanel.css';
 import nextImg from '../../../assets/images/next.png';
@@ -40,7 +42,7 @@ interface SideControlPanelProps {
 	onPause: () => void;
 	onEditTable: () => void;
 	onGiveTurn: () => void;
-	onExit: () => void;
+	onExit: (appDispatch: AppDispatch) => void;
 	onEditSums: (enable: boolean) => void;
 	onMoveNext: () => void;
 	showGameManageDialog: () => void;
@@ -94,8 +96,8 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	onGiveTurn: () => {
 		dispatch(roomActionCreators.giveTurn() as unknown as Action);
 	},
-	onExit: () => {
-		dispatch(roomActionCreators.exitGame() as unknown as Action);
+	onExit: (appDispatch: AppDispatch) => {
+		dispatch(roomActionCreators.exitGame(appDispatch) as unknown as Action);
 	},
 	onEditSums: (enable: boolean) => {
 		dispatch(roomActionCreators.areSumsEditableChanged(enable) as unknown as Action);
@@ -139,6 +141,7 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 	const canStart = !props.hasGameStarted && props.isHost;
 
 	const { voiceChatUri } = props;
+	const appDispatch = useAppDispatch();
 
 	return (
 		<div className="game__utilsArea">
@@ -240,7 +243,7 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 									<ul>
 										<li
 											className={enabledClass}
-											onClick={() => props.onExit()}>
+											onClick={() => props.onExit(appDispatch)}>
 											{localization.exitFromGame}
 										</li>
 									</ul>

@@ -1,11 +1,13 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import AnswerOption from '../../model/AnswerOption';
 import ContentGroup from '../../model/ContentGroup';
 import ThemeInfo from '../../model/ThemeInfo';
 import LayoutMode from '../../model/enums/LayoutMode';
 import TableMode from '../../model/enums/TableMode';
+import ContentType from '../../model/enums/ContentType';
+import ItemState from '../../model/enums/ItemState';
 
-interface TableState {
+export interface TableState {
 	mode: TableMode;
 	layoutMode: LayoutMode;
 	caption: string;
@@ -61,10 +63,198 @@ export const tableSlice = createSlice({
 	name: 'table',
 	initialState,
 	reducers: {
+		showLogo: (state: TableState) => {
+			state.mode = TableMode.Logo;
+		},
+		showGameThemes: (state: TableState, action: PayloadAction<string[]>) => {
+			state.mode = TableMode.GameThemes;
+			state.gameThemes = action.payload;
+		},
+		showObject: (state: TableState, action: PayloadAction<{ header: string, text: string, hint: string }>) => {
+			state.mode = TableMode.Object;
+			state.header = action.payload.header;
+			state.text = action.payload.text;
+			state.hint = action.payload.hint;
+			state.rotate = false;
+			state.content = [];
+			state.appendText = '';
+			state.prependText = '';
+		},
+		showQuestionType: (state: TableState, action: PayloadAction<{ header: string, text: string, hint: string }>) => {
+			state.mode = TableMode.QuestionType;
+			state.header = action.payload.header;
+			state.text = action.payload.text;
+			state.hint = action.payload.hint;
+			state.rotate = true;
+			state.content = [];
+			state.appendText = '';
+			state.prependText = '';
+		},
+		showRoundThemes: (state: TableState, action: PayloadAction<{ roundThemes: ThemeInfo[], isFinal: boolean, display: boolean }>) => {
+			state.mode = action.payload.display ? (action.payload.isFinal ? TableMode.Final : TableMode.RoundThemes) : state.mode;
+			state.roundInfo = action.payload.roundThemes;
+		},
+		showText: (state: TableState, action: PayloadAction<string>) => {
+			state.mode = TableMode.Text;
+			state.text = action.payload;
+			state.audio = '';
+		},
+		showRoundTable: (state: TableState) => {
+			state.mode = TableMode.RoundTable;
+			state.activeThemeIndex = -1;
+			state.actionQuestionIndex = -1;
+		},
+		blinkQuestion: (state: TableState, action: PayloadAction<{themeIndex: number, questionIndex: number}>) => {
+			state.activeThemeIndex = action.payload.themeIndex;
+			state.actionQuestionIndex = action.payload.questionIndex;
+		},
+		blinkTheme: (state: TableState, action: PayloadAction<number>) => {
+			state.activeThemeIndex = action.payload;
+		},
+		updateQuestion: (state: TableState, action: PayloadAction<{ themeIndex: number, questionIndex: number, price: number }>) => {
+			const theme = state.roundInfo[action.payload.themeIndex];
+
+			if (theme) {
+				if (action.payload.questionIndex > -1 && action.payload.questionIndex < theme.questions.length) {
+					theme.questions[action.payload.questionIndex] = action.payload.price;
+				}
+			}
+		},
+		removeTheme: (state: TableState, action: PayloadAction<number>) => {
+			state.activeThemeIndex = -1;
+			const theme = state.roundInfo[action.payload];
+
+			if (theme) {
+				theme.name = '';
+			}
+		},
+		showPartialText: (state: TableState, action: PayloadAction<string>) => {
+			state.text = '';
+			state.tail = action.payload;
+		},
+		appendPartialText: (state: TableState, action: PayloadAction<string>) => {
+			state.text += action.payload;
+			state.tail = state.tail.substring(action.payload.length);
+		},
+		showBackgroundAudio: (state: TableState, action: PayloadAction<string>) => {
+			state.mode = TableMode.Content;
+			state.audio = action.payload;
+			state.isMediaStopped = false;
+		},
+		showContent: (state: TableState, action: PayloadAction<ContentGroup[]>) => {
+			state.mode = TableMode.Content;
+			state.content = action.payload;
+			state.isMediaStopped = false;
+		},
+		canPressChanged: (state: TableState, action: PayloadAction<boolean>) => {
+			state.canPress = action.payload;
+			state.canPressUpdateTime = Date.now();
+
+			if (!action.payload) {
+				state.isMediaStopped = true;
+			}
+		},
+		isSelectableChanged: (state: TableState, action: PayloadAction<boolean>) => {
+			state.isSelectable = action.payload;
+		},
+		resumeMedia: (state: TableState) => {
+			state.isMediaStopped = false;
+		},
+		captionChanged: (state: TableState, action: PayloadAction<string>) => {
+			state.caption = action.payload;
+		},
+		tableReset: (state: TableState) => {
+			Object.assign(state, initialState);
+		},
+		endQuestion: (state: TableState) => {
+			state.content = [];
+			state.prependText = '';
+			state.appendText = '';
+			state.audio = '';
+			state.layoutMode = LayoutMode.Simple;
+			state.isSelectable = false;
+			state.isAnswer = false;
+		},
+		answerOptions: (state, action: PayloadAction<{ questionHasScreenContent: boolean, options: AnswerOption[] }>) => {
+			state.mode = TableMode.Content;
+			state.layoutMode = LayoutMode.AnswerOptions;
+			state.answerOptions = action.payload.options;
+		},
+		updateOption: (state, action: PayloadAction<{ index: number, label: string, contentType: ContentType, value: string }>) => {
+			const option = state.answerOptions[action.payload.index];
+
+			if (!option) {
+				return;
+			}
+
+			option.label = action.payload.label;
+			option.content.type = action.payload.contentType;
+			option.content.value = action.payload.value;
+		},
+		updateOptionState: (state, action: PayloadAction<{ index: number, state: ItemState }>) => {
+			const option = state.answerOptions[action.payload.index];
+
+			if (!option) {
+				return;
+			}
+
+			option.state = action.payload.state;
+		},
+		rightOption: (state, action: PayloadAction<string>) => {
+			state.answerOptions.forEach(o => {
+				if (o.label === action.payload) {
+					o.state = ItemState.Right;
+				} else if (o.state === ItemState.Active) {
+					o.state = ItemState.Normal;
+				}
+			});
+		},
+		prependTextChanged: (state, action: PayloadAction<string>) => {
+			state.prependText = action.payload;
+		},
+		questionReset: state => {
+			state.prependText = '';
+			state.appendText = '';
+			state.isAnswer = false;
+		},
+		setAnswerView: (state, action: PayloadAction<string>) => {
+			state.prependText = '';
+			state.content = [];
+			state.appendText = action.payload;
+			state.isAnswer = true;
+		},
 	}
 });
 
 export const {
+	showLogo,
+	showGameThemes,
+	showObject,
+	showQuestionType,
+	showRoundThemes,
+	showText,
+	showRoundTable,
+	blinkQuestion,
+	blinkTheme,
+	updateQuestion,
+	removeTheme,
+	showPartialText,
+	appendPartialText,
+	showBackgroundAudio,
+	showContent,
+	canPressChanged,
+	isSelectableChanged,
+	resumeMedia,
+	captionChanged,
+	tableReset,
+	endQuestion,
+	answerOptions,
+	updateOption,
+	updateOptionState,
+	rightOption,
+	prependTextChanged,
+	questionReset,
+	setAnswerView,
 } = tableSlice.actions;
 
 export default tableSlice.reducer;

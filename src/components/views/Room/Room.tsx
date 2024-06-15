@@ -30,6 +30,8 @@ import MessageLevel from '../../../model/enums/MessageLevel';
 import commonActionCreators from '../../../state/common/commonActionCreators';
 import RoomSettingsButton from '../../RoomSettingsButton/RoomSettingsButton';
 import AvatarViewDialog from '../../panels/AvatarViewDialog/AvatarViewDialog';
+import { AppDispatch } from '../../../state/new/store';
+import { useAppDispatch } from '../../../state/new/hooks';
 
 import './Room.css';
 
@@ -58,7 +60,7 @@ interface RoomProps {
 	onManageGameDialogClose: () => void;
 	onCancelSumChange: () => void;
 	onShowSettings: () => void;
-	onExit: () => void;
+	onExit: (appDispatch: AppDispatch) => void;
 	chatMessageAdded: (chatMessage: ChatMessage) => void;
 	onReconnect: () => void;
 	onUserError: (error: string) => void;
@@ -104,8 +106,8 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	onShowSettings: () => {
 		dispatch(uiActionCreators.showSettings(true));
 	},
-	onExit: () => {
-		dispatch(roomActionCreators.exitGame() as unknown as Action);
+	onExit: (appDispatch: AppDispatch) => {
+		dispatch(roomActionCreators.exitGame(appDispatch) as unknown as Action);
 	},
 	chatMessageAdded: (chatMessage: ChatMessage) => {
 		dispatch(roomActionCreators.chatMessageAdded(chatMessage) as unknown as Action);
@@ -119,10 +121,12 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 });
 
 export function Room(props: RoomProps) : JSX.Element {
+	const appDispatch = useAppDispatch();
+
 	React.useEffect(() => {
 		if (props.kicked) {
 			props.onUserError(localization.youAreKicked);
-			props.onExit();
+			props.onExit(appDispatch);
 		}
 	}, [props.kicked]);
 

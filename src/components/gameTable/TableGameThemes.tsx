@@ -1,24 +1,18 @@
 import * as React from 'react';
 import State from '../../state/State';
-import { Dispatch, Action } from 'redux';
 import { connect } from 'react-redux';
-
-import tableActionCreators from '../../state/table/tableActionCreators';
+import { showLogo } from '../../state/new/tableSlice';
 
 interface TableGameThemesProps {
 	gameThemes: string[];
-	onShowLogo: () => void;
+	showLogo: () => void;
 }
 
 const mapStateToProps = (state: State) => ({
 	gameThemes: state.table.gameThemes,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
-	onShowLogo: () => {
-		dispatch(tableActionCreators.showLogo());
-	}
-});
+const mapDispatchToProps = { showLogo };
 
 export class TableGameThemes extends React.Component<TableGameThemesProps> {
 	private tableGameThemesRef: React.RefObject<HTMLUListElement>;
@@ -43,7 +37,7 @@ export class TableGameThemes extends React.Component<TableGameThemesProps> {
 
 		this.timerRef = window.setTimeout(
 			() => {
-				this.props.onShowLogo();
+				this.props.showLogo();
 			},
 			animationTime * 1000
 		);

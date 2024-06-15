@@ -1,6 +1,6 @@
 ﻿import RoomState, { initialState as roomInitialState } from './room/RoomState';
 import SettingsState, { initialState as settingsInitialState } from './settings/SettingsState';
-import TableState, { initialState as tableInitialState } from './table/TableState';
+import * as table from './new/tableSlice';
 import UserState, { initialState as userInitialState } from './user/UserState';
 import * as login from './new/loginSlice';
 import CommonState, { initialState as commonInitialState } from './common/CommonState';
@@ -16,7 +16,7 @@ export default interface State {
 	online: OnlineState;
 	game: GameState;
 	room: RoomState;
-	table: TableState;
+	table: table.TableState;
 	common: CommonState;
 	siPackages: SIPackagesState;
 	settings: SettingsState;
@@ -30,7 +30,7 @@ export const initialState: State = {
 	game: gameInitialState,
 	siPackages: siPackagesInitialState,
 	room: roomInitialState,
-	table: tableInitialState,
+	table: table.tableSlice.getInitialState(),
 	common: commonInitialState,
 	settings: settingsInitialState
 };

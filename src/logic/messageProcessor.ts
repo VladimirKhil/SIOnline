@@ -9,7 +9,6 @@ import roomActionCreators from '../state/room/roomActionCreators';
 import Account from '../model/Account';
 import Sex from '../model/enums/Sex';
 import PlayerStates from '../model/enums/PlayerStates';
-import tableActionCreators from '../state/table/tableActionCreators';
 import ThemeInfo from '../model/ThemeInfo';
 import PersonInfo from '../model/PersonInfo';
 import Persons from '../model/Persons';
@@ -33,6 +32,8 @@ import GameSound from '../model/enums/GameSound';
 import commonActionCreators from '../state/common/commonActionCreators';
 import clearUrls from '../utils/clearUrls';
 import ThemesPlayMode from '../model/enums/ThemesPlayMode';
+import { AppDispatch } from '../state/new/store';
+import { captionChanged, isSelectableChanged, resumeMedia, showText } from '../state/new/tableSlice';
 
 const MAX_APPEND_TEXT_LENGTH = 150;
 
@@ -40,25 +41,29 @@ function unescapeNewLines(value: string): string {
 	return value.replaceAll('\\n', '\n').replaceAll('\\\\', '\\');
 }
 
-export default function messageProcessor(controller: ClientController, dispatch: Dispatch<AnyAction>, message: Message) {
+export default function messageProcessor(controller: ClientController, dispatch: Dispatch<AnyAction>, appDispatch: AppDispatch, message: Message) {
 	if (message.IsSystem) {
-		dispatch((processSystemMessage(controller, message) as object) as AnyAction);
+		dispatch((processSystemMessage(controller, message, appDispatch) as object) as AnyAction);
 		return;
 	}
 
 	dispatch((userMessageReceived(message) as object) as AnyAction);
 }
 
-const processSystemMessage: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (controller: ClientController, message: Message) =>
+const processSystemMessage: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (
+	controller: ClientController,
+	message: Message,
+	appDispatch: AppDispatch
+) =>
 	(dispatch: Dispatch<RoomActions.KnownRoomAction>, getState: () => State, dataContext: DataContext) => {
 		const state = getState();
 		const { role } = state.room;
 		const args = message.Text.split('\n');
 
-		viewerHandler(controller, dispatch, state, dataContext, args);
+		viewerHandler(controller, dispatch, appDispatch, state, dataContext, args);
 
 		if (role === Role.Player) {
-			playerHandler(controller, dispatch, state, dataContext, args);
+			playerHandler(controller, dispatch, appDispatch, state, dataContext, args);
 		} else if (role === Role.Showman) {
 			showmanHandler(controller, dispatch, state, dataContext, args);
 		}
@@ -140,7 +145,13 @@ function onConfig(controller: ClientController, ...args: string[]) {
 	}
 }
 
-const viewerHandler = (controller: ClientController, dispatch: Dispatch<any>, state: State, dataContext: DataContext, args: string[]) => {
+const viewerHandler = (
+	controller: ClientController,
+	dispatch: Dispatch<any>,
+	appDispatch: AppDispatch,
+	state: State,
+	dataContext: DataContext,
+	args: string[]) => {
 	switch (args[0]) {
 		case GameMessages.Ads:
 			if (args.length === 1) {
@@ -153,7 +164,7 @@ const viewerHandler = (controller: ClientController, dispatch: Dispatch<any>, st
 				ads = clearUrls(ads);
 			}
 
-			dispatch(tableActionCreators.showText(ads));
+			appDispatch(showText(ads));
 			break;
 
 		case 'APELLATION_ENABLES':
@@ -622,7 +633,7 @@ const viewerHandler = (controller: ClientController, dispatch: Dispatch<any>, st
 		}
 
 		case 'RESUME':
-			dispatch(tableActionCreators.resumeMedia());
+			appDispatch(resumeMedia());
 			break;
 
 		case GameMessages.RightAnswer:
@@ -635,7 +646,7 @@ const viewerHandler = (controller: ClientController, dispatch: Dispatch<any>, st
 			if (args.length > 2) {
 				const answer = trimLength(unescapeNewLines(args[2]), MAX_APPEND_TEXT_LENGTH);
 				controller.onRightAnswerStart(answer);
-				dispatch(tableActionCreators.captionChanged(localization.rightAnswer));
+				appDispatch(captionChanged(localization.rightAnswer));
 			}
 			break;
 
@@ -967,14 +978,20 @@ function onStake2(dispatch: Dispatch<any>, _state: State, args: string[], maximu
 	dispatch(roomActionCreators.decisionNeededChanged(true));
 }
 
-const playerHandler = (controller: ClientController, dispatch: Dispatch<any>, state: State, dataContext: DataContext, args: string[]) => {
+const playerHandler = (
+	controller: ClientController,
+	dispatch: Dispatch<any>,
+	appDispatch: AppDispatch,
+	state: State,
+	dataContext: DataContext,
+	args: string[]) => {
 	switch (args[0]) {
 		case GameMessages.Answer:
 			if (state.table.layoutMode === LayoutMode.Simple) {
 				dispatch(roomActionCreators.isAnswering());
 			} else {
 				dispatch(roomActionCreators.decisionNeededChanged(true));
-				dispatch(tableActionCreators.isSelectableChanged(true));
+				appDispatch(isSelectableChanged(true));
 			}
 			break;
 

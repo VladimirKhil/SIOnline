@@ -1,4 +1,4 @@
-import { Action, ActionCreator, AnyAction, Dispatch } from 'redux';
+import { Action, ActionCreator, Dispatch } from 'redux';
 import * as OnlineActions from './OnlineActions';
 import IGameServerClient from '../../client/IGameServerClient';
 import Slice from '../../client/contracts/Slice';
@@ -23,13 +23,11 @@ import GameSettings from '../../client/contracts/GameSettings';
 import PackageType from '../../model/enums/PackageType';
 import PackageType2 from '../../client/contracts/PackageType';
 import Sex from '../../model/enums/Sex';
-import tableActionCreators from '../table/tableActionCreators';
 import roomActionCreators from '../room/roomActionCreators';
 import * as GameErrorsHelper from '../../utils/GameErrorsHelper';
 import actionCreators from '../../logic/actionCreators';
 import gameActionCreators from '../game/gameActionCreators';
 import ServerTimeSettings from '../../client/contracts/ServerTimeSettings';
-import GameCreationResultCode from '../../client/contracts/GameCreationResultCode';
 import LobbySideMode from '../../model/enums/LobbySideMode';
 import SIStatisticsClient from 'sistatistics-client';
 import GamePlatforms from 'sistatistics-client/dist/models/GamePlatforms';
@@ -40,11 +38,12 @@ import ServerSex from '../../client/contracts/ServerSex';
 import IGameClient from '../../client/game/IGameClient';
 import ServerRole from '../../client/contracts/ServerRole';
 import clearUrls from '../../utils/clearUrls';
-import GameClient from '../../client/game/GameClient';
 import commonActionCreators from '../common/commonActionCreators';
 import GameState from '../game/GameState';
 import WellKnownSIContentServiceErrorCode from 'sicontent-client/dist/models/WellKnownSIContentServiceErrorCode';
 import RandomPackageParameters from 'sistorage-client/dist/models/RandomPackageParameters';
+import { AppDispatch } from '../new/store';
+import { showText, tableReset } from '../new/tableSlice';
 
 const selectGame: ActionCreator<OnlineActions.SelectGameAction> = (gameId: number) => ({
 	type: OnlineActions.OnlineActionTypes.SelectGame,
@@ -326,6 +325,7 @@ function getRandomValue(): number {
 
 const initGameAsync = async (
 	dispatch: Dispatch<any>,
+	appDispatch: AppDispatch,
 	gameClient: IGameClient,
 	hostUri: string,
 	gameId: number,
@@ -337,8 +337,8 @@ const initGameAsync = async (
 	navigate: boolean,
 ) => {
 	dispatch(gameActionCreators.gameSet(gameId, isAutomatic));
-	dispatch(tableActionCreators.tableReset());
-	dispatch(tableActionCreators.showText(localization.tableHint));
+	appDispatch(tableReset());
+	appDispatch(showText(localization.tableHint));
 	dispatch(roomActionCreators.nameChanged(name));
 	dispatch(roomActionCreators.roleChanged(role));
 	dispatch(roomActionCreators.stopTimer(0));
@@ -382,7 +382,7 @@ function getServerRole(role: Role) {
 }
 
 const joinGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
-	(hostUri: string, gameId: number, userName: string, role: Role) => async (
+	(hostUri: string, gameId: number, userName: string, role: Role, appDispatch: AppDispatch) => async (
 	dispatch: Dispatch<any>,
 	getState: () => State,
 	dataContext: DataContext
@@ -390,7 +390,7 @@ const joinGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 	dispatch(joinGameStarted());
 
 	try {
-		const siHostClient = await actionCreators.connectToSIHostAsync(hostUri, dispatch, getState, dataContext);
+		const siHostClient = await actionCreators.connectToSIHostAsync(hostUri, dispatch, appDispatch, getState, dataContext);
 
 		const state = getState();
 		const serverRole = getServerRole(role);
@@ -410,7 +410,20 @@ const joinGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 			return;
 		}
 
-		await initGameAsync(dispatch, dataContext.game, hostUri, gameId, userName, role, state.settings.sex, state.online.password, false, true);
+		await initGameAsync(
+			dispatch,
+			appDispatch,
+			dataContext.game,
+			hostUri,
+			gameId,
+			userName,
+			role,
+			state.settings.sex,
+			state.online.password,
+			false,
+			true
+		);
+
 		await actionCreators.disconnectAsync(dispatch, dataContext);
 
 		actionCreators.saveStateToStorage(state);
@@ -570,7 +583,7 @@ async function getPackageInfoAsync(state: State, game: GameState, dataContext: D
 }
 
 const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
-	(isSingleGame: boolean) => async (dispatch: Dispatch<any>, getState: () => State, dataContext: DataContext) => {
+	(isSingleGame: boolean, appDispatch: AppDispatch) => async (dispatch: Dispatch<any>, getState: () => State, dataContext: DataContext) => {
 		const state = getState();
 
 		if (!isSingleGame && state.game.name.length === 0) {
@@ -640,7 +653,7 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 				dispatch(commonActionCreators.onUserError(GameErrorsHelper.getMessage(result.ErrorType)));
 			} else {
 				dispatch(passwordChanged(gameSettings.NetworkGamePassword));
-				dispatch(joinGame(result.HostUri, result.GameId, state.user.login, role));
+				dispatch(joinGame(result.HostUri, result.GameId, state.user.login, role, appDispatch));
 			}
 		} catch (error) {
 			const userError = (error as SIContentServiceError)?.errorCode === WellKnownSIContentServiceErrorCode.BadPackageFile
@@ -654,7 +667,7 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 	};
 
 const createNewAutoGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
-	() => async (dispatch: Dispatch<any>, getState: () => State, dataContext: DataContext) => {
+	(appDispatch: AppDispatch) => async (dispatch: Dispatch<any>, getState: () => State, dataContext: DataContext) => {
 		const state = getState();
 
 		dispatch(gameCreationStart());
@@ -669,7 +682,7 @@ const createNewAutoGame: ActionCreator<ThunkAction<void, State, DataContext, Act
 			if (!result.IsSuccess) {
 				dispatch(commonActionCreators.onUserError(GameErrorsHelper.getMessage(result.ErrorType)));
 			} else {
-				dispatch(joinGame(result.HostUri, result.GameId, state.user.login, Role.Player));
+				dispatch(joinGame(result.HostUri, result.GameId, state.user.login, Role.Player, appDispatch));
 			}
 		} catch (error) {
 			dispatch(commonActionCreators.onUserError(getErrorMessage(error)));

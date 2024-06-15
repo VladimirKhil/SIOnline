@@ -12,6 +12,8 @@ import { getReadableTimeSpan } from '../utils/TimeHelpers';
 import GameStage from '../client/contracts/GameStage';
 import GameRules, { parseRulesFromString } from '../client/contracts/GameRules';
 import Constants from '../model/enums/Constants';
+import { AppDispatch } from '../state/new/store';
+import { useAppDispatch } from '../state/new/hooks';
 
 import './GameInfoView.css';
 
@@ -19,7 +21,7 @@ interface GameInfoViewOwnProps {
 	isConnected: boolean;
 	culture: string | null;
 	onPasswordChanged: (password: string) => void;
-	onJoin: (hostUri: string, gameId: number, name: string, role: Role) => void;
+	onJoin: (hostUri: string, gameId: number, name: string, role: Role, appDispatch: AppDispatch) => void;
 }
 
 interface GameInfoViewStateProps {
@@ -45,8 +47,8 @@ const mapDispatchToProps = (dispatch: any) => ({
 	onPasswordChanged: (newPassword: string) => {
 		dispatch(onlineActionCreators.passwordChanged(newPassword));
 	},
-	onJoin: (hostUri: string, gameId: number, name: string, role: Role) => {
-		dispatch(onlineActionCreators.joinGame(hostUri, gameId, name, role));
+	onJoin: (hostUri: string, gameId: number, name: string, role: Role, appDispatch: AppDispatch) => {
+		dispatch(onlineActionCreators.joinGame(hostUri, gameId, name, role, appDispatch));
 	}
 });
 
@@ -103,6 +105,8 @@ export function GameInfoView(props: GameInfoViewProps): JSX.Element {
 			</section>
 		);
 	}
+
+	const appDispatch = useAppDispatch();
 
 	const [userName, setUserName] = React.useState(props.login);
 
@@ -214,7 +218,7 @@ export function GameInfoView(props: GameInfoViewProps): JSX.Element {
 								<button
 									type="button"
 									className="join standard"
-									onClick={() => props.onJoin(game.HostUri, game.GameID, userName, Role.Showman)}
+									onClick={() => props.onJoin(game.HostUri, game.GameID, userName, Role.Showman, appDispatch)}
 									title={localization.joinAsShowmanHint}
 									disabled={!props.isConnected ||
 										props.joinGameProgress ||
@@ -227,7 +231,7 @@ export function GameInfoView(props: GameInfoViewProps): JSX.Element {
 								<button
 									type="button"
 									className="join standard"
-									onClick={() => props.onJoin(game.HostUri, game.GameID, userName, Role.Player)}
+									onClick={() => props.onJoin(game.HostUri, game.GameID, userName, Role.Player, appDispatch)}
 									title={localization.joinAsPlayerHint}
 									disabled={!props.isConnected ||
 										props.joinGameProgress ||
@@ -240,7 +244,7 @@ export function GameInfoView(props: GameInfoViewProps): JSX.Element {
 								<button
 									type="button"
 									className="join standard"
-									onClick={() => props.onJoin(game.HostUri, game.GameID, userName, Role.Viewer)}
+									onClick={() => props.onJoin(game.HostUri, game.GameID, userName, Role.Viewer, appDispatch)}
 									title={localization.joinAsViewerHint}
 									disabled={!props.isConnected || props.joinGameProgress || (game.PasswordRequired && !props.password)}
 								>

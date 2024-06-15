@@ -4,10 +4,10 @@ import runCore from './LibraryCore';
 import React from 'react';
 import PlayersView from './components/game/PlayersView';
 import GameTable from './components/gameTable/GameTable';
-import tableActionCreators from './state/table/tableActionCreators';
 import IGameClient from './client/game/IGameClient';
 import settingsActionCreators from './state/settings/settingsActionCreators';
 import AudioController from './components/common/AudioController';
+import { showLogo } from './state/new/tableSlice';
 
 import './style.css';
 
@@ -21,7 +21,7 @@ export function run(elementId: string, game?: IGameClient): void {
 
 	const store = runCore(game);
 
-	store.dispatch(tableActionCreators.showLogo());
+	store.dispatch(showLogo());
 	store.dispatch(settingsActionCreators.onAppSoundChanged(true));
 
 	ReactDOM.render(

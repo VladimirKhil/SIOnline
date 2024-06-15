@@ -5,6 +5,8 @@ import { connect } from 'react-redux';
 import AutoSizedText from '../common/AutoSizedText';
 import ThemeInfo from '../../model/ThemeInfo';
 import roomActionCreators from '../../state/room/roomActionCreators';
+import { useAppDispatch } from '../../state/new/hooks';
+import { AppDispatch } from '../../state/new/store';
 
 import './RoundTable.css';
 
@@ -15,7 +17,7 @@ interface RoundTableProps {
 	actionQuestionIndex: number;
 	isEditEnabled: boolean;
 
-	onSelectQuestion: (themeIndex: number, questionIndex: number) => void;
+	onSelectQuestion: (themeIndex: number, questionIndex: number, appDispatch: AppDispatch) => void;
 	onToggleQuestion: (themeIndex: number, questionIndex: number) => void;
 }
 
@@ -28,70 +30,70 @@ const mapStateToProps = (state: State) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
-	onSelectQuestion: (themeIndex: number, questionIndex: number) => {
-		dispatch((roomActionCreators.selectQuestion(themeIndex, questionIndex) as object) as Action);
+	onSelectQuestion: (themeIndex: number, questionIndex: number, appDispatch: AppDispatch) => {
+		dispatch((roomActionCreators.selectQuestion(themeIndex, questionIndex, appDispatch) as object) as Action);
 	},
 	onToggleQuestion: (themeIndex: number, questionIndex: number) => {
 		dispatch((roomActionCreators.toggleQuestion(themeIndex, questionIndex) as object) as Action);
 	},
 });
 
-export class RoundTable extends React.Component<RoundTableProps> {
-	onSelectQuestion(themeIndex: number, questionIndex: number) {
-		if (this.props.isEditEnabled) {
-			this.props.onToggleQuestion(themeIndex, questionIndex);
+export function RoundTable(props: RoundTableProps) {
+	const appDispatch = useAppDispatch();
+
+	const onSelectQuestion = (themeIndex: number, questionIndex: number) => {
+		if (props.isEditEnabled) {
+			props.onToggleQuestion(themeIndex, questionIndex);
 			return;
 		}
 
-		if (!this.props.isSelectable) {
+		if (!props.isSelectable) {
 			return;
 		}
 
-		const quest = this.props.roundInfo[themeIndex].questions[questionIndex];
+		const quest = props.roundInfo[themeIndex].questions[questionIndex];
 
 		if (quest === -1) {
 			return;
 		}
 
-		this.props.onSelectQuestion(themeIndex, questionIndex);
-	}
+		props.onSelectQuestion(themeIndex, questionIndex, appDispatch);
+	};
 
-	render() {
-		return (
-			<div className={`roundTable ${this.props.isSelectable ? 'selectable' : ''}`}>
-				{this.props.roundInfo.map((themeInfo, themeIndex) => {
-					const className = themeIndex % 2 === 0 ? 'right' : 'left';
-					const hasQuestions = themeInfo.questions.some(q => q > -1);
+	return (
+		<div className={`roundTable ${props.isSelectable ? 'selectable' : ''}`}>
+			{props.roundInfo.map((themeInfo, themeIndex) => {
+				const className = themeIndex % 2 === 0 ? 'right' : 'left';
+				const hasQuestions = themeInfo.questions.some(q => q > -1);
 
-					return (<div key={themeIndex} className={`roundTableRow ${className}`}>
-						<AutoSizedText className="roundTableCell themeHeader" maxFontSize={72}>
-							{hasQuestions ? themeInfo.name : ''}
-						</AutoSizedText>
+				return (<div key={themeIndex} className={`roundTableRow ${className}`}>
+					<AutoSizedText className="roundTableCell themeHeader" maxFontSize={72}>
+						{hasQuestions ? themeInfo.name : ''}
+					</AutoSizedText>
 
-						{themeInfo.questions.map((question, questionIndex) => {
-							const isActive = question > -1;
+					{themeInfo.questions.map((question, questionIndex) => {
+						const isActive = question > -1;
 
-							const isBlinking = themeIndex === this.props.activeThemeIndex &&
-								questionIndex === this.props.actionQuestionIndex;
+						const isBlinking = themeIndex === props.activeThemeIndex &&
+							questionIndex === props.actionQuestionIndex;
 
-							const questionClassName = 'roundTableCell questHeader ' +
-								`${this.props.isEditEnabled ? 'editable' : ''} ${isActive ? 'active' : ''} ${isBlinking ? 'blink' : ''}`;
+						const questionClassName = 'roundTableCell questHeader ' +
+							`${props.isEditEnabled ? 'editable' : ''} ${isActive ? 'active' : ''} ${isBlinking ? 'blink' : ''}`;
 
-							return (
-								<AutoSizedText
-									key={questionIndex}
-									className={questionClassName}
-									maxFontSize={144}
-									onClick={() => this.onSelectQuestion(themeIndex, questionIndex)}>
-									{isActive ? question.toString() : ''}
-								</AutoSizedText>
-							);
-						})}
-					</div>);
-				})}
-			</div>
-		);
-	}
+						return (
+							<AutoSizedText
+								key={questionIndex}
+								className={questionClassName}
+								maxFontSize={144}
+								onClick={() => onSelectQuestion(themeIndex, questionIndex)}>
+								{isActive ? question.toString() : ''}
+							</AutoSizedText>
+						);
+					})}
+				</div>);
+			})}
+		</div>
+	);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(RoundTable);

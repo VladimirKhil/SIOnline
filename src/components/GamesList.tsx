@@ -20,7 +20,6 @@ interface GamesListOwnProps {
 	onToggleFilterItem: (gamesFilterItem: GamesFilter) => void;
 	onGamesSearchChanged: (search: string) => void;
 	onSelectGame: (gameId: number, showInfo: boolean) => void;
-	onNewAutoSearchGame: () => void;
 	onNewGame: () => void;
 }
 
@@ -55,9 +54,6 @@ const mapDispatchToProps = (dispatch: any) => ({
 		if (showInfo) {
 			dispatch(uiActionCreators.onOnlineModeChanged(OnlineMode.GameInfo));
 		}
-	},
-	onNewAutoSearchGame: () => {
-		dispatch(onlineActionCreators.createNewAutoGame());
 	},
 	onNewGame: () => {
 		dispatch(onlineActionCreators.newGame());

@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import State from '../../../state/State';
-import AnswerOption from '../../../model/AnswerOption';
 import ContentItem from '../../../model/ContentItem';
 import ContentType from '../../../model/enums/ContentType';
 import TextContent from '../TextContent';
@@ -10,26 +9,24 @@ import ItemState from '../../../model/enums/ItemState';
 import { Action, Dispatch } from 'redux';
 import roomActionCreators from '../../../state/room/roomActionCreators';
 import AutoSizedText from '../../common/AutoSizedText';
+import { useAppDispatch, useAppSelector } from '../../../state/new/hooks';
+import { AppDispatch, RootState } from '../../../state/new/store';
 
 import './AnswerOptions.css';
 
 interface AnswerOptionsProps {
-	options: AnswerOption[];
-	isSelectable: boolean;
 	displayAnswerOptionsLabels: boolean;
 
-	onSelectAnswerOption: (label: string) => void;
+	onSelectAnswerOption: (label: string, appDispatch: AppDispatch) => void;
 }
 
 const mapStateToProps = (state: State) => ({
-	options: state.table.answerOptions,
-	isSelectable: state.table.isSelectable,
 	displayAnswerOptionsLabels: state.room.settings.displayAnswerOptionsLabels,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
-	onSelectAnswerOption: (label: string) => {
-		dispatch(roomActionCreators.selectAnswerOption(label) as unknown as Action);
+	onSelectAnswerOption: (label: string, appDispatch: AppDispatch) => {
+		dispatch(roomActionCreators.selectAnswerOption(label, appDispatch) as unknown as Action);
 	},
 });
 
@@ -47,8 +44,11 @@ function getContent(content: ContentItem): JSX.Element | null {
 }
 
 export function AnswerOptions(props: AnswerOptionsProps) {
-	function getOptionClass(state: ItemState) {
-		switch (state) {
+	const state = useAppSelector((rootState: RootState) => rootState.table);
+	const appDispatch = useAppDispatch();
+
+	function getOptionClass(itemState: ItemState) {
+		switch (itemState) {
 			case ItemState.Active:
 				return 'active';
 
@@ -64,9 +64,9 @@ export function AnswerOptions(props: AnswerOptionsProps) {
 	}
 
 	return (
-		<div className={`answerOptions ${props.isSelectable ? 'selectable' : ''}`}>
-			{props.options.map((o, i) => (
-				<div key={i} className={`answerOption ${getOptionClass(o.state)}`} onClick={() => props.onSelectAnswerOption(o.label)}>
+		<div className={`answerOptions ${state.isSelectable ? 'selectable' : ''}`}>
+			{state.answerOptions.map((o, i) => (
+				<div key={i} className={`answerOption ${getOptionClass(o.state)}`} onClick={() => props.onSelectAnswerOption(o.label, appDispatch)}>
 					{props.displayAnswerOptionsLabels ? <div className='optionLabel'>
 						<AutoSizedText maxFontSize={50}>{o.label}</AutoSizedText>
 					</div> : null}

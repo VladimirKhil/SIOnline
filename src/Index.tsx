@@ -310,7 +310,8 @@ async function run(stateManager: IStateManager) {
 	await dataContext.state.initAsync(store);
 
 	const initialView = getInitialView(dataContext.state.loadNavigationState() as INavigationState);
-	store.dispatch(actionCreators.init(initialView) as unknown as Action);
+	const appDispatch = store.dispatch;
+	store.dispatch(actionCreators.init(initialView, appDispatch) as unknown as Action);
 }
 
 const urlParams = new URLSearchParams(window.location.hash.substring(1));

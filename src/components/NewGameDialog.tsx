@@ -16,6 +16,8 @@ import onlineActionCreators from '../state/online/onlineActionCreators';
 import isWindowsOS from '../utils/isWindowsOS';
 import PackageFileSelector from './PackageFileSelector';
 import { INavigationState } from '../state/ui/UIState';
+import { AppDispatch } from '../state/new/store';
+import { useAppDispatch } from '../state/new/hooks';
 
 import './NewGameDialog.css';
 
@@ -49,7 +51,7 @@ interface NewGameDialogProps {
 	showmanTypeChanged: (isHuman: boolean) => void;
 	onPlayersCountChanged: (gamePlayersCount: number) => void;
 	onHumanPlayersCountChanged: (gameHumanPlayersCount: number) => void;
-	onCreate: (isSingleGame: boolean) => void;
+	onCreate: (isSingleGame: boolean, appDispatch: AppDispatch) => void;
 	onShowSettings: () => void;
 	onClose: () => void;
 }
@@ -108,8 +110,8 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	onShowSettings: () => {
 		dispatch(uiActionCreators.showSettings(true));
 	},
-	onCreate: (isSingleGame: boolean) => {
-		dispatch(onlineActionCreators.createNewGame(isSingleGame) as unknown as Action);
+	onCreate: (isSingleGame: boolean, appDispatch: AppDispatch) => {
+		dispatch(onlineActionCreators.createNewGame(isSingleGame, appDispatch) as unknown as Action);
 	},
 });
 
@@ -129,6 +131,7 @@ function getPackageName(packageType: PackageType, packageName: string, packageDa
 export function NewGameDialog(props: NewGameDialogProps) {
 	const [isSIStorageOpen, setIsSIStorageOpen] = React.useState(false);
 	const childRef = React.useRef<HTMLInputElement>(null);
+	const appDispatch = useAppDispatch();
 
 	React.useEffect(() => {
 		if (props.navigation.packageUri) {
@@ -157,7 +160,7 @@ export function NewGameDialog(props: NewGameDialogProps) {
 
 	const onKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
 		if (e.key === Constants.KEY_ENTER_NEW) {
-			props.onCreate(props.isSingleGame);
+			props.onCreate(props.isSingleGame, appDispatch);
 		}
 	};
 
@@ -402,7 +405,7 @@ export function NewGameDialog(props: NewGameDialogProps) {
 						type="button"
 						className="startGame standard"
 						disabled={!props.isConnected || props.inProgress}
-						onClick={() => props.onCreate(props.isSingleGame)}
+						onClick={() => props.onCreate(props.isSingleGame, appDispatch)}
 					>
 						{localization.startGame}
 					</button>

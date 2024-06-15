@@ -11,6 +11,8 @@ import { Action } from 'redux';
 import { INavigationState } from '../../../state/ui/UIState';
 import uiActionCreators from '../../../state/ui/uiActionCreators';
 import actionCreators from '../../../logic/actionCreators';
+import { AppDispatch } from '../../../state/new/store';
+import { useAppDispatch } from '../../../state/new/hooks';
 
 import './MainMenu.css';
 import exitImg from '../../../../assets/images/exit.png';
@@ -24,7 +26,7 @@ interface MainMenuProps {
 	userName: string;
 	avatar: string | null;
 
-	anyonePlay: () => void;
+	anyonePlay: (appDispatch: AppDispatch) => void;
 	onSoundPlay: (sound: GameSound) => void;
 	onSoundPause: () => void;
 	navigate: (navigation: INavigationState) => void;
@@ -42,8 +44,8 @@ const mapStateToProps = (state: State) => ({
 });
 
 const mapDispatchToProps = (dispatch: any) => ({
-	anyonePlay: () => {
-		dispatch(onlineActionCreators.createNewAutoGame());
+	anyonePlay: (appDispatch: AppDispatch) => {
+		dispatch(onlineActionCreators.createNewAutoGame(appDispatch));
 	},
 	onSoundPlay: (sound: GameSound) => {
 		dispatch(commonActionCreators.playAudio(sound, true));
@@ -61,6 +63,7 @@ const mapDispatchToProps = (dispatch: any) => ({
 
 export function MainMenu(props: MainMenuProps): JSX.Element {
 	const [showLicense, setShowLicense] = React.useState(false);
+	const appDispatch = useAppDispatch();
 
 	React.useEffect(() => {
 		if (props.mainMenuSound) {
@@ -123,7 +126,7 @@ export function MainMenu(props: MainMenuProps): JSX.Element {
 					type='button'
 					className='standard welcomeRow right'
 					disabled={!props.isConnected}
-					onClick={props.anyonePlay}>
+					onClick={() => props.anyonePlay(appDispatch)}>
 					{localization.anyonePlay}
 				</button>
 

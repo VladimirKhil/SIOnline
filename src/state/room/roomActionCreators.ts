@@ -12,7 +12,6 @@ import PersonInfo from '../../model/PersonInfo';
 import PlayerInfo from '../../model/PlayerInfo';
 import Role from '../../model/Role';
 import PlayerStates from '../../model/enums/PlayerStates';
-import tableActionCreators from '../table/tableActionCreators';
 import StakeTypes from '../../model/enums/StakeTypes';
 import Constants from '../../model/enums/Constants';
 import MessageLevel from '../../model/enums/MessageLevel';
@@ -22,6 +21,8 @@ import commonActionCreators from '../common/commonActionCreators';
 import Path from '../../model/enums/Path';
 import actionCreators from '../../logic/actionCreators';
 import AppSettings from '../../model/AppSettings';
+import { AppDispatch } from '../new/store';
+import { isSelectableChanged, tableReset } from '../new/tableSlice';
 
 let timerRef: number | null = null;
 
@@ -149,7 +150,7 @@ const playerSelected: ActionCreator<ThunkAction<void, State, DataContext, Action
 	}
 };
 
-const exitGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
+const exitGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (appDispatch: AppDispatch) => async (
 	dispatch: Dispatch<Action>,
 	getState: () => State,
 	dataContext: DataContext
@@ -170,7 +171,7 @@ const exitGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (
 		timerRef = null;
 	}
 
-	dispatch(tableActionCreators.tableReset());
+	appDispatch(tableReset());
 	dispatch(clearRoomChat());
 
 	dispatch(stopTimer(0));
@@ -453,7 +454,10 @@ const decisionNeededChanged: ActionCreator<RunActions.DecisionNeededChangedActio
 	type: RunActions.RoomActionTypes.DecisionNeededChanged, decisionNeeded
 });
 
-const selectQuestion: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (themeIndex: number, questionIndex: number) => async (
+const selectQuestion: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (
+	themeIndex: number,
+	questionIndex: number,
+	appDispatch: AppDispatch) => async (
 	dispatch: Dispatch<Action>,
 	getState: () => State, dataContext: DataContext
 ) => {
@@ -468,7 +472,7 @@ const selectQuestion: ActionCreator<ThunkAction<void, State, DataContext, Action
 
 		if (question > -1) {
 			if (await dataContext.game.selectQuestion(themeIndex, questionIndex)) {
-				dispatch(tableActionCreators.isSelectableChanged(false));
+				appDispatch(isSelectableChanged(false));
 				dispatch(decisionNeededChanged(false));
 			}
 		}
@@ -486,7 +490,7 @@ const toggleQuestion: ActionCreator<ThunkAction<void, State, DataContext, Action
 	}
 };
 
-const selectTheme: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (themeIndex: number) => async (
+const selectTheme: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (themeIndex: number, appDispatch: AppDispatch) => async (
 	dispatch: Dispatch<Action>,
 	getState: () => State, dataContext: DataContext
 ) => {
@@ -498,13 +502,13 @@ const selectTheme: ActionCreator<ThunkAction<void, State, DataContext, Action>> 
 
 	if (theme) {
 		if (await dataContext.game.deleteTheme(themeIndex)) {
-			dispatch(tableActionCreators.isSelectableChanged(false));
+			appDispatch(isSelectableChanged(false));
 			dispatch(decisionNeededChanged(false));
 		}
 	}
 };
 
-const selectAnswerOption: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (label: string) => async (
+const selectAnswerOption: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (label: string, appDispatch: AppDispatch) => async (
 	dispatch: Dispatch<Action>,
 	getState: () => State, dataContext: DataContext
 ) => {
@@ -513,7 +517,7 @@ const selectAnswerOption: ActionCreator<ThunkAction<void, State, DataContext, Ac
 	}
 
 	if (await dataContext.game.gameServerClient.msgAsync(Messages.Answer, label)) {
-		dispatch(tableActionCreators.isSelectableChanged(false));
+		appDispatch(isSelectableChanged(false));
 		dispatch(decisionNeededChanged(false));
 	}
 };
@@ -827,14 +831,6 @@ const themeNameChanged: ActionCreator<RunActions.ThemeNameChangedAction> = (them
 	type: RunActions.RoomActionTypes.ThemeNameChanged, themeName
 });
 
-const updateCaption: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (questionCaption: string) => (
-	dispatch: Dispatch<any>,
-	getState: () => State
-) => {
-	const { themeName } = getState().room.stage;
-	dispatch(tableActionCreators.captionChanged(`${themeName}, ${questionCaption}`));
-};
-
 const moveNext: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
 	_dispatch: Dispatch<any>,
 	_getState: () => State,
@@ -1069,7 +1065,6 @@ const roomActionCreators = {
 	operationError,
 	hostNameChanged,
 	themeNameChanged,
-	updateCaption,
 	moveNext,
 	navigateToRound,
 	isReadyChanged,

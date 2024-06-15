@@ -8,6 +8,7 @@ import ClientController from '../logic/ClientController';
 import roomActionCreators from '../state/room/roomActionCreators';
 import ISIHostClient from '../client/ISIHostClient';
 import getErrorMessage from './ErrorHelpers';
+import { AppDispatch } from '../state/new/store';
 
 export const activeSIHostConnections: string[] = [];
 
@@ -17,9 +18,10 @@ export function attachSIHostListeners(
 	gameClient: ISIHostClient,
 	connection: signalR.HubConnection,
 	dispatch: Dispatch<AnyAction>,
+	appDispatch: AppDispatch,
 	controller: ClientController
 ): void {
-	connection.on('Receive', (message: Message) => messageProcessor(controller, dispatch, message));
+	connection.on('Receive', (message: Message) => messageProcessor(controller, dispatch, appDispatch, message));
 
 	connection.on('Disconnect', () => {
 		dispatch(roomActionCreators.onKicked());

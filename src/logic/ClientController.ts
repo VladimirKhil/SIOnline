@@ -5,7 +5,6 @@ import ContentGroup from '../model/ContentGroup';
 import Constants from '../model/enums/Constants';
 import ContentInfo from '../model/ContentInfo';
 import ContentType from '../model/enums/ContentType';
-import tableActionCreators from '../state/table/tableActionCreators';
 import AnswerOption from '../model/AnswerOption';
 import ItemState from '../model/enums/ItemState';
 import LayoutMode from '../model/enums/LayoutMode';
@@ -24,6 +23,34 @@ import TableMode from '../model/enums/TableMode';
 import Role from '../model/Role';
 import Sex from '../model/enums/Sex';
 import RoundRules from '../model/enums/RoundRules';
+import { AppDispatch } from '../state/new/store';
+
+import { answerOptions,
+	appendPartialText,
+	blinkQuestion,
+	blinkTheme,
+	canPressChanged,
+	captionChanged,
+	endQuestion,
+	isSelectableChanged,
+	prependTextChanged,
+	questionReset,
+	removeTheme,
+	rightOption,
+	setAnswerView,
+	showBackgroundAudio,
+	showContent,
+	showGameThemes,
+	showLogo,
+	showObject,
+	showPartialText,
+	showQuestionType,
+	showRoundTable,
+	showRoundThemes,
+	showText,
+	updateOption,
+	updateOptionState,
+	updateQuestion } from '../state/new/tableSlice';
 
 function initGroup(group: ContentGroup) {
 	let bestRowCount = 1;
@@ -62,7 +89,11 @@ function getRuleString(rules: string) {
 }
 
 export default class ClientController {
-	constructor(private dispatch: Dispatch<AnyAction>, private getState: () => State, private dataContext: DataContext) {}
+	constructor(
+		private dispatch: Dispatch<AnyAction>,
+		private appDispatch: AppDispatch,
+		private getState: () => State,
+		private dataContext: DataContext) {}
 
 	preprocessServerUri(uri: string) {
 		const result = uri.replace(
@@ -179,7 +210,7 @@ export default class ClientController {
 			initGroup(group);
 		}
 
-		this.dispatch(tableActionCreators.showContent(groups));
+		this.appDispatch(showContent(groups));
 
 		if (runContentLoadTimer) {
 			// TODO
@@ -223,7 +254,7 @@ export default class ClientController {
 	}
 
 	onGameThemes(gameThemes: string[]) {
-		this.dispatch(tableActionCreators.showGameThemes(gameThemes));
+		this.appDispatch(showGameThemes(gameThemes));
 	}
 
 	onOptionChanged(name: string, value: string) {
@@ -272,7 +303,7 @@ export default class ClientController {
 
 	onPackage(packageName: string, packageLogo: string | null) {
 		if (packageLogo) {
-			this.dispatch(tableActionCreators.captionChanged(localization.package));
+			this.appDispatch(captionChanged(localization.package));
 
 			this.onContent('screen', [{
 				type: 'image',
@@ -282,7 +313,7 @@ export default class ClientController {
 				value: packageName
 			}]);
 		} else {
-			this.dispatch(tableActionCreators.showObject(localization.package, packageName, ''));
+			this.appDispatch(showObject({ header: localization.package, text: packageName, hint: '' }));
 		}
 	}
 
@@ -293,13 +324,13 @@ export default class ClientController {
 
 		const roundThemes: ThemeInfo[] = roundThemesNames.map(t => ({ name: t, questions: [] }));
 
-		this.dispatch(tableActionCreators.showRoundThemes(
+		this.appDispatch(showRoundThemes({
 			roundThemes,
-			playMode === ThemesPlayMode.AllTogether,
-			playMode !== ThemesPlayMode.None
-		));
+			isFinal: playMode === ThemesPlayMode.AllTogether,
+			display: playMode !== ThemesPlayMode.None,
+		}));
 
-		this.dispatch(tableActionCreators.questionReset());
+		this.appDispatch(questionReset());
 	}
 
 	onStage(stage: string, stageName: string, stageIndex: number, rules: string) {
@@ -316,7 +347,7 @@ export default class ClientController {
 			this.playGameSound(GameSound.ROUND_BEGIN);
 			const { roundTail } = localization;
 			const roundName = stageName.endsWith(roundTail) ? stageName.substring(0, stageName.length - roundTail.length) : stageName;
-			this.dispatch(tableActionCreators.showObject(localization.round, roundName, getRuleString(rules)));
+			this.appDispatch(showObject({ header: localization.round, text: roundName, hint: getRuleString(rules) }));
 			this.dispatch(roomActionCreators.playersStateCleared());
 
 			if (stage === GameStage.Round) {
@@ -325,15 +356,15 @@ export default class ClientController {
 				}
 			}
 
-			this.dispatch(tableActionCreators.captionChanged(''));
+			this.appDispatch(captionChanged(''));
 		} else if (stage === GameStage.Begin || stage === GameStage.After) {
-			this.dispatch(tableActionCreators.showLogo());
-			this.dispatch(tableActionCreators.captionChanged(stage === GameStage.Begin ? localization.gameStarted : localization.gameFinished));
+			this.appDispatch(showLogo());
+			this.appDispatch(captionChanged(stage === GameStage.Begin ? localization.gameStarted : localization.gameFinished));
 		}
 
 		this.dispatch(roomActionCreators.gameStateCleared());
-		this.dispatch(tableActionCreators.isSelectableChanged(false));
-		this.dispatch(tableActionCreators.canPressChanged(false));
+		this.appDispatch(isSelectableChanged(false));
+		this.appDispatch(canPressChanged(false));
 	}
 
 	onStageInfo(stage: string, _stageName: string, stageIndex: number) {
@@ -344,7 +375,7 @@ export default class ClientController {
 		}
 
 		if (stage === GameStage.After) {
-			this.dispatch(tableActionCreators.showLogo());
+			this.appDispatch(showLogo());
 		}
 	}
 
@@ -367,7 +398,7 @@ export default class ClientController {
 
 				if (backgroundContent.type === 'audio') {
 					const uri = this.preprocessServerUri(backgroundContent.value);
-					this.dispatch(tableActionCreators.showBackgroundAudio(uri));
+					this.appDispatch(showBackgroundAudio(uri));
 				}
 				break;
 
@@ -377,28 +408,28 @@ export default class ClientController {
 	}
 
 	onAnswerOption(index: number, label: string, contentType: string, contentValue: string) {
-		this.dispatch(tableActionCreators.updateOption(
+		this.appDispatch(updateOption({
 			index,
 			label,
-			contentType === 'text' ? ContentType.Text : ContentType.Image,
-			contentValue,
-		));
+			contentType: contentType === 'text' ? ContentType.Text : ContentType.Image,
+			value: contentValue,
+		}));
 	}
 
 	onThemeComments(themeComments: string) {
-		this.dispatch(tableActionCreators.prependTextChanged(themeComments));
+		this.appDispatch(prependTextChanged(themeComments));
 	}
 
 	onRightAnswerStart(rightAnswer: string) {
-		this.dispatch(tableActionCreators.setAnswerView(rightAnswer));
+		this.appDispatch(setAnswerView(rightAnswer));
 	}
 
 	onContentAppend(placement: string, layoutId: string, contentType: string, contentValue: string) {
-		this.dispatch(tableActionCreators.appendPartialText(contentValue));
+		this.appDispatch(appendPartialText(contentValue));
 	}
 
 	onContentShape(text: string) {
-		this.dispatch(tableActionCreators.showPartialText(text));
+		this.appDispatch(showPartialText(text));
 
 		const groups: ContentGroup[] = [{
 			content: [
@@ -413,7 +444,7 @@ export default class ClientController {
 			columnCount: 1
 		}];
 
-		this.dispatch(tableActionCreators.showContent(groups));
+		this.appDispatch(showContent(groups));
 	}
 
 	onContentState(placement: string, layoutId: number, itemState: ItemState) {
@@ -424,7 +455,7 @@ export default class ClientController {
 			layoutId > 0 &&
 			layoutId <= state.table.answerOptions.length &&
 			itemState) {
-			this.dispatch(tableActionCreators.updateOptionState(layoutId - 1, itemState));
+			this.appDispatch(updateOptionState({ index: layoutId - 1, state: itemState }));
 		}
 	}
 
@@ -441,20 +472,20 @@ export default class ClientController {
 			});
 		}
 
-		this.dispatch(tableActionCreators.answerOptions(questionHasScreenContent, options));
+		this.appDispatch(answerOptions({ questionHasScreenContent, options }));
 	}
 
 	onBeginPressButton() {
-		this.dispatch(tableActionCreators.canPressChanged(true));
+		this.appDispatch(canPressChanged(true));
 	}
 
 	onEndPressButtonByPlayer(index: number) {
-		this.dispatch(tableActionCreators.canPressChanged(false));
+		this.appDispatch(canPressChanged(false));
 		this.dispatch(roomActionCreators.playerStateChanged(index, PlayerStates.Press));
 	}
 
 	onEndPressButtonByTimeout() {
-		this.dispatch(tableActionCreators.canPressChanged(false));
+		this.appDispatch(canPressChanged(false));
 		this.dispatch(roomActionCreators.stopTimer(1));
 		this.playGameSound(GameSound.QUESTION_NOANSWERS);
 	}
@@ -479,24 +510,24 @@ export default class ClientController {
 	}
 
 	onTable(table: ThemeInfo[], isFinal: boolean) {
-		this.dispatch(tableActionCreators.showRoundThemes(table, isFinal, false));
+		this.appDispatch(showRoundThemes({ roundThemes: table, isFinal, display: false }));
 	}
 
 	onShowTable() {
-		this.dispatch(tableActionCreators.showRoundTable());
+		this.appDispatch(showRoundTable());
 		this.dispatch(commonActionCreators.stopAudio());
-		this.dispatch(tableActionCreators.canPressChanged(false));
+		this.appDispatch(canPressChanged(false));
 		this.dispatch(roomActionCreators.stopTimer(1));
 	}
 
 	onTableCaption(caption: string) {
-		this.dispatch(tableActionCreators.captionChanged(caption));
+		this.appDispatch(captionChanged(caption));
 	}
 
 	onQuestionSelected(themeIndex: number, questionIndex: number) {
 		this.dispatch(roomActionCreators.playersStateCleared());
 		this.dispatch(roomActionCreators.afterQuestionStateChanged(false));
-		this.dispatch(tableActionCreators.questionReset());
+		this.appDispatch(questionReset());
 
 		const themeInfo = this.getState().table.roundInfo[themeIndex];
 
@@ -505,15 +536,15 @@ export default class ClientController {
 
 			if (price) {
 				this.dispatch(roomActionCreators.currentPriceChanged(price));
-				this.dispatch(tableActionCreators.captionChanged(`${themeInfo.name}, ${price}`));
-				this.dispatch(tableActionCreators.blinkQuestion(themeIndex, questionIndex));
+				this.appDispatch(captionChanged(`${themeInfo.name}, ${price}`));
+				this.appDispatch(blinkQuestion({ themeIndex, questionIndex }));
 
 				setTimeout(
 					() => {
-						this.dispatch(tableActionCreators.updateQuestion(themeIndex, questionIndex, -1));
+						this.appDispatch(updateQuestion({ themeIndex, questionIndex, price: -1 }));
 
 						if (this.getState().table.mode === TableMode.RoundTable) {
-							this.dispatch(tableActionCreators.showObject(themeInfo.name, price, ''));
+							this.appDispatch(showObject({ header: themeInfo.name, text: price.toString(), hint: '' }));
 						}
 					},
 					500
@@ -525,19 +556,20 @@ export default class ClientController {
 	onTheme(themeName: string) {
 		this.dispatch(roomActionCreators.playersStateCleared());
 		this.dispatch(roomActionCreators.showmanReplicChanged(''));
-		this.dispatch(tableActionCreators.showObject(localization.theme, themeName, ''));
+		this.appDispatch(showObject({ header: localization.theme, text: themeName, hint: '' }));
 		this.dispatch(roomActionCreators.afterQuestionStateChanged(false));
 		this.dispatch(roomActionCreators.themeNameChanged(themeName));
-		this.dispatch(tableActionCreators.canPressChanged(false));
+		this.appDispatch(canPressChanged(false));
 		this.dispatch(roomActionCreators.stopTimer(1));
 	}
 
 	onQuestion(questionPrice: string) {
+		const { themeName } = this.getState().room.stage;
 		this.dispatch(roomActionCreators.playersStateCleared());
-		this.dispatch(tableActionCreators.showObject(this.getState().room.stage.themeName, questionPrice, ''));
 		this.dispatch(roomActionCreators.afterQuestionStateChanged(false));
-		this.dispatch(roomActionCreators.updateCaption(questionPrice) as any);
-		this.dispatch(tableActionCreators.questionReset());
+		this.appDispatch(showObject({ header: themeName, text: questionPrice, hint: '' }));
+		this.appDispatch(captionChanged(`${themeName}, ${questionPrice}`));
+		this.appDispatch(questionReset());
 	}
 
 	onTimerMaximumChanged(timerIndex: number, maximum: number) {
@@ -584,11 +616,11 @@ export default class ClientController {
 			case 'stake':
 				this.playGameSound(GameSound.QUESTION_STAKE);
 
-				this.dispatch(tableActionCreators.showQuestionType(
-					localization.question,
-					localization.questionTypeStake,
-					localization.questionTypeStakeHint,
-				));
+				this.appDispatch(showQuestionType({
+					header: localization.question,
+					text: localization.questionTypeStake,
+					hint: localization.questionTypeStakeHint,
+				}));
 
 				break;
 
@@ -597,23 +629,23 @@ export default class ClientController {
 			case 'secretNoQuestion':
 				this.playGameSound(GameSound.QUESTION_SECRET);
 
-				this.dispatch(tableActionCreators.showQuestionType(
-					localization.question,
-					localization.questionTypeSecret,
-					localization.questionTypeSecretHint,
-				));
+				this.appDispatch(showQuestionType({
+					header: localization.question,
+					text: localization.questionTypeSecret,
+					hint: localization.questionTypeSecretHint,
+				}));
 
-				this.dispatch(tableActionCreators.questionReset());
+				this.appDispatch(questionReset());
 				break;
 
 			case 'noRisk':
 				this.playGameSound(GameSound.QUESTION_NORISK);
 
-				this.dispatch(tableActionCreators.showQuestionType(
-					localization.question,
-					localization.questionTypeNoRisk,
-					localization.questionTypeNoRiskHint,
-				));
+				this.appDispatch(showQuestionType({
+					header: localization.question,
+					text: localization.questionTypeNoRisk,
+					hint: localization.questionTypeNoRiskHint,
+				}));
 
 				break;
 
@@ -632,11 +664,11 @@ export default class ClientController {
 		}
 
 		this.playGameSound(GameSound.FINAL_DELETE);
-		this.dispatch(tableActionCreators.blinkTheme(themeIndex));
+		this.appDispatch(blinkTheme(themeIndex));
 
 		setTimeout(
 			() => {
-				this.dispatch(tableActionCreators.removeTheme(themeIndex));
+				this.appDispatch(removeTheme(themeIndex));
 			},
 			600
 		);
@@ -644,10 +676,10 @@ export default class ClientController {
 
 	onRightAnswer(answer: string) {
 		if (this.getState().table.layoutMode === LayoutMode.Simple) {
-			this.dispatch(tableActionCreators.showText(answer));
-			this.dispatch(tableActionCreators.captionChanged(localization.rightAnswer));
+			this.appDispatch(showText(answer));
+			this.appDispatch(captionChanged(localization.rightAnswer));
 		} else {
-			this.dispatch(tableActionCreators.rightOption(answer));
+			this.appDispatch(rightOption(answer));
 		}
 
 		this.dispatch(roomActionCreators.afterQuestionStateChanged(true));
@@ -655,7 +687,7 @@ export default class ClientController {
 
 	onChoose() {
 		this.dispatch(roomActionCreators.decisionNeededChanged(true));
-		this.dispatch(tableActionCreators.isSelectableChanged(true));
+		this.appDispatch(isSelectableChanged(true));
 	}
 
 	onStop() {
@@ -663,7 +695,7 @@ export default class ClientController {
 		this.dispatch(roomActionCreators.stopTimer(1));
 		this.dispatch(roomActionCreators.stopTimer(2));
 
-		this.dispatch(tableActionCreators.showLogo());
+		this.appDispatch(showLogo());
 	}
 
 	onToggle(themeIndex: number, questionIndex: number, price: number) {
@@ -673,7 +705,7 @@ export default class ClientController {
 			const existingPrice = themeInfo.questions[questionIndex];
 
 			if (existingPrice) {
-				this.dispatch(tableActionCreators.updateQuestion(themeIndex, questionIndex, price));
+				this.appDispatch(updateQuestion({ themeIndex, questionIndex, price }));
 			}
 		}
 	}
@@ -681,7 +713,7 @@ export default class ClientController {
 	onQuestionEnd() {
 		this.dispatch(roomActionCreators.afterQuestionStateChanged(true));
 		this.dispatch(roomActionCreators.isQuestionChanged(false));
-		this.dispatch(tableActionCreators.endQuestion());
+		this.appDispatch(endQuestion());
 	}
 
 	addPlayerTable() {
@@ -707,9 +739,9 @@ export default class ClientController {
 
 		if (currentTime.length > 2) {
 			if (isPaused) {
-				this.dispatch(roomActionCreators.pauseTimer(0, currentTime[1], true));
-				this.dispatch(roomActionCreators.pauseTimer(1, currentTime[2], true));
-				this.dispatch(roomActionCreators.pauseTimer(2, currentTime[3], true));
+				this.dispatch(roomActionCreators.pauseTimer(0, currentTime[0], true));
+				this.dispatch(roomActionCreators.pauseTimer(1, currentTime[1], true));
+				this.dispatch(roomActionCreators.pauseTimer(2, currentTime[2], true));
 			} else {
 				this.dispatch(roomActionCreators.resumeTimer(0, true));
 				this.dispatch(roomActionCreators.resumeTimer(1, true));

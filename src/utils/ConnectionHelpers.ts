@@ -1,14 +1,10 @@
 import * as signalR from '@microsoft/signalr';
 import { Dispatch, AnyAction } from 'redux';
 import localization from '../model/resources/localization';
-import Message from '../client/contracts/Message';
-import messageProcessor from '../logic/messageProcessor';
 import GameInfo from '../client/contracts/GameInfo';
 import commonActionCreators from '../state/common/commonActionCreators';
 import onlineActionCreators from '../state/online/onlineActionCreators';
 import IGameServerClient from '../client/IGameServerClient';
-import ClientController from '../logic/ClientController';
-import roomActionCreators from '../state/room/roomActionCreators';
 import getErrorMessage from './ErrorHelpers';
 
 export const activeConnections: string[] = [];
@@ -18,20 +14,13 @@ const detachedConnections: signalR.HubConnection[] = [];
 export function attachListeners(
 	gameClient: IGameServerClient,
 	connection: signalR.HubConnection,
-	dispatch: Dispatch<AnyAction>,
-	controller: ClientController): void {
+	dispatch: Dispatch<AnyAction>): void {
 	connection.on('Joined', (login: string) => dispatch(onlineActionCreators.userJoined(login)));
 	connection.on('Leaved', (login: string) => dispatch(onlineActionCreators.userLeaved(login)));
 	connection.on('Say', (name: string, text: string) => dispatch(onlineActionCreators.receiveMessage(name, text)));
 	connection.on('GameCreated', (game: GameInfo) => dispatch(onlineActionCreators.gameCreated(game)));
 	connection.on('GameChanged', (game: GameInfo) => dispatch(onlineActionCreators.gameChanged(game)));
 	connection.on('GameDeleted', (id: number) => dispatch(onlineActionCreators.gameDeleted(id)));
-
-	connection.on('Receive', (message: Message) => messageProcessor(controller, dispatch, message));
-
-	connection.on('Disconnect', () => {
-		dispatch(roomActionCreators.onKicked());
-	});
 
 	connection.onreconnecting((e) => {
 		if (detachedConnections.includes(connection)) {
@@ -78,8 +67,6 @@ export function detachListeners(connection: signalR.HubConnection): void {
 	connection.off('GameCreated');
 	connection.off('GameChanged');
 	connection.off('GameDeleted');
-	connection.off('Receive');
-	connection.off('Disconnect');
 
 	detachedConnections.push(connection);
 }
