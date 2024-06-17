@@ -171,7 +171,6 @@ const exitGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (
 		timerRef = null;
 	}
 
-	appDispatch(tableReset());
 	dispatch(clearRoomChat());
 
 	dispatch(stopTimer(0));

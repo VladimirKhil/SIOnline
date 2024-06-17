@@ -24,6 +24,8 @@ import Role from '../model/Role';
 import Sex from '../model/enums/Sex';
 import RoundRules from '../model/enums/RoundRules';
 import { AppDispatch } from '../state/new/store';
+import TimerStates from '../model/enums/TimeStates';
+import TimerInfo from '../model/TimerInfo';
 
 import { answerOptions,
 	appendPartialText,
@@ -33,9 +35,11 @@ import { answerOptions,
 	captionChanged,
 	endQuestion,
 	isSelectableChanged,
+	pauseLoadTimer,
 	prependTextChanged,
 	questionReset,
 	removeTheme,
+	resumeLoadTimer,
 	rightOption,
 	setAnswerView,
 	showBackgroundAudio,
@@ -48,6 +52,7 @@ import { answerOptions,
 	showRoundTable,
 	showRoundThemes,
 	showText,
+	startLoadTimer,
 	updateOption,
 	updateOptionState,
 	updateQuestion } from '../state/new/tableSlice';
@@ -93,7 +98,9 @@ export default class ClientController {
 		private dispatch: Dispatch<AnyAction>,
 		private appDispatch: AppDispatch,
 		private getState: () => State,
-		private dataContext: DataContext) {}
+		private dataContext: DataContext,
+		private loadStart: Date | null = null,
+	) {}
 
 	preprocessServerUri(uri: string) {
 		const result = uri.replace(
@@ -213,7 +220,8 @@ export default class ClientController {
 		this.appDispatch(showContent(groups));
 
 		if (runContentLoadTimer) {
-			// TODO
+			this.appDispatch(startLoadTimer());
+			this.loadStart = new Date();
 		}
 	}
 
@@ -477,11 +485,13 @@ export default class ClientController {
 
 	onBeginPressButton() {
 		this.appDispatch(canPressChanged(true));
+		this.resumeLoadTimerIfNeeded();
 	}
 
 	onEndPressButtonByPlayer(index: number) {
 		this.appDispatch(canPressChanged(false));
 		this.dispatch(roomActionCreators.playerStateChanged(index, PlayerStates.Press));
+		this.pauseLoadTimerIfNeeded();
 	}
 
 	onEndPressButtonByTimeout() {
@@ -742,11 +752,42 @@ export default class ClientController {
 				this.dispatch(roomActionCreators.pauseTimer(0, currentTime[0], true));
 				this.dispatch(roomActionCreators.pauseTimer(1, currentTime[1], true));
 				this.dispatch(roomActionCreators.pauseTimer(2, currentTime[2], true));
+
+				this.pauseLoadTimerIfNeeded();
 			} else {
 				this.dispatch(roomActionCreators.resumeTimer(0, true));
 				this.dispatch(roomActionCreators.resumeTimer(1, true));
 				this.dispatch(roomActionCreators.resumeTimer(2, true));
+
+				this.resumeLoadTimerIfNeeded();
 			}
+		}
+	}
+
+	private pauseLoadTimerIfNeeded() {
+		const state = this.getState();
+		const { loadTimer } = state.table;
+
+		if (this.loadStart && loadTimer.state === TimerStates.Running) {
+			const allTime = state.room.settings.timeSettings.partialImageTime * 1000;
+			const passedTime = new Date().getTime() - this.loadStart.getTime();
+
+			if (passedTime < allTime) {
+				const value = loadTimer.maximum * passedTime / allTime;
+				this.appDispatch(pauseLoadTimer(value));
+			}
+		}
+	}
+
+	private resumeLoadTimerIfNeeded() {
+		const state = this.getState();
+		const { loadTimer } = state.table;
+
+		if (loadTimer.state === TimerStates.Paused) {
+			const allTime = state.room.settings.timeSettings.partialImageTime * 1000;
+			const passedTime = loadTimer.value * allTime / loadTimer.maximum;
+			this.loadStart = new Date(new Date().getTime() - passedTime);
+			this.appDispatch(resumeLoadTimer());
 		}
 	}
 

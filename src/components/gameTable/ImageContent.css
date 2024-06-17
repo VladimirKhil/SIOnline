@@ -19,3 +19,13 @@
     max-height: 100%;
     object-fit: contain;
 }
+
+.inGameImg.animate {
+	animation-name: animateClip;
+	animation-fill-mode: forwards;
+	animation-timing-function: linear;
+}
+
+@keyframes animateClip {
+	100% { clip-path: inset(0 0 0 0); }
+}

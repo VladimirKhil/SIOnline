@@ -6,6 +6,8 @@ import LayoutMode from '../../model/enums/LayoutMode';
 import TableMode from '../../model/enums/TableMode';
 import ContentType from '../../model/enums/ContentType';
 import ItemState from '../../model/enums/ItemState';
+import TimerInfo from '../../model/TimerInfo';
+import TimerStates from '../../model/enums/TimeStates';
 
 export interface TableState {
 	mode: TableMode;
@@ -29,7 +31,7 @@ export interface TableState {
 	answerOptions: AnswerOption[];
 	prependText: string;
 	appendText: string;
-	contentLoadProgress: number;
+	loadTimer: TimerInfo;
 	isAnswer: boolean;
 }
 
@@ -55,7 +57,13 @@ const initialState: TableState = {
 	answerOptions: [],
 	prependText: '',
 	appendText: '',
-	contentLoadProgress: 1,
+	loadTimer: {
+		state: TimerStates.Stopped,
+		value: 1,
+		maximum: 1,
+		isPausedBySystem: true,
+		isPausedByUser: false,
+	},
 	isAnswer: false,
 };
 
@@ -216,12 +224,30 @@ export const tableSlice = createSlice({
 			state.prependText = '';
 			state.appendText = '';
 			state.isAnswer = false;
+			state.loadTimer.value = 1;
+			state.loadTimer.state = TimerStates.Stopped;
 		},
 		setAnswerView: (state, action: PayloadAction<string>) => {
 			state.prependText = '';
 			state.content = [];
 			state.appendText = action.payload;
 			state.isAnswer = true;
+			state.loadTimer.value = 1;
+			state.loadTimer.state = TimerStates.Stopped;
+		},
+		startLoadTimer: (state) => {
+			state.loadTimer.state = TimerStates.Running;
+			state.loadTimer.value = 0;
+			state.loadTimer.isPausedBySystem = false;
+		},
+		pauseLoadTimer: (state, action: PayloadAction<number>) => {
+			state.loadTimer.state = TimerStates.Paused;
+			state.loadTimer.isPausedBySystem = true;
+			state.loadTimer.value = action.payload;
+		},
+		resumeLoadTimer: (state) => {
+			state.loadTimer.state = TimerStates.Running;
+			state.loadTimer.isPausedBySystem = false;
 		},
 	}
 });
@@ -255,6 +281,9 @@ export const {
 	prependTextChanged,
 	questionReset,
 	setAnswerView,
+	startLoadTimer,
+	pauseLoadTimer,
+	resumeLoadTimer,
 } = tableSlice.actions;
 
 export default tableSlice.reducer;
