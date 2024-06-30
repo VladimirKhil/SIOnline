@@ -171,7 +171,9 @@ export default class ClientController {
 
 					const state = this.getState();
 
+					// TODO: this logic should be moved to server
 					if (state.room.stage.isQuestion &&
+						state.room.stage.questionType === 'simple' &&
 						!state.table.isAnswer &&
 						!state.room.settings.falseStart &&
 						state.room.settings.partialImages &&
@@ -428,10 +430,6 @@ export default class ClientController {
 		this.appDispatch(prependTextChanged(themeComments));
 	}
 
-	onRightAnswerStart(rightAnswer: string) {
-		this.appDispatch(setAnswerView(rightAnswer));
-	}
-
 	onContentAppend(placement: string, layoutId: string, contentType: string, contentValue: string) {
 		this.appDispatch(appendPartialText(contentValue));
 	}
@@ -663,7 +661,7 @@ export default class ClientController {
 				break;
 		}
 
-		this.dispatch(roomActionCreators.isQuestionChanged(true));
+		this.dispatch(roomActionCreators.isQuestionChanged(true, qType));
 	}
 
 	onThemeDeleted(themeIndex: number) {
@@ -684,7 +682,13 @@ export default class ClientController {
 		);
 	}
 
+	onRightAnswerStart(rightAnswer: string) {
+		this.appDispatch(setAnswerView(rightAnswer));
+	}
+
 	onRightAnswer(answer: string) {
+		this.onRightAnswerStart(answer);
+
 		if (this.getState().table.layoutMode === LayoutMode.Simple) {
 			this.appDispatch(showText(answer));
 			this.appDispatch(captionChanged(localization.rightAnswer));
@@ -722,7 +726,7 @@ export default class ClientController {
 
 	onQuestionEnd() {
 		this.dispatch(roomActionCreators.afterQuestionStateChanged(true));
-		this.dispatch(roomActionCreators.isQuestionChanged(false));
+		this.dispatch(roomActionCreators.isQuestionChanged(false, ''));
 		this.appDispatch(endQuestion());
 	}
 

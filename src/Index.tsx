@@ -80,7 +80,7 @@ function setState(state: State, savedState: SavedState | null): State {
 				falseStart: appSettings.falseStart ?? true,
 				hintShowman: appSettings.hintShowman ?? false,
 				partialText: appSettings.partialText ?? false,
-				partialImages: appSettings.partialImages ?? true,
+				partialImages: appSettings.partialImages ?? false,
 				oral: appSettings.oral ?? false,
 				ignoreWrong: appSettings.ignoreWrong ?? false,
 				culture: appSettings.culture,

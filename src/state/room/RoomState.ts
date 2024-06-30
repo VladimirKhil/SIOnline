@@ -36,6 +36,7 @@ export default interface RoomState {
 		currentPrice: number;
 		themeName: string;
 		isQuestion: boolean;
+		questionType: string;
 	};
 
 	timers: Timers;
@@ -144,6 +145,7 @@ export const initialState: RoomState = {
 		currentPrice: 0,
 		themeName: '',
 		isQuestion: false,
+		questionType: '',
 	},
 
 	timers: {

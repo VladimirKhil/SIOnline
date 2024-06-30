@@ -955,6 +955,7 @@ const roomReducer: Reducer<RoomState> = (state: RoomState = initialState, anyAct
 				stage: {
 					...state.stage,
 					isQuestion: action.isQuestion,
+					questionType: action.questionType,
 				}
 			};
 

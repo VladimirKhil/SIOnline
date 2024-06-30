@@ -217,7 +217,7 @@ export type EditTableAction = { type: RoomActionTypes.EditTable };
 export type JoinModeChangedAction = { type: RoomActionTypes.JoinModeChanged, joinMode: JoinMode };
 export type WebCameraUrlChangedAction = { type: RoomActionTypes.WebCameraUrlChanged, webCameraUrl: string };
 export type SettingsChangedAction = { type: RoomActionTypes.SettingsChanged, settings: AppSettings };
-export type IsQuestionChangedAction = { type: RoomActionTypes.IsQuestionChanged, isQuestion: boolean };
+export type IsQuestionChangedAction = { type: RoomActionTypes.IsQuestionChanged, isQuestion: boolean, questionType: string };
 
 export type KnownRoomAction =
 	RunChatModeChangedAction

@@ -385,8 +385,8 @@ const afterQuestionStateChanged: ActionCreator<RunActions.AfterQuestionStateChan
 	type: RunActions.RoomActionTypes.AfterQuestionStateChanged, isAfterQuestion
 });
 
-const isQuestionChanged: ActionCreator<RunActions.IsQuestionChangedAction> = (isQuestion: boolean) => ({
-	type: RunActions.RoomActionTypes.IsQuestionChanged, isQuestion
+const isQuestionChanged: ActionCreator<RunActions.IsQuestionChangedAction> = (isQuestion: boolean, questionType: string) => ({
+	type: RunActions.RoomActionTypes.IsQuestionChanged, isQuestion, questionType,
 });
 
 const currentPriceChanged: ActionCreator<RunActions.CurrentPriceChangedAction> = (currentPrice: number) => ({

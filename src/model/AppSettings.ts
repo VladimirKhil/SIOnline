@@ -48,7 +48,7 @@ export const initialState: AppSettings = {
 	falseStart: true,
 	hintShowman: false,
 	partialText: false,
-	partialImages: true,
+	partialImages: false,
 	allowEveryoneToPlayHiddenStakes: true,
 	playAllQuestionsInFinalRound: false,
 	displaySources: false,
