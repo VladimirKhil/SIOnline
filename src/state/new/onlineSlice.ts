@@ -1,6 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import ChatMessage from '../../model/ChatMessage';
-import ChatMode from '../../model/enums/ChatMode';
 import GamesFilter from '../../model/enums/GamesFilter';
 import localization from '../../model/resources/localization';
 import GameInfo from '../../client/contracts/GameInfo';

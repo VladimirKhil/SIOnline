@@ -39,6 +39,7 @@ import ServerRole from '../client/contracts/ServerRole';
 import ServerSex from '../client/contracts/ServerSex';
 import WellKnownSIContentServiceErrorCode from 'sicontent-client/dist/models/WellKnownSIContentServiceErrorCode';
 import { getJoinErrorMessage } from '../utils/GameErrorsHelper';
+import { selectGame } from '../state/new/online2Slice';
 
 interface ConnectResult {
 	success: boolean;
@@ -351,7 +352,8 @@ const navigateAsync = async (
 	dispatch: Dispatch<Action>,
 	appDispatch: AppDispatch,
 	getState: () => State,
-	dataContext: DataContext) => {
+	dataContext: DataContext
+) => {
 	if (view.path === Path.Room) {
 		if (view.gameId && view.role && view.hostUri) {
 			const siHostClient = await connectToSIHostAsync(view.hostUri, dispatch, appDispatch, getState, dataContext);
@@ -418,6 +420,21 @@ const init: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 		if (initialView.path === Path.Login) {
 			dispatch(uiActionCreators.navigate({ path: Path.Login, callbackState: { path: Path.Root } }) as unknown as Action);
 			return;
+		} else if (initialView.path == Path.JoinRoom && initialView.gameId && initialView.hostUri) {
+			try {
+				const siHostClient = await connectToSIHostAsync(initialView.hostUri, dispatch, appDispatch, getState, dataContext);
+				const gameInfo = await siHostClient.tryGetGameInfoAsync(initialView.gameId);
+
+				if (gameInfo) {
+					appDispatch(selectGame(gameInfo));
+					dispatch(uiActionCreators.navigate(initialView) as unknown as Action);
+					return;
+				} else {
+					dispatch(commonActionCreators.commonErrorChanged(`${localization.joinError}: ${localization.gameNotFound}`));
+				}
+			} catch (e) {
+				dispatch(commonActionCreators.commonErrorChanged(getErrorMessage(e)));
+			}
 		}
 
 		const connectResult = await tryConnectAsync(dispatch, getState, dataContext);

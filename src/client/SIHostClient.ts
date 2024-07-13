@@ -1,5 +1,6 @@
 import IClientBase from './IClientBase';
 import ISIHostClient from './ISIHostClient';
+import GameInfo from './contracts/GameInfo';
 import JoinGameRequest from './contracts/JoinGameRequest';
 import JoinGameResponse from './contracts/JoinGameResponse';
 
@@ -14,6 +15,11 @@ export default class SIHostClient implements ISIHostClient, IClientBase {
 	 * @param errorHandler General error handler.
 	 */
 	constructor(public connection: signalR.HubConnection, private errorHandler: (error: any) => void) { }
+
+	async tryGetGameInfoAsync(gameId: number): Promise<GameInfo | null> {
+		const info = await this.connection.invoke<GameInfo | null>('TryGetGameInfo', gameId);
+		return info;
+	}
 
 	async joinGameAsync(joinGameRequest: JoinGameRequest): Promise<JoinGameResponse> {
 		const result = await this.connection.invoke<JoinGameResponse>('JoinGame', joinGameRequest);

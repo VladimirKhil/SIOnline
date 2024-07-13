@@ -1,5 +1,4 @@
 import * as React from 'react';
-import GameInfo from '../../../client/contracts/GameInfo';
 import State from '../../../state/State';
 import Dialog from '../../common/Dialog';
 import GameInfoView from '../../GameInfoView';
@@ -8,19 +7,19 @@ import Path from '../../../model/enums/Path';
 import uiActionCreators from '../../../state/ui/uiActionCreators';
 import { Action } from 'redux';
 import commonActionCreators from '../../../state/common/commonActionCreators';
+import { useAppSelector } from '../../../state/new/hooks';
+import localization from '../../../model/resources/localization';
+
+import './JoinRoom.css';
 
 interface JoinRoomProps {
 	inProgress: boolean;
-	games: Record<number, GameInfo>;
-	gameId?: number;
 	navigate: (path: Path) => void;
 	onUserError: (error: string) => void;
 }
 
 const mapStateToProps = (state: State) => ({
 	inProgress: state.online.inProgress,
-	games: state.online.games,
-	gameId: state.ui.navigation.gameId,
 });
 
 const mapDispatchToProps = (dispatch: React.Dispatch<Action>) => ({
@@ -34,12 +33,13 @@ const mapDispatchToProps = (dispatch: React.Dispatch<Action>) => ({
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export function JoinRoom(props: JoinRoomProps): JSX.Element | null {
-	const selectedGame = props.gameId ? props.games[props.gameId] : null;
+	const onlineState = useAppSelector(state => state.online2);
+	const { selectedGame } = onlineState;
 
 	React.useEffect(() => {
-		if (!props.inProgress && !selectedGame) {
+		if (!selectedGame) {
 			props.onUserError('Game not found');
-			props.navigate(Path.Menu);
+			props.navigate(Path.Login);
 		}
 	}, [props.inProgress]);
 
@@ -47,9 +47,16 @@ export function JoinRoom(props: JoinRoomProps): JSX.Element | null {
 		return null;
 	}
 
-	return <Dialog className="gameInfoDialog2" title={selectedGame.GameName} onClose={() => props.navigate(Path.Menu)}>
-		<GameInfoView game={selectedGame} showGameName={false} />
-	</Dialog>;
+	return <div className='joinRoomHost'>
+		<div className='logo' />
+
+		<Dialog
+			className="joinRoom"
+			title={`${localization.gameJoin}: ${selectedGame.GameName}`}
+			onClose={() => props.navigate(Path.Login)}>
+			<GameInfoView game={selectedGame} showGameName={false} />
+		</Dialog>
+	</div>;
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(JoinRoom);

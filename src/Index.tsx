@@ -191,7 +191,7 @@ async function getServerUri(serverDiscoveryUri: string) {
 function getInitialView(historyState: INavigationState): INavigationState {
 	const urlParams = new URLSearchParams(window.location.search);
 	const gameId = urlParams.get('gameId');
-	const invite = urlParams.get('invite');
+	const hostUri = urlParams.get('host');
 	const packageUri = urlParams.get('packageUri');
 	const packageName = urlParams.get('packageName');
 
@@ -199,8 +199,8 @@ function getInitialView(historyState: INavigationState): INavigationState {
 		return historyState;
 	}
 
-	if (gameId && invite) {
-		return { path: Path.JoinRoom, gameId: parseInt(gameId, 10) };
+	if (gameId && hostUri) {
+		return { path: Path.JoinRoom, gameId: parseInt(gameId, 10), hostUri };
 	}
 
 	if (packageUri) {

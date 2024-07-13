@@ -60,7 +60,7 @@ const handleNavigation = (navigation: INavigationState, dispatch: Dispatch<Actio
 			break;
 
 		case Path.JoinRoom:
-			dispatch(onlineActionCreators.friendsPlay() as unknown as Action);
+			// No action required for now
 			break;
 
 		case Path.Lobby:

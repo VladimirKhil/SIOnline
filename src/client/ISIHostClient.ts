@@ -1,7 +1,11 @@
+import GameInfo from './contracts/GameInfo';
 import JoinGameRequest from './contracts/JoinGameRequest';
 import JoinGameResponse from './contracts/JoinGameResponse';
 
 export default interface ISIHostClient {
+	/** Tries to get existing game info. */
+	tryGetGameInfoAsync(gameId: number): Promise<GameInfo | null>;
+
 	/**
 	 * Joins an existsing game.
 	 */

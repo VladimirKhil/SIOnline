@@ -1,0 +1,31 @@
+.joinRoom {
+    background-color: #5A95E2;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.joinRoom h1 {
+	margin-bottom: 6px;
+}
+
+.joinRoomHost .logo {
+    width: 100px;
+    height: 100px;
+    background-image: url('../../../../assets/images/sigame.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    margin: auto;
+    margin-top: 20px;
+}
+
+@media screen and (min-width: 800px) {
+	.joinRoom {
+		margin: 140px 60px 60px 60px;
+		vertical-align: middle;
+		border: 1px solid black;
+		box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+		overflow: hidden;
+	}
+}
