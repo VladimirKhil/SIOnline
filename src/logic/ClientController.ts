@@ -25,7 +25,6 @@ import Sex from '../model/enums/Sex';
 import RoundRules from '../model/enums/RoundRules';
 import { AppDispatch } from '../state/new/store';
 import TimerStates from '../model/enums/TimeStates';
-import TimerInfo from '../model/TimerInfo';
 
 import { answerOptions,
 	appendPartialText,
@@ -56,6 +55,8 @@ import { answerOptions,
 	updateOption,
 	updateOptionState,
 	updateQuestion } from '../state/new/tableSlice';
+
+import { setReport } from '../state/new/room2Slice';
 
 function initGroup(group: ContentGroup) {
 	let bestRowCount = 1;
@@ -325,6 +326,10 @@ export default class ClientController {
 		} else {
 			this.appDispatch(showObject({ header: localization.package, text: packageName, hint: '' }));
 		}
+	}
+
+	onReport(report: string) {
+		this.appDispatch(setReport(report));
 	}
 
 	onRoundThemes(roundThemesNames: string[], playMode: ThemesPlayMode) {

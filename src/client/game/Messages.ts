@@ -36,6 +36,8 @@ const enum Messages {
 
 	Ready = 'READY',
 
+	Report = 'REPORT',
+
 	/** Gives turn to player. */
 	SetChooser = 'SETCHOOSER',
 

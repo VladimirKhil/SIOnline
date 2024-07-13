@@ -1031,8 +1031,13 @@ const playerHandler = (
 			}
 			break;
 
-		case 'REPORT':
-			// TODO: process
+		case GameMessages.Report:
+			if (args.length < 2) {
+				return;
+			}
+
+			const report = args[1].replaceAll('\r', '\n');
+			controller.onReport(report);
 			break;
 
 		case GameMessages.Stake2:

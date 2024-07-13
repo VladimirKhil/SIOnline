@@ -4,24 +4,30 @@ import DataContext from '../../model/DataContext';
 export enum DialogView {
 	None,
 	Complain,
+	Report,
+}
+
+export enum ContextView {
+	None,
+	Report,
 }
 
 export interface Room2State {
 	playState: {
-		themeIndex: number;
-		questionIndex: number;
+		report: string;
 	};
 
 	dialogView: DialogView;
+	contextView: ContextView;
 }
 
 const initialState: Room2State = {
 	playState: {
-		themeIndex: -1,
-		questionIndex: -1,
+		report: '',
 	},
 
 	dialogView: DialogView.None,
+	contextView: ContextView.None,
 };
 
 export const complain = createAsyncThunk(
@@ -32,23 +38,45 @@ export const complain = createAsyncThunk(
 	},
 );
 
+export const sendGameReport = createAsyncThunk(
+	'room2/sendGameReport',
+	async (arg: string, thunkAPI) => {
+		const dataContext = thunkAPI.extra as DataContext;
+		await dataContext.game.sendGameReport(arg);
+	},
+);
+
 export const room2Slice = createSlice({
 	name: 'room2',
 	initialState,
 	reducers: {
 		showDialog: (state: Room2State, action: PayloadAction<DialogView>) => {
 			state.dialogView = action.payload;
-		}
+		},
+		setContext: (state: Room2State, action: PayloadAction<ContextView>) => {
+			state.contextView = action.payload;
+		},
+		setReport: (state: Room2State, action: PayloadAction<string>) => {
+			state.playState.report = action.payload;
+			state.contextView = ContextView.Report;
+		},
 	},
 	extraReducers: (builder) => {
 		builder.addCase(complain.fulfilled, (state) => {
 			state.dialogView = DialogView.None;
 		});
-	}
+
+		builder.addCase(sendGameReport.fulfilled, (state) => {
+			state.dialogView = DialogView.None;
+			state.contextView = ContextView.None;
+		});
+	},
 });
 
 export const {
 	showDialog,
+	setContext,
+	setReport,
 } = room2Slice.actions;
 
 

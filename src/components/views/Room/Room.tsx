@@ -34,6 +34,7 @@ import { AppDispatch, RootState } from '../../../state/new/store';
 import { useAppDispatch, useAppSelector } from '../../../state/new/hooks';
 import { DialogView } from '../../../state/new/room2Slice';
 import ComplainDialog from '../../panels/ComplainDialog/ComplainDialog';
+import ReportDialog from '../../panels/ReportDialog/ReportDialog';
 
 import './Room.css';
 
@@ -129,6 +130,9 @@ function getDialog(dialogView: DialogView) : JSX.Element | null {
 
 		case DialogView.Complain:
 			return <ComplainDialog />;
+
+		case DialogView.Report:
+			return <ReportDialog />;
 
 		default:
 			return null;

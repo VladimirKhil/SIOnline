@@ -66,6 +66,10 @@ export default class GameClient implements IGameClient {
 		return this.gameServerClient.msgAsync(Messages.Picture, avatarUri);
 	}
 
+	sendGameReport(reportText: string): Promise<boolean> {
+		return this.gameServerClient.msgAsync(Messages.Report, 'ACCEPT', reportText);
+	}
+
 	sendVideoAvatar(avatarUri: string): Promise<boolean> {
 		return this.gameServerClient.msgAsync(Messages.Avatar, 'video', avatarUri);
 	}

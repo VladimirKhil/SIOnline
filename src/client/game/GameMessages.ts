@@ -76,6 +76,8 @@ const enum GameMessages {
 
 	Replic = 'REPLIC',
 
+	Report = 'REPORT',
+
 	/** Question right answer. */
 	RightAnswer = 'RIGHTANSWER',
 
