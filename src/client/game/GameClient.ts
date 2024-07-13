@@ -22,8 +22,8 @@ export default class GameClient implements IGameClient {
 		return this.gameServerClient.msgAsync(Messages.Info);
 	}
 
-	markQuestion(): Promise<boolean> {
-		return this.gameServerClient.msgAsync(Messages.Mark);
+	markQuestion(questionId: number, comment: string): Promise<boolean> {
+		return this.gameServerClient.msgAsync(Messages.Mark, questionId, comment);
 	}
 
 	mediaLoaded(): Promise<boolean> {

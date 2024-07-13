@@ -6,6 +6,7 @@ import uiReducer from './uiSlice';
 import onlineReducer from './onlineSlice';
 import gameReducer from './gameSlice';
 import roomReducer from './roomSlice';
+import room2Reducer from './room2Slice';
 import commonReducer from './commonSlice';
 import tableReducer from './tableSlice';
 import siPackagesReducer from './siPackagesSlice';
@@ -52,6 +53,7 @@ const store = configureStore({
 		online: onlineReducer,
 		game: gameReducer,
 		room: roomReducer,
+		room2: room2Reducer,
 		common: commonReducer,
 		siPackages: siPackagesReducer,
 		settings: settingsReducer,

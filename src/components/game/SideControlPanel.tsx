@@ -34,7 +34,6 @@ interface SideControlPanelProps {
 	voiceChatUri: string | null;
 
 	onChatVisibilityChanged: (isOpen: boolean) => void;
-	onMarkQuestion: () => void;
 	onShowPersons: () => void;
 	onShowTables: () => void;
 	onShowBanned: () => void;
@@ -71,9 +70,6 @@ const mapStateToProps = (state: State) => ({
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	onChatVisibilityChanged: (isOpen: boolean) => {
 		dispatch(roomActionCreators.runChatVisibilityChanged(isOpen));
-	},
-	onMarkQuestion: () => {
-		dispatch(roomActionCreators.markQuestion() as unknown as Action);
 	},
 	onShowPersons: () => {
 		dispatch(roomActionCreators.runShowPersons());

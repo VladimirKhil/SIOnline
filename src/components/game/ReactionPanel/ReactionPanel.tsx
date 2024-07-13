@@ -5,6 +5,8 @@ import State from '../../../state/State';
 import localization from '../../../model/resources/localization';
 import Sex from '../../../model/enums/Sex';
 import roomActionCreators from '../../../state/room/roomActionCreators';
+import { useAppDispatch } from '../../../state/new/hooks';
+import { DialogView, showDialog } from '../../../state/new/room2Slice';
 
 import './ReactionPanel.css';
 
@@ -16,7 +18,6 @@ interface ReactionPanelProps {
 
 	apellate: () => void;
 	disagree: () => void;
-	onMarkQuestion: () => void;
 }
 
 const mapStateToProps = (state: State) => ({
@@ -33,12 +34,10 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	disagree: () => {
 		dispatch(roomActionCreators.disagree() as object as Action);
 	},
-	onMarkQuestion: () => {
-		dispatch(roomActionCreators.markQuestion() as unknown as Action);
-	},
 });
 
 export function ReactionPanel(props: ReactionPanelProps): JSX.Element | null {
+	const appDispatch = useAppDispatch();
 	const rightString = props.sex === Sex.Female ? localization.iAmRightFemale : localization.iAmRightMale;
 
 	return (
@@ -65,13 +64,14 @@ export function ReactionPanel(props: ReactionPanelProps): JSX.Element | null {
 			</> )
 			: null}
 
-			{/* <button
+			<button
+				type='button'
 				className="reactionButton"
 				disabled={!props.isConnected}
 				title={localization.complainHint}
-				onClick={() => props.onMarkQuestion()}>
+				onClick={() => appDispatch(showDialog(DialogView.Complain))}>
 				{localization.complain}
-			</button> */}
+			</button>
 		</div>
 	);
 }

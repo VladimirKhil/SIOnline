@@ -53,14 +53,6 @@ const runChatMessageSend: ActionCreator<ThunkAction<void, State, DataContext, Ac
 		}
 	};
 
-const markQuestion: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
-	_dispatch: Dispatch<RunActions.KnownRoomAction>,
-	_getState: () => State,
-	dataContext: DataContext
-	) => {
-		await dataContext.game.markQuestion();
-	};
-
 const onPass: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
 	_dispatch: Dispatch<RunActions.KnownRoomAction>,
 	_getState: () => State,
@@ -966,7 +958,6 @@ const roomActionCreators = {
 	runChatModeChanged,
 	runChatMessageChanged,
 	runChatMessageSend,
-	markQuestion,
 	onPass,
 	pause,
 	editTable,

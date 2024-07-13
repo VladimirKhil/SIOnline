@@ -1,0 +1,62 @@
+.complainDialog {
+	background-color: #5A95E2;
+	z-index: 5;
+}
+
+.dialogBody {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	height: calc(100% - 60px);
+}
+
+.dialogOptions {
+	flex: 1 0 0;
+}
+
+.dialogOptions div {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+}
+
+.dialogOptions div label {
+    margin-top: 1px;
+}
+
+.dialogBody input {
+	margin: 15px;
+}
+
+.dialogBody .complainTextComment {
+	margin: 5px 15px 0 15px;
+	display: block;
+}
+
+.dialogBody label {
+	cursor: pointer;
+}
+
+.dialogBody input[type="text"] {
+	width: calc(100% - 30px);
+	font-size: 20px;
+	margin-top: 5px;
+}
+
+.dialogBody .buttonsPanel {
+	flex: 45px 0 0;
+}
+
+@media screen and (min-width: 800px) {
+	.complainDialog {
+		width: 600px;
+		height: 440px;
+		margin-left: auto;
+		margin-right: auto;
+		top: 130px;
+		vertical-align: middle;
+		border: 1px solid black;
+		box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+		overflow: hidden;
+	}
+}

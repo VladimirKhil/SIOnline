@@ -13,7 +13,7 @@ export default interface IGameClient {
 
 	info(): Promise<boolean>;
 
-	markQuestion(): Promise<boolean>;
+	markQuestion(questionId: number, comment: string): Promise<boolean>;
 
 	/** Notifies that the client has loaded the media. */
 	mediaLoaded(): Promise<boolean>;

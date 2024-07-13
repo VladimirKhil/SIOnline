@@ -30,8 +30,10 @@ import MessageLevel from '../../../model/enums/MessageLevel';
 import commonActionCreators from '../../../state/common/commonActionCreators';
 import RoomSettingsButton from '../../RoomSettingsButton/RoomSettingsButton';
 import AvatarViewDialog from '../../panels/AvatarViewDialog/AvatarViewDialog';
-import { AppDispatch } from '../../../state/new/store';
-import { useAppDispatch } from '../../../state/new/hooks';
+import { AppDispatch, RootState } from '../../../state/new/store';
+import { useAppDispatch, useAppSelector } from '../../../state/new/hooks';
+import { DialogView } from '../../../state/new/room2Slice';
+import ComplainDialog from '../../panels/ComplainDialog/ComplainDialog';
 
 import './Room.css';
 
@@ -120,8 +122,22 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	}
 });
 
+function getDialog(dialogView: DialogView) : JSX.Element | null {
+	switch (dialogView) {
+		case DialogView.None:
+			return null;
+
+		case DialogView.Complain:
+			return <ComplainDialog />;
+
+		default:
+			return null;
+	}
+}
+
 export function Room(props: RoomProps) : JSX.Element {
 	const appDispatch = useAppDispatch();
+	const state = useAppSelector((rootState: RootState) => rootState.room2);
 
 	React.useEffect(() => {
 		if (props.kicked) {
@@ -232,6 +248,7 @@ export function Room(props: RoomProps) : JSX.Element {
 
 			{props.isAnswerValidationDialogVisible ? <AnswerValidationDialog /> : null}
 			{props.avatarViewVisible ? <AvatarViewDialog /> : null}
+			{getDialog(state.dialogView)}
 		</section>
 	);
 }

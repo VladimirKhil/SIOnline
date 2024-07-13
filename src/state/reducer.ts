@@ -6,6 +6,7 @@ import settingsReducer from './settings/settingsReducer';
 import { KnownSettingsAction } from './settings/SettingsActions';
 import tableReducer from './new/tableSlice';
 import userReducer from './user/userReducer';
+import room2Reducer from './new/room2Slice';
 import { KnownUserAction } from './user/UserActions';
 import loginReducer from './new/loginSlice';
 import commonReducer from './common/commonReducer';
@@ -26,6 +27,7 @@ const reducer: Reducer<State> = (
 	user: userReducer(state.user, action as KnownUserAction),
 	login: loginReducer(state.login, action as UnknownAction),
 	room: roomReducer(state.room, action as KnownRoomAction),
+	room2: room2Reducer(state.room2, action as KnownRoomAction),
 	common: commonReducer(state.common, action as KnownCommonAction),
 	settings: settingsReducer(state.settings, action as KnownSettingsAction),
 	table: tableReducer(state.table, action as UnknownAction),

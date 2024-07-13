@@ -36,7 +36,6 @@ interface GameChatViewProps {
 	voiceChatUri: string | null;
 
 	onChatModeChanged: (chatMode: ChatMode) => void;
-	onMarkQuestion: () => void;
 	onEditSums: (enable: boolean) => void;
 	navigateToRound: (roundIndex: number) => void;
 	onEditTable: () => void;
@@ -60,9 +59,6 @@ const mapStateToProps = (state: State) => ({
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	onChatModeChanged: (chatMode: ChatMode) => {
 		dispatch(roomActionCreators.runChatModeChanged(chatMode));
-	},
-	onMarkQuestion: () => {
-		dispatch(roomActionCreators.markQuestion() as unknown as Action);
 	},
 	onEditSums: (enable: boolean) => {
 		dispatch(roomActionCreators.areSumsEditableChanged(enable) as unknown as Action);
