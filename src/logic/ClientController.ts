@@ -58,6 +58,10 @@ import { answerOptions,
 	updateQuestion } from '../state/new/tableSlice';
 
 import { setReport } from '../state/new/room2Slice';
+import PersonInfo from '../model/PersonInfo';
+import Persons from '../model/Persons';
+import PlayerInfo from '../model/PlayerInfo';
+import actionCreators from './actionCreators';
 
 function initGroup(group: ContentGroup) {
 	let bestRowCount = 1;
@@ -278,6 +282,11 @@ export default class ClientController {
 
 	onGameThemes(gameThemes: string[]) {
 		this.appDispatch(showGameThemes(gameThemes));
+	}
+
+	onInfo(all: Persons, showman: PersonInfo, players: PlayerInfo[]) {
+		this.dispatch(roomActionCreators.infoChanged(all, showman, players));
+		this.dispatch(actionCreators.sendAvatar() as any);
 	}
 
 	onOptionChanged(name: string, value: string) {

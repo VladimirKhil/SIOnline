@@ -7,6 +7,8 @@ import roomActionCreators from '../../../state/room/roomActionCreators';
 import NumericTextBox from '../../common/NumericTextBox';
 import Persons from '../../../model/Persons';
 import getAvatarClass from '../../../utils/AccountHelpers';
+import { useAppDispatch } from '../../../state/new/hooks';
+import { playerSelected } from '../../../state/new/room2Slice';
 
 import './PlayersListView.css';
 
@@ -16,6 +18,7 @@ interface PlayersListViewProps {
 	login: string;
 	avatar: string | null;
 	isSumEditable: boolean;
+	selectMessage: string;
 
 	onPlayerSelected: (playerIndex: number) => void;
 	onSumChanged: (playerIndex: number, sum: number) => void;
@@ -28,6 +31,7 @@ const mapStateToProps = (state: State) => ({
 	login: state.room.name,
 	avatar: state.user.avatar,
 	isSumEditable: state.room.areSumsEditable,
+	selectMessage: state.room.selection.message,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
@@ -43,8 +47,15 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 });
 
 export function PlayersListView(props: PlayersListViewProps): JSX.Element {
+	const appDispatch = useAppDispatch();
+
 	const onSumChanged = (index: number, value: number) => {
 		props.onSumChanged(index, value);
+	};
+
+	const onPlayerSelected = (index: number) => {
+		appDispatch(playerSelected({ message: props.selectMessage, playerIndex: index }));
+		props.onPlayerSelected(index);
 	};
 
 	return <div className='playerListView'>
@@ -59,7 +70,7 @@ export function PlayersListView(props: PlayersListViewProps): JSX.Element {
 				? { backgroundImage: `url("${avatar}")` }
 				: {};
 
-			return <li onClick={() => props.onPlayerSelected(index)}>
+			return <li onClick={() => onPlayerSelected(index)}>
 				<div className={`playerAvatar2 ${avatarClass}`} style={avatarStyle} title={`${player.name} ${player.sum}`} />
 
 				<div className="playerInfo2">

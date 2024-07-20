@@ -46,6 +46,74 @@ export const sendGameReport = createAsyncThunk(
 	},
 );
 
+export const playerSelected = createAsyncThunk(
+	'room2/playerSelected',
+	async (arg: any, thunkAPI) => {
+		const dataContext = thunkAPI.extra as DataContext;
+		await dataContext.game.gameServerClient.msgAsync(arg.message, arg.playerIndex); // Bad design
+	},
+);
+
+export const sendAnswer = createAsyncThunk(
+	'room2/sendAnswer',
+	async (answer: string, thunkAPI) => {
+		const dataContext = thunkAPI.extra as DataContext;
+		await dataContext.game.gameServerClient.msgAsync('ANSWER', answer);
+	},
+);
+
+export const approveAnswer = createAsyncThunk(
+	'room2/approveAnswer',
+	async (factor: number, thunkAPI) => {
+		const dataContext = thunkAPI.extra as DataContext;
+		await dataContext.game.approveAnswer(factor);
+	},
+);
+
+export const rejectAnswer = createAsyncThunk(
+	'room2/rejectAnswer',
+	async (factor: number, thunkAPI) => {
+		const dataContext = thunkAPI.extra as DataContext;
+		await dataContext.game.rejectAnswer(factor);
+	},
+);
+
+export const sendNominal = createAsyncThunk(
+	'room2/sendNominal',
+	async (arg: void, thunkAPI) => {
+		const dataContext = thunkAPI.extra as DataContext;
+		await dataContext.game.gameServerClient.msgAsync('STAKE', 0);
+	},
+);
+
+export const sendPass = createAsyncThunk(
+	'room2/sendPass',
+	async (arg: void, thunkAPI) => {
+		const dataContext = thunkAPI.extra as DataContext;
+		await dataContext.game.gameServerClient.msgAsync('STAKE', 2);
+	},
+);
+
+export const sendAllIn = createAsyncThunk(
+	'room2/sendAllIn',
+	async (arg: void, thunkAPI) => {
+		const dataContext = thunkAPI.extra as DataContext;
+		await dataContext.game.gameServerClient.msgAsync('STAKE', 3);
+	},
+);
+
+export const sendStake = createAsyncThunk(
+	'room2/sendStake',
+	async (arg: any, thunkAPI) => {
+		const dataContext = thunkAPI.extra as DataContext;
+		if (arg.message === 'STAKE') { // Bad design
+			await dataContext.game.gameServerClient.msgAsync('STAKE', 1, arg.stake);
+		} else {
+			await dataContext.game.gameServerClient.msgAsync(arg.message, arg.stake);
+		}
+	},
+);
+
 export const room2Slice = createSlice({
 	name: 'room2',
 	initialState,

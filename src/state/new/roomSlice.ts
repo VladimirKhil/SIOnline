@@ -268,10 +268,4 @@ export const {
 	clearDecisions
 } = roomSlice.actions;
 
-export const sendStake = (stake: number) => async (dispatch: AppDispatch, _getState: () => RootState, dataContext: DataContext) : Promise<void> => {
-	if (await dataContext.game.gameServerClient.msgAsync('STAKE', stake)) {
-		dispatch(clearDecisions());
-	}
-};
-
 export default roomSlice.reducer;

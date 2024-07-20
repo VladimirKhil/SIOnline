@@ -5,6 +5,8 @@ import roomActionCreators from '../../state/room/roomActionCreators';
 import State from '../../state/State';
 import Constants from '../../model/enums/Constants';
 import localization from '../../model/resources/localization';
+import { useAppDispatch } from '../../state/new/hooks';
+import { sendAnswer } from '../../state/new/room2Slice';
 
 import './AnswerInput.css';
 
@@ -33,14 +35,21 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 });
 
 export function AnswerInput(props: AnswerInputProps): JSX.Element | null {
+	const appDispatch = useAppDispatch();
+
 	const onAnswerChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
 		props.onAnswerChanged(e.target.value);
+	};
+
+	const sendAnswer2 = () => {
+		appDispatch(sendAnswer(props.answer));
+		props.sendAnswer();
 	};
 
 	const onAnswerKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
 		if (e.key === Constants.KEY_ENTER_NEW) {
 			if (props.isConnected) {
-				props.sendAnswer();
+				sendAnswer2();
 			}
 
 			e.preventDefault();
@@ -60,7 +69,7 @@ export function AnswerInput(props: AnswerInputProps): JSX.Element | null {
 				placeholder={localization.answer}
 			/>
 
-			<button className='sendAnswer' title={localization.send} onClick={() => props.sendAnswer()}>💬</button>
+			<button className='sendAnswer' title={localization.send} onClick={sendAnswer2}>💬</button>
 		</div>
 	) : null;
 }

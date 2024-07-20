@@ -7,6 +7,8 @@ import PlayerInfo from '../../model/PlayerInfo';
 import Persons from '../../model/Persons';
 import getAvatarClass from '../../utils/AccountHelpers';
 import PlayerView from './PlayerView/PlayerView';
+import { useAppDispatch } from '../../state/new/hooks';
+import { playerSelected } from '../../state/new/room2Slice';
 
 import './PlayersView.css';
 
@@ -16,6 +18,7 @@ interface PlayersViewProps {
 	login: string;
 	avatar: string | null;
 	isVisible: boolean;
+	selectMessage: string;
 
 	onPlayerSelected: (playerIndex: number) => void;
 	onSumChanged: (playerIndex: number, sum: number) => void;
@@ -28,6 +31,7 @@ const mapStateToProps = (state: State) => ({
 	login: state.room.name,
 	avatar: state.user.avatar,
 	isVisible: state.ui.showPlayers,
+	selectMessage: state.room.selection.message,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
@@ -43,7 +47,13 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 });
 
 const PlayersView: React.FC<PlayersViewProps> = (props) => {
+	const appDispatch = useAppDispatch();
 	const listRef = React.useRef<HTMLUListElement>(null);
+
+	const onPlayerSelected = (index: number) => {
+		appDispatch(playerSelected({ message: props.selectMessage, playerIndex: index }));
+		props.onPlayerSelected(index);
+	};
 
 	return !props.isVisible ? null : (
 		<div id="playersPanel">
@@ -64,7 +74,7 @@ const PlayersView: React.FC<PlayersViewProps> = (props) => {
 						avatarVideo={account?.avatarVideo}
 						avatarClass={avatarClass}
 						index={index}
-						onPlayerSelected={() => props.onPlayerSelected(index)}
+						onPlayerSelected={() => onPlayerSelected(index)}
 						onSumChanged={(sum) => props.onSumChanged(index, sum)} />;
 				})}
 			</ul>

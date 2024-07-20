@@ -131,15 +131,9 @@ const clearDecisions: ActionCreator<RunActions.ClearDecisionsAction> = () => ({
 	type: RunActions.RoomActionTypes.ClearDecisions
 });
 
-const playerSelected: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (playerIndex: number) => async (
-	dispatch: Dispatch<RunActions.KnownRoomAction>,
-	getState: () => State,
-	dataContext: DataContext
-	) => {
-	if (await dataContext.game.gameServerClient.msgAsync(getState().room.selection.message, playerIndex)) {
-		dispatch(clearDecisions());
-		dispatch(showmanReplicChanged(''));
-	}
+const playerSelected: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => (dispatch: Dispatch<RunActions.KnownRoomAction>) => {
+	dispatch(clearDecisions());
+	dispatch(showmanReplicChanged(''));
 };
 
 const exitGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (appDispatch: AppDispatch) => async (
@@ -587,21 +581,13 @@ const updateAnswer: ActionCreator<ThunkAction<void, State, DataContext, Action>>
 	);
 };
 
-const sendAnswer: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
-	dispatch: Dispatch<any>,
-	getState: () => State,
-	dataContext: DataContext
-	) => {
+const sendAnswer: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (dispatch: Dispatch<any>) => {
 	if (answerLock) {
 		window.clearTimeout(answerLock);
 		answerLock = null;
 	}
 
-	const { answer } = getState().room;
-
-	if (await dataContext.game.gameServerClient.msgAsync('ANSWER', answer)) {
-		dispatch(clearDecisions());
-	}
+	dispatch(clearDecisions());
 };
 
 const validate: ActionCreator<RunActions.ValidateAction> = (
@@ -615,26 +601,6 @@ const validate: ActionCreator<RunActions.ValidateAction> = (
 ) => ({
 	type: RunActions.RoomActionTypes.Validate, name, answer, rightAnswers, wrongAnswers, header, message, showExtraRightButtons
 });
-
-const approveAnswer: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (factor: number) => async (
-	dispatch: Dispatch<any>,
-	_getState: () => State,
-	dataContext: DataContext
-	) => {
-		if (await dataContext.game.approveAnswer(factor)) {
-			dispatch(clearDecisions());
-		}
-	};
-
-const rejectAnswer: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (factor: number) => async (
-	dispatch: Dispatch<any>,
-	_getState: () => State,
-	dataContext: DataContext
-	) => {
-		if (await dataContext.game.rejectAnswer(factor)) {
-			dispatch(clearDecisions());
-		}
-	};
 
 const setStakes: ActionCreator<RunActions.SetStakesAction> = (
 	allowedStakeTypes: Record<StakeTypes, boolean>,
@@ -651,56 +617,6 @@ const setStakes: ActionCreator<RunActions.SetStakesAction> = (
 const stakeChanged: ActionCreator<RunActions.StakeChangedAction> = (stake: number) => ({
 	type: RunActions.RoomActionTypes.StakeChanged, stake
 });
-
-const sendNominal: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
-	dispatch: Dispatch<any>,
-	_getState: () => State,
-	dataContext: DataContext
-	) => {
-		if (await dataContext.game.gameServerClient.msgAsync('STAKE', 0)) {
-			dispatch(clearDecisions());
-		}
-	};
-
-const sendStake: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (stake?: number) => async (
-	dispatch: Dispatch<any>,
-	getState: () => State,
-	dataContext: DataContext
-	) => {
-		const state = getState();
-
-		let result : boolean;
-
-		if (state.room.stakes.message === 'STAKE') { // Bad design
-			result = await dataContext.game.gameServerClient.msgAsync('STAKE', 1, stake ?? state.room.stakes.stake);
-		} else {
-			result = await dataContext.game.gameServerClient.msgAsync(state.room.stakes.message, stake ?? state.room.stakes.stake);
-		}
-
-		if (result) {
-			dispatch(clearDecisions());
-		}
-	};
-
-const sendPass: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
-	dispatch: Dispatch<any>,
-	_getState: () => State,
-	dataContext: DataContext
-	) => {
-	if (await dataContext.game.gameServerClient.msgAsync('STAKE', 2)) {
-		dispatch(clearDecisions());
-	}
-};
-
-const sendAllIn: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
-	dispatch: Dispatch<any>,
-	_getState: () => State,
-	dataContext: DataContext
-	) => {
-	if (await dataContext.game.gameServerClient.msgAsync('STAKE', 3)) {
-		dispatch(clearDecisions());
-	}
-};
 
 const selectionEnabled: ActionCreator<RunActions.SelectionEnabledAction> = (allowedIndices: number[], message: string) => ({
 	type: RunActions.RoomActionTypes.SelectionEnabled, allowedIndices, message
@@ -1027,14 +943,8 @@ const roomActionCreators = {
 	updateAnswer,
 	sendAnswer,
 	validate,
-	approveAnswer,
-	rejectAnswer,
 	setStakes,
 	stakeChanged,
-	sendNominal,
-	sendStake,
-	sendPass,
-	sendAllIn,
 	selectionEnabled,
 	showLeftSeconds,
 	onMediaEnded,

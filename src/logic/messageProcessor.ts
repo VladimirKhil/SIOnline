@@ -412,8 +412,8 @@ const viewerHandler = (
 			}
 			break;
 
-		case 'INFO2':
-			info(dispatch, ...args);
+		case GameMessages.Info:
+			info(controller, ...args);
 			break;
 
 		case GameMessages.Layout:
@@ -1208,7 +1208,7 @@ function getIndices(args: string[]): number[] {
 	return indices;
 }
 
-function info(dispatch: Dispatch<RoomActions.KnownRoomAction>, ...args: string[]) {
+function info(controller: ClientController, ...args: string[]) {
 	const playersCount = parseInt(args[1], 10);
 	const viewersCount = (args.length - 2) / 5 - 1 - playersCount;
 	let pIndex = 2;
@@ -1287,8 +1287,7 @@ function info(dispatch: Dispatch<RoomActions.KnownRoomAction>, ...args: string[]
 		};
 	}
 
-	dispatch(roomActionCreators.infoChanged(all, showman, players));
-	dispatch(actionCreators.sendAvatar() as any);
+	controller.onInfo(all, showman, players);
 }
 
 function disconnected(dispatch: Dispatch<RoomActions.KnownRoomAction>, state: State, ...args: string[]) {

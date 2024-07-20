@@ -4,12 +4,14 @@ import roomActionCreators from '../../../state/room/roomActionCreators';
 import State from '../../../state/State';
 import { Dispatch, Action } from 'redux';
 import localization from '../../../model/resources/localization';
+import { sendAllIn } from '../../../state/new/room2Slice';
+import { useAppDispatch } from '../../../state/new/hooks';
 
 interface SendAllInButtonProps {
 	isConnected: boolean;
 	useSimpleStakes: boolean;
 	className?: string;
-	sendAllIn: () => void;
+	clearDecisions: () => void;
 }
 
 const mapStateToProps = (state: State) => ({
@@ -18,15 +20,22 @@ const mapStateToProps = (state: State) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
-	sendAllIn: () => {
-		dispatch((roomActionCreators.sendAllIn() as object) as Action);
-	}
+	clearDecisions: () => {
+		dispatch(roomActionCreators.clearDecisions());
+	},
 });
 
 export function SendAllInButton(props: SendAllInButtonProps) {
+	const appDispatch = useAppDispatch();
+
+	const sendAllIn2 = () => {
+		appDispatch(sendAllIn());
+		props.clearDecisions();
+	};
+
 	return props.useSimpleStakes
 		? null
-		: (<button className={props.className} disabled={!props.isConnected} onClick={() => props.sendAllIn()}>{localization.allIn}</button>);
+		: (<button type='button' className={props.className} disabled={!props.isConnected} onClick={sendAllIn2}>{localization.allIn}</button>);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(SendAllInButton);

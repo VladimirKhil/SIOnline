@@ -7,6 +7,8 @@ import localization from '../../model/resources/localization';
 import roomActionCreators from '../../state/room/roomActionCreators';
 import Dialog from '../common/Dialog';
 import settingsActionCreators from '../../state/settings/settingsActionCreators';
+import { useAppDispatch } from '../../state/new/hooks';
+import { approveAnswer, rejectAnswer } from '../../state/new/room2Slice';
 
 import './AnswerValidationDialog.css';
 
@@ -19,8 +21,7 @@ interface AnswerValidationDialogProps {
 	wrongAnswers: string[];
 	showExtraRightButtons: boolean;
 	areAnswersVisible: boolean;
-	onApprove: (factor: number) => void;
-	onReject: (factor: number) => void;
+	clearDecisions: () => void;
 	onAnswersVisibilityChanged: (areAnswersVisible: boolean) => void;
 }
 
@@ -36,11 +37,8 @@ const mapStateToProps = (state: State) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
-	onApprove: (factor: number) => {
-		dispatch(roomActionCreators.approveAnswer(factor) as unknown as Action);
-	},
-	onReject: (factor: number) => {
-		dispatch(roomActionCreators.rejectAnswer(factor) as unknown as Action);
+	clearDecisions: () => {
+		dispatch(roomActionCreators.clearDecisions());
 	},
 	onAnswersVisibilityChanged: (areAnswersVisible: boolean) => {
 		dispatch(settingsActionCreators.onValidationAnswersVisibilityChanged(areAnswersVisible));
@@ -48,11 +46,23 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 });
 
 export function AnswerValidationDialog(props: AnswerValidationDialogProps): JSX.Element {
+	const appDispatch = useAppDispatch();
+
+	const onApprove = (factor: number) => {
+		appDispatch(approveAnswer(factor));
+		props.clearDecisions();
+	};
+
+	const onReject = (factor: number) => {
+		appDispatch(rejectAnswer(factor));
+		props.clearDecisions();
+	};
+
 	return (
 		<Dialog
 			className='answerValidationDialog'
 			title={props.header}
-			onClose={() => props.onReject(1.0)}>
+			onClose={() => onReject(1.0)}>
 			<div className='answerValidationDialogBody'>
 				<div className='validationHeader'>
 					<div className='mainMessage'>
@@ -65,7 +75,7 @@ export function AnswerValidationDialog(props: AnswerValidationDialogProps): JSX.
 							type='button'
 							className='cancelAnswer'
 							title={localization.cancelAnswer}
-							onClick={() => props.onReject(0)}
+							onClick={() => onReject(0)}
 						>
 							−0
 						</button> : null}
@@ -105,7 +115,7 @@ export function AnswerValidationDialog(props: AnswerValidationDialogProps): JSX.
 							type="button"
 							className='standard validationButton'
 							disabled={!props.isConnected}
-							onClick={() => props.onApprove(1.0)}>
+							onClick={() => onApprove(1.0)}>
 							{localization.yes}
 						</button>
 
@@ -114,7 +124,7 @@ export function AnswerValidationDialog(props: AnswerValidationDialogProps): JSX.
 								type="button"
 								className='standard halfPrice extraButton'
 								disabled={!props.isConnected}
-								onClick={() => props.onApprove(0.5)}>
+								onClick={() => onApprove(0.5)}>
 								×0.5
 							</button>
 
@@ -122,7 +132,7 @@ export function AnswerValidationDialog(props: AnswerValidationDialogProps): JSX.
 								type="button"
 								className='standard doublePrice extraButton'
 								disabled={!props.isConnected}
-								onClick={() => props.onApprove(2.0)}>
+								onClick={() => onApprove(2.0)}>
 								×2
 							</button>
 						</>) : null}
@@ -133,7 +143,7 @@ export function AnswerValidationDialog(props: AnswerValidationDialogProps): JSX.
 							type="button"
 							className='standard validationButton'
 							disabled={!props.isConnected}
-							onClick={() => props.onReject(1.0)}>
+							onClick={() => onReject(1.0)}>
 							{localization.no}
 						</button>
 
@@ -142,7 +152,7 @@ export function AnswerValidationDialog(props: AnswerValidationDialogProps): JSX.
 								type="button"
 								className='standard halfPrice extraButton'
 								disabled={!props.isConnected}
-								onClick={() => props.onReject(0.5)}>
+								onClick={() => onReject(0.5)}>
 								×0.5
 							</button>
 
@@ -150,7 +160,7 @@ export function AnswerValidationDialog(props: AnswerValidationDialogProps): JSX.
 								type="button"
 								className='standard doublePrice extraButton'
 								disabled={!props.isConnected}
-								onClick={() => props.onReject(2.0)}>
+								onClick={() => onReject(2.0)}>
 								×2
 							</button>
 						</>) : null}
