@@ -57,8 +57,10 @@ function renderBody(props: TableContextViewProps, contextView: ContextView) : JS
 		return <AnswerInput id="answerBoxWide" />;
 	}
 
+	const defaultView = props.role === Role.Showman ? <div className='emptyContext' /> : null;
+
 	if (props.isAfterQuestion) {
-		return props.role === Role.Player ? <ReactionPanel /> : null;
+		return props.role === Role.Player ? <ReactionPanel /> : defaultView;
 	}
 
 	if (props.role === Role.Player) {
@@ -69,7 +71,7 @@ function renderBody(props: TableContextViewProps, contextView: ContextView) : JS
 		return <GameHint />;
 	}
 
-	return null;
+	return defaultView;
 }
 
 export function TableContextView(props: TableContextViewProps): JSX.Element | null {

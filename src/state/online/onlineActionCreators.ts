@@ -44,6 +44,7 @@ import WellKnownSIContentServiceErrorCode from 'sicontent-client/dist/models/Wel
 import RandomPackageParameters from 'sistorage-client/dist/models/RandomPackageParameters';
 import { AppDispatch } from '../new/store';
 import { showText, tableReset } from '../new/tableSlice';
+import { ContextView, setContext } from '../new/room2Slice';
 
 const selectGame: ActionCreator<OnlineActions.SelectGameAction> = (gameId: number) => ({
 	type: OnlineActions.OnlineActionTypes.SelectGame,
@@ -339,6 +340,7 @@ const initGameAsync = async (
 	dispatch(gameActionCreators.gameSet(gameId, isAutomatic));
 	appDispatch(tableReset());
 	appDispatch(showText(localization.tableHint));
+	appDispatch(setContext(ContextView.None));
 	dispatch(roomActionCreators.nameChanged(name));
 	dispatch(roomActionCreators.roleChanged(role));
 	dispatch(roomActionCreators.stopTimer(0));

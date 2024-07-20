@@ -1165,8 +1165,7 @@ function startValidation(dispatch: Dispatch<RoomActions.KnownRoomAction>, title:
 		wrong.push(args[i]);
 	}
 
-	const validationMesssage = `${localization.playersAnswer} ${name} "${answer}". ${localization.validateAnswer}`;
-	dispatch(roomActionCreators.validate(name, answer, right, wrong, title, validationMesssage, false));
+	dispatch(roomActionCreators.validate(name, answer, right, wrong, title, '', false));
 }
 
 function startValidation2(dispatch: Dispatch<RoomActions.KnownRoomAction>, title: string, args: string[]) {
@@ -1191,8 +1190,7 @@ function startValidation2(dispatch: Dispatch<RoomActions.KnownRoomAction>, title
 		wrong.push(args[i]);
 	}
 
-	const validationMesssage = `${localization.playersAnswer} ${name} "${answer}". ${localization.validateAnswer}`;
-	dispatch(roomActionCreators.validate(name, answer, right, wrong, title, validationMesssage, showExtraRightButtons));
+	dispatch(roomActionCreators.validate(name, answer, right, wrong, title, '', showExtraRightButtons));
 }
 
 function getIndices(args: string[]): number[] {

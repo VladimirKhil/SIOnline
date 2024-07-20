@@ -1,9 +1,9 @@
-.tableContextView {
+.tableContextView, .emptyContext {
 	height: 45px;
 }
 
 @media screen and (min-width: 1600px) {
-	.tableContextView {
+	.tableContextView, .emptyContext {
 		height: 65px;
 	}
 }

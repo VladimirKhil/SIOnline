@@ -25,10 +25,11 @@
     text-align: center;
 }
 
-.answerValidationDialog #answersPanel {
+.answerValidationDialog .answersPanel {
     margin: 13px;
-    height: calc(100% - 183px);
     display: flex;
+    flex: 1;
+    overflow: hidden;
 }
 
 .answerValidationDialog .answers {
@@ -66,8 +67,7 @@
 }
 
 .answerValidationDialog .buttonsPanel {
-    position: absolute;
-    bottom: 0;
+    flex: 0 0 45px;
 }
 
 .answerValidationDialog .buttonsPanel .buttonsArea {
@@ -104,37 +104,58 @@
     color: darkred;
 }
 
-@media screen and (min-width: 800px) {
+.answerValidationDialog .mainMessage {
+    flex: 1;
+}
+
+.answerValidationDialog .playerTitle {
+    display: block !important;
+}
+
+.answerValidationDialog .playerAnswer {
+    font-weight: bold;
+    text-align: center;
+    display: block !important;
+    font-size: 25px;
+    margin-top: 5px;
+}
+
+.answerValidationDialog .answersPanel.answersHidden {
+    opacity: 0;
+}
+
+.answerValidationDialogBody {
+    height: calc(100% - 60px);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+@media screen and (min-width: 1100px) {
     .answerValidationDialog {
-        width: 600px;
-        margin-left: auto;
-        margin-right: auto;
-        top: 130px;
-        bottom: 130px;
+        width: 19.2%;
+        right: 0;
+        left: auto;
+        top: 0;
+        bottom: 45px;
         vertical-align: middle;
         border: 1px solid black;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
         overflow: hidden;
+        background-color: orange;
     }
 
-    .answerValidationDialog.short {
-        height: 171px;
-        top: initial;
+    .answerValidationDialog h1 {
+        font-size: 25px;
     }
-}
 
-@media screen and (min-width: 800px) {
-    .answerValidationDialog {
-        height: 50%;
-        top: 200px;
-        bottom: 200px;
+    .answerValidationDialog .answersPanel {
+        flex-direction: column;
+        overflow-y: auto;
+        height: initial;
     }
-}
 
-@media screen and (min-width: 1600px) {
-    .answerValidationDialog {
-        height: 40%;
-        top: 250px;
-        bottom: 250px;
+    .answerValidationDialog .buttonsPanel {
+        position: static;
     }
 }

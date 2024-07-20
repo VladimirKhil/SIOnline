@@ -13,7 +13,8 @@ import './AnswerValidationDialog.css';
 interface AnswerValidationDialogProps {
 	isConnected: boolean;
 	header: string;
-	message: string;
+	name: string;
+	answer: string;
 	rightAnswers: string[];
 	wrongAnswers: string[];
 	showExtraRightButtons: boolean;
@@ -26,7 +27,8 @@ interface AnswerValidationDialogProps {
 const mapStateToProps = (state: State) => ({
 	isConnected: state.common.isSIHostConnected,
 	header: state.room.validation.header,
-	message: state.room.validation.message,
+	name: state.room.validation.name,
+	answer: state.room.validation.answer,
 	rightAnswers: state.room.validation.rightAnswers,
 	wrongAnswers: state.room.validation.wrongAnswers,
 	showExtraRightButtons: state.room.validation.showExtraRightButtons,
@@ -48,36 +50,38 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 export function AnswerValidationDialog(props: AnswerValidationDialogProps): JSX.Element {
 	return (
 		<Dialog
-			className={`answerValidationDialog ${props.areAnswersVisible ? '' : 'short'}`}
+			className='answerValidationDialog'
 			title={props.header}
 			onClose={() => props.onReject(1.0)}>
-			<div className='validationHeader'>
-				<p>{props.message}</p>
+			<div className='answerValidationDialogBody'>
+				<div className='validationHeader'>
+					<div className='mainMessage'>
+						<p className='playerTitle'>{localization.validateAnswer}<b>{props.name}</b>{localization.validateAnswerEnd}</p>
+						<p className='playerAnswer'>{props.answer}</p>
+					</div>
 
-				<div className='mainValidationPanel'>
-					{props.showExtraRightButtons ? <button
-						type='button'
-						className='cancelAnswer'
-						title={localization.cancelAnswer}
-						onClick={() => props.onReject(0)}
-					>
-						−0
-					</button> : null}
+					<div className='mainValidationPanel'>
+						{props.showExtraRightButtons ? <button
+							type='button'
+							className='cancelAnswer'
+							title={localization.cancelAnswer}
+							onClick={() => props.onReject(0)}
+						>
+							−0
+						</button> : null}
 
-					<button
-						type='button'
-						className='validationAnswersVisibilityButton'
-						title={props.areAnswersVisible ? localization.hideAnswers : localization.showAnswers}
-						onClick={() => props.onAnswersVisibilityChanged(!props.areAnswersVisible)}
-					>
-						👁
-					</button>
+						<button
+							type='button'
+							className='validationAnswersVisibilityButton'
+							title={props.areAnswersVisible ? localization.hideAnswers : localization.showAnswers}
+							onClick={() => props.onAnswersVisibilityChanged(!props.areAnswersVisible)}
+						>
+							👁
+						</button>
+					</div>
 				</div>
-			</div>
 
-			{props.areAnswersVisible
-				? (
-				<div id="answersPanel">
+				<div className={`answersPanel ${props.areAnswersVisible ? '' : 'answersHidden'}`}>
 					<div className="answers">
 						<p>{localization.rightAnswers}</p>
 
@@ -93,64 +97,64 @@ export function AnswerValidationDialog(props: AnswerValidationDialogProps): JSX.
 							{props.wrongAnswers.map((answer, index) => <li key={index}><span>{answer}</span></li>)}
 						</ul>
 					</div>
-				</div>)
-				: null}
-
-			<div className="buttonsPanel">
-				<div className='buttonsArea'>
-					<button
-						type="button"
-						className='standard validationButton'
-						disabled={!props.isConnected}
-						onClick={() => props.onApprove(1.0)}>
-						{localization.yes}
-					</button>
-
-					{props.showExtraRightButtons ? (<>
-						<button
-							type="button"
-							className='standard halfPrice extraButton'
-							disabled={!props.isConnected}
-							onClick={() => props.onApprove(0.5)}>
-							×0.5
-						</button>
-
-						<button
-							type="button"
-							className='standard doublePrice extraButton'
-							disabled={!props.isConnected}
-							onClick={() => props.onApprove(2.0)}>
-							×2
-						</button>
-					</>) : null}
 				</div>
 
-				<div className='buttonsArea'>
-					<button
-						type="button"
-						className='standard validationButton'
-						disabled={!props.isConnected}
-						onClick={() => props.onReject(1.0)}>
-						{localization.no}
-					</button>
-
-					{props.showExtraRightButtons ? (<>
+				<div className="buttonsPanel">
+					<div className='buttonsArea'>
 						<button
 							type="button"
-							className='standard halfPrice extraButton'
+							className='standard validationButton'
 							disabled={!props.isConnected}
-							onClick={() => props.onReject(0.5)}>
-							×0.5
+							onClick={() => props.onApprove(1.0)}>
+							{localization.yes}
 						</button>
 
+						{props.showExtraRightButtons ? (<>
+							<button
+								type="button"
+								className='standard halfPrice extraButton'
+								disabled={!props.isConnected}
+								onClick={() => props.onApprove(0.5)}>
+								×0.5
+							</button>
+
+							<button
+								type="button"
+								className='standard doublePrice extraButton'
+								disabled={!props.isConnected}
+								onClick={() => props.onApprove(2.0)}>
+								×2
+							</button>
+						</>) : null}
+					</div>
+
+					<div className='buttonsArea'>
 						<button
 							type="button"
-							className='standard doublePrice extraButton'
+							className='standard validationButton'
 							disabled={!props.isConnected}
-							onClick={() => props.onReject(2.0)}>
-							×2
+							onClick={() => props.onReject(1.0)}>
+							{localization.no}
 						</button>
-					</>) : null}
+
+						{props.showExtraRightButtons ? (<>
+							<button
+								type="button"
+								className='standard halfPrice extraButton'
+								disabled={!props.isConnected}
+								onClick={() => props.onReject(0.5)}>
+								×0.5
+							</button>
+
+							<button
+								type="button"
+								className='standard doublePrice extraButton'
+								disabled={!props.isConnected}
+								onClick={() => props.onReject(2.0)}>
+								×2
+							</button>
+						</>) : null}
+					</div>
 				</div>
 			</div>
 		</Dialog>

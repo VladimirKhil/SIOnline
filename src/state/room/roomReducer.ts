@@ -580,6 +580,7 @@ const roomReducer: Reducer<RoomState> = (state: RoomState = initialState, anyAct
 					wrongAnswers: action.wrongAnswers,
 					header: action.header,
 					name: action.name,
+					answer: action.answer,
 					message: action.message,
 					showExtraRightButtons: action.showExtraRightButtons,
 				}

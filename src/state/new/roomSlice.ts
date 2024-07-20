@@ -64,6 +64,7 @@ interface RoomState {
 		isVisible: boolean;
 		header: string;
 		name: string;
+		answer: string;
 		message: string;
 		rightAnswers: string[];
 		wrongAnswers: string[];
@@ -197,6 +198,7 @@ const initialState: RoomState = {
 		isVisible: false,
 		header: '',
 		name: '',
+		answer: '',
 		message: '',
 		rightAnswers: [],
 		wrongAnswers: [],
