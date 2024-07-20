@@ -176,7 +176,11 @@ const viewerHandler = (
 			break;
 
 		case GameMessages.AtomHint:
-			// TODO
+			if (args.length < 2) {
+				break;
+			}
+
+			controller.onContentHint(args[1]);
 			break;
 
 		case GameMessages.Avatar: {

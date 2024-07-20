@@ -39,6 +39,22 @@
     opacity: 0.85;
 }
 
+.contentHint {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    opacity: 0.75;
+    background-color: #000451;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 20px;
+    font-size: 20px;
+}
+
 #table .pauseLogo.warning {
 	color: darkgray;
 	background-color: #000066;

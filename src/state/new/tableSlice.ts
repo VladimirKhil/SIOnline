@@ -17,6 +17,7 @@ export interface TableState {
 	text: string;
 	tail: string;
 	hint: string;
+	contentHint: string;
 	audio: string;
 	rotate: boolean;
 	canPress: boolean;
@@ -43,6 +44,7 @@ const initialState: TableState = {
 	text: '',
 	tail: '',
 	hint: '',
+	contentHint: '',
 	audio: '',
 	rotate: false,
 	canPress: false,
@@ -249,6 +251,9 @@ export const tableSlice = createSlice({
 			state.loadTimer.state = TimerStates.Running;
 			state.loadTimer.isPausedBySystem = false;
 		},
+		showContentHint: (state, action: PayloadAction<string>) => {
+			state.contentHint = action.payload;
+		},
 	}
 });
 
@@ -284,6 +289,7 @@ export const {
 	startLoadTimer,
 	pauseLoadTimer,
 	resumeLoadTimer,
+	showContentHint,
 } = tableSlice.actions;
 
 export default tableSlice.reducer;

@@ -43,6 +43,7 @@ import { answerOptions,
 	setAnswerView,
 	showBackgroundAudio,
 	showContent,
+	showContentHint,
 	showGameThemes,
 	showLogo,
 	showObject,
@@ -262,6 +263,17 @@ export default class ClientController {
 			default:
 				break;
 		}
+	}
+
+	onContentHint(hint: string) {
+		this.appDispatch(showContentHint(hint));
+
+		setTimeout(
+			() => {
+				this.appDispatch(showContentHint(''));
+			},
+			6000
+		);
 	}
 
 	onGameThemes(gameThemes: string[]) {

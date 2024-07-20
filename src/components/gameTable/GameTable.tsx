@@ -15,6 +15,7 @@ import ProgressBar from '../common/ProgressBar';
 import { isRunning } from '../../utils/TimerInfoHelpers';
 import TableContent from './TableContent/TableContent';
 import ObjectView from './ObjectView/ObjectView';
+import { useAppSelector } from '../../state/new/hooks';
 
 import './GameTable.css';
 
@@ -92,6 +93,7 @@ function getCaption(props: GameTableProps): string | null {
 }
 
 export function GameTable(props: GameTableProps): JSX.Element {
+	const tableState = useAppSelector((state) => state.table);
 	const caption = getCaption(props);
 
 	return (
@@ -105,6 +107,8 @@ export function GameTable(props: GameTableProps): JSX.Element {
 			<div className="tableContent">
 				{getContent(props.mode)}
 			</div>
+
+			{tableState.contentHint.length > 0 ? <div className='contentHint'>{tableState.contentHint}</div> : null}
 
 			{props.showMainTimer ? (
 				<ProgressBar
