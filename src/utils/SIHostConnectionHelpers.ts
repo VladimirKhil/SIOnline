@@ -9,6 +9,8 @@ import roomActionCreators from '../state/room/roomActionCreators';
 import ISIHostClient from '../client/ISIHostClient';
 import getErrorMessage from './ErrorHelpers';
 import { AppDispatch } from '../state/new/store';
+import PersonInfo from '../client/contracts/PersonInfo';
+import { onGamePersonsChanged } from '../state/new/online2Slice';
 
 export const activeSIHostConnections: string[] = [];
 
@@ -25,6 +27,10 @@ export function attachSIHostListeners(
 
 	connection.on('Disconnect', () => {
 		dispatch(roomActionCreators.onKicked());
+	});
+
+	connection.on('GamePersonsChanged', (gameId: number, persons: PersonInfo[]) => {
+		dispatch(appDispatch(onGamePersonsChanged({ gameId, persons })));
 	});
 
 	connection.onreconnecting((e) => {
@@ -72,6 +78,7 @@ export function attachSIHostListeners(
 export function detachSIHostListeners(connection: signalR.HubConnection): void {
 	connection.off('Receive');
 	connection.off('Disconnect');
+	connection.off('GamePersonsChanged');
 
 	detachedConnections.push(connection);
 }

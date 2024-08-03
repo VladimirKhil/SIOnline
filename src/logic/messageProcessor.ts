@@ -18,7 +18,6 @@ import Role from '../model/Role';
 import localization from '../model/resources/localization';
 import StakeTypes from '../model/enums/StakeTypes';
 import stringFormat, { trimLength } from '../utils/StringHelpers';
-import actionCreators from './actionCreators';
 import MessageLevel from '../model/enums/MessageLevel';
 import GameMessages from '../client/game/GameMessages';
 import JoinMode from '../client/game/JoinMode';
