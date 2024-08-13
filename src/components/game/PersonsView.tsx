@@ -8,15 +8,15 @@ import roomActionCreators from '../../state/room/roomActionCreators';
 import PersonView from './PersonView';
 import { isHost } from '../../utils/StateHelpers';
 import JoinMode from '../../client/game/JoinMode';
+import Persons from '../../model/Persons';
+import { useAppSelector } from '../../state/new/hooks';
 
 import './PersonsView.css';
 
 interface PersonsViewProps {
 	isConnected: boolean;
 	isHost: boolean;
-	showman: Account | undefined;
-	players: Account[];
-	viewers: Account[];
+	all: Persons;
 	login: string;
 	selectedPerson: Account | null;
 	joinMode: JoinMode;
@@ -28,27 +28,12 @@ interface PersonsViewProps {
 }
 
 const mapStateToProps = (state: State) => {
-	const showman = state.room.persons.all[state.room.persons.showman.name];
-	const playersNames = state.room.persons.players.map(p => p.name);
-
-	const players = playersNames
-		.map(name => state.room.persons.all[name])
-		.filter(p => p)
-		.sort((p1, p2) => p1.name.localeCompare(p2.name));
-
-	const viewers = Object.keys(state.room.persons.all)
-		.filter(name => name !== state.room.persons.showman.name && !playersNames.includes(name))
-		.map(name => state.room.persons.all[name])
-		.sort((p1, p2) => p1.name.localeCompare(p2.name));
-
 	const { selectedPersonName } = state.room.chat;
 
 	return {
 		isConnected: state.common.isSIHostConnected,
 		isHost: isHost(state),
-		showman,
-		players,
-		viewers,
+		all: state.room.persons.all,
 		login: state.room.name,
 		selectedPerson: selectedPersonName ? state.room.persons.all[selectedPersonName] : null,
 		joinMode: state.room.joinMode,
@@ -96,6 +81,21 @@ function inviteLink() {
 }
 
 export function PersonsView(props: PersonsViewProps): JSX.Element {
+	const roomState = useAppSelector(state => state.room2);
+
+	const showman = props.all[roomState.persons.showman.name];
+	const playersNames = roomState.persons.players.map(p => p.name);
+
+	const players = playersNames
+		.map(name => props.all[name])
+		.filter(p => p)
+		.sort((p1, p2) => p1.name.localeCompare(p2.name));
+
+	const viewers = Object.keys(props.all)
+		.filter(name => name !== roomState.persons.showman.name && !playersNames.includes(name))
+		.map(name => props.all[name])
+		.sort((p1, p2) => p1.name.localeCompare(p2.name));
+
 	const canKick = props.isHost && props.selectedPerson && props.selectedPerson.name !== props.login && props.selectedPerson.isHuman;
 
 	const onJoinModeChanged = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -107,16 +107,16 @@ export function PersonsView(props: PersonsViewProps): JSX.Element {
 			<div className="personsList">
 				<div className="personsHeader">{localization.showman}</div>
 
-				{props.showman ? (
+				{showman ? (
 					<ul>
-						<PersonView account={props.showman} />
+						<PersonView account={showman} />
 					</ul>
 				) : null}
 
 				<div className="personsHeader">{localization.players}</div>
 
 				<ul>
-					{props.players.map((person, index) => (
+					{players.map((person, index) => (
 						<PersonView key={person ? person.name : index} account={person} />
 					))}
 				</ul>
@@ -124,7 +124,7 @@ export function PersonsView(props: PersonsViewProps): JSX.Element {
 				<div className="personsHeader">{localization.viewers}</div>
 
 				<ul>
-					{props.viewers.map(person => <PersonView key={person.name} account={person} />)}
+					{viewers.map(person => <PersonView key={person.name} account={person} />)}
 				</ul>
 			</div>
 

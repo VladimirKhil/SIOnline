@@ -38,6 +38,8 @@ const enum Messages {
 
 	Report = 'REPORT',
 
+	SelectPlayer = 'SELECT_PLAYER',
+
 	/** Gives turn to player. */
 	SetChooser = 'SETCHOOSER',
 
@@ -46,6 +48,8 @@ const enum Messages {
 
 	/** Sets game join mode. */
 	SetJoinMode = 'SETJOINMODE',
+
+	SetStake = 'SET_STAKE',
 
 	/** Toggles (removes or restores a question). */
 	Toggle = 'TOGGLE',

@@ -6,26 +6,29 @@ import localization from '../../../model/resources/localization';
 import roomActionCreators from '../../../state/room/roomActionCreators';
 import Sex from '../../../model/enums/Sex';
 import Role from '../../../model/Role';
+import { useAppSelector } from '../../../state/new/hooks';
+import { Room2State } from '../../../state/new/room2Slice';
 
 import './ReadyButton.css';
 
 interface ReadyButtonProps {
 	isConnected: boolean;
-	isReady: boolean;
+	role: Role;
+	myName: string;
 	sex: Sex;
 
 	onReady: (isReady: boolean) => void;
 }
 
-const getIsReady = (state: State) => {
-	const { persons, role } = state.room;
+const getIsReady = (state: Room2State, role: Role, myName: string) => {
+	const { persons } = state;
 
 	if (role === Role.Showman) {
 		return persons.showman.isReady;
 	}
 
 	if (role === Role.Player) {
-		const me = persons.players.find(p => p.name === state.room.name);
+		const me = persons.players.find(p => p.name === myName);
 
 		if (me) {
 			return me.isReady;
@@ -38,7 +41,8 @@ const getIsReady = (state: State) => {
 const mapStateToProps = (state: State) => ({
 	isConnected: state.common.isSIHostConnected,
 	sex: state.settings.sex,
-	isReady: getIsReady(state),
+	role: state.room.role,
+	myName: state.room.name,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
@@ -48,13 +52,15 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 });
 
 export function ReadyButton(props: ReadyButtonProps): JSX.Element | null {
+	const roomState = useAppSelector(state => state.room2);
+	const isReady = getIsReady(roomState, props.role, props.myName);
 	const enabledClass = props.isConnected ? '' : 'disabled';
 
 	return (
 		<button
 			type="button"
-			className={`ready_button ${enabledClass} ${props.isReady ? 'active' : ''}`}
-			onClick={() => props.onReady(!props.isReady)}
+			className={`ready_button ${enabledClass} ${isReady ? 'active' : ''}`}
+			onClick={() => props.onReady(!isReady)}
 		>
 			<span>{props.sex === Sex.Female ? localization.readyFemale : localization.readyMale}</span>
 		</button>

@@ -3,25 +3,26 @@ import AutoSizedText from '../common/AutoSizedText';
 import Constants from '../../model/enums/Constants';
 import State from '../../state/State';
 import { connect } from 'react-redux';
+import { useAppSelector } from '../../state/new/hooks';
 
 import './ShowmanReplic.css';
 
 interface ShowmanReplicProps {
-	replic: string | null;
 	windowWidth: number;
 }
 
 const mapStateToProps = (state: State) => ({
-	replic: state.room.persons.showman.replic,
 	windowWidth: state.ui.windowWidth,
 });
 
 export function ShowmanReplic(props: ShowmanReplicProps): JSX.Element {
+	const roomState = useAppSelector(state => state.room2);
+	const { replic } = roomState.persons.showman;
 	const isScreenWide = props.windowWidth >= Constants.WIDE_WINDOW_WIDTH;
 
 	return (
-		<AutoSizedText className={`showmanReplic ${props.replic || !isScreenWide ? '' : 'hidden'}`} maxFontSize={48}>
-			{props.replic || ''}
+		<AutoSizedText className={`showmanReplic ${replic || !isScreenWide ? '' : 'hidden'}`} maxFontSize={48}>
+			{replic || ''}
 		</AutoSizedText>
 	);
 }

@@ -57,11 +57,36 @@ import { answerOptions,
 	updateOptionState,
 	updateQuestion } from '../state/new/tableSlice';
 
-import { setReport } from '../state/new/room2Slice';
+import {
+	activatePlayerDecision,
+	activateShowmanDecision,
+	chooserChanged,
+	clearDecisions,
+	deselectPlayers,
+	infoChanged,
+	isReadyChanged,
+	playerAdded,
+	playerChanged,
+	playerDeleted,
+	playerInGameChanged,
+	playerReplicChanged,
+	playerStateChanged,
+	playerSumChanged,
+	playersStateCleared,
+	playersSwap,
+	selectPlayers,
+	setReport,
+	showmanChanged,
+	showmanReplicChanged,
+	sumsChanged
+} from '../state/new/room2Slice';
+
 import PersonInfo from '../model/PersonInfo';
 import Persons from '../model/Persons';
 import PlayerInfo from '../model/PlayerInfo';
 import actionCreators from './actionCreators';
+import Messages from '../client/game/Messages';
+import StakeModes from '../client/game/StakeModes';
 
 function initGroup(group: ContentGroup) {
 	let bestRowCount = 1;
@@ -93,6 +118,25 @@ function getRuleString(rules: string) {
 
 		case RoundRules.RemoveOtherThemes:
 			return localization.rulesRemoveThemes;
+
+		default:
+			return '';
+	}
+}
+
+function getAskSelectHint(reason: string): string {
+	switch (reason) {
+		case 'Answerer':
+			return localization.selectAnswerer;
+
+		case 'Chooser':
+			return localization.selectFirstPlayer;
+
+		case 'Deleter':
+			return localization.selectThemeDeleter;
+
+		case 'Staker':
+			return localization.selectStaker;
 
 		default:
 			return '';
@@ -233,6 +277,20 @@ export default class ClientController {
 		}
 	}
 
+	onAnswers(answers: string[]) {
+	}
+
+	onAskSelectPlayer(reason: string, indices: number[]) {
+		this.appDispatch(selectPlayers(indices));
+		this.dispatch(roomActionCreators.selectionEnabled(Messages.SelectPlayer));
+		this.appDispatch(showmanReplicChanged(getAskSelectHint(reason)));
+	}
+
+	onAskStake(stakeModes: StakeModes, minimum: number, maximum: number, step: number, reason: string, playerName: string | null) {
+		this.dispatch(roomActionCreators.setStakes(stakeModes, minimum, maximum, step, playerName));
+		this.dispatch(roomActionCreators.decisionNeededChanged(true));
+	}
+
 	onAvatarChanged(personName: string, contentType: string, uri: string) {
 		switch (contentType) {
 			case 'image':
@@ -248,6 +306,11 @@ export default class ClientController {
 		}
 	}
 
+	onCancel() {
+		this.dispatch(roomActionCreators.clearDecisions());
+		this.appDispatch(deselectPlayers());
+	}
+
 	onConnected(account: Account, role: string, index: number) {
 		if (account.name === this.getState().room.name) {
 			return;
@@ -257,11 +320,11 @@ export default class ClientController {
 
 		switch (role) {
 			case 'showman':
-				this.dispatch(roomActionCreators.showmanChanged(account.name, true, false));
+				this.appDispatch(showmanChanged({ name: account.name, isHuman: true, isReady: false }));
 				break;
 
 			case 'player':
-				this.dispatch(roomActionCreators.playerChanged(index, account.name, true, false));
+				this.appDispatch(playerChanged({ index, name: account.name, isHuman: true, isReady: false }));
 				break;
 
 			default:
@@ -285,7 +348,8 @@ export default class ClientController {
 	}
 
 	onInfo(all: Persons, showman: PersonInfo, players: PlayerInfo[]) {
-		this.dispatch(roomActionCreators.infoChanged(all, showman, players));
+		this.dispatch(roomActionCreators.infoChanged(all));
+		this.appDispatch(infoChanged({ showman, players }));
 		this.dispatch(actionCreators.sendAvatar() as any);
 	}
 
@@ -349,6 +413,23 @@ export default class ClientController {
 		}
 	}
 
+	onReady(personName: string, isReady: boolean): void {
+		let personIndex: number;
+		const state = this.getState();
+
+		if (personName === state.room2.persons.showman.name) {
+			personIndex = -1;
+		} else {
+			personIndex = state.room2.persons.players.findIndex(p => p.name === personName);
+
+			if (personIndex === -1) {
+				return;
+			}
+		}
+
+		this.appDispatch(isReadyChanged({ personIndex, isReady }));
+	}
+
 	onReport(report: string) {
 		this.appDispatch(setReport(report));
 	}
@@ -384,11 +465,10 @@ export default class ClientController {
 			const { roundTail } = localization;
 			const roundName = stageName.endsWith(roundTail) ? stageName.substring(0, stageName.length - roundTail.length) : stageName;
 			this.appDispatch(showObject({ header: localization.round, text: roundName, hint: getRuleString(rules) }));
-			this.dispatch(roomActionCreators.playersStateCleared());
 
 			if (stage === GameStage.Round) {
-				for	(let i = 0; i < state.room.persons.players.length; i++) {
-					this.dispatch(roomActionCreators.playerInGameChanged(i, true));
+				for	(let i = 0; i < state.room2.persons.players.length; i++) {
+					this.appDispatch(playerInGameChanged({ playerIndex: i, inGame: true }));
 				}
 			}
 
@@ -398,6 +478,7 @@ export default class ClientController {
 			this.appDispatch(captionChanged(stage === GameStage.Begin ? localization.gameStarted : localization.gameFinished));
 		}
 
+		this.dispatch(playersStateCleared());
 		this.dispatch(roomActionCreators.gameStateCleared());
 		this.appDispatch(isSelectableChanged(false));
 		this.appDispatch(canPressChanged(false));
@@ -514,7 +595,7 @@ export default class ClientController {
 
 	onEndPressButtonByPlayer(index: number) {
 		this.appDispatch(canPressChanged(false));
-		this.dispatch(roomActionCreators.playerStateChanged(index, PlayerStates.Press));
+		this.appDispatch(playerStateChanged({ index, state: PlayerStates.Press }));
 		this.pauseLoadTimerIfNeeded();
 	}
 
@@ -526,13 +607,13 @@ export default class ClientController {
 
 	onReplic(personCode: string, text: string) {
 		if (personCode === 's') {
-			this.dispatch(roomActionCreators.showmanReplicChanged(text));
+			this.appDispatch(showmanReplicChanged(text));
 			return;
 		}
 
 		if (personCode.startsWith('p') && personCode.length > 1) {
 			const index = parseInt(personCode.substring(1), 10);
-			this.dispatch(roomActionCreators.playerReplicChanged(index, text));
+			this.appDispatch(playerReplicChanged({ playerIndex: index, replic: text }));
 			return;
 		}
 
@@ -559,7 +640,7 @@ export default class ClientController {
 	}
 
 	onQuestionSelected(themeIndex: number, questionIndex: number) {
-		this.dispatch(roomActionCreators.playersStateCleared());
+		this.appDispatch(playersStateCleared());
 		this.dispatch(roomActionCreators.afterQuestionStateChanged(false));
 		this.appDispatch(questionReset());
 
@@ -588,8 +669,8 @@ export default class ClientController {
 	}
 
 	onTheme(themeName: string) {
-		this.dispatch(roomActionCreators.playersStateCleared());
-		this.dispatch(roomActionCreators.showmanReplicChanged(''));
+		this.appDispatch(playersStateCleared());
+		this.appDispatch(showmanReplicChanged(''));
 		this.appDispatch(showObject({ header: localization.theme, text: themeName, hint: '' }));
 		this.dispatch(roomActionCreators.afterQuestionStateChanged(false));
 		this.dispatch(roomActionCreators.themeNameChanged(themeName));
@@ -599,7 +680,7 @@ export default class ClientController {
 
 	onQuestion(questionPrice: string) {
 		const { themeName } = this.getState().room.stage;
-		this.dispatch(roomActionCreators.playersStateCleared());
+		this.appDispatch(playersStateCleared());
 		this.dispatch(roomActionCreators.afterQuestionStateChanged(false));
 		this.appDispatch(showObject({ header: themeName, text: questionPrice, hint: '' }));
 		this.appDispatch(captionChanged(`${themeName}, ${questionPrice}`));
@@ -619,11 +700,11 @@ export default class ClientController {
 
 		if (timerIndex === 2 && timerPersonIndex !== null) {
 			if (timerPersonIndex === -1) {
-				this.dispatch(roomActionCreators.activateShowmanDecision());
+				this.appDispatch(activateShowmanDecision());
 			} else if (timerPersonIndex === -2) {
 				this.dispatch(roomActionCreators.showMainTimer());
-			} else if (timerPersonIndex > -1 && timerPersonIndex < this.getState().room.persons.players.length) {
-				this.dispatch(roomActionCreators.activatePlayerDecision(timerPersonIndex));
+			} else if (timerPersonIndex > -1 && timerPersonIndex < this.getState().room2.persons.players.length) {
+				this.appDispatch(activatePlayerDecision(timerPersonIndex));
 			}
 		}
 	}
@@ -641,6 +722,7 @@ export default class ClientController {
 
 		if (timerIndex === 2) {
 			this.dispatch(roomActionCreators.clearDecisionsAndMainTimer());
+			this.appDispatch(clearDecisions());
 			this.dispatch(commonActionCreators.stopAudio());
 		}
 	}
@@ -757,15 +839,15 @@ export default class ClientController {
 	}
 
 	addPlayerTable() {
-		this.dispatch(roomActionCreators.playerAdded());
+		this.appDispatch(playerAdded());
 	}
 
 	deletePlayerTable(index: number) {
 		const state = this.getState();
-		const player = state.room.persons.players[index];
+		const player = state.room2.persons.players[index];
 		const person = state.room.persons.all[player.name];
 
-		this.dispatch(roomActionCreators.playerDeleted(index));
+		this.appDispatch(playerDeleted(index));
 
 		if (person && !person.isHuman) {
 			this.dispatch(roomActionCreators.personRemoved(person.name));
@@ -824,7 +906,7 @@ export default class ClientController {
 	onTableChangeType(personType: string, index: number, isHuman: boolean, name: string, sex: Sex) {
 		const state = this.getState();
 		const isPlayer = personType === 'player';
-		const account = isPlayer ? state.room.persons.players[index] : state.room.persons.showman;
+		const account = isPlayer ? state.room2.persons.players[index] : state.room2.persons.showman;
 		const person = state.room.persons.all[account.name];
 
 		if (person && person.isHuman === isHuman) {
@@ -842,9 +924,9 @@ export default class ClientController {
 			this.dispatch(roomActionCreators.personAdded(newAccount));
 		}
 
-		this.dispatch(isPlayer
-			? roomActionCreators.playerChanged(index, name, isHuman, false)
-			: roomActionCreators.showmanChanged(name, isHuman, false));
+		this.appDispatch(isPlayer
+			? playerChanged({ index, name, isHuman, isReady: false })
+			: showmanChanged({ name, isHuman, isReady: false }));
 
 		if (isHuman) {
 			this.dispatch(roomActionCreators.personRemoved(person.name));
@@ -858,13 +940,13 @@ export default class ClientController {
 	onTableSet(role: string, index: number, replacer: string, replacerSex: Sex) {
 		const state = this.getState();
 		const isPlayer = role === 'player';
-		const account = isPlayer ? state.room.persons.players[index] : state.room.persons.showman;
+		const account = isPlayer ? state.room2.persons.players[index] : state.room2.persons.showman;
 		const person = state.room.persons.all[account.name];
 
 		if (person && !person.isHuman) {
-			this.dispatch(isPlayer
-				? roomActionCreators.playerChanged(index, replacer, null, false)
-				: roomActionCreators.showmanChanged(replacer, null, false));
+			this.appDispatch(isPlayer
+				? playerChanged({ index, name: replacer, isHuman: false, isReady: false })
+				: showmanChanged({ name: replacer, isHuman: false, isReady: false }));
 
 				this.dispatch(roomActionCreators.personRemoved(person.name));
 
@@ -879,9 +961,9 @@ export default class ClientController {
 			return;
 		}
 
-		if (state.room.persons.showman.name === replacer) { // isPlayer
-			this.dispatch(roomActionCreators.showmanChanged(account.name, true, account.isReady));
-			this.dispatch(roomActionCreators.playerChanged(index, replacer, true, state.room.persons.showman.isReady));
+		if (state.room2.persons.showman.name === replacer) { // isPlayer
+			this.appDispatch(showmanChanged({ name: account.name, isHuman: true, isReady: account.isReady }));
+			this.appDispatch(playerChanged({ index, name: replacer, isHuman: true, isReady: state.room2.persons.showman.isReady }));
 
 			if (account.name === state.room.name) {
 				this.dispatch(roomActionCreators.roleChanged(Role.Showman));
@@ -892,17 +974,17 @@ export default class ClientController {
 			return;
 		}
 
-		for (let i = 0; i < state.room.persons.players.length; i++) {
-			if (state.room.persons.players[i].name === replacer) {
+		for (let i = 0; i < state.room2.persons.players.length; i++) {
+			if (state.room2.persons.players[i].name === replacer) {
 				if (isPlayer) {
-					this.dispatch(roomActionCreators.playersSwap(index, i));
+					this.appDispatch(playersSwap({ index1: index, index2: i }));
 				} else {
-					const { isReady } = state.room.persons.players[i];
+					const { isReady } = state.room2.persons.players[i];
 
-					this.dispatch(roomActionCreators.playerChanged(i, account.name, null, account.isReady));
-					this.dispatch(roomActionCreators.showmanChanged(replacer, null, isReady));
+					this.appDispatch(playerChanged({ index: i, name: account.name, isHuman: false, isReady: account.isReady }));
+					this.appDispatch(showmanChanged({ name: replacer, isHuman: false, isReady }));
 
-					if (state.room.persons.showman.name === state.room.name) {
+					if (state.room2.persons.showman.name === state.room.name) {
 						this.dispatch(roomActionCreators.roleChanged(Role.Player));
 					} else if (replacer === state.room.name) {
 						this.dispatch(roomActionCreators.roleChanged(Role.Showman));
@@ -913,9 +995,9 @@ export default class ClientController {
 			}
 		}
 
-		this.dispatch(isPlayer
-			? roomActionCreators.playerChanged(index, replacer, null, false)
-			: roomActionCreators.showmanChanged(replacer, null, false));
+		this.appDispatch(isPlayer
+			? playerChanged({ index, name: replacer, isHuman: false, isReady: false })
+			: showmanChanged({ name: replacer, isHuman: false, isReady: false }));
 
 		if (account.name === state.room.name) {
 			this.dispatch(roomActionCreators.roleChanged(Role.Viewer));
@@ -928,11 +1010,11 @@ export default class ClientController {
 		const state = this.getState();
 		const isPlayer = personType === 'player';
 
-		this.dispatch(isPlayer
-			? roomActionCreators.playerChanged(index, Constants.ANY_NAME, null, false)
-			: roomActionCreators.showmanChanged(Constants.ANY_NAME, null, false));
+		this.appDispatch(isPlayer
+			? playerChanged({ index, name: Constants.ANY_NAME, isHuman: false, isReady: false })
+			: showmanChanged({ name: Constants.ANY_NAME, isHuman: false, isReady: false }));
 
-		const account = isPlayer ? state.room.persons.players[index] : state.room.persons.showman;
+		const account = isPlayer ? state.room2.persons.players[index] : state.room2.persons.showman;
 
 		if (account.name === state.room.name) {
 			this.dispatch(roomActionCreators.roleChanged(Role.Viewer));
@@ -940,26 +1022,26 @@ export default class ClientController {
 	}
 
 	onSetChooser(chooserIndex: number, setActive: boolean) {
-		this.dispatch(roomActionCreators.chooserChanged(chooserIndex));
+		this.appDispatch(chooserChanged(chooserIndex));
 
 		if (setActive) {
-			this.dispatch(roomActionCreators.playerStateChanged(chooserIndex, PlayerStates.Press));
+			this.appDispatch(playerStateChanged({ index: chooserIndex, state: PlayerStates.Press }));
 		}
 	}
 
 	onSum(playerIndex: number, value: number) {
-		this.dispatch(roomActionCreators.playerSumChanged(playerIndex, value));
+		this.appDispatch(playerSumChanged({ index: playerIndex, value }));
 	}
 
 	onSums(sums: number[]) {
-		this.dispatch(roomActionCreators.sumsChanged(sums));
+		this.appDispatch(sumsChanged(sums));
 	}
 
 	onPerson(playerIndex: number, isRight: boolean) {
 		const state = this.getState();
 
-		if (playerIndex > -1 && playerIndex < state.room.persons.players.length) {
-			this.dispatch(roomActionCreators.playerStateChanged(playerIndex, isRight ? PlayerStates.Right : PlayerStates.Wrong));
+		if (playerIndex > -1 && playerIndex < state.room2.persons.players.length) {
+			this.appDispatch(playerStateChanged({ index: playerIndex, state: isRight ? PlayerStates.Right : PlayerStates.Wrong }));
 
 			const rightApplause = state.room.stage.currentPrice >= 2000
 				? GameSound.APPLAUSE_BIG

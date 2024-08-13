@@ -1,22 +1,16 @@
 import { createSlice } from '@reduxjs/toolkit';
 import ChatMessage from '../../model/ChatMessage';
-import DataContext from '../../model/DataContext';
 import ChatMode from '../../model/enums/ChatMode';
 import Role from '../../model/Role';
-import StakeTypes from '../../model/enums/StakeTypes';
-import PersonInfo from '../../model/PersonInfo';
 import Persons from '../../model/Persons';
-import PlayerInfo from '../../model/PlayerInfo';
 import Timers from '../../model/Timers';
-import { AppDispatch, RootState } from './store';
 import TimerStates from '../../model/enums/TimeStates';
 import JoinMode from '../../client/game/JoinMode';
+import StakeModes from '../../client/game/StakeModes';
 
 interface RoomState {
 	persons: {
 		all: Persons;
-		showman: PersonInfo;
-		players: PlayerInfo[];
 		hostName: string | null;
 	};
 
@@ -51,13 +45,11 @@ interface RoomState {
 
 	stakes: {
 		areVisible: boolean;
-		areSimple: boolean;
-		allowedStakeTypes: Record<StakeTypes, boolean>;
+		stakeModes: StakeModes;
 		minimum: number;
 		maximum: number;
 		step: number;
 		stake: number;
-		message: string;
 	};
 
 	validation: {
@@ -115,14 +107,6 @@ interface RoomState {
 const initialState: RoomState = {
 	persons: {
 		all: {},
-		showman: {
-			name: '',
-			isReady: false,
-			replic: null,
-			isDeciding: false,
-			isHuman: true
-		},
-		players: [],
 		hostName: null
 	},
 
@@ -180,18 +164,11 @@ const initialState: RoomState = {
 
 	stakes: {
 		areVisible: false,
-		areSimple: false,
-		allowedStakeTypes: {
-			[StakeTypes.Nominal]: false,
-			[StakeTypes.Sum]: false,
-			[StakeTypes.Pass]: false,
-			[StakeTypes.AllIn]: false
-		},
+		stakeModes: StakeModes.None,
 		minimum: 0,
 		maximum: 0,
 		step: 0,
 		stake: 0,
-		message: ''
 	},
 
 	validation: {
@@ -251,12 +228,10 @@ export const roomSlice = createSlice({
 	initialState,
 	reducers: {
 		clearDecisions: (state: RoomState) => {
-			state.persons.players.forEach(p => p.canBeSelected = false);
 			state.stage.isAnswering = false;
 			state.stage.isDecisionNeeded = false;
 			state.validation.isVisible = false;
 			state.selection.isEnabled = false;
-			state.stakes.areSimple = false;
 			state.stakes.areVisible = false;
 			state.answer = null;
 			state.hint = null;

@@ -15,6 +15,8 @@ import FlyoutButton, { FlyoutHorizontalOrientation, FlyoutVerticalOrientation } 
 import GameMetadataView from './GameMetadataView';
 import BannedView from './BannedView';
 import isWellFormedUri from '../../utils/isWellFormedUri';
+import { useAppDispatch } from '../../state/new/hooks';
+import { selectPlayers } from '../../state/new/room2Slice';
 
 import './GameChatView.css';
 import sumsImg from '../../../assets/images/sums.png';
@@ -122,6 +124,13 @@ function getSideArea(props: GameChatViewProps): React.ReactNode {
 }
 
 export function GameChatView(props: GameChatViewProps): JSX.Element {
+	const appDispatch = useAppDispatch();
+
+	const onGiveTurn = () =>{
+		props.onGiveTurn();
+		appDispatch(selectPlayers([]));
+	};
+
 	return (
 		<div id="gameLogHost">
 			<div className="wide tabHeader gameHeader">
@@ -213,7 +222,7 @@ export function GameChatView(props: GameChatViewProps): JSX.Element {
 						type="button"
 						className={`sumsButton standard imageButton wide commandButton bottomButton ${props.areSumsEditable ? 'active' : ''}`}
 						disabled={!props.isConnected}
-						onClick={() => props.onGiveTurn()}
+						onClick={onGiveTurn}
 						title={localization.giveTurn}
 					>
 						<img src={activePlayerImg} />

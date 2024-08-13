@@ -1,10 +1,7 @@
 import { AnyAction, Reducer } from 'redux';
 import RoomState, { initialState } from './RoomState';
 import { KnownRoomAction, RoomActionTypes } from './RoomActions';
-import { replace, swap } from '../../utils/ArrayExtensions';
 import { removeS, set } from '../../utils/RecordExtensions';
-import PlayerStates from '../../model/enums/PlayerStates';
-import Constants from '../../model/enums/Constants';
 import { updateTimers } from '../../utils/TimerInfoHelpers';
 import TimerStates from '../../model/enums/TimeStates';
 import MessageLevel from '../../model/enums/MessageLevel';
@@ -129,40 +126,12 @@ const roomReducer: Reducer<RoomState> = (state: RoomState = initialState, anyAct
 				}
 			};
 
-		case RoomActionTypes.ShowmanReplicChanged:
-			return {
-				...state,
-				persons: {
-					...state.persons,
-					showman: {
-						...state.persons.showman,
-						replic: action.replic
-					},
-					players: state.persons.players.map(p => ({ ...p, replic: null }))
-				}
-			};
-
-		case RoomActionTypes.PlayerReplicChanged:
-			return {
-				...state,
-				persons: {
-					...state.persons,
-					showman: {
-						...state.persons.showman,
-						replic: null
-					},
-					players: state.persons.players.map((p, i) => ({ ...p, replic: i === action.playerIndex ? action.replic : null }))
-				}
-			};
-
 		case RoomActionTypes.InfoChanged:
 			return {
 				...state,
 				persons: {
 					...state.persons,
 					all: action.all,
-					showman: action.showman,
-					players: action.players
 				}
 			};
 
@@ -233,20 +202,6 @@ const roomReducer: Reducer<RoomState> = (state: RoomState = initialState, anyAct
 				}
 			};
 
-		case RoomActionTypes.PlayersStateCleared:
-			return {
-				...state,
-				persons: {
-					...state.persons,
-					players: state.persons.players.map(p => ({
-						...p,
-						state: PlayerStates.None,
-						stake: 0,
-						mediaLoaded: false,
-					}))
-				}
-			};
-
 		case RoomActionTypes.GameStateCleared:
 			return {
 				...state,
@@ -256,14 +211,6 @@ const roomReducer: Reducer<RoomState> = (state: RoomState = initialState, anyAct
 					isAnswering: false,
 					isDecisionNeeded: false
 				},
-				persons: {
-					...state.persons,
-					players: state.persons.players.map(p => ({
-						...p,
-						canBeSelected: false,
-						mediaLoaded: false,
-					}))
-				},
 				validation: {
 					...state.validation,
 					isVisible: false
@@ -271,7 +218,6 @@ const roomReducer: Reducer<RoomState> = (state: RoomState = initialState, anyAct
 				stakes: {
 					...state.stakes,
 					areVisible: false,
-					areSimple: false
 				}
 			};
 
@@ -284,15 +230,6 @@ const roomReducer: Reducer<RoomState> = (state: RoomState = initialState, anyAct
 					message: ''
 				},
 				kicked: false,
-			};
-
-		case RoomActionTypes.SumsChanged:
-			return {
-				...state,
-				persons: {
-					...state.persons,
-					players: state.persons.players.map((p, i) => ({ ...p, sum: i < action.sums.length ? action.sums[i] : 0 }))
-				}
 			};
 
 		case RoomActionTypes.AfterQuestionStateChanged:
@@ -335,109 +272,6 @@ const roomReducer: Reducer<RoomState> = (state: RoomState = initialState, anyAct
 				}
 			};
 
-		case RoomActionTypes.ShowmanChanged:
-			return {
-				...state,
-				persons: {
-					...state.persons,
-					showman: {
-						...state.persons.showman,
-						name: action.name,
-						isHuman: action.isHuman ?? state.persons.showman.isHuman,
-						isReady: action.isReady ?? state.persons.showman.isReady
-					}
-				}
-			};
-
-		case RoomActionTypes.PlayerAdded:
-			return {
-				...state,
-				persons: {
-					...state.persons,
-					players: [...state.persons.players, {
-						name: Constants.ANY_NAME,
-						sum: 0,
-						stake: 0,
-						state: PlayerStates.None,
-						canBeSelected: false,
-						isReady: false,
-						replic: null,
-						isDeciding: false,
-						isHuman: true,
-						isChooser: false,
-						inGame: true,
-						mediaLoaded: false,
-					}]
-				}
-			};
-
-		case RoomActionTypes.PlayerChanged:
-			if (action.index < 0 || action.index >= state.persons.players.length) {
-				console.log(`PlayerChanged: Wrong index ${action.index}!`);
-				return state;
-			}
-
-			return {
-				...state,
-				persons: {
-					...state.persons,
-					players: replace(
-						state.persons.players,
-						action.index,
-						{
-							...state.persons.players[action.index],
-							name: action.name,
-							isHuman: action.isHuman ?? state.persons.players[action.index].isHuman,
-							isReady: action.isReady ?? state.persons.players[action.index].isReady
-						}
-					)
-				}
-			};
-
-		case RoomActionTypes.PlayerSumChanged:
-			if (action.index < 0 || action.index >= state.persons.players.length) {
-				console.log(`PlayerChanged: Wrong index ${action.index}!`);
-				return state;
-			}
-
-			return {
-				...state,
-				persons: {
-					...state.persons,
-					players: replace(
-						state.persons.players,
-						action.index,
-						{
-							...state.persons.players[action.index],
-							sum: action.value
-						}
-					)
-				}
-			};
-
-		case RoomActionTypes.PlayerDeleted:
-			if (action.index < 0 || action.index >= state.persons.players.length) {
-				console.log(`PlayerDeleted: Wrong index ${action.index}!`);
-				return state;
-			}
-
-			return {
-				...state,
-				persons: {
-					...state.persons,
-					players: [...state.persons.players.slice(0, action.index), ...state.persons.players.slice(action.index + 1)]
-				}
-			};
-
-		case RoomActionTypes.PlayersSwap:
-			return {
-				...state,
-				persons: {
-					...state.persons,
-					players: swap(state.persons.players, action.index1, action.index2)
-				}
-			};
-
 		case RoomActionTypes.NameChanged:
 			return {
 				...state,
@@ -450,39 +284,6 @@ const roomReducer: Reducer<RoomState> = (state: RoomState = initialState, anyAct
 				role: action.role
 			};
 
-		case RoomActionTypes.PlayerStateChanged:
-			return {
-				...state,
-				persons: {
-					...state.persons,
-					players: replace(state.persons.players, action.index, {
-						...state.persons.players[action.index],
-						state: action.state
-					})
-				}
-			};
-
-		case RoomActionTypes.PlayerLostStateDropped:
-			if (action.index < 0 || action.index >= state.persons.players.length) {
-				console.log(`PlayerLostStateDropped: Wrong index ${action.index}!`);
-				return state;
-			}
-
-			if (state.persons.players[action.index].state !== PlayerStates.Lost) {
-				return state;
-			}
-
-			return {
-				...state,
-				persons: {
-					...state.persons,
-					players: replace(state.persons.players, action.index, {
-						...state.persons.players[action.index],
-						state: PlayerStates.None
-					})
-				}
-			};
-
 		case RoomActionTypes.IsPausedChanged:
 			return {
 				...state,
@@ -490,18 +291,6 @@ const roomReducer: Reducer<RoomState> = (state: RoomState = initialState, anyAct
 					...state.stage,
 					isGamePaused: action.isPaused,
 					isEditEnabled: action.isPaused && state.stage.isEditEnabled,
-				}
-			};
-
-		case RoomActionTypes.PlayerStakeChanged:
-			return {
-				...state,
-				persons: {
-					...state.persons,
-					players: replace(state.persons.players, action.index, {
-						...state.persons.players[action.index],
-						stake: action.stake
-					})
 				}
 			};
 
@@ -517,13 +306,6 @@ const roomReducer: Reducer<RoomState> = (state: RoomState = initialState, anyAct
 		case RoomActionTypes.ClearDecisions:
 			return {
 				...state,
-				persons: {
-					...state.persons,
-					players: state.persons.players.map(p => ({
-						...p,
-						canBeSelected: false
-					}))
-				},
 				stage: {
 					...state.stage,
 					isAnswering: false,
@@ -539,7 +321,6 @@ const roomReducer: Reducer<RoomState> = (state: RoomState = initialState, anyAct
 				},
 				stakes: {
 					...state.stakes,
-					areSimple: false,
 					areVisible: false
 				},
 				answer: null,
@@ -591,13 +372,11 @@ const roomReducer: Reducer<RoomState> = (state: RoomState = initialState, anyAct
 				...state,
 				stakes: {
 					areVisible: true,
-					areSimple: action.areSimple,
-					allowedStakeTypes: action.allowedStakeTypes,
+					stakeModes: action.stakeModes,
 					minimum: action.minimum,
 					maximum: action.maximum,
-					stake: action.stake,
+					stake: action.minimum,
 					step: action.step,
-					message: action.message
 				}
 			};
 
@@ -613,13 +392,6 @@ const roomReducer: Reducer<RoomState> = (state: RoomState = initialState, anyAct
 		case RoomActionTypes.SelectionEnabled:
 			return {
 				...state,
-				persons: {
-					...state.persons,
-					players: state.persons.players.map((p, i) => ({
-						...p,
-						canBeSelected: action.allowedIndices.includes(i)
-					}))
-				},
 				selection: {
 					isEnabled: true,
 					message: action.message
@@ -698,30 +470,6 @@ const roomReducer: Reducer<RoomState> = (state: RoomState = initialState, anyAct
 				}))
 			};
 
-		case RoomActionTypes.ActivateShowmanDecision:
-			return {
-				...state,
-				persons: {
-					...state.persons,
-					showman: {
-						...state.persons.showman,
-						isDeciding: true
-					}
-				}
-			};
-
-		case RoomActionTypes.ActivatePlayerDecision:
-			return {
-				...state,
-				persons: {
-					...state.persons,
-					players: replace(state.persons.players, action.playerIndex, {
-						...state.persons.players[action.playerIndex],
-						isDeciding: true
-					})
-				}
-			};
-
 		case RoomActionTypes.ShowMainTimer:
 			return {
 				...state,
@@ -732,17 +480,6 @@ const roomReducer: Reducer<RoomState> = (state: RoomState = initialState, anyAct
 			return {
 				...state,
 				showMainTimer: false,
-				persons: {
-					...state.persons,
-					showman: {
-						...state.persons.showman,
-						isDeciding: false
-					},
-					players: state.persons.players.map(p => ({
-						...p,
-						isDeciding: false
-					}))
-				}
 			};
 
 		case RoomActionTypes.HintChanged:
@@ -782,59 +519,10 @@ const roomReducer: Reducer<RoomState> = (state: RoomState = initialState, anyAct
 				}
 			};
 
-		case RoomActionTypes.IsReadyChanged:
-			if (action.personIndex === -1) {
-				return {
-					...state,
-					persons: {
-						...state.persons,
-						showman: {
-							...state.persons.showman,
-							isReady: action.isReady
-						}
-					}
-				};
-			}
-
-			return {
-				...state,
-				persons: {
-					...state.persons,
-					players: replace(state.persons.players, action.personIndex, {
-						...state.persons.players[action.personIndex],
-						isReady: action.isReady
-					})
-				}
-			};
-
 		case RoomActionTypes.RoundsNamesChanged:
 			return {
 				...state,
 				roundsNames: action.roundsNames
-			};
-
-		case RoomActionTypes.ChooserChanged:
-			return {
-				...state,
-				persons: {
-					...state.persons,
-					players: state.persons.players.map((player, index) => ({
-						...player,
-						isChooser: index === action.chooserIndex
-					}))
-				}
-			};
-
-		case RoomActionTypes.PlayerInGameChanged:
-			return {
-				...state,
-				persons: {
-					...state.persons,
-					players: replace(state.persons.players, action.playerIndex, {
-						...state.persons.players[action.playerIndex],
-						inGame: action.inGame
-					})
-				}
 			};
 
 		case RoomActionTypes.AreApellationsEnabledChanged:
@@ -897,18 +585,6 @@ const roomReducer: Reducer<RoomState> = (state: RoomState = initialState, anyAct
 					...state.banned,
 					selectedIp: action.ip
 				},
-			};
-
-		case RoomActionTypes.PlayerMediaLoaded:
-			return {
-				...state,
-				persons: {
-					...state.persons,
-					players: replace(state.persons.players, action.playerIndex, {
-						...state.persons.players[action.playerIndex],
-						mediaLoaded: true
-					})
-				}
 			};
 
 		case RoomActionTypes.EditTable:

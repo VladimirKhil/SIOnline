@@ -1,7 +1,7 @@
 .flyoutButton_flyout {
     position: absolute;
     box-shadow: 0 0 15px rgba(0, 0, 0, 1.0);
-    z-index: 4;
+    z-index: 5;
 }
 
     .flyoutButton_flyout li {

@@ -6,6 +6,12 @@ const enum GameMessages {
 	/** Asks person answer. */
 	Answer = 'ANSWER',
 
+	Answers = 'ANSWERS',
+
+	AskSelectPlayer = 'ASK_SELECT_PLAYER',
+
+	AskStake = 'ASK_STAKE',
+
 	/** Small hint fragment. Displayed separately from the main content. */
 	AtomHint = 'ATOM_HINT',
 
@@ -17,6 +23,8 @@ const enum GameMessages {
 
 	/** Person has been banned. */
 	BannedList = 'BANNEDLIST',
+
+	Cancel = 'CANCEL',
 
 	/** Question selection. */
 	Choice = 'CHOICE',
@@ -39,7 +47,11 @@ const enum GameMessages {
 	/** Updates content state. */
 	ContentState = 'CONTENT_STATE',
 
+	Disconnected = 'DISCONNECTED',
+
 	EndTry = 'ENDTRY',
+
+	FinalRound = 'FINALROUND',
 
 	FinalThink = 'FINALTHINK',
 
@@ -62,6 +74,8 @@ const enum GameMessages {
 
 	Package = 'PACKAGE',
 
+	Pass = 'PASS',
+
 	Pause = 'PAUSE',
 
 	Person = 'PERSON',
@@ -75,6 +89,8 @@ const enum GameMessages {
 
 	/** Question has ended. */
 	QuestionEnd = 'QUESTION_END',
+
+	Ready = 'READY',
 
 	Replic = 'REPLIC',
 

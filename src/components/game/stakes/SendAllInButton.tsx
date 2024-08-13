@@ -6,17 +6,18 @@ import { Dispatch, Action } from 'redux';
 import localization from '../../../model/resources/localization';
 import { sendAllIn } from '../../../state/new/room2Slice';
 import { useAppDispatch } from '../../../state/new/hooks';
+import StakeModes from '../../../client/game/StakeModes';
 
 interface SendAllInButtonProps {
 	isConnected: boolean;
-	useSimpleStakes: boolean;
+	stakeModes: StakeModes;
 	className?: string;
 	clearDecisions: () => void;
 }
 
 const mapStateToProps = (state: State) => ({
 	isConnected: state.common.isSIHostConnected,
-	useSimpleStakes: state.room.stakes.areSimple
+	stakeModes: state.room.stakes.stakeModes,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
@@ -33,9 +34,9 @@ export function SendAllInButton(props: SendAllInButtonProps) {
 		props.clearDecisions();
 	};
 
-	return props.useSimpleStakes
-		? null
-		: (<button type='button' className={props.className} disabled={!props.isConnected} onClick={sendAllIn2}>{localization.allIn}</button>);
+	return props.stakeModes & StakeModes.AllIn
+		? (<button type='button' className={props.className} disabled={!props.isConnected} onClick={sendAllIn2}>{localization.allIn}</button>)
+		: null;
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(SendAllInButton);

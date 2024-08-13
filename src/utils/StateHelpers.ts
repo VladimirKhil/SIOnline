@@ -15,7 +15,7 @@ export function getFullCulture(state: State): string {
 }
 
 export function getMeAsPlayer(state: State): PlayerInfo | null {
-	const { players } = state.room.persons;
+	const { players } = state.room2.persons;
 
 	for (let i = 0; i < players.length; i++) {
 		if (players[i].name === state.room.name) {

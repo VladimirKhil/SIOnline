@@ -6,18 +6,16 @@ import State from '../../state/State';
 import localization from '../../model/resources/localization';
 import roomActionCreators from '../../state/room/roomActionCreators';
 import PersonInfo from '../../model/PersonInfo';
-import PlayerInfo from '../../model/PlayerInfo';
 import TableView from './TableView';
 import Constants from '../../model/enums/Constants';
 import Account from '../../model/Account';
 import FlyoutButton, { FlyoutHorizontalOrientation, FlyoutVerticalOrientation } from '../common/FlyoutButton';
+import { useAppSelector } from '../../state/new/hooks';
 
 import './TablesView.css';
 
 interface TablesViewProps {
 	isConnected: boolean;
-	showman: PersonInfo;
-	players: PlayerInfo[];
 	persons: Record<string, Account>;
 	selectedIndex: number;
 	isGameStarted: boolean;
@@ -33,8 +31,6 @@ interface TablesViewProps {
 
 const mapStateToProps = (state: State) => ({
 	isConnected: state.common.isSIHostConnected,
-	showman: state.room.persons.showman,
-	players: state.room.persons.players,
 	persons: state.room.persons.all,
 	selectedIndex: state.room.selectedTableIndex,
 	isGameStarted: state.room.stage.isGameStarted,
@@ -82,17 +78,19 @@ function loadPersonReplacementList(selectedPerson: PersonInfo | null, props: Tab
 }
 
 export function TablesView(props: TablesViewProps): JSX.Element {
+	const roomState = useAppSelector(state => state.room2);
+	const { showman, players } = roomState.persons;
 	// You cannot add unlimited number of tables
-	const canAdd = props.players.length < Constants.MAX_PLAYER_COUNT;
+	const canAdd = players.length < Constants.MAX_PLAYER_COUNT;
 
-	const isPlayerSelected = props.selectedIndex > 0 && props.selectedIndex <= props.players.length;
+	const isPlayerSelected = props.selectedIndex > 0 && props.selectedIndex <= players.length;
 
-	const selectedPlayer = isPlayerSelected ? props.players[props.selectedIndex - 1] : null;
-	const selectedPerson = props.selectedIndex === 0 ? props.showman : selectedPlayer;
+	const selectedPlayer = isPlayerSelected ? players[props.selectedIndex - 1] : null;
+	const selectedPerson = props.selectedIndex === 0 ? showman : selectedPlayer;
 	const selectedAccount = selectedPerson ? props.persons[selectedPerson.name] : null;
 
 	// You can delete occupied tables only before game start
-	const canDelete = props.players.length > Constants.MIN_PLAYER_COUNT &&
+	const canDelete = players.length > Constants.MIN_PLAYER_COUNT &&
 		isPlayerSelected &&
 		(!props.isGameStarted || !selectedAccount || !selectedAccount.isHuman);
 
@@ -108,7 +106,7 @@ export function TablesView(props: TablesViewProps): JSX.Element {
 				<div className="tablesHeader">{localization.showman}</div>
 
 				<ul>
-					<TableView person={props.showman} isSelected={props.selectedIndex === 0} selectTable={() => props.selectTable(0)} />
+					<TableView person={showman} isSelected={props.selectedIndex === 0} selectTable={() => props.selectTable(0)} />
 				</ul>
 
 				<div className="tablesHeader">
@@ -126,7 +124,7 @@ export function TablesView(props: TablesViewProps): JSX.Element {
 				</div>
 
 				<ul>
-					{props.players.map((player, index) => (
+					{players.map((player, index) => (
 						<TableView
 							key={index}
 							person={player}

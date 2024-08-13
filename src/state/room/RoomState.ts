@@ -1,20 +1,16 @@
 import ChatMode from '../../model/enums/ChatMode';
 import ChatMessage from '../../model/ChatMessage';
-import PersonInfo from '../../model/PersonInfo';
-import PlayerInfo from '../../model/PlayerInfo';
 import Persons from '../../model/Persons';
 import Role from '../../model/Role';
-import StakeTypes from '../../model/enums/StakeTypes';
 import Timers from '../../model/Timers';
 import TimerStates from '../../model/enums/TimeStates';
 import JoinMode from '../../client/game/JoinMode';
 import AppSettings, { initialState as initialAppSettings } from '../../model/AppSettings';
+import StakeModes from '../../client/game/StakeModes';
 
 export default interface RoomState {
 	persons: {
 		all: Persons;
-		showman: PersonInfo;
-		players: PlayerInfo[];
 		hostName: string | null;
 	};
 
@@ -48,13 +44,11 @@ export default interface RoomState {
 
 	stakes: {
 		areVisible: boolean;
-		areSimple: boolean;
-		allowedStakeTypes: Record<StakeTypes, boolean>;
+		stakeModes: StakeModes;
 		minimum: number;
 		maximum: number;
 		step: number;
 		stake: number;
-		message: string;
 	};
 
 	validation: {
@@ -114,16 +108,6 @@ export default interface RoomState {
 export const initialState: RoomState = {
 	persons: {
 		all: {},
-
-		showman: {
-			name: '',
-			isReady: false,
-			replic: null,
-			isDeciding: false,
-			isHuman: true
-		},
-
-		players: [],
 		hostName: null
 	},
 
@@ -182,18 +166,11 @@ export const initialState: RoomState = {
 
 	stakes: {
 		areVisible: false,
-		areSimple: false,
-		allowedStakeTypes: {
-			[StakeTypes.Nominal]: false,
-			[StakeTypes.Sum]: false,
-			[StakeTypes.Pass]: false,
-			[StakeTypes.AllIn]: false
-		},
+		stakeModes: StakeModes.None,
 		minimum: 0,
 		maximum: 0,
 		step: 0,
 		stake: 0,
-		message: ''
 	},
 
 	validation: {

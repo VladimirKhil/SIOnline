@@ -18,26 +18,20 @@ interface PlayersListViewProps {
 	login: string;
 	avatar: string | null;
 	isSumEditable: boolean;
-	selectMessage: string;
 
-	onPlayerSelected: (playerIndex: number) => void;
 	onSumChanged: (playerIndex: number, sum: number) => void;
 	onCancelSumChange: () => void;
 }
 
 const mapStateToProps = (state: State) => ({
-	players: state.room.persons.players,
+	players: state.room2.persons.players,
 	all: state.room.persons.all,
 	login: state.room.name,
 	avatar: state.user.avatar,
 	isSumEditable: state.room.areSumsEditable,
-	selectMessage: state.room.selection.message,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
-	onPlayerSelected: (playerIndex: number) => {
-		dispatch(roomActionCreators.playerSelected(playerIndex) as object as Action);
-	},
 	onSumChanged: (playerIndex: number, sum: number) => {
 		dispatch(roomActionCreators.changePlayerSum(playerIndex, sum) as object as Action);
 	},
@@ -54,8 +48,7 @@ export function PlayersListView(props: PlayersListViewProps): JSX.Element {
 	};
 
 	const onPlayerSelected = (index: number) => {
-		appDispatch(playerSelected({ message: props.selectMessage, playerIndex: index }));
-		props.onPlayerSelected(index);
+		appDispatch(playerSelected(index));
 	};
 
 	return <div className='playerListView'>

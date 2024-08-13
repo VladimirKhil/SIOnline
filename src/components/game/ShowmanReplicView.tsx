@@ -2,21 +2,20 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import State from '../../state/State';
 import ShowmanReplic from './ShowmanReplic';
-import Account from '../../model/Account';
 import ProgressBar from '../common/ProgressBar';
 import TimerInfo from '../../model/TimerInfo';
 import { isRunning } from '../../utils/TimerInfoHelpers';
 import getAvatarClass from '../../utils/AccountHelpers';
 import Sex from '../../model/enums/Sex';
 import localization from '../../model/resources/localization';
+import { useAppSelector } from '../../state/new/hooks';
+import Persons from '../../model/Persons';
 
 import './ShowmanReplicView.css';
 
 interface ShowmanReplicViewProps {
-	isReady: boolean;
-	account: Account;
+	all: Persons;
 	decisionNeeded: boolean;
-	isDeciding: boolean;
 	decisionTimer: TimerInfo;
 	hasGameStarted: boolean;
 	login: string;
@@ -25,10 +24,8 @@ interface ShowmanReplicViewProps {
 }
 
 const mapStateToProps = (state: State) => ({
-	isReady: state.room.persons.showman.isReady,
-	account: state.room.persons.all[state.room.persons.showman.name],
+	all: state.room.persons.all,
 	decisionNeeded: state.room.stage.isDecisionNeeded,
-	isDeciding: state.room.persons.showman.isDeciding,
 	decisionTimer: state.room.timers.decision,
 	hasGameStarted: state.room.stage.isGameStarted,
 	login: state.room.name,
@@ -37,15 +34,18 @@ const mapStateToProps = (state: State) => ({
 });
 
 export function ShowmanReplicView(props: ShowmanReplicViewProps): JSX.Element {
-	const isMe = props.account?.name === props.login;
+	const roomState = useAppSelector(state => state.room2);
+	const account = props.all[roomState.persons.showman.name];
+	const { isReady, isDeciding } = roomState.persons.showman;
+	const isMe = account?.name === props.login;
 
-	const avatar = isMe && props.avatar ? props.avatar : props.account?.avatar;
+	const avatar = isMe && props.avatar ? props.avatar : account?.avatar;
 
 	const avatarStyle : React.CSSProperties = avatar
 		? { backgroundImage: `url("${avatar}")` }
 		: {};
 
-	const avatarClass = getAvatarClass(props.account);
+	const avatarClass = getAvatarClass(account);
 
 	const showmanInfoStyle: React.CSSProperties = props.hasGameStarted ? {} : {
 		display: 'flex'
@@ -56,28 +56,28 @@ export function ShowmanReplicView(props: ShowmanReplicViewProps): JSX.Element {
 	return (
 		<div className={`showmanArea ${props.decisionNeeded ? 'highlighted' : ''}`}>
 			<div className="showmanInfo" style={showmanInfoStyle}>
-				{props.showVideoAvatars && props.account?.avatarVideo
-					? <div className='showmanAvatar'><iframe title='Video avatar' src={props.account?.avatarVideo} /></div>
+				{props.showVideoAvatars && account?.avatarVideo
+					? <div className='showmanAvatar'><iframe title='Video avatar' src={account?.avatarVideo} /></div>
 					: <div className={`showmanAvatar ${avatarClass}`} style={avatarStyle} />}
 
 				<div className="showmanName">
-					{props.isReady && !props.hasGameStarted ? (
+					{isReady && !props.hasGameStarted ? (
 						<span
 							role="img"
 							aria-label="checkmark"
-							title={props.account?.sex === Sex.Female ? localization.readyFemale : localization.readyMale}
+							title={account?.sex === Sex.Female ? localization.readyFemale : localization.readyMale}
 						>
 							✔️
 						</span>
 					) : null}
 
-					<span className={meClass}>{props.account?.name}</span>
+					<span className={meClass}>{account?.name}</span>
 				</div>
 			</div>
 
 			<ShowmanReplic />
 
-			{props.isDeciding ? (
+			{isDeciding ? (
 				<ProgressBar
 					value={1 - props.decisionTimer.value / props.decisionTimer.maximum}
 					valueChangeDuration={isRunning(props.decisionTimer) ? (props.decisionTimer.maximum - props.decisionTimer.value) / 10 : 0}

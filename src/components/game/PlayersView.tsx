@@ -18,26 +18,20 @@ interface PlayersViewProps {
 	login: string;
 	avatar: string | null;
 	isVisible: boolean;
-	selectMessage: string;
 
-	onPlayerSelected: (playerIndex: number) => void;
 	onSumChanged: (playerIndex: number, sum: number) => void;
 	onShowTables: () => void;
 }
 
 const mapStateToProps = (state: State) => ({
-	players: state.room.persons.players,
+	players: state.room2.persons.players,
 	all: state.room.persons.all,
 	login: state.room.name,
 	avatar: state.user.avatar,
 	isVisible: state.ui.showPlayers,
-	selectMessage: state.room.selection.message,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
-	onPlayerSelected: (playerIndex: number) => {
-		dispatch(roomActionCreators.playerSelected(playerIndex) as object as Action);
-	},
 	onSumChanged: (playerIndex: number, sum: number) => {
 		dispatch(roomActionCreators.changePlayerSum(playerIndex, sum) as object as Action);
 	},
@@ -51,8 +45,7 @@ const PlayersView: React.FC<PlayersViewProps> = (props) => {
 	const listRef = React.useRef<HTMLUListElement>(null);
 
 	const onPlayerSelected = (index: number) => {
-		appDispatch(playerSelected({ message: props.selectMessage, playerIndex: index }));
-		props.onPlayerSelected(index);
+		appDispatch(playerSelected(index));
 	};
 
 	return !props.isVisible ? null : (

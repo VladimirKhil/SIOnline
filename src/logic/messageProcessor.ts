@@ -16,13 +16,11 @@ import PlayerInfo from '../model/PlayerInfo';
 import Constants from '../model/enums/Constants';
 import Role from '../model/Role';
 import localization from '../model/resources/localization';
-import StakeTypes from '../model/enums/StakeTypes';
 import stringFormat, { trimLength } from '../utils/StringHelpers';
 import MessageLevel from '../model/enums/MessageLevel';
 import GameMessages from '../client/game/GameMessages';
 import JoinMode from '../client/game/JoinMode';
-import { getMeAsPlayer } from '../utils/StateHelpers';
-import StakeTypes2, { parseStakeTypesFromString } from '../client/game/StakeTypes';
+import { parseStakeModesFromString } from '../client/game/StakeModes';
 import LayoutMode from '../model/enums/LayoutMode';
 import ClientController from './ClientController';
 import ContentInfo from '../model/ContentInfo';
@@ -33,6 +31,9 @@ import clearUrls from '../utils/clearUrls';
 import ThemesPlayMode from '../model/enums/ThemesPlayMode';
 import { AppDispatch } from '../state/new/store';
 import { captionChanged, isSelectableChanged, resumeMedia, showText } from '../state/new/tableSlice';
+import { playerChanged, playerInGameChanged, playerLostStateDropped, playerMediaLoaded, playerStakeChanged, playerStateChanged,
+ showmanChanged } from '../state/new/room2Slice';
+import StakeTypes from '../model/enums/StakeTypes';
 
 const MAX_APPEND_TEXT_LENGTH = 150;
 
@@ -62,9 +63,9 @@ const processSystemMessage: ActionCreator<ThunkAction<void, State, DataContext, 
 		viewerHandler(controller, dispatch, appDispatch, state, dataContext, args);
 
 		if (role === Role.Player) {
-			playerHandler(controller, dispatch, appDispatch, state, dataContext, args);
+			playerHandler(controller, dispatch, appDispatch, state, args);
 		} else if (role === Role.Showman) {
-			showmanHandler(controller, dispatch, state, dataContext, args);
+			showmanHandler(controller, dispatch, state, args);
 		}
 	};
 
@@ -82,21 +83,6 @@ const userMessageReceived: ActionCreator<ThunkAction<void, State, DataContext, A
 
 		dispatch(roomActionCreators.chatMessageAdded(replic));
 	};
-
-function onReady(personName: string, isReady: boolean, dispatch: Dispatch<any>, state: State): void {
-	let personIndex: number;
-
-	if (personName === state.room.persons.showman.name) {
-		personIndex = -1;
-	} else {
-		personIndex = state.room.persons.players.findIndex(p => p.name === personName);
-		if (personIndex === -1) {
-			return;
-		}
-	}
-
-	dispatch(roomActionCreators.isReadyChanged(personIndex, isReady));
-}
 
 function onConfig(controller: ClientController, ...args: string[]) {
 	switch (args[1]) {
@@ -164,6 +150,14 @@ const viewerHandler = (
 			}
 
 			appDispatch(showText(ads));
+			break;
+
+		case GameMessages.Answers:
+			if (args.length === 1) {
+				break;
+			}
+
+			controller.onAnswers(args.slice(1));
 			break;
 
 		case 'APELLATION_ENABLES':
@@ -348,14 +342,14 @@ const viewerHandler = (
 			break;
 		}
 
-		case 'DISCONNECTED':
-			disconnected(dispatch, state, ...args);
+		case GameMessages.Disconnected:
+			disconnected(dispatch, appDispatch, state, ...args);
 			break;
 
 		case GameMessages.EndTry: {
 			const index = (Number)(args[1]);
 
-			if (!isNaN(index) && index > -1 && index < state.room.persons.players.length) {
+			if (!isNaN(index) && index > -1 && index < state.room2.persons.players.length) {
 				controller.onEndPressButtonByPlayer(index);
 			} else if (args[1] === 'A') { // This is ENDTRY for All
 				controller.onEndPressButtonByTimeout();
@@ -367,11 +361,11 @@ const viewerHandler = (
 			// Not used - game button is always available
 			break;
 
-		case 'FINALROUND':
-			const playersLength = state.room.persons.players.length;
+		case GameMessages.FinalRound:
+			const playersLength = state.room2.persons.players.length;
 
 			for (let i = 1; i < Math.min(args.length, playersLength + 1); i++) {
-				dispatch(roomActionCreators.playerInGameChanged(i - 1, args[i] === '+'));
+				appDispatch(playerInGameChanged({ playerIndex: i - 1, inGame: args[i] === '+' }));
 			}
 
 			dispatch(roomActionCreators.afterQuestionStateChanged(false));
@@ -433,11 +427,11 @@ const viewerHandler = (
 				break;
 			}
 
-			const { players } = state.room.persons;
+			const { players } = state.room2.persons;
 
 			for (let i = 0; i < players.length; i++) {
 				if (players[i].name === args[1]) {
-					dispatch(roomActionCreators.playerMediaLoaded(i));
+					appDispatch(playerMediaLoaded(i));
 					break;
 				}
 			}
@@ -461,12 +455,12 @@ const viewerHandler = (
 			}
 			break;
 
-		case 'PASS':
+		case GameMessages.Pass:
 			{
 				const playerIndex = parseInt(args[1], 10);
 
-				if (playerIndex > -1 && playerIndex < state.room.persons.players.length) {
-					dispatch(roomActionCreators.playerStateChanged(playerIndex, PlayerStates.Pass));
+				if (playerIndex > -1 && playerIndex < state.room2.persons.players.length) {
+					appDispatch(playerStateChanged({ index: playerIndex, state: PlayerStates.Pass }));
 				}
 			}
 			break;
@@ -499,8 +493,8 @@ const viewerHandler = (
 			{
 				const playerIndex = parseInt(args[1], 10);
 
-				if (playerIndex > -1 && playerIndex < state.room.persons.players.length) {
-					dispatch(roomActionCreators.playerStateChanged(playerIndex, PlayerStates.HasAnswered));
+				if (playerIndex > -1 && playerIndex < state.room2.persons.players.length) {
+					appDispatch(playerStateChanged({ index: playerIndex, state: PlayerStates.HasAnswered }));
 				}
 			}
 			break;
@@ -509,8 +503,8 @@ const viewerHandler = (
 			{
 				const playerIndex = parseInt(args[1], 10);
 
-				if (playerIndex > -1 && playerIndex < state.room.persons.players.length) {
-					dispatch(roomActionCreators.playerStateChanged(playerIndex, PlayerStates.HasAnswered));
+				if (playerIndex > -1 && playerIndex < state.room2.persons.players.length) {
+					appDispatch(playerStateChanged({ index: playerIndex, state: PlayerStates.HasAnswered }));
 				}
 			}
 			break;
@@ -518,20 +512,20 @@ const viewerHandler = (
 		case 'PERSONFINALSTAKE':
 			{
 				const playerIndex = parseInt(args[1], 10);
-				const player = state.room.persons.players[playerIndex];
+				const player = state.room2.persons.players[playerIndex];
 
 				if (!player) {
 					break;
 				}
 
-				dispatch(roomActionCreators.playerStakeChanged(playerIndex, Constants.HIDDEN_STAKE));
+				appDispatch(playerStakeChanged({ index: playerIndex, stake: Constants.HIDDEN_STAKE }));
 			}
 			break;
 
 		case 'PERSONSTAKE':
 			{
 				const playerIndex = parseInt(args[1], 10);
-				const player = state.room.persons.players[playerIndex];
+				const player = state.room2.persons.players[playerIndex];
 
 				if (!player) {
 					break;
@@ -561,7 +555,7 @@ const viewerHandler = (
 						break;
 				}
 
-				dispatch(roomActionCreators.playerStakeChanged(playerIndex, stake));
+				appDispatch(playerStakeChanged({ index: playerIndex, stake }));
 			}
 			break;
 
@@ -603,12 +597,12 @@ const viewerHandler = (
 			dispatch(roomActionCreators.readingSpeedChanged(parseInt(args[1], 10)));
 			break;
 
-		case 'READY':
+		case GameMessages.Ready:
 			if (args.length < 2) {
 				break;
 			}
 
-			onReady(args[1], args.length < 3 || args[2] === '+', dispatch, state);
+			controller.onReady(args[1], args.length < 3 || args[2] === '+');
 			break;
 
 		case GameMessages.Replic: {
@@ -759,7 +753,7 @@ const viewerHandler = (
 			break;
 
 		case GameMessages.Sums:
-			const max = Math.min(args.length - 1, Object.keys(state.room.persons.players).length);
+			const max = Math.min(args.length - 1, Object.keys(state.room2.persons.players).length);
 			const sums: number[] = [];
 
 			for (let i = 0; i < max; i++) {
@@ -825,7 +819,7 @@ const viewerHandler = (
 				&& args[2] === 'GO'
 				&& args[4] === '-2') {
 				const leftSeconds = parseInt(args[3], 10) / 10;
-				roomActionCreators.showLeftSeconds(leftSeconds, dispatch);
+				roomActionCreators.showLeftSeconds(leftSeconds, appDispatch);
 			} else if (args.length > 2) {
 				const timerIndex = parseInt(args[1], 10);
 				const timerCommand = args[2];
@@ -916,16 +910,17 @@ const viewerHandler = (
 		case 'WRONGTRY':
 			{
 				const index = parseInt(args[1], 10);
-				const { players } = state.room.persons;
+				const { players } = state.room2.persons;
 
 				if (index > -1 && index < players.length) {
 					const player = players[index];
 
 					if (player.state === PlayerStates.None) {
-						dispatch(roomActionCreators.playerStateChanged(index, PlayerStates.Lost));
+						appDispatch(playerStateChanged({ index, state: PlayerStates.Lost }));
+
 						setTimeout(
 							() => {
-								dispatch(roomActionCreators.playerLostStateDropped(index));
+								appDispatch(playerLostStateDropped(index));
 							},
 							800
 						);
@@ -939,46 +934,20 @@ const viewerHandler = (
 	}
 };
 
-function onCat(dispatch: Dispatch<any>, args: string[]) {
-	const indices = getIndices(args);
-	dispatch(roomActionCreators.selectionEnabled(indices, 'CAT'));
-}
-
-function onCatCost(dispatch: Dispatch<any>, args: string[]) {
-	const allowedStakeTypes = {
-		[StakeTypes.Nominal]: false,
-		[StakeTypes.Sum]: true,
-		[StakeTypes.Pass]: false,
-		[StakeTypes.AllIn]: false
-	};
-
-	const minimum = parseInt(args[1], 10);
-	const maximum = parseInt(args[2], 10);
-	const step = parseInt(args[3], 10);
-
-	dispatch(roomActionCreators.setStakes(allowedStakeTypes, minimum, maximum, minimum, step, 'CATCOST', true));
-	dispatch(roomActionCreators.decisionNeededChanged(true));
-}
-
-function onStake2(dispatch: Dispatch<any>, _state: State, args: string[], maximum: number) {
-	if (args.length < 4) {
+function onAskStake(controller: ClientController, args: string[]) {
+	if (args.length < 6) {
 		return;
 	}
 
-	const stakeTypes = parseStakeTypesFromString(args[1]);
-
-	const allowedStakeTypes = {
-		[StakeTypes.Nominal]: (stakeTypes & StakeTypes2.Nominal) > 0,
-		[StakeTypes.Sum]: (stakeTypes & StakeTypes2.Stake) > 0,
-		[StakeTypes.Pass]: (stakeTypes & StakeTypes2.Pass) > 0,
-		[StakeTypes.AllIn]: (stakeTypes & StakeTypes2.AllIn) > 0,
-	};
-
+	const stakeModes = parseStakeModesFromString(args[1]);
 	const minimum = parseInt(args[2], 10);
-	const step = parseInt(args[3], 10);
+	const maximum = parseInt(args[3], 10);
+	const step = parseInt(args[4], 10);
+	const reason = args[5];
 
-	dispatch(roomActionCreators.setStakes(allowedStakeTypes, minimum, maximum, minimum, step, 'STAKE', false));
-	dispatch(roomActionCreators.decisionNeededChanged(true));
+	const playerName = args.length > 6 ? args[6] : null;
+
+	controller.onAskStake(stakeModes, minimum, maximum, step, reason, playerName);
 }
 
 const playerHandler = (
@@ -986,7 +955,6 @@ const playerHandler = (
 	dispatch: Dispatch<any>,
 	appDispatch: AppDispatch,
 	state: State,
-	dataContext: DataContext,
 	args: string[]) => {
 	switch (args[0]) {
 		case GameMessages.Answer:
@@ -998,40 +966,25 @@ const playerHandler = (
 			}
 			break;
 
-		case 'CANCEL':
-			dispatch(roomActionCreators.clearDecisions());
+		case GameMessages.AskSelectPlayer:
+			if (args.length < 3) {
+				return;
+			}
+
+			const indices = getIndices(args);
+			controller.onAskSelectPlayer(args[1], indices);
 			break;
 
-		case 'CAT':
-			onCat(dispatch, args);
+		case GameMessages.AskStake:
+			onAskStake(controller, args);
 			break;
 
-		case 'CATCOST':
-			onCatCost(dispatch, args);
+		case GameMessages.Cancel:
+			controller.onCancel();
 			break;
 
 		case GameMessages.Choose:
 			controller.onChoose();
-			break;
-
-		case 'FINALSTAKE':
-			{
-				const me = getMeAsPlayer(state);
-
-				if (!me) {
-					break;
-				}
-
-				const allowedStakeTypes = {
-					[StakeTypes.Nominal]: false,
-					[StakeTypes.Sum]: true,
-					[StakeTypes.Pass]: false,
-					[StakeTypes.AllIn]: false
-				};
-
-				dispatch(roomActionCreators.setStakes(allowedStakeTypes, 1, me.sum, 1, 1, 'FINALSTAKE', true));
-				dispatch(roomActionCreators.decisionNeededChanged(true));
-			}
 			break;
 
 		case GameMessages.Report:
@@ -1041,18 +994,6 @@ const playerHandler = (
 
 			const report = args[1].replaceAll('\r', '\n');
 			controller.onReport(report);
-			break;
-
-		case GameMessages.Stake2:
-			const me2 = getMeAsPlayer(state);
-
-			if (!me2) {
-				return;
-			}
-
-			const playerName = ''; // TODO: support in UI
-
-			onStake2(dispatch, state, args, me2.sum);
 			break;
 
 		case GameMessages.Validation:
@@ -1068,32 +1009,20 @@ const playerHandler = (
 	}
 };
 
-const showmanHandler = (controller: ClientController, dispatch: Dispatch<any>, state: State, dataContext: DataContext, args: string[]) => {
+const showmanHandler = (controller: ClientController, dispatch: Dispatch<any>, state: State, args: string[]) => {
 	switch (args[0]) {
-		case 'CANCEL':
-			dispatch(roomActionCreators.clearDecisions());
+		case GameMessages.AskSelectPlayer:
+			if (args.length < 3) {
+				return;
+			}
+
+			const indices = getIndices(args);
+			controller.onAskSelectPlayer(args[1], indices);
 			break;
 
-		case 'FIRST': {
-			const indices = getIndices(args);
-			dispatch(roomActionCreators.selectionEnabled(indices, 'FIRST'));
-			dispatch(roomActionCreators.showmanReplicChanged(localization.selectFirstPlayer));
+		case GameMessages.Cancel:
+			controller.onCancel();
 			break;
-		}
-
-		case 'FIRSTDELETE': {
-			const indices = getIndices(args);
-			dispatch(roomActionCreators.selectionEnabled(indices, 'NEXTDELETE'));
-			dispatch(roomActionCreators.showmanReplicChanged(localization.selectThemeDeleter));
-			break;
-		}
-
-		case 'FIRSTSTAKE': {
-			const indices = getIndices(args);
-			dispatch(roomActionCreators.selectionEnabled(indices, 'NEXT'));
-			dispatch(roomActionCreators.showmanReplicChanged(localization.selectStaker));
-			break;
-		}
 
 		case 'HINT':
 			if (args.length > 1) {
@@ -1119,27 +1048,13 @@ const showmanHandler = (controller: ClientController, dispatch: Dispatch<any>, s
 			break;
 
 		// Player commands for oral game
-		case 'CAT':
-			onCat(dispatch, args);
-			break;
 
-		case 'CATCOST':
-			onCatCost(dispatch, args);
+		case GameMessages.AskStake:
+			onAskStake(controller, args);
 			break;
 
 		case GameMessages.Choose:
 			controller.onChoose();
-			break;
-
-		case GameMessages.Stake2:
-			if (args.length < 6) {
-				break;
-			}
-
-			const maximum2 = args[4];
-			const playerName = args[5]; // TODO: support in UI
-
-			onStake2(dispatch, state, args, parseInt(maximum2, 10));
 			break;
 
 		default:
@@ -1198,8 +1113,9 @@ function startValidation2(dispatch: Dispatch<RoomActions.KnownRoomAction>, title
 
 function getIndices(args: string[]): number[] {
 	const indices: number[] = [];
-	for (let i = 0; i + 1 < args.length; i++) {
-		if (args[i + 1] === '+') {
+
+	for (let i = 0; i + 2 < args.length; i++) {
+		if (args[i + 2] === '+') {
 			indices.push(i);
 		}
 	}
@@ -1259,6 +1175,7 @@ function info(controller: ClientController, ...args: string[]) {
 			isChooser: false,
 			inGame: true,
 			mediaLoaded: false,
+			answer: '',
 		});
 
 		if (isConnected) {
@@ -1289,17 +1206,17 @@ function info(controller: ClientController, ...args: string[]) {
 	controller.onInfo(all, showman, players);
 }
 
-function disconnected(dispatch: Dispatch<RoomActions.KnownRoomAction>, state: State, ...args: string[]) {
+function disconnected(dispatch: Dispatch<RoomActions.KnownRoomAction>, appDispatch: AppDispatch, state: State, ...args: string[]) {
 	const name = args[1];
 
 	dispatch(roomActionCreators.personRemoved(name));
 
-	if (state.room.persons.showman.name === name) {
-		dispatch(roomActionCreators.showmanChanged(Constants.ANY_NAME, null, false));
+	if (state.room2.persons.showman.name === name) {
+		appDispatch(showmanChanged({ name: Constants.ANY_NAME, isHuman: false, isReady: false }));
 	} else {
-		for (let i = 0; i < state.room.persons.players.length; i++) {
-			if (state.room.persons.players[i].name === name) {
-				dispatch(roomActionCreators.playerChanged(i, Constants.ANY_NAME, null, false));
+		for (let i = 0; i < state.room2.persons.players.length; i++) {
+			if (state.room2.persons.players[i].name === name) {
+				appDispatch(playerChanged({ index: i, name: Constants.ANY_NAME, isHuman: false, isReady: false }));
 				break;
 			}
 		}

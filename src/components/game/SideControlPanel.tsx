@@ -12,6 +12,7 @@ import uiActionCreators from '../../state/ui/uiActionCreators';
 import isWellFormedUri from '../../utils/isWellFormedUri';
 import { useAppDispatch } from '../../state/new/hooks';
 import { AppDispatch } from '../../state/new/store';
+import { selectPlayers } from '../../state/new/room2Slice';
 
 import './SideControlPanel.css';
 import nextImg from '../../../assets/images/next.png';
@@ -139,6 +140,11 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 	const { voiceChatUri } = props;
 	const appDispatch = useAppDispatch();
 
+	const onGiveTurn = () =>{
+		props.onGiveTurn();
+		appDispatch(selectPlayers([]));
+	};
+
 	return (
 		<div className="game__utilsArea">
 			<div className="gameMessageHost">
@@ -178,7 +184,7 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 
 									{props.role === Role.Showman ? (<>
 										<li className={enabledEditClass} onClick={() => props.onEditTable()}>{localization.editTable}</li>
-										<li className={enabledClass} onClick={() => props.onGiveTurn()}>{localization.giveTurn}</li>
+										<li className={enabledClass} onClick={onGiveTurn}>{localization.giveTurn}</li>
 										</>) : null}
 
 									{voiceChatUri && isWellFormedUri(voiceChatUri) ? (
