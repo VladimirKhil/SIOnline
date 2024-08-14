@@ -1,21 +1,21 @@
 ﻿import * as React from 'react';
 import { connect } from 'react-redux';
-import State from '../../state/State';
-import TableMode from '../../model/enums/TableMode';
-import TableLogo from './TableLogo/TableLogo';
-import TableText from './TableText';
-import TableGameThemes from './TableGameThemes';
-import TableRoundThemes from './TableRoundThemes';
-import RoundTable from './RoundTable';
-import FinalTable from './FinalTable';
-import AutoSizedText from '../common/AutoSizedText';
-import localization from '../../model/resources/localization';
-import TimerInfo from '../../model/TimerInfo';
-import ProgressBar from '../common/ProgressBar';
-import { isRunning } from '../../utils/TimerInfoHelpers';
-import TableContent from './TableContent/TableContent';
-import ObjectView from './ObjectView/ObjectView';
-import { useAppSelector } from '../../state/new/hooks';
+import State from '../../../state/State';
+import TableMode from '../../../model/enums/TableMode';
+import TableLogo from '../TableLogo/TableLogo';
+import TableText from '../TableText/TableText';
+import TableGameThemes from '../TableGameThemes/TableGameThemes';
+import TableRoundThemes from '../TableRoundThemes/TableRoundThemes';
+import RoundTable from '../RoundTable/RoundTable';
+import FinalTable from '../FinalTable/FinalTable';
+import AutoSizedText from '../../common/AutoSizedText';
+import localization from '../../../model/resources/localization';
+import TimerInfo from '../../../model/TimerInfo';
+import ProgressBar from '../../common/ProgressBar';
+import { isRunning } from '../../../utils/TimerInfoHelpers';
+import TableContent from '../TableContent/TableContent';
+import ObjectView from '../ObjectView/ObjectView';
+import { useAppSelector } from '../../../state/new/hooks';
 
 import './GameTable.css';
 

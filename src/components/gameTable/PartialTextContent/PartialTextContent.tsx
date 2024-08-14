@@ -1,9 +1,9 @@
 import * as React from 'react';
-import State from '../../state/State';
+import State from '../../../state/State';
 import { connect } from 'react-redux';
-import fitElement from '../../utils/fitElement';
+import fitElement from '../../../utils/fitElement';
 
-import './PartialTextContent.css';
+import './PartialTextContent.scss';
 
 interface PartialTextContentProps {
 	text: string;

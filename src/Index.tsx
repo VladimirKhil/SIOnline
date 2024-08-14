@@ -37,7 +37,7 @@ import IStateManager from './utils/IStateManager';
 import SIHostClient from './client/SIHostClient';
 
 import './utils/polyfills';
-import './style.css';
+import './scss/style.scss';
 
 declare const config: Config | undefined;
 declare const firebaseConfig: FirebaseOptions | undefined;

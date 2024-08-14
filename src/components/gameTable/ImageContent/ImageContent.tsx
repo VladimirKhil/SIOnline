@@ -1,13 +1,13 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch, Action } from 'redux';
-import roomActionCreators from '../../state/room/roomActionCreators';
-import State from '../../state/State';
-import TimerInfo from '../../model/TimerInfo';
-import { isRunning } from '../../utils/TimerInfoHelpers';
+import roomActionCreators from '../../../state/room/roomActionCreators';
+import State from '../../../state/State';
+import TimerInfo from '../../../model/TimerInfo';
+import { isRunning } from '../../../utils/TimerInfoHelpers';
 
 import './ImageContent.css';
-import spinnerSvg from '../../../assets/images/spinner.svg';
+import spinnerSvg from '../../../../assets/images/spinner.svg';
 
 interface ImageContentProps {
 	uri: string;

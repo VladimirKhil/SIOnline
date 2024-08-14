@@ -1,7 +1,7 @@
 import * as React from 'react';
-import State from '../../state/State';
+import State from '../../../state/State';
 import { connect } from 'react-redux';
-import { showLogo } from '../../state/new/tableSlice';
+import { showLogo } from '../../../state/new/tableSlice';
 
 interface TableGameThemesProps {
 	gameThemes: string[];

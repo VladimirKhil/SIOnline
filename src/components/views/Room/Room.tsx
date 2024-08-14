@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Action, Dispatch } from 'redux';
 import State from '../../../state/State';
 import PlayersView from '../../game/PlayersView';
-import GameTable from '../../gameTable/GameTable';
+import GameTable from '../../gameTable/GameTable/GameTable';
 import GameChatView from '../../game/GameChatView';
 import SideControlPanel from '../../game/SideControlPanel';
 import ShowmanReplicView from '../../game/ShowmanReplicView';

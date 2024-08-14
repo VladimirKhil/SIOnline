@@ -1,9 +1,11 @@
+@use "../../../scss/variables" as v;
+
 .animatableCharacter {
 	animation: color-change 0.5s forwards;
 }
 
 @keyframes color-change {
-	100% { color: #22ffff; }
+	100% { color: v.$highlighted-text-color; }
 }
 
 .textHost {

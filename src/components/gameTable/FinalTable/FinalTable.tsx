@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { Dispatch, Action } from 'redux';
 import { connect } from 'react-redux';
-import AutoSizedText from '../common/AutoSizedText';
-import roomActionCreators from '../../state/room/roomActionCreators';
-import { AppDispatch, RootState } from '../../state/new/store';
-import { useAppDispatch, useAppSelector } from '../../state/new/hooks';
+import AutoSizedText from '../../common/AutoSizedText';
+import roomActionCreators from '../../../state/room/roomActionCreators';
+import { AppDispatch, RootState } from '../../../state/new/store';
+import { useAppDispatch, useAppSelector } from '../../../state/new/hooks';
 
 interface FinalTableProps {
 	onSelectTheme: (themeIndex: number, appDispatch: AppDispatch) => void;

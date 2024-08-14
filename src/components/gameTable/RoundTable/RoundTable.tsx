@@ -1,12 +1,12 @@
 import * as React from 'react';
-import State from '../../state/State';
+import State from '../../../state/State';
 import { Dispatch, Action } from 'redux';
 import { connect } from 'react-redux';
-import AutoSizedText from '../common/AutoSizedText';
-import ThemeInfo from '../../model/ThemeInfo';
-import roomActionCreators from '../../state/room/roomActionCreators';
-import { useAppDispatch } from '../../state/new/hooks';
-import { AppDispatch } from '../../state/new/store';
+import AutoSizedText from '../../common/AutoSizedText';
+import ThemeInfo from '../../../model/ThemeInfo';
+import roomActionCreators from '../../../state/room/roomActionCreators';
+import { useAppDispatch } from '../../../state/new/hooks';
+import { AppDispatch } from '../../../state/new/store';
 
 import './RoundTable.css';
 

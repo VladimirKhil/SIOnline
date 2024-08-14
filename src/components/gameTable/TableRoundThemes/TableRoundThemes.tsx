@@ -1,10 +1,12 @@
 import * as React from 'react';
-import State from '../../state/State';
+import State from '../../../state/State';
 import { Dispatch, Action } from 'redux';
 import { connect } from 'react-redux';
-import AutoSizedText from '../common/AutoSizedText';
-import commonActionCreators from '../../state/common/commonActionCreators';
-import { showRoundTable } from '../../state/new/tableSlice';
+import AutoSizedText from '../../common/AutoSizedText';
+import commonActionCreators from '../../../state/common/commonActionCreators';
+import { showRoundTable } from '../../../state/new/tableSlice';
+
+import './TableRoundThemes.css';
 
 interface TableRoundThemesProps {
 	roundThemes: string[];

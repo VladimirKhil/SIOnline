@@ -2,11 +2,11 @@ import * as React from 'react';
 import ContentGroup from '../../../model/ContentGroup';
 import ContentItem from '../../../model/ContentItem';
 import ContentType from '../../../model/enums/ContentType';
-import PartialTextContent from '../PartialTextContent';
-import TextContent from '../TextContent';
-import ImageContent from '../ImageContent';
-import VideoContent from '../VideoContent';
-import HtmlContent from '../HtmlContent';
+import PartialTextContent from '../PartialTextContent/PartialTextContent';
+import TextContent from '../TextContent/TextContent';
+import ImageContent from '../ImageContent/ImageContent';
+import VideoContent from '../VideoContent/VideoContent';
+import HtmlContent from '../HtmlContent/HtmlContent';
 
 import './StackedContent.css';
 

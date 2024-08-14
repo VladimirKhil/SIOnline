@@ -1,8 +1,8 @@
 import * as React from 'react';
-import State from '../../state/State';
+import State from '../../../state/State';
 import { connect } from 'react-redux';
-import TimerInfo from '../../model/TimerInfo';
-import { isRunning } from '../../utils/TimerInfoHelpers';
+import TimerInfo from '../../../model/TimerInfo';
+import { isRunning } from '../../../utils/TimerInfoHelpers';
 
 import './TableBorder.css';
 

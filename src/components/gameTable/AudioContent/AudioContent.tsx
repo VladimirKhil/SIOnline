@@ -1,9 +1,9 @@
 import * as React from 'react';
-import State from '../../state/State';
+import State from '../../../state/State';
 import { Dispatch, Action } from 'redux';
 import { connect } from 'react-redux';
-import roomActionCreators from '../../state/room/roomActionCreators';
-import getErrorMessage from '../../utils/ErrorHelpers';
+import roomActionCreators from '../../../state/room/roomActionCreators';
+import getErrorMessage from '../../../utils/ErrorHelpers';
 
 interface AudioContentProps {
 	audioContext: AudioContext;

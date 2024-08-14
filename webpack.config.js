@@ -22,6 +22,20 @@ module.exports = (env, argv) => {
 			rules: [
 				{ test: /\.tsx?$/, use: 'ts-loader' },
 				{ test: /\.css$/, use: argv.mode === 'development' ? ['style-loader', 'css-loader'] : ['style-loader', 'css-loader', 'postcss-loader'] },
+				{
+					test: /\.scss$/,
+					use: [
+						'style-loader',
+						{
+							loader: 'css-loader',
+							options: { sourceMap: argv.mode === 'development' },
+						},
+						{
+							loader: 'sass-loader',
+							options: { sourceMap: argv.mode === 'development' },
+						}
+					]
+				},
 				{ test: /\.(png|jpg|jpeg|gif)$/i, type: 'asset/resource' },
 				{
 					test: /\.svg$/,

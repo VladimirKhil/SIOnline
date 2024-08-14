@@ -3,13 +3,13 @@ import { Provider } from 'react-redux';
 import runCore from './LibraryCore';
 import React from 'react';
 import PlayersView from './components/game/PlayersView';
-import GameTable from './components/gameTable/GameTable';
+import GameTable from './components/gameTable/GameTable/GameTable';
 import IGameClient from './client/game/IGameClient';
 import settingsActionCreators from './state/settings/settingsActionCreators';
 import AudioController from './components/common/AudioController';
 import { showLogo } from './state/new/tableSlice';
 
-import './style.css';
+import './scss/style.scss';
 
 export function run(elementId: string, game?: IGameClient): void {
 	const host = document.getElementById(elementId);

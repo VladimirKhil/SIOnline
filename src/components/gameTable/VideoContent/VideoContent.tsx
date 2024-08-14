@@ -1,11 +1,11 @@
 import * as React from 'react';
-import State from '../../state/State';
+import State from '../../../state/State';
 import { Dispatch, Action } from 'redux';
 import { connect } from 'react-redux';
-import roomActionCreators from '../../state/room/roomActionCreators';
-import getErrorMessage from '../../utils/ErrorHelpers';
-import localization from '../../model/resources/localization';
-import getExtension from '../../utils/FileHelper';
+import roomActionCreators from '../../../state/room/roomActionCreators';
+import getErrorMessage from '../../../utils/ErrorHelpers';
+import localization from '../../../model/resources/localization';
+import getExtension from '../../../utils/FileHelper';
 
 import './VideoContent.css';
 

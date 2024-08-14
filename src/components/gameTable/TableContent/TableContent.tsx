@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import State from '../../../state/State';
-import TableBorder from '../TableBorder';
+import TableBorder from '../TableBorder/TableBorder';
 import ContentType from '../../../model/enums/ContentType';
-import AudioContent from '../AudioContent';
+import AudioContent from '../AudioContent/AudioContent';
 import VolumeButton from '../../common/VolumeButton';
 import ContentGroup from '../../../model/ContentGroup';
 import LayoutMode from '../../../model/enums/LayoutMode';

@@ -1,9 +1,9 @@
 ﻿import * as React from 'react';
-import State from '../../state/State';
+import State from '../../../state/State';
 import { connect } from 'react-redux';
-import AutoSizedText from '../common/AutoSizedText';
+import AutoSizedText from '../../common/AutoSizedText';
 
-import './TableText.css';
+import './TableText.scss';
 
 interface TableTextProps {
 	text: string;

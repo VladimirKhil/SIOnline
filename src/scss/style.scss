@@ -1,36 +1,59 @@
-﻿@font-face {
+﻿@use 'variables' as v;
+
+@font-face {
+    font-family: Standard;
+    src: url('../../assets/fonts/Geologica/Geologica-Light.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: Standard;
+    src: url('../../assets/fonts/Geologica/Geologica-SemiBold.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: Standard;
+    src: url('../../assets/fonts/Geologica/Geologica-Bold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+}
+
+@font-face {
     font-family: SI;
-    src: url('../assets/fonts/FuturaC.eot');
-    src: local('вє'), url('../assets/fonts/FuturaC.woff') format('woff'), url('../assets/fonts/FuturaC.ttf') format('truetype'), url('../assets/fonts/FuturaC.svg') format('svg');
+    src: url('../../assets/fonts/FuturaC.eot');
+    src: local('вє'), url('../../assets/fonts/FuturaC.woff') format('woff'), url('../../assets/fonts/FuturaC.ttf') format('truetype'), url('../../assets/fonts/FuturaC.svg') format('svg');
     font-weight: normal;
     font-style: normal;
 }
 
 @font-face {
     font-family: 'Clefs';
-    src: url('../assets/fonts/Clefs.eot');
-    src: url('../assets/fonts/Clefs.eot?#iefix') format('embedded-opentype'), url('../assets/fonts/Clefs.woff') format('woff'), url('../assets/fonts/Clefs.ttf') format('truetype'), url('../assets/fonts/Clefs.svg#Clefs') format('svg');
+    src: url('../../assets/fonts/Clefs.eot');
+    src: url('../../assets/fonts/Clefs.eot?#iefix') format('embedded-opentype'), url('../../assets/fonts/Clefs.woff') format('woff'), url('../../assets/fonts/Clefs.ttf') format('truetype'), url('../../assets/fonts/Clefs.svg#Clefs') format('svg');
     font-weight: normal;
     font-style: normal;
 }
 
 @font-face {
     font-family: 'Main';
-    src: url('../assets/fonts/Jost-Regular.ttf') format('truetype');
+    src: url('../../assets/fonts/Jost-Regular.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
 }
 
 @font-face {
     font-family: 'Main';
-    src: url('../assets/fonts/Jost-SemiBold.ttf') format('truetype');
+    src: url('../../assets/fonts/Jost-SemiBold.ttf') format('truetype');
     font-weight: 500;
     font-style: normal;
 }
 
 @font-face {
     font-family: 'Main';
-    src: url('../assets/fonts/Jost-Bold.ttf') format('truetype');
+    src: url('../../assets/fonts/Jost-Bold.ttf') format('truetype');
     font-weight: bold;
     font-style: normal;
 }
@@ -38,9 +61,9 @@
 html,body { height:100%; }
 
 body {
-    background-color: #000451;
-    background: linear-gradient(to bottom, #000451 0%,#183CF3 50%,#000451 100%);
-    background-image: url('../assets/images/main_background.jpg');
+    background-color: v.$background-color;
+    background: linear-gradient(to bottom, v.$background-color 0%,#183CF3 50%,#000451 100%);
+    background-image: url('../../assets/images/main_background.jpg');
     background-size: cover;
     color: black;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -164,11 +187,11 @@ ul {
 }
 
 .avatarMale {
-    background-image: url('../assets/images/avatar-m.png');
+    background-image: url('../../assets/images/avatar-m.png');
 }
 
 .avatarFemale {
-    background-image: url('../assets/images/avatar-f.png');
+    background-image: url('../../assets/images/avatar-f.png');
 }
 
 .gameHost {

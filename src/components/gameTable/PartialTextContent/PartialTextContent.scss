@@ -1,6 +1,8 @@
+@use "../../../scss/variables" as v;
+
 #table .tableText.nonAligned {
     align-items: flex-start;
-    color: #22ffff;
+    color: v.$highlighted-text-color;
 }
 
 .animatablePartialCharacter {
