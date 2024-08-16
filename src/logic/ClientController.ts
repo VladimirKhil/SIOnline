@@ -945,8 +945,8 @@ export default class ClientController {
 
 		if (person && !person.isHuman) {
 			this.appDispatch(isPlayer
-				? playerChanged({ index, name: replacer, isHuman: false, isReady: false })
-				: showmanChanged({ name: replacer, isHuman: false, isReady: false }));
+				? playerChanged({ index, name: replacer, isReady: false })
+				: showmanChanged({ name: replacer, isReady: false }));
 
 				this.dispatch(roomActionCreators.personRemoved(person.name));
 
@@ -981,8 +981,8 @@ export default class ClientController {
 				} else {
 					const { isReady } = state.room2.persons.players[i];
 
-					this.appDispatch(playerChanged({ index: i, name: account.name, isHuman: false, isReady: account.isReady }));
-					this.appDispatch(showmanChanged({ name: replacer, isHuman: false, isReady }));
+					this.appDispatch(playerChanged({ index: i, name: account.name, isReady: account.isReady }));
+					this.appDispatch(showmanChanged({ name: replacer, isReady }));
 
 					if (state.room2.persons.showman.name === state.room.name) {
 						this.dispatch(roomActionCreators.roleChanged(Role.Player));
@@ -996,8 +996,8 @@ export default class ClientController {
 		}
 
 		this.appDispatch(isPlayer
-			? playerChanged({ index, name: replacer, isHuman: false, isReady: false })
-			: showmanChanged({ name: replacer, isHuman: false, isReady: false }));
+			? playerChanged({ index, name: replacer, isReady: false })
+			: showmanChanged({ name: replacer, isReady: false }));
 
 		if (account.name === state.room.name) {
 			this.dispatch(roomActionCreators.roleChanged(Role.Viewer));
@@ -1011,8 +1011,8 @@ export default class ClientController {
 		const isPlayer = personType === 'player';
 
 		this.appDispatch(isPlayer
-			? playerChanged({ index, name: Constants.ANY_NAME, isHuman: false, isReady: false })
-			: showmanChanged({ name: Constants.ANY_NAME, isHuman: false, isReady: false }));
+			? playerChanged({ index, name: Constants.ANY_NAME, isReady: false })
+			: showmanChanged({ name: Constants.ANY_NAME, isReady: false }));
 
 		const account = isPlayer ? state.room2.persons.players[index] : state.room2.persons.showman;
 

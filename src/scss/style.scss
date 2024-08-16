@@ -61,9 +61,7 @@
 html,body { height:100%; }
 
 body {
-    background-color: v.$background-color;
-    background: linear-gradient(to bottom, v.$background-color 0%,#183CF3 50%,#000451 100%);
-    background-image: url('../../assets/images/main_background.jpg');
+	background: radial-gradient(91.6% 91.6% at 50% 4.05%, #1322AB 0%, #11174E 100%);
     background-size: cover;
     color: black;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -77,7 +75,7 @@ body {
     user-select: none;
     scrollbar-width: thin;
     scrollbar-color: #a8acfd transparent;
-	font-family: Main;
+	font-family: Standard;
 }
 
 #reactHost {
@@ -254,7 +252,7 @@ button {
     background-color: transparent;
     border: 0;
     padding: 5px 7px 5px 7px;
-    font-family: Main;
+    font-family: Standard;
     text-shadow: 1px 1px 0 #000;
     font-size: inherit;
     cursor: pointer;

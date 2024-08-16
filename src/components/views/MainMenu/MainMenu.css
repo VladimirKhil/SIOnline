@@ -3,57 +3,97 @@
 	display: flex;
 	flex-flow: column;
 	align-items: center;
+	justify-content: flex-start;
 	color: #FFFFFF;
-	font-family: Main;
+	font-family: Standard;
 	overflow-y: auto;
 	overflow-x: hidden;
 	scrollbar-width: thin;
 }
 
 .welcomeView .logo {
-    width: 100px;
-    height: 100px;
-    background-image: url('../../../../assets/images/sigame.png');
+    max-width: 600px;
+	width: 90%;
+    background-image: url('../../../../assets/images/logo.png');
     background-size: contain;
-    margin: auto;
+	background-repeat: no-repeat;
+	background-position: center;
     margin-top: 10px;
+	flex: 200px 0 0;
 }
 
 .welcomeView header {
 	color: white;
 	text-align: center;
+	background-color: #04071B;
+	width: 100%;
+	height: 45px;
+	overflow: hidden;
 }
 
 .welcomeView header h1 {
-	font-size: 24px;
+	font-size: 16px;
+	margin: 0;
+	display: flex;
+	flex-direction: row;
+	height: 45px;
+	overflow: hidden;
+}
+
+.welcomeView header h1 .left {
+	text-align: left;
+}
+
+.welcomeView header h1 .right {
+	text-align: right;
+	flex: 1 0 0;
+}
+
+.welcomeView .mainArea {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	overflow-y: auto;
+	overflow-x: hidden;
+	width: 100%;
+	flex: 1;
 }
 
 .serverName {
 	color: #FFFFFF;
+	margin-left: 10px;
+	line-height: 45px;
+	height: 45px;
+	display: inline-block;
 }
 
 .welcomeView .user {
-	color: rgb(222, 206, 108);
-	margin-left: 15px;
+	margin-left: 10px;
+	margin-right: 5px;
+	display: inline-block;
+	height: 45px;
+	line-height: 45px;
 }
 
 .welcomeView .userAvatar {
-	width: 50px;
-	height: 50px;
+	margin-top: 2px;
+	max-width: 41px;
+	height: 41px;
     background-size: contain;
 	vertical-align: middle;
 }
 
 .serverLicense {
 	margin-left: 10px;
-	font-size: 22px;
+	font-size: 18px;
 	cursor: pointer;
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
 	border: 0;
 	width: 44px;
-	height: 42px;
+	height: 45px;
 	padding: 3px;
 }
 
@@ -88,7 +128,7 @@
 }
 
 .welcomeViewActions button {
-	margin: 1.5px 0;
+	margin: 5px 0;
 	flex: 1;
 	display: flex;
 	align-items: center;
@@ -103,7 +143,9 @@
 	}
 }
 
-.welcomeRow {
+button.standard.welcomeRow {
+	background-color: #04071B;
+	border-radius: 4px;
 	animation: welcomeRows;
 	animation-duration: .5s;
 	animation-fill-mode: forwards;
@@ -135,10 +177,6 @@
 		display: none;
 	}
 
-	.welcomeView header h1 {
-		font-size: 16px;
-	}
-
 	.welcomeViewActions {
 		font-size: 20px;
 	}
@@ -161,16 +199,6 @@
 }
 
 @media screen and (min-height: 600px) {
-	.welcomeView {
-		height: calc(100% - 30px);
-		margin-top: 30px;
-		justify-content: center;
-	}
-
-	.welcomeView header h1 {
-		font-size: 28px;
-	}
-
 	.welcomeViewActions {
 		font-size: 25px;
 		margin-top: 30px;
@@ -182,15 +210,6 @@
 }
 
 @media screen and (min-height: 800px) {
-	.welcomeView {
-		height: calc(100% - 40px);
-		margin-top: 40px;
-	}
-
-	.welcomeView header h1 {
-		font-size: 30px;
-	}
-
 	.welcomeViewActions {
 		margin-top: 40px;
 	}
@@ -198,5 +217,15 @@
 	.welcomeViewActions button {
 		padding: 17px 50px;
 		font-size: 35px;
+	}
+
+	.welcomeView .logo {
+		flex: 300px 0 0;
+	}
+}
+
+@media screen and (min-height: 800px) and (min-width: 1600px) {
+	.welcomeViewActions {
+		margin-top: 80px;
 	}
 }

@@ -75,68 +75,70 @@ export function MainMenu(props: MainMenuProps): JSX.Element {
 	return (
 		<section className="welcomeView">
 			<header>
-				<div className='logo' />
-
 				<h1>
-					<span>{localization.server}</span>
-					<span>: </span>
-					<span className="serverName">{props.serverName || localization.appUser}</span>
+					<span className='left'>
+						<button
+							type='button'
+							className='standard imageButton welcomeExit'
+							onClick={props.exit}
+							title={localization.exitFromGame}>
+							<img src={exitImg} alt='Exit' />
+						</button>
 
-					<button
-						type='button'
-						className='serverLicense'
-						title={localization.serverLicense}
-						onClick={() => setShowLicense(true)}
-					>
-						ⓘ
-					</button>
+						<span className="serverName" title={localization.server}>{props.serverName || localization.appUser}</span>
 
-					<button
-						type='button'
-						className='standard imageButton welcomeExit'
-						onClick={props.exit}
-						title={localization.exitFromGame}>
-						<img src={exitImg} alt='Exit' />
-					</button>
-				</h1>
+						<button
+							type='button'
+							className='serverLicense'
+							title={localization.serverLicense}
+							onClick={() => setShowLicense(true)}
+						>
+							ⓘ
+						</button>
+					</span>
 
-				<h1>
-					{props.avatar ? <img className='userAvatar' src={props.avatar} alt='Avatar' /> : null}
-					<span className='user'>{props.userName}</span>
+					<span className='right'>
+						{props.avatar ? <img className='userAvatar' src={props.avatar} alt='Avatar' /> : null}
+						<span className='user'>{props.userName}</span>
+					</span>
 				</h1>
 			</header>
 
-			<div className={`welcomeViewActions ${props.isConnected ? '' : 'disconnected'}`}>
-				<button
-					type='button'
-					className='standard welcomeRow right'
-					disabled={!props.isConnected} onClick={() => props.navigate({ path: Path.NewRoom, newGameMode: 'single' })}>
-					{localization.singlePlay}
-				</button>
+			<div className='mainArea'>
+				<div className='logo' />
 
-				<button
-					type='button'
-					className='standard welcomeRow left'
-					disabled={!props.isConnected}
-					onClick={() => props.navigate({ path: Path.Rooms })}>
-					{localization.friendsPlay}
-				</button>
+				<div className={`welcomeViewActions ${props.isConnected ? '' : 'disconnected'}`}>
+					<button
+						type='button'
+						className='standard welcomeRow right'
+						disabled={!props.isConnected} onClick={() => props.navigate({ path: Path.NewRoom, newGameMode: 'single' })}>
+						{localization.singlePlay}
+					</button>
 
-				<button
-					type='button'
-					className='standard welcomeRow right'
-					disabled={!props.isConnected}
-					onClick={() => props.anyonePlay(appDispatch)}>
-					{localization.anyonePlay}
-				</button>
+					<button
+						type='button'
+						className='standard welcomeRow left'
+						disabled={!props.isConnected}
+						onClick={() => props.navigate({ path: Path.Rooms })}>
+						{localization.friendsPlay}
+					</button>
 
-				<button
-					type='button'
-					className='standard welcomeRow left'
-					disabled={!props.isConnected}
-					onClick={() => props.navigate({ path: Path.Lobby })}>
-					{localization.joinLobby}
-				</button>
+					<button
+						type='button'
+						className='standard welcomeRow right'
+						disabled={!props.isConnected}
+						onClick={() => props.anyonePlay(appDispatch)}>
+						{localization.anyonePlay}
+					</button>
+
+					<button
+						type='button'
+						className='standard welcomeRow left'
+						disabled={!props.isConnected}
+						onClick={() => props.navigate({ path: Path.Lobby })}>
+						{localization.joinLobby}
+					</button>
+				</div>
 			</div>
 
 			{showLicense ? (
