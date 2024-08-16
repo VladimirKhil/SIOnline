@@ -1,3 +1,5 @@
+@use "../../../scss/variables" as v;
+
 #table .roundTable {
 	color: #FFFFFF;
 	text-shadow: 1px 1px 0 #000;
@@ -64,8 +66,8 @@
 }
 
 #table .roundTable .questHeader.active {
-	background: linear-gradient(180deg, #0737B8 0%, #0F2078 100%);
-	border-color: #0D40CD;
+	background: v.$table-cell-background-color;
+	border-color: v.$table-cell-border-color;
 }
 
 #table .roundTable.selectable .questHeader.active {

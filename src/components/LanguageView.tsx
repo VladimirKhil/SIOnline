@@ -1,30 +1,23 @@
 import * as React from 'react';
-import { connect } from 'react-redux';
-import { Dispatch, Action } from 'redux';
 import localization from '../model/resources/localization';
-import settingsActionCreators from '../state/settings/settingsActionCreators';
-import State from '../state/State';
 import Selector from './common/Selector';
+import { useAppDispatch, useAppSelector } from '../state/new/hooks';
+import { languageChanged } from '../state/new/settingsSlice';
 
 import './LanguageView.css';
 
 interface LanguageViewProps {
-	culture: string;
 	disabled: boolean | undefined;
-	onLanguageChanged: (language: string | null) => void;
 }
 
-const mapStateToProps = (state: State) => ({
-	culture: state.settings.appSettings.culture || localization.getLanguage(),
-});
+export default function LanguageView(props: LanguageViewProps): JSX.Element {
+	const culture = useAppSelector(state => state.settings.appSettings.culture || localization.getLanguage());
+	const appDispatch = useAppDispatch();
 
-const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
-	onLanguageChanged: (language: string | null) => {
-		dispatch(settingsActionCreators.languageChanged(language));
-	},
-});
+	function onLanguageChanged(language: string | null): void {
+		appDispatch(languageChanged(language));
+	}
 
-export function LanguageView(props: LanguageViewProps): JSX.Element {
 	return (
 		<Selector
 			className='languageArea'
@@ -37,11 +30,9 @@ export function LanguageView(props: LanguageViewProps): JSX.Element {
 				name: 'EN',
 				tooltip: localization.languageEn
 			}]}
-			value={props.culture}
+			value={culture}
 			disabled={props.disabled}
-			onValueChanged={props.onLanguageChanged}
+			onValueChanged={onLanguageChanged}
 		/>
 	);
 }
-
-export default connect(mapStateToProps, mapDispatchToProps)(LanguageView);

@@ -12,7 +12,7 @@ import AutoSizedText from '../../common/AutoSizedText';
 import { useAppDispatch, useAppSelector } from '../../../state/new/hooks';
 import { AppDispatch, RootState } from '../../../state/new/store';
 
-import './AnswerOptions.css';
+import './AnswerOptions.scss';
 
 interface AnswerOptionsProps {
 	displayAnswerOptionsLabels: boolean;

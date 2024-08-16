@@ -2,8 +2,7 @@
 import State, { initialState } from './State';
 import { KnownRoomAction } from './room/RoomActions';
 import roomReducer from './room/roomReducer';
-import settingsReducer from './settings/settingsReducer';
-import { KnownSettingsAction } from './settings/SettingsActions';
+import settingsReducer from './new/settingsSlice';
 import tableReducer from './new/tableSlice';
 import userReducer from './user/userReducer';
 import room2Reducer from './new/room2Slice';
@@ -30,7 +29,7 @@ const reducer: Reducer<State> = (
 	room: roomReducer(state.room, action as KnownRoomAction),
 	room2: room2Reducer(state.room2, action as KnownRoomAction),
 	common: commonReducer(state.common, action as KnownCommonAction),
-	settings: settingsReducer(state.settings, action as KnownSettingsAction),
+	settings: settingsReducer(state.settings, action as UnknownAction),
 	table: tableReducer(state.table, action as UnknownAction),
 	siPackages: siPackagesReducer(state.siPackages, action as KnownSIPackagesAction),
 	ui: uiReducer(state.ui, action as KnownUIAction),

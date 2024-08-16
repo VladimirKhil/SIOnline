@@ -6,9 +6,9 @@ import State from '../../state/State';
 import localization from '../../model/resources/localization';
 import roomActionCreators from '../../state/room/roomActionCreators';
 import Dialog from '../common/Dialog';
-import settingsActionCreators from '../../state/settings/settingsActionCreators';
 import { useAppDispatch } from '../../state/new/hooks';
 import { approveAnswer, rejectAnswer } from '../../state/new/room2Slice';
+import { setValidationAnswersVisibility } from '../../state/new/settingsSlice';
 
 import './AnswerValidationDialog.css';
 
@@ -22,7 +22,6 @@ interface AnswerValidationDialogProps {
 	showExtraRightButtons: boolean;
 	areAnswersVisible: boolean;
 	clearDecisions: () => void;
-	onAnswersVisibilityChanged: (areAnswersVisible: boolean) => void;
 }
 
 const mapStateToProps = (state: State) => ({
@@ -40,9 +39,6 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	clearDecisions: () => {
 		dispatch(roomActionCreators.clearDecisions());
 	},
-	onAnswersVisibilityChanged: (areAnswersVisible: boolean) => {
-		dispatch(settingsActionCreators.onValidationAnswersVisibilityChanged(areAnswersVisible));
-	}
 });
 
 export function AnswerValidationDialog(props: AnswerValidationDialogProps): JSX.Element {
@@ -84,7 +80,7 @@ export function AnswerValidationDialog(props: AnswerValidationDialogProps): JSX.
 							type='button'
 							className='validationAnswersVisibilityButton'
 							title={props.areAnswersVisible ? localization.hideAnswers : localization.showAnswers}
-							onClick={() => props.onAnswersVisibilityChanged(!props.areAnswersVisible)}
+							onClick={() => appDispatch(setValidationAnswersVisibility(!props.areAnswersVisible))}
 						>
 							👁
 						</button>

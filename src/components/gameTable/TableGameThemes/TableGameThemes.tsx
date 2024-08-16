@@ -3,6 +3,8 @@ import State from '../../../state/State';
 import { connect } from 'react-redux';
 import { showLogo } from '../../../state/new/tableSlice';
 
+import './TableGameThemes.scss';
+
 interface TableGameThemesProps {
 	gameThemes: string[];
 	showLogo: () => void;

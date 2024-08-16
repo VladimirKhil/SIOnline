@@ -19,7 +19,6 @@ import { FirebaseApp, FirebaseOptions, initializeApp } from 'firebase/app';
 import { Analytics, getAnalytics } from 'firebase/analytics';
 import { ErrorView } from './components/views/Error/ErrorView';
 import Constants from './model/enums/Constants';
-import settingsActionCreators from './state/settings/settingsActionCreators';
 import getErrorMessage from './utils/ErrorHelpers';
 import commonActionCreators from './state/common/commonActionCreators';
 import enableNoSleep from './utils/NoSleepHelper';
@@ -35,6 +34,7 @@ import StateManager from './utils/StateManager';
 import YAStateManager from './utils/YAStateManager';
 import IStateManager from './utils/IStateManager';
 import SIHostClient from './client/SIHostClient';
+import { setGameButtonKey } from './state/new/settingsSlice';
 
 import './utils/polyfills';
 import './scss/style.scss';
@@ -116,7 +116,7 @@ function subscribeToExternalEvents(store: Store<State, any>) {
 		const state = store.getState();
 
 		if (state.ui.isSettingGameButtonKey) {
-			store.dispatch(settingsActionCreators.gameButtonKeyChanged(e.key));
+			store.dispatch(setGameButtonKey(e.key));
 			store.dispatch(uiActionCreators.isSettingGameButtonKeyChanged(false));
 		} else if (e.key === state.settings.gameButtonKey) {
 			store.dispatch(roomActionCreators.pressGameButton());

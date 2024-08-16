@@ -3,63 +3,34 @@ import { Dispatch, Action } from 'redux';
 import { connect } from 'react-redux';
 import State from '../../state/State';
 import localization from '../../model/resources/localization';
-import SettingsState from '../../state/settings/SettingsState';
-import settingsActionCreators from '../../state/settings/settingsActionCreators';
 import LanguageView from '../LanguageView';
 import uiActionCreators from '../../state/ui/uiActionCreators';
 import Constants from '../../model/enums/Constants';
+import { useAppDispatch, useAppSelector } from '../../state/new/hooks';
+
+import { setAppSound,
+	setAttachContentToTable,
+	setBindNextButton,
+	setFloatingControls,
+	setMainMenuSound,
+	setShowPersonsAtBottomOnWideScreen,
+	setShowVideoAvatars,
+	setSound,
+	setSoundVolume } from '../../state/new/settingsSlice';
 
 interface CommonSettingsViewProps {
-	settings: SettingsState;
 	isSettingGameButtonKey: boolean;
 
-	onSoundVolumeChange: (volume: number) => void;
-	onSoundChange: (sound: boolean) => void;
-	onAppSoundChange: (sound: boolean) => void;
-	onMainMenuSoundChange: (sound: boolean) => void;
-	onShowPersonsAtBottomOnWideScreenChanged: (showPersonsAtBottomOnWideScreen: boolean) => void;
-	onFloatingControlsChanged: (float: boolean) => void;
 	isSettingGameButtonKeyChanged: (isSettingGameButtonKey: boolean) => void;
-	onBindNextButtonChanged: (bindNextButton: boolean) => void;
-	onAttachContentToTableChanged: (attachContentToTable: boolean) => void;
-	onShowVideoAvatarsChanged: (showVideoAvatars: boolean) => void;
 }
 
 const mapStateToProps = (state: State) => ({
-	settings: state.settings,
 	isSettingGameButtonKey: state.ui.isSettingGameButtonKey,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
-	onSoundVolumeChange: (volume: number) => {
-		dispatch(settingsActionCreators.onSoundVolumeChanged(volume));
-	},
-	onSoundChange: (sound: boolean) => {
-		dispatch(settingsActionCreators.onSoundChanged(sound));
-	},
-	onAppSoundChange: (sound: boolean) => {
-		dispatch(settingsActionCreators.onAppSoundChanged(sound));
-	},
-	onMainMenuSoundChange: (sound: boolean) => {
-		dispatch(settingsActionCreators.onMainMenuSoundChanged(sound));
-	},
-	onShowPersonsAtBottomOnWideScreenChanged: (showPersonsAtBottomOnWideScreen: boolean) => {
-		dispatch(settingsActionCreators.showPersonsAtBottomOnWideScreenChanged(showPersonsAtBottomOnWideScreen));
-	},
-	onFloatingControlsChanged: (float: boolean) => {
-		dispatch(settingsActionCreators.onFloatingControlsChanged(float));
-	},
 	isSettingGameButtonKeyChanged: (isSettingGameButtonKey: boolean) => {
 		dispatch(uiActionCreators.isSettingGameButtonKeyChanged(isSettingGameButtonKey));
-	},
-	onBindNextButtonChanged: (bindNextButton: boolean) => {
-		dispatch(settingsActionCreators.onBindNextButtonChanged(bindNextButton));
-	},
-	onAttachContentToTableChanged: (attachContentToTable: boolean) => {
-		dispatch(settingsActionCreators.onAttachContentToTableChanged(attachContentToTable));
-	},
-	onShowVideoAvatarsChanged: (showVideoAvatars: boolean) => {
-		dispatch(settingsActionCreators.showVideoAvatarsChanged(showVideoAvatars));
 	},
 });
 
@@ -80,6 +51,9 @@ function getKeyName(key: string) {
 }
 
 export function CommonSettingsView(props: CommonSettingsViewProps): JSX.Element {
+	const settings = useAppSelector(state => state.settings);
+	const appDispatch = useAppDispatch();
+
 	return (
 		<div>
 			<p className="header">{localization.language}</p>
@@ -90,8 +64,8 @@ export function CommonSettingsView(props: CommonSettingsViewProps): JSX.Element 
 				<input
 					id="sound"
 					type="checkbox"
-					checked={props.settings.sound}
-					onChange={() => props.onSoundChange(!props.settings.sound)}
+					checked={settings.sound}
+					onChange={() => appDispatch(setSound(!settings.sound))}
 				/>
 				<label htmlFor="sound">{localization.sound}</label>
 			</div>
@@ -100,8 +74,8 @@ export function CommonSettingsView(props: CommonSettingsViewProps): JSX.Element 
 				<input
 					id="appSound"
 					type="checkbox"
-					checked={props.settings.appSound}
-					onChange={() => props.onAppSoundChange(!props.settings.appSound)}
+					checked={settings.appSound}
+					onChange={() => appDispatch(setAppSound(!settings.appSound))}
 				/>
 				<label htmlFor="appSound">{localization.soundApp}</label>
 			</div>
@@ -110,8 +84,8 @@ export function CommonSettingsView(props: CommonSettingsViewProps): JSX.Element 
 				<input
 					id="mainMenuSound"
 					type="checkbox"
-					checked={props.settings.mainMenuSound}
-					onChange={() => props.onMainMenuSoundChange(!props.settings.mainMenuSound)}
+					checked={settings.mainMenuSound}
+					onChange={() => appDispatch(setMainMenuSound(!settings.mainMenuSound))}
 				/>
 				<label htmlFor="mainMenuSound">{localization.mainMenuSound}</label>
 			</div>
@@ -126,8 +100,8 @@ export function CommonSettingsView(props: CommonSettingsViewProps): JSX.Element 
 					min={0}
 					max={1}
 					step={0.1}
-					value={props.settings.soundVolume}
-					onChange={(e) => props.onSoundVolumeChange(Number(e.target.value))}
+					value={settings.soundVolume}
+					onChange={(e) => appDispatch(setSoundVolume(Number(e.target.value)))}
 				/>
 			</div>
 
@@ -135,8 +109,8 @@ export function CommonSettingsView(props: CommonSettingsViewProps): JSX.Element 
 				<input
 					id="showPersonsAtBottomOnWideScreen"
 					type="checkbox"
-					checked={props.settings.showPersonsAtBottomOnWideScreen}
-					onChange={() => props.onShowPersonsAtBottomOnWideScreenChanged(!props.settings.showPersonsAtBottomOnWideScreen)}
+					checked={settings.showPersonsAtBottomOnWideScreen}
+					onChange={() => appDispatch(setShowPersonsAtBottomOnWideScreen(!settings.showPersonsAtBottomOnWideScreen))}
 				/>
 
 				<label htmlFor="showPersonsAtBottomOnWideScreen">{localization.showPersonsAtBottomOnWideScreen}</label>
@@ -146,8 +120,8 @@ export function CommonSettingsView(props: CommonSettingsViewProps): JSX.Element 
 				<input
 					id="floatingControls"
 					type="checkbox"
-					checked={props.settings.floatingControls}
-					onChange={() => props.onFloatingControlsChanged(!props.settings.floatingControls)}
+					checked={settings.floatingControls}
+					onChange={() => appDispatch(setFloatingControls(!settings.floatingControls))}
 				/>
 
 				<label htmlFor="floatingControls">{localization.floatingControls}</label>
@@ -162,15 +136,15 @@ export function CommonSettingsView(props: CommonSettingsViewProps): JSX.Element 
 				disabled={props.isSettingGameButtonKey}
 				onClick={() => props.isSettingGameButtonKeyChanged(true)}
 			>
-				{getKeyName(props.settings.gameButtonKey ?? localization.notSet)}
+				{getKeyName(settings.gameButtonKey ?? localization.notSet)}
 			</button>
 
 			<div className="settingItem">
 				<input
 					id="bindNextButton"
 					type="checkbox"
-					checked={props.settings.bindNextButton}
-					onChange={() => props.onBindNextButtonChanged(!props.settings.bindNextButton)}
+					checked={settings.bindNextButton}
+					onChange={() => appDispatch(setBindNextButton(!settings.bindNextButton))}
 				/>
 
 				<label htmlFor="bindNextButton">{localization.bindNextButton}</label>
@@ -180,8 +154,8 @@ export function CommonSettingsView(props: CommonSettingsViewProps): JSX.Element 
 				<input
 					id="attachContentToTable"
 					type="checkbox"
-					checked={props.settings.attachContentToTable}
-					onChange={() => props.onAttachContentToTableChanged(!props.settings.attachContentToTable)}
+					checked={settings.attachContentToTable}
+					onChange={() => appDispatch(setAttachContentToTable(!settings.attachContentToTable))}
 				/>
 
 				<label htmlFor="attachContentToTable">{localization.attachContentToTable}</label>
@@ -191,8 +165,8 @@ export function CommonSettingsView(props: CommonSettingsViewProps): JSX.Element 
 				<input
 					id="showVideoAvatars"
 					type="checkbox"
-					checked={props.settings.showVideoAvatars}
-					onChange={() => props.onShowVideoAvatarsChanged(!props.settings.showVideoAvatars)}
+					checked={settings.showVideoAvatars}
+					onChange={() => appDispatch(setShowVideoAvatars(!settings.showVideoAvatars))}
 				/>
 
 				<label htmlFor="showVideoAvatars">{localization.showVideoAvatars}</label>

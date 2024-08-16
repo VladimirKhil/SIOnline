@@ -1,3 +1,5 @@
+@use "../../../scss/variables" as v;
+
 .answerOptions {
 	display: flex;
 	flex-direction: column;
@@ -7,12 +9,16 @@
 
 .answerOption {
 	flex: 1 0 0;
-	background-color: rgba(0,0,0,0.3);
+	border-width: 2px;
+	border-style: solid;
+	background: v.$table-cell-background-color;
+	border-color: v.$table-cell-border-color;
 	display: flex;
 	flex-direction: row;
 	align-items: center;
 	justify-content: center;
 	padding: 2px;
+	margin: 2px;
 	overflow: hidden;
 	transition: background-color 1s;
 }
@@ -22,6 +28,7 @@
 }
 
 .answerOptions.selectable .answerOption.normal:hover {
+    background: initial;
     background: rgb(189, 189, 166);
 }
 
@@ -34,23 +41,28 @@
 }
 
 .answerOption.active {
+    background: initial;
 	background-color: lightyellow;
 }
 
 .answerOption.right {
+    background: initial;
 	background-color: green;
 }
 
 .answerOption.wrong {
+    background: initial;
 	background-color: darkred;
 }
 
 .answerOption.active:hover {
+    background: initial;
 	background-color: rgba(0,0,0,0.2);
 }
 
 .optionLabel {
 	color: cyan;
+	margin-left: 1px;
 	margin-right: 10px;
 	flex: 0 0 30px;
 	display: flex;
@@ -77,6 +89,7 @@
     align-items: center;
     justify-content: center;
 	overflow: hidden;
+	padding: 1px;
 }
 
 .optionContent div {
@@ -85,4 +98,24 @@
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+@media screen and (min-width: 1100px) {
+	.optionLabel {
+		margin-left: 3px;
+	}
+
+    .optionContent {
+		padding: 3px;
+	}
+}
+
+@media screen and (min-width: 1600px) {
+	.optionLabel {
+		margin-left: 6px;
+	}
+
+    .optionContent {
+		padding: 6px;
+	}
 }

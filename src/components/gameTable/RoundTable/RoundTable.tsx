@@ -8,7 +8,7 @@ import roomActionCreators from '../../../state/room/roomActionCreators';
 import { useAppDispatch } from '../../../state/new/hooks';
 import { AppDispatch } from '../../../state/new/store';
 
-import './RoundTable.css';
+import './RoundTable.scss';
 
 interface RoundTableProps {
 	roundInfo: ThemeInfo[];

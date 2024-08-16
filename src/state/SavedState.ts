@@ -1,6 +1,6 @@
 ﻿import Role from '../model/Role';
 import GameType from '../model/GameType';
-import SettingsState from './settings/SettingsState';
+import { SettingsState } from './new/settingsSlice';
 
 const STATE_KEY = 'SIOnline_State';
 

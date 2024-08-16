@@ -16,7 +16,6 @@ import Constants from '../model/enums/Constants';
 import GameServerClient from '../client/GameServerClient';
 import getErrorMessage from '../utils/ErrorHelpers';
 import { getFullCulture } from '../utils/StateHelpers';
-import settingsActionCreators from '../state/settings/settingsActionCreators';
 import GameClient from '../client/game/GameClient';
 import userActionCreators from '../state/user/userActionCreators';
 import commonActionCreators from '../state/common/commonActionCreators';
@@ -40,6 +39,7 @@ import ServerSex from '../client/contracts/ServerSex';
 import WellKnownSIContentServiceErrorCode from 'sicontent-client/dist/models/WellKnownSIContentServiceErrorCode';
 import { getJoinErrorMessage } from '../utils/GameErrorsHelper';
 import { selectGame } from '../state/new/online2Slice';
+import { setAvatarKey } from '../state/new/settingsSlice';
 
 interface ConnectResult {
 	success: boolean;
@@ -48,7 +48,7 @@ interface ConnectResult {
 }
 
 const onAvatarSelectedLocal: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
-	(avatar: File) => async (dispatch: Dispatch<Action>) => {
+	(avatar: File, appDispatch: AppDispatch) => async (dispatch: Dispatch<Action>) => {
 		try {
 			const buffer = await avatar.arrayBuffer();
 			const base64 = window.btoa(new Uint8Array(buffer).reduce((data, byte) => data + String.fromCharCode(byte), ''));
@@ -58,18 +58,10 @@ const onAvatarSelectedLocal: ActionCreator<ThunkAction<void, State, DataContext,
 			localStorage.setItem(Constants.AVATAR_KEY, base64);
 			localStorage.setItem(Constants.AVATAR_NAME_KEY, avatar.name);
 
-			dispatch(settingsActionCreators.onAvatarKeyChanged(key) as any);
+			appDispatch(setAvatarKey(key));
 		} catch (error) {
 			dispatch(commonActionCreators.onUserError(getErrorMessage(error)) as any);
 		}
-	};
-
-const onAvatarDeleted: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
-	() => async (dispatch: Dispatch<AnyAction>) => {
-		localStorage.removeItem(Constants.AVATAR_KEY);
-		localStorage.removeItem(Constants.AVATAR_NAME_KEY);
-
-		dispatch(settingsActionCreators.onAvatarKeyChanged('') as any);
 	};
 
 async function uploadAvatarAsync(dispatch: Dispatch<Action>, dataContext: DataContext) {
@@ -497,7 +489,6 @@ const actionCreators = {
 	reloadComputerAccounts,
 	saveStateToStorage,
 	onAvatarSelectedLocal,
-	onAvatarDeleted,
 	sendAvatar,
 	login,
 	connectToSIHostAsync,

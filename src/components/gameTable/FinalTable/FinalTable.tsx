@@ -6,6 +6,8 @@ import roomActionCreators from '../../../state/room/roomActionCreators';
 import { AppDispatch, RootState } from '../../../state/new/store';
 import { useAppDispatch, useAppSelector } from '../../../state/new/hooks';
 
+import './FinalTable.scss';
+
 interface FinalTableProps {
 	onSelectTheme: (themeIndex: number, appDispatch: AppDispatch) => void;
 }

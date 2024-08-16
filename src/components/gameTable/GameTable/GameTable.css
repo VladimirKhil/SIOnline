@@ -98,17 +98,6 @@
         justify-content: center;
     }
 
-    #table .tableGameThemes {
-        width: 100%;
-        text-align: center;
-        color: #FFFFFF;
-        text-shadow: 1px 1px 0 #000;
-        font-size: 36px;
-        position: absolute;
-        top: 100%;
-        transition: top linear 10s;
-    }
-
 @keyframes blink {
     from {
         background: transparent;
@@ -130,43 +119,6 @@
     height: 100%;
     display: flex;
     flex-direction: column;
-}
-
-#table .finalTable {
-    margin: 20px;
-    display: flex;
-    flex-direction: column;
-    height: calc(100% - 40px);
-    width: 100%;
-    color: #FFFFFF;
-    text-shadow: 1px 1px 0 #000;
-    font-family: SI;
-}
-
-#table .finalTableCell {
-    margin: 4px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 7px;
-    flex: 1 0 0;
-    overflow: hidden;
-}
-
-    #table .finalTableCell.blink {
-        animation: blink;
-        animation-duration: 1s;
-        animation-fill-mode: forwards;
-        color: darkblue;
-    }
-
-    #table .finalTable .finalTableCell.active {
-        background-color: rgba(0,0,0,0.3);
-    }
-
-#table .finalTable.selectable .finalTableCell.active:hover {
-    background: rgb(189, 189, 166);
-    cursor: pointer;
 }
 
 .commonProgress {

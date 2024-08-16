@@ -1,29 +1,22 @@
 import * as React from 'react';
-import { connect } from 'react-redux';
-import { Dispatch, Action } from 'redux';
 import Sex from '../model/enums/Sex';
 import localization from '../model/resources/localization';
-import settingsActionCreators from '../state/settings/settingsActionCreators';
-import State from '../state/State';
 import Selector from './common/Selector';
+import { useAppDispatch, useAppSelector } from '../state/new/hooks';
+import { setSex } from '../state/new/settingsSlice';
 
 interface SexViewProps {
-	sex: Sex;
 	disabled: boolean | undefined;
-	onSexChanged: (newSex: Sex) => void;
 }
 
-const mapStateToProps = (state: State) => ({
-	sex: state.settings.sex,
-});
+export default function SexView(props: SexViewProps): JSX.Element {
+	const sex = useAppSelector(state => state.settings.sex);
+	const appDispatch = useAppDispatch();
 
-const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
-	onSexChanged: (newSex: Sex) => {
-		dispatch(settingsActionCreators.onSexChanged(newSex));
-	},
-});
+	function onSexChanged(newSex: Sex): void {
+		appDispatch(setSex(newSex));
+	}
 
-export function SexView(props: SexViewProps): JSX.Element {
 	return (
 		<Selector
 			className='sexArea'
@@ -36,11 +29,9 @@ export function SexView(props: SexViewProps): JSX.Element {
 				name: '👩',
 				tooltip: localization.female
 			}]}
-			value={props.sex}
+			value={sex}
 			disabled={props.disabled}
-			onValueChanged={props.onSexChanged}
+			onValueChanged={onSexChanged}
 		/>
 	);
 }
-
-export default connect(mapStateToProps, mapDispatchToProps)(SexView);

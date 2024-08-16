@@ -1,5 +1,5 @@
 ﻿import RoomState, { initialState as roomInitialState } from './room/RoomState';
-import SettingsState, { initialState as settingsInitialState } from './settings/SettingsState';
+import * as settings from './new/settingsSlice';
 import * as table from './new/tableSlice';
 import UserState, { initialState as userInitialState } from './user/UserState';
 import * as login from './new/loginSlice';
@@ -23,7 +23,7 @@ export default interface State {
 	table: table.TableState;
 	common: CommonState;
 	siPackages: SIPackagesState;
-	settings: SettingsState;
+	settings: settings.SettingsState;
 }
 
 export const initialState: State = {
@@ -38,5 +38,5 @@ export const initialState: State = {
 	room2: room2.room2Slice.getInitialState(),
 	table: table.tableSlice.getInitialState(),
 	common: commonInitialState,
-	settings: settingsInitialState
+	settings: settings.settingsSlice.getInitialState(),
 };

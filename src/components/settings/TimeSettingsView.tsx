@@ -1,105 +1,106 @@
 import * as React from 'react';
-import { Dispatch, Action } from 'redux';
-import { connect } from 'react-redux';
-import State from '../../state/State';
 import localization from '../../model/resources/localization';
 import TimeSettingItem from './TimeSettingItem';
-import settingsActionCreators from '../../state/settings/settingsActionCreators';
 import TimeSettings from '../../model/TimeSettings';
+import { useAppDispatch, useAppSelector } from '../../state/new/hooks';
+import { setTimeSetting } from '../../state/new/settingsSlice';
 
 import './TimeSettingsView.css';
 
-interface TimeSettingsViewProps {
-	settings: TimeSettings;
-	onTimeSettingChanged: (name: keyof(TimeSettings), value: number) => void;
-}
+export default function TimeSettingsView(): JSX.Element {
+	const settings = useAppSelector(state => state.settings.appSettings.timeSettings);
+	const appDispatch = useAppDispatch();
 
-const mapStateToProps = (state: State) => ({
-	settings: state.settings.appSettings.timeSettings
-});
+	function onTimeSettingChanged(name: keyof TimeSettings, value: number): void {
+		appDispatch(setTimeSetting({ name, value }));
+	}
 
-const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
-	onTimeSettingChanged: (name: keyof(TimeSettings), value: number) => dispatch(settingsActionCreators.onTimeSettingChanged(name, value))
-});
-
-export function TimeSettingsView(props: TimeSettingsViewProps): JSX.Element {
 	return (
 		<div className="timeSettingsView">
 			<TimeSettingItem
 				label={localization.timeForChoosingQuestion}
-				value={props.settings.timeForChoosingQuestion}
+				value={settings.timeForChoosingQuestion}
 				maximum={120}
-				onValueChanged={value => props.onTimeSettingChanged('timeForChoosingQuestion', value)} />
+				onValueChanged={value => onTimeSettingChanged('timeForChoosingQuestion', value)} />
+
 			<TimeSettingItem
 				label={localization.timeForThinkingOnQuestion}
-				value={props.settings.timeForThinkingOnQuestion}
+				value={settings.timeForThinkingOnQuestion}
 				maximum={120}
-				onValueChanged={value => props.onTimeSettingChanged('timeForThinkingOnQuestion', value)} />
+				onValueChanged={value => onTimeSettingChanged('timeForThinkingOnQuestion', value)} />
+
 			<TimeSettingItem
 				label={localization.timeForPrintingAnswer}
-				value={props.settings.timeForPrintingAnswer}
+				value={settings.timeForPrintingAnswer}
 				maximum={120}
-				onValueChanged={value => props.onTimeSettingChanged('timeForPrintingAnswer', value)} />
+				onValueChanged={value => onTimeSettingChanged('timeForPrintingAnswer', value)} />
+
 			<TimeSettingItem
 				label={localization.timeForGivingACat}
-				value={props.settings.timeForGivingACat}
+				value={settings.timeForGivingACat}
 				maximum={120}
-				onValueChanged={value => props.onTimeSettingChanged('timeForGivingACat', value)} />
+				onValueChanged={value => onTimeSettingChanged('timeForGivingACat', value)} />
+
 			<TimeSettingItem
 				label={localization.timeForMakingStake}
-				value={props.settings.timeForMakingStake}
+				value={settings.timeForMakingStake}
 				maximum={120}
-				onValueChanged={value => props.onTimeSettingChanged('timeForMakingStake', value)} />
+				onValueChanged={value => onTimeSettingChanged('timeForMakingStake', value)} />
+
 			<TimeSettingItem
 				label={localization.timeForThinkingOnSpecial}
-				value={props.settings.timeForThinkingOnSpecial}
+				value={settings.timeForThinkingOnSpecial}
 				maximum={120}
-				onValueChanged={value => props.onTimeSettingChanged('timeForThinkingOnSpecial', value)} />
+				onValueChanged={value => onTimeSettingChanged('timeForThinkingOnSpecial', value)} />
+
 			<TimeSettingItem
 				label={localization.timeForRightAnswer}
-				value={props.settings.timeForRightAnswer}
+				value={settings.timeForRightAnswer}
 				maximum={10}
-				onValueChanged={value => props.onTimeSettingChanged('timeForRightAnswer', value)} />
+				onValueChanged={value => onTimeSettingChanged('timeForRightAnswer', value)} />
+
 			<TimeSettingItem
 				label={localization.timeOfRound}
-				value={props.settings.timeOfRound}
+				value={settings.timeOfRound}
 				maximum={10800}
-				onValueChanged={value => props.onTimeSettingChanged('timeOfRound', value)} />
+				onValueChanged={value => onTimeSettingChanged('timeOfRound', value)} />
+
 			<TimeSettingItem
 				label={localization.timeForChoosingFinalTheme}
-				value={props.settings.timeForChoosingFinalTheme}
+				value={settings.timeForChoosingFinalTheme}
 				maximum={120}
-				onValueChanged={value => props.onTimeSettingChanged('timeForChoosingFinalTheme', value)} />
+				onValueChanged={value => onTimeSettingChanged('timeForChoosingFinalTheme', value)} />
+
 			<TimeSettingItem
 				label={localization.timeForFinalThinking}
-				value={props.settings.timeForFinalThinking}
+				value={settings.timeForFinalThinking}
 				maximum={120}
-				onValueChanged={value => props.onTimeSettingChanged('timeForFinalThinking', value)} />
+				onValueChanged={value => onTimeSettingChanged('timeForFinalThinking', value)} />
+
 			<TimeSettingItem
 				label={localization.timeForShowmanDecisions}
-				value={props.settings.timeForShowmanDecisions}
+				value={settings.timeForShowmanDecisions}
 				maximum={300}
-				onValueChanged={value => props.onTimeSettingChanged('timeForShowmanDecisions', value)} />
+				onValueChanged={value => onTimeSettingChanged('timeForShowmanDecisions', value)} />
+
 			<TimeSettingItem
 				label={localization.timeForMediaDelay}
-				value={props.settings.timeForMediaDelay}
+				value={settings.timeForMediaDelay}
 				maximum={10}
-				onValueChanged={value => props.onTimeSettingChanged('timeForMediaDelay', value)} />
+				onValueChanged={value => onTimeSettingChanged('timeForMediaDelay', value)} />
 
 			<TimeSettingItem
 				label={localization.timeForBlockingButton}
-				value={props.settings.timeForBlockingButton}
+				value={settings.timeForBlockingButton}
 				maximum={10}
-				onValueChanged={value => props.onTimeSettingChanged('timeForBlockingButton', value)} />
+				onValueChanged={value => onTimeSettingChanged('timeForBlockingButton', value)} />
 
 			<TimeSettingItem
 				label={localization.partialImageTime}
-				value={props.settings.partialImageTime}
+				value={settings.partialImageTime}
 				maximum={20}
-				onValueChanged={value => props.onTimeSettingChanged('partialImageTime', value)} />
+				onValueChanged={value => onTimeSettingChanged('partialImageTime', value)} />
 		</div>
 	);
 }
-
-export default connect(mapStateToProps, mapDispatchToProps)(TimeSettingsView);
 
