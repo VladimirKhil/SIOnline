@@ -301,7 +301,7 @@ async function run(stateManager: IStateManager) {
 	ReactDOM.render(
 		<React.StrictMode>
 			<Provider store={store}>
-				<App ads={config.ads} />
+				<App />
 			</Provider>
 		</React.StrictMode>,
 		document.getElementById('reactHost')

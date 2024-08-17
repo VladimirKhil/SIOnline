@@ -1,3 +1,5 @@
+@use '../../../scss/variables.scss' as v;
+
 #logon {
     width: 100%;
     height: 100%;
@@ -74,6 +76,21 @@
     margin: 10px 0 0 0;
 }
 
+.main header {
+    display: flex;
+    flex-direction: row;
+    background-color: v.$header-background-color;
+    height: 45px;
+    overflow: hidden;
+}
+
+.main header .right {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+
     .main .header {
         font-size: 18px;
         text-align: left;
@@ -85,11 +102,11 @@
     }
 
     .main h1 {
-        font-size: 30pt;
-        margin-top: 10pt;
-        margin-bottom: 0;
-        color: #FFFFFF;
-        text-shadow: 1px 1px 0 #000;
+        font-size: 20px;
+        color: white;
+        height: 45px;
+        display: inline-block;
+        margin: 0 0 0 10px;
     }
 
     .main p {
@@ -97,21 +114,48 @@
         margin-bottom: 10px;
     }
 
+.loginBody {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    height: 100%;
+    overflow: hidden;
+}
+
+.loginBody .avatarArea {
+    height: 200px;
+    width: 200px;
+    margin-top: 10px;
+}
+
+.loginBody .emptyAvatar, .loginBody .avatarView {
+    height: 180px;
+    width: 180px;
+}
+
+.loginBody .sexArea {
+    margin-top: 20px;
+}
+
 .login_name {
     display: block;
     font-size: 20px;
-    height: 33px;
-    margin: 2px 0 0 0;
+    margin-top: 40px;
     width: 100%;
     max-width: 100;
     border: 0;
-    padding: 3px 5px;
+    padding: 6px 5px;
 }
 
-.siAdHost {
-    flex: 1 0 0;
-    margin: 10px 10px 75px 10px;
-    overflow: hidden;
+.standard.enter {
+    height: 45px;
+    padding: 5px 40px;
+    width: 100%;
+    margin-top: 15px;
+    border-radius: 4px;
+    font-size: 20px;
 }
 
 .clientLink {
@@ -119,13 +163,8 @@
     margin-bottom: 5px;
 }
 
-#logonerror {
-    width: 100%;
-    color: darkred;
-}
-
-#logonButtons {
-    flex: 0 0 45px;
+.howToPlay {
+    width: 45px;
 }
 
 @media screen and (max-height: 400px) {
@@ -137,10 +176,10 @@
 @media screen and (min-width: 470px) and (min-height: 600px) {
     .main {
         width: 470px;
-        height: 560px;
-        padding: 10px 0 0 0;
+        height: 500px;
         border: 1px solid #111111;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        border-radius: 4px;
     }
 
     #logonButtons {
@@ -149,11 +188,7 @@
         display: flex;
     }
 
-    #howToPlay, #enter {
+    #howToPlay, .enter {
         width: auto;
-    }
-
-    .siAdHost {
-        margin: 10px;
     }
 }

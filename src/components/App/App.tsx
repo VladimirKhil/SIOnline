@@ -21,7 +21,6 @@ import UserError from '../panels/UserError/UserError';
 import './App.css';
 
 interface AppProps {
-	ads?: string;
 	areSettingsVisible: boolean;
 	commonError: string | null;
 	userError: string | null;
@@ -76,7 +75,7 @@ export class App extends React.Component<AppProps, AppState> {
 				return <MainMenu />;
 
 			case Path.Login:
-				return <Login ads={this.props.ads} />;
+				return <Login />;
 
 			case Path.About:
 				return <About />;

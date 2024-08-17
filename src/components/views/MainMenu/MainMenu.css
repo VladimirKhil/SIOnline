@@ -19,10 +19,10 @@
 	background-repeat: no-repeat;
 	background-position: center;
     margin-top: 10px;
-	flex: 200px 0 0;
+	flex: 100px 0 0;
 }
 
-.welcomeView header {
+.welcomeView > header {
 	color: white;
 	text-align: center;
 	background-color: #04071B;
@@ -31,7 +31,7 @@
 	overflow: hidden;
 }
 
-.welcomeView header h1 {
+.welcomeView > header h1 {
 	font-size: 16px;
 	margin: 0;
 	display: flex;
@@ -47,6 +47,9 @@
 .welcomeView header h1 .right {
 	text-align: right;
 	flex: 1 0 0;
+	display: flex;
+	justify-content: flex-end;
+	align-items: center;
 }
 
 .welcomeView .mainArea {
@@ -70,16 +73,16 @@
 
 .welcomeView .user {
 	margin-left: 10px;
-	margin-right: 5px;
+	margin-right: 10px;
 	display: inline-block;
 	height: 45px;
 	line-height: 45px;
 }
 
 .welcomeView .userAvatar {
-	margin-top: 2px;
-	max-width: 41px;
-	height: 41px;
+	margin-top: 3px;
+	max-width: 36px;
+	height: 33px;
     background-size: contain;
 	vertical-align: middle;
 }
@@ -125,6 +128,7 @@
 	display: flex;
 	flex-direction: column;
 	overflow-x: hidden;
+	margin-top: 20px;
 }
 
 .welcomeViewActions button {
@@ -144,8 +148,6 @@
 }
 
 button.standard.welcomeRow {
-	background-color: #04071B;
-	border-radius: 4px;
 	animation: welcomeRows;
 	animation-duration: .5s;
 	animation-fill-mode: forwards;
@@ -159,12 +161,13 @@ button.standard.welcomeRow {
 	transform: translate(100%);
 }
 
-.welcomeExit {
+button.standard.welcomeExit {
 	display: inline-flex !important;
 	vertical-align: middle;
 	height: 42px;
 	margin-left: 2px;
 	margin-top: -3px;
+	background: transparent;
 }
 
 .welcomeExit img {
@@ -206,6 +209,10 @@ button.standard.welcomeRow {
 
 	.welcomeViewActions button {
 		padding: 10px 40px;
+	}
+
+	.welcomeView .logo {
+		flex: 200px 0 0;
 	}
 }
 

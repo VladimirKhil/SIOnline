@@ -13,6 +13,7 @@ import uiActionCreators from '../../../state/ui/uiActionCreators';
 import actionCreators from '../../../logic/actionCreators';
 import { AppDispatch } from '../../../state/new/store';
 import { useAppDispatch } from '../../../state/new/hooks';
+import Ads from '../../panels/Ads/Ads';
 
 import './MainMenu.css';
 import exitImg from '../../../../assets/images/exit.png';
@@ -139,6 +140,8 @@ export function MainMenu(props: MainMenuProps): JSX.Element {
 						{localization.joinLobby}
 					</button>
 				</div>
+
+				<Ads />
 			</div>
 
 			{showLicense ? (

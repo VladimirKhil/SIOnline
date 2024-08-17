@@ -16,6 +16,7 @@
 .sidecontrol_buttons button.standard {
     padding: 0;
     height: 45px;
+    border-radius: 0;
 }
 
 #gameMenuButton, .gameMenuButton {

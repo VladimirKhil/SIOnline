@@ -15,11 +15,10 @@ import uiActionCreators from '../../../state/ui/uiActionCreators';
 import { useAppDispatch, useAppSelector } from '../../../state/new/hooks';
 import { AppDispatch, RootState } from '../../../state/new/store';
 
-import './Login.css';
+import './Login.scss';
 
 interface LoginProps {
 	login: string;
-	ads?: string;
 	culture: string;
 
 	selectedGameId: number;
@@ -81,61 +80,52 @@ export function Login(props: LoginProps) {
 	return (
 		<div id="logon">
 			<div className="main">
-				{state.inProgress ? <ProgressBar isIndeterminate /> : null}
-				<div className='logo' />
-
-				<div className="logonHost">
-					<div className='loginUser'>
-						<AvatarView disabled={state.inProgress} />
-
-						<div className='userArea'>
-							<input
-								className='login_name'
-								name="name"
-								type='text'
-								placeholder={localization.yourName}
-								title={localization.yourName}
-								autoFocus
-								value={props.login}
-								autoComplete='on'
-								maxLength={30}
-								disabled={state.inProgress}
-								onChange={onLoginChanged}
-								onKeyPress={onLoginKeyPress}
-							/>
-
-							<div className='loginOptions'>
-								<LanguageView disabled={state.inProgress} />
-								<SexView disabled={state.inProgress} />
-							</div>
-						</div>
+				<header>
+					<div className='left'>
+						<h1>{localization.appName}</h1>
 					</div>
 
-					<div className="siAdHost" dangerouslySetInnerHTML={{ __html: props.ads ? props.ads : '' }} />
-
-					{state.errorMessage ? <p id="logonerror">{state.errorMessage}</p> : null}
-
-					<div id="logonButtons">
+					<div className='right'>
 						<button
-							id="howToPlay"
-							className='standard'
+							className='howToPlay'
 							type="button"
+							title={localization.aboutTitle}
 							disabled={state.inProgress}
-							onClick={navigateToAbout}
-						>
-							{localization.aboutTitle}
+							onClick={navigateToAbout}>
+							ⓘ
 						</button>
 
-						<button
-							id="enter"
-							className='standard'
-							type="button"
-							disabled={state.inProgress || props.login.length === 0}
-							onClick={login}
-						>
-							{localization.enter}
-						</button>
+						<LanguageView disabled={state.inProgress} />
 					</div>
+				</header>
+
+				<div className='loginBody'>
+					{state.inProgress ? <ProgressBar isIndeterminate /> : null}
+					<AvatarView disabled={state.inProgress} />
+					<SexView disabled={state.inProgress} />
+
+					<input
+						className='login_name'
+						name="name"
+						type='text'
+						placeholder={localization.yourName}
+						title={localization.yourName}
+						autoFocus
+						value={props.login}
+						autoComplete='on'
+						maxLength={30}
+						disabled={state.inProgress}
+						onChange={onLoginChanged}
+						onKeyPress={onLoginKeyPress}
+					/>
+
+					<button
+						className='standard enter'
+						type="button"
+						disabled={state.inProgress || props.login.length === 0}
+						onClick={login}>
+						{localization.enter}
+					</button>
 				</div>
 			</div>
 		</div>

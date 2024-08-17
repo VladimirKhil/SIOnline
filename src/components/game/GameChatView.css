@@ -3,9 +3,10 @@
 	background-color: rgba(0, 0, 0, 0.1);
 }
 
-.sideButtonHost button {
+.sideButtonHost button.standard {
 	flex: 1;
 	font-size: 22px;
+	border-radius: 0;
 }
 
 .sideButtonHost button.active {

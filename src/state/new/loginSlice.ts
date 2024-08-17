@@ -1,13 +1,11 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 
 export interface LoginState {
 	inProgress: boolean;
-	errorMessage: string | null;
 }
 
 const initialState: LoginState = {
 	inProgress: false,
-	errorMessage: null,
 };
 
 export const loginSlice = createSlice({
@@ -16,18 +14,16 @@ export const loginSlice = createSlice({
 	reducers: {
 		startLogin: (state: LoginState) => {
 			state.inProgress = true;
-			state.errorMessage = '';
 		},
-		endLogin: (state: LoginState, action: PayloadAction<string | null>) => {
+		endLogin: (state: LoginState) => {
 			state.inProgress = false;
-			state.errorMessage = action.payload;
 		}
 	}
 });
 
 export const {
 	startLogin,
-	endLogin
+	endLogin,
 } = loginSlice.actions;
 
 export default loginSlice.reducer;

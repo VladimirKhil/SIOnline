@@ -1,7 +1,7 @@
 config = {
     serverDiscoveryUri: 'https://vladimirkhil.com/api/si/servers',
     rootUri: '/',
-    ads: '<b>Test ad</b>',
+    ads: '<b></b>',
     rewriteUrl: true,
     forceHttps: false,
     registerServiceWorker: false,

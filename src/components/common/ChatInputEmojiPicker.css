@@ -12,6 +12,10 @@
     width: 10%;
 }
 
+button.standard.chatEmojiPickerButton{
+    border-radius: 0;
+}
+
 aside.EmojiPickerReact.epr-main {
     border-radius: inherit !important;
     position: absolute;

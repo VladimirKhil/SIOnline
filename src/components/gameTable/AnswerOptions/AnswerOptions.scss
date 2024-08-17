@@ -28,7 +28,6 @@
 }
 
 .answerOptions.selectable .answerOption.normal:hover {
-    background: initial;
     background: rgb(189, 189, 166);
 }
 
@@ -41,27 +40,23 @@
 }
 
 .answerOption.active {
-    background: initial;
-	background-color: lightyellow;
+	background: #FB771D;
 }
 
 .answerOption.right {
-    background: initial;
-	background-color: green;
+	background: #27CB5C;
 }
 
 .answerOption.wrong {
-    background: initial;
-	background-color: darkred;
+    background: #D2352B;
 }
 
 .answerOption.active:hover {
-    background: initial;
-	background-color: rgba(0,0,0,0.2);
+	background: rgba(0,0,0,0.2);
 }
 
 .optionLabel {
-	color: cyan;
+	color: white;
 	margin-left: 1px;
 	margin-right: 10px;
 	flex: 0 0 30px;

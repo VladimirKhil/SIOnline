@@ -4,6 +4,7 @@
     border: 2px solid transparent;
 	display: flex;
 	justify-content: center;
+    align-items: center;
 	background-color: rgba(0, 0, 0, 0.1);
     width: 124px;
     height: 124px;

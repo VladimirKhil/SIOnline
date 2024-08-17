@@ -219,12 +219,6 @@ ul {
     flex: 1 0 0;
 }
 
-#howToPlay, #enter {
-    height: 45px;
-    padding: 5px 40px;
-    width: 100%;
-}
-
 .sexLogin {
     text-align: left;
     margin-top: -5px;
@@ -260,7 +254,11 @@ button {
 }
 
 button.standard, .sidePanel {
-    background-color: #2c7be1;
+    background: linear-gradient(180deg, #255ADC 14.29%, #0A3FA4 100%);
+}
+
+button.standard {
+	border-radius: 4px;
 }
 
 button.standard.imageButton {
@@ -271,7 +269,7 @@ button.standard.imageButton {
 }
 
 button.standard.imageButton.active {
-	background-color: #CEE0FF;
+    background: linear-gradient(180deg, #CEE0FF 14.29%, rgb(39, 108, 237) 100%);
 }
 
 button.standard.imageButton img {
@@ -283,18 +281,18 @@ button.standard.imageButton:disabled img {
 }
 
 button:hover, button.standard:hover {
-    background-color: #98B9FF;
+    background: linear-gradient(180deg, #2860ef 14.29%, rgb(39, 108, 237) 100%);
 }
 
 button:active, button.standard:active {
-    background-color: #FFFFFF;
+    background: #FFFFFF;
     transition: initial;
 }
 
 button:disabled, button.standard:disabled {
     color: darkgray;
     border-color: darkgray;
-    background-color: transparent;
+    background: transparent;
     cursor: initial;
 }
 

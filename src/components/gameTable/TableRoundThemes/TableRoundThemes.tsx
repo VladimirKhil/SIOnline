@@ -5,17 +5,13 @@ import { connect } from 'react-redux';
 import AutoSizedText from '../../common/AutoSizedText';
 import commonActionCreators from '../../../state/common/commonActionCreators';
 import { showRoundTable } from '../../../state/new/tableSlice';
+import { useAppDispatch } from '../../../state/new/hooks';
 
 import './TableRoundThemes.css';
 
 interface TableRoundThemesProps {
 	roundThemes: string[];
 	stopAudio: () => void;
-	showRoundTable: () => void;
-}
-
-interface TableRoundThemesState {
-	themeIndex: number;
 }
 
 const mapStateToProps = (state: State) => ({
@@ -26,83 +22,73 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	stopAudio: () => {
 		dispatch(commonActionCreators.stopAudio());
 	},
-	showRoundTable,
 });
 
-export class TableRoundThemes extends React.Component<TableRoundThemesProps, TableRoundThemesState> {
-	private textRef: React.RefObject<HTMLDivElement>;
-	private timerRef: number | null = null;
-	private fadeTimerRef: number | null = null;
+const TableRoundThemes: React.FC<TableRoundThemesProps> = ({ roundThemes, stopAudio }) => {
+    const [themeIndex, setThemeIndex] = React.useState(0);
+	let timerThemeIndex = 0;
+    const textRef = React.useRef<HTMLDivElement>(null);
+    let timerRef: number | null = null;
+    let fadeTimerRef: number | null = null;
 
-	constructor(props: TableRoundThemesProps) {
-		super(props);
+	const appDispatch = useAppDispatch();
 
-		this.state = {
-			themeIndex: -1
-		};
+	const setNextTheme = () => {
+		if (timerThemeIndex === roundThemes.length) {
+			if (timerRef) {
+				window.clearInterval(timerRef);
+			}
 
-		this.textRef = React.createRef();
-	}
-
-	componentDidMount() {
-		const text = this.textRef.current;
-		if (!text) {
+			stopAudio();
+			appDispatch(showRoundTable());
 			return;
 		}
 
-		const setNextTheme = () => {
-			if (this.state.themeIndex === this.props.roundThemes.length - 1) {
-				if (this.timerRef) {
-					window.clearInterval(this.timerRef);
-				}
+		setThemeIndex(timerThemeIndex);
+		timerThemeIndex = timerThemeIndex + 1;
 
-				this.props.stopAudio();
-				this.props.showRoundTable();
-				return;
-			}
+		const text = textRef.current;
 
-			this.setState((previousState: TableRoundThemesState) => ({
-				themeIndex: previousState.themeIndex + 1
-			}));
+		if (!text) {
+            return;
+        }
 
-			text.style.transform = 'scale(1)';
+		text.style.transform = 'scale(1)';
 
-			this.fadeTimerRef = window.setTimeout(
-				() => {
-					text.style.transform = 'scale(0)';
-				},
-				1700
-			);
-		};
-
-		setNextTheme();
-		this.timerRef = window.setInterval(setNextTheme, 1900);
-	}
-
-	componentWillUnmount() {
-		if (this.timerRef) {
-			window.clearTimeout(this.timerRef);
-			this.timerRef = null;
-		}
-
-		if (this.fadeTimerRef) {
-			window.clearTimeout(this.fadeTimerRef);
-			this.fadeTimerRef = null;
-		}
-	}
-
-	render() {
-		const text = this.state.themeIndex < this.props.roundThemes.length ?
-			this.props.roundThemes[this.state.themeIndex] : '';
-
-		return (
-			<div className="tableBorderCentered scaleText" ref={this.textRef}>
-				<AutoSizedText id="tableText" className="tableText tableTextCenter margined" maxFontSize={288}>
-					{text}
-				</AutoSizedText>
-			</div>
+		fadeTimerRef = window.setTimeout(
+			() => {
+				text.style.transform = 'scale(0)';
+			},
+			1700
 		);
-	}
-}
+	};
+
+    React.useEffect(() => {
+        setNextTheme();
+        timerRef = window.setInterval(setNextTheme, 1900);
+
+        return () => {
+            if (timerRef) {
+                window.clearTimeout(timerRef);
+                timerRef = null;
+            }
+
+            if (fadeTimerRef) {
+                window.clearTimeout(fadeTimerRef);
+                fadeTimerRef = null;
+            }
+        };
+    }, []);
+
+    const text = themeIndex < roundThemes.length ? roundThemes[themeIndex] : '';
+
+    return (
+        <div className="tableBorderCentered scaleText" ref={textRef}>
+            <AutoSizedText id="tableText" className="tableText tableTextCenter margined" maxFontSize={288}>
+                {text}
+            </AutoSizedText>
+        </div>
+    );
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(TableRoundThemes);

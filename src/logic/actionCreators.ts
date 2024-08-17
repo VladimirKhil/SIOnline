@@ -147,6 +147,9 @@ function getLoginErrorByCode(response: Response): string {
 		case 403:
 			return localization.forbiddenNickname;
 
+		case 405:
+			return localization.methodNotAllowed;
+
 		case 409:
 			return localization.duplicateUserName;
 
@@ -457,7 +460,8 @@ const login: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 
 			if (!response.ok){
 				const errorText = getLoginErrorByCode(response);
-				appDispatch(endLogin(errorText));
+				appDispatch(endLogin());
+				dispatch(commonActionCreators.onUserError(errorText) as any);
 				return;
 			}
 
@@ -466,15 +470,17 @@ const login: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 
 			if (connectResult.success) {
 				dispatch(userActionCreators.onLoginChanged(state.user.login.trim())); // Normalize login
-				appDispatch(endLogin(null));
+				appDispatch(endLogin());
 				await checkLicenseAsync(state.ui.navigation.callbackState ?? { path: Path.Root }, dispatch, appDispatch, getState, dataContext);
 			} else if (connectResult.authenticationRequired) {
-				appDispatch(endLogin(connectResult.error ?? localization.errorHappened));
+				appDispatch(endLogin());
+				dispatch(commonActionCreators.onUserError(connectResult.error ?? localization.errorHappened) as any);
 			} else {
 				dispatch(commonActionCreators.commonErrorChanged(connectResult.error));
 			}
 		} catch (err) {
-			appDispatch(endLogin(`${localization.cannotConnectToServer}: ${getErrorMessage(err)}`));
+			appDispatch(endLogin());
+			dispatch(commonActionCreators.onUserError(`${localization.cannotConnectToServer}: ${getErrorMessage(err)}`) as any);
 		}
 	};
 

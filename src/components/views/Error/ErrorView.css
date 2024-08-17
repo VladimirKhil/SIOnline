@@ -48,9 +48,10 @@
 
 .errorView .buttons button {
 	flex: 1;
-	font-size: 18px;
+	font-size: 15px;
 	width: 100%;
 	padding: 15px;
+	border-radius: 0;
 }
 
 @media screen and (min-width: 800px) {
@@ -60,7 +61,8 @@
 
 	.errorView .buttons button {
 		width: 300px;
-		height: 40px;
+		height: 45px;
+		font-size: 16px;
 		padding: initial;
 	}
 

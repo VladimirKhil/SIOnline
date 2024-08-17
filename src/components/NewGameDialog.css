@@ -43,6 +43,7 @@
     height: 45px;
     flex: 1;
     margin-top: 5px;
+    border-radius: 0;
 }
 
 .newGameHeader {

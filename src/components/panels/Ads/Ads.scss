@@ -1,0 +1,11 @@
+.siAdHost {
+    flex: 0 0 50px;
+    margin: 30px;
+    overflow: hidden;
+}
+
+@media screen and (min-height: 800px) {
+	.siAdHost {
+    	flex: 0 0 150px;
+	}
+}
