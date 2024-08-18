@@ -403,7 +403,15 @@ const checkLicenseAsync = async (
 	getState: () => State,
 	dataContext: DataContext) => {
 	const licenseAccepted = dataContext.state.isLicenseAccepted();
-	await navigateAsync(licenseAccepted ? view : { path: Path.AcceptLicense, callbackState: view }, dispatch, appDispatch, getState, dataContext);
+	const defaultView = view.path === Path.About ? { path: Path.Menu } : view;
+
+	await navigateAsync(
+		licenseAccepted ? defaultView : { path: Path.AcceptLicense, callbackState: view },
+		dispatch,
+		appDispatch,
+		getState,
+		dataContext
+	);
 };
 
 const init: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
@@ -437,7 +445,10 @@ const init: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 		if (connectResult.success) {
 			await checkLicenseAsync(initialView, dispatch, appDispatch, getState, dataContext);
 		} else if (connectResult.authenticationRequired) {
-			dispatch(uiActionCreators.navigate({ path: Path.Login, callbackState: initialView }) as unknown as Action);
+			dispatch(uiActionCreators.navigate({
+				path: Path.Login,
+				callbackState: initialView.path === Path.About ? { path: Path.Menu } : initialView
+			}) as unknown as Action);
 		} else {
 			dispatch(commonActionCreators.commonErrorChanged(connectResult.error));
 		}

@@ -7,6 +7,7 @@ const SDK_PATH = 'https://yandex.ru/games/sdk/v2';
 declare const YaGames: any;
 
 export default class YAStateManager implements IStateManager {
+	private ysdk: any;
 	private player: any;
 
 	private playerData: any;
@@ -23,12 +24,13 @@ export default class YAStateManager implements IStateManager {
 
 		await scriptPromise;
 
-		const ysdk = await YaGames.init();
-		const player = await ysdk.getPlayer();
+		this.ysdk = await YaGames.init();
+		this.player = await this.ysdk.getPlayer();
 
-		this.player = player;
 		this.playerData = await this.player.getData();
-		store.dispatch(userActionCreators.onLoginChanged(player.getName()) as any);
+		store.dispatch(userActionCreators.onLoginChanged(this.player.getName()) as any);
+
+		this.ysdk.features.LoadingAPI?.ready();
 
 		console.log('Loaded from Yandex');
 	}

@@ -7,9 +7,10 @@ import actionCreators from '../logic/actionCreators';
 import State from '../state/State';
 import FlyoutButton from './common/FlyoutButton';
 import commonActionCreators from '../state/common/commonActionCreators';
-import { useAppDispatch } from '../state/new/hooks';
+import { useAppDispatch, useAppSelector } from '../state/new/hooks';
 import { setAvatarKey } from '../state/new/settingsSlice';
 import { AppDispatch } from '../state/new/store';
+import Sex from '../model/enums/Sex';
 
 import './AvatarView.css';
 
@@ -38,21 +39,22 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	}
 });
 
-function renderEmpty() {
-	return <div className='emptyAvatar' />;
+function renderEmpty(sex: Sex) {
+	return <div className={`emptyAvatar ${sex === Sex.Male ? 'avatarMale' : 'avatarFemale'}`} />;
 }
 
-function renderAvatar() {
+function renderAvatar(sex: Sex) {
 	const base64 = localStorage.getItem(Constants.AVATAR_KEY);
 
 	if (!base64) {
-		return renderEmpty();
+		return renderEmpty(sex);
 	}
 
 	return <img className='avatarView' alt='user avatar' src={`data:image/png;base64, ${base64}`} />;
 }
 
 export function AvatarView(props: AvatarViewProps): JSX.Element {
+	const sex = useAppSelector(state => state.settings.sex);
 	const appDispatch = useAppDispatch();
 	const inputRef = React.useRef<HTMLInputElement>(null);
 
@@ -105,10 +107,10 @@ export function AvatarView(props: AvatarViewProps): JSX.Element {
 							<li onClick={onAvatarDeleted}>{localization.deleteAvatar}</li>
 						</ul>
 					}>
-					{renderAvatar()}
+					{renderAvatar(sex)}
 				</FlyoutButton>) : (
 				<div className={`avatarArea ${props.disabled ? 'unselectable' : ''}`} title={localization.selectAvatar} onClick={onAreaClick}>
-					{renderEmpty()}
+					{renderEmpty(sex)}
 				</div>
 			)}
 

@@ -8,6 +8,7 @@ interface LinkProps {
 	target?: React.HTMLAttributeAnchorTarget;
 	rel?: string;
 	children?: any;
+	title?: string;
 }
 
 const mapStateToProps = (state: State) => ({
@@ -16,7 +17,7 @@ const mapStateToProps = (state: State) => ({
 
 export function Link(props: LinkProps): JSX.Element {
 	return props.clearUrls ? props.children : (
-		<a href={props.href} target={props.target} rel={props.rel}>
+		<a href={props.href} target={props.target} rel={props.rel} title={props.title}>
 			{props.children}
 		</a>
 	);

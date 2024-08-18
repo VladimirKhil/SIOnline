@@ -66,6 +66,8 @@ export function About(props: AboutProps): JSX.Element {
 						</li>
 
 						<li><Link href="https://github.com/richtr/NoSleep.js/blob/master/LICENSE">NoSleep.JS (MIT)</Link></li>
+						<li><Link href="https://www.flaticon.com/free-icons/girl" title="girl icons">Girl icons created by Famo - Flaticon</Link></li>
+						<li><Link href="https://www.flaticon.com/free-icons/man" title="man icons">Man icons created by Famo - Flaticon</Link></li>
 					</ul>
 				</section>
 			</div>
