@@ -225,7 +225,9 @@ button.standard.welcomeExit {
 		padding: 17px 50px;
 		font-size: 35px;
 	}
+}
 
+@media screen and (min-height: 800px) and (min-width: 1100px) {
 	.welcomeView .logo {
 		flex: 300px 0 0;
 	}

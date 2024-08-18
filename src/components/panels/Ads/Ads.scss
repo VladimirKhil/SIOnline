@@ -4,7 +4,7 @@
     overflow: hidden;
 }
 
-@media screen and (min-height: 800px) {
+@media screen and (min-height: 800px) and (min-width: 1100px) {
 	.siAdHost {
     	flex: 0 0 150px;
 	}
