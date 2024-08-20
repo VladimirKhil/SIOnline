@@ -9,6 +9,14 @@ interface AdsProps {
 	ads?: string;
 }
 
+declare const onLoad: () => void;
+
 export default function Ads(props: AdsProps) {
+	React.useEffect(() => {
+		if (onLoad) {
+			onLoad();
+		}
+	}, []);
+
 	return <div className="siAdHost" dangerouslySetInnerHTML={{ __html: config && config.ads ? config.ads : '' }} />;
 }

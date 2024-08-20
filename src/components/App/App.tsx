@@ -40,19 +40,11 @@ const mapStateToProps = (state: State) => ({
 	path: state.ui.navigation.path,
 });
 
-declare const onLoad: () => void;
-
 export class App extends React.Component<AppProps, AppState> {
 	constructor(props: AppProps) {
 		super(props);
 
 		this.state = { error: null };
-	}
-
-	componentDidMount(): void {
-		if (onLoad) {
-			onLoad();
-		}
 	}
 
 	componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {

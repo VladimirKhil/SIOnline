@@ -98,7 +98,7 @@ export function MainMenu(props: MainMenuProps): JSX.Element {
 						</button>
 					</span>
 
-					<span className='right'>
+					<span className='right' title={props.userName}>
 						{props.avatar ? <img className='userAvatar' src={props.avatar} alt='Avatar' /> : null}
 						<span className='user'>{props.userName}</span>
 					</span>

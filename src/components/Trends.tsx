@@ -7,6 +7,7 @@ import GamesStatistic from 'sistatistics-client/dist/models/GamesStatistic';
 import localization from '../model/resources/localization';
 import Link from './common/Link';
 import Constants from '../model/enums/Constants';
+import clearUrls from '../utils/clearUrls';
 
 import './Trends.css';
 
@@ -44,7 +45,10 @@ export function Trends(props: TrendsProps): JSX.Element {
 					<div className='trendCategory'>{localization.topPackages}</div>
 					{props.packagesStatistics.packages.filter(p => p.package.name !== Constants.RANDOM_PACKAGE).map(
 						(p, i) => <div key={i} className='trendPackage'>
-							<div><span className='packageName'>{p.package.name}</span> ({localization.ofGames}: {p.gameCount})</div>
+							<div><span className='packageName'>
+								{props.clearUrls ? clearUrls(p.package.name) : p.package.name}</span> ({localization.ofGames}: {p.gameCount})
+							</div>
+
 							<div>{localization.by} <span className='packageAuthors'>
 								{isValidLink(p.package.authorsContacts)
 									? <Link href={p.package.authorsContacts} target='_blank' rel='noopener noreferrer'>{p.package.authors}</Link>

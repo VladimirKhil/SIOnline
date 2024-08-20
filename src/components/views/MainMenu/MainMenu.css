@@ -77,6 +77,10 @@
 	display: inline-block;
 	height: 45px;
 	line-height: 45px;
+	max-width: 150px;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
 }
 
 .welcomeView .userAvatar {
@@ -138,7 +142,7 @@
 	align-items: center;
 	justify-content: center;
 	padding: 0 15px;
-	font-size: 30px;
+	font-size: 25px;
 }
 
 @keyframes welcomeRows {
