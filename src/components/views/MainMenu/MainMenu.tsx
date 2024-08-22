@@ -4,7 +4,7 @@ import localization from '../../../model/resources/localization';
 import State from '../../../state/State';
 import Dialog from '../../common/Dialog';
 import GameSound from '../../../model/enums/GameSound';
-import commonActionCreators from '../../../state/common/commonActionCreators';
+import { playAudio, stopAudio } from '../../../state/new/commonSlice';
 import onlineActionCreators from '../../../state/online/onlineActionCreators';
 import Path from '../../../model/enums/Path';
 import { Action } from 'redux';
@@ -28,10 +28,8 @@ interface MainMenuProps {
 	avatar: string | null;
 
 	anyonePlay: (appDispatch: AppDispatch) => void;
-	onSoundPlay: (sound: GameSound) => void;
-	onSoundPause: () => void;
 	navigate: (navigation: INavigationState) => void;
-	exit: () => void;
+	exit: (appDispatch: AppDispatch) => void;
 }
 
 const mapStateToProps = (state: State) => ({
@@ -48,17 +46,11 @@ const mapDispatchToProps = (dispatch: any) => ({
 	anyonePlay: (appDispatch: AppDispatch) => {
 		dispatch(onlineActionCreators.createNewAutoGame(appDispatch));
 	},
-	onSoundPlay: (sound: GameSound) => {
-		dispatch(commonActionCreators.playAudio(sound, true));
-	},
-	onSoundPause: () => {
-		dispatch(commonActionCreators.stopAudio());
-	},
 	navigate: (navigation: INavigationState) => {
 		dispatch(uiActionCreators.navigate(navigation) as unknown as Action); // TODO: fix typing
 	},
-	exit: () => {
-		dispatch(actionCreators.onExit());
+	exit: (appDispatch: AppDispatch) => {
+		dispatch(actionCreators.onExit(appDispatch));
 	},
 });
 
@@ -66,12 +58,16 @@ export function MainMenu(props: MainMenuProps): JSX.Element {
 	const [showLicense, setShowLicense] = React.useState(false);
 	const appDispatch = useAppDispatch();
 
+	const stopAudioPlay = () => { appDispatch(stopAudio()); };
+
 	React.useEffect(() => {
 		if (props.mainMenuSound) {
-			props.onSoundPlay(GameSound.MAIN_MENU);
-			return props.onSoundPause;
+			appDispatch(playAudio({ audio: GameSound.MAIN_MENU, loop: true }));
+			return stopAudioPlay;
 		}
 	}, []);
+
+	const onExit = () => props.exit(appDispatch);
 
 	return (
 		<section className="welcomeView">
@@ -81,7 +77,7 @@ export function MainMenu(props: MainMenuProps): JSX.Element {
 						<button
 							type='button'
 							className='standard imageButton welcomeExit'
-							onClick={props.exit}
+							onClick={onExit}
 							title={localization.exitFromGame}>
 							<img src={exitImg} alt='Exit' />
 						</button>

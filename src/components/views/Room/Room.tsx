@@ -27,7 +27,7 @@ import PlayersListView from '../../game/PlayersListView/PlayersListView';
 import GameProgress from '../../game/GameProgress';
 import ChatMessage from '../../../model/ChatMessage';
 import MessageLevel from '../../../model/enums/MessageLevel';
-import commonActionCreators from '../../../state/common/commonActionCreators';
+import { userErrorChanged } from '../../../state/new/commonSlice';
 import RoomSettingsButton from '../../RoomSettingsButton/RoomSettingsButton';
 import AvatarViewDialog from '../../panels/AvatarViewDialog/AvatarViewDialog';
 import { AppDispatch, RootState } from '../../../state/new/store';
@@ -66,7 +66,6 @@ interface RoomProps {
 	onExit: (appDispatch: AppDispatch) => void;
 	chatMessageAdded: (chatMessage: ChatMessage) => void;
 	onReconnect: () => void;
-	onUserError: (error: string) => void;
 }
 
 const mapStateToProps = (state: State) => ({
@@ -118,9 +117,6 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	onReconnect: () => {
 		dispatch(roomActionCreators.onReconnect() as unknown as Action);
 	},
-	onUserError: (error: string) => {
-		dispatch(commonActionCreators.onUserError(error) as any);
-	}
 });
 
 function getDialog(dialogView: DialogView) : JSX.Element | null {
@@ -145,7 +141,7 @@ export function Room(props: RoomProps) : JSX.Element {
 
 	React.useEffect(() => {
 		if (props.kicked) {
-			props.onUserError(localization.youAreKicked);
+			appDispatch(userErrorChanged(localization.youAreKicked));
 			props.onExit(appDispatch);
 		}
 	}, [props.kicked]);

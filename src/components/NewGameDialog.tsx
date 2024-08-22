@@ -17,7 +17,8 @@ import isWindowsOS from '../utils/isWindowsOS';
 import PackageFileSelector from './PackageFileSelector';
 import { INavigationState } from '../state/ui/UIState';
 import { AppDispatch } from '../state/new/store';
-import { useAppDispatch } from '../state/new/hooks';
+import { useAppDispatch, useAppSelector } from '../state/new/hooks';
+import { userErrorChanged } from '../state/new/commonSlice';
 
 import './NewGameDialog.css';
 
@@ -90,7 +91,7 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 		dispatch(gameActionCreators.gamePackageTypeChanged(type));
 	},
 	onGamePackageDataChanged: (name: string, data: File | null) => {
-		dispatch(gameActionCreators.gamePackageDataChangedRequest(name, data) as unknown as Action);
+		dispatch(gameActionCreators.gamePackageDataChanged(name, data) as unknown as Action);
 	},
 	onGamePackageLibraryChanged: (id: string, name: string, uri: string) => {
 		dispatch(gameActionCreators.gamePackageLibraryChanged(id, name, uri));
@@ -132,6 +133,8 @@ export function NewGameDialog(props: NewGameDialogProps) {
 	const [isSIStorageOpen, setIsSIStorageOpen] = React.useState(false);
 	const childRef = React.useRef<HTMLInputElement>(null);
 	const appDispatch = useAppDispatch();
+	const commonState = useAppSelector((state) => state.common);
+	const { maxPackageSizeMb } = commonState;
 
 	React.useEffect(() => {
 		if (props.navigation.packageUri) {
@@ -193,6 +196,15 @@ export function NewGameDialog(props: NewGameDialogProps) {
 
 	const humanPlayersMaxCount = props.playersCount - (props.gameRole === Role.Player ? 1 : 0);
 	const botsCount = Math.max(0, humanPlayersMaxCount - props.humanPlayersCount);
+
+	const onGamePackageDataChanged = (name: string, packageData: File | null) => {
+		if (packageData && packageData.size > maxPackageSizeMb * 1024 * 1024) {
+			appDispatch(userErrorChanged(`${localization.packageIsTooBig} (${maxPackageSizeMb} MB)`));
+			return;
+		}
+
+		props.onGamePackageDataChanged(name, packageData);
+	};
 
 	return (
 		<>
@@ -314,7 +326,7 @@ export function NewGameDialog(props: NewGameDialogProps) {
 						<PackageFileSelector
 							ref={childRef}
 							onGamePackageTypeChanged={props.onGamePackageTypeChanged}
-							onGamePackageDataChanged={props.onGamePackageDataChanged} />
+							onGamePackageDataChanged={onGamePackageDataChanged} />
 					</div>
 
 					<p className='newGameHeader'>{localization.role}</p>

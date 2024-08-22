@@ -20,7 +20,6 @@ import { Analytics, getAnalytics } from 'firebase/analytics';
 import { ErrorView } from './components/views/Error/ErrorView';
 import Constants from './model/enums/Constants';
 import getErrorMessage from './utils/ErrorHelpers';
-import commonActionCreators from './state/common/commonActionCreators';
 import enableNoSleep from './utils/NoSleepHelper';
 import uiActionCreators from './state/ui/uiActionCreators';
 import getDeviceType from './utils/getDeviceType';
@@ -35,6 +34,7 @@ import YAStateManager from './utils/YAStateManager';
 import IStateManager from './utils/IStateManager';
 import SIHostClient from './client/SIHostClient';
 import { setGameButtonKey } from './state/new/settingsSlice';
+import { commonErrorChanged } from './state/new/commonSlice';
 
 import './utils/polyfills';
 import './scss/style.scss';
@@ -51,7 +51,7 @@ if (!config) {
 	throw new Error('Config is undefined!');
 }
 
-function setState(state: State, savedState: SavedState | null): State {
+function setState(state: State, savedState: SavedState | null, c: Config): State {
 	if (!savedState) {
 		return state;
 	}
@@ -60,6 +60,12 @@ function setState(state: State, savedState: SavedState | null): State {
 
 	return {
 		...state,
+		common: {
+			...state.common,
+			askForConsent: !!c.askForConsent,
+			emojiCultures: c.emojiCultures,
+			clearUrls: c.clearUrls,
+		},
 		user: {
 			...state.user,
 			login: savedState.login
@@ -134,12 +140,12 @@ function subscribeToExternalEvents(store: Store<State, any>) {
 	};
 
 	window.addEventListener('error', (e: ErrorEvent) => {
-		store.dispatch(commonActionCreators.commonErrorChanged(`${e.type} ${e.message} ${e.filename} ${e.lineno}:${e.colno}`));
+		store.dispatch(commonErrorChanged(`${e.type} ${e.message} ${e.filename} ${e.lineno}:${e.colno}`));
 		return false;
 	});
 
 	window.addEventListener('unhandledrejection', (e: PromiseRejectionEvent) => {
-		store.dispatch(commonActionCreators.commonErrorChanged(`${e.reason.message}: ${e.reason.stack}`));
+		store.dispatch(commonErrorChanged(`${e.reason.message}: ${e.reason.stack}`));
 		return false;
 	});
 
@@ -242,15 +248,11 @@ async function run(stateManager: IStateManager) {
 	}
 
 	const savedState = loadState();
-	const state = setState(initialState, savedState);
+	const state = setState(initialState, savedState, config);
 
 	const noOpHubConnection = new signalR.HubConnectionBuilder().withUrl('http://fake').build();
 
 	const gameClient = new GameServerClient(noOpHubConnection, () => { });
-
-	state.common.askForConsent = !!config.askForConsent;
-	state.common.emojiCultures = config.emojiCultures;
-	state.common.clearUrls = config.clearUrls;
 
 	const dataContext: DataContext = {
 		config,
@@ -280,7 +282,7 @@ async function run(stateManager: IStateManager) {
 			if (newSettings.appSettings.culture !== currentSettings.appSettings.culture) {
 				localization.setLanguage(newSettings.appSettings.culture || localization.getInterfaceLanguage());
 				document.title = localization.appName;
-				store.dispatch(actionCreators.reloadComputerAccounts() as any);
+				store.dispatch(actionCreators.reloadComputerAccounts(store.dispatch) as any);
 			}
 
 			currentSettings = newSettings;

@@ -1,30 +1,22 @@
 import * as React from 'react';
 import State from '../../../state/State';
-import { Dispatch, Action } from 'redux';
 import { connect } from 'react-redux';
 import AutoSizedText from '../../common/AutoSizedText';
-import commonActionCreators from '../../../state/common/commonActionCreators';
 import { showRoundTable } from '../../../state/new/tableSlice';
 import { useAppDispatch } from '../../../state/new/hooks';
+import { stopAudio } from '../../../state/new/commonSlice';
 
 import './TableRoundThemes.css';
 
 interface TableRoundThemesProps {
 	roundThemes: string[];
-	stopAudio: () => void;
 }
 
 const mapStateToProps = (state: State) => ({
 	roundThemes: state.table.roundInfo.map(theme => theme.name)
 });
 
-const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
-	stopAudio: () => {
-		dispatch(commonActionCreators.stopAudio());
-	},
-});
-
-const TableRoundThemes: React.FC<TableRoundThemesProps> = ({ roundThemes, stopAudio }) => {
+const TableRoundThemes: React.FC<TableRoundThemesProps> = ({ roundThemes }) => {
     const [themeIndex, setThemeIndex] = React.useState(0);
 	let timerThemeIndex = 0;
     const textRef = React.useRef<HTMLDivElement>(null);
@@ -39,7 +31,7 @@ const TableRoundThemes: React.FC<TableRoundThemesProps> = ({ roundThemes, stopAu
 				window.clearInterval(timerRef);
 			}
 
-			stopAudio();
+			appDispatch(stopAudio());
 			appDispatch(showRoundTable());
 			return;
 		}
@@ -91,4 +83,4 @@ const TableRoundThemes: React.FC<TableRoundThemesProps> = ({ roundThemes, stopAu
     );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(TableRoundThemes);
+export default connect(mapStateToProps)(TableRoundThemes);

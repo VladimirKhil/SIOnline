@@ -15,7 +15,6 @@ import GameSound from '../model/enums/GameSound';
 import ThemeInfo from '../model/ThemeInfo';
 import GameStage from '../model/enums/GameStage';
 import Account from '../model/Account';
-import commonActionCreators from '../state/common/commonActionCreators';
 import localization from '../model/resources/localization';
 import uiActionCreators from '../state/ui/uiActionCreators';
 import ThemesPlayMode from '../model/enums/ThemesPlayMode';
@@ -87,6 +86,7 @@ import PlayerInfo from '../model/PlayerInfo';
 import actionCreators from './actionCreators';
 import Messages from '../client/game/Messages';
 import StakeModes from '../client/game/StakeModes';
+import { playAudio, stopAudio } from '../state/new/commonSlice';
 
 function initGroup(group: ContentGroup) {
 	let bestRowCount = 1;
@@ -174,7 +174,7 @@ export default class ClientController {
 			return;
 		}
 
-		this.dispatch(commonActionCreators.playAudio(sound, loop));
+		this.appDispatch(playAudio({ audio: sound, loop }));
 	}
 
 	private onScreenContent(content: ContentInfo[]) {
@@ -453,7 +453,7 @@ export default class ClientController {
 	onStage(stage: string, stageName: string, stageIndex: number, rules: string) {
 		const state = this.getState();
 
-		this.dispatch(commonActionCreators.stopAudio());
+		this.appDispatch(stopAudio());
 		this.dispatch(roomActionCreators.stageChanged(stage, stageIndex));
 
 		if (stage !== GameStage.Before) {
@@ -630,7 +630,7 @@ export default class ClientController {
 
 	onShowTable() {
 		this.appDispatch(showRoundTable());
-		this.dispatch(commonActionCreators.stopAudio());
+		this.appDispatch(stopAudio());
 		this.appDispatch(canPressChanged(false));
 		this.dispatch(roomActionCreators.stopTimer(1));
 	}
@@ -723,7 +723,7 @@ export default class ClientController {
 		if (timerIndex === 2) {
 			this.dispatch(roomActionCreators.clearDecisionsAndMainTimer());
 			this.appDispatch(clearDecisions());
-			this.dispatch(commonActionCreators.stopAudio());
+			this.appDispatch(stopAudio());
 		}
 	}
 

@@ -1,6 +1,6 @@
 SIOnline is the web version of game SIGame.
 
-For compilation and running you need Node.js version 12.16.3 or higher.
+For compilation and running you need Node.js version 18.15.0 or higher.
 
 Used technologies: Typescript, Webpack (with loaders and plugins), React, Redux, Redux Thunk, SignalR, TSLint, Jest.
 

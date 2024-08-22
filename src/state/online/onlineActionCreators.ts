@@ -38,7 +38,7 @@ import ServerSex from '../../client/contracts/ServerSex';
 import IGameClient from '../../client/game/IGameClient';
 import ServerRole from '../../client/contracts/ServerRole';
 import clearUrls from '../../utils/clearUrls';
-import commonActionCreators from '../common/commonActionCreators';
+import { userErrorChanged } from '../new/commonSlice';
 import GameState from '../game/GameState';
 import WellKnownSIContentServiceErrorCode from 'sicontent-client/dist/models/WellKnownSIContentServiceErrorCode';
 import RandomPackageParameters from 'sistorage-client/dist/models/RandomPackageParameters';
@@ -408,7 +408,7 @@ const joinGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 		});
 
 		if (!result.IsSuccess) {
-			dispatch(commonActionCreators.onUserError(
+			appDispatch(userErrorChanged(
 				`${localization.joinError}: ${GameErrorsHelper.getJoinErrorMessage(result.ErrorType)} ${result.Message ?? ''}`));
 
 			return;
@@ -428,11 +428,11 @@ const joinGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 			true
 		);
 
-		await actionCreators.disconnectAsync(dispatch, dataContext);
+		await actionCreators.disconnectAsync(appDispatch, dataContext);
 
 		actionCreators.saveStateToStorage(state);
 	} catch (error) {
-		dispatch(commonActionCreators.onUserError(getErrorMessage(error)));
+		appDispatch(userErrorChanged(getErrorMessage(error)));
 	} finally {
 		dispatch(joinGameFinished());
 		dispatch(newGameCancel());
@@ -654,7 +654,7 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 			actionCreators.saveStateToStorage(state);
 
 			if (!result.IsSuccess) {
-				dispatch(commonActionCreators.onUserError(GameErrorsHelper.getMessage(result.ErrorType)));
+				appDispatch(userErrorChanged(GameErrorsHelper.getMessage(result.ErrorType)));
 			} else {
 				dispatch(passwordChanged(gameSettings.NetworkGamePassword));
 				dispatch(joinGame(result.HostUri, result.GameId, state.user.login, role, appDispatch));
@@ -664,7 +664,7 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 				? localization.badPackage
 				: getErrorMessage(error);
 
-			dispatch(commonActionCreators.onUserError(userError));
+			appDispatch(userErrorChanged(userError));
 		} finally {
 			dispatch(gameCreationEnd());
 		}
@@ -684,12 +684,12 @@ const createNewAutoGame: ActionCreator<ThunkAction<void, State, DataContext, Act
 			actionCreators.saveStateToStorage(state);
 
 			if (!result.IsSuccess) {
-				dispatch(commonActionCreators.onUserError(GameErrorsHelper.getMessage(result.ErrorType)));
+				appDispatch(userErrorChanged(GameErrorsHelper.getMessage(result.ErrorType)));
 			} else {
 				dispatch(joinGame(result.HostUri, result.GameId, state.user.login, Role.Player, appDispatch));
 			}
 		} catch (error) {
-			dispatch(commonActionCreators.onUserError(getErrorMessage(error)));
+			appDispatch(userErrorChanged(getErrorMessage(error)));
 		} finally {
 			dispatch(gameCreationEnd());
 		}

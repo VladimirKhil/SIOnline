@@ -2,10 +2,11 @@ import * as signalR from '@microsoft/signalr';
 import { Dispatch, AnyAction } from 'redux';
 import localization from '../model/resources/localization';
 import GameInfo from '../client/contracts/GameInfo';
-import commonActionCreators from '../state/common/commonActionCreators';
 import onlineActionCreators from '../state/online/onlineActionCreators';
 import IGameServerClient from '../client/IGameServerClient';
 import getErrorMessage from './ErrorHelpers';
+import { AppDispatch } from '../state/new/store';
+import { isConnectedChanged, userErrorChanged } from '../state/new/commonSlice';
 
 export const activeConnections: string[] = [];
 
@@ -14,7 +15,9 @@ const detachedConnections: signalR.HubConnection[] = [];
 export function attachListeners(
 	gameClient: IGameServerClient,
 	connection: signalR.HubConnection,
-	dispatch: Dispatch<AnyAction>): void {
+	dispatch: Dispatch<AnyAction>,
+	appDispatch: AppDispatch,
+): void {
 	connection.on('Joined', (login: string) => dispatch(onlineActionCreators.userJoined(login)));
 	connection.on('Leaved', (login: string) => dispatch(onlineActionCreators.userLeaved(login)));
 	connection.on('Say', (name: string, text: string) => dispatch(onlineActionCreators.receiveMessage(name, text)));
@@ -28,7 +31,11 @@ export function attachListeners(
 		}
 
 		const errorMessage = e ? ` (${e.message})` : '';
-		dispatch(commonActionCreators.isConnectedChanged(false, `${localization.connectionReconnecting}${errorMessage}`) as object as AnyAction);
+
+		appDispatch(isConnectedChanged({
+			isConnected: false,
+			reason: `${localization.connectionReconnecting}${errorMessage}`,
+		}));
 	});
 
 	connection.onreconnected(() => {
@@ -36,7 +43,10 @@ export function attachListeners(
 			return;
 		}
 
-		dispatch(commonActionCreators.isConnectedChanged(true, localization.connectionReconnected) as object as AnyAction);
+		appDispatch(isConnectedChanged({
+			isConnected: true,
+			reason: localization.connectionReconnected,
+		}));
 	});
 
 	connection.onclose(async (e) => {
@@ -56,7 +66,8 @@ export function attachListeners(
 			}
 		}
 
-		dispatch(commonActionCreators.onConnectionClosed(`${localization.connectionClosed} ${e?.message || ''}`) as object as AnyAction);
+		appDispatch(isConnectedChanged({ isConnected: false, reason: '' }));
+		appDispatch(userErrorChanged(`${localization.connectionClosed} ${e?.message || ''}`));
 	});
 }
 

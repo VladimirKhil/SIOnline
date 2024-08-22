@@ -6,8 +6,8 @@ import { connect } from 'react-redux';
 import Path from '../../../model/enums/Path';
 import uiActionCreators from '../../../state/ui/uiActionCreators';
 import { Action } from 'redux';
-import commonActionCreators from '../../../state/common/commonActionCreators';
-import { useAppSelector } from '../../../state/new/hooks';
+import { userErrorChanged } from '../../../state/new/commonSlice';
+import { useAppDispatch, useAppSelector } from '../../../state/new/hooks';
 import localization from '../../../model/resources/localization';
 
 import './JoinRoom.css';
@@ -15,7 +15,6 @@ import './JoinRoom.css';
 interface JoinRoomProps {
 	inProgress: boolean;
 	navigate: (path: Path) => void;
-	onUserError: (error: string) => void;
 }
 
 const mapStateToProps = (state: State) => ({
@@ -26,19 +25,17 @@ const mapDispatchToProps = (dispatch: React.Dispatch<Action>) => ({
 	navigate: (path: Path) => {
 		dispatch(uiActionCreators.navigate({ path: path }) as unknown as Action); // TODO: fix typing
 	},
-	onUserError: (error: string) => {
-		dispatch(commonActionCreators.onUserError(error) as any);
-	}
 });
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export function JoinRoom(props: JoinRoomProps): JSX.Element | null {
 	const onlineState = useAppSelector(state => state.online2);
 	const { selectedGame } = onlineState;
+	const appDispatch = useAppDispatch();
 
 	React.useEffect(() => {
 		if (!selectedGame) {
-			props.onUserError('Game not found');
+			appDispatch(userErrorChanged(localization.gameNotFound));
 			props.navigate(Path.Login);
 		}
 	}, [props.inProgress]);

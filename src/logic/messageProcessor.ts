@@ -26,7 +26,7 @@ import ClientController from './ClientController';
 import ContentInfo from '../model/ContentInfo';
 import ItemState from '../model/enums/ItemState';
 import GameSound from '../model/enums/GameSound';
-import commonActionCreators from '../state/common/commonActionCreators';
+import { playAudio } from '../state/new/commonSlice';
 import clearUrls from '../utils/clearUrls';
 import ThemesPlayMode from '../model/enums/ThemesPlayMode';
 import { AppDispatch } from '../state/new/store';
@@ -1223,10 +1223,10 @@ function disconnected(dispatch: Dispatch<RoomActions.KnownRoomAction>, appDispat
 	}
 }
 
-function playGameSound(dispatch: Dispatch<any>, isSoundEnabled: boolean, sound: GameSound, loop = false): void {
+function playGameSound(appDispatch: Dispatch<any>, isSoundEnabled: boolean, sound: GameSound, loop = false): void {
 	if (!isSoundEnabled) {
 		return;
 	}
 
-	dispatch(commonActionCreators.playAudio(sound, loop));
+	appDispatch(playAudio({ audio: sound, loop }));
 }

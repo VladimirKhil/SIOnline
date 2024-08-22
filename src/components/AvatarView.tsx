@@ -6,7 +6,7 @@ import localization from '../model/resources/localization';
 import actionCreators from '../logic/actionCreators';
 import State from '../state/State';
 import FlyoutButton from './common/FlyoutButton';
-import commonActionCreators from '../state/common/commonActionCreators';
+import { userErrorChanged } from '../state/new/commonSlice';
 import { useAppDispatch, useAppSelector } from '../state/new/hooks';
 import { setAvatarKey } from '../state/new/settingsSlice';
 import { AppDispatch } from '../state/new/store';
@@ -20,7 +20,6 @@ interface AvatarViewProps {
 	disabled: boolean | undefined;
 
 	onAvatarSelected: (avatar: File, appDispatch: AppDispatch) => void;
-	onUserError: (error: string) => void;
 }
 
 const mapStateToProps = (state: State) => ({
@@ -34,9 +33,6 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	onAvatarSelected: (avatar: File, appDispatch: AppDispatch) => {
 		dispatch(actionCreators.onAvatarSelectedLocal(avatar, appDispatch) as any);
 	},
-	onUserError: (error: string) => {
-		dispatch(commonActionCreators.onUserError(error) as any);
-	}
 });
 
 function renderEmpty(sex: Sex) {
@@ -86,7 +82,7 @@ export function AvatarView(props: AvatarViewProps): JSX.Element {
 			const targetFile = e.target.files[0];
 
 			if (targetFile.size > MaxAvatarSizeMb * 1024 * 1024) {
-				props.onUserError(`${localization.avatarIsTooBig} (${MaxAvatarSizeMb} MB)`);
+				appDispatch(userErrorChanged(`${localization.avatarIsTooBig} (${MaxAvatarSizeMb} MB)`));
 				return;
 			}
 

@@ -18,7 +18,6 @@ import getErrorMessage from '../utils/ErrorHelpers';
 import { getFullCulture } from '../utils/StateHelpers';
 import GameClient from '../client/game/GameClient';
 import userActionCreators from '../state/user/userActionCreators';
-import commonActionCreators from '../state/common/commonActionCreators';
 
 import SIContentClient, { SIContentServiceError } from 'sicontent-client';
 import SIStorageClient from 'sistorage-client';
@@ -41,6 +40,16 @@ import { getJoinErrorMessage } from '../utils/GameErrorsHelper';
 import { selectGame } from '../state/new/online2Slice';
 import { setAvatarKey } from '../state/new/settingsSlice';
 
+import {
+	avatarLoadEnd,
+	avatarLoadError,
+	avatarLoadStart,
+	commonErrorChanged,
+	computerAccountsChanged,
+	serverInfoChanged,
+	userErrorChanged,
+} from '../state/new/commonSlice';
+
 interface ConnectResult {
 	success: boolean;
 	error?: string;
@@ -48,7 +57,7 @@ interface ConnectResult {
 }
 
 const onAvatarSelectedLocal: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
-	(avatar: File, appDispatch: AppDispatch) => async (dispatch: Dispatch<Action>) => {
+	(avatar: File, appDispatch: AppDispatch) => async () => {
 		try {
 			const buffer = await avatar.arrayBuffer();
 			const base64 = window.btoa(new Uint8Array(buffer).reduce((data, byte) => data + String.fromCharCode(byte), ''));
@@ -60,11 +69,11 @@ const onAvatarSelectedLocal: ActionCreator<ThunkAction<void, State, DataContext,
 
 			appDispatch(setAvatarKey(key));
 		} catch (error) {
-			dispatch(commonActionCreators.onUserError(getErrorMessage(error)) as any);
+			appDispatch(userErrorChanged(getErrorMessage(error)) as any);
 		}
 	};
 
-async function uploadAvatarAsync(dispatch: Dispatch<Action>, dataContext: DataContext) {
+async function uploadAvatarAsync(dispatch: Dispatch<Action>, appDispatch: AppDispatch, dataContext: DataContext) {
 	const base64 = localStorage.getItem(Constants.AVATAR_KEY);
 	const fileName = localStorage.getItem(Constants.AVATAR_NAME_KEY);
 
@@ -72,7 +81,7 @@ async function uploadAvatarAsync(dispatch: Dispatch<Action>, dataContext: DataCo
 		return;
 	}
 
-	dispatch(commonActionCreators.avatarLoadStart(null));
+	appDispatch(avatarLoadStart());
 
 	try {
 		const data = Uint8Array.from(window.atob(base64), c => c.charCodeAt(0));
@@ -87,7 +96,7 @@ async function uploadAvatarAsync(dispatch: Dispatch<Action>, dataContext: DataCo
 			? contentClient.options.serviceUri + avatarUri2.substring(1)
 			: avatarUri2;
 
-		dispatch(commonActionCreators.avatarLoadEnd(null));
+		appDispatch(avatarLoadEnd());
 		dispatch(userActionCreators.avatarChanged(fullAvatarUri2));
 	} catch (err) {
 		const errorMessage = getErrorMessage(err);
@@ -96,8 +105,8 @@ async function uploadAvatarAsync(dispatch: Dispatch<Action>, dataContext: DataCo
 			? localization.avatarIsTooBig
 			: errorMessage;
 
-		dispatch(commonActionCreators.onUserError(localization.avatarLoadError + ': ' + userError) as any);
-		dispatch(commonActionCreators.avatarLoadError(errorMessage));
+		appDispatch(userErrorChanged(localization.avatarLoadError + ': ' + userError) as any);
+		appDispatch(avatarLoadError(errorMessage));
 	}
 }
 
@@ -111,17 +120,16 @@ const sendAvatar: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 };
 
 const reloadComputerAccounts: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
-	() => async (dispatch: Dispatch<Action>, getState: () => State, dataContext: DataContext) => {
+	(appDispatch: AppDispatch) => async (_dispatch: Dispatch<Action>, getState: () => State, dataContext: DataContext) => {
 	if (!dataContext.connection) {
 		return;
 	}
 
 	const state = getState();
-
 	const requestCulture = getFullCulture(state);
 
 	const computerAccounts = await dataContext.gameClient.getComputerAccountsAsync(requestCulture);
-	dispatch(commonActionCreators.computerAccountsChanged(computerAccounts));
+	appDispatch(computerAccountsChanged(computerAccounts));
 };
 
 const saveStateToStorage = (state: State) => {
@@ -161,7 +169,7 @@ function getLoginErrorByCode(response: Response): string {
 	}
 }
 
-async function loadHostInfoAsync(dispatch: Dispatch<any>, dataContext: DataContext, culture: string) {
+async function loadHostInfoAsync(appDispatch: AppDispatch, dataContext: DataContext, culture: string) {
 	const hostInfo = await dataContext.gameClient.getGameHostInfoAsync(culture);
 	// eslint-disable-next-line no-param-reassign
 	dataContext.contentUris = hostInfo.ContentPublicBaseUrls;
@@ -185,10 +193,19 @@ async function loadHostInfoAsync(dispatch: Dispatch<any>, dataContext: DataConte
 		});
 	}
 
-	dispatch(commonActionCreators.serverInfoChanged(hostInfo.Name, hostInfo.License, hostInfo.MaxPackageSizeMb));
+	appDispatch(serverInfoChanged({
+		serverName: hostInfo.Name,
+		serverLicense: hostInfo.License,
+		maxPackageSizeMb: hostInfo.MaxPackageSizeMb,
+	}));
 }
 
-const tryConnectAsync = async (dispatch: Dispatch<Action>, getState: () => State, dataContext: DataContext): Promise<ConnectResult> => {
+const tryConnectAsync = async (
+	dispatch: Dispatch<Action>,
+	appDispatch: AppDispatch,
+	getState: () => State,
+	dataContext: DataContext
+): Promise<ConnectResult> => {
 	if (dataContext.connection) {
 		return { success: true, authenticationRequired: false };
 	}
@@ -234,13 +251,13 @@ const tryConnectAsync = async (dispatch: Dispatch<Action>, getState: () => State
 		const requestCulture = getFullCulture(state);
 
 		const computerAccounts = await dataContext.gameClient.getComputerAccountsAsync(requestCulture);
-		dispatch(commonActionCreators.computerAccountsChanged(computerAccounts));
+		appDispatch(computerAccountsChanged(computerAccounts));
 
 		// Listeners should be attached after first successfull request to be sure that connection is working
-		attachListeners(dataContext.gameClient, dataContext.connection, dispatch);
+		attachListeners(dataContext.gameClient, dataContext.connection, dispatch, appDispatch);
 
-		await loadHostInfoAsync(dispatch, dataContext, requestCulture);
-		await uploadAvatarAsync(dispatch, dataContext);
+		await loadHostInfoAsync(appDispatch, dataContext, requestCulture);
+		await uploadAvatarAsync(dispatch, appDispatch, dataContext);
 
 		return { success: true, authenticationRequired: false };
 	} catch (error) {
@@ -288,7 +305,7 @@ const connectToSIHostAsync = async (
 	return siHostClient;
 };
 
-const closeSIHostClientAsync = async (dispatch: Dispatch<Action>, dataContext: DataContext) => {
+const closeSIHostClientAsync = async (appDispatch: AppDispatch, dataContext: DataContext) => {
 	const { connection } = dataContext.game.gameServerClient;
 
 	if (!connection) {
@@ -306,11 +323,11 @@ const closeSIHostClientAsync = async (dispatch: Dispatch<Action>, dataContext: D
 		await connection.stop();
 		removeSIHostConnection(connection);
 	} catch (error) {
-		dispatch(commonActionCreators.onUserError(getErrorMessage(error)) as any);
+		appDispatch(userErrorChanged(getErrorMessage(error)) as any);
 	}
 };
 
-const disconnectAsync = async (dispatch: Dispatch<Action>, dataContext: DataContext) => {
+const disconnectAsync = async (appDispatch: AppDispatch, dataContext: DataContext) => {
 	const { connection } = dataContext;
 
 	if (!connection) {
@@ -330,7 +347,7 @@ const disconnectAsync = async (dispatch: Dispatch<Action>, dataContext: DataCont
 
 		dataContext.connection = null;
 	} catch (error) {
-		dispatch(commonActionCreators.onUserError(getErrorMessage(error)) as any); // TODO: normal error message
+		appDispatch(userErrorChanged(getErrorMessage(error)) as any); // TODO: normal error message
 	}
 };
 
@@ -365,8 +382,8 @@ const navigateAsync = async (
 			});
 
 			if (!result.IsSuccess) {
-				dispatch(commonActionCreators.onUserError(
-					`${localization.joinError}: ${getJoinErrorMessage(result.ErrorType)} ${result.Message ?? ''}`) as any);
+				appDispatch(userErrorChanged(
+					`${localization.joinError}: ${getJoinErrorMessage(result.ErrorType)} ${result.Message ?? ''}`));
 
 				dispatch(uiActionCreators.navigate({ path: Path.Root }) as unknown as Action);
 				return;
@@ -386,7 +403,7 @@ const navigateAsync = async (
 				false
 			);
 
-			await disconnectAsync(dispatch, dataContext);
+			await disconnectAsync(appDispatch, dataContext);
 		} else {
 			dispatch(uiActionCreators.navigate({ path: Path.Root }) as unknown as Action);
 			return;
@@ -433,14 +450,14 @@ const init: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 					dispatch(uiActionCreators.navigate(initialView) as unknown as Action);
 					return;
 				} else {
-					dispatch(commonActionCreators.commonErrorChanged(`${localization.joinError}: ${localization.gameNotFound}`));
+					appDispatch(commonErrorChanged(`${localization.joinError}: ${localization.gameNotFound}`));
 				}
 			} catch (e) {
-				dispatch(commonActionCreators.commonErrorChanged(getErrorMessage(e)));
+				appDispatch(commonErrorChanged(getErrorMessage(e)));
 			}
 		}
 
-		const connectResult = await tryConnectAsync(dispatch, getState, dataContext);
+		const connectResult = await tryConnectAsync(dispatch, appDispatch, getState, dataContext);
 
 		if (connectResult.success) {
 			await checkLicenseAsync(initialView, dispatch, appDispatch, getState, dataContext);
@@ -450,7 +467,7 @@ const init: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 				callbackState: initialView.path === Path.About ? { path: Path.Menu } : initialView
 			}) as unknown as Action);
 		} else {
-			dispatch(commonActionCreators.commonErrorChanged(connectResult.error));
+			appDispatch(commonErrorChanged(connectResult.error ?? localization.errorHappened));
 		}
 	};
 
@@ -472,12 +489,12 @@ const login: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 			if (!response.ok){
 				const errorText = getLoginErrorByCode(response);
 				appDispatch(endLogin());
-				dispatch(commonActionCreators.onUserError(errorText) as any);
+				appDispatch(userErrorChanged(errorText));
 				return;
 			}
 
 			saveStateToStorage(state);
-			const connectResult = await tryConnectAsync(dispatch, getState, dataContext);
+			const connectResult = await tryConnectAsync(dispatch, appDispatch, getState, dataContext);
 
 			if (connectResult.success) {
 				dispatch(userActionCreators.onLoginChanged(state.user.login.trim())); // Normalize login
@@ -485,19 +502,19 @@ const login: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 				await checkLicenseAsync(state.ui.navigation.callbackState ?? { path: Path.Root }, dispatch, appDispatch, getState, dataContext);
 			} else if (connectResult.authenticationRequired) {
 				appDispatch(endLogin());
-				dispatch(commonActionCreators.onUserError(connectResult.error ?? localization.errorHappened) as any);
+				appDispatch(userErrorChanged(connectResult.error ?? localization.errorHappened));
 			} else {
-				dispatch(commonActionCreators.commonErrorChanged(connectResult.error));
+				appDispatch(commonErrorChanged(connectResult.error ?? localization.errorHappened));
 			}
 		} catch (err) {
 			appDispatch(endLogin());
-			dispatch(commonActionCreators.onUserError(`${localization.cannotConnectToServer}: ${getErrorMessage(err)}`) as any);
+			appDispatch(userErrorChanged(`${localization.cannotConnectToServer}: ${getErrorMessage(err)}`));
 		}
 	};
 
 const onExit: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
-	() => async (dispatch: Dispatch<Action>, _getState: () => State, dataContext: DataContext) => {
-	await disconnectAsync(dispatch, dataContext);
+	(appDispatch: AppDispatch) => async (dispatch: Dispatch<Action>, _getState: () => State, dataContext: DataContext) => {
+	await disconnectAsync(appDispatch, dataContext);
 	dispatch(uiActionCreators.navigate({ path: Path.Login }) as unknown as Action);
 };
 

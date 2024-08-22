@@ -13,7 +13,7 @@ import Constants from '../../model/enums/Constants';
 import MessageLevel from '../../model/enums/MessageLevel';
 import Messages from '../../client/game/Messages';
 import JoinMode from '../../client/game/JoinMode';
-import commonActionCreators from '../common/commonActionCreators';
+import { stopAudio, userErrorChanged } from '../new/commonSlice';
 import Path from '../../model/enums/Path';
 import actionCreators from '../../logic/actionCreators';
 import AppSettings from '../../model/AppSettings';
@@ -131,12 +131,12 @@ const exitGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (
 	try {
 		// TODO: show progress bar
 		if (dataContext.game.shouldClose) {
-			await actionCreators.closeSIHostClientAsync(dispatch, dataContext);
+			await actionCreators.closeSIHostClientAsync(appDispatch, dataContext);
 		} else {
 			await dataContext.game.gameServerClient.leaveGameAsync();
 		}
 	} catch (e) {
-		dispatch(commonActionCreators.onUserError(localization.exitError) as any);
+		appDispatch(userErrorChanged(localization.exitError) as any);
 	}
 
 	if (timerRef) {
@@ -153,7 +153,7 @@ const exitGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (
 	dispatch(isPausedChanged(false));
 	dispatch(clearDecisionsAndMainTimer());
 
-	dispatch(commonActionCreators.stopAudio());
+	appDispatch(stopAudio());
 
 	const state = getState();
 	dispatch(actionCreators.init({ path: state.ui.navigation.returnToLobby ? Path.Lobby : Path.Menu }) as unknown as Action);
@@ -213,8 +213,9 @@ const operationError: ActionCreator<RunActions.OperationErrorAction> = (error: s
 });
 
 const addTable: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
-	dispatch: Dispatch<RunActions.KnownRoomAction>,
-	getState: () => State, dataContext: DataContext) => {
+	_dispatch: Dispatch<RunActions.KnownRoomAction>,
+	getState: () => State, dataContext: DataContext
+) => {
 	if (getState().room2.persons.players.length >= Constants.MAX_PLAYER_COUNT) {
 		return;
 	}
@@ -228,6 +229,7 @@ const deleteTable: ActionCreator<ThunkAction<void, State, DataContext, Action>> 
 	dataContext: DataContext
 	) => {
 	const tableIndex = getState().room.selectedTableIndex - 1;
+
 	if (tableIndex < 0 || tableIndex >= getState().room2.persons.players.length) {
 		return;
 	}

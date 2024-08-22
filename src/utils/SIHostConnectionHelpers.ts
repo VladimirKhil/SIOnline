@@ -3,7 +3,6 @@ import { Dispatch, AnyAction } from 'redux';
 import localization from '../model/resources/localization';
 import Message from '../client/contracts/Message';
 import messageProcessor from '../logic/messageProcessor';
-import commonActionCreators from '../state/common/commonActionCreators';
 import ClientController from '../logic/ClientController';
 import roomActionCreators from '../state/room/roomActionCreators';
 import ISIHostClient from '../client/ISIHostClient';
@@ -11,6 +10,7 @@ import getErrorMessage from './ErrorHelpers';
 import { AppDispatch } from '../state/new/store';
 import PersonInfo from '../client/contracts/PersonInfo';
 import { onGamePersonsChanged } from '../state/new/online2Slice';
+import { isSIHostConnectedChanged, userErrorChanged } from '../state/new/commonSlice';
 
 export const activeSIHostConnections: string[] = [];
 
@@ -40,10 +40,10 @@ export function attachSIHostListeners(
 
 		const errorMessage = e ? ` (${e.message})` : '';
 
-		dispatch(commonActionCreators.isSIHostConnectedChanged(
-			false,
-			`${localization.connectionReconnecting}${errorMessage}`
-		) as object as AnyAction);
+		appDispatch(isSIHostConnectedChanged({
+			isConnected: false,
+			reason: `${localization.connectionReconnecting}${errorMessage}`
+		}));
 	});
 
 	connection.onreconnected(() => {
@@ -51,7 +51,10 @@ export function attachSIHostListeners(
 			return;
 		}
 
-		dispatch(commonActionCreators.isSIHostConnectedChanged(true, localization.connectionReconnected) as object as AnyAction);
+		appDispatch(isSIHostConnectedChanged({
+			isConnected: true,
+			reason: localization.connectionReconnected
+		}));
 	});
 
 	connection.onclose(async (e) => {
@@ -71,7 +74,8 @@ export function attachSIHostListeners(
 			}
 		}
 
-		dispatch(commonActionCreators.onSIHostConnectionClosed(`${localization.connectionClosed} ${e?.message || ''}`) as object as AnyAction);
+		appDispatch(isSIHostConnectedChanged({ isConnected: false, reason: '' }));
+		appDispatch(userErrorChanged(`${localization.connectionClosed} ${e?.message || ''}`));
 	});
 }
 
