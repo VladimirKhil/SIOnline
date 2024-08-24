@@ -1,12 +1,12 @@
 import { connect } from 'react-redux';
 import * as React from 'react';
 import { createRef } from 'react';
-import roomActionCreators from '../../state/room/roomActionCreators';
-import State from '../../state/State';
+import roomActionCreators from '../../../state/room/roomActionCreators';
+import State from '../../../state/State';
 import { Dispatch, Action } from 'redux';
-import Constants from '../../model/enums/Constants';
+import Constants from '../../../model/enums/Constants';
 import { EmojiClickData } from 'emoji-picker-react';
-import ChatInputEmojiPicker from '../common/ChatInputEmojiPicker';
+import ChatInputEmojiPicker from '../../common/ChatInputEmojiPicker/ChatInputEmojiPicker';
 
 import './ChatInput.css';
 

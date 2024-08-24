@@ -1,7 +1,6 @@
 .wideStakeHost {
 	height: 100%;
 	width: 100%;
-	background-color: #2c7be1;
 	display: flex;
 }
 
@@ -9,7 +8,7 @@
 	font-size: 20px;
 	padding: 0 15px;
 	background-color: rgba(255, 165, 0, 0.5);
-	margin: 0px 1px;
+	margin: 0px 2px;
 	overflow: hidden;
 	font-size: 12px;
 	padding: 2px;
@@ -24,6 +23,11 @@
 	font-size: 24px;
 	text-align: center;
 	overflow: hidden;
+	color: white;
+	background: #0A0E30;
+	border: 1px solid #2649FF;
+	border-radius: 10px;
+	margin-left: 4px;
 }
 
 .wideStakeHost__range {

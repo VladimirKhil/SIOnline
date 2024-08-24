@@ -22,7 +22,7 @@ export function ReportButton(props: ReadyButtonProps): JSX.Element | null {
 	return (
 		<button
 			type="button"
-			className={`report_button ${enabledClass}`}
+			className={`report_button standard ${enabledClass}`}
 			onClick={() => appDispatch(showDialog(DialogView.Report))}
 		>
 			<span>{`⭐ ${localization.rateGame}`}</span>

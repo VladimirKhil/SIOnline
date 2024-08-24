@@ -1,12 +1,12 @@
 import { connect } from 'react-redux';
 import * as React from 'react';
 import { Dispatch, Action } from 'redux';
-import roomActionCreators from '../../state/room/roomActionCreators';
-import State from '../../state/State';
-import Constants from '../../model/enums/Constants';
-import localization from '../../model/resources/localization';
-import { useAppDispatch } from '../../state/new/hooks';
-import { sendAnswer } from '../../state/new/room2Slice';
+import roomActionCreators from '../../../state/room/roomActionCreators';
+import State from '../../../state/State';
+import Constants from '../../../model/enums/Constants';
+import localization from '../../../model/resources/localization';
+import { useAppDispatch } from '../../../state/new/hooks';
+import { sendAnswer } from '../../../state/new/room2Slice';
 
 import './AnswerInput.css';
 
@@ -66,10 +66,23 @@ export function AnswerInput(props: AnswerInputProps): JSX.Element | null {
 				onChange={onAnswerChanged}
 				onKeyPress={onAnswerKeyPress}
 				maxLength={250}
-				placeholder={localization.answer}
+				placeholder={localization.inputAnswer}
 			/>
 
-			<button className='sendAnswer' title={localization.send} onClick={sendAnswer2}>💬</button>
+			<button
+				type='button'
+				className='sendAnswer standard'
+				title={localization.send}
+				onClick={sendAnswer2}
+				disabled={props.answer.length === 0}>
+				<svg width="14" height="13" viewBox="0 0 14 13" fill="none">
+					<path
+						fillRule="evenodd"
+						clipRule="evenodd"
+						d="M8.85337 7.88091H0V5.11911H8.85337L5.77101 1.95288L7.67216 0L14 6.5L7.67216 13L5.77101 11.0471L8.85337 7.88091Z"
+						fill="white"/>
+				</svg>
+			</button>
 		</div>
 	) : null;
 }

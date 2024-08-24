@@ -72,11 +72,29 @@
 
 .answerValidationDialog .buttonsPanel .buttonsArea {
     position: relative;
+    margin: 0 2px;
 }
 
 .answerValidationDialog .validationButton {
-    width: 100%;
+    width: calc(100% - 4px);
     height: 100%;
+}
+
+.answerValidationDialog .acceptButton {
+    background: linear-gradient(180deg, #27CB5C 14.29%, #0f8735 100%);
+}
+
+.answerValidationDialog .acceptButton:hover {
+    background: linear-gradient(180deg, #97c7a6 14.29%, #54996a 100%);
+}
+
+.answerValidationDialog .rejectButton {
+    background: #4CAF50;
+    background: linear-gradient(180deg, #D2352B 14.29%, #a9160b 100%);
+}
+
+.answerValidationDialog .rejectButton:hover {
+    background: linear-gradient(180deg, #d0726c 14.29%, #a8372f 100%);
 }
 
 .answerValidationDialog .extraButton {
@@ -101,7 +119,7 @@
 }
 
 .answerValidationDialog .cancelAnswer {
-    color: darkred;
+    color: white;
 }
 
 .answerValidationDialog .mainMessage {
@@ -139,10 +157,16 @@
         top: 0;
         bottom: 45px;
         vertical-align: middle;
-        border: 1px solid black;
+        border: 1px solid white;
+        border-radius: 4px;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
         overflow: hidden;
-        background-color: orange;
+        background-color: #0A0E30;
+        color: white;
+    }
+
+    .answerValidationDialog .validationHeader {
+        color: orange;
     }
 
     .answerValidationDialog h1 {

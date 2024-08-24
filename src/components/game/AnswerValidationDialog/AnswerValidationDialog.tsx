@@ -2,13 +2,13 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch, Action } from 'redux';
-import State from '../../state/State';
-import localization from '../../model/resources/localization';
-import roomActionCreators from '../../state/room/roomActionCreators';
-import Dialog from '../common/Dialog';
-import { useAppDispatch } from '../../state/new/hooks';
-import { approveAnswer, rejectAnswer } from '../../state/new/room2Slice';
-import { setValidationAnswersVisibility } from '../../state/new/settingsSlice';
+import State from '../../../state/State';
+import localization from '../../../model/resources/localization';
+import roomActionCreators from '../../../state/room/roomActionCreators';
+import Dialog from '../../common/Dialog/Dialog';
+import { useAppDispatch } from '../../../state/new/hooks';
+import { approveAnswer, rejectAnswer } from '../../../state/new/room2Slice';
+import { setValidationAnswersVisibility } from '../../../state/new/settingsSlice';
 
 import './AnswerValidationDialog.css';
 
@@ -109,7 +109,7 @@ export function AnswerValidationDialog(props: AnswerValidationDialogProps): JSX.
 					<div className='buttonsArea'>
 						<button
 							type="button"
-							className='standard validationButton'
+							className='standard validationButton acceptButton'
 							disabled={!props.isConnected}
 							onClick={() => onApprove(1.0)}>
 							{localization.yes}
@@ -118,7 +118,7 @@ export function AnswerValidationDialog(props: AnswerValidationDialogProps): JSX.
 						{props.showExtraRightButtons ? (<>
 							<button
 								type="button"
-								className='standard halfPrice extraButton'
+								className='standard halfPrice extraButton acceptButton'
 								disabled={!props.isConnected}
 								onClick={() => onApprove(0.5)}>
 								×0.5
@@ -126,7 +126,7 @@ export function AnswerValidationDialog(props: AnswerValidationDialogProps): JSX.
 
 							<button
 								type="button"
-								className='standard doublePrice extraButton'
+								className='standard doublePrice extraButton acceptButton'
 								disabled={!props.isConnected}
 								onClick={() => onApprove(2.0)}>
 								×2
@@ -137,7 +137,7 @@ export function AnswerValidationDialog(props: AnswerValidationDialogProps): JSX.
 					<div className='buttonsArea'>
 						<button
 							type="button"
-							className='standard validationButton'
+							className='standard validationButton rejectButton'
 							disabled={!props.isConnected}
 							onClick={() => onReject(1.0)}>
 							{localization.no}
@@ -146,7 +146,7 @@ export function AnswerValidationDialog(props: AnswerValidationDialogProps): JSX.
 						{props.showExtraRightButtons ? (<>
 							<button
 								type="button"
-								className='standard halfPrice extraButton'
+								className='standard halfPrice extraButton rejectButton'
 								disabled={!props.isConnected}
 								onClick={() => onReject(0.5)}>
 								×0.5
@@ -154,7 +154,7 @@ export function AnswerValidationDialog(props: AnswerValidationDialogProps): JSX.
 
 							<button
 								type="button"
-								className='standard doublePrice extraButton'
+								className='standard doublePrice extraButton rejectButton'
 								disabled={!props.isConnected}
 								onClick={() => onReject(2.0)}>
 								×2

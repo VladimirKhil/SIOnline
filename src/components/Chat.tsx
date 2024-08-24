@@ -8,7 +8,7 @@ import Constants from '../model/enums/Constants';
 import onlineActionCreators from '../state/online/onlineActionCreators';
 import ChatMessage from '../model/ChatMessage';
 import ChatLog from './common/ChatLog';
-import ChatInputEmojiPicker from './common/ChatInputEmojiPicker';
+import ChatInputEmojiPicker from './common/ChatInputEmojiPicker/ChatInputEmojiPicker';
 import hasUserMentioned from '../utils/MentionHelpers';
 
 import './Chat.css';

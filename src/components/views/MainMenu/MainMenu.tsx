@@ -2,7 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import localization from '../../../model/resources/localization';
 import State from '../../../state/State';
-import Dialog from '../../common/Dialog';
+import Dialog from '../../common/Dialog/Dialog';
 import GameSound from '../../../model/enums/GameSound';
 import { playAudio, stopAudio } from '../../../state/new/commonSlice';
 import onlineActionCreators from '../../../state/online/onlineActionCreators';

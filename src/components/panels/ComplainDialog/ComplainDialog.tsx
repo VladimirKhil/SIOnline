@@ -1,7 +1,7 @@
 /* eslint-disable react/no-array-index-key */
 import * as React from 'react';
 import { connect } from 'react-redux';
-import Dialog from '../../common/Dialog';
+import Dialog from '../../common/Dialog/Dialog';
 import { DialogView, complain, showDialog } from '../../../state/new/room2Slice';
 import { useAppDispatch } from '../../../state/new/hooks';
 import localization from '../../../model/resources/localization';

@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { useState } from 'react';
 import EmojiPicker, { EmojiClickData, EmojiStyle, SkinTones, Theme } from 'emoji-picker-react';
-import localization from '../../model/resources/localization';
+import localization from '../../../model/resources/localization';
 import { connect } from 'react-redux';
-import State from '../../state/State';
+import State from '../../../state/State';
 
 import './ChatInputEmojiPicker.css';
 

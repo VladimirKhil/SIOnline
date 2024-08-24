@@ -9,7 +9,7 @@ import GameInfo from '../../../client/contracts/GameInfo';
 import { filterGames } from '../../../utils/GamesHelpers';
 import GamesFilter from '../../../model/enums/GamesFilter';
 import NewGameDialog from '../../NewGameDialog';
-import Dialog from '../../common/Dialog';
+import Dialog from '../../common/Dialog/Dialog';
 import GameInfoView from '../../GameInfoView';
 import uiActionCreators from '../../../state/ui/uiActionCreators';
 import onlineActionCreators from '../../../state/online/onlineActionCreators';

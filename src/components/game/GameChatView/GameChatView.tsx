@@ -1,28 +1,28 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch, Action } from 'redux';
-import State from '../../state/State';
-import PersonsView from './PersonsView';
-import GameLogView from './GameLogView';
-import ChatMode from '../../model/enums/ChatMode';
-import roomActionCreators from '../../state/room/roomActionCreators';
-import localization from '../../model/resources/localization';
-import ChatInput from './ChatInput';
-import Role from '../../model/Role';
-import TablesView from './TablesView';
-import { isHost } from '../../utils/StateHelpers';
-import FlyoutButton, { FlyoutHorizontalOrientation, FlyoutVerticalOrientation } from '../common/FlyoutButton';
-import GameMetadataView from './GameMetadataView';
-import BannedView from './BannedView';
-import isWellFormedUri from '../../utils/isWellFormedUri';
-import { useAppDispatch } from '../../state/new/hooks';
-import { selectPlayers } from '../../state/new/room2Slice';
+import State from '../../../state/State';
+import PersonsView from '../PersonsView';
+import GameLogView from '../GameLogView';
+import ChatMode from '../../../model/enums/ChatMode';
+import roomActionCreators from '../../../state/room/roomActionCreators';
+import localization from '../../../model/resources/localization';
+import ChatInput from '../ChatInput/ChatInput';
+import Role from '../../../model/Role';
+import TablesView from '../TablesView';
+import { isHost } from '../../../utils/StateHelpers';
+import FlyoutButton, { FlyoutHorizontalOrientation, FlyoutVerticalOrientation } from '../../common/FlyoutButton';
+import GameMetadataView from '../GameMetadataView';
+import BannedView from '../BannedView';
+import isWellFormedUri from '../../../utils/isWellFormedUri';
+import { useAppDispatch } from '../../../state/new/hooks';
+import { selectPlayers } from '../../../state/new/room2Slice';
 
 import './GameChatView.css';
-import sumsImg from '../../../assets/images/sums.png';
-import editImg from '../../../assets/images/edit.png';
-import moveRoundImg from '../../../assets/images/move_round.png';
-import activePlayerImg from '../../../assets/images/active_player.png';
+import sumsImg from '../../../../assets/images/sums.png';
+import editImg from '../../../../assets/images/edit.png';
+import moveRoundImg from '../../../../assets/images/move_round.png';
+import activePlayerImg from '../../../../assets/images/active_player.png';
 
 interface GameChatViewProps {
 	isConnected: boolean;

@@ -46,7 +46,7 @@ export function ReactionPanel(props: ReactionPanelProps): JSX.Element | null {
 			? (<>
 				<button
 					type='button'
-					className="reactionButton"
+					className="reactionButton standard"
 					disabled={!props.isConnected}
 					title={localization.apellateAnswer}
 					onClick={() => props.apellate()}>
@@ -55,7 +55,7 @@ export function ReactionPanel(props: ReactionPanelProps): JSX.Element | null {
 
 				<button
 					type='button'
-					className="reactionButton"
+					className="reactionButton standard"
 					disabled={!props.isConnected || playerCount < 4} // 2 players cannot overvote third player + showman
 					title={localization.iDisagreeHint}
 					onClick={() => props.disagree()}>
@@ -66,7 +66,7 @@ export function ReactionPanel(props: ReactionPanelProps): JSX.Element | null {
 
 			<button
 				type='button'
-				className="reactionButton"
+				className="reactionButton standard"
 				disabled={!props.isConnected}
 				title={localization.complainHint}
 				onClick={() => appDispatch(showDialog(DialogView.Complain))}>

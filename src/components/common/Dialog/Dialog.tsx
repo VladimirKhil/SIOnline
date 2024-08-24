@@ -1,8 +1,8 @@
 ﻿import * as React from 'react';
-import localization from '../../model/resources/localization';
+import localization from '../../../model/resources/localization';
 import { ForwardedRef } from 'react';
 
-import closeSvg from '../../../assets/images/close.svg';
+import closeSvg from '../../../../assets/images/close.svg';
 
 import './Dialog.css';
 

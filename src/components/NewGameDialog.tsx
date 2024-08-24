@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Dispatch, Action } from 'redux';
 import gameActionCreators from '../state/game/gameActionCreators';
 import localization from '../model/resources/localization';
-import Dialog from './common/Dialog';
+import Dialog from './common/Dialog/Dialog';
 import ProgressBar from './common/ProgressBar';
 import State from '../state/State';
 import Role from '../model/Role';

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch, Action } from 'redux';
-import Dialog from '../common/Dialog';
+import Dialog from '../common/Dialog/Dialog';
 import localization from '../../model/resources/localization';
 import TimeSettingsView from './TimeSettingsView';
 import SettingsView from '../../model/enums/SettingsView';

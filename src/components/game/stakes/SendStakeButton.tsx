@@ -41,7 +41,7 @@ export function SendStakeButton(props: SendStakeButtonProps) {
 
 	return <button
 		type='button'
-		className={props.className}
+		className={`standard ${props.className}`}
 		onClick={sendStake2}
 		disabled={!props.isConnected || !canSendStake}>
 			{canSendStake ? (props.stake ?? localization.send) : ''}

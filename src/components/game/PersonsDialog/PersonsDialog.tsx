@@ -1,5 +1,5 @@
 import * as React from 'react';
-import Dialog from '../common/Dialog';
+import Dialog from '../../common/Dialog/Dialog';
 
 import './PersonsDialog.css';
 

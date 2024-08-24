@@ -196,6 +196,8 @@
     position: absolute;
     bottom: 0;
     right: 0;
+    display: flex;
+    flex-direction: row;
 }
 
 .readyMark {
@@ -430,12 +432,12 @@
 @media screen and (min-width: 1600px) and (min-height: 700px) {
     .gamePlayers li {
         height: 100%;
-        margin: 5px !important;
+        margin: 5px 0 !important;
         max-width: 350px;
     }
 
     .gamePlayers .playerCard {
-        padding: 16px;
+        padding: 10px;
     }
 
     .gamePlayers .playerReplic {

@@ -51,18 +51,27 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	},
 });
 
+function getNotReadyMessage(props: ReadyButtonProps) {
+	return props.sex === Sex.Female ? localization.notReadyFemale : localization.notReadyMale;
+}
+
+function getReadyMessage(props: ReadyButtonProps) {
+	return props.sex === Sex.Female ? localization.readyFemale : localization.readyMale;
+}
+
 export function ReadyButton(props: ReadyButtonProps): JSX.Element | null {
 	const roomState = useAppSelector(state => state.room2);
 	const isReady = getIsReady(roomState, props.role, props.myName);
 	const enabledClass = props.isConnected ? '' : 'disabled';
+	const label = isReady ? getReadyMessage(props) : getNotReadyMessage(props);
 
 	return (
 		<button
 			type="button"
-			className={`ready_button ${enabledClass} ${isReady ? 'active' : ''}`}
+			className={`ready_button mainAction ${enabledClass} ${isReady ? 'active' : ''}`}
 			onClick={() => props.onReady(!isReady)}
 		>
-			<span>{props.sex === Sex.Female ? localization.readyFemale : localization.readyMale}</span>
+			<span>{label?.toLocaleUpperCase()}</span>
 		</button>
 	);
 }

@@ -31,7 +31,7 @@ export function PassButton(props: PassButtonProps): JSX.Element | null {
 			disabled={!props.isConnected}
 			onClick={() => props.onPass()}
 		>
-			{localization.pass}
+			{localization.pass.toLocaleUpperCase()}
 		</button>
 	);
 }

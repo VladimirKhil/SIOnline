@@ -7,7 +7,7 @@ import UsersView from '../../UsersView';
 import OnlineMode from '../../../model/enums/OnlineMode';
 import NewGameDialog from '../../NewGameDialog';
 import GameInfo from '../../../client/contracts/GameInfo';
-import Dialog from '../../common/Dialog';
+import Dialog from '../../common/Dialog/Dialog';
 import onlineActionCreators from '../../../state/online/onlineActionCreators';
 import { Dispatch, Action } from 'redux';
 import ProgressBar from '../../common/ProgressBar';

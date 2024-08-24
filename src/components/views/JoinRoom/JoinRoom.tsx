@@ -1,6 +1,6 @@
 import * as React from 'react';
 import State from '../../../state/State';
-import Dialog from '../../common/Dialog';
+import Dialog from '../../common/Dialog/Dialog';
 import GameInfoView from '../../GameInfoView';
 import { connect } from 'react-redux';
 import Path from '../../../model/enums/Path';

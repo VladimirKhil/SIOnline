@@ -1,6 +1,6 @@
 import * as React from 'react';
 import PassButton from '../PassButton/PassButton';
-import GameButton from '../GameButton';
+import GameButton from '../GameButton/GameButton';
 
 import './PlayerButtonsPanel.css';
 

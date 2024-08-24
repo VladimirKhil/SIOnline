@@ -1,0 +1,49 @@
+.answerInputHost {
+	display: flex;
+	height: 100%;
+    border: 0;
+	overflow: hidden;
+    pointer-events: initial;
+	padding-right: 2px;
+}
+
+.answerInput {
+	border: 0;
+    max-width: none;
+    box-sizing: border-box;
+	flex: 1;
+    padding: 3px 15px;
+    font-size: 20px;
+	color: white;
+	background: transparent;
+	margin: 2px 5px;
+	background: #05061F;
+	border: 1px solid #2649FF;
+	border-radius: 10px;
+}
+
+.answerInput::placeholder {
+	color: lightgray;
+}
+
+.sendAnswer {
+	height: calc(100% - 4px);
+	aspect-ratio: 1/1;
+	margin: 2px 2px;
+	padding-top: 6px;
+}
+
+.sendAnswer svg {
+	width: 60%;
+	height: 60%;
+}
+
+button.standard.sendAnswer:disabled {
+	background: linear-gradient(180deg, #5178db 14.29%, #2d56a1 100%);
+}
+
+@media screen and (min-width: 1400px) {
+	.answerInput {
+		font-size: 28px;
+	}
+}

@@ -156,7 +156,7 @@ const exitGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (
 	appDispatch(stopAudio());
 
 	const state = getState();
-	dispatch(actionCreators.init({ path: state.ui.navigation.returnToLobby ? Path.Lobby : Path.Menu }) as unknown as Action);
+	dispatch(actionCreators.init({ path: state.ui.navigation.returnToLobby ? Path.Lobby : Path.Menu }, appDispatch) as unknown as Action);
 };
 
 let lastReplicLock: number;

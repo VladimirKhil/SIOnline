@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Dispatch, Action } from 'redux';
 import State from '../../../state/State';
 import localization from '../../../model/resources/localization';
-import Dialog from '../../common/Dialog';
+import Dialog from '../../common/Dialog/Dialog';
 import roomActionCreators from '../../../state/room/roomActionCreators';
 
 import './AvatarViewDialog.css';

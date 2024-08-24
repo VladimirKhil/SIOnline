@@ -28,11 +28,13 @@ export function StakePanel(props: StakePanelProps): JSX.Element | null {
 
 	return (
 		<div className="wideStakeHost">
-			<SendPassButton className={useStakeVariants ? 'wideStake' : ''} />
+			<SendPassButton className={`standard ${useStakeVariants ? 'wideStake' : ''}`} />
 
 			{useStakeVariants
 			? <>
-				{Array.from(Array(stakeVariants).keys()).map(n => <SendStakeButton className='wideStake' stake={props.minimum + props.step * n} />)}
+				{Array.from(Array(stakeVariants).keys()).map(n => <SendStakeButton
+					className='wideStake standard'
+					stake={props.minimum + props.step * n} />)}
 			</>
 			: <>
 				<StakeSumEditor type="number" className="wideStakeHost__number checkSum" />
@@ -40,7 +42,7 @@ export function StakePanel(props: StakePanelProps): JSX.Element | null {
 				<SendStakeButton />
 			</>}
 
-			<SendAllInButton className={useStakeVariants ? 'wideStake' : ''} />
+			<SendAllInButton className={`mainAction active ${useStakeVariants ? 'wideStake' : ''}`} />
 		</div>
 	);
 }
