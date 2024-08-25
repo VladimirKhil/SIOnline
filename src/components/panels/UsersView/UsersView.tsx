@@ -1,14 +1,14 @@
 ﻿import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch, Action } from 'redux';
-import LobbySideMode from '../model/enums/LobbySideMode';
-import Chat from './Chat';
-import UsersList from './UsersList';
-import State from '../state/State';
-import localization from '../model/resources/localization';
-import onlineActionCreators from '../state/online/onlineActionCreators';
-import LobbyMenu from './LobbyMenu';
-import Trends from './Trends';
+import LobbySideMode from '../../../model/enums/LobbySideMode';
+import Chat from '../../Chat';
+import UsersList from '../../UsersList';
+import State from '../../../state/State';
+import localization from '../../../model/resources/localization';
+import onlineActionCreators from '../../../state/online/onlineActionCreators';
+import LobbyMenu from '../LobbyMenu/LobbyMenu';
+import Trends from '../../Trends';
 
 import './UsersView.css';
 
@@ -41,26 +41,27 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 });
 
 export function UsersView(props: UsersViewProps): JSX.Element | null {
-	function chatModeChanged(chatMode: LobbySideMode) {
+/* 	function chatModeChanged(chatMode: LobbySideMode) {
 		if (props.chatMode !== chatMode) {
 			props.onChatModeChanged(chatMode);
 		}
-	}
+	} */
 
 	return props.isLobbyChatHidden ? null : (
 		<section className="chatHost gamesblock">
 			<header>
 				<LobbyMenu />
 
-				<div id="chatHostTitle" className="tabHeader">
-					<h1
+				<div className="chatHostTitle">
+					{/* <h1
 						className={props.chatMode === LobbySideMode.Trends ? 'activeTab' : ''}
 						onClick={() => chatModeChanged(LobbySideMode.Trends)}
-					>
+					> */}
+					<h1>
 						{localization.trends}
 					</h1>
 
-					{!props.clearUrls && localization.getLanguage() === 'ru'
+					{/* {!props.clearUrls && localization.getLanguage() === 'ru'
 						? <>
 							<h1
 								className={props.chatMode === LobbySideMode.Chat ? 'activeTab' : ''}
@@ -80,14 +81,15 @@ export function UsersView(props: UsersViewProps): JSX.Element | null {
 								</div>
 							</h1>
 						</>
-						: null}
+						: null} */}
 				</div>
 			</header>
 
 			<div className="chatBody">
-				{props.chatMode === LobbySideMode.Trends
+				{/* {props.chatMode === LobbySideMode.Trends
 					? <Trends />
-					: (props.chatMode === LobbySideMode.Chat ? <Chat /> : <UsersList />)}
+					: (props.chatMode === LobbySideMode.Chat ? <Chat /> : <UsersList />)} */}
+				<Trends />
 			</div>
 		</section>
 	);

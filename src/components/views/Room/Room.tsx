@@ -24,17 +24,16 @@ import BannedView from '../../game/BannedView';
 import TableContextView from '../../game/TableContextView/TableContextView';
 import ChatInput from '../../game/ChatInput/ChatInput';
 import PlayersListView from '../../game/PlayersListView/PlayersListView';
-import GameProgress from '../../game/GameProgress';
 import ChatMessage from '../../../model/ChatMessage';
 import MessageLevel from '../../../model/enums/MessageLevel';
 import { userErrorChanged } from '../../../state/new/commonSlice';
-import RoomSettingsButton from '../../RoomSettingsButton/RoomSettingsButton';
 import AvatarViewDialog from '../../panels/AvatarViewDialog/AvatarViewDialog';
 import { AppDispatch, RootState } from '../../../state/new/store';
 import { useAppDispatch, useAppSelector } from '../../../state/new/hooks';
 import { DialogView } from '../../../state/new/room2Slice';
 import ComplainDialog from '../../panels/ComplainDialog/ComplainDialog';
 import ReportDialog from '../../panels/ReportDialog/ReportDialog';
+import GameState from '../../game/GameState/GameState';
 
 import './Room.css';
 
@@ -174,8 +173,8 @@ export function Room(props: RoomProps) : JSX.Element {
 					<div className="showmanTableArea">
 						<div className="showmanProgressArea">
 							<div className='progressArea'>
+								<GameState />
 								<RoundProgress />
-								<GameProgress />
 							</div>
 
 							<ShowmanReplicView />
@@ -205,8 +204,6 @@ export function Room(props: RoomProps) : JSX.Element {
 				{isScreenWide ? <GameChatView /> : null}
 				<SideControlPanel />
 			</div>
-
-			{isScreenWide ? <RoomSettingsButton /> : null}
 
 			{/* TODO: Switch to a single enum here */}
 

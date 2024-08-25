@@ -8,7 +8,7 @@ import localization from '../model/resources/localization';
 import getFilterValue from '../utils/getFilterValue';
 import onlineActionCreators from '../state/online/onlineActionCreators';
 import GameInfo from '../client/contracts/GameInfo';
-import LobbyMenu from './LobbyMenu';
+import LobbyMenu from './panels/LobbyMenu/LobbyMenu';
 import uiActionCreators from '../state/ui/uiActionCreators';
 import OnlineMode from '../model/enums/OnlineMode';
 

@@ -121,10 +121,6 @@
         align-items: center;
     }
 
-	.tableArea {
-		margin-right: 10px;
-	}
-
     .showmanProgressArea {
         flex: 0 0 280px;
         height: 100%;
@@ -132,6 +128,7 @@
 
     .progressArea {
         display: flex;
+        align-items: stretch;
     }
 
     .showmanProgressArea .round_progress {

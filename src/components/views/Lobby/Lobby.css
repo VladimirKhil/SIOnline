@@ -1,8 +1,50 @@
-.onlineView {
-    position: absolute;
+.lobby {
     height: 100%;
     width: 100%;
     display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.lobby > header {
+	color: white;
+	text-align: center;
+	background-color: #04071B;
+	width: 100%;
+	height: 45px;
+    flex: 0 0 45px;
+	overflow: hidden;
+}
+
+.lobby > header h1 {
+	font-size: 16px;
+	margin: 0;
+	display: flex;
+	flex-direction: row;
+	height: 45px;
+	overflow: hidden;
+}
+
+.lobby header h1 .left {
+	text-align: left;
+}
+
+.lobby header h1 .right {
+	text-align: right;
+	flex: 1 0 0;
+	display: flex;
+	justify-content: flex-end;
+	align-items: center;
+}
+
+.lobby header h1 .welcomeExit {
+	margin-top: 1px;
+}
+
+.onlineView {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
 }
 
 #gameInfoDialog {

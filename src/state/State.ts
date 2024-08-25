@@ -1,7 +1,7 @@
 ﻿import RoomState, { initialState as roomInitialState } from './room/RoomState';
 import * as settings from './new/settingsSlice';
 import * as table from './new/tableSlice';
-import UserState, { initialState as userInitialState } from './user/UserState';
+import * as user from './new/userSlice';
 import * as login from './new/loginSlice';
 import * as room2 from './new/room2Slice';
 import * as online2 from './new/online2Slice';
@@ -12,7 +12,7 @@ import OnlineState, { initialState as onlineInitialState } from './online/Online
 import GameState, { initialState as gameInitialState } from './game/GameState';
 
 export default interface State {
-	user: UserState;
+	user: user.UserState;
 	login: login.LoginState;
 	ui: UIState;
 	online: OnlineState;
@@ -27,7 +27,7 @@ export default interface State {
 }
 
 export const initialState: State = {
-	user: userInitialState,
+	user: user.userSlice.getInitialState(),
 	login: login.loginSlice.getInitialState(),
 	ui: uiInitialState,
 	online: onlineInitialState,

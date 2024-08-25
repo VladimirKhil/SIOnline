@@ -14,6 +14,7 @@ import actionCreators from '../../../logic/actionCreators';
 import { AppDispatch } from '../../../state/new/store';
 import { useAppDispatch } from '../../../state/new/hooks';
 import Ads from '../../panels/Ads/Ads';
+import UserOptions from '../../panels/UserOptions/UserOptions';
 
 import './MainMenu.css';
 import exitImg from '../../../../assets/images/exit.png';
@@ -72,7 +73,7 @@ export function MainMenu(props: MainMenuProps): JSX.Element {
 	return (
 		<section className="welcomeView">
 			<header>
-				<h1>
+				<h1 className='mainHeader'>
 					<span className='left'>
 						<button
 							type='button'
@@ -94,10 +95,9 @@ export function MainMenu(props: MainMenuProps): JSX.Element {
 						</button>
 					</span>
 
-					<span className='right' title={props.userName}>
-						{props.avatar ? <img className='userAvatar' src={props.avatar} alt='Avatar' /> : null}
-						<span className='user'>{props.userName}</span>
-					</span>
+					<div className='right'>
+						<UserOptions />
+					</div>
 				</h1>
 			</header>
 

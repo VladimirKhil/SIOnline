@@ -1,0 +1,43 @@
+.userOptions {
+	text-align: right;
+	display: flex;
+	justify-content: flex-end;
+	align-items: center;
+	font-size: 16px;
+}
+
+.userOptions .userInfo {
+	height: 45px;
+	display: flex;
+	align-items: center;
+	padding: 0;
+	font-weight: 500;
+}
+
+.userOptions .userInfo > div {
+	margin-left: 5px;
+    margin-right: 5px;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+}
+
+.userOptions .user {
+	margin-left: 5px;
+	margin-right: 5px;
+	display: inline-block;
+	height: 45px;
+	line-height: 45px;
+	max-width: 150px;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
+}
+
+.userOptions .userAvatar {
+	margin-top: 3px;
+	max-width: 36px;
+	height: 33px;
+    background-size: contain;
+	vertical-align: middle;
+}

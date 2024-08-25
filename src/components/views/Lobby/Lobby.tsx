@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import GamesList from '../../GamesList';
 import State from '../../../state/State';
 import GameInfoView from '../../GameInfoView';
-import UsersView from '../../UsersView';
+import UsersView from '../../panels/UsersView/UsersView';
 import OnlineMode from '../../../model/enums/OnlineMode';
 import NewGameDialog from '../../NewGameDialog';
 import GameInfo from '../../../client/contracts/GameInfo';
@@ -12,11 +12,13 @@ import onlineActionCreators from '../../../state/online/onlineActionCreators';
 import { Dispatch, Action } from 'redux';
 import ProgressBar from '../../common/ProgressBar';
 import { filterGames } from '../../../utils/GamesHelpers';
-import SettingsButton from '../../SettingsButton';
-import LobbyChatVisibilityButton from '../../LobbyChatVisibilityButton';
 import uiActionCreators from '../../../state/ui/uiActionCreators';
+import localization from '../../../model/resources/localization';
+import Path from '../../../model/enums/Path';
+import UserOptions from '../../panels/UserOptions/UserOptions';
 
 import './Lobby.css';
+import exitImg from '../../../../assets/images/exit.png';
 
 interface LobbyProps {
 	inProgress: boolean;
@@ -30,6 +32,7 @@ interface LobbyProps {
 
 	closeGameInfo: () => void;
 	closeNewGame: () => void;
+	navigate: (path: Path) => void;
 }
 
 const mapStateToProps = (state: State) => {
@@ -56,56 +59,81 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	},
 	closeNewGame: () => {
 		dispatch(onlineActionCreators.newGameCancel());
+	},
+	navigate: (path: Path) => {
+		dispatch(uiActionCreators.navigate({ path: path }) as unknown as Action);
 	}
 });
 
-export class Lobby extends React.Component<LobbyProps> {
-	render() {
-		const newGame = (
-			<div className={`newGameArea ${this.props.isLobbyChatHidden ? 'newWide' : null}`}>
-				<NewGameDialog isSingleGame={false} onClose={this.props.closeNewGame} />
-			</div>
-		);
+export function Lobby(props: LobbyProps) {
+	const newGame = (
+		<div className={`newGameArea ${props.isLobbyChatHidden ? 'newWide' : null}`}>
+			<NewGameDialog isSingleGame={false} onClose={props.closeNewGame} />
+		</div>
+	);
 
-		if (this.props.windowWidth < 1100) { // TODO: this should be solved purely in CSS
-			if (this.props.mode === OnlineMode.GameInfo && this.props.selectedGame) {
-				return (
-					<Dialog id="gameInfoDialog" title={this.props.selectedGame.GameName} onClose={() => this.props.closeGameInfo()}>
-						<GameInfoView game={this.props.selectedGame} showGameName={false} />
-					</Dialog>
-				);
-			}
+	const onExit = () => {
+		props.navigate(Path.Menu);
+	};
 
-			if (this.props.mode === OnlineMode.Games || this.props.mode === OnlineMode.GameInfo) {
-				return (
-					<div className="onlineView">
-						{this.props.inProgress ? <ProgressBar isIndeterminate /> : null}
-						<GamesList games={this.props.filteredGames} selectedGameId={this.props.selectedGameId} showInfo />
-						{this.props.newGameShown ? newGame : null}
-					</div>
-				);
-			}
-
-			return <div className="onlineView"><UsersView /></div>;
+	if (props.windowWidth < 1100) { // TODO: this should be solved purely in CSS
+		if (props.mode === OnlineMode.GameInfo && props.selectedGame) {
+			return (
+				<Dialog id="gameInfoDialog" title={props.selectedGame.GameName} onClose={() => props.closeGameInfo()}>
+					<GameInfoView game={props.selectedGame} showGameName={false} />
+				</Dialog>
+			);
 		}
 
-		return (
-			<div className="onlineView">
-				{this.props.inProgress ? <ProgressBar isIndeterminate /> : null}
-				<GamesList games={this.props.filteredGames} selectedGameId={this.props.selectedGameId} showInfo={false} />
+		if (props.mode === OnlineMode.Games || props.mode === OnlineMode.GameInfo) {
+			return (
+				<div className="lobby">
+					<div className="onlineView">
+						{props.inProgress ? <ProgressBar isIndeterminate /> : null}
+						<GamesList games={props.filteredGames} selectedGameId={props.selectedGameId} showInfo />
+						{props.newGameShown ? newGame : null}
+					</div>
+				</div>
+			);
+		}
+
+		return <div className="lobby"><div className="onlineView"><UsersView /></div></div>;
+	}
+
+	return (
+		<div className="lobby">
+			<header>
+				<h1 className='mainHeader'>
+					<span className='left'>
+						<button
+							type='button'
+							className='standard imageButton welcomeExit'
+							onClick={onExit}
+							title={localization.exit}>
+							<img src={exitImg} alt='Exit' />
+						</button>
+					</span>
+
+					<div className='right'>
+						<UserOptions />
+					</div>
+				</h1>
+			</header>
+
+			<div className='onlineView'>
+				{props.inProgress ? <ProgressBar isIndeterminate /> : null}
+				<GamesList games={props.filteredGames} selectedGameId={props.selectedGameId} showInfo={false} />
 
 				<div className='gameInfoArea'>
 					<header />
-					<div className='gameInfoAreaContent'><GameInfoView game={this.props.selectedGame} showGameName /></div>
+					<div className='gameInfoAreaContent'><GameInfoView game={props.selectedGame} showGameName /></div>
 				</div>
 
 				<UsersView />
-				<SettingsButton />
-				<LobbyChatVisibilityButton />
-				{this.props.newGameShown ? newGame : null}
+				{props.newGameShown ? newGame : null}
 			</div>
-		);
-	}
+		</div>
+	);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Lobby);

@@ -2,7 +2,6 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import localization from '../model/resources/localization';
 import uiActionCreators from '../state/ui/uiActionCreators';
-import FlyoutButton, { FlyoutHorizontalOrientation, FlyoutVerticalOrientation } from './common/FlyoutButton';
 import Path from '../model/enums/Path';
 
 import './SettingsButton.css';
@@ -23,20 +22,14 @@ const mapDispatchToProps = (dispatch: any) => ({
 
 export function SettingsButton(props: SettingsButtonProps): JSX.Element {
 	return (
-		<FlyoutButton
+		<button
+			type='button'
 			className="settingsButton"
-			flyout={(
-				<ul>
-					<li onClick={props.onShowSettings}>{localization.settings}</li>
-					<li onClick={() => props.navigate(Path.About)}>{localization.aboutTitle}</li>
-					<li onClick={() => props.navigate(Path.Menu)}>{localization.exit}</li>
-				</ul>
-			)}
-			horizontalOrientation={FlyoutHorizontalOrientation.Left}
-			verticalOrientation={FlyoutVerticalOrientation.Bottom}
+			title={localization.settings}
+			onClick={props.onShowSettings}
 		>
 			<span>⚙</span>
-		</FlyoutButton>
+		</button>
 	);
 }
 

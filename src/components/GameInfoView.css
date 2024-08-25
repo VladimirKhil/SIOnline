@@ -97,13 +97,12 @@
     position: static;
 }
 
-.join {
+.actions button.join {
     font-size: 26px;
     line-height: 26px;
     height: 45px;
     padding: 7pt 2px;
-    margin: 0;
-    margin-left: -1px;
+    margin: 0 2px;
 }
 
 @media screen and (min-width: 800px) {

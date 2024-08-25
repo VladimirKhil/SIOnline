@@ -4,6 +4,20 @@
     position: relative;
 }
 
+.chatHostTitle {
+    display: flex;
+}
+
+.chatHostTitle h1 {
+    display: inline;
+    margin: 10px 5px 10px 5px;
+    color: #FFFFFF;
+    font-size: 20px;
+    line-height: 26px;
+    text-shadow: 1px 1px 0 #000;
+    white-space: nowrap;
+}
+
 .playersTitle {
     margin-left: 8px;
     width: 160px;
@@ -20,6 +34,14 @@
         display: block;
         flex: 0 0 300px;
         width: 300px;
+    }
+
+    .chatHostTitle {
+        padding-left: 0;
+    }
+
+    .chatHostTitle h1 {
+        margin-left: 15px;
     }
 }
 

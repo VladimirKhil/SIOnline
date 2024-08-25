@@ -17,7 +17,6 @@ import GameServerClient from '../client/GameServerClient';
 import getErrorMessage from '../utils/ErrorHelpers';
 import { getFullCulture } from '../utils/StateHelpers';
 import GameClient from '../client/game/GameClient';
-import userActionCreators from '../state/user/userActionCreators';
 
 import SIContentClient, { SIContentServiceError } from 'sicontent-client';
 import SIStorageClient from 'sistorage-client';
@@ -49,6 +48,8 @@ import {
 	serverInfoChanged,
 	userErrorChanged,
 } from '../state/new/commonSlice';
+
+import { changeAvatar, changeLogin } from '../state/new/userSlice';
 
 interface ConnectResult {
 	success: boolean;
@@ -97,7 +98,7 @@ async function uploadAvatarAsync(dispatch: Dispatch<Action>, appDispatch: AppDis
 			: avatarUri2;
 
 		appDispatch(avatarLoadEnd());
-		dispatch(userActionCreators.avatarChanged(fullAvatarUri2));
+		appDispatch(changeAvatar(fullAvatarUri2));
 	} catch (err) {
 		const errorMessage = getErrorMessage(err);
 
@@ -249,6 +250,14 @@ const tryConnectAsync = async (
 
 		const state = getState();
 		const requestCulture = getFullCulture(state);
+
+		const login = await dataContext.gameClient.getLoginAsync();
+		const localLogin = state.user.login;
+
+		if ((login === null || login === '') && (localLogin === null || localLogin === '')) {
+			// Login is required to continue
+			return { success: false, authenticationRequired: true };
+		}
 
 		const computerAccounts = await dataContext.gameClient.getComputerAccountsAsync(requestCulture);
 		appDispatch(computerAccountsChanged(computerAccounts));
@@ -497,7 +506,7 @@ const login: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 			const connectResult = await tryConnectAsync(dispatch, appDispatch, getState, dataContext);
 
 			if (connectResult.success) {
-				dispatch(userActionCreators.onLoginChanged(state.user.login.trim())); // Normalize login
+				appDispatch(changeLogin(state.user.login.trim())); // Normalize login
 				appDispatch(endLogin());
 				await checkLicenseAsync(state.ui.navigation.callbackState ?? { path: Path.Root }, dispatch, appDispatch, getState, dataContext);
 			} else if (connectResult.authenticationRequired) {
@@ -518,6 +527,12 @@ const onExit: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 	dispatch(uiActionCreators.navigate({ path: Path.Login }) as unknown as Action);
 };
 
+const acceptLicense: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
+	() => async (dispatch: Dispatch<any>, getState: () => State, dataContext: DataContext) => {
+		dataContext.state.acceptLicense();
+		dispatch(uiActionCreators.navigate(getState().ui.navigation.callbackState ?? { path: Path.Root }) as unknown as Action);
+	};
+
 const actionCreators = {
 	init,
 	reloadComputerAccounts,
@@ -529,6 +544,7 @@ const actionCreators = {
 	closeSIHostClientAsync,
 	disconnectAsync,
 	onExit,
+	acceptLicense,
 };
 
 export default actionCreators;

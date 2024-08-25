@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { useState } from 'react';
 import localization from '../../../model/resources/localization';
 import State from '../../../state/State';
-import userActionCreators from '../../../state/user/userActionCreators';
+import actionCreators from '../../../logic/actionCreators';
 
 import './ServerLicense.css';
 
@@ -18,7 +18,7 @@ const mapStateToProps = (state: State) => ({
 
 const mapDispatchToProps = (dispatch: any) => ({
 	accept: () => {
-		dispatch(userActionCreators.acceptLicense());
+		dispatch(actionCreators.acceptLicense());
 	},
 });
 

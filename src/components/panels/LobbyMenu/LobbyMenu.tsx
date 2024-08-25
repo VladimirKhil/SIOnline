@@ -1,12 +1,12 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch, Action } from 'redux';
-import OnlineMode from '../model/enums/OnlineMode';
-import localization from '../model/resources/localization';
-import FlyoutButton, { FlyoutHorizontalOrientation, FlyoutVerticalOrientation } from './common/FlyoutButton';
-import uiActionCreators from '../state/ui/uiActionCreators';
-import State from '../state/State';
-import Path from '../model/enums/Path';
+import OnlineMode from '../../../model/enums/OnlineMode';
+import localization from '../../../model/resources/localization';
+import FlyoutButton, { FlyoutHorizontalOrientation, FlyoutVerticalOrientation } from '../../common/FlyoutButton';
+import uiActionCreators from '../../../state/ui/uiActionCreators';
+import State from '../../../state/State';
+import Path from '../../../model/enums/Path';
 
 import './LobbyMenu.css';
 
@@ -49,11 +49,10 @@ export function LobbyMenu(props: LobbyMenuProps): JSX.Element {
 					</li>
 
 					<li className={props.currentMode === OnlineMode.Chat ? 'activeMenuItem' : ''} onClick={props.onShowChat}>
-						{localization.chat}
+						{localization.trends}
 					</li>
 
 					<li onClick={props.onShowSettings}>{localization.settings}</li>
-					<li onClick={() => props.navigate(Path.About)}>{localization.aboutTitle}</li>
 					<li onClick={() => props.navigate(Path.Menu)}>{localization.exit}</li>
 				</ul>
 			)}

@@ -9,11 +9,11 @@ import ProgressBar from '../../common/ProgressBar';
 import AvatarView from '../../AvatarView';
 import SexView from '../../SexView';
 import LanguageView from '../../LanguageView';
-import userActionCreators from '../../../state/user/userActionCreators';
 import Path from '../../../model/enums/Path';
 import uiActionCreators from '../../../state/ui/uiActionCreators';
 import { useAppDispatch, useAppSelector } from '../../../state/new/hooks';
 import { AppDispatch, RootState } from '../../../state/new/store';
+import { changeLogin } from '../../../state/new/userSlice';
 
 import './Login.scss';
 
@@ -22,7 +22,6 @@ interface LoginProps {
 	culture: string;
 
 	selectedGameId: number;
-	onLoginChanged: (newLogin: string) => void;
 	onLogin: (appDispatch: AppDispatch) => void;
 	navigate: (path: Path) => void;
 }
@@ -36,9 +35,6 @@ const mapStateToProps = (state: State) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
-	onLoginChanged: (newLogin: string) => {
-		dispatch(userActionCreators.onLoginChanged(newLogin));
-	},
 	onLogin: (appDispatch: AppDispatch) => {
 		dispatch(actionCreators.login(appDispatch) as unknown as Action);
 	},
@@ -52,7 +48,7 @@ export function Login(props: LoginProps) {
 	const appDispatch = useAppDispatch();
 
 	const onLoginChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
-		props.onLoginChanged(e.target.value);
+		appDispatch(changeLogin(e.target.value));
 	};
 
 	const login = () => props.onLogin(appDispatch);

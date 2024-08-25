@@ -1,9 +1,15 @@
 import localization from '../model/resources/localization';
 
 function getLocalizedError(error: Error): string {
-	return error.message === 'Failed to fetch'
-		? localization.failedToFetch
-		: (error.name === 'NotReadableError' ? localization.fileNonReadable : error.message);
+	if (error.message === 'Failed to fetch') {
+		return localization.failedToFetch;
+	} else if (error.name === 'NotReadableError') {
+		return localization.fileNonReadable;
+	} else if (error.message.startsWith('Failed to complete negotiation with the server')) {
+		return localization.failedToCompleteNegotiationWithTheServer;
+	} else {
+		return error.message;
+	}
 }
 
 export default function getErrorMessage(e: unknown): string {

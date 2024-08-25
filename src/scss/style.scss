@@ -402,10 +402,6 @@ h1.activeTab {
     word-wrap: break-word;
 }
 
-#chatHostTitle {
-    display: flex;
-}
-
 #gamesList, #game {
     position: absolute;
     height: 100%;
@@ -577,7 +573,7 @@ a.simpleLink {
 }
 
 @media screen and (min-width: 800px) {
-    #gamesTitle, #chatHostTitle {
+    #gamesTitle {
         padding-left: 0;
     }
 

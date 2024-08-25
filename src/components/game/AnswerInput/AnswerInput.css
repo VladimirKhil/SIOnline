@@ -42,7 +42,7 @@ button.standard.sendAnswer:disabled {
 	background: linear-gradient(180deg, #5178db 14.29%, #2d56a1 100%);
 }
 
-@media screen and (min-width: 1400px) {
+@media screen and (min-width: 1600px) {
 	.answerInput {
 		font-size: 28px;
 	}

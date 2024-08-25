@@ -1,8 +1,8 @@
 import { Store } from 'redux';
 import IStateManager from './IStateManager';
-import userActionCreators from '../state/user/userActionCreators';
+import { changeLogin } from '../state/new/userSlice';
 
-const SDK_PATH = 'https://yandex.ru/games/sdk/v2';
+const SDK_PATH = 'https://sdk.games.s3.yandex.net/sdk.js';
 
 declare const YaGames: any;
 
@@ -15,7 +15,7 @@ export default class YAStateManager implements IStateManager {
 	async initAsync(store: Store): Promise<void> {
 		const scriptPromise = new Promise((resolve, reject) => {
 			const script = document.createElement('script');
-			document.body.appendChild(script);
+			document.head.appendChild(script);
 			script.onload = resolve;
 			script.onerror = reject;
 			script.async = true;
@@ -28,7 +28,7 @@ export default class YAStateManager implements IStateManager {
 		this.player = await this.ysdk.getPlayer();
 
 		this.playerData = await this.player.getData();
-		store.dispatch(userActionCreators.onLoginChanged(this.player.getName()) as any);
+		store.dispatch(changeLogin(this.player.getName()) as any);
 
 		this.ysdk.features.LoadingAPI?.ready();
 

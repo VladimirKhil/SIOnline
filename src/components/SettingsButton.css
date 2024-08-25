@@ -1,12 +1,10 @@
 .settingsButton {
     display: none;
-    position: absolute;
-    right: 0;
-    top: 0;
-    height: 35pt;
     font-size: 26px;
     padding: 0 10px;
     border: 0;
+    height: 45px;
+    width: 45px;
 }
 
 @media screen and (min-width: 800px) {

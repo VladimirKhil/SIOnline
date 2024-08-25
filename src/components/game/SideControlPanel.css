@@ -189,6 +189,10 @@ ul.gameMenu, .exitMenu ul {
     .pauseButton img {
         height: 28px;
     }
+
+    button.standard.imageButton.exit {
+        display: none;
+    }
 }
 
 @media screen and (min-width: 1100px) {

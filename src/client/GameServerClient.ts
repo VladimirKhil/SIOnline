@@ -45,8 +45,8 @@ export default class GameServerClient implements IGameServerClient {
 		return this.connection.invoke<string[]>('GetUsers');
 	}
 
-	getLoginAsync(): Promise<string> {
-		return this.connection.invoke<string>('GetLogin');
+	getLoginAsync(): Promise<string | null> {
+		return this.connection.invoke<string | null>('GetLogin');
 	}
 
 	getNewsAsync(): Promise<string | null> {
