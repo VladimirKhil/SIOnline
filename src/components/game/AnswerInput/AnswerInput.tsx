@@ -8,7 +8,7 @@ import localization from '../../../model/resources/localization';
 import { useAppDispatch } from '../../../state/new/hooks';
 import { sendAnswer } from '../../../state/new/room2Slice';
 
-import './AnswerInput.css';
+import './AnswerInput.scss';
 
 interface AnswerInputProps {
 	isConnected: boolean;
@@ -71,10 +71,9 @@ export function AnswerInput(props: AnswerInputProps): JSX.Element | null {
 
 			<button
 				type='button'
-				className='sendAnswer standard'
+				className='sendAnswer mainAction active'
 				title={localization.send}
-				onClick={sendAnswer2}
-				disabled={props.answer.length === 0}>
+				onClick={sendAnswer2}>
 				<svg width="14" height="13" viewBox="0 0 14 13" fill="none">
 					<path
 						fillRule="evenodd"

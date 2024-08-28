@@ -1,3 +1,5 @@
+@use "../../../scss/variables" as v;
+
 .answerValidationDialog {
     background-color: #5A95E2;
     z-index: 5;
@@ -81,7 +83,7 @@
 }
 
 .answerValidationDialog .acceptButton {
-    background: linear-gradient(180deg, #27CB5C 14.29%, #0f8735 100%);
+    background: v.$accept-button-background;
 }
 
 .answerValidationDialog .acceptButton:hover {
@@ -89,8 +91,7 @@
 }
 
 .answerValidationDialog .rejectButton {
-    background: #4CAF50;
-    background: linear-gradient(180deg, #D2352B 14.29%, #a9160b 100%);
+    background: v.$reject-button-background;
 }
 
 .answerValidationDialog .rejectButton:hover {

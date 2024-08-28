@@ -1,3 +1,5 @@
+@use '../../../scss/variables' as v;
+
 .answerInputHost {
 	display: flex;
 	height: 100%;
@@ -16,9 +18,9 @@
     font-size: 20px;
 	color: white;
 	background: transparent;
-	margin: 2px 5px;
+	margin: 0 5px;
 	background: #05061F;
-	border: 1px solid #2649FF;
+	border: v.$input-border;
 	border-radius: 10px;
 }
 
@@ -27,9 +29,9 @@
 }
 
 .sendAnswer {
-	height: calc(100% - 4px);
+	height: 100%;
 	aspect-ratio: 1/1;
-	margin: 2px 2px;
+	margin: 0 2px;
 	padding-top: 6px;
 }
 

@@ -6,7 +6,7 @@ import SendPassButton from '../SendPassButton';
 import SendStakeButton from '../SendStakeButton';
 import State from '../../../../state/State';
 
-import './StakePanel.css';
+import './StakePanel.scss';
 
 interface StakePanelProps {
 	minimum: number;
@@ -33,7 +33,7 @@ export function StakePanel(props: StakePanelProps): JSX.Element | null {
 			{useStakeVariants
 			? <>
 				{Array.from(Array(stakeVariants).keys()).map(n => <SendStakeButton
-					className='wideStake standard'
+					className='wideStake mainAction active'
 					stake={props.minimum + props.step * n} />)}
 			</>
 			: <>

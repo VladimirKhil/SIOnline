@@ -5,6 +5,7 @@
 	line-height: 40px;
 	vertical-align: middle;
 	display: flex;
+	overflow: hidden;
 }
 
 	.personItem:hover {
@@ -17,6 +18,19 @@
 
 	.personItem.me {
 		font-weight: bold;
+	}
+
+	.personItem .personNameWrapper {
+		display: inline-flex;
+		justify-content: center;
+		align-items: center;
+		overflow: hidden;
+	}
+
+	.personItem .personName {
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
 	}
 
 .personItem_avatar {

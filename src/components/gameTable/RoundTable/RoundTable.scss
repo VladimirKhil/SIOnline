@@ -75,7 +75,7 @@
 }
 
 #table .roundTable.selectable .questHeader.active:hover {
-	background: rgb(189, 189, 166);
+	background: v.$table-cell-active-background-color;
 }
 
 #table .roundTable.selectable .questHeader.active:active {
@@ -83,16 +83,15 @@
 }
 
 #table .roundTable .questHeader.editable {
-	background-color: rgba(255,255,255,0.5);
 	cursor: pointer;
 }
 
 #table .roundTable .questHeader.editable:hover {
-	background-color: rgba(0,255,0,0.8);
+	background: v.$accept-button-background;
 }
 
 #table .roundTable .questHeader.editable.active:hover {
-	background-color: rgba(255,0,0,0.8);
+	background: v.$reject-button-background;
 }
 
 @media screen and (min-width: 1100px) {

@@ -6,9 +6,11 @@ import Role from '../../model/Role';
 import JoinMode from '../../client/game/JoinMode';
 import AppSettings from '../../model/AppSettings';
 import StakeModes from '../../client/game/StakeModes';
+import UsersMode from '../../model/enums/UsersMode';
 
 export const enum RoomActionTypes {
 	RoomChatModeChanged = 'ROOM_CHAT_MODE_CHANGED',
+	RoomUsersModeChanged = 'ROOM_USERS_MODE_CHANGED',
 	RoomChatMessageChanged = 'ROOM_CHAT_MESSAGE_CHANGED',
 	RoomChatVisibilityChanged = 'ROOM_CHAT_VISIBILITY_CHANGED',
 	RoomShowPersons = 'ROOM_SHOW_PERSONS',
@@ -83,6 +85,7 @@ export const enum RoomActionTypes {
 }
 
 export type RunChatModeChangedAction = { type: RoomActionTypes.RoomChatModeChanged, chatMode: ChatMode };
+export type RunUsersModeChangedAction = { type: RoomActionTypes.RoomUsersModeChanged, usersMode: UsersMode };
 export type RunChatMessageChangedAction = { type: RoomActionTypes.RoomChatMessageChanged, message: string };
 export type RunChatVisibilityChangedAction = { type: RoomActionTypes.RoomChatVisibilityChanged, isOpen: boolean };
 export type RunShowPersonsAction = { type: RoomActionTypes.RoomShowPersons };
@@ -181,6 +184,7 @@ export type IsQuestionChangedAction = { type: RoomActionTypes.IsQuestionChanged,
 
 export type KnownRoomAction =
 	RunChatModeChangedAction
+	| RunUsersModeChangedAction
 	| RunChatMessageChangedAction
 	| RunChatVisibilityChangedAction
 	| RunShowPersonsAction

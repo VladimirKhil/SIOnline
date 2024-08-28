@@ -1,5 +1,6 @@
 .tableItem {
 	padding-left: 15px;
+	padding-right: 15px;
 	cursor: pointer;
 	height: 40px;
 	line-height: 40px;
@@ -17,6 +18,12 @@
 	.tableItem.active {
 		background-color: #5A95E2;
 	}
+
+.tableName {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
 
 .tableSum {
 	font-weight: bold;

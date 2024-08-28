@@ -1,3 +1,5 @@
+@use "../../../../scss/variables" as v;
+
 .wideStakeHost {
 	height: 100%;
 	width: 100%;
@@ -25,7 +27,7 @@
 	overflow: hidden;
 	color: white;
 	background: #0A0E30;
-	border: 1px solid #2649FF;
+	border: v.$input-border;
 	border-radius: 10px;
 	margin-left: 4px;
 }

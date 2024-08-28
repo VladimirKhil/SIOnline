@@ -54,9 +54,11 @@ export function PersonView(props: PersonViewProps): JSX.Element {
 				style={{ backgroundImage: avatar ? `url("${avatar}")` : undefined }}
 			/>
 
-			<span>
-				{props.account.name}
-			</span>
+			<div className='personNameWrapper'>
+				<span className='personName'>
+					{props.account.name}
+				</span>
+			</div>
 
 			{isHost ? (<span className="personItem_host" role="img" aria-label="star" title={localization.host}>⭐</span>) : null}
 		</li>

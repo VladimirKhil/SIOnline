@@ -41,7 +41,10 @@
 }
 
 .welcomeView header h1 .left {
-	text-align: left;
+	display: flex !important;
+	flex-direction: row;
+	overflow: hidden;
+	flex: 0 0 auto;
 }
 
 .mainHeader .right {
@@ -75,7 +78,8 @@
 	align-items: center;
 	justify-content: center;
 	border: 0;
-	width: 44px;
+	flex: 0 0 45px;
+	width: 45px;
 	height: 45px;
 	padding: 3px;
 }
@@ -112,7 +116,7 @@
 }
 
 .welcomeViewActions button {
-	margin: 5px 0;
+	margin: 2px 0;
 	flex: 1;
 	display: flex;
 	align-items: center;
@@ -142,15 +146,15 @@ button.standard.welcomeRow {
 }
 
 button.standard.welcomeExit {
-	display: inline-flex !important;
-	vertical-align: middle;
-	height: 42px;
-	margin-left: 2px;
+	display: flex !important;
+	flex: 0 0 45px;
+	width: 45px;
+	height: 45px;
 	background: transparent;
-}
-
-.welcomeView .welcomeExit {
-	margin-top: -3px;
+	border-radius: 0;
+	overflow: hidden;
+	justify-content: center;
+	align-items: center;
 }
 
 .welcomeExit img {
@@ -192,6 +196,7 @@ button.standard.welcomeExit {
 
 	.welcomeViewActions button {
 		padding: 10px 40px;
+		margin: 3px 0;
 	}
 
 	.welcomeView .logo {
@@ -206,6 +211,7 @@ button.standard.welcomeExit {
 
 	.welcomeViewActions button {
 		padding: 17px 50px;
+		margin: 5px 0;
 		font-size: 35px;
 	}
 }

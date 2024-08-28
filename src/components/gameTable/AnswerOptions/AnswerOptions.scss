@@ -28,7 +28,7 @@
 }
 
 .answerOptions.selectable .answerOption.normal:hover {
-    background: rgb(189, 189, 166);
+    background: v.$table-cell-active-background-color;
 }
 
 .answerOptions.selectable .answerOption.normal:active {
@@ -40,15 +40,15 @@
 }
 
 .answerOption.active {
-	background: #FB771D;
+	background: v.$active-button-background;
 }
 
 .answerOption.right {
-	background: #27CB5C;
+	background: v.$accept-button-background;
 }
 
 .answerOption.wrong {
-    background: #D2352B;
+    background: v.$reject-button-background;
 }
 
 .answerOption.active:hover {

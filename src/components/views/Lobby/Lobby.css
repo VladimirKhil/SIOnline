@@ -37,10 +37,6 @@
 	align-items: center;
 }
 
-.lobby header h1 .welcomeExit {
-	margin-top: 1px;
-}
-
 .onlineView {
     display: flex;
     flex: 1;

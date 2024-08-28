@@ -19,6 +19,15 @@ const roomReducer: Reducer<RoomState> = (state: RoomState = initialState, anyAct
 				}
 			};
 
+		case RoomActionTypes.RoomUsersModeChanged:
+			return {
+				...state,
+				chat: {
+					...state.chat,
+					usersMode: action.usersMode
+				}
+			};
+
 		case RoomActionTypes.RoomChatMessageChanged:
 			return {
 				...state,

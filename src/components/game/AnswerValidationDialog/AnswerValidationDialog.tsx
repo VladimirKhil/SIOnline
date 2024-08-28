@@ -10,7 +10,7 @@ import { useAppDispatch } from '../../../state/new/hooks';
 import { approveAnswer, rejectAnswer } from '../../../state/new/room2Slice';
 import { setValidationAnswersVisibility } from '../../../state/new/settingsSlice';
 
-import './AnswerValidationDialog.css';
+import './AnswerValidationDialog.scss';
 
 interface AnswerValidationDialogProps {
 	isConnected: boolean;

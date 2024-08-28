@@ -1,8 +1,6 @@
 ﻿const enum ChatMode {
 	Chat,
 	Users,
-	Tables,
-	Banned,
 	Info,
 }
 

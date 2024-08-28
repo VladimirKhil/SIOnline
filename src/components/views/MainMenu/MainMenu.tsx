@@ -74,7 +74,7 @@ export function MainMenu(props: MainMenuProps): JSX.Element {
 		<section className="welcomeView">
 			<header>
 				<h1 className='mainHeader'>
-					<span className='left'>
+					<div className='left'>
 						<button
 							type='button'
 							className='standard imageButton welcomeExit'
@@ -93,7 +93,7 @@ export function MainMenu(props: MainMenuProps): JSX.Element {
 						>
 							ⓘ
 						</button>
-					</span>
+					</div>
 
 					<div className='right'>
 						<UserOptions />

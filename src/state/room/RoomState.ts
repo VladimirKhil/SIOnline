@@ -7,6 +7,7 @@ import TimerStates from '../../model/enums/TimeStates';
 import JoinMode from '../../client/game/JoinMode';
 import AppSettings, { initialState as initialAppSettings } from '../../model/AppSettings';
 import StakeModes from '../../client/game/StakeModes';
+import UsersMode from '../../model/enums/UsersMode';
 
 export default interface RoomState {
 	persons: {
@@ -68,6 +69,7 @@ export default interface RoomState {
 		mode: ChatMode;
 		message: string;
 		messages: ChatMessage[];
+		usersMode: UsersMode;
 		selectedPersonName: string | null;
 	};
 
@@ -190,7 +192,8 @@ export const initialState: RoomState = {
 		mode: ChatMode.Chat,
 		message: '',
 		messages: [],
-		selectedPersonName: null
+		usersMode: UsersMode.Users,
+		selectedPersonName: null,
 	},
 
 	selectedTableIndex: -1,

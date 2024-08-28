@@ -21,11 +21,16 @@ import { AppDispatch } from '../new/store';
 import { isSelectableChanged } from '../new/tableSlice';
 import { showmanReplicChanged } from '../new/room2Slice';
 import StakeModes from '../../client/game/StakeModes';
+import UsersMode from '../../model/enums/UsersMode';
 
 let timerRef: number | null = null;
 
 const runChatModeChanged: ActionCreator<RunActions.RunChatModeChangedAction> = (chatMode: ChatMode) => ({
 	type: RunActions.RoomActionTypes.RoomChatModeChanged, chatMode
+});
+
+const runUsersModeChanged: ActionCreator<RunActions.RunUsersModeChangedAction> = (usersMode: UsersMode) => ({
+	type: RunActions.RoomActionTypes.RoomUsersModeChanged, usersMode
 });
 
 const runChatMessageChanged: ActionCreator<RunActions.RunChatMessageChangedAction> = (message: string) => ({
@@ -781,6 +786,7 @@ const settingsChanged: ActionCreator<RunActions.SettingsChangedAction> = (settin
 
 const roomActionCreators = {
 	runChatModeChanged,
+	runUsersModeChanged,
 	runChatMessageChanged,
 	runChatMessageSend,
 	onPass,

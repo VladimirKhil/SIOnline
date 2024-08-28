@@ -34,6 +34,6 @@
     }
 
 #table .finalTable.selectable .finalTableCell.active:hover {
-    background: rgb(189, 189, 166);
+    background: v.$table-cell-active-background-color;
     cursor: pointer;
 }

@@ -57,6 +57,7 @@ import { answerOptions,
 	updateQuestion } from '../state/new/tableSlice';
 
 import {
+	ContextView,
 	activatePlayerDecision,
 	activateShowmanDecision,
 	chooserChanged,
@@ -74,6 +75,7 @@ import {
 	playersStateCleared,
 	playersSwap,
 	selectPlayers,
+	setContext,
 	setReport,
 	showmanChanged,
 	showmanReplicChanged,
@@ -482,6 +484,7 @@ export default class ClientController {
 		this.dispatch(roomActionCreators.gameStateCleared());
 		this.appDispatch(isSelectableChanged(false));
 		this.appDispatch(canPressChanged(false));
+		this.appDispatch(setContext(ContextView.None));
 	}
 
 	onStageInfo(stage: string, _stageName: string, stageIndex: number) {
