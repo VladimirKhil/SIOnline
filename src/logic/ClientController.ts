@@ -794,7 +794,7 @@ export default class ClientController {
 	}
 
 	onRightAnswerStart(rightAnswer: string) {
-		this.appDispatch(setAnswerView(rightAnswer));
+		this.appDispatch(setAnswerView(this.getState().table.layoutMode === LayoutMode.Simple ? rightAnswer : ''));
 	}
 
 	onRightAnswer(answer: string) {

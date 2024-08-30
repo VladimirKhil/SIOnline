@@ -231,7 +231,6 @@ export const tableSlice = createSlice({
 		},
 		setAnswerView: (state, action: PayloadAction<string>) => {
 			state.prependText = '';
-			state.content = [];
 			state.appendText = action.payload;
 			state.isAnswer = true;
 			state.loadTimer.value = 1;
