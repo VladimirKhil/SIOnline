@@ -1,12 +1,12 @@
 import * as React from 'react';
 import { Dispatch, Action } from 'redux';
 import { connect } from 'react-redux';
-import State from '../../state/State';
-import localization from '../../model/resources/localization';
-import LanguageView from '../LanguageView';
-import uiActionCreators from '../../state/ui/uiActionCreators';
-import Constants from '../../model/enums/Constants';
-import { useAppDispatch, useAppSelector } from '../../state/new/hooks';
+import State from '../../../state/State';
+import localization from '../../../model/resources/localization';
+import LanguageView from '../../LanguageView';
+import uiActionCreators from '../../../state/ui/uiActionCreators';
+import Constants from '../../../model/enums/Constants';
+import { useAppDispatch, useAppSelector } from '../../../state/new/hooks';
 
 import { setAppSound,
 	setAttachContentToTable,
@@ -16,7 +16,7 @@ import { setAppSound,
 	setShowPersonsAtBottomOnWideScreen,
 	setShowVideoAvatars,
 	setSound,
-	setSoundVolume } from '../../state/new/settingsSlice';
+	setSoundVolume } from '../../../state/new/settingsSlice';
 
 interface CommonSettingsViewProps {
 	isSettingGameButtonKey: boolean;

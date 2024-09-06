@@ -1,5 +1,5 @@
 import * as React from 'react';
-import NewGameDialog from '../../NewGameDialog';
+import NewGameDialog from '../../panels/NewGameDialog/NewGameDialog';
 import State from '../../../state/State';
 import { INavigationState } from '../../../state/ui/UIState';
 import { connect } from 'react-redux';

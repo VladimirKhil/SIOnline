@@ -6,10 +6,10 @@ import * as login from './new/loginSlice';
 import * as room2 from './new/room2Slice';
 import * as online2 from './new/online2Slice';
 import * as common from './new/commonSlice';
+import * as game from './new/gameSlice';
 import SIPackagesState, { initialState as siPackagesInitialState } from './siPackages/SIPackagesState';
 import UIState, { initialState as uiInitialState } from './ui/UIState';
 import OnlineState, { initialState as onlineInitialState } from './online/OnlineState';
-import GameState, { initialState as gameInitialState } from './game/GameState';
 
 export default interface State {
 	user: user.UserState;
@@ -17,7 +17,7 @@ export default interface State {
 	ui: UIState;
 	online: OnlineState;
 	online2: online2.Online2State;
-	game: GameState;
+	game: game.GameState;
 	room: RoomState;
 	room2: room2.Room2State;
 	table: table.TableState;
@@ -32,7 +32,7 @@ export const initialState: State = {
 	ui: uiInitialState,
 	online: onlineInitialState,
 	online2: online2.online2Slice.getInitialState(),
-	game: gameInitialState,
+	game: game.gameSlice.getInitialState(),
 	siPackages: siPackagesInitialState,
 	room: roomInitialState,
 	room2: room2.room2Slice.getInitialState(),

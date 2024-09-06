@@ -15,8 +15,7 @@ import uiReducer from './ui/uiReducer';
 import { KnownUIAction } from './ui/UIActions';
 import onlineReducer from './online/onlineReducer';
 import { KnownOnlineAction } from './online/OnlineActions';
-import gameReducer from './game/gameReducer';
-import { KnownGameAction } from './game/GameActions';
+import gameReducer from './new/gameSlice';
 import { UnknownAction } from '@reduxjs/toolkit';
 
 const reducer: Reducer<State> = (
@@ -33,7 +32,7 @@ const reducer: Reducer<State> = (
 	ui: uiReducer(state.ui, action as KnownUIAction),
 	online: onlineReducer(state.online, action as KnownOnlineAction),
 	online2: online2Reducer(state.online2, action as UnknownAction),
-	game: gameReducer(state.game, action as KnownGameAction),
+	game: gameReducer(state.game, action as UnknownAction),
 });
 
 export default reducer;

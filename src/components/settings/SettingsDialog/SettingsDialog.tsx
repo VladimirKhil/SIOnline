@@ -1,15 +1,15 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch, Action } from 'redux';
-import Dialog from '../common/Dialog/Dialog';
-import localization from '../../model/resources/localization';
-import TimeSettingsView from './TimeSettingsView';
-import SettingsView from '../../model/enums/SettingsView';
-import CommonSettingsView from './CommonSettingsView';
-import RulesSettingsView from './RulesSettingsView';
-import uiActionCreators from '../../state/ui/uiActionCreators';
-import { useAppDispatch } from '../../state/new/hooks';
-import { resetSettings } from '../../state/new/settingsSlice';
+import Dialog from '../../common/Dialog/Dialog';
+import localization from '../../../model/resources/localization';
+import TimeSettingsView from '../TimeSettingsView/TimeSettingsView';
+import SettingsView from '../../../model/enums/SettingsView';
+import CommonSettingsView from '../CommonSettingsView/CommonSettingsView';
+import RulesSettingsView from '../RulesSettingsView/RulesSettingsView';
+import uiActionCreators from '../../../state/ui/uiActionCreators';
+import { useAppDispatch } from '../../../state/new/hooks';
+import { resetSettings } from '../../../state/new/settingsSlice';
 
 import './SettingsDialog.css';
 

@@ -1,12 +1,8 @@
 import * as React from 'react';
-import { Dispatch, Action } from 'redux';
-import { connect } from 'react-redux';
-import State from '../../state/State';
-import localization from '../../model/resources/localization';
-import GameType from '../../model/GameType';
-import gameActionCreators from '../../state/game/gameActionCreators';
-import ButtonPressMode from '../../model/ButtonPressMode';
-import { useAppDispatch, useAppSelector } from '../../state/new/hooks';
+import localization from '../../../model/resources/localization';
+import GameType from '../../../model/GameType';
+import ButtonPressMode from '../../../model/ButtonPressMode';
+import { useAppDispatch, useAppSelector } from '../../../state/new/hooks';
 
 import { resetSettings,
 	setAllowEveryoneToPlayHiddenStakes,
@@ -25,27 +21,15 @@ import { resetSettings,
 	setPlayAllQuestionsInFinalRound,
 	setPreloadRoundContent,
 	setReadingSpeed,
-	setUseApellations } from '../../state/new/settingsSlice';
+	setUseApellations } from '../../../state/new/settingsSlice';
+
+import { setType } from '../../../state/new/gameSlice';
 
 import './RulesSettingsView.css';
 
-interface RulesSettingsViewProps {
-	gameType: GameType;
-	onGameTypeChanged: (newGameType: number) => void;
-}
-
-const mapStateToProps = (state: State) => ({
-	gameType: state.game.type,
-});
-
-const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
-	onGameTypeChanged: (newGameType: number) => {
-		dispatch(gameActionCreators.gameTypeChanged(newGameType));
-	},
-});
-
-export function RulesSettingsView(props: RulesSettingsViewProps): JSX.Element {
+export default function RulesSettingsView(): JSX.Element {
 	const settings = useAppSelector(state => state.settings);
+	const game = useAppSelector(state => state.game);
 	const appDispatch = useAppDispatch();
 
 	function onReadingSpeedChanged(e: React.ChangeEvent<HTMLInputElement>) {
@@ -57,7 +41,7 @@ export function RulesSettingsView(props: RulesSettingsViewProps): JSX.Element {
 	}
 
 	function onGameTypeChanged(e: React.ChangeEvent<HTMLSelectElement>) {
-		props.onGameTypeChanged(parseInt(e.target.value, 10));
+		appDispatch(setType(parseInt(e.target.value, 10)));
 	}
 
 	function onButtonPressModeChanged(e: React.ChangeEvent<HTMLSelectElement>) {
@@ -70,13 +54,13 @@ export function RulesSettingsView(props: RulesSettingsViewProps): JSX.Element {
 				<div className='blockName'>{localization.gameType}</div>
 
 				<div className='blockValue'>
-					<select aria-label='Game type' className='blockValue' value={props.gameType} onChange={onGameTypeChanged}>
+					<select aria-label='Game type' className='blockValue' value={game.type} onChange={onGameTypeChanged}>
 						<option value="1">{localization.sport}</option>
 						<option value="0">{localization.tv}</option>
 					</select>
 
 					<div className='gameTypeHint'>
-						{props.gameType === GameType.Classic ? localization.gameTypeClassicHint : localization.gameTypeSimpleHint}
+						{game.type === GameType.Classic ? localization.gameTypeClassicHint : localization.gameTypeSimpleHint}
 					</div>
 				</div>
 			</div>
@@ -89,7 +73,6 @@ export function RulesSettingsView(props: RulesSettingsViewProps): JSX.Element {
 						id="playAllQuestionsInFinalRound"
 						type="checkbox"
 						checked={settings.appSettings.playAllQuestionsInFinalRound}
-						disabled={props.gameType === GameType.Simple}
 						onChange={() => appDispatch(setPlayAllQuestionsInFinalRound(!settings.appSettings.playAllQuestionsInFinalRound))}
 					/>
 				</div>
@@ -345,6 +328,4 @@ export function RulesSettingsView(props: RulesSettingsViewProps): JSX.Element {
 		</div>
 	);
 }
-
-export default connect(mapStateToProps, mapDispatchToProps)(RulesSettingsView);
 

@@ -26,7 +26,6 @@ import Sex from '../../model/enums/Sex';
 import roomActionCreators from '../room/roomActionCreators';
 import * as GameErrorsHelper from '../../utils/GameErrorsHelper';
 import actionCreators from '../../logic/actionCreators';
-import gameActionCreators from '../game/gameActionCreators';
 import ServerTimeSettings from '../../client/contracts/ServerTimeSettings';
 import LobbySideMode from '../../model/enums/LobbySideMode';
 import SIStatisticsClient from 'sistatistics-client';
@@ -39,12 +38,12 @@ import IGameClient from '../../client/game/IGameClient';
 import ServerRole from '../../client/contracts/ServerRole';
 import clearUrls from '../../utils/clearUrls';
 import { userErrorChanged } from '../new/commonSlice';
-import GameState from '../game/GameState';
 import WellKnownSIContentServiceErrorCode from 'sicontent-client/dist/models/WellKnownSIContentServiceErrorCode';
 import RandomPackageParameters from 'sistorage-client/dist/models/RandomPackageParameters';
 import { AppDispatch } from '../new/store';
 import { showText, tableReset } from '../new/tableSlice';
 import { ContextView, setContext } from '../new/room2Slice';
+import { GameState, setGameSet } from '../new/gameSlice';
 
 const selectGame: ActionCreator<OnlineActions.SelectGameAction> = (gameId: number) => ({
 	type: OnlineActions.OnlineActionTypes.SelectGame,
@@ -337,7 +336,7 @@ const initGameAsync = async (
 	isAutomatic: boolean,
 	navigate: boolean,
 ) => {
-	dispatch(gameActionCreators.gameSet(gameId, isAutomatic));
+	appDispatch(setGameSet({ id: gameId, isAutomatic }));
 	appDispatch(tableReset());
 	appDispatch(showText(localization.tableHint));
 	appDispatch(setContext(ContextView.None));

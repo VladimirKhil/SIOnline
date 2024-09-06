@@ -5,7 +5,7 @@ import State from '../../../state/State';
 import GameInfoView from '../../GameInfoView';
 import UsersView from '../../panels/UsersView/UsersView';
 import OnlineMode from '../../../model/enums/OnlineMode';
-import NewGameDialog from '../../NewGameDialog';
+import NewGameDialog from '../../panels/NewGameDialog/NewGameDialog';
 import GameInfo from '../../../client/contracts/GameInfo';
 import Dialog from '../../common/Dialog/Dialog';
 import onlineActionCreators from '../../../state/online/onlineActionCreators';

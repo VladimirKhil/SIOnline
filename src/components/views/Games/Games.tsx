@@ -2,19 +2,20 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch, Action, AnyAction } from 'redux';
-import gameActionCreators from '../../../state/game/gameActionCreators';
 import localization from '../../../model/resources/localization';
 import State from '../../../state/State';
 import GameInfo from '../../../client/contracts/GameInfo';
 import { filterGames } from '../../../utils/GamesHelpers';
 import GamesFilter from '../../../model/enums/GamesFilter';
-import NewGameDialog from '../../NewGameDialog';
+import NewGameDialog from '../../panels/NewGameDialog/NewGameDialog';
 import Dialog from '../../common/Dialog/Dialog';
 import GameInfoView from '../../GameInfoView';
 import uiActionCreators from '../../../state/ui/uiActionCreators';
 import onlineActionCreators from '../../../state/online/onlineActionCreators';
 import OnlineMode from '../../../model/enums/OnlineMode';
 import Path from '../../../model/enums/Path';
+import { useAppDispatch, useAppSelector } from '../../../state/new/hooks';
+import { newGame2 } from '../../../state/new/gameSlice';
 
 import './Games.css';
 
@@ -65,7 +66,6 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	},
 	onNewGame: () => {
 		dispatch(onlineActionCreators.newGame());
-		dispatch(gameActionCreators.runNewGame() as any as AnyAction);
 	},
 	closeNewGame: () => {
 		dispatch(onlineActionCreators.newGameCancel());
@@ -110,9 +110,17 @@ function renderGameList(props: GamesProps): React.ReactNode {
 }
 
 export function Games(props: GamesProps): JSX.Element {
+	const appDispatch = useAppDispatch();
+	const user = useAppSelector(state => state.user);
+
 	if (props.newGameShown) {
 		return <NewGameDialog isSingleGame={false} onClose={props.closeNewGame} />;
 	}
+
+	const onNewGame = () => {
+		props.onNewGame();
+		appDispatch(newGame2(user.login));
+	};
 
 	return props.selectedGame ? (
 		<Dialog className="gameInfoDialog2" title={props.selectedGame.GameName} onClose={() => props.unselectGame()}>
@@ -138,7 +146,7 @@ export function Games(props: GamesProps): JSX.Element {
 						onChange={e => props.onGamesSearchChanged(e.target.value)}
 					/>
 
-					<button type="button" className='standard' id="newGame" disabled={!props.isConnected} onClick={props.onNewGame}>
+					<button type="button" className='standard' id="newGame" disabled={!props.isConnected} onClick={onNewGame}>
 						{localization.newGame.toLocaleUpperCase()}
 					</button>
 				</div>
