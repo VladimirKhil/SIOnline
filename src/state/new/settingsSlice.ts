@@ -153,7 +153,8 @@ export const settingsSlice = createSlice({
 			state.nextButtonKey = action.payload;
 		},
 		resetSettings: (state: SettingsState) => {
-			Object.assign(state, initialState);
+			const { culture } = state.appSettings;
+			Object.assign(state, initialState, { appSettings: { ...initialAppSettings, culture } });
 		}
 	}
 });

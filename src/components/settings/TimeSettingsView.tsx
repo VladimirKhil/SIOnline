@@ -3,7 +3,7 @@ import localization from '../../model/resources/localization';
 import TimeSettingItem from './TimeSettingItem';
 import TimeSettings from '../../model/TimeSettings';
 import { useAppDispatch, useAppSelector } from '../../state/new/hooks';
-import { setTimeSetting } from '../../state/new/settingsSlice';
+import { resetSettings, setTimeSetting } from '../../state/new/settingsSlice';
 
 import './TimeSettingsView.css';
 
@@ -100,6 +100,14 @@ export default function TimeSettingsView(): JSX.Element {
 				value={settings.partialImageTime}
 				maximum={20}
 				onValueChanged={value => onTimeSettingChanged('partialImageTime', value)} />
+
+			<button
+				type="button"
+				className="reset standard"
+				title={localization.resetToDefaultsHint}
+				onClick={() => appDispatch(resetSettings())}>
+				{localization.resetToDefaults}
+			</button>
 		</div>
 	);
 }

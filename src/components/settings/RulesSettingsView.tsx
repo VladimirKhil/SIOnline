@@ -8,7 +8,8 @@ import gameActionCreators from '../../state/game/gameActionCreators';
 import ButtonPressMode from '../../model/ButtonPressMode';
 import { useAppDispatch, useAppSelector } from '../../state/new/hooks';
 
-import { setAllowEveryoneToPlayHiddenStakes,
+import { resetSettings,
+	setAllowEveryoneToPlayHiddenStakes,
 	setButtonPressMode,
 	setDisplayAnswerOptionsLabels,
 	setDisplayAnswerOptionsOneByOne,
@@ -64,121 +65,144 @@ export function RulesSettingsView(props: RulesSettingsViewProps): JSX.Element {
 	}
 
 	return (
-		<div>
-			<div className="settingItem">
-				<p className='gameTypeHeader'>{localization.gameType}</p>
+		<div className='rulesSettingsView'>
+			<div className="block">
+				<div className='blockName'>{localization.gameType}</div>
 
-				<select aria-label='Game type' className='gameType' value={props.gameType} onChange={onGameTypeChanged}>
-					<option value="1">{localization.sport}</option>
-					<option value="0">{localization.tv}</option>
-				</select>
+				<div className='blockValue'>
+					<select aria-label='Game type' className='blockValue' value={props.gameType} onChange={onGameTypeChanged}>
+						<option value="1">{localization.sport}</option>
+						<option value="0">{localization.tv}</option>
+					</select>
 
-				<span className='gameTypeHint'>
-					{props.gameType === GameType.Classic ? localization.gameTypeClassicHint : localization.gameTypeSimpleHint}
-				</span>
+					<div className='gameTypeHint'>
+						{props.gameType === GameType.Classic ? localization.gameTypeClassicHint : localization.gameTypeSimpleHint}
+					</div>
+				</div>
 			</div>
 
-			<div className="settingItem">
-				<input
-					id="playAllQuestionsInFinalRound"
-					type="checkbox"
-					checked={settings.appSettings.playAllQuestionsInFinalRound}
-					disabled={props.gameType === GameType.Simple}
-					onChange={() => appDispatch(setPlayAllQuestionsInFinalRound(!settings.appSettings.playAllQuestionsInFinalRound))}
-				/>
+			<div className="block">
+				<label className='blockName' htmlFor="playAllQuestionsInFinalRound">{localization.playAllQuestionsInFinalRound}</label>
 
-				<label htmlFor="playAllQuestionsInFinalRound">{localization.playAllQuestionsInFinalRound}</label>
+				<div className='blockValue'>
+					<input
+						id="playAllQuestionsInFinalRound"
+						type="checkbox"
+						checked={settings.appSettings.playAllQuestionsInFinalRound}
+						disabled={props.gameType === GameType.Simple}
+						onChange={() => appDispatch(setPlayAllQuestionsInFinalRound(!settings.appSettings.playAllQuestionsInFinalRound))}
+					/>
+				</div>
 			</div>
 
-			<div className="settingItem">
-				<input
-					id="oral"
-					type="checkbox"
-					checked={settings.appSettings.oral}
-					onChange={() => appDispatch(setOral(!settings.appSettings.oral))}
-				/>
+			<div className="block">
+				<label className='blockName' htmlFor="oral">{localization.oralGame}</label>
 
-				<label htmlFor="oral">{localization.oralGame}</label>
-				<span className="hint">{localization.oralGameHint}</span>
+				<div className='blockValue'>
+					<input
+						id="oral"
+						type="checkbox"
+						checked={settings.appSettings.oral}
+						onChange={() => appDispatch(setOral(!settings.appSettings.oral))}
+					/>
+
+					<div className="hint">{localization.oralGameHint}</div>
+				</div>
 			</div>
 
-			<div className="settingItem">
-				<input
-					id="oralPlayersActions"
-					type="checkbox"
-					disabled={!settings.appSettings.oral}
-					checked={settings.appSettings.oralPlayersActions}
-					onChange={() => appDispatch(setOralPlayersActions(!settings.appSettings.oralPlayersActions))}
-				/>
+			<div className="block">
+				<label className='blockName' htmlFor="oralPlayersActions">{localization.oralPlayersActions}</label>
 
-				<label htmlFor="oralPlayersActions">{localization.oralPlayersActions}</label>
+				<div className='blockValue'>
+					<input
+						id="oralPlayersActions"
+						type="checkbox"
+						disabled={!settings.appSettings.oral}
+						checked={settings.appSettings.oralPlayersActions}
+						onChange={() => appDispatch(setOralPlayersActions(!settings.appSettings.oralPlayersActions))}
+					/>
+				</div>
 			</div>
 
-			<div className="settingItem">
-				<input
-					id="falseStarts"
-					type="checkbox"
-					checked={settings.appSettings.falseStart}
-					onChange={() => appDispatch(setFalseStarts(!settings.appSettings.falseStart))}
-				/>
+			<div className="block">
+				<label className='blockName' htmlFor="falseStarts">{localization.falseStarts}</label>
 
-				<label htmlFor="falseStarts">{localization.falseStarts}</label>
-				<span className="hint">{localization.falseStartsHint}</span>
+				<div className='blockValue'>
+					<input
+						id="falseStarts"
+						type="checkbox"
+						checked={settings.appSettings.falseStart}
+						onChange={() => appDispatch(setFalseStarts(!settings.appSettings.falseStart))}
+					/>
+
+					<div className="hint">{localization.falseStartsHint}</div>
+				</div>
 			</div>
 
-			<div className="settingItem">
-				<input
-					id="partialText"
-					type="checkbox"
-					disabled={settings.appSettings.falseStart}
-					checked={settings.appSettings.partialText}
-					onChange={() => appDispatch(setPartialText(!settings.appSettings.partialText))}
-				/>
+			<div className='block'>
+				<label className='blockName' htmlFor="partialText">{localization.partialText}</label>
 
-				<label htmlFor="partialText">{localization.partialText}</label>
-				<span className="hint">{localization.partialTextHint}</span>
+				<div className='blockValue'>
+					<input
+						id="partialText"
+						type="checkbox"
+						disabled={settings.appSettings.falseStart}
+						checked={settings.appSettings.partialText}
+						onChange={() => appDispatch(setPartialText(!settings.appSettings.partialText))}
+					/>
+
+					<div className="hint">{localization.partialTextHint}</div>
+				</div>
 			</div>
 
-			<div className="settingItem">
-				<input
-					id="partialImages"
-					type="checkbox"
-					disabled={settings.appSettings.falseStart}
-					checked={settings.appSettings.partialImages}
-					onChange={() => appDispatch(setPartialImages(!settings.appSettings.partialImages))}
-				/>
+			<div className="block">
+				<label className='blockName' htmlFor='partialImages'>{localization.partialImages}</label>
 
-				<label htmlFor="partialImages">{localization.partialImages}</label>
-				<span className="hint">{localization.partialImagesHint}</span>
+				<div className='blockValue'>
+					<input
+						id="partialImages"
+						type="checkbox"
+						disabled={settings.appSettings.falseStart}
+						checked={settings.appSettings.partialImages}
+						onChange={() => appDispatch(setPartialImages(!settings.appSettings.partialImages))}
+					/>
+
+					<div className="hint">{localization.partialImagesHint}</div>
+				</div>
 			</div>
 
-			<div className="settingItem">
-				<input
-					id="allowEveryoneToPlayHiddenStakes"
-					type="checkbox"
-					checked={settings.appSettings.allowEveryoneToPlayHiddenStakes}
-					onChange={() => appDispatch(setAllowEveryoneToPlayHiddenStakes(!settings.appSettings.allowEveryoneToPlayHiddenStakes))}
-				/>
+			<div className="block">
+				<label className='blockName' htmlFor="allowEveryoneToPlayHiddenStakes">{localization.allowEveryoneToPlayHiddenStakes}</label>
 
-				<label htmlFor="allowEveryoneToPlayHiddenStakes">{localization.allowEveryoneToPlayHiddenStakes}</label>
-				<span className="hint">{localization.allowEveryoneToPlayHiddenStakesHint}</span>
+				<div className='blockValue'>
+					<input
+						id="allowEveryoneToPlayHiddenStakes"
+						type="checkbox"
+						checked={settings.appSettings.allowEveryoneToPlayHiddenStakes}
+						onChange={() => appDispatch(setAllowEveryoneToPlayHiddenStakes(!settings.appSettings.allowEveryoneToPlayHiddenStakes))}
+					/>
+
+					<div className="hint">{localization.allowEveryoneToPlayHiddenStakesHint}</div>
+				</div>
 			</div>
 
-			<div className="settingItem">
-				<input
-					id="hintShowman"
-					type="checkbox"
-					checked={settings.appSettings.hintShowman}
-					onChange={() => appDispatch(setHintShowman(!settings.appSettings.hintShowman))}
-				/>
+			<div className="block">
+				<label className='blockName' htmlFor="hintShowman">{localization.hintShowman}</label>
 
-				<label htmlFor="hintShowman">{localization.hintShowman}</label>
+				<div className='blockValue'>
+					<input
+						id="hintShowman"
+						type="checkbox"
+						checked={settings.appSettings.hintShowman}
+						onChange={() => appDispatch(setHintShowman(!settings.appSettings.hintShowman))}
+					/>
+				</div>
 			</div>
 
-			<p className="readingSpeed">{localization.questionReadingSpeed}</p>
+			<div className="block">
+				<div className="blockName">{localization.questionReadingSpeed}</div>
 
-			<div className="settingItem">
-				<div>
+				<div className="blockValue">
 					<input
 						id='readingSpeed'
 						aria-label="Reading speed range"
@@ -202,68 +226,81 @@ export function RulesSettingsView(props: RulesSettingsViewProps): JSX.Element {
 				</div>
 			</div>
 
-			<div className="settingItem">
-				<input
-					id="managed"
-					type="checkbox"
-					checked={settings.appSettings.managed}
-					onChange={() => appDispatch(setManaged(!settings.appSettings.managed))}
-				/>
+			<div className="block">
+				<label htmlFor="managed" className='blockName'>{localization.managed}</label>
 
-				<label htmlFor="managed">{localization.managed}</label>
-				<span className="hint">{localization.managedHint}</span>
+				<div className='blockValue'>
+					<input
+						id="managed"
+						type="checkbox"
+						checked={settings.appSettings.managed}
+						onChange={() => appDispatch(setManaged(!settings.appSettings.managed))}
+					/>
+
+					<div className="hint">{localization.managedHint}</div>
+				</div>
 			</div>
 
-			<div className="settingItem">
-				<input
-					id="useApellations"
-					type="checkbox"
-					checked={settings.appSettings.useApellations}
-					onChange={() => appDispatch(setUseApellations(!settings.appSettings.useApellations))}
-				/>
+			<div className='block'>
+				<label className='blockName' htmlFor="useApellations">{localization.useApellations}</label>
 
-				<label htmlFor="useApellations">{localization.useApellations}</label>
-				<span className="hint">{localization.useApellationsHint}</span>
+				<div className='blockValue'>
+					<input
+						id="useApellations"
+						type="checkbox"
+						checked={settings.appSettings.useApellations}
+						onChange={() => appDispatch(setUseApellations(!settings.appSettings.useApellations))}
+					/>
+
+					<div className="hint">{localization.useApellationsHint}</div>
+				</div>
 			</div>
 
-			<div className="settingItem">
-				<input
-					id="displayAnswerOptionsOneByOne"
-					type="checkbox"
-					checked={settings.appSettings.displayAnswerOptionsOneByOne}
-					onChange={() => appDispatch(setDisplayAnswerOptionsOneByOne(!settings.appSettings.displayAnswerOptionsOneByOne))}
-				/>
+			<div className="block">
+				<label className='blockName' htmlFor="displayAnswerOptionsOneByOne">{localization.displayAnswerOptionsOneByOne}</label>
 
-				<label htmlFor="displayAnswerOptionsOneByOne">{localization.displayAnswerOptionsOneByOne}</label>
+				<div className='blockValue'>
+					<input
+						id="displayAnswerOptionsOneByOne"
+						type="checkbox"
+						checked={settings.appSettings.displayAnswerOptionsOneByOne}
+						onChange={() => appDispatch(setDisplayAnswerOptionsOneByOne(!settings.appSettings.displayAnswerOptionsOneByOne))}
+					/>
+				</div>
 			</div>
 
-			<div className="settingItem">
-				<input
-					id="displayAnswerOptionsLabels"
-					type="checkbox"
-					checked={settings.appSettings.displayAnswerOptionsLabels}
-					onChange={() => appDispatch(setDisplayAnswerOptionsLabels(!settings.appSettings.displayAnswerOptionsLabels))}
-				/>
+			<div className="block">
+				<label className='blockName' htmlFor="displayAnswerOptionsLabels">{localization.displayAnswerOptionsLabels}</label>
 
-				<label htmlFor="displayAnswerOptionsLabels">{localization.displayAnswerOptionsLabels}</label>
+				<div className='blockValue'>
+					<input
+						id="displayAnswerOptionsLabels"
+						type="checkbox"
+						checked={settings.appSettings.displayAnswerOptionsLabels}
+						onChange={() => appDispatch(setDisplayAnswerOptionsLabels(!settings.appSettings.displayAnswerOptionsLabels))}
+					/>
+				</div>
 			</div>
 
-			<div className="settingItem">
-				<input
-					id="ignoreWrong"
-					type="checkbox"
-					checked={settings.appSettings.ignoreWrong}
-					onChange={() => appDispatch(setIgnoreWrong(!settings.appSettings.ignoreWrong))}
-				/>
-				<label htmlFor="ignoreWrong">{localization.ignoreWrong}</label>
+			<div className="block">
+				<label className='blockName' htmlFor="ignoreWrong">{localization.ignoreWrong}</label>
+
+				<div className='blockValue'>
+					<input
+						id="ignoreWrong"
+						type="checkbox"
+						checked={settings.appSettings.ignoreWrong}
+						onChange={() => appDispatch(setIgnoreWrong(!settings.appSettings.ignoreWrong))}
+					/>
+				</div>
 			</div>
 
-			<div className="settingItem">
-				<p className='gameTypeHeader'>{localization.buttonPressMode}</p>
+			<div className="block">
+				<div className='blockName'>{localization.buttonPressMode}</div>
 
 				<select
 					aria-label='Game type'
-					className='gameType'
+					className='blockValue'
 					value={settings.appSettings.buttonPressMode}
 					onChange={onButtonPressModeChanged}>
 					<option value={ButtonPressMode.RandomWithinInterval}>{localization.buttonPressModeRandomWithinInterval}</option>
@@ -272,25 +309,39 @@ export function RulesSettingsView(props: RulesSettingsViewProps): JSX.Element {
 				</select>
 			</div>
 
-			<div className="settingItem">
-				<input
-					id="preloadRoundContent"
-					type="checkbox"
-					checked={settings.appSettings.preloadRoundContent}
-					onChange={() => appDispatch(setPreloadRoundContent(!settings.appSettings.preloadRoundContent))}
-				/>
-				<label htmlFor="preloadRoundContent">{localization.preloadRoundContent}</label>
+			<div className='block'>
+				<label className='blockName' htmlFor="preloadRoundContent">{localization.preloadRoundContent}</label>
+
+				<div className='blockValue'>
+					<input
+						id="preloadRoundContent"
+						type="checkbox"
+						checked={settings.appSettings.preloadRoundContent}
+						onChange={() => appDispatch(setPreloadRoundContent(!settings.appSettings.preloadRoundContent))}
+					/>
+				</div>
 			</div>
 
-			<div className="settingItem">
-				<input
-					id="displaySources"
-					type="checkbox"
-					checked={settings.appSettings.displaySources}
-					onChange={() => appDispatch(setDisplaySources(!settings.appSettings.displaySources))}
-				/>
-				<label htmlFor="displaySources">{localization.displaySources}</label>
+			<div className="block">
+				<label className='blockName' htmlFor="displaySources">{localization.displaySources}</label>
+
+				<div className='blockValue'>
+					<input
+						id="displaySources"
+						type="checkbox"
+						checked={settings.appSettings.displaySources}
+						onChange={() => appDispatch(setDisplaySources(!settings.appSettings.displaySources))}
+					/>
+				</div>
 			</div>
+
+			<button
+				type="button"
+				className="reset standard"
+				title={localization.resetToDefaultsHint}
+				onClick={() => appDispatch(resetSettings())}>
+				{localization.resetToDefaults}
+			</button>
 		</div>
 	);
 }

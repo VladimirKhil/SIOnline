@@ -207,7 +207,7 @@ const tryConnectAsync = async (
 	getState: () => State,
 	dataContext: DataContext
 ): Promise<ConnectResult> => {
-	if (dataContext.connection) {
+	if (dataContext.connection && dataContext.connection.state === signalR.HubConnectionState.Connected) {
 		return { success: true, authenticationRequired: false };
 	}
 

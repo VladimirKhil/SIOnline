@@ -20,10 +20,10 @@ export default function TimeSettingItem(props: TimeSettingItemProps): JSX.Elemen
 	};
 
 	return (
-		<div className="timeSettingItem">
-			<h3>{props.label}</h3>
+		<div className="block timeSettingItem">
+			<div className="blockName">{props.label}</div>
 
-			<div className='timeSettingEditor'>
+			<div className='blockValue'>
 				<input
 					className='timeRange'
 					type="range"

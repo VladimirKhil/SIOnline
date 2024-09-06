@@ -19,6 +19,9 @@ import { INavigationState } from '../state/ui/UIState';
 import { AppDispatch } from '../state/new/store';
 import { useAppDispatch, useAppSelector } from '../state/new/hooks';
 import { userErrorChanged } from '../state/new/commonSlice';
+import TabControl from './common/TabControl/TabControl';
+import RulesSettingsView from './settings/RulesSettingsView';
+import TimeSettingsView from './settings/TimeSettingsView';
 
 import './NewGameDialog.css';
 
@@ -130,6 +133,7 @@ function getPackageName(packageType: PackageType, packageName: string, packageDa
 }
 
 export function NewGameDialog(props: NewGameDialogProps) {
+	const [activeTab, setActiveTab] = React.useState(0);
 	const [isSIStorageOpen, setIsSIStorageOpen] = React.useState(false);
 	const childRef = React.useRef<HTMLInputElement>(null);
 	const appDispatch = useAppDispatch();
@@ -206,220 +210,245 @@ export function NewGameDialog(props: NewGameDialogProps) {
 		props.onGamePackageDataChanged(name, packageData);
 	};
 
-	return (
-		<>
-			<Dialog id="newGameDialog" title={localization.newGame} onClose={props.onClose}>
-				<div className="settings">
+	function getContent(activeTab: number): React.ReactNode {
+		switch (activeTab) {
+			case 0:
+				return <>
 					{props.isSingleGame ? null : (
 						<>
-							<p>{localization.gameName}</p>
+							<div className="block">
+								<div className='blockName'>{localization.gameName}</div>
 
-							<input
-								type="text"
-								value={props.gameName}
-								onChange={onGameNameChanged}
-								onKeyPress={onKeyPress}
-							/>
+								<input
+									type="text"
+									className='blockValue'
+									value={props.gameName}
+									onChange={onGameNameChanged}
+									onKeyPress={onKeyPress}
+								/>
+							</div>
 
-							<p>{localization.password}</p>
+							<div className="block">
+								<div className='blockName'>{localization.password}</div>
 
-							<input
-								aria-label='Password'
-								type="password"
-								value={props.gamePassword}
-								onChange={onGamePasswordChanged}
-								onKeyPress={onKeyPress}
-							/>
+								<input
+									aria-label='Password'
+									type="password"
+									className='blockValue'
+									value={props.gamePassword}
+									onChange={onGamePasswordChanged}
+									onKeyPress={onKeyPress}
+								/>
+							</div>
 
 							{props.isOralGame ? (
-								<>
-									<p>{localization.voiceChat}</p>
+								<div className="block">
+									<div className='blockName'>{localization.voiceChat}</div>
 
 									<input
 										aria-label='Voice chat url'
 										type="text"
+										className='blockValue'
 										value={props.gameVoiceChat}
 										onChange={onGameVoiceChatChanged}
 									/>
-								</>
+							</div>
 							) : null}
 						</>
 					)}
 
-					<p className='newGameHeader'>{localization.questionPackage}</p>
+					<div className="block">
+						<div className='blockName newGameHeader'>{localization.questionPackage}</div>
 
-					<div className='packageSelector'>
-						<FlyoutButton
-							theme={FlyoutTheme.Dark}
-							flyout={
-								<ul className='packageSources'>
-									<li onClick={onRandomThemesSelected}>{localization.randomThemes}</li>
-									<li onClick={onFilePackageSelected}>{`${localization.file}…`}</li>
-									<li onClick={() => setIsSIStorageOpen(true)}>{`${localization.libraryTitle}…`}</li>
+						<div className='blockValue packageSelector'>
+							<FlyoutButton
+								theme={FlyoutTheme.Dark}
+								flyout={
+									<ul className='packageSources'>
+										<li onClick={onRandomThemesSelected}>{localization.randomThemes}</li>
+										<li onClick={onFilePackageSelected}>{`${localization.file}…`}</li>
+										<li onClick={() => setIsSIStorageOpen(true)}>{`${localization.libraryTitle}…`}</li>
 
-									{!props.clearUrls && localization.userPackages.length > 0
-									? <>
-										<li>
-											<a
-												className='simpleLink'
-												href="https://vk.com/topic-135725718_34975471"
-												target='_blank'
-												rel='noopener noreferrer'>
-												{`${localization.userPackages}…`}
-											</a>
-										</li>
+										{!props.clearUrls && localization.userPackages.length > 0
+										? <>
+											<li>
+												<a
+													className='simpleLink'
+													href="https://vk.com/topic-135725718_34975471"
+													target='_blank'
+													rel='noopener noreferrer'>
+													{`${localization.userPackages}…`}
+												</a>
+											</li>
 
-										<li>
-											<a
-												className='simpleLink'
-												href="https://sigame.ru"
-												target='_blank'
-												rel='noopener noreferrer'>
-												{`${localization.library} sigame.ru…`}
-											</a>
-										</li>
+											<li>
+												<a
+													className='simpleLink'
+													href="https://sigame.ru"
+													target='_blank'
+													rel='noopener noreferrer'>
+													{`${localization.library} sigame.ru…`}
+												</a>
+											</li>
 
-										<li>
-											<a
-												className='simpleLink'
-												href="https://sigame.xyz"
-												target='_blank'
-												rel='noopener noreferrer'>
-												{`${localization.library} sigame.xyz…`}
-											</a>
-										</li>
+											<li>
+												<a
+													className='simpleLink'
+													href="https://sigame.xyz"
+													target='_blank'
+													rel='noopener noreferrer'>
+													{`${localization.library} sigame.xyz…`}
+												</a>
+											</li>
 
-										<li>
-											<a
-												className='simpleLink'
-												href="https://www.sibrowser.ru"
-												target='_blank'
-												rel='noopener noreferrer'>
-												{`${localization.library} sibrowser.ru…`}
-											</a>
-										</li>
-									</>
-									: null}
-
-									{!props.clearUrls && isWindowsOS()
-										? <li>
-											<a
-												className='simpleLink'
-												href="https://vladimirkhil.com/si/siquester"
-												target='_blank'
-												rel='noopener noreferrer'>
-												{`${localization.createOwnPackage}…`}
-											</a>
-										</li>
+											<li>
+												<a
+													className='simpleLink'
+													href="https://www.sibrowser.ru"
+													target='_blank'
+													rel='noopener noreferrer'>
+													{`${localization.library} sibrowser.ru…`}
+												</a>
+											</li>
+										</>
 										: null}
-								</ul>
-							}
-							title={localization.select}
-						>
-							📂
-						</FlyoutButton>
 
-						<span className='packageName'>
-							{getPackageName(props.gamePackageType, props.gamePackageName, props.gamePackageData)}
-						</span>
+										{!props.clearUrls && isWindowsOS()
+											? <li>
+												<a
+													className='simpleLink'
+													href="https://vladimirkhil.com/si/siquester"
+													target='_blank'
+													rel='noopener noreferrer'>
+													{`${localization.createOwnPackage}…`}
+												</a>
+											</li>
+											: null}
+									</ul>
+								}
+								title={localization.select}
+							>
+								📂
+							</FlyoutButton>
 
-						<PackageFileSelector
-							ref={childRef}
-							onGamePackageTypeChanged={props.onGamePackageTypeChanged}
-							onGamePackageDataChanged={onGamePackageDataChanged} />
+							<span className='packageName'>
+								{getPackageName(props.gamePackageType, props.gamePackageName, props.gamePackageData)}
+							</span>
+
+							<PackageFileSelector
+								ref={childRef}
+								onGamePackageTypeChanged={props.onGamePackageTypeChanged}
+								onGamePackageDataChanged={onGamePackageDataChanged} />
+						</div>
 					</div>
 
-					<p className='newGameHeader'>{localization.role}</p>
+					<div className="block">
+						<div className='blockName newGameHeader'>{localization.myRole}</div>
 
-					<select title='Game role' value={props.gameRole} onChange={onGameRoleChanged}>
-						<option value="0">{localization.viewer}</option>
-						<option value="1">{localization.player}</option>
-						<option value="2">{localization.showman}</option>
-					</select>
+						<select className='blockValue' title='Game role' value={props.gameRole} onChange={onGameRoleChanged}>
+							<option value="0">{localization.viewer}</option>
+							<option value="1">{localization.player}</option>
+							<option value="2">{localization.showman}</option>
+						</select>
+					</div>
 
 					{props.gameRole === Role.Showman || props.isSingleGame ? null : (
-						<>
-							<p>{localization.showman}</p>
+						<div className="block">
+							<div className='blockName'>{localization.showman}</div>
 
 							<select
 								title='Showman type'
-								className="showmanTypeSelector"
+								className="blockValue showmanTypeSelector"
 								value={props.isShowmanHuman ? 1 : 0}
 								onChange={onShowmanTypeChanged}
 							>
 								<option value="1">{localization.human}</option>
 								<option value="0">{localization.bot}</option>
 							</select>
-							{props.isShowmanHuman ? '👤' : '🖥️'}
-						</>
+						</div>
 					)}
 
-					<p className='newGameHeader'>{localization.players}</p>
+					<div className="block">
+						<div className='blockName newGameHeader'>{localization.players}</div>
 
-					<div className="playersBlock">
-						<span className="playersCountTitle">{`${localization.total} `}</span>
-						<span className="playersCountValue">{props.playersCount}</span>
+						<div className="blockValue playersBlock">
+							<span className="playersCountValue">{props.playersCount}</span>
 
-						<input
-							aria-label='Players count'
-							type="range"
-							className="playersCount"
-							min={2}
-							max={12}
-							value={props.playersCount}
-							onChange={onPlayersCountChanged}
-						/>
+							<input
+								aria-label='Players count'
+								type="range"
+								className="playersCount"
+								min={2}
+								max={12}
+								value={props.playersCount}
+								onChange={onPlayersCountChanged}
+							/>
+						</div>
 					</div>
 
 					{props.isSingleGame ? null : (
 						<>
-							<div className="playersBlock">
-								<span className="playersCountTitle">{`${localization.humanPlayers} `}</span>
-								<span className="playersCountValue">{props.humanPlayersCount}</span>
+							<div className="block">
+								<div className="blockName">{localization.humanPlayers}</div>
 
-								<input
-									aria-label='Human players count'
-									type="range"
-									className="playersCount"
-									min={0}
-									max={humanPlayersMaxCount}
-									disabled={humanPlayersMaxCount === 0}
-									value={props.humanPlayersCount}
-									onChange={onHumanPlayersCountChanged}
-								/>
+								<div className="blockValue playersBlock">
+									<span className="playersCountValue">{props.humanPlayersCount}</span>
+
+									<input
+										aria-label='Human players count'
+										type="range"
+										className="playersCount"
+										min={0}
+										max={humanPlayersMaxCount}
+										disabled={humanPlayersMaxCount === 0}
+										value={props.humanPlayersCount}
+										onChange={onHumanPlayersCountChanged}
+									/>
+								</div>
 							</div>
 
-							<div className="playersBlock">
-								<span className="playersCountTitle">{`${localization.computerPlayers} `}</span>
-								<span className="playersCountValue">{botsCount}</span>
-							</div>
+							<div className="block">
+								<div className="blockName">{localization.computerPlayers}</div>
 
-							<div className="playersBlock">
-								{props.gameRole === Role.Player ? '🧑' : null}
-								{Array.from(Array(props.humanPlayersCount).keys()).map(() => '👤')}
-								{Array.from(Array(botsCount).keys()).map(() => '🖥️')}
+								<div className="blockValue playersBlock">
+									<span className="playersCountValue">{botsCount}</span>
+								</div>
 							</div>
 						</>
 					)}
+				</>;
+
+			case 1:
+				return <RulesSettingsView />;
+
+			case 2:
+				return <TimeSettingsView />;
+
+			default:
+				return null;
+		}
+	}
+
+	return (
+		<>
+			<Dialog className="newGameDialog" title={localization.newGame} onClose={props.onClose}>
+				<TabControl
+					tabs={[{ id: 0, label: localization.room }, { id: 1, label: localization.rules }, { id: 2, label: localization.time } ]}
+					activeTab={activeTab}
+					onTabClick={setActiveTab} />
+
+				<div className="settings">
+					{getContent(activeTab)}
 				</div>
 
 				<div className="buttonsArea">
 					<button
 						type="button"
-						className="showSettings standard"
-						disabled={!props.isConnected || props.inProgress}
-						onClick={() => props.onShowSettings()}
-					>
-						{`${localization.settings}…`}
-					</button>
-
-					<button
-						type="button"
-						className="startGame standard"
+						className="startGame mainAction active"
 						disabled={!props.isConnected || props.inProgress}
 						onClick={() => props.onCreate(props.isSingleGame, appDispatch)}
 					>
-						{localization.startGame}
+						{localization.startGame.toLocaleUpperCase()}
 					</button>
 				</div>
 

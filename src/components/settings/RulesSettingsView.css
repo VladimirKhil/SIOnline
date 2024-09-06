@@ -6,17 +6,75 @@
 	background-color: white;
 }
 
-.gameTypeHeader {
-	margin: 0 0 10px 0;
+.rulesSettingsView .block {
+	height: 130px;
 }
 
-.gameType {
-	margin-right: 10px;
-	margin-bottom: 10px;
+.rulesSettingsView .blockName {
+    flex: 0 0 150px;
+}
+
+.rulesSettingsView .blockValue {
+    flex-direction: column;
+	align-items: center;
+}
+
+.rulesSettingsView .blockValue div {
+	text-align: center;
+}
+
+.rulesSettingsView input[type='checkbox'] {
+    height: 25px;
+	width: 25px;
+	text-align: left;
+	accent-color: #181B64;
+	cursor: pointer;
+}
+
+.rulesSettingsView input[type='number'] {
+	background: #181B64;
+	color: white;
+}
+
+.rulesSettingsView .hint {
+	margin-top: 5px;
+}
+
+.rulesSettingsView .valueEditor {
+	margin-left: 20px;
 }
 
 .gameTypeHint {
-	font-size: 14px;
-	display: block;
-	height: 35px;
+	margin-top: 5px;
+	width: 280px;
+}
+
+.rulesSettingsView .reset {
+    font-size: 25px;
+    margin: 20px 0;
+    padding: 5px 25px;
+}
+
+@media screen and (min-width: 800px) {
+	.rulesSettingsView .block {
+		height: 54px;
+	}
+
+	.rulesSettingsView .blockName {
+		flex: 0 0 350px;
+	}
+
+	.rulesSettingsView .blockValue {
+		flex-direction: row;
+	}
+
+    .rulesSettingsView .hint {
+		margin-top: 0;
+		margin-left: 20px;
+	}
+
+	.gameTypeHint {
+		margin-top: 0;
+		margin-left: 20px;
+	}
 }

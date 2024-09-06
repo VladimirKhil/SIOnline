@@ -44,22 +44,6 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({ onClose }) => {
 		};
 	}, []);
 
-	const renderTab = () => {
-		switch (view) {
-			case SettingsView.Common:
-				return <CommonSettingsView />;
-
-			case SettingsView.Rules:
-				return <RulesSettingsView />;
-
-			case SettingsView.Time:
-				return <TimeSettingsView />;
-
-			default:
-				return null;
-		}
-	};
-
 	const onReset = () => {
 		appDispatch(resetSettings());
 	};
@@ -67,20 +51,8 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({ onClose }) => {
 	return (
 		<Dialog id="settingsDialog" ref={layout} title={localization.settings} onClose={onClose}>
 			<div className="settingsDialogBody">
-				<div className="tabHost tabHeader">
-					<h1 className={view === SettingsView.Common ? 'activeTab' : ''} onClick={() => setView(SettingsView.Common)}>
-						{localization.common}
-					</h1>
-					<h1 className={view === SettingsView.Rules ? 'activeTab' : ''} onClick={() => setView(SettingsView.Rules)}>
-						{localization.rules}
-					</h1>
-					<h1 className={view === SettingsView.Time ? 'activeTab' : ''} onClick={() => setView(SettingsView.Time)}>
-						{localization.time}
-					</h1>
-				</div>
-
 				<div className="settingsBody">
-					{renderTab()}
+					<CommonSettingsView />
 
 					<button className="reset standard" title={localization.resetToDefaultsHint} onClick={onReset}>
 						{localization.resetToDefaults}
