@@ -102,6 +102,8 @@ const enum GameMessages {
 	/** Notifies about complex answer start. */
 	RightAnswerStart = 'RIGHT_ANSWER_START',
 
+	RoundContent = 'ROUNDCONTENT',
+
 	/** Round themes names. */
 	RoundThemes = 'ROUNDTHEMES',
 

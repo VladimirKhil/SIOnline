@@ -647,46 +647,8 @@ const viewerHandler = (
 			}
 			break;
 
-		case 'ROUNDCONTENT':
-			// Clearing old preloads
-			// for (let i = 0; i < document.head.children.length; i++) {
-			// 	const child = document.head.children[i];
-			// 	if (child.tagName.toLowerCase() === 'link') {
-			// 		if (child.attributes.getNamedItem('rel')?.value === 'preload') {
-			// 			document.head.removeChild(child);
-			// 			i = i - 1;
-			// 		}
-			// 	}
-			// }
-
-			args.slice(1).forEach(url => {
-				const contentUri = controller.preprocessServerUri(url);
-
-				// Straight but working method
-				// TODO: await
-				fetch(contentUri)
-					.then(response => {
-						if (!response.ok) {
-							dispatch(roomActionCreators.chatMessageAdded({
-								sender: '',
-								text: response.statusText,
-								level: MessageLevel.System,
-							}));
-						}
-					})
-					.catch((e : TypeError) => {
-						console.error(url + ' ' + e.message);
-					});
-
-				// Chrome does not support audio and video preload
-				// We can return to this method later
-				// const link = document.createElement('link');
-				// link.setAttribute('rel', 'preload');
-				// link.setAttribute('as', 'image');
-				// link.setAttribute('href', uri);
-
-				// document.head.appendChild(link);
-			});
+		case GameMessages.RoundContent:
+			controller.onRoundContent(args.slice(1));
 			break;
 
 		case 'ROUNDSNAMES':

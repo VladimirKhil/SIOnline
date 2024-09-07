@@ -89,6 +89,7 @@ import actionCreators from './actionCreators';
 import Messages from '../client/game/Messages';
 import StakeModes from '../client/game/StakeModes';
 import { playAudio, stopAudio } from '../state/new/commonSlice';
+import getErrorMessage from '../utils/ErrorHelpers';
 
 function initGroup(group: ContentGroup) {
 	let bestRowCount = 1;
@@ -434,6 +435,53 @@ export default class ClientController {
 
 	onReport(report: string) {
 		this.appDispatch(setReport(report));
+	}
+
+	onRoundContent(content: string[]) {
+		// Clearing old preloads
+		// for (let i = 0; i < document.head.children.length; i++) {
+		// 	const child = document.head.children[i];
+		// 	if (child.tagName.toLowerCase() === 'link') {
+		// 		if (child.attributes.getNamedItem('rel')?.value === 'preload') {
+		// 			document.head.removeChild(child);
+		// 			i = i - 1;
+		// 		}
+		// 	}
+		// }
+
+		// Straight but working method
+		content.forEach((url, index) => {
+			const contentUri = this.preprocessServerUri(url);
+
+			// Timeout to avoid rate limiting
+			window.setTimeout(
+				async () => {
+					try {
+						const response = await fetch(contentUri);
+
+						if (!response.ok) {
+							this.dispatch(roomActionCreators.chatMessageAdded({
+								sender: '',
+								text: response.statusText,
+								level: MessageLevel.System,
+							}) as any);
+						}
+					} catch (e) {
+						console.error(url + ' ' + getErrorMessage(e));
+					}
+				},
+				index * 1000
+			);
+		});
+
+		// Chrome does not support audio and video preload
+		// We can return to this method later
+		// const link = document.createElement('link');
+		// link.setAttribute('rel', 'preload');
+		// link.setAttribute('as', 'image');
+		// link.setAttribute('href', uri);
+
+		// document.head.appendChild(link);
 	}
 
 	onRoundThemes(roundThemesNames: string[], playMode: ThemesPlayMode) {
