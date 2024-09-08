@@ -7,6 +7,8 @@ module.exports = (env, argv) => {
 	return {
 		entry: env.type === 'library-table' ? {
 			main: './src/LibraryTable.tsx',
+		} : env.type === 'library-player' ? {
+			main: './src/LibraryPlayer.tsx',
 		} : env.type === 'library-quest' ? {
 			main: './src/LibraryQuestion.tsx',
 		} : {

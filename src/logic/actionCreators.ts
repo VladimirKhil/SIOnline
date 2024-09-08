@@ -455,6 +455,10 @@ const init: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 				const gameInfo = await siHostClient.tryGetGameInfoAsync(initialView.gameId);
 
 				if (gameInfo) {
+					if (!gameInfo.HostUri) {
+						gameInfo.HostUri = initialView.hostUri;
+					}
+
 					appDispatch(selectGame(gameInfo));
 					dispatch(uiActionCreators.navigate(initialView) as unknown as Action);
 					return;

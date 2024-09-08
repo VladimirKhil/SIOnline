@@ -28,10 +28,6 @@ interface AppProps {
 	path: Path;
 }
 
-interface AppState {
-	error: string | null;
-}
-
 const mapStateToProps = (state: State) => ({
 	areSettingsVisible: state.ui.areSettingsVisible,
 	commonError: state.common.error,
@@ -40,19 +36,9 @@ const mapStateToProps = (state: State) => ({
 	path: state.ui.navigation.path,
 });
 
-export class App extends React.Component<AppProps, AppState> {
-	constructor(props: AppProps) {
-		super(props);
-
-		this.state = { error: null };
-	}
-
+export class App extends React.Component<AppProps> {
 	componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
 		console.error(`Component error: ${error} ${errorInfo}`);
-	}
-
-	public static getDerivedStateFromError(error: Error): AppState {
-		return { error: `${error.message}: ${error.stack}` };
 	}
 
 	getContent(): JSX.Element | null {
@@ -96,7 +82,7 @@ export class App extends React.Component<AppProps, AppState> {
 	}
 
 	render(): JSX.Element {
-		const error = this.props.commonError || this.state.error;
+		const error = this.props.commonError;
 
 		return error ? <ErrorView error={error} /> : (
 			<div className="app">

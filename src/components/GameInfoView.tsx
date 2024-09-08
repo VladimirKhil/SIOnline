@@ -222,6 +222,7 @@ export function GameInfoView(props: GameInfoViewProps): JSX.Element {
 									title={localization.joinAsShowmanHint}
 									disabled={!props.isConnected ||
 										props.joinGameProgress ||
+										userName.length === 0 ||
 										(game.PasswordRequired && !props.password) ||
 										!canJoinAsShowman}
 								>
@@ -235,6 +236,7 @@ export function GameInfoView(props: GameInfoViewProps): JSX.Element {
 									title={localization.joinAsPlayerHint}
 									disabled={!props.isConnected ||
 										props.joinGameProgress ||
+										userName.length === 0 ||
 										(game.PasswordRequired && !props.password) ||
 										!canJoinAsPlayer}
 								>
@@ -246,7 +248,10 @@ export function GameInfoView(props: GameInfoViewProps): JSX.Element {
 									className="join standard"
 									onClick={() => props.onJoin(game.HostUri, game.GameID, userName, Role.Viewer, appDispatch)}
 									title={localization.joinAsViewerHint}
-									disabled={!props.isConnected || props.joinGameProgress || (game.PasswordRequired && !props.password)}
+									disabled={!props.isConnected ||
+										props.joinGameProgress ||
+										userName.length === 0 ||
+										(game.PasswordRequired && !props.password)}
 								>
 									{localization.joinAsViewer}
 								</button>
