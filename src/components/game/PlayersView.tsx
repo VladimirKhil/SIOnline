@@ -10,7 +10,7 @@ import PlayerView from './PlayerView/PlayerView';
 import { useAppDispatch } from '../../state/new/hooks';
 import { playerSelected } from '../../state/new/room2Slice';
 
-import './PlayersView.css';
+import './PlayersView.scss';
 
 interface PlayersViewProps {
 	players: PlayerInfo[];

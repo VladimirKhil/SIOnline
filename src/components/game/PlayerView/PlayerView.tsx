@@ -14,6 +14,8 @@ import roomActionCreators from '../../../state/room/roomActionCreators';
 import { Action } from 'redux';
 import { connect } from 'react-redux';
 
+import './PlayerView.scss';
+
 interface PlayerViewProps {
 	player: PlayerInfo;
 	isMe: boolean;
@@ -64,7 +66,7 @@ export function PlayerView(props: PlayerViewProps): JSX.Element {
 		const meClass = isMe ? 'me' : '';
 		const inGameClass = player.inGame ? '' : 'out_of_game';
 		const selectableClass = player.canBeSelected && props.isSelectionEnabled ? 'selectable' : '';
-		return `gamePlayer ${stateClass} ${meClass} ${inGameClass} ${selectableClass}`;
+		return `playerCard ${stateClass} ${meClass} ${inGameClass} ${selectableClass}`;
 	};
 
 	const onSumChanged = (value: number) => {
@@ -131,10 +133,14 @@ export function PlayerView(props: PlayerViewProps): JSX.Element {
 
 	return (
 		<li
-			className={buildPlayerClasses()}
+			className="gamePlayer"
 			onClick={(e) => player.canBeSelected ? onPlayerClicked(e) : null}
 		>
-			<div className="playerCard">
+			<div className="stakeHost">
+				<div className="stake">{displayedStake ?? '\u200b'}</div>
+			</div>
+
+			<div className={buildPlayerClasses()}>
 				{props.showVideoAvatars && avatarVideo
 					? <div className='playerAvatar'><iframe title='Video avatar' src={avatarVideo} /></div>
 					: <div
@@ -155,17 +161,13 @@ export function PlayerView(props: PlayerViewProps): JSX.Element {
 								onValueChanged={value => onSumChanged(value)}
 								onCancel={props.onCancelSumChange}
 							/>
-						) : <span>{player.sum}</span>}
-					</div>
-
-					<div className="stakeHost">
-						<span className="stake">{displayedStake ?? '\u200b'}</span>
+						) : <div className='staticSum'>{player.sum}</div>}
 					</div>
 				</div>
 			</div>
 
 			{player.replic && player.replic.length > 0 ? (
-				<div ref={replicRef} className="playerReplic">
+				<div ref={replicRef} className="playerReplic replic">
 					<AutoSizedText id={`playerReplic_${index}`} className="playerReplicText" maxFontSize={48}>
 						{player.replic}
 					</AutoSizedText>

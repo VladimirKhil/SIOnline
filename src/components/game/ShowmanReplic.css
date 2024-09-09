@@ -1,6 +1,5 @@
 .showmanReplic {
     width: 100%;
-    margin: 0;
     padding: 5px;
     text-align: center;
     display: flex;
@@ -8,8 +7,12 @@
     justify-content: center;
     align-items: center;
     overflow: hidden;
-    background-color: lightyellow;
     transition: opacity 1s;
+}
+
+.replic {
+    background: #1634CF;
+    color: white;
 }
 
 .showmanReplic.hidden {
@@ -18,8 +21,11 @@
 
 @media screen and (min-width: 1100px) {
     .showmanReplic {
+        width: calc(100% - 10px);
         padding: 7px;
         flex: 1.5;
+        border-radius: 30px;
+        margin: 5px;
     }
 }
 

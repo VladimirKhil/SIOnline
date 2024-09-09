@@ -1,0 +1,200 @@
+@use '../../../scss/variables' as v;
+
+.playerInfo .name, .playerInfo .sum {
+	display: block;
+	margin: 0 1px;
+}
+
+.stake {
+	font-weight: bold;
+	padding-left: 3.5px;
+	margin-left: 3.5px;
+	text-align: center;
+}
+
+.stakeHost {
+	display: none;
+}
+
+.playerInfo .name, .playerInfo .sum, .stakeHost {
+	text-align: center;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	padding-top: 5px;
+}
+
+.gamePlayer .playerReplic {
+	position: absolute;
+	top: 0;
+	width: 200px;
+	left: 100%;
+	height: 100%;
+	padding: 5px;
+	text-align: center;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 1.0);
+	z-index: 3;
+	animation: replicfadein 1s;
+	border-radius: 30px;
+}
+
+@keyframes replicfadein {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+.gamePlayer .playerReplicText {
+	width: 100%;
+	height: 100%;
+	text-align: center;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.gamePlayer .replicLink {
+	position: absolute;
+	left: -5px;
+	width: 10px;
+	height: 10px;
+	z-index: 1;
+	background: #1634CF;
+	transform: rotate(135deg);
+	box-shadow: 12px 11px 10px -4px black;
+}
+
+.playerAvatar {
+    height: 100%;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    overflow: hidden;
+    min-width: 10px;
+    flex: 0.3;
+    position: relative;
+}
+
+.playerAvatar iframe {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.gamePlayer {
+    background-color: transparent;
+    transition: background-color 1s, opacity 1s;
+}
+
+.playerCard.state_press {
+    background: v.$table-cell-active-background-color;
+}
+
+.playerCard.state_lost {
+    background: v.$active-button-background;
+}
+
+.playerCard.state_right {
+    background: v.$accept-button-background;
+}
+
+.playerCard.state_wrong {
+    background: v.$reject-button-background;
+}
+
+.playerCard.state_hasanswered {
+    background-color: darkviolet;
+}
+
+.playerCard.state_pass {
+    background-color: gray;
+}
+
+.playerCard.out_of_game {
+    opacity: 0.5;
+}
+
+.playerCard.selectable {
+    background-color: lightyellow;
+}
+
+.gamePlayer {
+	font-size: 25px;
+}
+
+.gamePlayer:nth-last-child(n+6),
+.gamePlayer:nth-last-child(n+6) ~ li {
+	font-size: 22px;
+}
+
+.gamePlayer:nth-last-child(n+9),
+.gamePlayer:nth-last-child(n+9) ~ li {
+	font-size: 18px;
+}
+
+.playerInfo .numericTextBox {
+    font-size: smaller;
+}
+
+.marksArea {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    display: flex;
+    flex-direction: row;
+}
+
+.readyMark {
+    font-size: 15px;
+}
+
+.chooserMark {
+    width: 15px;
+    height: 15px;
+    background-color: rgba(0, 0, 0, 0.3);
+    background-image: url(../../../../assets/images/active_player.png);
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    background-size: contain;
+    background-origin: content-box;
+    padding: 2px;
+}
+
+.mediaLoadedMark {
+    width: 20px;
+    height: 20px;
+    background: green;
+    border-width: 1px 1px 0 0;
+    border-color: lightgray;
+    border-style: solid;
+}
+
+@media screen and (min-width: 1100px) and (min-height: 700px) {
+	.playerInfo .staticSum {
+		background: #05061F;
+		border: 2px solid #14183E;
+		border-radius: 5px;
+		padding: 4px;
+	}
+
+	.stakeHost {
+		flex: 0 0 45px;
+		color: white;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.gamePlayer .progress {
+		top: 40px;
+		height: 7px;
+		border-radius: 5px;
+	}
+
+	.gamePlayer .progress .progress-bar {
+		height: 7px;
+	}
+}

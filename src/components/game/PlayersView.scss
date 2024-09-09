@@ -1,3 +1,5 @@
+@use '../../scss/variables' as v;
+
 #playersPanel {
     margin: 0;
     flex: 0.5;
@@ -43,7 +45,7 @@
         font-weight: bolder;
     }
 
-    .gamePlayers li.me .name, .gamePlayers li.me .sum, .gamePlayers li.me .stakeHost {
+    .gamePlayers .playerCard.me .name, .gamePlayers .playerCard.me .sum {
         color: orange;
     }
 
@@ -54,176 +56,6 @@
         .gamePlayers li.selectable:hover {
             background-color: orange !important;
         }
-
-    .gamePlayers .stake {
-        font-weight: bold;
-        padding-left: 3.5px;
-        margin-left: 3.5px;
-    }
-
-    .gamePlayers .name, .gamePlayers .sum {
-        display: block;
-        margin: 0 1px;
-    }
-
-    .gamePlayers .stakeHost {
-        display: none;
-    }
-
-    .gamePlayers .name, .gamePlayers .sum, .gamePlayers .stakeHost {
-        text-align: center;
-        overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-    }
-
-    .gamePlayers .playerReplic {
-        position: absolute;
-        top: 0;
-        width: 200px;
-        left: 100%;
-        height: 100%;
-        padding: 5px;
-        background-color: #ffffee;
-        text-align: center;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 1.0);
-        z-index: 3;
-        animation: replicfadein 1s;
-    }
-
-    .gamePlayers .playerReplicText {
-        width: 100%;
-        height: 100%;
-        text-align: center;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
-    .gamePlayers .replicLink {
-        position: absolute;
-        left: -5px;
-        width: 10px;
-        height: 10px;
-        z-index: 1;
-        background: #ffffee;
-        transform: rotate(135deg);
-        box-shadow: 12px 11px 10px -4px black;
-    }
-
-@keyframes replicfadein {
-    from { opacity: 0; }
-    to   { opacity: 1; }
-}
-
-.playerAvatar {
-    height: 100%;
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-    overflow: hidden;
-    min-width: 10px;
-    flex: 0.3;
-    position: relative;
-}
-
-.playerAvatar iframe {
-    position: absolute;
-    top: 0;
-    width: 100%;
-    height: 100%;
-}
-
-.gamePlayer {
-    background-color: transparent;
-    transition: background-color 1s, opacity 1s;
-}
-
-.gamePlayer.state_press {
-    background-color: rgb(255, 255, 119);
-}
-
-.gamePlayer.state_lost {
-    background-color: #ffac59;
-}
-
-.gamePlayer.state_right {
-    background-color: rgb(69, 189, 45);
-}
-
-.gamePlayer.state_wrong {
-    background-color: rgb(175, 51, 51);
-}
-
-.gamePlayer.state_hasanswered {
-    background-color: darkviolet;
-}
-
-.gamePlayer.state_pass {
-    background-color: gray;
-}
-
-.gamePlayer.out_of_game {
-    opacity: 0.5;
-}
-
-.gamePlayer.selectable {
-    background-color: lightyellow;
-}
-
-.gamePlayer {
-	font-size: 25px;
-}
-
-.gamePlayer:nth-last-child(n+6),
-.gamePlayer:nth-last-child(n+6) ~ li {
-	font-size: 22px;
-}
-
-.gamePlayer:nth-last-child(n+9),
-.gamePlayer:nth-last-child(n+9) ~ li {
-	font-size: 18px;
-}
-
-.playerInfo .numericTextBox {
-    font-size: smaller;
-}
-
-.marksArea {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    display: flex;
-    flex-direction: row;
-}
-
-.readyMark {
-    font-size: 15px;
-}
-
-.chooserMark {
-    width: 15px;
-    height: 15px;
-    background-color: rgba(0, 0, 0, 0.3);
-    background-image: url(../../../assets/images/active_player.png);
-    background-repeat: no-repeat;
-    background-position: 50% 50%;
-    background-size: contain;
-    background-origin: content-box;
-    padding: 2px;
-}
-
-.mediaLoadedMark {
-    width: 20px;
-    height: 20px;
-    background: green;
-    border-width: 1px 1px 0 0;
-    border-color: lightgray;
-    border-style: solid;
-}
 
 @media screen and (min-height: 700px), (max-width: 600px) {
     #playersPanel {
@@ -290,7 +122,7 @@
     }
 
     .gamePlayers .playerCard {
-        padding: 3px 1px 0 1px;
+        padding: 3px 1px 3px 1px;
         flex-direction: column;
     }
 }
@@ -320,7 +152,6 @@
 
     .playerAvatar {
         min-width: 26px;
-        background-color: rgba(0, 0, 0, 0.10);
     }
 
     #playersPanel .avatarMale, #playersPanel .avatarFemale {
@@ -359,20 +190,16 @@
         margin: 5px 1px !important;
     }
 
-    .gamePlayers .playerCard {
+    .playerCard {
         padding: 5px;
         flex-direction: column;
+        background-color: v.$person-background;
+        border: 1px solid #222084;
+        border-radius: 10px;
     }
 
     .gamePlayers .playerInfo {
         color: white;
-        background-color: rgba(0, 0, 0, 0.5);
-    }
-
-    .playerAvatar {
-        height: 60%;
-        flex: initial;
-        margin-right: 5px;
     }
 
     .gamePlayers .playerReplic {
@@ -415,10 +242,6 @@
         font-size: 11px;
     }
 
-    .gamePlayers .stakeHost {
-        display: block;
-    }
-
     .gamePlayers .stake {
         padding-left: 0;
         margin-left: 0;
@@ -431,13 +254,13 @@
 
 @media screen and (min-width: 1600px) and (min-height: 700px) {
     .gamePlayers li {
-        height: 100%;
-        margin: 5px 0 !important;
+        height: calc(100% - 10px);
+        margin: 5px 3px !important;
         max-width: 350px;
     }
 
     .gamePlayers .playerCard {
-        padding: 10px;
+        padding: 15px 10px;
     }
 
     .gamePlayers .playerReplic {

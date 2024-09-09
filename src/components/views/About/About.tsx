@@ -33,7 +33,6 @@ export function About(props: AboutProps): JSX.Element {
 				<section>
 					<header><h1 className="subHeader">{localization.aboutAuthor}</h1></header>
 					<p>{localization.gameAuthor}: <Link href="https://vladimirkhil.com">{localization.authorInfo}</Link>.</p>
-					<p>{localization.designer}: {localization.designerInfo}.</p>
 					<p>{localization.composer}: <Link href="https://soundcloud.com/vladislav-hoshenko">Vlad Hoshenko</Link>.</p>
 					<p><Link href="https://github.com/VladimirKhil/SIOnline">{localization.sourcesInfo}</Link></p>
 				</section>

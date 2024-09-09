@@ -11,7 +11,7 @@ import localization from '../../model/resources/localization';
 import { useAppSelector } from '../../state/new/hooks';
 import Persons from '../../model/Persons';
 
-import './ShowmanReplicView.css';
+import './ShowmanReplicView.scss';
 
 interface ShowmanReplicViewProps {
 	all: Persons;

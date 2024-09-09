@@ -1,3 +1,5 @@
+@use '../../scss/variables' as v;
+
 .showmanArea {
     position: relative;
     width: 100%;
@@ -9,7 +11,7 @@
 }
 
 .showmanArea.highlighted .showmanReplic {
-    background-color: rgb(255, 188, 62);
+    background: v.$active-button-background;
 }
 
 .showmanInfo {
@@ -71,12 +73,16 @@
     .showmanInfo {
         display: flex;
         flex: 1;
+        background: v.$person-background;
+        border: 1px solid #222084;
+        border-radius: 10px;
+        margin: 5px;
     }
 
     .showmanName {
         font-size: 20px;
         width: initial;
-        margin-top: 2px;
+        padding-top: 5px;
     }
 
     .showmanAvatar {
@@ -93,5 +99,10 @@
 @media screen and (min-width: 1600px) {
     .showmanAvatar img {
         max-height: 290px;
+    }
+
+    .showmanName {
+        font-size: 25px;
+        padding-top: 10px;
     }
 }
