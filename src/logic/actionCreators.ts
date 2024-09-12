@@ -74,7 +74,7 @@ const onAvatarSelectedLocal: ActionCreator<ThunkAction<void, State, DataContext,
 		}
 	};
 
-async function uploadAvatarAsync(dispatch: Dispatch<Action>, appDispatch: AppDispatch, dataContext: DataContext) {
+async function uploadAvatarAsync(appDispatch: AppDispatch, dataContext: DataContext) {
 	const base64 = localStorage.getItem(Constants.AVATAR_KEY);
 	const fileName = localStorage.getItem(Constants.AVATAR_NAME_KEY);
 
@@ -208,6 +208,7 @@ const tryConnectAsync = async (
 	dataContext: DataContext
 ): Promise<ConnectResult> => {
 	if (dataContext.connection && dataContext.connection.state === signalR.HubConnectionState.Connected) {
+		await uploadAvatarAsync(appDispatch, dataContext);
 		return { success: true, authenticationRequired: false };
 	}
 
@@ -254,11 +255,6 @@ const tryConnectAsync = async (
 		const login = await dataContext.gameClient.getLoginAsync();
 		const localLogin = state.user.login;
 
-		if ((login === null || login === '') && (localLogin === null || localLogin === '')) {
-			// Login is required to continue
-			return { success: false, authenticationRequired: true };
-		}
-
 		const computerAccounts = await dataContext.gameClient.getComputerAccountsAsync(requestCulture);
 		appDispatch(computerAccountsChanged(computerAccounts));
 
@@ -266,7 +262,12 @@ const tryConnectAsync = async (
 		attachListeners(dataContext.gameClient, dataContext.connection, dispatch, appDispatch);
 
 		await loadHostInfoAsync(appDispatch, dataContext, requestCulture);
-		await uploadAvatarAsync(dispatch, appDispatch, dataContext);
+		await uploadAvatarAsync(appDispatch, dataContext);
+
+		if ((login === null || login === '') && (localLogin === null || localLogin === '')) {
+			// Login is required to continue
+			return { success: false, authenticationRequired: true };
+		}
 
 		return { success: true, authenticationRequired: false };
 	} catch (error) {
