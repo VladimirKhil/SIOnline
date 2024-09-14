@@ -9,9 +9,8 @@ import room2Reducer from './new/room2Slice';
 import online2Reducer from './new/online2Slice';
 import loginReducer from './new/loginSlice';
 import commonReducer from './new/commonSlice';
-import siPackagesReducer from './siPackages/siPackagesReducer';
-import { KnownSIPackagesAction } from './siPackages/SIPackagesActions';
 import uiReducer from './ui/uiReducer';
+import siPackagesReducer from './new/siPackagesSlice';
 import { KnownUIAction } from './ui/UIActions';
 import onlineReducer from './online/onlineReducer';
 import { KnownOnlineAction } from './online/OnlineActions';
@@ -28,7 +27,7 @@ const reducer: Reducer<State> = (
 	common: commonReducer(state.common, action as UnknownAction),
 	settings: settingsReducer(state.settings, action as UnknownAction),
 	table: tableReducer(state.table, action as UnknownAction),
-	siPackages: siPackagesReducer(state.siPackages, action as KnownSIPackagesAction),
+	siPackages: siPackagesReducer(state.siPackages, action as UnknownAction),
 	ui: uiReducer(state.ui, action as KnownUIAction),
 	online: onlineReducer(state.online, action as KnownOnlineAction),
 	online2: online2Reducer(state.online2, action as UnknownAction),
