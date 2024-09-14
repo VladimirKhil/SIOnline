@@ -4,7 +4,7 @@
     "noEmitOnError": true,
     "removeComments": true,
     "sourceMap": true,
-    "target": "es5",
+    "target": "es2015",
     "jsx": "react",
     "skipLibCheck": true,
     "lib": [ "es5", "es2015", "dom", "ES2021.String" ],

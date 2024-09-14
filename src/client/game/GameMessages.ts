@@ -96,6 +96,8 @@ const enum GameMessages {
 
 	Report = 'REPORT',
 
+	Resume = 'RESUME',
+
 	/** Question right answer. */
 	RightAnswer = 'RIGHTANSWER',
 

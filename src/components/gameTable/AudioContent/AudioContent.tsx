@@ -4,6 +4,7 @@ import { Dispatch, Action } from 'redux';
 import { connect } from 'react-redux';
 import roomActionCreators from '../../../state/room/roomActionCreators';
 import getErrorMessage from '../../../utils/ErrorHelpers';
+import localization from '../../../model/resources/localization';
 
 interface AudioContentProps {
 	audioContext: AudioContext;
@@ -65,6 +66,12 @@ export class AudioContent extends React.Component<AudioContentProps> {
 
 		try {
 			const response = await fetch(this.props.audio);
+
+			if (!response.ok) {
+				this.props.operationError(`${localization.audioLoadError} ${this.props.audio}: ${response.statusText}`);
+				return;
+			}
+
 			const arrayBuffer = await response.arrayBuffer();
 			this.audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
 

@@ -38,6 +38,7 @@ import { answerOptions,
 	questionReset,
 	removeTheme,
 	resumeLoadTimer,
+	resumeMedia,
 	rightOption,
 	setAnswerView,
 	showBackgroundAudio,
@@ -431,6 +432,10 @@ export default class ClientController {
 		}
 
 		this.appDispatch(isReadyChanged({ personIndex, isReady }));
+	}
+
+	onResumeMedia() {
+		this.appDispatch(resumeMedia());
 	}
 
 	onReport(report: string) {

@@ -30,9 +30,14 @@ import { playAudio } from '../state/new/commonSlice';
 import clearUrls from '../utils/clearUrls';
 import ThemesPlayMode from '../model/enums/ThemesPlayMode';
 import { AppDispatch } from '../state/new/store';
-import { captionChanged, isSelectableChanged, resumeMedia, showText } from '../state/new/tableSlice';
-import { playerChanged, playerInGameChanged, playerLostStateDropped, playerMediaLoaded, playerStakeChanged, playerStateChanged,
- showmanChanged } from '../state/new/room2Slice';
+import { captionChanged, isSelectableChanged, showText } from '../state/new/tableSlice';
+import { playerChanged,
+	playerInGameChanged,
+	playerLostStateDropped,
+	playerMediaLoaded,
+	playerStakeChanged,
+	playerStateChanged,
+	showmanChanged } from '../state/new/room2Slice';
 import StakeTypes from '../model/enums/StakeTypes';
 
 const MAX_APPEND_TEXT_LENGTH = 150;
@@ -629,8 +634,8 @@ const viewerHandler = (
 			break;
 		}
 
-		case 'RESUME':
-			appDispatch(resumeMedia());
+		case GameMessages.Resume:
+			controller.onResumeMedia();
 			break;
 
 		case GameMessages.RightAnswer:

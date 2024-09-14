@@ -18,6 +18,8 @@ import Role from './model/Role';
 import IGameClient from './client/game/IGameClient';
 import { gameSoundPlayer } from './utils/GameSoundPlayer';
 import GameSound from './model/enums/GameSound';
+import { AppDispatch } from './state/new/store';
+import { setAppSound } from './state/new/settingsSlice';
 
 declare global {
     interface Window {
@@ -55,7 +57,7 @@ interface WebView extends EventTarget {
         options?: boolean | AddEventListenerOptions): void;
 }
 
-function processMessage(controller: ClientController, payload: any) {
+function processMessage(controller: ClientController, payload: any, appDispatch: AppDispatch) {
 	switch (payload.type) {
 		case 'addPlayerTable':
 			controller.addPlayerTable();
@@ -87,6 +89,10 @@ function processMessage(controller: ClientController, payload: any) {
 
 		case 'deletePlayerTable':
 			controller.deletePlayerTable(payload.index);
+			break;
+
+		case 'endPressButtonByPlayer':
+			controller.onEndPressButtonByPlayer(payload.playerIndex);
 			break;
 
 		case 'endPressButtonByTimeout':
@@ -137,6 +143,10 @@ function processMessage(controller: ClientController, payload: any) {
 			controller.onReplic(payload.personCode, payload.text);
 			break;
 
+		case 'resumeMedia':
+			controller.onResumeMedia();
+			break;
+
 		case 'rightAnswer':
 			controller.onRightAnswer(payload.answer);
 			break;
@@ -155,6 +165,10 @@ function processMessage(controller: ClientController, payload: any) {
 
 		case 'setLanguage': // non-SIHost compatible API
 			localization.setLanguage(payload.language);
+			break;
+
+		case 'setAppSound': // non-SIHost compatible API
+			appDispatch(setAppSound(payload.isEnabled));
 			break;
 
 		case 'setSoundMap': // non-SIHost compatible API
@@ -277,7 +291,7 @@ export default function runCore(game?: IGameClient): Store<State, AnyAction> {
 		if (webview) {
 			webview.addEventListener('message', event => {
 				const payload = event.data;
-				processMessage(controller, payload);
+				processMessage(controller, payload, appDispatch);
 			});
 		}
 	}

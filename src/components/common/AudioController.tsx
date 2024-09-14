@@ -2,6 +2,7 @@ import * as React from 'react';
 import State from '../../state/State';
 import { connect } from 'react-redux';
 import getErrorMessage from '../../utils/ErrorHelpers';
+import localization from '../../model/resources/localization';
 
 interface AudioControllerProps {
 	soundVolume: number;
@@ -43,6 +44,12 @@ export class AudioController extends React.Component<AudioControllerProps> {
 	async load(audio: string) {
 		try {
 			const response = await fetch(audio);
+
+			if (!response.ok) {
+				console.error(`${localization.audioLoadError} ${audio}: ${response.statusText}`);
+				return;
+			}
+
 			const arrayBuffer = await response.arrayBuffer();
 			this.audioBuffer = await this.audioContext.decodeAudioData(arrayBuffer);
 
