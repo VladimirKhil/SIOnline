@@ -1,0 +1,14 @@
+.miniGameStatus {
+	color: white;
+    margin-bottom: 10px;
+    font-size: 25px;
+}
+
+.connectionStatus {
+	color: red;
+    margin-left: 5px;
+}
+
+.connectionStatus.active {
+	color: green;
+}

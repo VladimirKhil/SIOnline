@@ -1,12 +1,15 @@
 import React from 'react';
-import Path from '../../model/enums/Path';
-import State from '../../state/State';
-import JoinRoom from '../views/JoinRoom/JoinRoom';
-import TableContextView from '../game/TableContextView/TableContextView';
+import Path from '../../../model/enums/Path';
+import State from '../../../state/State';
+import JoinRoom from '../../views/JoinRoom/JoinRoom';
+import TableContextView from '../../game/TableContextView/TableContextView';
 import { connect } from 'react-redux';
-import { useAppSelector } from '../../state/new/hooks';
-import ErrorView from '../views/Error/ErrorView';
-import localization from '../../model/resources/localization';
+import { useAppSelector } from '../../../state/new/hooks';
+import ErrorView from '../../views/Error/ErrorView';
+import localization from '../../../model/resources/localization';
+import MiniGameStatus from '../MiniGameStatus/MiniGameStatus';
+
+import './MiniApp.scss';
 
 interface MiniAppProps {
 	path: Path;
@@ -22,7 +25,7 @@ const getContent = (path: Path) => {
 			return <div>{localization.connectionClosed}</div>;
 
 		case Path.Room:
-			return <TableContextView />;
+			return <div className='miniRoom'><MiniGameStatus /><TableContextView /></div>;
 
 		case Path.JoinRoom:
 			return <JoinRoom />;

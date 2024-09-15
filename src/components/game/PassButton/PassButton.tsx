@@ -27,7 +27,6 @@ export function PassButton(props: PassButtonProps): JSX.Element | null {
 		<button
 			type="button"
 			className='passButton'
-			title={localization.pass}
 			disabled={!props.isConnected}
 			onClick={() => props.onPass()}
 		>

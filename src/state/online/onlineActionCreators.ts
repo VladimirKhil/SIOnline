@@ -346,7 +346,7 @@ const initGameAsync = async (
 	dispatch(roomActionCreators.stopTimer(1));
 	dispatch(roomActionCreators.stopTimer(2));
 	dispatch(roomActionCreators.gameStarted(false));
-	dispatch(roomActionCreators.afterQuestionStateChanged(true));
+	dispatch(roomActionCreators.afterQuestionStateChanged(false));
 	dispatch(roomActionCreators.isQuestionChanged(false, ''));
 
 	await gameInit(gameClient, role);

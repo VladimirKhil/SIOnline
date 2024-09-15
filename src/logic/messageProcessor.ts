@@ -925,12 +925,7 @@ const playerHandler = (
 	args: string[]) => {
 	switch (args[0]) {
 		case GameMessages.Answer:
-			if (state.table.layoutMode === LayoutMode.Simple) {
-				dispatch(roomActionCreators.isAnswering());
-			} else {
-				dispatch(roomActionCreators.decisionNeededChanged(true));
-				appDispatch(isSelectableChanged(true));
-			}
+			controller.onAskAnswer();
 			break;
 
 		case GameMessages.AskSelectPlayer:

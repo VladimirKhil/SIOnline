@@ -284,6 +284,15 @@ export default class ClientController {
 	onAnswers(answers: string[]) {
 	}
 
+	onAskAnswer() {
+		if (this.getState().table.layoutMode === LayoutMode.Simple) {
+			this.dispatch(roomActionCreators.isAnswering());
+		} else {
+			this.dispatch(roomActionCreators.decisionNeededChanged(true));
+			this.appDispatch(isSelectableChanged(true));
+		}
+	}
+
 	onAskSelectPlayer(reason: string, indices: number[]) {
 		this.appDispatch(selectPlayers(indices));
 		this.dispatch(roomActionCreators.selectionEnabled(Messages.SelectPlayer));

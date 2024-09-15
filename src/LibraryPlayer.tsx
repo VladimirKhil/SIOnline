@@ -2,7 +2,7 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import runCore from './LibraryCore';
 import React from 'react';
-import MiniApp from './components/MiniApp/MiniApp';
+import MiniApp from './components/mini/MiniApp/MiniApp';
 import Path from './model/enums/Path';
 import { INavigationState } from './state/ui/UIState';
 import actionCreators from './logic/actionCreators';

@@ -46,8 +46,15 @@ export function attachSIHostListeners(
 		}));
 	});
 
-	connection.onreconnected(() => {
+	connection.onreconnected(async () => {
 		if (detachedConnections.includes(connection)) {
+			return;
+		}
+
+		try {
+			await gameClient.reconnectAsync();
+		} catch (e) {
+			appDispatch(userErrorChanged('Reconnection error: ' + getErrorMessage(e)));
 			return;
 		}
 

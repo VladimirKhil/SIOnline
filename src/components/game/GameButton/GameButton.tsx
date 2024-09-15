@@ -29,7 +29,6 @@ export function GameButton(props: GameButtonProps) {
 		<button
 			type='button'
 			className="playerButton mainAction active"
-			title={localization.gameButton}
 			disabled={!props.isConnected || !props.isGameButtonEnabled}
 			onClick={() => props.pressGameButton()}>
 			{localization.makeAnswer.toLocaleUpperCase()}

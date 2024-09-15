@@ -71,8 +71,16 @@ function processMessage(controller: ClientController, payload: any, appDispatch:
 			controller.onAnswerOptionsLayout(payload.questionHasScreenContent, payload.typeNames);
 			break;
 
+		case 'askAnswer':
+			controller.onAskAnswer();
+			break;
+
 		case 'beginPressButton':
 			controller.onBeginPressButton();
+			break;
+
+		case 'cancel':
+			controller.onCancel();
 			break;
 
 		case 'choose':
