@@ -38,15 +38,11 @@
 
 .rulesSettingsView .hint {
 	margin-top: 5px;
+	font-size: 12px;
 }
 
 .rulesSettingsView .valueEditor {
 	margin-left: 20px;
-}
-
-.gameTypeHint {
-	margin-top: 5px;
-	width: 280px;
 }
 
 .rulesSettingsView .reset {
@@ -71,10 +67,12 @@
     .rulesSettingsView .hint {
 		margin-top: 0;
 		margin-left: 20px;
+		font-size: 16px;
 	}
 
 	.gameTypeHint {
 		margin-top: 0;
 		margin-left: 20px;
+		width: 280px;
 	}
 }

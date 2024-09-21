@@ -1,0 +1,17 @@
+.gamesSearch {
+	color: white;
+	margin: 0 5px;
+	background: #05061F !important;
+    height: 47px;
+    font-size: 17px;
+    line-height: 45px;
+	border: 1px solid #303a94;
+	border-radius: 10px;
+    padding: 3px 15px;
+	flex: 1;
+	min-width: 0;
+}
+
+.gamesSearch::placeholder {
+	color: lightgray;
+}

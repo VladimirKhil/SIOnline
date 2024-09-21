@@ -16,16 +16,24 @@
 
 .trendPackage, .trendGame {
 	margin: 8px 0px;
-	padding: 10px;
-	background-color: rgba(0,0,0,0.2);
+	padding: 20px;
+	background: #0A0E30;
+	border-radius: 12px;
 }
 
 .trends .packageName, .trends .packageAuthors, .trends .gameName {
-	font-weight: bold;
+	font-weight: 500;
 	font-size: 18px;
 }
 
 .hasContact {
 	color: rgb(222, 206, 108);
 	cursor: pointer;
+}
+
+.property {
+	margin-top: 5px;
+	display: flex;
+	justify-content: space-between;
+	overflow: hidden;
 }

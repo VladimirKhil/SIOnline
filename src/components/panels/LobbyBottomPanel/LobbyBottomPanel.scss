@@ -1,0 +1,13 @@
+.lobbyBottomPanel {
+	display: flex;
+	flex-direction: row;
+	overflow: hidden;
+}
+
+.lobbyBottomPanel button {
+	flex: 1;
+	height: 45px;
+    font-size: 25px;
+    line-height: 25px;
+	margin: 2px;
+}

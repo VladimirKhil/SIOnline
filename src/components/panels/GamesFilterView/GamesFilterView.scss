@@ -1,0 +1,17 @@
+@use '../../../scss/variables' as v;
+
+.gamesFilterButton {
+    border: 0;
+    font-size: 26px;
+    margin-left: 5px;
+    overflow: hidden;
+	flex: 0 0 45px;
+	height: 45px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.gamesFilterButton.active {
+	background: v.$active-button-background;
+}

@@ -59,7 +59,7 @@ export default function RulesSettingsView(): JSX.Element {
 						<option value="0">{localization.tv}</option>
 					</select>
 
-					<div className='gameTypeHint'>
+					<div className='hint gameTypeHint'>
 						{game.type === GameType.Classic ? localization.gameTypeClassicHint : localization.gameTypeSimpleHint}
 					</div>
 				</div>

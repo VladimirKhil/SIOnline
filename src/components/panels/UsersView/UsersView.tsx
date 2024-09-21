@@ -2,13 +2,9 @@
 import { connect } from 'react-redux';
 import { Dispatch, Action } from 'redux';
 import LobbySideMode from '../../../model/enums/LobbySideMode';
-import Chat from '../../Chat';
-import UsersList from '../../UsersList';
 import State from '../../../state/State';
-import localization from '../../../model/resources/localization';
 import onlineActionCreators from '../../../state/online/onlineActionCreators';
-import LobbyMenu from '../LobbyMenu/LobbyMenu';
-import Trends from '../../Trends';
+import Trends from '../Trends/Trends';
 
 import './UsersView.css';
 
@@ -41,54 +37,9 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 });
 
 export function UsersView(props: UsersViewProps): JSX.Element | null {
-/* 	function chatModeChanged(chatMode: LobbySideMode) {
-		if (props.chatMode !== chatMode) {
-			props.onChatModeChanged(chatMode);
-		}
-	} */
-
 	return props.isLobbyChatHidden ? null : (
 		<section className="chatHost gamesblock">
-			<header>
-				<LobbyMenu />
-
-				<div className="chatHostTitle">
-					{/* <h1
-						className={props.chatMode === LobbySideMode.Trends ? 'activeTab' : ''}
-						onClick={() => chatModeChanged(LobbySideMode.Trends)}
-					> */}
-					<h1>
-						{localization.trends}
-					</h1>
-
-					{/* {!props.clearUrls && localization.getLanguage() === 'ru'
-						? <>
-							<h1
-								className={props.chatMode === LobbySideMode.Chat ? 'activeTab' : ''}
-								onClick={() => chatModeChanged(LobbySideMode.Chat)}
-							>
-								{localization.chat}
-							</h1>
-							<h1
-								className={`playersTitle ${props.chatMode === LobbySideMode.Users ? 'activeTab' : ''}`}
-								onClick={() => chatModeChanged(LobbySideMode.Users)}
-							>
-								<div>
-									<span>{localization.users}</span>
-									<span> (</span>
-									<span>{props.usersCount}</span>
-									<span>)</span>
-								</div>
-							</h1>
-						</>
-						: null} */}
-				</div>
-			</header>
-
 			<div className="chatBody">
-				{/* {props.chatMode === LobbySideMode.Trends
-					? <Trends />
-					: (props.chatMode === LobbySideMode.Chat ? <Chat /> : <UsersList />)} */}
 				<Trends />
 			</div>
 		</section>

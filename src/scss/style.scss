@@ -363,11 +363,6 @@ h1.activeTab {
         background-color: white;
     }
 
-.chatBody {
-    height: calc(100% - 35pt);
-    position: relative;
-}
-
 .chat span {
     display: block;
     word-wrap: break-word;
@@ -545,10 +540,6 @@ a.simpleLink {
 }
 
 @media screen and (min-width: 800px) {
-    #gamesTitle {
-        padding-left: 0;
-    }
-
     #nav {
         display: none;
     }

@@ -1,14 +1,8 @@
 .settingsButton {
-    display: none;
+    display: inline-block;
     font-size: 26px;
     padding: 0 10px;
     border: 0;
     height: 45px;
     width: 45px;
-}
-
-@media screen and (min-width: 800px) {
-    .settingsButton {
-        display: inline-block;
-    }
 }

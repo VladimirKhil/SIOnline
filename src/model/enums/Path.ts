@@ -6,7 +6,6 @@ const enum Path {
 	About = '/about',
 	Menu = '/menu',
 	NewRoom = '/create',
-	Rooms = '/rooms',
 	Lobby = '/lobby',
 	Room = '/room',
 	JoinRoom = '/join',

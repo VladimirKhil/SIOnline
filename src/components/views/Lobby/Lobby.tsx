@@ -1,6 +1,6 @@
 ﻿import * as React from 'react';
 import { connect } from 'react-redux';
-import GamesList from '../../GamesList';
+import GamesList from '../../panels/GamesList/GamesList';
 import State from '../../../state/State';
 import GameInfoView from '../../GameInfoView';
 import UsersView from '../../panels/UsersView/UsersView';
@@ -16,6 +16,8 @@ import uiActionCreators from '../../../state/ui/uiActionCreators';
 import localization from '../../../model/resources/localization';
 import Path from '../../../model/enums/Path';
 import UserOptions from '../../panels/UserOptions/UserOptions';
+import GamesControlPanel from '../../panels/GamesControlPanel/GamesControlPanel';
+import LobbyBottomPanel from '../../panels/LobbyBottomPanel/LobbyBottomPanel';
 
 import './Lobby.css';
 import exitImg from '../../../../assets/images/exit.png';
@@ -65,6 +67,26 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	}
 });
 
+const topMenu = (onExit: () => void) => (
+	<header className='main'>
+		<h1 className='mainHeader'>
+			<span className='left'>
+				<button
+					type='button'
+					className='standard imageButton welcomeExit'
+					onClick={onExit}
+					title={localization.exit}>
+					<img src={exitImg} alt='Exit' />
+				</button>
+			</span>
+
+			<div className='right'>
+				<UserOptions />
+			</div>
+		</h1>
+	</header>
+);
+
 export function Lobby(props: LobbyProps) {
 	const newGame = (
 		<div className={`newGameArea ${props.isLobbyChatHidden ? 'newWide' : null}`}>
@@ -90,43 +112,48 @@ export function Lobby(props: LobbyProps) {
 				<div className="lobby">
 					<div className="onlineView">
 						{props.inProgress ? <ProgressBar isIndeterminate /> : null}
-						<GamesList games={props.filteredGames} selectedGameId={props.selectedGameId} showInfo />
+
+						<div className='gamesBlock'>
+							{topMenu(onExit)}
+							<GamesControlPanel games={props.filteredGames} />
+							<GamesList games={props.filteredGames} selectedGameId={props.selectedGameId} showInfo />
+							<LobbyBottomPanel />
+						</div>
+
 						{props.newGameShown ? newGame : null}
 					</div>
 				</div>
 			);
 		}
 
-		return <div className="lobby"><div className="onlineView"><UsersView /></div></div>;
+		return <div className="lobby">
+			{topMenu(onExit)}
+			<div className="onlineView">
+				<UsersView />
+			</div>
+			<LobbyBottomPanel />
+			{props.newGameShown ? newGame : null}
+			</div>;
 	}
 
 	return (
 		<div className="lobby">
-			<header>
-				<h1 className='mainHeader'>
-					<span className='left'>
-						<button
-							type='button'
-							className='standard imageButton welcomeExit'
-							onClick={onExit}
-							title={localization.exit}>
-							<img src={exitImg} alt='Exit' />
-						</button>
-					</span>
-
-					<div className='right'>
-						<UserOptions />
-					</div>
-				</h1>
-			</header>
+			{topMenu(onExit)}
 
 			<div className='onlineView'>
 				{props.inProgress ? <ProgressBar isIndeterminate /> : null}
-				<GamesList games={props.filteredGames} selectedGameId={props.selectedGameId} showInfo={false} />
 
-				<div className='gameInfoArea'>
-					<header />
-					<div className='gameInfoAreaContent'><GameInfoView game={props.selectedGame} showGameName /></div>
+				<div className='gamesArea'>
+					<GamesControlPanel games={props.filteredGames} />
+
+					<div className='gamesView'>
+						<GamesList games={props.filteredGames} selectedGameId={props.selectedGameId} showInfo={false} />
+
+						<div className='gameInfoArea'>
+							<header />
+							<div className='gameInfoAreaContent'><GameInfoView game={props.selectedGame} showGameName /></div>
+						</div>
+					</div>
 				</div>
 
 				<UsersView />

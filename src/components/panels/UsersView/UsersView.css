@@ -18,6 +18,11 @@
     white-space: nowrap;
 }
 
+.chatBody {
+    height: 100%;
+    position: relative;
+}
+
 .playersTitle {
     margin-left: 8px;
     width: 160px;

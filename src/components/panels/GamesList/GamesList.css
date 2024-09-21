@@ -1,8 +1,9 @@
 .gameslistHost {
     width: 100%;
-    height: 100%;
+    flex: 1;
     position: relative;
     display: flex;
+    overflow: hidden;
     flex-direction: column;
 }
 
@@ -20,14 +21,6 @@
         white-space: nowrap;
     }
 
-.gamesFilterButton {
-    border: 0;
-    font-size: 26px;
-    margin-left: auto;
-    padding: 0 6px 0 12px;
-    overflow: hidden;
-}
-
 .filterText {
     white-space: nowrap;
 }
@@ -38,25 +31,13 @@
     left: 1px;
 }
 
-.gamesSearch {
-    height: 47px;
-    font-size: 17px;
-    line-height: 45px;
-    padding: 4px 10px;
-    border: 0;
-}
-
-.gamesSearch::placeholder {
-    color: rgb(153, 153, 153);
-}
-
 .gamenames {
     overflow: auto;
     scrollbar-width: thin;
     width: 100%;
-    height: calc(100% - 135px);
     background-color: rgba(0,0,0,0.2);
     margin: 0;
+    flex: 1;
 }
 
 .gamenames li {
@@ -104,18 +85,6 @@
     display: flex;
 }
 
-#newGame, #newAutoGame {
-    display: block;
-    width: 100%;
-    max-width: none;
-    height: 45px;
-    font-size: 25px;
-    line-height: 25px;
-    border-left: 0;
-    border-right: 0;
-    bottom: 0;
-}
-
 .flyoutButton_flyout.dark > ul.gamesFilter > li {
     padding: 10pt 30pt 10pt 0;
 }
@@ -143,11 +112,6 @@ ul.gamesFilter > li.disabled {
         flex: 0 0 400px;
         width: 300px;
     }
-
-    #newGame, #newAutoGame {
-        font-size: 26px;
-        line-height: 26px;
-    }
 }
 
 @media screen and (min-width: 1600px) {
@@ -159,11 +123,5 @@ ul.gamesFilter > li.disabled {
 @media screen and (min-height: 600px) {
     .commandButtonsPanel {
         flex-flow: row;
-    }
-
-    #newGame, #newAutoGame {
-        font-size: 26px;
-        line-height: 26px;
-        padding-top: 8px;
     }
 }

@@ -92,29 +92,6 @@ const receiveGameStart: ActionCreator<OnlineActions.ReceiveGamesStartAction> = (
 	type: OnlineActions.OnlineActionTypes.ReceiveGamesStart
 });
 
-const friendsPlay: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
-	() => async (dispatch: Dispatch<Action>, getState: () => State, dataContext: DataContext) => {
-	const state = getState();
-	const { selectedGameId } = state.online;
-
-	dispatch(dropSelectedGame());
-	dispatch(receiveGameStart());
-
-	try {
-		await loadGamesAsync(dispatch, dataContext.gameClient, dataContext.config.clearUrls);
-
-		const state2 = getState();
-
-		if (selectedGameId && state2.online.games[selectedGameId]) {
-			dispatch(selectGame(selectedGameId));
-		}
-
-		dispatch(onlineLoadFinish());
-	} catch (error) {
-		dispatch(onlineLoadError(getErrorMessage(error)));
-	}
-};
-
 const resetLobby: ActionCreator<OnlineActions.ResetLobbyAction> = () => ({
 	type: OnlineActions.OnlineActionTypes.ResetLobby
 });
@@ -705,7 +682,6 @@ async function gameInit(gameClient: IGameClient, role: Role) {
 
 const onlineActionCreators = {
 	receiveGameStart,
-	friendsPlay,
 	navigateToLobby,
 	onGamesFilterToggle,
 	onGamesSearchChanged,

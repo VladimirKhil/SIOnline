@@ -6,7 +6,7 @@
     overflow: hidden;
 }
 
-.lobby > header {
+.lobby header.main {
 	color: white;
 	text-align: center;
 	background-color: #04071B;
@@ -16,7 +16,7 @@
 	overflow: hidden;
 }
 
-.lobby > header h1 {
+.lobby header.main h1 {
 	font-size: 16px;
 	margin: 0;
 	display: flex;
@@ -25,11 +25,11 @@
 	overflow: hidden;
 }
 
-.lobby header h1 .left {
+.lobby header.main h1 .left {
 	text-align: left;
 }
 
-.lobby header h1 .right {
+.lobby header.main h1 .right {
 	text-align: right;
 	flex: 1 0 0;
 	display: flex;
@@ -39,6 +39,13 @@
 
 .onlineView {
     display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+.gamesBlock {
+    display: flex;
+    flex-direction: column;
     flex: 1;
     overflow: hidden;
 }
@@ -56,6 +63,20 @@
     bottom: 0;
     left: 0;
     right: 0;
+}
+
+.gamesArea {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow: hidden;
+}
+
+.gamesView {
+    display: flex;
+    flex-direction: row;
+    overflow: hidden;
+    flex: 1;
 }
 
 .gameInfoArea {

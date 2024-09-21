@@ -7,7 +7,6 @@ import MainMenu from '../views/MainMenu/MainMenu';
 import Lobby from '../views/Lobby/Lobby';
 import Room from '../views/Room/Room';
 import SettingsDialog from '../settings/SettingsDialog/SettingsDialog';
-import Games from '../views/Games/Games';
 import ErrorView from '../views/Error/ErrorView';
 import CookiesWarning from '../panels/CookiesWarning/CookiesWarning';
 import AudioController from '../common/AudioController';
@@ -63,9 +62,6 @@ export class App extends React.Component<AppProps> {
 
 			case Path.NewRoom:
 				return <NewGame />;
-
-			case Path.Rooms:
-				return <Games />;
 
 			case Path.Lobby:
 				return <Lobby />;

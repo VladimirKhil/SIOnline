@@ -1,0 +1,36 @@
+.gamesControlPanel {
+	flex: 0 0 70px;
+	color: white;
+	font-size: 20px;
+	font-weight: 500;
+	background: #0A0E30;
+	border-radius: 16px;
+	margin: 10px;
+	padding: 10px 20px 10px 20px;
+	display: flex;
+	align-items: center;
+}
+
+.gamesTitle {
+	flex: 0 0 80px;
+	font-size: 14px;
+}
+
+.gamesControlPanel .newGame {
+	display: none;
+}
+
+@media screen and (min-width: 800px) {
+    .gamesControlPanel {
+		padding: 10px 30px;
+    }
+
+    .gamesControlPanel .newGame {
+        display: initial;
+    }
+
+	.gamesTitle {
+		flex: 0 0 160px;
+		font-size: 20px;
+	}
+}

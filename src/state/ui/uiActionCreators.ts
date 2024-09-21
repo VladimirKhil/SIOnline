@@ -55,10 +55,6 @@ const handleNavigation = (navigation: INavigationState, dispatch: Dispatch<Actio
 	dispatch(navigateCore(nav));
 
 	switch (nav.path) {
-		case Path.Rooms:
-			dispatch(onlineActionCreators.friendsPlay() as unknown as Action);
-			break;
-
 		case Path.JoinRoom:
 			// No action required for now
 			break;
