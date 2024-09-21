@@ -794,6 +794,17 @@ export default class ClientController {
 
 	onQuestionType(qType: string) {
 		switch (qType) {
+			case 'forAll':
+				this.playGameSound(GameSound.QUESTION_ALL);
+
+				this.appDispatch(showQuestionType({
+					header: localization.question,
+					text: localization.questionTypeForAll,
+					hint: localization.questionTypeForAllHint,
+				}));
+
+				break;
+
 			case 'stake':
 				this.playGameSound(GameSound.QUESTION_STAKE);
 
@@ -801,6 +812,17 @@ export default class ClientController {
 					header: localization.question,
 					text: localization.questionTypeStake,
 					hint: localization.questionTypeStakeHint,
+				}));
+
+				break;
+
+			case 'stakeAll':
+				this.playGameSound(GameSound.QUESTION_STAKE_ALL);
+
+				this.appDispatch(showQuestionType({
+					header: localization.question,
+					text: localization.questionTypeStakeAll,
+					hint: localization.questionTypeStakeAllHint,
 				}));
 
 				break;

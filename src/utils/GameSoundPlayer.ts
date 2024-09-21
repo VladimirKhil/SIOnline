@@ -5,9 +5,11 @@ import applauseSmallSfx from '../../assets/sounds/applause_small.mp3';
 import finalDeleteSfx from '../../assets/sounds/final_delete.mp3';
 import finalThinkSfx from '../../assets/sounds/final_think.mp3';
 import mainMenuSfx from '../../assets/sounds/main_menu.mp3';
+import questionAllSfx from '../../assets/sounds/question_all.mp3';
 import questionNoAnswersSfx from '../../assets/sounds/question_noanswers.mp3';
 import questionNoRiskSfx from '../../assets/sounds/question_norisk.mp3';
 import questionStakeSfx from '../../assets/sounds/question_stake.mp3';
+import questionStakeAllSfx from '../../assets/sounds/question_stake_all.mp3';
 import questionSecretSfx from '../../assets/sounds/question_secret.mp3';
 import roundBeginSfx from '../../assets/sounds/round_begin.mp3';
 import roundThemesSfx from '../../assets/sounds/round_themes.mp3';
@@ -27,10 +29,12 @@ class GameSoundPlayer {
 			[GameSound.FINAL_DELETE, finalDeleteSfx],
 			[GameSound.FINAL_THINK, finalThinkSfx],
 			[GameSound.MAIN_MENU, mainMenuSfx],
+			[GameSound.QUESTION_ALL, questionAllSfx],
 			[GameSound.QUESTION_NOANSWERS, questionNoAnswersSfx],
 			[GameSound.QUESTION_NORISK, questionNoRiskSfx],
 			[GameSound.QUESTION_SECRET, questionSecretSfx],
 			[GameSound.QUESTION_STAKE, questionStakeSfx],
+			[GameSound.QUESTION_STAKE_ALL, questionStakeAllSfx],
 			[GameSound.ROUND_BEGIN, roundBeginSfx],
 			[GameSound.ROUND_THEMES, roundThemesSfx],
 			[GameSound.ROUND_TIMEOUT, roundTimeoutSfx],
