@@ -70,6 +70,7 @@ import {
 	playerChanged,
 	playerDeleted,
 	playerInGameChanged,
+	playerLostStateDropped,
 	playerReplicChanged,
 	playerStateChanged,
 	playerSumChanged,
@@ -426,6 +427,10 @@ export default class ClientController {
 		}
 	}
 
+	onReadingSpeedChanged(readingSpeed: number) {
+		this.dispatch(roomActionCreators.readingSpeedChanged(readingSpeed));
+	}
+
 	onReady(personName: string, isReady: boolean): void {
 		let personIndex: number;
 		const state = this.getState();
@@ -558,6 +563,25 @@ export default class ClientController {
 
 		if (stage === GameStage.After) {
 			this.appDispatch(showLogo());
+		}
+	}
+
+	onWrongTry(playerIndex: number) {
+		const { players } = this.getState().room2.persons;
+
+		if (playerIndex > -1 && playerIndex < players.length) {
+			const player = players[playerIndex];
+
+			if (player.state === PlayerStates.None) {
+				this.appDispatch(playerStateChanged({ index: playerIndex, state: PlayerStates.Lost }));
+
+				setTimeout(
+					() => {
+						this.appDispatch(playerLostStateDropped(playerIndex));
+					},
+					800
+				);
+			}
 		}
 	}
 

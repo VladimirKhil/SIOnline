@@ -44,6 +44,7 @@ import { AppDispatch } from '../new/store';
 import { showText, tableReset } from '../new/tableSlice';
 import { ContextView, setContext } from '../new/room2Slice';
 import { GameState, setGameSet } from '../new/gameSlice';
+import { saveStateToStorage } from '../new/StateHelpers';
 
 const selectGame: ActionCreator<OnlineActions.SelectGameAction> = (gameId: number) => ({
 	type: OnlineActions.OnlineActionTypes.SelectGame,
@@ -405,8 +406,7 @@ const joinGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 		);
 
 		await actionCreators.disconnectAsync(appDispatch, dataContext);
-
-		actionCreators.saveStateToStorage(state);
+		saveStateToStorage(getState()); // use state that could be changed by initGameAsync
 	} catch (error) {
 		appDispatch(userErrorChanged(getErrorMessage(error)));
 	} finally {
@@ -627,7 +627,7 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 				ComputerAccounts: []
 			});
 
-			actionCreators.saveStateToStorage(state);
+			saveStateToStorage(state);
 
 			if (!result.IsSuccess) {
 				appDispatch(userErrorChanged(GameErrorsHelper.getMessage(result.ErrorType)));
@@ -657,7 +657,7 @@ const createNewAutoGame: ActionCreator<ThunkAction<void, State, DataContext, Act
 				Culture: getFullCulture(state)
 			});
 
-			actionCreators.saveStateToStorage(state);
+			saveStateToStorage(state);
 
 			if (!result.IsSuccess) {
 				appDispatch(userErrorChanged(GameErrorsHelper.getMessage(result.ErrorType)));

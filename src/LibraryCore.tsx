@@ -20,6 +20,7 @@ import { gameSoundPlayer } from './utils/GameSoundPlayer';
 import GameSound from './model/enums/GameSound';
 import { AppDispatch } from './state/new/store';
 import { setAppSound } from './state/new/settingsSlice';
+import { loadState } from './state/SavedState';
 
 declare global {
     interface Window {
@@ -147,6 +148,10 @@ function processMessage(controller: ClientController, payload: any, appDispatch:
 			controller.onQuestionType(payload.questionType);
 			break;
 
+		case 'setReadingSpeed':
+			controller.onReadingSpeedChanged(payload.readingSpeed);
+			break;
+
 		case 'replic':
 			controller.onReplic(payload.personCode, payload.text);
 			break;
@@ -250,6 +255,10 @@ function processMessage(controller: ClientController, payload: any, appDispatch:
 			controller.onToggle(payload.themeIndex, payload.questionIndex, payload.price);
 			break;
 
+		case 'wrongTry':
+			controller.onWrongTry(payload.playerIndex);
+			break;
+
 		default:
 			break;
 	}
@@ -274,6 +283,8 @@ export default function runCore(game?: IGameClient): Store<State, AnyAction> {
 		state: new StateManager(),
 	};
 
+	const savedState = loadState();
+
 	const store = createStore<State, AnyAction, {}, {}>(
 		reducer,
 		{
@@ -285,7 +296,11 @@ export default function runCore(game?: IGameClient): Store<State, AnyAction> {
 			room: {
 				...initialState.room,
 				role: Role.Showman,
-			}
+			},
+			user: {
+				...initialState.user,
+				login: savedState?.login ?? '',
+			},
 		},
 		applyMiddleware(reduxThunk.withExtraArgument(dataContext))
 	);

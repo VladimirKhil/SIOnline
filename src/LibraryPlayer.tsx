@@ -7,6 +7,7 @@ import Path from './model/enums/Path';
 import { INavigationState } from './state/ui/UIState';
 import actionCreators from './logic/actionCreators';
 import { Action } from 'redux';
+import { changeLogin } from './state/new/userSlice';
 
 import './scss/style.scss';
 
@@ -25,6 +26,18 @@ export function run(elementId: string): void {
 
 	const store = runCore();
 	store.dispatch(actionCreators.init(initialView, store.dispatch) as unknown as Action);
+
+	let { login } = store.getState().user;
+
+	store.subscribe(() => {
+		const state = store.getState();
+		const { name } = state.room;
+
+		if (name !== login && name.length > 0) {
+			login = name;
+			store.dispatch(changeLogin(login));
+		}
+	});
 
 	ReactDOM.render(
 		<Provider store={store}>

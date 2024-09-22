@@ -6,7 +6,6 @@ import State from '../state/State';
 import DataContext from '../model/DataContext';
 
 import 'es6-promise/auto';
-import { saveState } from '../state/SavedState';
 import localization from '../model/resources/localization';
 
 import { attachListeners, detachListeners, activeConnections, removeConnection } from '../utils/ConnectionHelpers';
@@ -50,6 +49,7 @@ import {
 } from '../state/new/commonSlice';
 
 import { changeAvatar, changeLogin } from '../state/new/userSlice';
+import { saveStateToStorage } from '../state/new/StateHelpers';
 
 interface ConnectResult {
 	success: boolean;
@@ -131,21 +131,6 @@ const reloadComputerAccounts: ActionCreator<ThunkAction<void, State, DataContext
 
 	const computerAccounts = await dataContext.gameClient.getComputerAccountsAsync(requestCulture);
 	appDispatch(computerAccountsChanged(computerAccounts));
-};
-
-const saveStateToStorage = (state: State) => {
-	saveState({
-		login: state.user.login,
-		game: {
-			name: state.game.name,
-			password: state.game.password,
-			role: state.game.role,
-			type: state.game.type,
-			playersCount: state.game.playersCount,
-			humanPlayersCount: state.game.humanPlayersCount
-		},
-		settings: state.settings
-	});
 };
 
 function getLoginErrorByCode(response: Response): string {
@@ -541,7 +526,6 @@ const acceptLicense: ActionCreator<ThunkAction<void, State, DataContext, Action>
 const actionCreators = {
 	init,
 	reloadComputerAccounts,
-	saveStateToStorage,
 	onAvatarSelectedLocal,
 	sendAvatar,
 	login,

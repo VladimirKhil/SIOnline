@@ -149,6 +149,18 @@ export function GameInfoView(props: GameInfoViewProps): JSX.Element {
 
 	const rules = buildRules(game.Rules, game.Mode === ServerGameType.Simple);
 
+	const onKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+		if (e.key === Constants.KEY_ENTER_NEW) {
+			if (canJoinAsPlayer) {
+				props.onJoin(game.HostUri, game.GameID, userName, Role.Player, appDispatch);
+			} else if (canJoinAsShowman) {
+				props.onJoin(game.HostUri, game.GameID, userName, Role.Showman, appDispatch);
+			} else {
+				props.onJoin(game.HostUri, game.GameID, userName, Role.Viewer, appDispatch);
+			}
+		}
+	};
+
 	return (
 		<section className="gameinfoHost">
 			<div id="gameinfo">
@@ -194,6 +206,7 @@ export function GameInfoView(props: GameInfoViewProps): JSX.Element {
 									disabled={props.joinGameProgress}
 									value={userName}
 									onChange={e => setUserName(e.target.value)}
+									onKeyPress={onKeyPress}
 								/>
 							</div>
 
@@ -208,6 +221,7 @@ export function GameInfoView(props: GameInfoViewProps): JSX.Element {
 										disabled={props.joinGameProgress}
 										value={props.password}
 										onChange={e => props.onPasswordChanged(e.target.value)}
+										onKeyPress={onKeyPress}
 									/>
 								</div>
 							) : null}

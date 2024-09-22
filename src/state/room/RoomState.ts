@@ -29,6 +29,7 @@ export default interface RoomState {
 		isDecisionNeeded: boolean;
 		isAnswering: boolean;
 		isAfterQuestion: boolean;
+		themeIndex: number;
 		currentPrice: number;
 		themeName: string;
 		isQuestion: boolean;
@@ -127,6 +128,7 @@ export const initialState: RoomState = {
 		isDecisionNeeded: false,
 		isAnswering: false,
 		isAfterQuestion: false,
+		themeIndex: -1,
 		currentPrice: 0,
 		themeName: '',
 		isQuestion: false,

@@ -594,12 +594,12 @@ const viewerHandler = (
 			controller.onQuestionEnd();
 			break;
 
-		case 'READINGSPEED':
+		case GameMessages.ReadingSpeed:
 			if (args.length < 2) {
 				break;
 			}
 
-			dispatch(roomActionCreators.readingSpeedChanged(parseInt(args[1], 10)));
+			controller.onReadingSpeedChanged(parseInt(args[1], 10));
 			break;
 
 		case GameMessages.Ready:
@@ -874,25 +874,14 @@ const viewerHandler = (
 			playGameSound(dispatch, state.settings.appSound, GameSound.APPLAUSE_FINAL);
 			break;
 
-		case 'WRONGTRY':
+		case GameMessages.WrongTry:
 			{
-				const index = parseInt(args[1], 10);
-				const { players } = state.room2.persons;
-
-				if (index > -1 && index < players.length) {
-					const player = players[index];
-
-					if (player.state === PlayerStates.None) {
-						appDispatch(playerStateChanged({ index, state: PlayerStates.Lost }));
-
-						setTimeout(
-							() => {
-								appDispatch(playerLostStateDropped(index));
-							},
-							800
-						);
-					}
+				if (args.length < 2) {
+					break;
 				}
+
+				const playerIndex = parseInt(args[1], 10);
+				controller.onWrongTry(playerIndex);
 			}
 			break;
 

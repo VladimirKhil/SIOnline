@@ -35,6 +35,7 @@ import IStateManager from './utils/IStateManager';
 import SIHostClient from './client/SIHostClient';
 import { setGameButtonKey } from './state/new/settingsSlice';
 import { commonErrorChanged } from './state/new/commonSlice';
+import { saveStateToStorage } from './state/new/StateHelpers';
 
 import './utils/polyfills';
 import './scss/style.scss';
@@ -286,7 +287,7 @@ async function run(stateManager: IStateManager) {
 			}
 
 			currentSettings = newSettings;
-			actionCreators.saveStateToStorage(newState);
+			saveStateToStorage(newState);
 		}
 	});
 

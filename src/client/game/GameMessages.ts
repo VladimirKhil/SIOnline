@@ -90,6 +90,8 @@ const enum GameMessages {
 	/** Question has ended. */
 	QuestionEnd = 'QUESTION_END',
 
+	ReadingSpeed = 'READINGSPEED',
+
 	Ready = 'READY',
 
 	Replic = 'REPLIC',
@@ -149,6 +151,8 @@ const enum GameMessages {
 
 	/** Answer validation. */
 	Validation2 = 'VALIDATION2',
+
+	WrongTry = 'WRONGTRY',
 }
 
 export default GameMessages;
