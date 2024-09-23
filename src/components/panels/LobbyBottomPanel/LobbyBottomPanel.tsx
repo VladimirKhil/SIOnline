@@ -1,29 +1,18 @@
-import React, { Dispatch } from 'react';
+import React from 'react';
 import NewGameButton from '../NewGameButton/NewGameButton';
-import { useAppSelector } from '../../../state/new/hooks';
+import { useAppDispatch, useAppSelector } from '../../../state/new/hooks';
 import OnlineMode from '../../../model/enums/OnlineMode';
 import localization from '../../../model/resources/localization';
-import uiActionCreators from '../../../state/ui/uiActionCreators';
-import { connect } from 'react-redux';
-import { Action } from 'redux';
+import { onlineModeChanged } from '../../../state/new/uiSlice';
 
 import './LobbyBottomPanel.scss';
 
-interface LobbyBottomPanelProps {
-	onOnlineModeChanged: (view: OnlineMode) => void;
-}
-
-const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
-	onOnlineModeChanged: (view: OnlineMode) => {
-		dispatch(uiActionCreators.onOnlineModeChanged(view));
-	},
-});
-
-const LobbyBottomPanel: React.FC<LobbyBottomPanelProps> = (props: LobbyBottomPanelProps) => {
+const LobbyBottomPanel: React.FC = () => {
 	const ui = useAppSelector(state => state.ui);
+	const appDispatch = useAppDispatch();
 
 	const changeView = (view: OnlineMode) => {
-		props.onOnlineModeChanged(view);
+		appDispatch(onlineModeChanged(view));
 	};
 
 	return (<div className='lobbyBottomPanel'>
@@ -35,4 +24,4 @@ const LobbyBottomPanel: React.FC<LobbyBottomPanelProps> = (props: LobbyBottomPan
 	</div>);
 };
 
-export default connect(null, mapDispatchToProps)(LobbyBottomPanel);
+export default LobbyBottomPanel;

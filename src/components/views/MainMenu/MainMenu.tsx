@@ -7,14 +7,12 @@ import GameSound from '../../../model/enums/GameSound';
 import { playAudio, stopAudio } from '../../../state/new/commonSlice';
 import onlineActionCreators from '../../../state/online/onlineActionCreators';
 import Path from '../../../model/enums/Path';
-import { Action } from 'redux';
-import { INavigationState } from '../../../state/ui/UIState';
-import uiActionCreators from '../../../state/ui/uiActionCreators';
 import actionCreators from '../../../logic/actionCreators';
 import { AppDispatch } from '../../../state/new/store';
 import { useAppDispatch } from '../../../state/new/hooks';
 import Ads from '../../panels/Ads/Ads';
 import UserOptions from '../../panels/UserOptions/UserOptions';
+import { navigate } from '../../../utils/Navigator';
 
 import './MainMenu.css';
 import exitImg from '../../../../assets/images/exit.png';
@@ -29,7 +27,6 @@ interface MainMenuProps {
 	avatar: string | null;
 
 	anyonePlay: (appDispatch: AppDispatch) => void;
-	navigate: (navigation: INavigationState) => void;
 	exit: (appDispatch: AppDispatch) => void;
 }
 
@@ -46,9 +43,6 @@ const mapStateToProps = (state: State) => ({
 const mapDispatchToProps = (dispatch: any) => ({
 	anyonePlay: (appDispatch: AppDispatch) => {
 		dispatch(onlineActionCreators.createNewAutoGame(appDispatch));
-	},
-	navigate: (navigation: INavigationState) => {
-		dispatch(uiActionCreators.navigate(navigation) as unknown as Action); // TODO: fix typing
 	},
 	exit: (appDispatch: AppDispatch) => {
 		dispatch(actionCreators.onExit(appDispatch));
@@ -108,7 +102,8 @@ export function MainMenu(props: MainMenuProps): JSX.Element {
 					<button
 						type='button'
 						className='standard welcomeRow right'
-						disabled={!props.isConnected} onClick={() => props.navigate({ path: Path.NewRoom, newGameMode: 'single' })}>
+						disabled={!props.isConnected}
+						onClick={() => appDispatch(navigate({ navigation: { path: Path.NewRoom, newGameMode: 'single' }, saveState: true }))}>
 						{localization.singlePlay}
 					</button>
 
@@ -124,7 +119,7 @@ export function MainMenu(props: MainMenuProps): JSX.Element {
 						type='button'
 						className='standard welcomeRow left'
 						disabled={!props.isConnected}
-						onClick={() => props.navigate({ path: Path.Lobby })}>
+						onClick={() => appDispatch(navigate({ navigation: { path: Path.Lobby }, saveState: true }))}>
 						{localization.joinLobby}
 					</button>
 				</div>

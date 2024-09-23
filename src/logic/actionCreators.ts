@@ -20,9 +20,7 @@ import GameClient from '../client/game/GameClient';
 import SIContentClient, { SIContentServiceError } from 'sicontent-client';
 import SIStorageClient from 'sistorage-client';
 import ClientController from './ClientController';
-import uiActionCreators from '../state/ui/uiActionCreators';
 import Path from '../model/enums/Path';
-import { INavigationState } from '../state/ui/UIState';
 import Sex from '../model/enums/Sex';
 import onlineActionCreators from '../state/online/onlineActionCreators';
 import { endLogin, startLogin } from '../state/new/loginSlice';
@@ -50,6 +48,8 @@ import {
 
 import { changeAvatar, changeLogin } from '../state/new/userSlice';
 import { saveStateToStorage } from '../state/new/StateHelpers';
+import { INavigationState } from '../state/new/uiSlice';
+import { navigate } from '../utils/Navigator';
 
 interface ConnectResult {
 	success: boolean;
@@ -363,6 +363,7 @@ const navigateAsync = async (
 ) => {
 	if (view.path === Path.Room) {
 		if (view.gameId && view.role && view.hostUri) {
+			// TODO: merge with onlineActionCreators.joinGame()
 			const siHostClient = await connectToSIHostAsync(view.hostUri, dispatch, appDispatch, getState, dataContext);
 
 			const state = getState();
@@ -377,10 +378,9 @@ const navigateAsync = async (
 			});
 
 			if (!result.IsSuccess) {
-				appDispatch(userErrorChanged(
-					`${localization.joinError}: ${getJoinErrorMessage(result.ErrorType)} ${result.Message ?? ''}`));
-
-				dispatch(uiActionCreators.navigate({ path: Path.Root }) as unknown as Action);
+				const userError = `${localization.joinError}: ${getJoinErrorMessage(result.ErrorType)} ${result.Message ?? ''}`;
+				appDispatch(userErrorChanged(userError));
+				appDispatch(navigate({ navigation: { path: Path.Root }, saveState: true }));
 				return;
 			}
 
@@ -388,24 +388,20 @@ const navigateAsync = async (
 				dispatch,
 				appDispatch,
 				dataContext.game,
-				view.hostUri ?? '',
 				view.gameId,
 				state.user.login,
 				view.role,
-				view.sex ?? Sex.Female,
-				view.password ?? '',
 				view.isAutomatic ?? false,
-				false
 			);
 
 			await disconnectAsync(appDispatch, dataContext);
 		} else {
-			dispatch(uiActionCreators.navigate({ path: Path.Root }) as unknown as Action);
+			appDispatch(navigate({ navigation: { path: Path.Root }, saveState: true }));
 			return;
 		}
 	}
 
-	dispatch(uiActionCreators.navigate(view) as unknown as Action);
+	appDispatch(navigate({ navigation: view, saveState: true }));
 };
 
 const checkLicenseAsync = async (
@@ -433,7 +429,7 @@ const init: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 		dataContext: DataContext
 	) => {
 		if (initialView.path === Path.Login) {
-			dispatch(uiActionCreators.navigate({ path: Path.Login, callbackState: { path: Path.Root } }) as unknown as Action);
+			appDispatch(navigate({ navigation: { path: Path.Login, callbackState: { path: Path.Root } }, saveState: true }));
 			return;
 		} else if (initialView.path == Path.JoinRoom && initialView.gameId && initialView.hostUri) {
 			try {
@@ -446,7 +442,7 @@ const init: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 					}
 
 					appDispatch(selectGame(gameInfo));
-					dispatch(uiActionCreators.navigate(initialView) as unknown as Action);
+					appDispatch(navigate({ navigation: initialView, saveState: true }));
 					return;
 				} else {
 					appDispatch(commonErrorChanged(`${localization.joinError}: ${localization.gameNotFound}`));
@@ -461,10 +457,13 @@ const init: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 		if (connectResult.success) {
 			await checkLicenseAsync(initialView, dispatch, appDispatch, getState, dataContext);
 		} else if (connectResult.authenticationRequired) {
-			dispatch(uiActionCreators.navigate({
-				path: Path.Login,
-				callbackState: initialView.path === Path.About ? { path: Path.Menu } : initialView
-			}) as unknown as Action);
+			appDispatch(navigate({
+				navigation: {
+					path: Path.Login,
+					callbackState: initialView.path === Path.About ? { path: Path.Menu } : initialView
+				},
+				saveState: true,
+			}));
 		} else {
 			appDispatch(commonErrorChanged(connectResult.error ?? localization.errorHappened));
 		}
@@ -514,13 +513,13 @@ const login: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 const onExit: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 	(appDispatch: AppDispatch) => async (dispatch: Dispatch<Action>, _getState: () => State, dataContext: DataContext) => {
 	await disconnectAsync(appDispatch, dataContext);
-	dispatch(uiActionCreators.navigate({ path: Path.Login }) as unknown as Action);
+	appDispatch(navigate({ navigation: { path: Path.Login }, saveState: true }));
 };
 
 const acceptLicense: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
-	() => async (dispatch: Dispatch<any>, getState: () => State, dataContext: DataContext) => {
+	(appDispatch: AppDispatch) => async (dispatch: Dispatch<any>, getState: () => State, dataContext: DataContext) => {
 		dataContext.state.acceptLicense();
-		dispatch(uiActionCreators.navigate(getState().ui.navigation.callbackState ?? { path: Path.Root }) as unknown as Action);
+		appDispatch(navigate({ navigation: getState().ui.navigation.callbackState ?? { path: Path.Root }, saveState: true }));
 	};
 
 const actionCreators = {

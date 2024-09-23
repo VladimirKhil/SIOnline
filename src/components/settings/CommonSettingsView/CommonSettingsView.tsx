@@ -1,10 +1,6 @@
 import * as React from 'react';
-import { Dispatch, Action } from 'redux';
-import { connect } from 'react-redux';
-import State from '../../../state/State';
 import localization from '../../../model/resources/localization';
 import LanguageView from '../../LanguageView';
-import uiActionCreators from '../../../state/ui/uiActionCreators';
 import Constants from '../../../model/enums/Constants';
 import { useAppDispatch, useAppSelector } from '../../../state/new/hooks';
 
@@ -17,22 +13,7 @@ import { setAppSound,
 	setShowVideoAvatars,
 	setSound,
 	setSoundVolume } from '../../../state/new/settingsSlice';
-
-interface CommonSettingsViewProps {
-	isSettingGameButtonKey: boolean;
-
-	isSettingGameButtonKeyChanged: (isSettingGameButtonKey: boolean) => void;
-}
-
-const mapStateToProps = (state: State) => ({
-	isSettingGameButtonKey: state.ui.isSettingGameButtonKey,
-});
-
-const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
-	isSettingGameButtonKeyChanged: (isSettingGameButtonKey: boolean) => {
-		dispatch(uiActionCreators.isSettingGameButtonKeyChanged(isSettingGameButtonKey));
-	},
-});
+import { isSettingGameButtonKeyChanged } from '../../../state/new/uiSlice';
 
 function getKeyName(key: string) {
 	switch (key) {
@@ -50,8 +31,9 @@ function getKeyName(key: string) {
 	}
 }
 
-export function CommonSettingsView(props: CommonSettingsViewProps): JSX.Element {
+export function CommonSettingsView(): JSX.Element {
 	const settings = useAppSelector(state => state.settings);
+	const ui = useAppSelector(state => state.ui);
 	const appDispatch = useAppDispatch();
 
 	return (
@@ -131,10 +113,10 @@ export function CommonSettingsView(props: CommonSettingsViewProps): JSX.Element 
 
 			<button
 				type='button'
-				className={`gameButtonKey standard ${props.isSettingGameButtonKey ? 'active' : ''}`}
+				className={`gameButtonKey standard ${ui.isSettingGameButtonKey ? 'active' : ''}`}
 				title={localization.set}
-				disabled={props.isSettingGameButtonKey}
-				onClick={() => props.isSettingGameButtonKeyChanged(true)}
+				disabled={ui.isSettingGameButtonKey}
+				onClick={() => appDispatch(isSettingGameButtonKeyChanged(true))}
 			>
 				{getKeyName(settings.gameButtonKey ?? localization.notSet)}
 			</button>
@@ -175,5 +157,5 @@ export function CommonSettingsView(props: CommonSettingsViewProps): JSX.Element 
 	);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(CommonSettingsView);
+export default CommonSettingsView;
 

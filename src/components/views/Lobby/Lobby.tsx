@@ -1,5 +1,5 @@
 ﻿import * as React from 'react';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import GamesList from '../../panels/GamesList/GamesList';
 import State from '../../../state/State';
 import GameInfoView from '../../GameInfoView';
@@ -12,12 +12,13 @@ import onlineActionCreators from '../../../state/online/onlineActionCreators';
 import { Dispatch, Action } from 'redux';
 import ProgressBar from '../../common/ProgressBar';
 import { filterGames } from '../../../utils/GamesHelpers';
-import uiActionCreators from '../../../state/ui/uiActionCreators';
 import localization from '../../../model/resources/localization';
 import Path from '../../../model/enums/Path';
 import UserOptions from '../../panels/UserOptions/UserOptions';
 import GamesControlPanel from '../../panels/GamesControlPanel/GamesControlPanel';
 import LobbyBottomPanel from '../../panels/LobbyBottomPanel/LobbyBottomPanel';
+import { navigate } from '../../../utils/Navigator';
+import { closeGameInfo } from '../../../state/new/uiSlice';
 
 import './Lobby.css';
 import exitImg from '../../../../assets/images/exit.png';
@@ -32,9 +33,7 @@ interface LobbyProps {
 	newGameShown: boolean;
 	isLobbyChatHidden: boolean;
 
-	closeGameInfo: () => void;
 	closeNewGame: () => void;
-	navigate: (path: Path) => void;
 }
 
 const mapStateToProps = (state: State) => {
@@ -56,15 +55,9 @@ const mapStateToProps = (state: State) => {
 };
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
-	closeGameInfo: () => {
-		dispatch(uiActionCreators.closeGameInfo());
-	},
 	closeNewGame: () => {
 		dispatch(onlineActionCreators.newGameCancel());
 	},
-	navigate: (path: Path) => {
-		dispatch(uiActionCreators.navigate({ path: path }) as unknown as Action);
-	}
 });
 
 const topMenu = (onExit: () => void) => (
@@ -88,20 +81,24 @@ const topMenu = (onExit: () => void) => (
 );
 
 export function Lobby(props: LobbyProps) {
+	const appDispatch = useDispatch();
+
 	const newGame = (
 		<div className={`newGameArea ${props.isLobbyChatHidden ? 'newWide' : null}`}>
 			<NewGameDialog isSingleGame={false} onClose={props.closeNewGame} />
 		</div>
 	);
 
-	const onExit = () => {
-		props.navigate(Path.Menu);
+	const onExit = () => appDispatch(navigate({ navigation: { path: Path.Menu }, saveState: true }));
+
+	const onCloseGameInfo = () => {
+		appDispatch(closeGameInfo());
 	};
 
 	if (props.windowWidth < 1100) { // TODO: this should be solved purely in CSS
 		if (props.mode === OnlineMode.GameInfo && props.selectedGame) {
 			return (
-				<Dialog id="gameInfoDialog" title={props.selectedGame.GameName} onClose={() => props.closeGameInfo()}>
+				<Dialog id="gameInfoDialog" title={props.selectedGame.GameName} onClose={onCloseGameInfo}>
 					<GameInfoView game={props.selectedGame} showGameName={false} />
 				</Dialog>
 			);

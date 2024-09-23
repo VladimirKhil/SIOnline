@@ -8,13 +8,14 @@ import * as online2 from './new/online2Slice';
 import * as common from './new/commonSlice';
 import * as game from './new/gameSlice';
 import * as siPackages from './new/siPackagesSlice';
-import UIState, { initialState as uiInitialState } from './ui/UIState';
+import * as ui from './new/uiSlice';
+
 import OnlineState, { initialState as onlineInitialState } from './online/OnlineState';
 
 export default interface State {
 	user: user.UserState;
 	login: login.LoginState;
-	ui: UIState;
+	ui: ui.UIState;
 	online: OnlineState;
 	online2: online2.Online2State;
 	game: game.GameState;
@@ -29,7 +30,7 @@ export default interface State {
 export const initialState: State = {
 	user: user.userSlice.getInitialState(),
 	login: login.loginSlice.getInitialState(),
-	ui: uiInitialState,
+	ui: ui.uiSlice.getInitialState(),
 	online: onlineInitialState,
 	online2: online2.online2Slice.getInitialState(),
 	game: game.gameSlice.getInitialState(),

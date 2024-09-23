@@ -1,36 +1,23 @@
 import * as React from 'react';
-import { connect } from 'react-redux';
 import localization from '../model/resources/localization';
-import uiActionCreators from '../state/ui/uiActionCreators';
-import Path from '../model/enums/Path';
+import { useAppDispatch } from '../state/new/hooks';
+import { showSettings } from '../state/new/uiSlice';
 
 import './SettingsButton.css';
 
-interface SettingsButtonProps {
-	onShowSettings: () => void;
-	navigate: (path: Path) => void;
-}
+export function SettingsButton(): JSX.Element {
+	const appDispatch = useAppDispatch();
 
-const mapDispatchToProps = (dispatch: any) => ({
-	onShowSettings: () => {
-		dispatch(uiActionCreators.showSettings(true));
-	},
-	navigate: (path: Path) => {
-		dispatch(uiActionCreators.navigate({ path: path }));
-	},
-});
-
-export function SettingsButton(props: SettingsButtonProps): JSX.Element {
 	return (
 		<button
 			type='button'
 			className="settingsButton"
 			title={localization.settings}
-			onClick={props.onShowSettings}
+			onClick={() => appDispatch(showSettings(true))}
 		>
 			<span>⚙</span>
 		</button>
 	);
 }
 
-export default connect(null, mapDispatchToProps)(SettingsButton);
+export default SettingsButton;

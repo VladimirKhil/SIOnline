@@ -69,6 +69,11 @@ button.standard.imageButton.pauseButton {
     margin: 8px;
 }
 
+.exitMenu {
+    border: 1px solid lightgray;
+    border-radius: 10px;
+}
+
 .gameMenu, .exitMenu {
     bottom: 45px;
     width: 100%;

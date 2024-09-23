@@ -16,7 +16,6 @@ import ThemeInfo from '../model/ThemeInfo';
 import GameStage from '../model/enums/GameStage';
 import Account from '../model/Account';
 import localization from '../model/resources/localization';
-import uiActionCreators from '../state/ui/uiActionCreators';
 import ThemesPlayMode from '../model/enums/ThemesPlayMode';
 import TableMode from '../model/enums/TableMode';
 import Role from '../model/Role';
@@ -92,6 +91,7 @@ import Messages from '../client/game/Messages';
 import StakeModes from '../client/game/StakeModes';
 import { playAudio, stopAudio } from '../state/new/commonSlice';
 import getErrorMessage from '../utils/ErrorHelpers';
+import { playersVisibilityChanged } from '../state/new/uiSlice';
 
 function initGroup(group: ContentGroup) {
 	let bestRowCount = 1;
@@ -781,7 +781,7 @@ export default class ClientController {
 	}
 
 	onPlayersVisibilityChanged(isVisible: boolean) {
-		this.dispatch(uiActionCreators.playersVisibilityChanged(isVisible));
+		this.appDispatch(playersVisibilityChanged(isVisible));
 	}
 
 	onTimerRun(timerIndex: number, timerArgument: number, timerPersonIndex: number | null) {

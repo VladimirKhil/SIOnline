@@ -8,14 +8,12 @@ import State from '../../../state/State';
 import PackageType from '../../../model/enums/PackageType';
 import SIStorageDialog from '../../SIStorageDialog';
 import onlineActionCreators from '../../../state/online/onlineActionCreators';
-import { INavigationState } from '../../../state/ui/UIState';
 import { AppDispatch } from '../../../state/new/store';
-import { useAppDispatch } from '../../../state/new/hooks';
+import { useAppDispatch, useAppSelector } from '../../../state/new/hooks';
 import TabControl from '../../common/TabControl/TabControl';
 import RulesSettingsView from '../../settings/RulesSettingsView/RulesSettingsView';
 import TimeSettingsView from '../../settings/TimeSettingsView/TimeSettingsView';
 import RoomOptions from '../RoomOptions/RoomOptions';
-
 import { setPackageLibrary, setPackageType } from '../../../state/new/gameSlice';
 
 import './NewGameDialog.css';
@@ -27,7 +25,6 @@ interface NewGameDialogProps {
 	inProgress: boolean;
 	uploadPackageProgress: boolean;
 	uploadPackagePercentage: number;
-	navigation: INavigationState;
 	clearUrls?: boolean;
 
 	onCreate: (isSingleGame: boolean, appDispatch: AppDispatch) => void;
@@ -40,7 +37,6 @@ const mapStateToProps = (state: State) => ({
 	inProgress: state.online.gameCreationProgress,
 	uploadPackageProgress:  state.online.uploadPackageProgress,
 	uploadPackagePercentage: state.online.uploadPackagePercentage,
-	navigation: state.ui.navigation,
 	clearUrls: state.common.clearUrls,
 });
 
@@ -54,15 +50,16 @@ export function NewGameDialog(props: NewGameDialogProps) {
 	const [activeTab, setActiveTab] = React.useState(0);
 	const [isSIStorageOpen, setIsSIStorageOpen] = React.useState(false);
 	const appDispatch = useAppDispatch();
+	const ui = useAppSelector(state => state.ui);
 
 	React.useEffect(() => {
-		if (props.navigation.packageUri) {
+		if (ui.navigation.packageUri) {
 			appDispatch(setPackageType(PackageType.SIStorage));
 
 			appDispatch(setPackageLibrary({
 				id: '',
-				name: props.navigation.packageName ?? props.navigation.packageUri,
-				uri: props.navigation.packageUri
+				name: ui.navigation.packageName ?? ui.navigation.packageUri,
+				uri: ui.navigation.packageUri
 			}));
 		}
 	});

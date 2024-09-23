@@ -1,9 +1,25 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import OnlineMode from '../../model/enums/OnlineMode';
-import { INavigationState } from '../ui/UIState';
 import Path from '../../model/enums/Path';
+import Role from '../../model/Role';
+import Sex from '../../model/enums/Sex';
 
-interface UIState {
+export interface INavigationState {
+	path: Path;
+	returnToLobby?: boolean;
+	packageUri?: string;
+	packageName?: string;
+	hostUri?: string;
+	gameId?: number;
+	newGameMode?: 'single' | 'multi';
+	callbackState?: INavigationState;
+	role?: Role;
+	sex?: Sex;
+	password?: string;
+	isAutomatic?: boolean;
+}
+
+export interface UIState {
 	onlineView: OnlineMode;
 	windowWidth: number;
 	windowHeight: number;
@@ -22,7 +38,7 @@ const initialState: UIState = {
 	isSettingGameButtonKey: false,
 	isVisible: true,
 	navigation: {
-		path: Path.Login,
+		path: Path.Loading,
 	},
 	showPlayers: true,
 };
@@ -33,20 +49,42 @@ export const uiSlice = createSlice({
 	reducers: {
 		showSettings: (state: UIState, action: PayloadAction<boolean>) => {
 			state.areSettingsVisible = action.payload;
+			state.isSettingGameButtonKey = state.isSettingGameButtonKey && action.payload;
 		},
-		setOnlineView: (state: UIState, action: PayloadAction<OnlineMode>) => {
+		closeGameInfo: (state: UIState) => {
+			state.onlineView = OnlineMode.Games;
+		},
+		onlineModeChanged: (state: UIState, action: PayloadAction<OnlineMode>) => {
 			state.onlineView = action.payload;
 		},
-		setWindowWidth: (state: UIState, action: PayloadAction<number>) => {
-			state.windowWidth = action.payload;
-		}
+		windowSizeChanged: (state: UIState, action: PayloadAction<{ width: number, height: number }>) => {
+			state.windowWidth = action.payload.width;
+			state.windowHeight = action.payload.height;
+		},
+		isSettingGameButtonKeyChanged: (state: UIState, action: PayloadAction<boolean>) => {
+			state.isSettingGameButtonKey = action.payload;
+		},
+		visibilityChanged: (state: UIState, action: PayloadAction<boolean>) => {
+			state.isVisible = action.payload;
+		},
+		navigateCore: (state: UIState, action: PayloadAction<INavigationState>) => {
+			state.navigation = action.payload;
+		},
+		playersVisibilityChanged: (state: UIState, action: PayloadAction<boolean>) => {
+			state.showPlayers = action.payload;
+		},
 	}
 });
 
 export const {
 	showSettings,
-	setOnlineView,
-	setWindowWidth
+	closeGameInfo,
+	onlineModeChanged,
+	windowSizeChanged,
+	isSettingGameButtonKeyChanged,
+	visibilityChanged,
+	navigateCore,
+	playersVisibilityChanged,
 } = uiSlice.actions;
 
 export default uiSlice.reducer;

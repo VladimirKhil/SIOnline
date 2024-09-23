@@ -5,9 +5,7 @@ import Slice from '../../client/contracts/Slice';
 import GameInfo from '../../client/contracts/GameInfo';
 import State from '../State';
 import DataContext from '../../model/DataContext';
-import uiActionCreators from '../ui/uiActionCreators';
 import getErrorMessage from '../../utils/ErrorHelpers';
-import OnlineMode from '../../model/enums/OnlineMode';
 import localization from '../../model/resources/localization';
 import GamesFilter from '../../model/enums/GamesFilter';
 import SIContentClient, { SIContentServiceError } from 'sicontent-client';
@@ -32,7 +30,6 @@ import SIStatisticsClient from 'sistatistics-client';
 import GamePlatforms from 'sistatistics-client/dist/models/GamePlatforms';
 import StatisticFilter from 'sistatistics-client/dist/models/StatisticFilter';
 import Path from '../../model/enums/Path';
-import { INavigationState } from '../ui/UIState';
 import ServerSex from '../../client/contracts/ServerSex';
 import IGameClient from '../../client/game/IGameClient';
 import ServerRole from '../../client/contracts/ServerRole';
@@ -45,6 +42,8 @@ import { showText, tableReset } from '../new/tableSlice';
 import { ContextView, setContext } from '../new/room2Slice';
 import { GameState, setGameSet } from '../new/gameSlice';
 import { saveStateToStorage } from '../new/StateHelpers';
+import { INavigationState } from '../new/uiSlice';
+import { navigate } from '../../utils/Navigator';
 
 const selectGame: ActionCreator<OnlineActions.SelectGameAction> = (gameId: number) => ({
 	type: OnlineActions.OnlineActionTypes.SelectGame,
@@ -85,10 +84,6 @@ const onlineLoadError: ActionCreator<OnlineActions.OnlineLoadErrorAction> = (err
 	error
 });
 
-const dropSelectedGame: ActionCreator<OnlineActions.DropSelectedGameAction> = () => ({
-	type: OnlineActions.OnlineActionTypes.DropSelectedGame
-});
-
 const receiveGameStart: ActionCreator<OnlineActions.ReceiveGamesStartAction> = () => ({
 	type: OnlineActions.OnlineActionTypes.ReceiveGamesStart
 });
@@ -98,20 +93,15 @@ const resetLobby: ActionCreator<OnlineActions.ResetLobbyAction> = () => ({
 });
 
 const navigateToLobby: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
-	(gameId: number, showInfo?: boolean) => async (dispatch: Dispatch<Action>, getState: () => State, dataContext: DataContext) => {
+	(appDispatch: AppDispatch) => async (
+		dispatch: Dispatch<Action>,
+		getState: () => State,
+		dataContext: DataContext) => {
 		const state = getState();
 		const requestCulture = getFullCulture(state);
 
 		await dataContext.gameClient.joinLobbyAsync(requestCulture);
 		dispatch(resetLobby());
-
-		if (gameId > -1) {
-			dispatch(selectGame(gameId));
-
-			if (showInfo) {
-				dispatch(uiActionCreators.onOnlineModeChanged(OnlineMode.GameInfo));
-			}
-		}
 
 		// Games filtering is performed on client
 		try {
@@ -305,14 +295,10 @@ const initGameAsync = async (
 	dispatch: Dispatch<any>,
 	appDispatch: AppDispatch,
 	gameClient: IGameClient,
-	hostUri: string,
 	gameId: number,
 	name: string,
 	role: Role,
-	sex: Sex,
-	password: string,
 	isAutomatic: boolean,
-	navigate: boolean,
 ) => {
 	appDispatch(setGameSet({ id: gameId, isAutomatic }));
 	appDispatch(tableReset());
@@ -328,22 +314,6 @@ const initGameAsync = async (
 	dispatch(roomActionCreators.isQuestionChanged(false, ''));
 
 	await gameInit(gameClient, role);
-
-	const navigationState: INavigationState = {
-		path: Path.Room,
-		hostUri: hostUri,
-		gameId: gameId,
-		role: role,
-		sex: sex,
-		password: password,
-		isAutomatic: isAutomatic
-	};
-
-	if (navigate) {
-		dispatch(uiActionCreators.navigate(navigationState));
-	} else {
-		dispatch(uiActionCreators.onNavigated(navigationState));
-	}
 };
 
 const joinGameStarted: ActionCreator<OnlineActions.JoinGameStartedAction> = () => ({
@@ -391,22 +361,21 @@ const joinGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 			return;
 		}
 
-		await initGameAsync(
-			dispatch,
-			appDispatch,
-			dataContext.game,
-			hostUri,
-			gameId,
-			userName,
-			role,
-			state.settings.sex,
-			state.online.password,
-			false,
-			true
-		);
-
+		await initGameAsync(dispatch, appDispatch, dataContext.game, gameId, userName, role, false);
 		await actionCreators.disconnectAsync(appDispatch, dataContext);
 		saveStateToStorage(getState()); // use state that could be changed by initGameAsync
+
+		const navigation: INavigationState = {
+			path: Path.Room,
+			hostUri: hostUri,
+			gameId: gameId,
+			role: role,
+			sex: state.settings.sex,
+			password: state.online.password,
+			isAutomatic: false,
+		};
+
+		appDispatch(navigate({ navigation, saveState: true }));
 	} catch (error) {
 		appDispatch(userErrorChanged(getErrorMessage(error)));
 	} finally {

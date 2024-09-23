@@ -1,20 +1,11 @@
 import * as React from 'react';
 import NewGameDialog from '../../panels/NewGameDialog/NewGameDialog';
-import State from '../../../state/State';
-import { INavigationState } from '../../../state/ui/UIState';
-import { connect } from 'react-redux';
-
-interface NewGameProps {
-	navigation: INavigationState;
-}
-
-const mapStateToProps = (state: State) => ({
-	navigation: state.ui.navigation,
-});
+import { useAppSelector } from '../../../state/new/hooks';
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export function NewGame(props: NewGameProps): JSX.Element | null {
-	return <NewGameDialog isSingleGame={props.navigation.newGameMode === 'single'} onClose={() => window.history.back()} />;
+export function NewGame(): JSX.Element | null {
+	const ui = useAppSelector(state => state.ui);
+	return <NewGameDialog isSingleGame={ui.navigation.newGameMode === 'single'} onClose={() => window.history.back()} />;
 }
 
-export default connect(mapStateToProps)(NewGame);
+export default NewGame;

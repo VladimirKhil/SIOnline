@@ -13,7 +13,6 @@ import AnswerValidationDialog from '../../game/AnswerValidationDialog/AnswerVali
 import RoundProgress from '../../game/RoundProgress';
 import localization from '../../../model/resources/localization';
 import roomActionCreators from '../../../state/room/roomActionCreators';
-import uiActionCreators from '../../../state/ui/uiActionCreators';
 import PersonsView from '../../game/PersonsView';
 import TablesView from '../../game/TablesView';
 import Dialog from '../../common/Dialog/Dialog';
@@ -61,7 +60,6 @@ interface RoomProps {
 	onGameInfoDialogClose: () => void;
 	onManageGameDialogClose: () => void;
 	onCancelSumChange: () => void;
-	onShowSettings: () => void;
 	onExit: (appDispatch: AppDispatch) => void;
 	chatMessageAdded: (chatMessage: ChatMessage) => void;
 	onReconnect: () => void;
@@ -103,9 +101,6 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	},
 	onCancelSumChange: () => {
 		dispatch(roomActionCreators.areSumsEditableChanged(false) as object as Action);
-	},
-	onShowSettings: () => {
-		dispatch(uiActionCreators.showSettings(true));
 	},
 	onExit: (appDispatch: AppDispatch) => {
 		dispatch(roomActionCreators.exitGame(appDispatch) as unknown as Action);

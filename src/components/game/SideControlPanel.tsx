@@ -8,11 +8,11 @@ import FlyoutButton, { FlyoutVerticalOrientation, FlyoutTheme, FlyoutHorizontalO
 import Role from '../../model/Role';
 import ChatMessage from '../../model/ChatMessage';
 import { isHost } from '../../utils/StateHelpers';
-import uiActionCreators from '../../state/ui/uiActionCreators';
 import isWellFormedUri from '../../utils/isWellFormedUri';
 import { useAppDispatch } from '../../state/new/hooks';
 import { AppDispatch } from '../../state/new/store';
 import { selectPlayers } from '../../state/new/room2Slice';
+import { showSettings } from '../../state/new/uiSlice';
 
 import './SideControlPanel.css';
 import nextImg from '../../../assets/images/next.png';
@@ -48,7 +48,6 @@ interface SideControlPanelProps {
 	showGameManageDialog: () => void;
 	onStart: () => void;
 	onPass: () => void;
-	onShowSettings: () => void;
 	onShowAvatars: () => void;
 }
 
@@ -110,9 +109,6 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	},
 	onPass: () => {
 		dispatch(roomActionCreators.onPass() as unknown as Action);
-	},
-	onShowSettings: () => {
-		dispatch(uiActionCreators.showSettings(true));
 	},
 	onShowAvatars: () => {
 		dispatch(roomActionCreators.avatarVisibleChanged(true));
@@ -191,7 +187,7 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 										<li title={voiceChatUri} onClick={() => window.open(voiceChatUri, '_blank')}>{localization.voiceChat}</li>
 									) : null}
 
-									<li onClick={() => props.onShowSettings()}>{localization.settings}</li>
+									<li onClick={() => appDispatch(showSettings(true))}>{localization.settings}</li>
 									<li onClick={() => props.onShowAvatars()}>{localization.avatar}</li>
 								</ul>
 							)}

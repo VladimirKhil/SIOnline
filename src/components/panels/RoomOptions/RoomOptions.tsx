@@ -16,17 +16,16 @@ import Constants from '../../../model/enums/Constants';
 import PackageType from '../../../model/enums/PackageType';
 import FlyoutButton, { FlyoutTheme } from '../../common/FlyoutButton';
 import PackageFileSelector from '../../PackageFileSelector';
-import { INavigationState } from '../../../state/ui/UIState';
 import { AppDispatch } from '../../../state/new/store';
 import State from '../../../state/State';
 import PackageSources from '../PackageSources/PackageSources';
 import Role from '../../../model/Role';
 import { userErrorChanged } from '../../../state/new/commonSlice';
 import { connect } from 'react-redux';
-import uiActionCreators from '../../../state/ui/uiActionCreators';
 import onlineActionCreators from '../../../state/online/onlineActionCreators';
 import { Dispatch } from 'react';
 import { Action } from 'redux';
+import { INavigationState } from '../../../state/new/uiSlice';
 
 interface RoomOptionsProps {
 	isConnected: boolean;
@@ -40,14 +39,10 @@ interface RoomOptionsProps {
 	isSIStorageOpen: boolean;
 
 	onCreate: (isSingleGame: boolean, appDispatch: AppDispatch) => void;
-	onShowSettings: () => void;
 	setIsSIStorageOpen: (isOpen: boolean) => void;
 }
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
-	onShowSettings: () => {
-		dispatch(uiActionCreators.showSettings(true));
-	},
 	onCreate: (isSingleGame: boolean, appDispatch: AppDispatch) => {
 		dispatch(onlineActionCreators.createNewGame(isSingleGame, appDispatch) as unknown as Action);
 	},

@@ -1,18 +1,18 @@
 ﻿import * as React from 'react';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import State from '../../../state/State';
 import localization from '../../../model/resources/localization';
 import onlineActionCreators from '../../../state/online/onlineActionCreators';
 import GameInfo from '../../../client/contracts/GameInfo';
-import uiActionCreators from '../../../state/ui/uiActionCreators';
 import OnlineMode from '../../../model/enums/OnlineMode';
+import { onlineModeChanged } from '../../../state/new/uiSlice';
 
 import './GamesList.css';
 
 interface GamesListOwnProps {
 	isConnected: boolean;
 	error: string;
-	onSelectGame: (gameId: number, showInfo: boolean) => void;
+	onSelectGame: (gameId: number) => void;
 }
 
 interface GamesListProps extends GamesListOwnProps {
@@ -27,18 +27,23 @@ const mapStateToProps = (state: State) => ({
 });
 
 const mapDispatchToProps = (dispatch: any) => ({
-	onSelectGame: (gameId: number, showInfo: boolean) => {
+	onSelectGame: (gameId: number) => {
 		dispatch(onlineActionCreators.selectGame(gameId));
-
-		if (showInfo) {
-			dispatch(uiActionCreators.onOnlineModeChanged(OnlineMode.GameInfo));
-		}
 	},
 });
 
 export function GamesList(props: GamesListProps): JSX.Element {
+	const appDispatch = useDispatch();
 	const sortedGames = props.games.slice();
 	sortedGames.sort((game1, game2) => game1.GameName.localeCompare(game2.GameName));
+
+	const onSelectGame = (gameId: number) => {
+		props.onSelectGame(gameId);
+
+		if (props.showInfo) {
+			appDispatch(onlineModeChanged(OnlineMode.GameInfo));
+		}
+	};
 
 	return (
 		<section className="gameslistHost gamesblock">
@@ -48,7 +53,7 @@ export function GamesList(props: GamesListProps): JSX.Element {
 						<li
 							key={game.GameID}
 							className={game.GameID === props.selectedGameId ? 'active' : ''}
-							onClick={() => props.onSelectGame(game.GameID, props.showInfo)}
+							onClick={() => onSelectGame(game.GameID)}
 						>
 							<div className={`gameName ${game.PasswordRequired ? 'password' : ''}`} title={game.GameName}>{game.GameName}</div>
 							{game.PasswordRequired ? <div className='locked' title={localization.passwordRequired}>🔓</div> : null}

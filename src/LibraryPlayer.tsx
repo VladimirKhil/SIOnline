@@ -4,7 +4,7 @@ import runCore from './LibraryCore';
 import React from 'react';
 import MiniApp from './components/mini/MiniApp/MiniApp';
 import Path from './model/enums/Path';
-import { INavigationState } from './state/ui/UIState';
+import { INavigationState } from './state/new/uiSlice';
 import actionCreators from './logic/actionCreators';
 import { Action } from 'redux';
 import { changeLogin } from './state/new/userSlice';

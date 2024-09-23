@@ -114,7 +114,7 @@ export const tableSlice = createSlice({
 			state.activeThemeIndex = -1;
 			state.actionQuestionIndex = -1;
 		},
-		blinkQuestion: (state: TableState, action: PayloadAction<{themeIndex: number, questionIndex: number}>) => {
+		blinkQuestion: (state: TableState, action: PayloadAction<{ themeIndex: number, questionIndex: number }>) => {
 			state.activeThemeIndex = action.payload.themeIndex;
 			state.actionQuestionIndex = action.payload.questionIndex;
 		},

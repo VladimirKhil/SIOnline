@@ -10,10 +10,10 @@ import AvatarView from '../../AvatarView';
 import SexView from '../../SexView';
 import LanguageView from '../../LanguageView';
 import Path from '../../../model/enums/Path';
-import uiActionCreators from '../../../state/ui/uiActionCreators';
 import { useAppDispatch, useAppSelector } from '../../../state/new/hooks';
 import { AppDispatch, RootState } from '../../../state/new/store';
 import { changeLogin } from '../../../state/new/userSlice';
+import { navigate } from '../../../utils/Navigator';
 
 import './Login.scss';
 
@@ -23,13 +23,11 @@ interface LoginProps {
 
 	selectedGameId: number;
 	onLogin: (appDispatch: AppDispatch) => void;
-	navigate: (path: Path) => void;
 }
 
 const mapStateToProps = (state: State) => ({
 	login: state.user.login,
 	culture: state.settings.appSettings.culture || localization.getLanguage(),
-	navigation: state.ui.navigation,
 
 	selectedGameId: state.online.selectedGameId,
 });
@@ -38,9 +36,6 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	onLogin: (appDispatch: AppDispatch) => {
 		dispatch(actionCreators.login(appDispatch) as unknown as Action);
 	},
-	navigate: (path: Path) => {
-		dispatch(uiActionCreators.navigate({ path: path }) as unknown as Action);
-	}
 });
 
 export function Login(props: LoginProps) {
@@ -59,7 +54,7 @@ export function Login(props: LoginProps) {
 		}
 	};
 
-	const navigateToAbout = () => props.navigate(Path.About);
+	const navigateToAbout = () => appDispatch(navigate({ navigation: { path: Path.About }, saveState: true }));
 
 	const prevPropsRef = React.useRef<LoginProps>();
 

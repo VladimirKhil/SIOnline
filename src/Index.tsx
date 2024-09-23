@@ -21,14 +21,12 @@ import { ErrorView } from './components/views/Error/ErrorView';
 import Constants from './model/enums/Constants';
 import getErrorMessage from './utils/ErrorHelpers';
 import enableNoSleep from './utils/NoSleepHelper';
-import uiActionCreators from './state/ui/uiActionCreators';
 import getDeviceType from './utils/getDeviceType';
 import isSafari from './utils/isSafari';
 import GameServerClient from './client/GameServerClient';
 import SIContentClient from 'sicontent-client';
 import ButtonPressMode from './model/ButtonPressMode';
 import Path from './model/enums/Path';
-import { INavigationState } from './state/ui/UIState';
 import StateManager from './utils/StateManager';
 import YAStateManager from './utils/YAStateManager';
 import IStateManager from './utils/IStateManager';
@@ -36,6 +34,8 @@ import SIHostClient from './client/SIHostClient';
 import { setGameButtonKey } from './state/new/settingsSlice';
 import { commonErrorChanged } from './state/new/commonSlice';
 import { saveStateToStorage } from './state/new/StateHelpers';
+import { INavigationState, isSettingGameButtonKeyChanged, visibilityChanged, windowSizeChanged } from './state/new/uiSlice';
+import { navigate } from './utils/Navigator';
 
 import './utils/polyfills';
 import './scss/style.scss';
@@ -116,15 +116,15 @@ function setState(state: State, savedState: SavedState | null, c: Config): State
 function subscribeToExternalEvents(store: Store<State, any>) {
 	// TODO use ResizeObserver for body element instead of this as app could be hosted inside iframe
 	// and window dimensions will be irrelevant
-	window.onresize = () => store.dispatch(uiActionCreators.windowSizeChanged(window.innerWidth, window.innerHeight));
-	window.onpopstate = (e) => { if (e.state) { store.dispatch(uiActionCreators.onNavigated(e.state)); } };
+	window.onresize = () => store.dispatch(windowSizeChanged({ width: window.innerWidth, height: window.innerHeight }));
+	window.onpopstate = (e) => { if (e.state) { store.dispatch(navigate({ navigation: e.state, saveState: false })); } };
 
 	window.onkeydown = (e: KeyboardEvent) => {
 		const state = store.getState();
 
 		if (state.ui.isSettingGameButtonKey) {
 			store.dispatch(setGameButtonKey(e.key));
-			store.dispatch(uiActionCreators.isSettingGameButtonKeyChanged(false));
+			store.dispatch(isSettingGameButtonKeyChanged(false));
 		} else if (e.key === state.settings.gameButtonKey) {
 			store.dispatch(roomActionCreators.pressGameButton());
 		} else if (e.key === state.settings.nextButtonKey && state.settings.bindNextButton) {
@@ -151,7 +151,7 @@ function subscribeToExternalEvents(store: Store<State, any>) {
 	});
 
 	window.addEventListener('visibilitychange', () => {
-		store.dispatch(uiActionCreators.visibilityChanged(document.visibilityState === 'visible'));
+		store.dispatch(visibilityChanged(document.visibilityState === 'visible'));
 		return false;
 	});
 }
@@ -293,7 +293,7 @@ async function run(stateManager: IStateManager) {
 
 	subscribeToExternalEvents(store);
 
-	store.dispatch(uiActionCreators.windowSizeChanged(window.innerWidth, window.innerHeight));
+	store.dispatch(windowSizeChanged({ width: window.innerWidth, height: window.innerHeight }));
 
 	if (state.settings.appSettings.culture) {
 		localization.setLanguage(state.settings.appSettings.culture);
@@ -313,8 +313,7 @@ async function run(stateManager: IStateManager) {
 	await dataContext.state.initAsync(store);
 
 	const initialView = getInitialView(dataContext.state.loadNavigationState() as INavigationState);
-	const appDispatch = store.dispatch;
-	store.dispatch(actionCreators.init(initialView, appDispatch) as unknown as Action);
+	store.dispatch(actionCreators.init(initialView, store.dispatch) as unknown as Action);
 }
 
 const urlParams = new URLSearchParams(window.location.hash.substring(1));

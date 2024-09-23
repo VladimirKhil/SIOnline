@@ -1,32 +1,20 @@
 import * as React from 'react';
-import { connect } from 'react-redux';
-import { Dispatch, Action } from 'redux';
 import Dialog from '../../common/Dialog/Dialog';
 import localization from '../../../model/resources/localization';
-import TimeSettingsView from '../TimeSettingsView/TimeSettingsView';
-import SettingsView from '../../../model/enums/SettingsView';
 import CommonSettingsView from '../CommonSettingsView/CommonSettingsView';
-import RulesSettingsView from '../RulesSettingsView/RulesSettingsView';
-import uiActionCreators from '../../../state/ui/uiActionCreators';
 import { useAppDispatch } from '../../../state/new/hooks';
 import { resetSettings } from '../../../state/new/settingsSlice';
+import { showSettings } from '../../../state/new/uiSlice';
 
 import './SettingsDialog.css';
 
-interface SettingsDialogProps {
-	onClose: () => void;
-}
-
-const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
-	onClose: () => {
-		dispatch(uiActionCreators.showSettings(false));
-	},
-});
-
-const SettingsDialog: React.FC<SettingsDialogProps> = ({ onClose }) => {
-	const [view, setView] = React.useState(SettingsView.Common);
+const SettingsDialog: React.FC = () => {
 	const layout = React.useRef<HTMLDivElement>(null);
 	const appDispatch = useAppDispatch();
+
+	const onClose = () => {
+		appDispatch(showSettings(false));
+	};
 
 	const hide = (e: Event): void => {
 		if (!layout.current || (e.target instanceof Node && layout.current.contains(e.target as Node))) {
@@ -63,4 +51,4 @@ const SettingsDialog: React.FC<SettingsDialogProps> = ({ onClose }) => {
 	);
 };
 
-export default connect(null, mapDispatchToProps)(SettingsDialog);
+export default SettingsDialog;

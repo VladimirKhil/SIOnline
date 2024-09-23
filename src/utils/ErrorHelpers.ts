@@ -7,6 +7,8 @@ function getLocalizedError(error: Error): string {
 		return localization.fileNonReadable;
 	} else if (error.message.startsWith('Failed to complete negotiation with the server')) {
 		return localization.failedToCompleteNegotiationWithTheServer;
+	} else if (error.message.startsWith('429 API calls quota exceeded')) {
+		return localization.apiCallsQuotaExceeded;
 	} else {
 		return error.message;
 	}
