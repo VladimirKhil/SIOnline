@@ -138,6 +138,7 @@ export function PlayerView(props: PlayerViewProps): JSX.Element {
 		>
 			<div className="stakeHost">
 				<div className="stake">{displayedStake ?? '\u200b'}</div>
+				<div className='answer'>{player.answer}</div>
 			</div>
 
 			<div className={buildPlayerClasses()}>

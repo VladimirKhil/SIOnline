@@ -82,7 +82,7 @@ export function AvatarViewDialog(props: AvatarViewDialogProps): JSX.Element {
 					<button
 						disabled={webCameraUrl === ''}
 						type='button'
-						className='set'
+						className='standard set'
 						onClick={() => props.onSetWebCamera(webCameraUrl)}>
 						{localization.set}
 					</button>
@@ -90,7 +90,7 @@ export function AvatarViewDialog(props: AvatarViewDialogProps): JSX.Element {
 					<button
 						disabled={webCameraUrl === ''}
 						type='button'
-						className='set'
+						className='standard set'
 						onClick={() => { props.onunsetWebCamera(); setWebCameraUrl(''); }}>
 						{localization.drop}
 					</button>

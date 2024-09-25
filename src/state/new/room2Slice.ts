@@ -201,6 +201,11 @@ export const room2Slice = createSlice({
 		playerSumChanged: (state: Room2State, action: PayloadAction<{ index: number, value: number }>) => {
 			state.persons.players[action.payload.index].sum = action.payload.value;
 		},
+		playersAnswersChanged: (state: Room2State, action: PayloadAction<string[]>) => {
+			state.persons.players.forEach((p, i) => {
+				p.answer = i < action.payload.length ? action.payload[i] : '';
+			});
+		},
 		playerDeleted: (state: Room2State, action: PayloadAction<number>) => {
 			state.persons.players.splice(action.payload, 1);
 		},
@@ -293,6 +298,7 @@ export const {
 	playerAdded,
 	playerChanged,
 	playerSumChanged,
+	playersAnswersChanged,
 	playerDeleted,
 	playersSwap,
 	playerStateChanged,

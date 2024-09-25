@@ -36,18 +36,21 @@ export default class ChatLog extends React.Component<ChatLogProps> {
 		return (
 			<div ref={this.myRef} className={`chatLog ${this.props.className}`}>
 				{this.props.messages.map((message, index) => message.sender
-					? <span
-							key={index} className={userMessageSpanClass(message, this.props.user)}
+					? <div
+							key={index} className={`chatItem ${userMessageSpanClass(message, this.props.user)}`}
 						>
-						<b
-							className={'nickname'}
+						<div
+							className='nickname'
 							onClick={() => this.props.onNicknameClick(message.sender)}>
-							{`${message.sender}: `}
-						</b>
-						{message.text.split(' ').map(
-							(word) => word === `@${this.props.user}` ? <strong className={'mentionedNickname'}>{`${word} `}</strong> : `${word} `
-						)}
-						</span>
+							{message.sender}
+						</div>
+
+						<div className='chatBody'>
+							{message.text.split(' ').map(
+								(word) => word === `@${this.props.user}` ? <strong className={'mentionedNickname'}>{`${word} `}</strong> : `${word} `
+							)}
+						</div>
+					</div>
 					: <span key={index} className={MessageLevel[message.level].toLowerCase()}>{message.text}</span>)}
 			</div>
 		);

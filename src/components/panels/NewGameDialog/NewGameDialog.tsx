@@ -21,11 +21,9 @@ import './NewGameDialog.css';
 interface NewGameDialogProps {
 	isConnected: boolean;
 	isSingleGame: boolean;
-	isOralGame: boolean;
 	inProgress: boolean;
 	uploadPackageProgress: boolean;
 	uploadPackagePercentage: number;
-	clearUrls?: boolean;
 
 	onCreate: (isSingleGame: boolean, appDispatch: AppDispatch) => void;
 	onClose: () => void;
@@ -33,11 +31,9 @@ interface NewGameDialogProps {
 
 const mapStateToProps = (state: State) => ({
 	isConnected: state.common.isConnected,
-	isOralGame: state.settings.appSettings.oral,
 	inProgress: state.online.gameCreationProgress,
 	uploadPackageProgress:  state.online.uploadPackageProgress,
 	uploadPackagePercentage: state.online.uploadPackagePercentage,
-	clearUrls: state.common.clearUrls,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
@@ -51,6 +47,7 @@ export function NewGameDialog(props: NewGameDialogProps) {
 	const [isSIStorageOpen, setIsSIStorageOpen] = React.useState(false);
 	const appDispatch = useAppDispatch();
 	const ui = useAppSelector(state => state.ui);
+	const game = useAppSelector(state => state.game);
 
 	React.useEffect(() => {
 		if (ui.navigation.packageUri) {
@@ -107,7 +104,7 @@ export function NewGameDialog(props: NewGameDialogProps) {
 					<button
 						type="button"
 						className="startGame mainAction active"
-						disabled={!props.isConnected || props.inProgress}
+						disabled={!props.isConnected || props.inProgress || game.name.length === 0}
 						onClick={() => props.onCreate(props.isSingleGame, appDispatch)}
 					>
 						{localization.startGame.toLocaleUpperCase()}

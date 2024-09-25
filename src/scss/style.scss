@@ -411,8 +411,6 @@ h1.activeTab {
     scrollbar-width: thin;
     height: 100%;
     flex: 1 0 0;
-    border-top: 1px solid lightyellow;
-    flex: 1 0 0;
 }
 
 showman, player, viewer {
@@ -422,10 +420,6 @@ showman, player, viewer {
 
 showman::after, player::after, viewer::after {
     content: ": "
-}
-
-.gameMessage {
-    background-color: #C0CFF4;
 }
 
 .playerButtonWrapper {

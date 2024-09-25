@@ -7,8 +7,9 @@ import { Dispatch, Action } from 'redux';
 import Constants from '../../../model/enums/Constants';
 import { EmojiClickData } from 'emoji-picker-react';
 import ChatInputEmojiPicker from '../../common/ChatInputEmojiPicker/ChatInputEmojiPicker';
+import localization from '../../../model/resources/localization';
 
-import './ChatInput.css';
+import './ChatInput.scss';
 
 interface ChatInputProps {
 	isConnected: boolean;
@@ -69,7 +70,8 @@ export class ChatInput extends React.Component<ChatInputProps> {
 			<div className='roomChatBodyHost'>
 				<input
 					ref={this.inputRef}
-					className={`gameInputBox gameMessage ${this.props.isConnected ? '' : 'disconnected'}`}
+					placeholder={localization.message}
+					className={`gameInputBox ${this.props.isConnected ? '' : 'disconnected'}`}
 					value={this.props.message}
 					onChange={this.onMessageChanged}
 					onKeyPress={this.onMessageKeyPress} />

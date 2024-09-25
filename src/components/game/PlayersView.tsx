@@ -48,28 +48,32 @@ const PlayersView: React.FC<PlayersViewProps> = (props) => {
 		appDispatch(playerSelected(index));
 	};
 
-	return !props.isVisible ? null : (
-		<div id="playersPanel">
-			<ul className="gamePlayers" ref={listRef}>
-				{props.players.map((player, index) => {
-					const account = props.all[player.name];
-					const isMe = player.name === props.login;
-					const avatar = isMe && props.avatar ? props.avatar : account?.avatar;
-					const avatarClass = getAvatarClass(account);
+	const isLarge = props.players.length > 6;
 
-					return <PlayerView
-						key={`${player.name}_${index}`}
-						listRef={listRef}
-						player={player}
-						isMe={isMe}
-						avatar={avatar}
-						sex={account?.sex}
-						avatarVideo={account?.avatarVideo}
-						avatarClass={avatarClass}
-						index={index}
-						onPlayerSelected={() => onPlayerSelected(index)}
-						onSumChanged={(sum) => props.onSumChanged(index, sum)} />;
-				})}
+	const renderPlayer = (player: PlayerInfo, index: number): JSX.Element => {
+		const account = props.all[player.name];
+		const isMe = player.name === props.login;
+		const avatar = isMe && props.avatar ? props.avatar : account?.avatar;
+		const avatarClass = getAvatarClass(account);
+
+		return <PlayerView
+			key={`${player.name}_${index}`}
+			listRef={listRef}
+			player={player}
+			isMe={isMe}
+			avatar={avatar}
+			sex={account?.sex}
+			avatarVideo={account?.avatarVideo}
+			avatarClass={avatarClass}
+			index={index}
+			onPlayerSelected={() => onPlayerSelected(index)}
+			onSumChanged={(sum) => props.onSumChanged(index, sum)} />;
+	};
+
+	return !props.isVisible ? null : (
+		<div className={`playersPanel ${isLarge ? 'large' : ''}`}>
+			<ul className="gamePlayers" ref={listRef}>
+				{props.players.map(renderPlayer)}
 			</ul>
 		</div>
 	);

@@ -1,4 +1,5 @@
 .game_progress {
 	font-weight: bold;
 	color: white;
+	flex: 1;
 }

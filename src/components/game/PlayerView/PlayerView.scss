@@ -16,6 +16,12 @@
 	display: none;
 }
 
+.stakeHost .answer {
+	color: orange;
+	margin-left: 5px;
+	font-size: larger;
+}
+
 .playerInfo .name, .playerInfo .sum, .stakeHost {
 	text-align: center;
 	overflow: hidden;
@@ -122,17 +128,17 @@
 }
 
 .gamePlayer {
-	font-size: 25px;
+	font-size: 20px;
 }
 
 .gamePlayer:nth-last-child(n+6),
 .gamePlayer:nth-last-child(n+6) ~ li {
-	font-size: 22px;
+	font-size: 15px;
 }
 
 .gamePlayer:nth-last-child(n+9),
 .gamePlayer:nth-last-child(n+9) ~ li {
-	font-size: 18px;
+	font-size: 10px;
 }
 
 .playerInfo .numericTextBox {

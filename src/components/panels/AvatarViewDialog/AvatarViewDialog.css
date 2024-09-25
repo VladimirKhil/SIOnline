@@ -25,8 +25,6 @@
 }
 
 .avatarViewDialog button.set {
-	background-color: #2c7be1;
-	text-align: center;
 	padding: 5px 30px;
     flex: 1;
 }

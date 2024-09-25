@@ -1,3 +1,5 @@
+@use '../../../scss/variables' as v;
+
 input.disconnected {
 	color: gray;
 }
@@ -6,6 +8,13 @@ input.disconnected {
 	position: relative;
 	display: flex;
 	flex: 0 0 45px;
+    padding: 5px;
+    background: #000451;
+}
+
+.roomChatBodyHost .pickerWrapper {
+    bottom: 5px;
+    right: 5px;
 }
 
 .gameInputBox {
@@ -14,18 +23,24 @@ input.disconnected {
     margin: 0;
     height: 45px;
     top: 0;
-    border: 0;
-    border-top: 1px solid gray;
-    font-size: 13px;
+    color: white;
+	background: #05061F;
+	border: 1px solid #222084;
+	border-radius: 10px;
+    font-size: 16px;
     padding-left: 10px;
     padding-right: 47px;
     box-sizing: border-box;
     pointer-events: initial;
 }
 
+.gameInputBox::placeholder {
+	color: lightgray;
+}
+
 @media screen and (min-width: 800px) {
 	.roomChatBodyHost {
 		flex: initial;
-		width: 100%;
+		width: calc(100% - 5px);
 	}
 }

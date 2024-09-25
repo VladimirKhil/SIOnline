@@ -12,7 +12,6 @@ import ChatInput from '../ChatInput/ChatInput';
 import Role from '../../../model/Role';
 import TablesView from '../TablesView';
 import { isHost } from '../../../utils/StateHelpers';
-import FlyoutButton, { FlyoutHorizontalOrientation, FlyoutVerticalOrientation } from '../../common/FlyoutButton';
 import GameMetadataView from '../GameMetadataView';
 import BannedView from '../BannedView';
 import isWellFormedUri from '../../../utils/isWellFormedUri';
@@ -23,7 +22,6 @@ import UserOptions from '../../panels/UserOptions/UserOptions';
 import './GameChatView.css';
 import sumsImg from '../../../../assets/images/sums.png';
 import editImg from '../../../../assets/images/edit.png';
-import moveRoundImg from '../../../../assets/images/move_round.png';
 import activePlayerImg from '../../../../assets/images/active_player.png';
 
 interface GameChatViewProps {
@@ -33,8 +31,6 @@ interface GameChatViewProps {
 	personsCount: number;
 	role: Role;
 	areSumsEditable: boolean;
-	roundsNames: string[] | null;
-	roundIndex: number;
 	isHost: boolean;
 	isPaused: boolean;
 	isEditEnabled: boolean;
@@ -43,7 +39,6 @@ interface GameChatViewProps {
 	onChatModeChanged: (chatMode: ChatMode) => void;
 	onUsersModeChanged: (usersMode: UsersMode) => void;
 	onEditSums: (enable: boolean) => void;
-	navigateToRound: (roundIndex: number) => void;
 	onEditTable: () => void;
 	onGiveTurn: () => void;
 }
@@ -55,8 +50,6 @@ const mapStateToProps = (state: State) => ({
 	personsCount: Object.values(state.room.persons.all).length,
 	role: state.room.role,
 	areSumsEditable: state.room.areSumsEditable,
-	roundsNames: state.room.roundsNames,
-	roundIndex: state.room.stage.roundIndex,
 	isHost: isHost(state),
 	isPaused: state.room.stage.isGamePaused,
 	isEditEnabled: state.room.stage.isEditEnabled,
@@ -72,9 +65,6 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	},
 	onEditSums: (enable: boolean) => {
 		dispatch(roomActionCreators.areSumsEditableChanged(enable) as unknown as Action);
-	},
-	navigateToRound: (roundIndex: number) => {
-		dispatch(roomActionCreators.navigateToRound(roundIndex) as unknown as Action);
 	},
 	onEditTable: () => {
 		dispatch(roomActionCreators.editTable());
@@ -217,29 +207,6 @@ export function GameChatView(props: GameChatViewProps): JSX.Element {
 
 			{props.role === Role.Showman ? (
 				<div className="sideButtonHost">
-					<FlyoutButton
-						className="standard imageButton wide commandButton bottomButton"
-						disabled={!props.isConnected || !props.roundsNames || props.roundsNames.length < 2}
-						flyout={
-							<ul>
-								{props.roundsNames?.map((name, index) => (
-									<li
-										key={index}
-										className={index === props.roundIndex ? 'sideButtonActiveRound' : ''}
-										onClick={() => props.navigateToRound(index)}
-									>
-										{name}
-									</li>))}
-							</ul>
-						}
-						horizontalOrientation={FlyoutHorizontalOrientation.Left}
-						verticalOrientation={FlyoutVerticalOrientation.Top}
-						alignWidth
-						title={localization.gameManageHint}
-					>
-						<img src={moveRoundImg} />
-					</FlyoutButton>
-
 					<button
 						type="button"
 						className={`standard imageButton wide commandButton bottomButton ${props.isEditEnabled ? 'active' : ''}`}

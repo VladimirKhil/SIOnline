@@ -7,6 +7,7 @@ import { AppDispatch } from '../../../state/new/store';
 import { Action } from 'redux';
 import roomActionCreators from '../../../state/room/roomActionCreators';
 import GameProgress from '../GameProgress';
+import MoveRoundButton from '../MoveRoundButton/MoveRoundButton';
 
 import './GameState.scss';
 import exitImg from '../../../../assets/images/exit.png';
@@ -58,6 +59,7 @@ const GameState: React.FC<GameStateProps> = (props: GameStateProps) => {
 					</span>
 
 					<GameProgress />
+					<MoveRoundButton />
 				</h1>
 			</header>
 		</div>

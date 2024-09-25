@@ -73,6 +73,7 @@ import {
 	playerReplicChanged,
 	playerStateChanged,
 	playerSumChanged,
+	playersAnswersChanged,
 	playersStateCleared,
 	playersSwap,
 	selectPlayers,
@@ -283,6 +284,7 @@ export default class ClientController {
 	}
 
 	onAnswers(answers: string[]) {
+		this.appDispatch(playersAnswersChanged(answers));
 	}
 
 	onAskAnswer() {

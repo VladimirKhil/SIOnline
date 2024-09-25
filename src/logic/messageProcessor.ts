@@ -30,10 +30,9 @@ import { playAudio } from '../state/new/commonSlice';
 import clearUrls from '../utils/clearUrls';
 import ThemesPlayMode from '../model/enums/ThemesPlayMode';
 import { AppDispatch } from '../state/new/store';
-import { captionChanged, isSelectableChanged, showText } from '../state/new/tableSlice';
+import { captionChanged, showText } from '../state/new/tableSlice';
 import { playerChanged,
 	playerInGameChanged,
-	playerLostStateDropped,
 	playerMediaLoaded,
 	playerStakeChanged,
 	playerStateChanged,
@@ -620,7 +619,7 @@ const viewerHandler = (
 
 			for (let i = 2; i < args.length; i++) {
 				if (text.length > 0) {
-					text += ' ';
+					text += '\n';
 				}
 
 				text += args[i];

@@ -1,6 +1,6 @@
 @use '../../scss/variables' as v;
 
-#playersPanel {
+.playersPanel {
     margin: 0;
     flex: 0.5;
 }
@@ -9,16 +9,15 @@
     width: 100%;
     height: 100%;
     display: flex;
+    overflow: hidden;
     justify-content: stretch;
     flex-direction: column;
     padding: 0;
     margin: 0;
     min-height: 50px;
-    background-color: #C0CFF4;
 }
 
     .gamePlayers li {
-        height: 50px;
         list-style-type: none;
         background-color: transparent;
         flex-grow: 1;
@@ -34,19 +33,25 @@
         height: 100%;
         width: 100%;
         display: flex;
+        overflow: hidden;
         justify-content: center;
+        background-color: v.$person-background;
+        border: 1px solid #222084;
+        border-radius: 10px;
     }
 
     .gamePlayers .playerInfo {
         flex: 1;
         display: flex;
+        overflow: hidden;
         flex-flow: column;
         justify-content: center;
         font-weight: bolder;
+        color: white;
     }
 
     .gamePlayers .playerCard.me .name, .gamePlayers .playerCard.me .sum {
-        color: orange;
+        color: v.$me-color;
     }
 
         .gamePlayers li.selectable {
@@ -57,12 +62,27 @@
             background-color: orange !important;
         }
 
-@media screen and (min-height: 700px), (max-width: 600px) {
-    #playersPanel {
-        flex: 0 0 75px;
+@media screen and (max-width: 600px) {
+    .playersPanel.large {
+        flex: 0 0 200px;
     }
 
-    .gamePlayers .playerInfo .name, .gamePlayers .playerInfo .stakeHost {
+    .playersPanel.large ul {
+        flex-wrap: wrap;
+    }
+
+    .playersPanel.large .gamePlayer {
+        font-size: 10px;
+        flex-basis: 15%;
+    }
+}
+
+@media screen and (min-height: 700px), (max-width: 600px) {
+    .playersPanel {
+        flex: 0 0 100px;
+    }
+
+    .gamePlayers .playerInfo .stakeHost {
         display: none;
     }
 
@@ -112,18 +132,22 @@
 
     .playerAvatar {
         min-width: 28px;
-        flex: 3;
+        flex: 1;
     }
 
     .gamePlayers li {
         height: initial;
-        margin: 0;
+        margin: 2px;
         flex: 1;
     }
 
     .gamePlayers .playerCard {
         padding: 3px 1px 3px 1px;
         flex-direction: column;
+    }
+
+    .gamePlayer {
+        font-size: 10px;
     }
 }
 
@@ -143,18 +167,22 @@
     .gamePlayers .name, .gamePlayers .sum {
         margin: 0 3px;
     }
+
+    .playersPanel.large ul {
+        flex-wrap: nowrap;
+    }
+
+    .gamePlayer {
+        font-size: 13px;
+    }
 }
 
 @media screen and (min-width: 1100px) and (min-height: 700px) {
-    #playersPanel {
+    .playersPanel {
         flex: 0.45 0 0 !important;
     }
 
-    .playerAvatar {
-        min-width: 26px;
-    }
-
-    #playersPanel .avatarMale, #playersPanel .avatarFemale {
+    .playersPanel .avatarMale, .playersPanel .avatarFemale {
         background-size: contain;
     }
 
@@ -193,13 +221,6 @@
     .playerCard {
         padding: 5px;
         flex-direction: column;
-        background-color: v.$person-background;
-        border: 1px solid #222084;
-        border-radius: 10px;
-    }
-
-    .gamePlayers .playerInfo {
-        color: white;
     }
 
     .gamePlayers .playerReplic {
@@ -249,6 +270,8 @@
 
     .playerAvatar {
         margin-right: 0;
+        min-width: 26px;
+        flex: 2;
     }
 }
 
@@ -283,11 +306,15 @@
 
     .gamePlayer:nth-last-child(n+6),
     .gamePlayer:nth-last-child(n+6) ~ li {
-        font-size: 27px;
+        font-size: 23px;
     }
 
     .gamePlayer:nth-last-child(n+9),
     .gamePlayer:nth-last-child(n+9) ~ li {
-        font-size: 18px;
+        font-size: 15px;
+    }
+
+    .playerAvatar {
+        flex: 3;
     }
 }

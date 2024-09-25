@@ -24,11 +24,22 @@
     background: rgba(255,255,255,0.15);
 }
 
+.chatItem:not(:first-child) {
+    margin-top: 15px;
+}
+
 .nickname {
     cursor: pointer;
-    color: rgb(222, 206, 108);
+    color: #2E68FF;
+    font-weight: 500;
+    font-size: 18px;
+    margin-bottom: 2px;
 }
 
 .mentionedNickname {
     color: yellow;
+}
+
+.chatBody, .system {
+	white-space: pre-wrap;
 }
