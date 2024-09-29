@@ -8,6 +8,7 @@ import IGameClient from './client/game/IGameClient';
 import AudioController from './components/common/AudioController';
 import { showLogo } from './state/new/tableSlice';
 import { setAppSound } from './state/new/settingsSlice';
+import QRCodeView from './components/panels/QRCodeView/QRCodeView';
 
 import './scss/style.scss';
 
@@ -30,6 +31,7 @@ export function run(elementId: string, game?: IGameClient): void {
 				<PlayersView />
 				<GameTable />
 				<AudioController />
+				<QRCodeView />
 			</div>
 		</Provider>,
 		host

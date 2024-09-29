@@ -28,6 +28,7 @@ export interface UIState {
 	isVisible: boolean;
 	navigation: INavigationState;
 	showPlayers: boolean;
+	qrCode: string | null;
 }
 
 const initialState: UIState = {
@@ -41,6 +42,7 @@ const initialState: UIState = {
 		path: Path.Loading,
 	},
 	showPlayers: true,
+	qrCode: null,
 };
 
 export const uiSlice = createSlice({
@@ -73,6 +75,9 @@ export const uiSlice = createSlice({
 		playersVisibilityChanged: (state: UIState, action: PayloadAction<boolean>) => {
 			state.showPlayers = action.payload;
 		},
+		setQrCode: (state: UIState, action: PayloadAction<string | null>) => {
+			state.qrCode = action.payload;
+		},
 	}
 });
 
@@ -85,6 +90,7 @@ export const {
 	visibilityChanged,
 	navigateCore,
 	playersVisibilityChanged,
+	setQrCode,
 } = uiSlice.actions;
 
 export default uiSlice.reducer;

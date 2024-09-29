@@ -132,6 +132,10 @@ function processMessage(controller: ClientController, payload: any, appDispatch:
 			controller.onPlayersVisibilityChanged(payload.isVisible);
 			break;
 
+		case 'qrCode': // non-SIHost compatible API
+			controller.onQrCode(payload.qrCode);
+			break;
+
 		case 'question':
 			controller.onQuestion(payload.questionPrice);
 			break;

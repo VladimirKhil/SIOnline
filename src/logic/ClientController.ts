@@ -92,7 +92,7 @@ import Messages from '../client/game/Messages';
 import StakeModes from '../client/game/StakeModes';
 import { playAudio, stopAudio } from '../state/new/commonSlice';
 import getErrorMessage from '../utils/ErrorHelpers';
-import { playersVisibilityChanged } from '../state/new/uiSlice';
+import { playersVisibilityChanged, setQrCode } from '../state/new/uiSlice';
 
 function initGroup(group: ContentGroup) {
 	let bestRowCount = 1;
@@ -427,6 +427,10 @@ export default class ClientController {
 		} else {
 			this.appDispatch(showObject({ header: localization.package, text: packageName, hint: '' }));
 		}
+	}
+
+	onQrCode(qrCode: string | null) {
+		this.appDispatch(setQrCode(qrCode));
 	}
 
 	onReadingSpeedChanged(readingSpeed: number) {
