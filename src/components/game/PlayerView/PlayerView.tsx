@@ -152,7 +152,7 @@ export function PlayerView(props: PlayerViewProps): JSX.Element {
 
 				<div className="playerInfo">
 					<div className="name" title={player.name}>
-						<span>{player.name != Constants.ANY_NAME ? player.name : '\u200b'}</span>
+						<div className='nameValue'>{player.name != Constants.ANY_NAME ? player.name : '\u200b'}</div>
 					</div>
 
 					<div className="sum" title={player.sum.toString()}>

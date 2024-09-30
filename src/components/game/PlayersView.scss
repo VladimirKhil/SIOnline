@@ -50,16 +50,25 @@
         color: white;
     }
 
+    .gamePlayers .playerInfo .name, .gamePlayers .playerInfo .sum {
+        display: flex;
+        flex: 1;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .gamePlayers .staticSum {
+        width: 100%;
+        height: 100%;
+        flex: 1;
+    }
+
     .gamePlayers .playerCard.me .name, .gamePlayers .playerCard.me .sum {
         color: v.$me-color;
     }
 
         .gamePlayers li.selectable {
             cursor: pointer;
-        }
-
-        .gamePlayers li.selectable:hover {
-            background-color: orange !important;
         }
 
 @media screen and (max-width: 600px) {
@@ -80,10 +89,6 @@
 @media screen and (min-height: 700px), (max-width: 600px) {
     .playersPanel {
         flex: 0 0 100px;
-    }
-
-    .gamePlayers .playerInfo .stakeHost {
-        display: none;
     }
 
     .gamePlayers .playerInfo .sum {
@@ -191,10 +196,6 @@
         height: 25px;
     }
 
-    .gamePlayers .playerInfo .name, .gamePlayers .playerInfo .stakeHost {
-        display: block !important;
-    }
-
     .gamePlayers li.me .sum {
         color: orange !important;
         text-shadow: none;
@@ -246,7 +247,6 @@
     .gamePlayers .playerInfo {
         padding: 2px 0 0 0;
         width: initial;
-        display: initial !important;
     }
 
     .gamePlayer {

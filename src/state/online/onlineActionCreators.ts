@@ -304,6 +304,7 @@ const initGameAsync = async (
 	appDispatch(tableReset());
 	appDispatch(showText(localization.tableHint));
 	appDispatch(setContext(ContextView.None));
+	// TODO: provide single action to reset room state
 	dispatch(roomActionCreators.nameChanged(name));
 	dispatch(roomActionCreators.roleChanged(role));
 	dispatch(roomActionCreators.stopTimer(0));
@@ -312,6 +313,7 @@ const initGameAsync = async (
 	dispatch(roomActionCreators.gameStarted(false));
 	dispatch(roomActionCreators.afterQuestionStateChanged(false));
 	dispatch(roomActionCreators.isQuestionChanged(false, ''));
+	dispatch(roomActionCreators.areSumsEditableChanged(false));
 
 	await gameInit(gameClient, role);
 };

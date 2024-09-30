@@ -173,6 +173,10 @@ export const tableSlice = createSlice({
 		captionChanged: (state: TableState, action: PayloadAction<string>) => {
 			state.caption = action.payload;
 		},
+		clearActiveState: (state: TableState) => {
+			state.activeThemeIndex = -1;
+			state.actionQuestionIndex = -1;
+		},
 		tableReset: (state: TableState) => {
 			Object.assign(state, initialState);
 		},
@@ -276,6 +280,7 @@ export const {
 	isSelectableChanged,
 	resumeMedia,
 	captionChanged,
+	clearActiveState,
 	tableReset,
 	endQuestion,
 	answerOptions,

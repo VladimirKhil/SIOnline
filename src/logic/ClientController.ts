@@ -30,6 +30,7 @@ import { answerOptions,
 	blinkTheme,
 	canPressChanged,
 	captionChanged,
+	clearActiveState,
 	endQuestion,
 	isSelectableChanged,
 	pauseLoadTimer,
@@ -556,6 +557,7 @@ export default class ClientController {
 		this.dispatch(playersStateCleared());
 		this.dispatch(roomActionCreators.gameStateCleared());
 		this.appDispatch(isSelectableChanged(false));
+		this.appDispatch(clearActiveState());
 		this.appDispatch(canPressChanged(false));
 		this.appDispatch(setContext(ContextView.None));
 	}
