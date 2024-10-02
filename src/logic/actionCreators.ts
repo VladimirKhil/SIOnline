@@ -428,44 +428,48 @@ const init: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 		getState: () => State,
 		dataContext: DataContext
 	) => {
-		if (initialView.path === Path.Login) {
-			appDispatch(navigate({ navigation: { path: Path.Login, callbackState: { path: Path.Root } }, saveState: true }));
-			return;
-		} else if (initialView.path == Path.JoinRoom && initialView.gameId && initialView.hostUri) {
-			try {
-				const siHostClient = await connectToSIHostAsync(initialView.hostUri, dispatch, appDispatch, getState, dataContext);
-				const gameInfo = await siHostClient.tryGetGameInfoAsync(initialView.gameId);
+		try {
+			if (initialView.path === Path.Login) {
+				appDispatch(navigate({ navigation: { path: Path.Login, callbackState: { path: Path.Root } }, saveState: true }));
+				return;
+			} else if (initialView.path == Path.JoinRoom && initialView.gameId && initialView.hostUri) {
+				try {
+					const siHostClient = await connectToSIHostAsync(initialView.hostUri, dispatch, appDispatch, getState, dataContext);
+					const gameInfo = await siHostClient.tryGetGameInfoAsync(initialView.gameId);
 
-				if (gameInfo) {
-					if (!gameInfo.HostUri) {
-						gameInfo.HostUri = initialView.hostUri;
+					if (gameInfo) {
+						if (!gameInfo.HostUri) {
+							gameInfo.HostUri = initialView.hostUri;
+						}
+
+						appDispatch(selectGame(gameInfo));
+						appDispatch(navigate({ navigation: initialView, saveState: true }));
+						return;
+					} else {
+						appDispatch(commonErrorChanged(`${localization.joinError}: ${localization.gameNotFound}`));
 					}
-
-					appDispatch(selectGame(gameInfo));
-					appDispatch(navigate({ navigation: initialView, saveState: true }));
-					return;
-				} else {
-					appDispatch(commonErrorChanged(`${localization.joinError}: ${localization.gameNotFound}`));
+				} catch (e) {
+					appDispatch(commonErrorChanged(getErrorMessage(e)));
 				}
-			} catch (e) {
-				appDispatch(commonErrorChanged(getErrorMessage(e)));
 			}
-		}
 
-		const connectResult = await tryConnectAsync(dispatch, appDispatch, getState, dataContext);
+			const connectResult = await tryConnectAsync(dispatch, appDispatch, getState, dataContext);
 
-		if (connectResult.success) {
-			await checkLicenseAsync(initialView, dispatch, appDispatch, getState, dataContext);
-		} else if (connectResult.authenticationRequired) {
-			appDispatch(navigate({
-				navigation: {
-					path: Path.Login,
-					callbackState: initialView.path === Path.About ? { path: Path.Menu } : initialView
-				},
-				saveState: true,
-			}));
-		} else {
-			appDispatch(commonErrorChanged(connectResult.error ?? localization.errorHappened));
+			if (connectResult.success) {
+				await checkLicenseAsync(initialView, dispatch, appDispatch, getState, dataContext);
+			} else if (connectResult.authenticationRequired) {
+				appDispatch(navigate({
+					navigation: {
+						path: Path.Login,
+						callbackState: initialView.path === Path.About ? { path: Path.Menu } : initialView
+					},
+					saveState: true,
+				}));
+			} else {
+				appDispatch(commonErrorChanged(connectResult.error ?? localization.errorHappened));
+			}
+		} finally {
+			dataContext.state.onReady();
 		}
 	};
 

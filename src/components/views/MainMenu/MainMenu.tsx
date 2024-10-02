@@ -9,7 +9,7 @@ import onlineActionCreators from '../../../state/online/onlineActionCreators';
 import Path from '../../../model/enums/Path';
 import actionCreators from '../../../logic/actionCreators';
 import { AppDispatch } from '../../../state/new/store';
-import { useAppDispatch } from '../../../state/new/hooks';
+import { useAppDispatch, useAppSelector } from '../../../state/new/hooks';
 import Ads from '../../panels/Ads/Ads';
 import UserOptions from '../../panels/UserOptions/UserOptions';
 import { navigate } from '../../../utils/Navigator';
@@ -52,6 +52,7 @@ const mapDispatchToProps = (dispatch: any) => ({
 export function MainMenu(props: MainMenuProps): JSX.Element {
 	const [showLicense, setShowLicense] = React.useState(false);
 	const appDispatch = useAppDispatch();
+	const common = useAppSelector(state => state.common);
 
 	const stopAudioPlay = () => { appDispatch(stopAudio()); };
 
@@ -96,7 +97,7 @@ export function MainMenu(props: MainMenuProps): JSX.Element {
 			</header>
 
 			<div className='mainArea'>
-				<div className='logo' />
+				<div className={common.clearUrls ? 'logoMini' : 'logo'} />
 
 				<div className={`welcomeViewActions ${props.isConnected ? '' : 'disconnected'}`}>
 					<button

@@ -9,7 +9,6 @@
     width: 100%;
     height: 100%;
     display: flex;
-    overflow: hidden;
     justify-content: stretch;
     flex-direction: column;
     padding: 0;
@@ -52,6 +51,7 @@
 
     .gamePlayers .playerInfo .name, .gamePlayers .playerInfo .sum {
         display: flex;
+        overflow: hidden;
         flex: 1;
         justify-content: center;
         align-items: center;
@@ -249,20 +249,6 @@
         width: initial;
     }
 
-    .gamePlayer {
-        font-size: 19px;
-    }
-
-    .gamePlayer:nth-last-child(n+6),
-    .gamePlayer:nth-last-child(n+6) ~ li {
-        font-size: 15px;
-    }
-
-    .gamePlayer:nth-last-child(n+9),
-    .gamePlayer:nth-last-child(n+9) ~ li {
-        font-size: 11px;
-    }
-
     .gamePlayers .stake {
         padding-left: 0;
         margin-left: 0;
@@ -298,20 +284,6 @@
 
     .gamePlayers .playerInfo {
         padding: 3px;
-    }
-
-    .gamePlayer {
-        font-size: 30px;
-    }
-
-    .gamePlayer:nth-last-child(n+6),
-    .gamePlayer:nth-last-child(n+6) ~ li {
-        font-size: 23px;
-    }
-
-    .gamePlayer:nth-last-child(n+9),
-    .gamePlayer:nth-last-child(n+9) ~ li {
-        font-size: 15px;
     }
 
     .playerAvatar {

@@ -9,6 +9,9 @@ export default class StateManager implements IStateManager {
 		return Promise.resolve();
 	}
 
+	onReady() {
+	}
+
 	isLicenseAccepted(): boolean {
 		return getCookie(ACCEPT_LICENSE_KEY) !== '';
 	}

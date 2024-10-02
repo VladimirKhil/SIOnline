@@ -32,7 +32,7 @@ import YAStateManager from './utils/YAStateManager';
 import IStateManager from './utils/IStateManager';
 import SIHostClient from './client/SIHostClient';
 import { setGameButtonKey } from './state/new/settingsSlice';
-import { commonErrorChanged } from './state/new/commonSlice';
+import { commonErrorChanged, setFontsReady } from './state/new/commonSlice';
 import { saveStateToStorage } from './state/new/StateHelpers';
 import { INavigationState, isSettingGameButtonKeyChanged, visibilityChanged, windowSizeChanged } from './state/new/uiSlice';
 import { navigate } from './utils/Navigator';
@@ -54,7 +54,15 @@ if (!config) {
 
 function setState(state: State, savedState: SavedState | null, c: Config): State {
 	if (!savedState) {
-		return state;
+		return {
+			...state,
+			common: {
+				...state.common,
+				askForConsent: !!c.askForConsent,
+				emojiCultures: c.emojiCultures,
+				clearUrls: c.clearUrls,
+			},
+		};
 	}
 
 	const { appSettings } = savedState.settings;
@@ -153,6 +161,10 @@ function subscribeToExternalEvents(store: Store<State, any>) {
 	window.addEventListener('visibilitychange', () => {
 		store.dispatch(visibilityChanged(document.visibilityState === 'visible'));
 		return false;
+	});
+
+	document.fonts.ready.then(() => {
+		window.setTimeout(() => store.dispatch(setFontsReady(true)), 1000);
 	});
 }
 

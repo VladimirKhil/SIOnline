@@ -11,15 +11,22 @@
 	scrollbar-width: thin;
 }
 
-.welcomeView .logo {
+.welcomeView .logo, .welcomeView .logoMini {
     max-width: 600px;
 	width: 90%;
-    background-image: url('../../../../assets/images/logo.png');
     background-size: contain;
 	background-repeat: no-repeat;
 	background-position: center;
     margin-top: 10px;
 	flex: 100px 0 0;
+}
+
+.welcomeView .logo {
+    background-image: url('../../../../assets/images/logo.png');
+}
+
+.welcomeView .logoMini {
+    background-image: url('../../../../assets/images/sigame.png');
 }
 
 .welcomeView > header {

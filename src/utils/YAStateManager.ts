@@ -30,9 +30,11 @@ export default class YAStateManager implements IStateManager {
 		this.playerData = await this.player.getData();
 		store.dispatch(changeLogin(this.player.getName()) as any);
 
-		this.ysdk.features.LoadingAPI?.ready();
-
 		console.log('Loaded from Yandex');
+	}
+
+	onReady() {
+		this.ysdk.features.LoadingAPI?.ready();
 	}
 
 	isLicenseAccepted() {

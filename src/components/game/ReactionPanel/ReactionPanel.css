@@ -6,6 +6,7 @@
 
 .reactions_panel {
 	display: flex;
+	overflow: hidden;
 	flex-direction: row;
 }
 
@@ -13,7 +14,7 @@
 	flex: 1;
     background-color: #2c7be1;
     cursor: pointer;
-	font-size: 20px;
+	font-size: 15px;
 	margin: 0 3px;
 }
 

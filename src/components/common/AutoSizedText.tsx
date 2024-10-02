@@ -1,5 +1,7 @@
 ﻿import * as React from 'react';
 import fitElement from '../../utils/fitElement';
+import State from '../../state/State';
+import { connect } from 'react-redux';
 
 interface AutoSizedTextProps {
 	id?: string;
@@ -8,11 +10,16 @@ interface AutoSizedTextProps {
 	className?: string;
 	maxFontSize: number;
 	title?: string;
+	fontsReady: boolean;
 
 	onClick?: () => void;
 }
 
-export default class AutoSizedText extends React.Component<AutoSizedTextProps> {
+const mapStateToProps = (state: State) => ({
+	fontsReady: state.common.fontsReady,
+});
+
+export class AutoSizedText extends React.Component<AutoSizedTextProps> {
 	private myRef: React.RefObject<HTMLDivElement>;
 
 	constructor(props: AutoSizedTextProps) {
@@ -42,7 +49,7 @@ export default class AutoSizedText extends React.Component<AutoSizedTextProps> {
 
 	resizeText = (): void => {
 		if (this.myRef.current !== null) {
-			fitElement(this.myRef.current, this.props.maxFontSize);
+			fitElement(this.myRef.current, this.props.maxFontSize, this.props.fontsReady);
 		}
 	};
 
@@ -61,3 +68,5 @@ export default class AutoSizedText extends React.Component<AutoSizedTextProps> {
 		);
 	}
 }
+
+export default connect(mapStateToProps)(AutoSizedText);

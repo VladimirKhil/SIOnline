@@ -20,6 +20,7 @@ export interface CommonState {
 	avatarLoadError: string | null;
 	audio: string | null;
 	audioLoop: boolean;
+	fontsReady: boolean;
 }
 
 const initialState: CommonState = {
@@ -38,6 +39,7 @@ const initialState: CommonState = {
 	avatarLoadError: null,
 	audio: null,
 	audioLoop: false,
+	fontsReady: false,
 };
 
 export const commonSlice = createSlice({
@@ -86,6 +88,9 @@ export const commonSlice = createSlice({
 			state.audio = null;
 			state.audioLoop = false;
 		},
+		setFontsReady: (state: CommonState, action: PayloadAction<boolean>) => {
+			state.fontsReady = action.payload;
+		},
 	}
 });
 
@@ -112,6 +117,7 @@ export const {
 	avatarLoadError,
 	playAudio,
 	stopAudio,
+	setFontsReady,
 } = commonSlice.actions;
 
 export default commonSlice.reducer;

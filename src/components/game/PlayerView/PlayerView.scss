@@ -31,10 +31,14 @@
 }
 
 .playerInfo .nameValue {
-	text-align: center;
+	display: flex;
 	overflow: hidden;
+	justify-content: center;
+	align-items: center;
 	white-space: nowrap;
-	text-overflow: ellipsis;
+	text-align: center;
+	width: 100%;
+	height: 100%;
 }
 
 .gamePlayer .playerReplic {
@@ -139,20 +143,6 @@
 	cursor: pointer;
 }
 
-.gamePlayer {
-	font-size: 20px;
-}
-
-.gamePlayer:nth-last-child(n+6),
-.gamePlayer:nth-last-child(n+6) ~ li {
-	font-size: 15px;
-}
-
-.gamePlayer:nth-last-child(n+9),
-.gamePlayer:nth-last-child(n+9) ~ li {
-	font-size: 10px;
-}
-
 .playerInfo .numericTextBox {
     font-size: smaller;
 	width: 100%;
@@ -196,15 +186,16 @@
 	justify-content: center;
 	align-items: center;
 	overflow: hidden;
+	background: #05061F;
+	border: 2px solid #14183E;
+	border-radius: 5px;
+}
+
+.playerInfo .sum {
+	font-size: 10px;
 }
 
 @media screen and (min-width: 1100px) and (min-height: 700px) {
-	.playerInfo .staticSum {
-		background: #05061F;
-		border: 2px solid #14183E;
-		border-radius: 5px;
-	}
-
 	.stakeHost {
 		flex: 0 0 45px;
 		color: white;
@@ -221,5 +212,15 @@
 
 	.gamePlayer .progress .progress-bar {
 		height: 7px;
+	}
+
+	.playerInfo .sum {
+		font-size: 15px;
+	}
+}
+
+@media screen and (min-width: 1600px) and (min-height: 700px) {
+	.playerInfo .sum {
+		font-size: 20px;
 	}
 }

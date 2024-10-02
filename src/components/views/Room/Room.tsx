@@ -181,6 +181,8 @@ export function Room(props: RoomProps) : JSX.Element {
 
 							{props.isChatOpen && !isScreenWide ? (
 								<div className="compactChatView">
+									<div className='compactChatHeader'>{localization.chat}</div>
+
 									<div className="sideArea">
 										<div className="game__chat">
 											<GameLogView />
