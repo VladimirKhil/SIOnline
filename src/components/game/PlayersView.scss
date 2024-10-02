@@ -154,6 +154,10 @@
     .gamePlayer {
         font-size: 10px;
     }
+
+    .playerInfo .sum {
+        font-size: 10px;
+    }
 }
 
 @media screen and (min-width: 800px) and (min-height: 700px) {
@@ -285,7 +289,9 @@
     .gamePlayers .playerInfo {
         padding: 3px;
     }
+}
 
+@media screen and (min-width: 1600px) and (min-height: 900px) {
     .playerAvatar {
         flex: 3;
     }
