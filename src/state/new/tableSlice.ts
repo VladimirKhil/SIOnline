@@ -151,6 +151,9 @@ export const tableSlice = createSlice({
 			state.audio = action.payload;
 			state.isMediaStopped = false;
 		},
+		clearAudio: (state: TableState) => {
+			state.audio = '';
+		},
 		showContent: (state: TableState, action: PayloadAction<ContentGroup[]>) => {
 			state.mode = TableMode.Content;
 			state.content = action.payload;
@@ -275,6 +278,7 @@ export const {
 	showPartialText,
 	appendPartialText,
 	showBackgroundAudio,
+	clearAudio,
 	showContent,
 	canPressChanged,
 	isSelectableChanged,

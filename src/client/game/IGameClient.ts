@@ -20,6 +20,8 @@ export default interface IGameClient {
 
 	moveable(): Promise<boolean>;
 
+	onMediaCompleted(): Promise<boolean>;
+
 	pass(): Promise<boolean>;
 
 	pause(enable: boolean): Promise<boolean>;
@@ -31,6 +33,8 @@ export default interface IGameClient {
 	rejectAnswer(factor: number): Promise<boolean>;
 
 	selectQuestion(themeIndex: number, questionIndex: number): Promise<boolean>;
+
+	sendAnswer(answer: string): Promise<boolean>;
 
 	/** Sends answer version. */
 	sendAnswerVersion(answerVersion: string): Promise<boolean>;

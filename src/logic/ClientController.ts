@@ -31,6 +31,7 @@ import { answerOptions,
 	canPressChanged,
 	captionChanged,
 	clearActiveState,
+	clearAudio,
 	endQuestion,
 	isSelectableChanged,
 	pauseLoadTimer,
@@ -612,6 +613,11 @@ export default class ClientController {
 
 				if (backgroundContent.type === 'audio') {
 					const uri = this.preprocessServerUri(backgroundContent.value);
+
+					if (this.getState().table.audio === uri) {
+						this.appDispatch(clearAudio()); // Forcing audio reload
+					}
+
 					this.appDispatch(showBackgroundAudio(uri));
 				}
 				break;

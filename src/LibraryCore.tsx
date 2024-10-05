@@ -251,6 +251,10 @@ function processMessage(controller: ClientController, payload: any, appDispatch:
 			controller.onTimerResume(payload.timerIndex);
 			break;
 
+		case 'timerRun':
+			controller.onTimerRun(payload.timerIndex, payload.timerArgument, payload.timerPersonIndex);
+			break;
+
 		case 'timerStop':
 			controller.onTimerStop(payload.timerIndex);
 			break;

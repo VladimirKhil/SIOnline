@@ -34,6 +34,10 @@ export default class GameClient implements IGameClient {
 		return this.gameServerClient.msgAsync(Messages.Moveable);
 	}
 
+	onMediaCompleted(): Promise<boolean> {
+		return this.gameServerClient.msgAsync(Messages.Atom);
+	}
+
 	pass(): Promise<boolean> {
 		return this.gameServerClient.msgAsync(Messages.Pass);
 	}
@@ -56,6 +60,10 @@ export default class GameClient implements IGameClient {
 
 	selectQuestion(themeIndex: number, questionIndex: number): Promise<boolean> {
 		return this.gameServerClient.msgAsync(Messages.Choice, themeIndex, questionIndex);
+	}
+
+	sendAnswer(answer: string): Promise<boolean> {
+		return this.gameServerClient.msgAsync(Messages.Answer, answer);
 	}
 
 	sendAnswerVersion(answerVersion: string): Promise<boolean> {

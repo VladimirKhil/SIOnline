@@ -164,7 +164,7 @@ export function PlayerView(props: PlayerViewProps): JSX.Element {
 								onValueChanged={value => onSumChanged(value)}
 								onCancel={props.onCancelSumChange}
 							/>
-						) : <div className='staticSum'>{player.sum}</div>}
+						) : <AutoSizedText className='staticSum' maxFontSize={48}>{player.sum}</AutoSizedText>}
 					</div>
 				</div>
 			</div>

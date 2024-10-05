@@ -443,7 +443,7 @@ const selectAnswerOption: ActionCreator<ThunkAction<void, State, DataContext, Ac
 		return;
 	}
 
-	if (await dataContext.game.gameServerClient.msgAsync(Messages.Answer, label)) {
+	if (await dataContext.game.sendAnswer(label)) {
 		appDispatch(isSelectableChanged(false));
 		dispatch(decisionNeededChanged(false));
 	}
@@ -586,7 +586,7 @@ const onMediaEnded: ActionCreator<ThunkAction<void, State, DataContext, Action>>
 	_getState: () => State,
 	dataContext: DataContext
 ) => {
-	await dataContext.game.gameServerClient.msgAsync('ATOM');
+	await dataContext.game.onMediaCompleted();
 };
 
 const areSumsEditableChanged: ActionCreator<RunActions.AreSumsEditableChangedAction> = (areSumsEditable: boolean) => ({

@@ -6,6 +6,8 @@ const enum Messages {
 	/** Answer version. Denotes a preliminary answer printed by player. */
 	AnswerVersion = 'ANSWER_VERSION',
 
+	Atom = 'ATOM',
+
 	/** User avatar info. */
 	Avatar = 'AVATAR',
 

@@ -81,7 +81,7 @@ export const sendAnswer = createAsyncThunk(
 	'room2/sendAnswer',
 	async (answer: string, thunkAPI) => {
 		const dataContext = thunkAPI.extra as DataContext;
-		await dataContext.game.gameServerClient.msgAsync(Messages.Answer, answer);
+		await dataContext.game.sendAnswer(answer);
 	},
 );
 
