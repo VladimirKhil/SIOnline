@@ -8,13 +8,20 @@ import { Action } from 'redux';
 import roomActionCreators from '../../../state/room/roomActionCreators';
 import GameProgress from '../GameProgress';
 import MoveRoundButton from '../MoveRoundButton/MoveRoundButton';
+import State from '../../../state/State';
+import Role from '../../../model/Role';
 
 import './GameState.scss';
 import exitImg from '../../../../assets/images/exit.png';
 
 interface GameStateProps {
+	role: Role;
 	onExit: (appDispatch: AppDispatch) => void;
 }
+
+const mapStateToProps = (state: State) => ({
+	role: state.room.role,
+});
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	onExit: (appDispatch: AppDispatch) => {
@@ -59,11 +66,11 @@ const GameState: React.FC<GameStateProps> = (props: GameStateProps) => {
 					</span>
 
 					<GameProgress />
-					<MoveRoundButton />
+					{props.role === Role.Showman ? <MoveRoundButton /> : null}
 				</h1>
 			</header>
 		</div>
 	);
 };
 
-export default connect(null, mapDispatchToProps)(GameState);
+export default connect(mapStateToProps, mapDispatchToProps)(GameState);

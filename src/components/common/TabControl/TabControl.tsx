@@ -5,6 +5,7 @@ import './TabControl.scss';
 interface TabItemProps {
 	id: number;
 	label: string;
+	title?: string;
 }
 
 export default function TabControl(props: { tabs: TabItemProps[], activeTab: number, onTabClick: (tab: number) => void }): JSX.Element {
@@ -14,6 +15,7 @@ export default function TabControl(props: { tabs: TabItemProps[], activeTab: num
 				<div
 					key={index}
 					className={`tab ${tab.id === props.activeTab ? 'active' : ''}`}
+					title={tab.title}
 					onClick={() => props.onTabClick(tab.id)}
 				>
 					{tab.label}

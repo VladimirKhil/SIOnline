@@ -1,12 +1,9 @@
 .helpDialog {
-    background-color: #5A95E2;
+    background-color: #000451;
+    color: white;
     display: flex;
     flex-flow: column;
     overflow-y: hidden;
-}
-
-.helpDialog > header {
-	background-color: #000451;
 }
 
 .helpText {
@@ -37,5 +34,6 @@
 		bottom: 100px;
 		left: 100px;
 		right: 100px;
+		border-radius: 12px;
 	}
 }

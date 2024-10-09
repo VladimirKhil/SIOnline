@@ -18,6 +18,7 @@ import isWellFormedUri from '../../../utils/isWellFormedUri';
 import { useAppDispatch } from '../../../state/new/hooks';
 import { selectPlayers } from '../../../state/new/room2Slice';
 import UserOptions from '../../panels/UserOptions/UserOptions';
+import TabControl from '../../common/TabControl/TabControl';
 
 import './GameChatView.css';
 import sumsImg from '../../../../assets/images/sums.png';
@@ -171,34 +172,14 @@ export function GameChatView(props: GameChatViewProps): JSX.Element {
 			</header>
 
 			{props.chatMode === ChatMode.Users ?
-				<div className="wide tabHeader gameHeader">
-					<h1
-						className={props.usersMode === UsersMode.Users ? 'activeTab' : ''}
-						onClick={() => props.onUsersModeChanged(UsersMode.Users)}
-						title={localization.members}
-					>
-						<div>
-							<span>👤{props.personsCount}</span>
-						</div>
-					</h1>
-
-					{props.isHost ? (
-						<h1
-							className={props.usersMode === UsersMode.Tables ? 'activeTab' : ''}
-							onClick={() => props.onUsersModeChanged(UsersMode.Tables)}
-							title={localization.tables}
-						>
-							🎓
-						</h1>
-					) : null}
-
-					<h1
-						className={props.usersMode === UsersMode.Banned ? 'activeTab' : ''}
-						onClick={() => props.onUsersModeChanged(UsersMode.Banned)}
-						title={localization.bannedList}
-					>
-						🚫
-					</h1>
+				<div className="wide tabHeader usersHeader">
+					<TabControl
+						tabs={[
+							{ id: UsersMode.Users, label: localization.members },
+							{ id: UsersMode.Tables, label: localization.tables },
+							{ id: UsersMode.Banned, label: '🚫', title: localization.bannedList } ]}
+						activeTab={props.usersMode}
+						onTabClick={props.onUsersModeChanged} />
 				</div> : null}
 
 			<div className="sideArea">

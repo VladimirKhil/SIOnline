@@ -7,12 +7,10 @@ import './TableText.scss';
 
 interface TableTextProps {
 	text: string;
-	readingSpeed: number;
 }
 
 const mapStateToProps = (state: State) => ({
 	text: state.table.text,
-	readingSpeed: state.room.readingSpeed,
 });
 
 export function TableText(props: TableTextProps) {

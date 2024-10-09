@@ -30,8 +30,7 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 const MoveRoundButton: React.FC<MoveRoundButtonProps> = (props: MoveRoundButtonProps) => {
 	const common = useAppSelector(state => state.common);
 
-	return (
-		<FlyoutButton
+	return <FlyoutButton
 			className="standard imageButton moveRoundButton"
 			disabled={!common.isSIHostConnected || !props.roundsNames || props.roundsNames.length < 2}
 			flyout={
@@ -52,8 +51,7 @@ const MoveRoundButton: React.FC<MoveRoundButtonProps> = (props: MoveRoundButtonP
 			title={localization.gameManageHint}
 		>
 			<img alt='Move round' src={moveRoundImg} />
-		</FlyoutButton>
-	);
+		</FlyoutButton>;
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(MoveRoundButton);

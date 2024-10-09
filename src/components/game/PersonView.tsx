@@ -36,8 +36,6 @@ export function PersonView(props: PersonViewProps): JSX.Element {
 	const isMe = props.account.name === props.login;
 	const isHost = props.account.name === props.hostName;
 
-	const humanImage = props.account.sex === Sex.Male ? '🧑' : '👩';
-
 	const avatar = isMe ? props.avatar : props.account.avatar;
 
 	return (
@@ -45,10 +43,6 @@ export function PersonView(props: PersonViewProps): JSX.Element {
 			className={`personItem ${isActive ? 'active ' : ''} ${isMe ? 'me' : ''}`}
 			onClick={() => props.selectPerson(props.account.name)}
 		>
-			<span title={props.account.isHuman ? localization.human : localization.computer}>
-				{props.account.isHuman ? humanImage : '🖥️'}
-			</span>
-
 			<div
 				className="personItem_avatar"
 				style={{ backgroundImage: avatar ? `url("${avatar}")` : undefined }}

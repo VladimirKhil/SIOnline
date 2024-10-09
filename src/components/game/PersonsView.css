@@ -3,13 +3,14 @@
     scrollbar-width: thin;
     width: 100%;
     flex: 1 0 0;
-    background-color: #C0CFF4;
+    background-color: rgb(0, 4, 81);
+    color: white;
 }
 
 .personsHeader {
     background-color: rgb(0, 4, 81);
     font-weight: bold;
-	font-size: 18px;
+	font-size: 12px;
 	color: #FFFFFF;
     padding: 0 10px;
     height: 43px;

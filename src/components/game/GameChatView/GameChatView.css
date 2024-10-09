@@ -22,10 +22,15 @@
 	background-color: #5A95E2 !important;
 }
 
-.gameHeader {
-	height: 50px;
+.usersHeader {
 	position: relative;
-	background-color: rgba(255, 255, 255, 0.3);
+	background-color: #5A95E2;
+	color: white;
+	font-size: 14px;
+}
+
+.usersHeader .tab {
+	padding: 5px 20px;
 }
 
 #gameLogHost .tabHeader h1 {
@@ -45,7 +50,6 @@
 }
 
 .tabBody {
-	border-top: 1px solid lightyellow;
 	flex: 1 0 0;
 }
 

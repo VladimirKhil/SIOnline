@@ -93,6 +93,7 @@
 
 .licenseDialog {
 	background-color: #000451;
+	color: white;
 	overflow-y: hidden;
 }
 
@@ -100,8 +101,6 @@
 	display: block;
 	padding: 10px;
 	height: calc(100% - 50px);
-	color: black;
-	background-color: #98B9FF;
 	font-weight: normal;
 	font-size: 18px;
 	overflow-y: auto;
@@ -192,6 +191,7 @@ button.standard.welcomeExit {
 		bottom: 50px;
 		left: 100px;
 		right: 100px;
+		border-radius: 12px;
 	}
 }
 
