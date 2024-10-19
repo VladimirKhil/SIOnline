@@ -18,6 +18,10 @@ export default class GameClient implements IGameClient {
 		return this.gameServerClient.msgAsync(Messages.Delete, themeIndex);
 	}
 
+	getPin(): Promise<boolean> {
+		return this.gameServerClient.msgAsync(Messages.Pin);
+	}
+
 	info(): Promise<boolean> {
 		return this.gameServerClient.msgAsync(Messages.Info);
 	}

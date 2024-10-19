@@ -48,7 +48,7 @@ const mapDispatchToProps = (dispatch: any) => ({
 		dispatch(onlineActionCreators.passwordChanged(newPassword));
 	},
 	onJoin: (hostUri: string, gameId: number, name: string, role: Role, appDispatch: AppDispatch) => {
-		dispatch(onlineActionCreators.joinGame(hostUri, gameId, name, role, appDispatch));
+		dispatch(onlineActionCreators.joinGame(hostUri, gameId, name, role, null, appDispatch));
 	}
 });
 

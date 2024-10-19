@@ -36,6 +36,8 @@ const enum Messages {
 
 	Picture = 'PICTURE',
 
+	Pin = 'PIN',
+
 	Ready = 'READY',
 
 	Report = 'REPORT',

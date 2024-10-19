@@ -5,6 +5,8 @@ import PackageType from '../../../model/enums/PackageType';
 import localization from '../../../model/resources/localization';
 import isWindowsOS from '../../../utils/isWindowsOS';
 
+import './PackageSources.scss';
+
 interface PackageSourcesProps {
 	setIsSIStorageOpen: (isOpen: boolean) => void;
 	onFilePackageSelected: () => void;

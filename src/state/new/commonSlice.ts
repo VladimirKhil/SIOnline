@@ -2,6 +2,12 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import GameSound from '../../model/enums/GameSound';
 import { gameSoundPlayer } from '../../utils/GameSoundPlayer';
 
+export enum MessageLevel {
+	Information,
+	Warning,
+	Error,
+}
+
 export interface CommonState {
 	computerAccounts: string[] | null;
 	isConnected: boolean;
@@ -13,6 +19,7 @@ export interface CommonState {
 	maxPackageSizeMb: number;
 	error: string | null;
 	userError: string | null;
+	messageLevel: MessageLevel;
 	askForConsent: boolean;
 	emojiCultures?: string[];
 	clearUrls?: boolean;
@@ -34,6 +41,7 @@ const initialState: CommonState = {
 	maxPackageSizeMb: 100,
 	error: null,
 	userError: null,
+	messageLevel: MessageLevel.Error,
 	askForConsent: true,
 	avatarLoadProgress: false,
 	avatarLoadError: null,
@@ -65,8 +73,9 @@ export const commonSlice = createSlice({
 		commonErrorChanged: (state: CommonState, action: PayloadAction<string | null>) => {
 			state.error = action.payload;
 		},
-		userErrorChangedInternal: (state: CommonState, action: PayloadAction<string | null>) => {
-			state.userError = action.payload;
+		userErrorChangedInternal: (state: CommonState, action: PayloadAction<{ message: string | null, messageLevel?: MessageLevel }>) => {
+			state.userError = action.payload.message;
+			state.messageLevel = action.payload.messageLevel ?? MessageLevel.Error;
 		},
 		avatarLoadStart: (state: CommonState) => {
 			state.avatarLoadProgress = true;
@@ -94,17 +103,35 @@ export const commonSlice = createSlice({
 	}
 });
 
-export const userErrorChanged = createAsyncThunk(
-	'common/userErrorChanged',
-	async (error: string, thunkAPI) => {
-		thunkAPI.dispatch(commonSlice.actions.userErrorChangedInternal(error));
+export const userMessageChanged = createAsyncThunk(
+	'common/userMessageChanged',
+	async (arg: any, thunkAPI) => {
+		thunkAPI.dispatch(commonSlice.actions.userErrorChangedInternal({
+			message: arg.message,
+			messageLevel: arg.messageLevel
+		}));
 
 		window.setTimeout(
-			() => thunkAPI.dispatch(commonSlice.actions.userErrorChangedInternal(null)),
+			() => thunkAPI.dispatch(commonSlice.actions.userErrorChangedInternal({ message: null })),
 			3000
 		);
 	},
 );
+
+export const userErrorChanged = (message: string) => userMessageChanged({
+	message,
+	messageLevel: MessageLevel.Error
+});
+
+export const userWarnChanged = (message: string) =>	userMessageChanged({
+	message,
+	messageLevel: MessageLevel.Warning
+});
+
+export const userInfoChanged = (message: string) =>	userMessageChanged({
+	message,
+	messageLevel: MessageLevel.Information
+});
 
 export const {
 	isConnectedChanged,

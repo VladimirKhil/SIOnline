@@ -5,6 +5,7 @@ import IGameServerClient from './IGameServerClient';
 import RunGameResponse from './contracts/RunGameResponse';
 import RunGameRequest from './contracts/RunGameRequest';
 import RunAutoGameRequest from './contracts/RunAutoGameRequest';
+import GetGameByPinResponse from './contracts/GetGameByPinResponse';
 
 const enum State { None, Lobby, Game }
 
@@ -68,6 +69,13 @@ export default class GameServerClient implements IGameServerClient {
 		return this.connection.invoke<RunGameResponse>(
 			'RunAutoGame',
 			runAutoGameRequest
+		);
+	}
+
+	getGameByPinAsync(pin: number): Promise<GetGameByPinResponse | null> {
+		return this.connection.invoke<GetGameByPinResponse | null>(
+			'GetGameByPin',
+			pin,
 		);
 	}
 

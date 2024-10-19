@@ -431,6 +431,10 @@ export default class ClientController {
 		}
 	}
 
+	onPass(playerIndex: number) {
+		this.appDispatch(playerStateChanged({ index: playerIndex, state: PlayerStates.Pass }));
+	}
+
 	onQrCode(qrCode: string | null) {
 		this.appDispatch(setQrCode(qrCode));
 	}
@@ -830,7 +834,13 @@ export default class ClientController {
 		}
 	}
 
-	onQuestionType(qType: string) {
+	onQuestionType(qType: string, isDefault: boolean) {
+		this.dispatch(roomActionCreators.isQuestionChanged(true, qType));
+
+		if (isDefault) {
+			return;
+		}
+
 		switch (qType) {
 			case 'forAll':
 				this.playGameSound(GameSound.QUESTION_ALL);
@@ -893,8 +903,6 @@ export default class ClientController {
 			default:
 				break;
 		}
-
-		this.dispatch(roomActionCreators.isQuestionChanged(true, qType));
 	}
 
 	onThemeDeleted(themeIndex: number) {

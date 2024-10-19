@@ -1,0 +1,31 @@
+.enterPin {
+	display: flex;
+	flex-flow: column;
+    background-color: #000451;
+}
+
+.enterPinBody {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 100%;
+}
+
+.pin {
+	margin: 10px;
+	font-size: 20px;
+}
+
+.pinJoin {
+	padding: 7px 20px;
+}
+
+@media screen and (min-width: 800px) {
+	.enterPin {
+		top: 100px;
+		bottom: 100px;
+		left: 100px;
+		right: 100px;
+		border-radius: 12px;
+	}
+}

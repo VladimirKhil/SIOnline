@@ -9,7 +9,10 @@ import PersonView from './PersonView';
 import { isHost } from '../../utils/StateHelpers';
 import JoinMode from '../../client/game/JoinMode';
 import Persons from '../../model/Persons';
-import { useAppSelector } from '../../state/new/hooks';
+import { useAppDispatch, useAppSelector } from '../../state/new/hooks';
+import { getPin } from '../../state/new/room2Slice';
+import { AppDispatch } from '../../state/new/store';
+import { userInfoChanged } from '../../state/new/commonSlice';
 
 import './PersonsView.css';
 
@@ -55,9 +58,7 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => ({
 	}
 });
 
-const tooltipRef: React.RefObject<HTMLDivElement> = React.createRef();
-
-function inviteLink() {
+function inviteLink(appDispatch: AppDispatch) {
 	const link = window.location.href;
 
 	if (navigator.clipboard) {
@@ -66,22 +67,12 @@ function inviteLink() {
 		alert(link);
 	}
 
-	if (tooltipRef.current) {
-		tooltipRef.current.style.display = 'initial';
-
-		setTimeout(
-			() => {
-				if (tooltipRef.current) {
-					tooltipRef.current.style.display = 'none';
-				}
-			},
-			3000
-		);
-	}
+	appDispatch(userInfoChanged(localization.inviteLinkCopied));
 }
 
 export function PersonsView(props: PersonsViewProps): JSX.Element {
 	const roomState = useAppSelector(state => state.room2);
+	const appDispatch = useAppDispatch();
 
 	const showman = props.all[roomState.persons.showman.name];
 	const playersNames = roomState.persons.players.map(p => p.name);
@@ -100,6 +91,10 @@ export function PersonsView(props: PersonsViewProps): JSX.Element {
 
 	const onJoinModeChanged = (e: React.ChangeEvent<HTMLSelectElement>) => {
 		props.onJoinModeChanged(parseInt(e.target.value, 10) as JoinMode);
+	};
+
+	const getPinCore = () => {
+		appDispatch(getPin());
 	};
 
 	return (
@@ -129,8 +124,8 @@ export function PersonsView(props: PersonsViewProps): JSX.Element {
 			</div>
 
 			<div className="buttonsPanel inviteLinkHost sidePanel">
-				<button type="button" className='standard' onClick={() => inviteLink()}>{localization.inviteLink}</button>
-				<div ref={tooltipRef} className='inviteLinkTooltip'>{localization.inviteLinkCopied}</div>
+				<button type="button" className='standard' onClick={() => inviteLink(appDispatch)}>{localization.inviteLink}</button>
+				<button type='button' className='standard' onClick={getPinCore}>{localization.getPin}</button>
 			</div>
 
 			<div className="buttonsPanel sidePanel joinMode">

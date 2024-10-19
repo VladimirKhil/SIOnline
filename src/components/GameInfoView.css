@@ -53,6 +53,7 @@
 .gameInfoBlocks {
     display: flex;
     flex-direction: column;
+    flex-wrap: wrap;
     margin-bottom: 10px;
 }
 
@@ -98,8 +99,8 @@
 }
 
 .actions button.join {
-    font-size: 26px;
-    line-height: 26px;
+    font-size: 22px;
+    line-height: 22px;
     height: 45px;
     padding: 7pt 2px;
     margin: 0 2px;
@@ -135,7 +136,7 @@
         top: 0;
     }
 
-    .join {
+    .actions button.join {
         font-size: 20px;
         line-height: 20px;
     }
@@ -161,7 +162,7 @@
         margin-top: 20px;
     }
 
-    .join {
+    .actions button.join {
         font-size: 24px;
         line-height: 24px;
     }

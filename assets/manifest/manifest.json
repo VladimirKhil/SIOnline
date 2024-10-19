@@ -9,8 +9,9 @@
 	"orientation": "portrait",
 	"display": "standalone",
 	"display_override": [
-		"window-controls-overlay",
 		"standalone",
+		"fullscreen",
+		"minimal-ui",
 		"browser"
 	],
 	"edge_side_panel": {},
@@ -56,14 +57,98 @@
 	],
 	"screenshots" : [
 		{
-		  "src": "screenshot.png",
-		  "sizes": "857x500",
+		  "src": "wide1.png",
+		  "sizes": "800x450",
 		  "type": "image/png",
 		  "form_factor": "wide"
 		},
 		{
-		  "src": "screenshot_narrow.png",
-		  "sizes": "419x625",
+		  "src": "wide2.png",
+		  "sizes": "800x450",
+		  "type": "image/png",
+		  "form_factor": "wide"
+		},
+		{
+		  "src": "wide3.png",
+		  "sizes": "800x450",
+		  "type": "image/png",
+		  "form_factor": "wide"
+		},
+		{
+		  "src": "wide4.png",
+		  "sizes": "800x450",
+		  "type": "image/png",
+		  "form_factor": "wide"
+		},
+		{
+		  "src": "wide5.png",
+		  "sizes": "800x450",
+		  "type": "image/png",
+		  "form_factor": "wide"
+		},
+		{
+		  "src": "wide6.png",
+		  "sizes": "800x450",
+		  "type": "image/png",
+		  "form_factor": "wide"
+		},
+		{
+		  "src": "wide7.png",
+		  "sizes": "800x450",
+		  "type": "image/png",
+		  "form_factor": "wide"
+		},
+		{
+		  "src": "wide8.png",
+		  "sizes": "800x450",
+		  "type": "image/png",
+		  "form_factor": "wide"
+		},
+		{
+		  "src": "narrow1.png",
+		  "sizes": "720x1480",
+		  "type": "image/png",
+		  "form_factor": "narrow"
+		},
+		{
+		  "src": "narrow2.png",
+		  "sizes": "720x1480",
+		  "type": "image/png",
+		  "form_factor": "narrow"
+		},
+		{
+		  "src": "narrow3.png",
+		  "sizes": "720x1480",
+		  "type": "image/png",
+		  "form_factor": "narrow"
+		},
+		{
+		  "src": "narrow4.png",
+		  "sizes": "720x1480",
+		  "type": "image/png",
+		  "form_factor": "narrow"
+		},
+		{
+		  "src": "narrow5.png",
+		  "sizes": "720x1480",
+		  "type": "image/png",
+		  "form_factor": "narrow"
+		},
+		{
+		  "src": "narrow6.png",
+		  "sizes": "720x1480",
+		  "type": "image/png",
+		  "form_factor": "narrow"
+		},
+		{
+		  "src": "narrow7.png",
+		  "sizes": "720x1480",
+		  "type": "image/png",
+		  "form_factor": "narrow"
+		},
+		{
+		  "src": "narrow8.png",
+		  "sizes": "720x1480",
 		  "type": "image/png",
 		  "form_factor": "narrow"
 		}

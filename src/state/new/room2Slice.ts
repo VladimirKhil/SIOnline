@@ -6,6 +6,7 @@ import PlayerStates from '../../model/enums/PlayerStates';
 import Messages from '../../client/game/Messages';
 import { RootState } from './store';
 import localization from '../../model/resources/localization';
+import roomActionCreators from '../room/roomActionCreators';
 
 export enum DialogView {
 	None,
@@ -74,6 +75,8 @@ export const playerSelected = createAsyncThunk(
 		const dataContext = thunkAPI.extra as DataContext;
 		const { message } = (thunkAPI.getState() as RootState).room.selection;
 		await dataContext.game.gameServerClient.msgAsync(message, arg);
+		// TODO: move to fulfilled section after migrating the property to Redux Toolkit
+		thunkAPI.dispatch(roomActionCreators.decisionNeededChanged(false));
 	},
 );
 
@@ -122,6 +125,14 @@ export const sendStake = createAsyncThunk(
 	async (arg: any, thunkAPI) => {
 		const dataContext = thunkAPI.extra as DataContext;
 		await dataContext.game.gameServerClient.msgAsync(Messages.SetStake, 'Stake', arg);
+	},
+);
+
+export const getPin = createAsyncThunk(
+	'room2/getPin',
+	async (arg: void, thunkAPI) => {
+		const dataContext = thunkAPI.extra as DataContext;
+		await dataContext.game.getPin();
 	},
 );
 

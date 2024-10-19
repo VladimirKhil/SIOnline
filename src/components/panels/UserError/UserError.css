@@ -6,9 +6,20 @@
     right: 0;
     text-align: center;
     font-size: 30px;
-    background: darkred;
 	border: 1px solid rgba(211, 211, 211, 0.24);
     padding: 8px;
 	transition: opacity 0.5s ease;
 	z-index: 100;
+}
+
+.userError.error {
+    background: darkred;
+}
+
+.userError.warn {
+    background: rgb(106, 106, 0);;
+}
+
+.userError.info {
+    background: darkblue;
 }

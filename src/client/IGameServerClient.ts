@@ -4,6 +4,7 @@ import Slice from './contracts/Slice';
 import RunGameRequest from './contracts/RunGameRequest';
 import RunGameResponse from './contracts/RunGameResponse';
 import RunAutoGameRequest from './contracts/RunAutoGameRequest';
+import GetGameByPinResponse from './contracts/GetGameByPinResponse';
 
 /** Defines the SIGame Server client. */
 export default interface IGameServerClient {
@@ -47,6 +48,12 @@ export default interface IGameServerClient {
 	 * @param runAutoGameRequest Automatic game options.
 	 */
 	runAutoGameAsync(runAutoGameRequest: RunAutoGameRequest): Promise<RunGameResponse>;
+
+	/**
+	 * Gets game info by PIN.
+	 * @param pin Game PIN.
+	 */
+	getGameByPinAsync(pin: number): Promise<GetGameByPinResponse | null>;
 
 	/** Logs out from the server. */
 	logOutAsync(): Promise<any>;

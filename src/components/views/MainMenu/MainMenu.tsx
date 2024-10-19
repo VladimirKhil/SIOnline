@@ -110,10 +110,18 @@ export function MainMenu(props: MainMenuProps): JSX.Element {
 
 					<button
 						type='button'
-						className='standard welcomeRow right'
+						className='standard welcomeRow left'
 						disabled={!props.isConnected}
 						onClick={() => props.anyonePlay(appDispatch)}>
 						{localization.anyonePlay}
+					</button>
+
+					<button
+						type='button'
+						className='standard welcomeRow right'
+						disabled={!props.isConnected}
+						onClick={() => appDispatch(navigate({ navigation: { path: Path.JoinByPin }, saveState: true }))}>
+						{localization.joinByPin}
 					</button>
 
 					<button

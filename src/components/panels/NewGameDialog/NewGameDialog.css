@@ -105,14 +105,13 @@ input.blockValue[type="text"], input.blockValue[type="number"], input.blockValue
     align-items: center;
 }
 
-.packageSources li {
-    font-size: 18px;
-}
-
 .newGameDialog .packageName {
     vertical-align: middle;
     margin: 3px 0 0 5px;
-    font-size: 18px
+    font-size: 18px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-wrap: nowrap;
 }
 
 .newGameDialog .packageFileBox input.selector {

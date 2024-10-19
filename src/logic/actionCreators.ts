@@ -375,6 +375,7 @@ const navigateAsync = async (
 				Role: serverRole,
 				Sex: view.sex === Sex.Male ? ServerSex.Male : ServerSex.Female,
 				Password: view.password ?? '',
+				Pin: null,
 			});
 
 			if (!result.IsSuccess) {

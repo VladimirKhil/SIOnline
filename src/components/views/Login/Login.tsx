@@ -69,7 +69,7 @@ export function Login(props: LoginProps) {
 	}, [props.culture]);
 
 	return (
-		<div id="logon">
+		<div id="logon" className='login'>
 			<div className="main">
 				<header>
 					<div className='left'>

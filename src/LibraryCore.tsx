@@ -120,6 +120,10 @@ function processMessage(controller: ClientController, payload: any, appDispatch:
 			controller.onPackage(payload.packageName, payload.packageLogo);
 			break;
 
+		case 'pass':
+			controller.onPass(payload.playerIndex);
+			break;
+
 		case 'pause':
 			controller.onPause(payload.isPaused, payload.currentTime);
 			break;
@@ -149,7 +153,7 @@ function processMessage(controller: ClientController, payload: any, appDispatch:
 			break;
 
 		case 'questionType':
-			controller.onQuestionType(payload.questionType);
+			controller.onQuestionType(payload.questionType, payload.isDefault);
 			break;
 
 		case 'setReadingSpeed':

@@ -100,7 +100,7 @@ export function GameTable(props: GameTableProps): JSX.Element {
 		<div id="table">
 			{caption ? (
 				<div className="tableCaption">
-					{caption}
+					<div className='tableCaptionContent'>{caption}</div>
 				</div>
 			) : null}
 

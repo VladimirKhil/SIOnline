@@ -11,6 +11,8 @@ export default interface IGameClient {
 
 	deleteTheme(themeIndex: number): Promise<boolean>;
 
+	getPin(): Promise<boolean>;
+
 	info(): Promise<boolean>;
 
 	markQuestion(questionId: number, comment: string): Promise<boolean>;

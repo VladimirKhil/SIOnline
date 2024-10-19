@@ -44,6 +44,7 @@ import { GameState, setGameSet } from '../new/gameSlice';
 import { saveStateToStorage } from '../new/StateHelpers';
 import { INavigationState } from '../new/uiSlice';
 import { navigate } from '../../utils/Navigator';
+import { UnknownAction } from '@reduxjs/toolkit';
 
 const selectGame: ActionCreator<OnlineActions.SelectGameAction> = (gameId: number) => ({
 	type: OnlineActions.OnlineActionTypes.SelectGame,
@@ -335,7 +336,7 @@ function getServerRole(role: Role) {
 }
 
 const joinGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
-	(hostUri: string, gameId: number, userName: string, role: Role, appDispatch: AppDispatch) => async (
+	(hostUri: string, gameId: number, userName: string, role: Role, pin: number | null, appDispatch: AppDispatch) => async (
 	dispatch: Dispatch<any>,
 	getState: () => State,
 	dataContext: DataContext
@@ -354,6 +355,7 @@ const joinGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 			Role: serverRole,
 			Sex: state.settings.sex === Sex.Male ? ServerSex.Male : ServerSex.Female,
 			Password: state.online.password,
+			Pin: pin,
 		});
 
 		if (!result.IsSuccess) {
@@ -384,6 +386,22 @@ const joinGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 		dispatch(joinGameFinished());
 		dispatch(newGameCancel());
 	}
+};
+
+const joinByPin: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
+(pin: number, userName: string, role: Role, appDispatch: AppDispatch) => async (
+	dispatch: Dispatch<any>,
+	getState: () => State,
+	dataContext: DataContext,
+) => {
+	const gameInfo = await dataContext.gameClient.getGameByPinAsync(pin);
+
+	if (!gameInfo) {
+		appDispatch(userErrorChanged(localization.gameNotFound));
+		return;
+	}
+
+	appDispatch(joinGame(gameInfo.HostUri, gameInfo.GameId, userName, role, pin, appDispatch) as unknown as UnknownAction);
 };
 
 function createGameSettings(
@@ -604,7 +622,7 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 				appDispatch(userErrorChanged(GameErrorsHelper.getMessage(result.ErrorType)));
 			} else {
 				dispatch(passwordChanged(gameSettings.NetworkGamePassword));
-				dispatch(joinGame(result.HostUri, result.GameId, state.user.login, role, appDispatch));
+				dispatch(joinGame(result.HostUri, result.GameId, state.user.login, role, null, appDispatch));
 			}
 		} catch (error) {
 			const userError = (error as SIContentServiceError)?.errorCode === WellKnownSIContentServiceErrorCode.BadPackageFile
@@ -633,7 +651,7 @@ const createNewAutoGame: ActionCreator<ThunkAction<void, State, DataContext, Act
 			if (!result.IsSuccess) {
 				appDispatch(userErrorChanged(GameErrorsHelper.getMessage(result.ErrorType)));
 			} else {
-				dispatch(joinGame(result.HostUri, result.GameId, state.user.login, Role.Player, appDispatch));
+				dispatch(joinGame(result.HostUri, result.GameId, state.user.login, Role.Player, null, appDispatch));
 			}
 		} catch (error) {
 			appDispatch(userErrorChanged(getErrorMessage(error)));
@@ -661,6 +679,7 @@ const onlineActionCreators = {
 	newGame,
 	newGameCancel,
 	joinGame,
+	joinByPin,
 	passwordChanged,
 	chatModeChanged,
 	gameCreated,

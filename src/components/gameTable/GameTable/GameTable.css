@@ -11,14 +11,21 @@
 }
 
 .tableCaption {
-    flex: 0;
+    flex: 0 0 45px;
     font-size: 22px;
     color: #FFFFFF;
     display: flex;
     justify-content: center;
     align-items: center;
     text-align: center;
-    padding: 2px 0;
+    padding: 2px;
+    overflow: hidden;
+}
+
+.tableCaptionContent {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
 .tableContent {

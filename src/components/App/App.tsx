@@ -16,6 +16,8 @@ import JoinRoom from '../views/JoinRoom/JoinRoom';
 import Loading from '../views/Loading/Loading';
 import ServerLicense from '../views/ServerLicense/ServerLicense';
 import UserError from '../panels/UserError/UserError';
+import { MessageLevel } from '../../state/new/commonSlice';
+import JoinByPin from '../views/JoinByPin/JoinByPin';
 
 import './App.css';
 
@@ -23,6 +25,7 @@ interface AppProps {
 	areSettingsVisible: boolean;
 	commonError: string | null;
 	userError: string | null;
+	messageLevel: MessageLevel;
 	askForConsent: boolean;
 	path: Path;
 }
@@ -31,6 +34,7 @@ const mapStateToProps = (state: State) => ({
 	areSettingsVisible: state.ui.areSettingsVisible,
 	commonError: state.common.error,
 	userError: state.common.userError,
+	messageLevel: state.common.messageLevel,
 	askForConsent: state.common.askForConsent,
 	path: state.ui.navigation.path,
 });
@@ -72,6 +76,9 @@ export class App extends React.Component<AppProps> {
 			case Path.JoinRoom:
 				return <JoinRoom />;
 
+			case Path.JoinByPin:
+				return <JoinByPin />;
+
 			default:
 				return null;
 		}
@@ -85,7 +92,7 @@ export class App extends React.Component<AppProps> {
 				{this.getContent()}
 				{this.props.areSettingsVisible ? <SettingsDialog /> : null}
 				{this.props.askForConsent ? <CookiesWarning /> : null}
-				{this.props.userError ? <UserError error={this.props.userError} /> : null}
+				{this.props.userError ? <UserError error={this.props.userError} messageLevel={this.props.messageLevel} /> : null}
 				<AudioController />
 			</div>
 		);

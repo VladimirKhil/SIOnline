@@ -26,7 +26,7 @@ import ClientController from './ClientController';
 import ContentInfo from '../model/ContentInfo';
 import ItemState from '../model/enums/ItemState';
 import GameSound from '../model/enums/GameSound';
-import { playAudio } from '../state/new/commonSlice';
+import { playAudio, userInfoChanged } from '../state/new/commonSlice';
 import clearUrls from '../utils/clearUrls';
 import ThemesPlayMode from '../model/enums/ThemesPlayMode';
 import { AppDispatch } from '../state/new/store';
@@ -464,7 +464,7 @@ const viewerHandler = (
 				const playerIndex = parseInt(args[1], 10);
 
 				if (playerIndex > -1 && playerIndex < state.room2.persons.players.length) {
-					appDispatch(playerStateChanged({ index: playerIndex, state: PlayerStates.Pass }));
+					controller.onPass(playerIndex);
 				}
 			}
 			break;
@@ -571,9 +571,23 @@ const viewerHandler = (
 			break;
 		}
 
-		case GameMessages.QType: // = Question start
+		case GameMessages.Pin:
 			if (args.length > 1) {
-				controller.onQuestionType(args[1]);
+				const pin = args[1];
+
+				if (navigator.clipboard) {
+					navigator.clipboard.writeText(pin);
+				} else {
+					alert(pin);
+				}
+
+				appDispatch(userInfoChanged(localization.pinCopied));
+			}
+			break;
+
+		case GameMessages.QType: // = Question start
+			if (args.length > 2) {
+				controller.onQuestionType(args[1], args[2] === 'True');
 			}
 			break;
 

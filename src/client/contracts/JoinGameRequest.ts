@@ -29,4 +29,7 @@ export default interface JoinGameRequest {
      * Game password.
      */
     Password?: string | null;
+
+    /** Game PIN. */
+    Pin: number | null;
 }

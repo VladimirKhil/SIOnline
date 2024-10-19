@@ -1,0 +1,9 @@
+.packageSources li {
+    font-size: 14px;
+}
+
+@media screen and (min-width: 800px) {
+    .packageSources li {
+		font-size: 18px;
+	}
+}

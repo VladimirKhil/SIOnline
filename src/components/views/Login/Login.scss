@@ -8,7 +8,7 @@
     justify-content: center;
 }
 
-.main {
+.login .main {
     margin: auto;
     background-color: #5A95E2;
     height: 100%;
@@ -76,7 +76,7 @@
     margin: 10px 0 0 0;
 }
 
-.main header {
+.login .main header {
     display: flex;
     flex-direction: row;
     background-color: v.$header-background-color;
@@ -84,14 +84,14 @@
     overflow: hidden;
 }
 
-.main header .right {
+.login .main header .right {
     flex: 1;
     display: flex;
     flex-direction: row;
     justify-content: flex-end;
 }
 
-    .main .header {
+    .login .main .header {
         font-size: 18px;
         text-align: left;
         padding-left: 22px;
@@ -101,7 +101,7 @@
         vertical-align: middle;
     }
 
-    .main h1 {
+    .login .main h1 {
         font-size: 20px;
         color: white;
         height: 45px;
@@ -109,7 +109,7 @@
         margin: 0 0 0 10px;
     }
 
-    .main p {
+    .login .main p {
         margin-top: 10px;
         margin-bottom: 10px;
     }
@@ -174,7 +174,7 @@
 }
 
 @media screen and (min-width: 470px) and (min-height: 600px) {
-    .main {
+    .login .main {
         width: 470px;
         height: 500px;
         border: 1px solid #111111;

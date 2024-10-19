@@ -80,6 +80,8 @@ const enum GameMessages {
 
 	Person = 'PERSON',
 
+	Pin = 'PIN',
+
 	QType = 'QTYPE',
 
 	/** Current question price. */
