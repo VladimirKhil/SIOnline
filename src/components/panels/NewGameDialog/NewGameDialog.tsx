@@ -104,7 +104,7 @@ export function NewGameDialog(props: NewGameDialogProps) {
 					<button
 						type="button"
 						className="startGame mainAction active"
-						disabled={!props.isConnected || props.inProgress || game.name.length === 0}
+						disabled={!props.isConnected || props.inProgress || (!props.isSingleGame && game.name.length === 0)}
 						onClick={() => props.onCreate(props.isSingleGame, appDispatch)}
 					>
 						{localization.startGame.toLocaleUpperCase()}
