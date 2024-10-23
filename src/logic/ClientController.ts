@@ -912,6 +912,7 @@ export default class ClientController {
 			return;
 		}
 
+		this.appDispatch(stopAudio()); // To erase previous FINAL_DELETE sound (hacky way. Is there an alternative?)
 		this.playGameSound(GameSound.FINAL_DELETE);
 		this.appDispatch(blinkTheme(themeIndex));
 

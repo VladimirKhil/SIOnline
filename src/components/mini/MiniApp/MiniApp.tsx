@@ -8,6 +8,7 @@ import { useAppSelector } from '../../../state/new/hooks';
 import ErrorView from '../../views/Error/ErrorView';
 import localization from '../../../model/resources/localization';
 import MiniGameStatus from '../MiniGameStatus/MiniGameStatus';
+import UserError from '../../panels/UserError/UserError';
 
 import './MiniApp.scss';
 
@@ -38,12 +39,13 @@ const getContent = (path: Path) => {
 /** Provides simplified view allowing only to join an existing game. */
 const MiniApp: React.FC<MiniAppProps> = (props: MiniAppProps) => {
 	const common = useAppSelector(state => state.common);
-	const { error } = common;
+	const { error, userError, messageLevel } = common;
 
 	return error
 		? <ErrorView error={error} />
 		: <div className='miniApp'>
 			{getContent(props.path)}
+			{userError ? <UserError error={userError} messageLevel={messageLevel} /> : null}
 		</div>;
 };
 

@@ -89,7 +89,6 @@ export const commonSlice = createSlice({
 			state.avatarLoadProgress = false;
 		},
 		playAudio: (state: CommonState, action: PayloadAction<{ audio: GameSound, loop: boolean }>) => {
-			state.audio = null; // Force audio to be updated. Is there a better way?
 			state.audio = gameSoundPlayer.getSound(action.payload.audio) ?? null;
 			state.audioLoop = action.payload.loop;
 		},

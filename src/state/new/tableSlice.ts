@@ -75,6 +75,7 @@ export const tableSlice = createSlice({
 	reducers: {
 		showLogo: (state: TableState) => {
 			state.mode = TableMode.Logo;
+			state.caption = '';
 		},
 		showGameThemes: (state: TableState, action: PayloadAction<string[]>) => {
 			state.mode = TableMode.GameThemes;

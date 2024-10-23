@@ -607,7 +607,7 @@ const localization = new LocalizedStrings({
 		joinAsShowmanHint: 'Войти ведущим',
 		joinAsViewer: 'Зритель',
 		joinAsViewerHint: 'Войти зрителем',
-		joinByPin: 'Вход по ПИН-коду',
+		joinByPin: 'Войти по ПИН-коду',
 		joinError: 'Не удалось подключиться к игре',
 		joinLobby: 'Войти в лобби',
 		joinMode: 'Режим входа',

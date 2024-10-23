@@ -8,6 +8,9 @@ import { INavigationState } from './state/new/uiSlice';
 import actionCreators from './logic/actionCreators';
 import { Action } from 'redux';
 import { changeLogin } from './state/new/userSlice';
+import getDeviceType from './utils/getDeviceType';
+import isSafari from './utils/isSafari';
+import enableNoSleep from './utils/NoSleepHelper';
 
 import './scss/style.scss';
 
@@ -45,4 +48,10 @@ export function run(elementId: string): void {
 		</Provider>,
 		host
 	);
+
+	const deviceType = getDeviceType();
+
+	if (deviceType == 'mobile' && !isSafari()) {
+		enableNoSleep();
+	}
 }
