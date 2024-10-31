@@ -503,7 +503,7 @@ let answerLock: number | null = null;
 
 const updateAnswer: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (answer: string) => async (
 	dispatch: Dispatch<any>,
-	_getState: () => State,
+	getState: () => State,
 	dataContext: DataContext
 	) => {
 	dispatch(onAnswerChanged(answer));
@@ -517,7 +517,11 @@ const updateAnswer: ActionCreator<ThunkAction<void, State, DataContext, Action>>
 	answerLock = window.setTimeout(
 		async () => {
 			isAnswerVersionThrottled = false;
-			await dataContext.game.sendAnswerVersion(answer);
+			const latestAnswer = getState().room.answer;
+
+			if (latestAnswer) {
+				await dataContext.game.sendAnswerVersion(latestAnswer);
+			}
 		},
 		3000
 	);
