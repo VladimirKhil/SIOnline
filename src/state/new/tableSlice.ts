@@ -238,8 +238,10 @@ export const tableSlice = createSlice({
 			state.loadTimer.state = TimerStates.Stopped;
 		},
 		setAnswerView: (state, action: PayloadAction<string>) => {
+			state.content = [];
 			state.prependText = '';
 			state.appendText = action.payload;
+			state.audio = '';
 			state.isAnswer = true;
 			state.loadTimer.value = 1;
 			state.loadTimer.state = TimerStates.Stopped;

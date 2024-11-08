@@ -8,7 +8,7 @@ import ChatMessage from '../model/ChatMessage';
 import roomActionCreators from '../state/room/roomActionCreators';
 import Account from '../model/Account';
 import Sex from '../model/enums/Sex';
-import PlayerStates from '../model/enums/PlayerStates';
+import PlayerStates, { parsePlayerStatesFromString } from '../model/enums/PlayerStates';
 import ThemeInfo from '../model/ThemeInfo';
 import PersonInfo from '../model/PersonInfo';
 import Persons from '../model/Persons';
@@ -585,6 +585,12 @@ const viewerHandler = (
 			}
 			break;
 
+		case GameMessages.PlayerState:
+			if (args.length > 1) {
+				controller.onPlayerState(parsePlayerStatesFromString(args[1]), args.slice(2).map(i => parseInt(i, 10)));
+			}
+			break;
+
 		case GameMessages.QType: // = Question start
 			if (args.length > 2) {
 				controller.onQuestionType(args[1], args[2] === 'True');
@@ -881,6 +887,12 @@ const viewerHandler = (
 				level: MessageLevel.System,
 			}));
 
+			break;
+
+		case GameMessages.UserError:
+			if (args.length > 1) {
+				controller.onUserError(parseInt(args[1], 10), args.slice(2));
+			}
 			break;
 
 		case 'WINNER':

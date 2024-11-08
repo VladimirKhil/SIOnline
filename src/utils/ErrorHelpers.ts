@@ -1,3 +1,4 @@
+import ErrorCode from '../client/contracts/ErrorCode';
 import localization from '../model/resources/localization';
 
 function getLocalizedError(error: Error): string {
@@ -16,4 +17,15 @@ function getLocalizedError(error: Error): string {
 
 export default function getErrorMessage(e: unknown): string {
 	return e instanceof Error ? getLocalizedError(e) : (e as Record<string, unknown>).toString();
+}
+
+export function getUserError(errorCode: ErrorCode, args: string[]): string {
+	switch (errorCode) {
+		case ErrorCode.OversizedFile: return 'File is too large';
+		case ErrorCode.CannotKickYourSelf: return 'Cannot kick yourself';
+		case ErrorCode.CannotKickBots: return 'Cannot kick bots';
+		case ErrorCode.CannotSetHostToYourself: return 'Cannot set host to yourself';
+		case ErrorCode.CannotSetHostToBots: return 'Cannot set host to bots';
+		default: return '';
+	}
 }

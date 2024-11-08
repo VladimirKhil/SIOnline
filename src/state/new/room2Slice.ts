@@ -229,11 +229,23 @@ export const room2Slice = createSlice({
 		playerStateChanged: (state: Room2State, action: PayloadAction<{ index: number, state: PlayerStates }>) => {
 			state.persons.players[action.payload.index].state = action.payload.state;
 		},
+		playerStatesChanged: (state: Room2State, action: PayloadAction<{ indices: number[], state: PlayerStates }>) => {
+			action.payload.indices.map(i => state.persons.players[i].state = action.payload.state);
+		},
 		playerLostStateDropped: (state: Room2State, action: PayloadAction<number>) => {
 			const player = state.persons.players[action.payload];
 			if (player.state === PlayerStates.Lost) {
 				player.state = PlayerStates.None;
 			}
+		},
+		playerLostStatesDropped: (state: Room2State, action: PayloadAction<number[]>) => {
+			action.payload.map(i => {
+				const player = state.persons.players[i];
+
+				if (player.state === PlayerStates.Lost) {
+					player.state = PlayerStates.None;
+				}
+			});
 		},
 		playerStakeChanged: (state: Room2State, action: PayloadAction<{ index: number, stake: number }>) => {
 			state.persons.players[action.payload.index].stake = action.payload.stake;
@@ -313,7 +325,9 @@ export const {
 	playerDeleted,
 	playersSwap,
 	playerStateChanged,
+	playerStatesChanged,
 	playerLostStateDropped,
+	playerLostStatesDropped,
 	playerStakeChanged,
 	deselectPlayers,
 	selectPlayers,

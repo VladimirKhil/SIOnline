@@ -82,6 +82,8 @@ const enum GameMessages {
 
 	Pin = 'PIN',
 
+	PlayerState = 'PLAYER_STATE',
+
 	QType = 'QTYPE',
 
 	/** Current question price. */
@@ -147,6 +149,8 @@ const enum GameMessages {
 
 	/** Person has been unbanned. */
 	Unbanned = 'UNBANNED',
+
+	UserError = 'USER_ERROR',
 
 	/** Answer validation. */
 	Validation = 'VALIDATION',

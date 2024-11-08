@@ -72,8 +72,10 @@ import {
 	playerDeleted,
 	playerInGameChanged,
 	playerLostStateDropped,
+	playerLostStatesDropped,
 	playerReplicChanged,
 	playerStateChanged,
+	playerStatesChanged,
 	playerSumChanged,
 	playersAnswersChanged,
 	playersStateCleared,
@@ -92,9 +94,10 @@ import PlayerInfo from '../model/PlayerInfo';
 import actionCreators from './actionCreators';
 import Messages from '../client/game/Messages';
 import StakeModes from '../client/game/StakeModes';
-import { playAudio, stopAudio } from '../state/new/commonSlice';
-import getErrorMessage from '../utils/ErrorHelpers';
+import { playAudio, stopAudio, userWarnChanged } from '../state/new/commonSlice';
+import getErrorMessage, { getUserError } from '../utils/ErrorHelpers';
 import { playersVisibilityChanged, setQrCode } from '../state/new/uiSlice';
+import ErrorCode from '../client/contracts/ErrorCode';
 
 function initGroup(group: ContentGroup) {
 	let bestRowCount = 1;
@@ -433,6 +436,19 @@ export default class ClientController {
 
 	onPass(playerIndex: number) {
 		this.appDispatch(playerStateChanged({ index: playerIndex, state: PlayerStates.Pass }));
+	}
+
+	onPlayerState(state: PlayerStates, playerIndicies: number[]) {
+		this.appDispatch(playerStatesChanged({ indices: playerIndicies, state }));
+
+		if (state === PlayerStates.Lost) {
+			setTimeout(
+				() => {
+					this.appDispatch(playerLostStatesDropped(playerIndicies));
+				},
+				800
+			);
+		}
 	}
 
 	onQrCode(qrCode: string | null) {
@@ -1188,4 +1204,13 @@ export default class ClientController {
 	onFinalThink() {
 		this.playGameSound(GameSound.FINAL_THINK, true);
 	}
+
+	onUserError(errorCode: ErrorCode, args: string[]) {
+		const error = getUserError(errorCode, args);
+
+		if (error.length > 0) {
+			this.appDispatch(userWarnChanged(error));
+		}
+	}
 }
+

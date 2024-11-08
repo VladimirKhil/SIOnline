@@ -26,7 +26,7 @@ const mapStateToProps: MapStateToProps<TrendsProps, unknown, State> = (state: St
 });
 
 function print(value: Record<string, number>): JSX.Element[] {
-	return Object.entries(value).map(e => <div className='property'><div>{e[0]}</div><div>{e[1]}</div></div>);
+	return Object.entries(value).map((e, i) => <div key={i} className='property'><div>{e[0]}</div><div>{e[1]}</div></div>);
 }
 
 function isValidLink(link: string) {
