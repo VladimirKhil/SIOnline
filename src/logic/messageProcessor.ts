@@ -1024,6 +1024,9 @@ const showmanHandler = (controller: ClientController, dispatch: Dispatch<any>, s
 			break;
 
 		// Player commands for oral game
+		case GameMessages.Answer:
+			controller.onAskAnswer();
+			break;
 
 		case GameMessages.AskStake:
 			onAskStake(controller, args);
