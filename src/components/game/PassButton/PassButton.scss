@@ -1,0 +1,18 @@
+@use "../../../scss/variables" as v;
+
+.passButton {
+	background: v.$cancel-button-background;
+}
+
+.passButton:hover {
+	background: v.$cancel-hover-button-background;
+}
+
+.passButton:active {
+    background: #f2daa0;
+}
+
+.passButton:disabled {
+    background: gray;
+    cursor: initial;
+}

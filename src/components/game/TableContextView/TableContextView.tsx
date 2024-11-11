@@ -35,7 +35,7 @@ const mapStateToProps = (state: State) => ({
 	hint: state.room.hint,
 });
 
-function renderBody(props: TableContextViewProps, contextView: ContextView) : JSX.Element | null {
+function renderBody(props: TableContextViewProps, contextView: ContextView, windowWidth: number) : JSX.Element | null {
 	// TODO: Switch to enum to select view to display
 	switch (contextView) {
 		case ContextView.Report:
@@ -67,7 +67,7 @@ function renderBody(props: TableContextViewProps, contextView: ContextView) : JS
 		return <PlayerButtonsPanel />;
 	}
 
-	if (props.hint) {
+	if (props.hint && windowWidth < 800) {
 		return <GameHint />;
 	}
 
@@ -76,7 +76,8 @@ function renderBody(props: TableContextViewProps, contextView: ContextView) : JS
 
 export function TableContextView(props: TableContextViewProps): JSX.Element | null {
 	const state = useAppSelector((rootState: RootState) => rootState.room2);
-	const body = renderBody(props, state.contextView);
+	const ui = useAppSelector(rootState => rootState.ui);
+	const body = renderBody(props, state.contextView, ui.windowWidth);
 	return body == null ? null : <div className='tableContextView'>{body}</div>;
 }
 

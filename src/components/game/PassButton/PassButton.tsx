@@ -5,7 +5,7 @@ import State from '../../../state/State';
 import localization from '../../../model/resources/localization';
 import roomActionCreators from '../../../state/room/roomActionCreators';
 
-import './PassButton.css';
+import './PassButton.scss';
 
 interface PassButtonProps {
 	isConnected: boolean;

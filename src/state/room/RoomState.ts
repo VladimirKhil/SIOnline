@@ -59,6 +59,7 @@ export default interface RoomState {
 		name: string;
 		answer: string;
 		message: string;
+		isCompact: boolean;
 		rightAnswers: string[];
 		wrongAnswers: string[];
 		showExtraRightButtons: boolean;
@@ -183,6 +184,7 @@ export const initialState: RoomState = {
 		name: '',
 		answer: '',
 		message: '',
+		isCompact: true,
 		rightAnswers: [],
 		wrongAnswers: [],
 		showExtraRightButtons: false,

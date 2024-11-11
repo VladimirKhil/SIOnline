@@ -19,6 +19,7 @@ import { useAppDispatch } from '../../../state/new/hooks';
 import { selectPlayers } from '../../../state/new/room2Slice';
 import UserOptions from '../../panels/UserOptions/UserOptions';
 import TabControl from '../../common/TabControl/TabControl';
+import ValidationArea from '../ValidationArea/ValidationArea';
 
 import './GameChatView.css';
 import sumsImg from '../../../../assets/images/sums.png';
@@ -187,37 +188,41 @@ export function GameChatView(props: GameChatViewProps): JSX.Element {
 			</div>
 
 			{props.role === Role.Showman ? (
-				<div className="sideButtonHost">
-					<button
-						type="button"
-						className={`standard imageButton wide commandButton bottomButton ${props.isEditEnabled ? 'active' : ''}`}
-						disabled={!props.isConnected || !props.isPaused}
-						onClick={() => props.onEditTable()}
-						title={localization.editTable}
-					>
-						<img src={editImg} />
-					</button>
+				<>
+					<ValidationArea />
 
-					<button
-						type="button"
-						className={`sumsButton standard imageButton wide commandButton bottomButton ${props.areSumsEditable ? 'active' : ''}`}
-						disabled={!props.isConnected}
-						onClick={onGiveTurn}
-						title={localization.giveTurn}
-					>
-						<img src={activePlayerImg} />
-					</button>
+					<div className="sideButtonHost">
+						<button
+							type="button"
+							className={`standard imageButton wide commandButton bottomButton ${props.isEditEnabled ? 'active' : ''}`}
+							disabled={!props.isConnected || !props.isPaused}
+							onClick={() => props.onEditTable()}
+							title={localization.editTable}
+						>
+							<img src={editImg} />
+						</button>
 
-					<button
-						type="button"
-						className={`sumsButton standard imageButton wide commandButton bottomButton ${props.areSumsEditable ? 'active' : ''}`}
-						disabled={!props.isConnected}
-						onClick={() => props.onEditSums(!props.areSumsEditable)}
-						title={localization.changeSums}
-					>
-						<img src={sumsImg} />
-					</button>
-				</div>) : null}
+						<button
+							type="button"
+							className={`sumsButton standard imageButton wide commandButton bottomButton ${props.areSumsEditable ? 'active' : ''}`}
+							disabled={!props.isConnected}
+							onClick={onGiveTurn}
+							title={localization.giveTurn}
+						>
+							<img src={activePlayerImg} />
+						</button>
+
+						<button
+							type="button"
+							className={`sumsButton standard imageButton wide commandButton bottomButton ${props.areSumsEditable ? 'active' : ''}`}
+							disabled={!props.isConnected}
+							onClick={() => props.onEditSums(!props.areSumsEditable)}
+							title={localization.changeSums}
+						>
+							<img src={sumsImg} />
+						</button>
+					</div>
+				</>) : null}
 		</div>
 	);
 }

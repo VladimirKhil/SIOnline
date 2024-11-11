@@ -121,6 +121,12 @@
 
 .answerValidationDialog .cancelAnswer {
     color: white;
+    background: v.$cancel-button-background;
+    margin: 1px 2px;
+}
+
+.answerValidationDialog .cancelAnswer:hover {
+    background: v.$cancel-hover-button-background;
 }
 
 .answerValidationDialog .mainMessage {

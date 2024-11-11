@@ -60,6 +60,8 @@ const enum GameMessages {
 
 	GameThemes = 'GAMETHEMES',
 
+	Hint = 'HINT',
+
 	Info = 'INFO2',
 
 	/** Table layout. */

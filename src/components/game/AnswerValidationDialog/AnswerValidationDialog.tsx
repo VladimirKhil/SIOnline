@@ -60,34 +60,7 @@ export function AnswerValidationDialog(props: AnswerValidationDialogProps): JSX.
 			title={props.header}
 			onClose={() => onReject(1.0)}>
 			<div className='answerValidationDialogBody'>
-				<div className='validationHeader'>
-					<div className='mainMessage'>
-						<p className='playerTitle'>{localization.validateAnswer}<b>{props.name}</b>{localization.validateAnswerEnd}</p>
-						<p className='playerAnswer'>{props.answer}</p>
-					</div>
-
-					<div className='mainValidationPanel'>
-						{props.showExtraRightButtons ? <button
-							type='button'
-							className='cancelAnswer'
-							title={localization.cancelAnswer}
-							onClick={() => onReject(0)}
-						>
-							−0
-						</button> : null}
-
-						<button
-							type='button'
-							className='validationAnswersVisibilityButton'
-							title={props.areAnswersVisible ? localization.hideAnswers : localization.showAnswers}
-							onClick={() => appDispatch(setValidationAnswersVisibility(!props.areAnswersVisible))}
-						>
-							👁
-						</button>
-					</div>
-				</div>
-
-				<div className={`answersPanel ${props.areAnswersVisible ? '' : 'answersHidden'}`}>
+				<div className='answersPanel'>
 					<div className="answers">
 						<p>{localization.rightAnswers}</p>
 
@@ -104,6 +77,24 @@ export function AnswerValidationDialog(props: AnswerValidationDialogProps): JSX.
 						</ul>
 					</div>
 				</div>
+
+				<div className='validationHeader'>
+					<div className='mainMessage'>
+						<p className='playerTitle'>{localization.validateAnswer}<b>{props.name}</b>{localization.validateAnswerEnd}</p>
+						<p className='playerAnswer'>{props.answer}</p>
+					</div>
+				</div>
+
+				{props.showExtraRightButtons ? <div className='buttonsPanel'>
+					<button
+						type='button'
+						className='standard cancelAnswer'
+						title={localization.cancelAnswer}
+						onClick={() => onReject(0)}
+					>
+						−0
+					</button>
+				</div> : null}
 
 				<div className="buttonsPanel">
 					<div className='buttonsArea'>

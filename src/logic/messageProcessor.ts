@@ -1000,7 +1000,7 @@ const showmanHandler = (controller: ClientController, dispatch: Dispatch<any>, s
 			controller.onCancel();
 			break;
 
-		case 'HINT':
+		case GameMessages.Hint:
 			if (args.length > 1) {
 				dispatch(roomActionCreators.hintChanged(args[1]));
 			}

@@ -34,6 +34,8 @@
 .rulesSettingsView input[type='number'] {
 	background: #181B64;
 	color: white;
+	border: 1px solid #347DFF;
+	border-radius: 5px;
 }
 
 .rulesSettingsView .hint {

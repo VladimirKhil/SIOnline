@@ -62,7 +62,7 @@ export const initialState: AppSettings = {
 		timeForGivingACat: 30,
 		timeForMakingStake: 30,
 		timeForThinkingOnSpecial: 25,
-		timeOfRound: 660,
+		timeOfRound: 3600,
 		timeForChoosingFinalTheme: 30,
 		timeForFinalThinking: 45,
 		timeForShowmanDecisions: 30,
