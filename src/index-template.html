@@ -6,6 +6,14 @@
     <title>SIGame</title>
     <meta name="theme-color" content="#FFFFFF"/>
     <link rel="manifest" href="../assets/manifest/manifest.json" crossorigin="use-credentials" />
+    <link rel="apple-touch-icon" href="../assets/images/sigame.png" />
+    <script>
+        window.addEventListener("error", (event) => {
+            if (event.target && event.target.tagName === "SCRIPT") {
+                alert("Script loading error: " + event.target.src);
+            }
+        }, true);
+    </script>
 </head>
 <body>
     <div id="reactHost"></div>

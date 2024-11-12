@@ -379,6 +379,10 @@ const viewerHandler = (
 			controller.onFinalThink();
 			break;
 
+		case GameMessages.GameClosed:
+			controller.onGameClosed();
+			break;
+
 		case GameMessages.GameMetadata:
 			{
 				if (args.length < 4) {

@@ -55,6 +55,8 @@ const enum GameMessages {
 
 	FinalThink = 'FINALTHINK',
 
+	GameClosed = 'GAME_CLOSED',
+
 	/** Game metadata: game name, package name, contact uri. */
 	GameMetadata = 'GAMEMETADATA',
 

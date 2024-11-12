@@ -168,17 +168,10 @@ function subscribeToExternalEvents(store: Store<State, any>) {
 	});
 }
 
-function validateBrowser() : boolean {
+function validateBrowser() {
 	if (!navigator.clipboard && window.isSecureContext) {
-		ReactDOM.render(
-			<ErrorView error={localization.unsupportedBrowser} />,
-			document.getElementById('reactHost')
-		);
-
-		return false;
+		throw new Error(localization.unsupportedBrowser);
 	}
-
-	return true;
 }
 
 async function registerServiceWorker2() {
@@ -230,102 +223,107 @@ function getInitialView(historyState: INavigationState): INavigationState {
 }
 
 async function run(stateManager: IStateManager) {
-	if (!config) {
-		throw new Error('Config is undefined!');
-	}
-
-	if (!validateBrowser()) {
-		return;
-	}
-
 	try {
-		if (firebaseConfig) {
-			// Initialize Firebase
-			app = initializeApp(firebaseConfig);
-			analytics = getAnalytics(app);
-		}
-	} catch (e) {
-		console.error(e);
-	}
-
-	let { serverUri } = config;
-
-	if (!serverUri) {
-		const { serverDiscoveryUri } = config;
-
-		if (!serverDiscoveryUri) {
-			throw new Error('Server uri is undefined');
+		if (!config) {
+			throw new Error('Config is undefined!');
 		}
 
-		serverUri = await getServerUri(serverDiscoveryUri);
-	}
+		validateBrowser();
 
-	const savedState = loadState();
-	const state = setState(initialState, savedState, config);
+		try {
+			if (firebaseConfig) {
+				// Initialize Firebase
+				app = initializeApp(firebaseConfig);
+				analytics = getAnalytics(app);
+			}
+		} catch (e) {
+			console.error(e);
+		}
 
-	const noOpHubConnection = new signalR.HubConnectionBuilder().withUrl('http://fake').build();
+		let { serverUri } = config;
 
-	const gameClient = new GameServerClient(noOpHubConnection, () => { });
+		if (!serverUri) {
+			const { serverDiscoveryUri } = config;
 
-	const dataContext: DataContext = {
-		config,
-		serverUri,
-		connection: null,
-		gameClient,
-		game: new GameClient(new SIHostClient(noOpHubConnection, () => { }), false),
-		contentUris: null,
-		contentClient: new SIContentClient({ serviceUri: 'http://fake' }),
-		storageClient: null,
-		state: stateManager,
-	};
-
-	const store = createStore<State, AnyAction, {}, {}>(
-		reducer,
-		state,
-		applyMiddleware(reduxThunk.withExtraArgument(dataContext))
-	);
-
-	let currentSettings = state.settings;
-
-	store.subscribe(() => {
-		const newState = store.getState();
-		const newSettings = newState.settings;
-
-		if (newSettings !== currentSettings) {
-			if (newSettings.appSettings.culture !== currentSettings.appSettings.culture) {
-				localization.setLanguage(newSettings.appSettings.culture || localization.getInterfaceLanguage());
-				document.title = localization.appName;
-				store.dispatch(actionCreators.reloadComputerAccounts(store.dispatch) as any);
+			if (!serverDiscoveryUri) {
+				throw new Error('Server uri is undefined');
 			}
 
-			currentSettings = newSettings;
-			saveStateToStorage(newState);
+			serverUri = await getServerUri(serverDiscoveryUri);
 		}
-	});
 
-	subscribeToExternalEvents(store);
+		const savedState = loadState();
+		const state = setState(initialState, savedState, config);
 
-	store.dispatch(windowSizeChanged({ width: window.innerWidth, height: window.innerHeight }));
+		const noOpHubConnection = new signalR.HubConnectionBuilder().withUrl('http://fake').build();
 
-	if (state.settings.appSettings.culture) {
-		localization.setLanguage(state.settings.appSettings.culture);
+		const gameClient = new GameServerClient(noOpHubConnection, () => { });
+
+		const dataContext: DataContext = {
+			config,
+			serverUri,
+			connection: null,
+			gameClient,
+			game: new GameClient(new SIHostClient(noOpHubConnection, () => { }), false),
+			contentUris: null,
+			contentClient: new SIContentClient({ serviceUri: 'http://fake' }),
+			storageClient: null,
+			state: stateManager,
+		};
+
+		const store = createStore<State, AnyAction, {}, {}>(
+			reducer,
+			state,
+			applyMiddleware(reduxThunk.withExtraArgument(dataContext))
+		);
+
+		let currentSettings = state.settings;
+
+		store.subscribe(() => {
+			const newState = store.getState();
+			const newSettings = newState.settings;
+
+			if (newSettings !== currentSettings) {
+				if (newSettings.appSettings.culture !== currentSettings.appSettings.culture) {
+					localization.setLanguage(newSettings.appSettings.culture || localization.getInterfaceLanguage());
+					document.title = localization.appName;
+					store.dispatch(actionCreators.reloadComputerAccounts(store.dispatch) as any);
+				}
+
+				currentSettings = newSettings;
+				saveStateToStorage(newState);
+			}
+		});
+
+		subscribeToExternalEvents(store);
+
+		store.dispatch(windowSizeChanged({ width: window.innerWidth, height: window.innerHeight }));
+
+		if (state.settings.appSettings.culture) {
+			localization.setLanguage(state.settings.appSettings.culture);
+		}
+
+		document.title = localization.appName;
+
+		ReactDOM.render(
+			<React.StrictMode>
+				<Provider store={store}>
+					<App />
+				</Provider>
+			</React.StrictMode>,
+			document.getElementById('reactHost')
+		);
+
+		await dataContext.state.initAsync(store);
+
+		const initialView = getInitialView(dataContext.state.loadNavigationState() as INavigationState);
+		store.dispatch(actionCreators.init(initialView, store.dispatch) as unknown as Action);
+	} catch (e: any) {
+		ReactDOM.render(
+			<ErrorView error={e.message} />,
+			document.getElementById('reactHost')
+		);
 	}
-
-	document.title = localization.appName;
-
-	ReactDOM.render(
-		<React.StrictMode>
-			<Provider store={store}>
-				<App />
-			</Provider>
-		</React.StrictMode>,
-		document.getElementById('reactHost')
-	);
-
-	await dataContext.state.initAsync(store);
-
-	const initialView = getInitialView(dataContext.state.loadNavigationState() as INavigationState);
-	store.dispatch(actionCreators.init(initialView, store.dispatch) as unknown as Action);
 }
 
 const urlParams = new URLSearchParams(window.location.hash.substring(1));

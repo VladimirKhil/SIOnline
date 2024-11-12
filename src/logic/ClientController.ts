@@ -364,6 +364,17 @@ export default class ClientController {
 		);
 	}
 
+	onGameClosed() {
+		this.appDispatch(showText(localization.gameClosed));
+		this.appDispatch(userWarnChanged(localization.gameClosed));
+
+		this.dispatch(roomActionCreators.chatMessageAdded({
+			sender: '',
+			text: localization.gameClosed,
+			level: MessageLevel.System,
+		}) as unknown as Action);
+	}
+
 	onGameThemes(gameThemes: string[]) {
 		this.appDispatch(showGameThemes(gameThemes));
 	}
