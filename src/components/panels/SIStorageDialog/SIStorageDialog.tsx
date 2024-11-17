@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import Dialog from './common/Dialog/Dialog';
-import localization from '../model/resources/localization';
-import State from '../state/State';
+import Dialog from '../../common/Dialog/Dialog';
+import localization from '../../../model/resources/localization';
+import State from '../../../state/State';
 import CompareMode from 'sistorage-client/dist/models/CompareMode';
 import Restriction from 'sistorage-client/dist/models/Restriction';
 import PackageSortMode from 'sistorage-client/dist/models/PackageSortMode';
@@ -10,13 +10,20 @@ import PackageSortDirection from 'sistorage-client/dist/models/PackageSortDirect
 import PackagesPage from 'sistorage-client/dist/models/PackagesPage';
 import PackageFilters from 'sistorage-client/dist/models/PackageFilters';
 import PackageSelectionParameters from 'sistorage-client/dist/models/PackageSelectionParameters';
-import { keys, sortRecord } from '../utils/RecordExtensions';
-import { getFullCulture } from '../utils/StateHelpers';
-import { useAppDispatch } from '../state/new/hooks';
-import { receiveAuthors, receiveLanguages, receivePublishers, receiveRestrictions, receiveTags, searchPackages } from '../state/new/siPackagesSlice';
+import { keys, sortRecord } from '../../../utils/RecordExtensions';
+import { getFullCulture } from '../../../utils/StateHelpers';
+import { useAppDispatch } from '../../../state/new/hooks';
+
+import {
+	receiveAuthors,
+	receiveLanguages,
+	receivePublishers,
+	receiveRestrictions,
+	receiveTags,
+	searchPackages } from '../../../state/new/siPackagesSlice';
 
 import './SIStorageDialog.css';
-import defaultLogo from '../../assets/images/qlogo.png';
+import defaultLogo from '../../../../assets/images/qlogo.png';
 
 const PAGE_SIZE = 20;
 

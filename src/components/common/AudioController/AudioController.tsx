@@ -1,8 +1,8 @@
 import * as React from 'react';
-import State from '../../state/State';
+import State from '../../../state/State';
 import { connect } from 'react-redux';
-import getErrorMessage from '../../utils/ErrorHelpers';
-import localization from '../../model/resources/localization';
+import getErrorMessage from '../../../utils/ErrorHelpers';
+import localization from '../../../model/resources/localization';
 
 interface AudioControllerProps {
 	soundVolume: number;

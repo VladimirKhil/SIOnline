@@ -9,7 +9,7 @@ import PersonInfo from '../../model/PersonInfo';
 import TableView from './TableView';
 import Constants from '../../model/enums/Constants';
 import Account from '../../model/Account';
-import FlyoutButton, { FlyoutHorizontalOrientation, FlyoutVerticalOrientation } from '../common/FlyoutButton';
+import FlyoutButton, { FlyoutHorizontalOrientation, FlyoutVerticalOrientation } from '../common/FlyoutButton/FlyoutButton';
 import { useAppSelector } from '../../state/new/hooks';
 
 import './TablesView.css';

@@ -1,6 +1,6 @@
 ﻿import * as React from 'react';
-import fitElement from '../../utils/fitElement';
-import State from '../../state/State';
+import fitElement from '../../../utils/fitElement';
+import State from '../../../state/State';
 import { connect } from 'react-redux';
 
 interface AutoSizedTextProps {

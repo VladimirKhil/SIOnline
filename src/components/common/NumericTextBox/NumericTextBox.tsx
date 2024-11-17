@@ -1,5 +1,5 @@
 import * as React from 'react';
-import Constants from '../../model/enums/Constants';
+import Constants from '../../../model/enums/Constants';
 
 import './NumericTextBox.css';
 

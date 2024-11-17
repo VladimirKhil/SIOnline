@@ -8,7 +8,7 @@ import ImageContent from '../ImageContent/ImageContent';
 import ItemState from '../../../model/enums/ItemState';
 import { Action, Dispatch } from 'redux';
 import roomActionCreators from '../../../state/room/roomActionCreators';
-import AutoSizedText from '../../common/AutoSizedText';
+import AutoSizedText from '../../common/AutoSizedText/AutoSizedText';
 import { useAppDispatch, useAppSelector } from '../../../state/new/hooks';
 import { AppDispatch, RootState } from '../../../state/new/store';
 

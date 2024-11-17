@@ -1,9 +1,9 @@
 import * as React from 'react';
-import Sex from '../model/enums/Sex';
-import localization from '../model/resources/localization';
-import Selector from './common/Selector';
-import { useAppDispatch, useAppSelector } from '../state/new/hooks';
-import { setSex } from '../state/new/settingsSlice';
+import Sex from '../../../model/enums/Sex';
+import localization from '../../../model/resources/localization';
+import Selector from '../../common/Selector/Selector';
+import { useAppDispatch, useAppSelector } from '../../../state/new/hooks';
+import { setSex } from '../../../state/new/settingsSlice';
 
 interface SexViewProps {
 	disabled: boolean | undefined;

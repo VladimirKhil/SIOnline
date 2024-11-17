@@ -2,7 +2,7 @@
 import { connect, useDispatch } from 'react-redux';
 import GamesList from '../../panels/GamesList/GamesList';
 import State from '../../../state/State';
-import GameInfoView from '../../GameInfoView';
+import GameInfoView from '../../panels/GameInfoView/GameInfoView';
 import UsersView from '../../panels/UsersView/UsersView';
 import OnlineMode from '../../../model/enums/OnlineMode';
 import NewGameDialog from '../../panels/NewGameDialog/NewGameDialog';
@@ -10,7 +10,7 @@ import GameInfo from '../../../client/contracts/GameInfo';
 import Dialog from '../../common/Dialog/Dialog';
 import onlineActionCreators from '../../../state/online/onlineActionCreators';
 import { Dispatch, Action } from 'redux';
-import ProgressBar from '../../common/ProgressBar';
+import ProgressBar from '../../common/ProgressBar/ProgressBar';
 import { filterGames } from '../../../utils/GamesHelpers';
 import localization from '../../../model/resources/localization';
 import Path from '../../../model/enums/Path';

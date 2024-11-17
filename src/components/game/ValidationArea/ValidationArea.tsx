@@ -2,7 +2,7 @@ import * as React from 'react';
 import localization from '../../../model/resources/localization';
 import State from '../../../state/State';
 import { connect } from 'react-redux';
-import AutoSizedText from '../../common/AutoSizedText';
+import AutoSizedText from '../../common/AutoSizedText/AutoSizedText';
 
 import './ValidationArea.scss';
 

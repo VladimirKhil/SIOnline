@@ -1,9 +1,9 @@
 import * as React from 'react';
 import PlayerInfo from '../../../model/PlayerInfo';
-import AutoSizedText from '../../common/AutoSizedText';
+import AutoSizedText from '../../common/AutoSizedText/AutoSizedText';
 import PlayerStates from '../../../model/enums/PlayerStates';
-import NumericTextBox from '../../common/NumericTextBox';
-import ProgressBar from '../../common/ProgressBar';
+import NumericTextBox from '../../common/NumericTextBox/NumericTextBox';
+import ProgressBar from '../../common/ProgressBar/ProgressBar';
 import localization from '../../../model/resources/localization';
 import Sex from '../../../model/enums/Sex';
 import Constants from '../../../model/enums/Constants';

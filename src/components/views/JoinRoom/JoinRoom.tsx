@@ -1,7 +1,7 @@
 import * as React from 'react';
 import State from '../../../state/State';
 import Dialog from '../../common/Dialog/Dialog';
-import GameInfoView from '../../GameInfoView';
+import GameInfoView from '../../panels/GameInfoView/GameInfoView';
 import { connect } from 'react-redux';
 import Path from '../../../model/enums/Path';
 import { userErrorChanged } from '../../../state/new/commonSlice';

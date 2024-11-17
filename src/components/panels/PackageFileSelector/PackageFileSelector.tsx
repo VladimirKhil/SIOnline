@@ -1,5 +1,5 @@
 import * as React from 'react';
-import PackageType from '../model/enums/PackageType';
+import PackageType from '../../../model/enums/PackageType';
 
 interface PackageFileSelectorProps {
 	onGamePackageTypeChanged: (type: PackageType) => void;

@@ -13,7 +13,8 @@ data:
       registerServiceWorker: {{ .Values.config.registerServiceWorker }},
       enableNoSleep: {{ .Values.config.enableNoSleep }},
       askForConsent: {{ .Values.config.askForConsent }},
-      siStatisticsServiceUri: '{{ .Values.config.siStatisticsServiceUri }}'
+      siStatisticsServiceUri: '{{ .Values.config.siStatisticsServiceUri }}',
+      appRegistryServiceUri: '{{ .Values.config.appRegistryServiceUri }}',
     };
 
 {{ if .Values.firebase }}

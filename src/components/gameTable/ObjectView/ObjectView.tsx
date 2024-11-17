@@ -1,5 +1,5 @@
 ﻿import * as React from 'react';
-import AutoSizedText from '../../common/AutoSizedText';
+import AutoSizedText from '../../common/AutoSizedText/AutoSizedText';
 import { useAppSelector } from '../../../state/new/hooks';
 import { RootState } from '../../../state/new/store';
 

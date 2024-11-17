@@ -4,7 +4,7 @@ import { Dispatch, Action } from 'redux';
 import State from '../../state/State';
 import roomActionCreators from '../../state/room/roomActionCreators';
 import localization from '../../model/resources/localization';
-import FlyoutButton, { FlyoutVerticalOrientation, FlyoutTheme, FlyoutHorizontalOrientation } from '../common/FlyoutButton';
+import FlyoutButton, { FlyoutVerticalOrientation, FlyoutTheme, FlyoutHorizontalOrientation } from '../common/FlyoutButton/FlyoutButton';
 import Role from '../../model/Role';
 import ChatMessage from '../../model/ChatMessage';
 import { isHost } from '../../utils/StateHelpers';

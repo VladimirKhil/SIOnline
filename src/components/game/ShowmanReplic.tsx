@@ -1,5 +1,5 @@
 import * as React from 'react';
-import AutoSizedText from '../common/AutoSizedText';
+import AutoSizedText from '../common/AutoSizedText/AutoSizedText';
 import Constants from '../../model/enums/Constants';
 import State from '../../state/State';
 import { connect } from 'react-redux';

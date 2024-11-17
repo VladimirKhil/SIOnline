@@ -1,19 +1,19 @@
 ﻿import * as React from 'react';
 import { connect } from 'react-redux';
-import localization from '../model/resources/localization';
-import Role from '../model/Role';
-import ServerRole from '../client/contracts/ServerRole';
-import State from '../state/State';
-import onlineActionCreators from '../state/online/onlineActionCreators';
-import GameInfo from '../client/contracts/GameInfo';
-import ServerGameType from '../client/contracts/ServerGameType';
-import ProgressBar from './common/ProgressBar';
-import { getReadableTimeSpan } from '../utils/TimeHelpers';
-import GameStage from '../client/contracts/GameStage';
-import GameRules, { parseRulesFromString } from '../client/contracts/GameRules';
-import Constants from '../model/enums/Constants';
-import { AppDispatch } from '../state/new/store';
-import { useAppDispatch } from '../state/new/hooks';
+import localization from '../../../model/resources/localization';
+import Role from '../../../model/Role';
+import ServerRole from '../../../client/contracts/ServerRole';
+import State from '../../../state/State';
+import onlineActionCreators from '../../../state/online/onlineActionCreators';
+import GameInfo from '../../../client/contracts/GameInfo';
+import ServerGameType from '../../../client/contracts/ServerGameType';
+import ProgressBar from '../../common/ProgressBar/ProgressBar';
+import { getReadableTimeSpan } from '../../../utils/TimeHelpers';
+import GameStage from '../../../client/contracts/GameStage';
+import GameRules, { parseRulesFromString } from '../../../client/contracts/GameRules';
+import Constants from '../../../model/enums/Constants';
+import { AppDispatch } from '../../../state/new/store';
+import { useAppDispatch } from '../../../state/new/hooks';
 
 import './GameInfoView.css';
 

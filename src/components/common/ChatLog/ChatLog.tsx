@@ -1,7 +1,7 @@
 import * as React from 'react';
-import ChatMessage from '../../model/ChatMessage';
-import MessageLevel from '../../model/enums/MessageLevel';
-import hasUserMentioned from '../../utils/MentionHelpers';
+import ChatMessage from '../../../model/ChatMessage';
+import MessageLevel from '../../../model/enums/MessageLevel';
+import hasUserMentioned from '../../../utils/MentionHelpers';
 
 import './ChatLog.css';
 

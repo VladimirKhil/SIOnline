@@ -1,6 +1,6 @@
 import React, { Dispatch } from 'react';
 import localization from '../../../model/resources/localization';
-import FlyoutButton, { FlyoutHorizontalOrientation, FlyoutTheme, FlyoutVerticalOrientation } from '../../common/FlyoutButton';
+import FlyoutButton, { FlyoutHorizontalOrientation, FlyoutTheme, FlyoutVerticalOrientation } from '../../common/FlyoutButton/FlyoutButton';
 import { useAppDispatch, useAppSelector } from '../../../state/new/hooks';
 import { connect } from 'react-redux';
 import { AppDispatch } from '../../../state/new/store';

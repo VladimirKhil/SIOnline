@@ -2,7 +2,7 @@ import * as React from 'react';
 import State from '../../../state/State';
 import { Dispatch, Action } from 'redux';
 import { connect } from 'react-redux';
-import AutoSizedText from '../../common/AutoSizedText';
+import AutoSizedText from '../../common/AutoSizedText/AutoSizedText';
 import ThemeInfo from '../../../model/ThemeInfo';
 import roomActionCreators from '../../../state/room/roomActionCreators';
 import { useAppDispatch } from '../../../state/new/hooks';

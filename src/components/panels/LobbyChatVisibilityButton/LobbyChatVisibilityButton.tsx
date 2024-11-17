@@ -1,7 +1,7 @@
 import * as React from 'react';
-import localization from '../model/resources/localization';
-import { useAppDispatch, useAppSelector } from '../state/new/hooks';
-import { setLobbyChatVisibility } from '../state/new/settingsSlice';
+import localization from '../../../model/resources/localization';
+import { useAppDispatch, useAppSelector } from '../../../state/new/hooks';
+import { setLobbyChatVisibility } from '../../../state/new/settingsSlice';
 
 import './LobbyChatVisibilityButton.css';
 

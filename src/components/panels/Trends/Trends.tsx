@@ -5,7 +5,7 @@ import GamesResponse from 'sistatistics-client/dist/models/GamesResponse';
 import PackagesStatistic from 'sistatistics-client/dist/models/PackagesStatistic';
 import GamesStatistic from 'sistatistics-client/dist/models/GamesStatistic';
 import localization from '../../../model/resources/localization';
-import Link from '../../common/Link';
+import Link from '../../common/Link/Link';
 import Constants from '../../../model/enums/Constants';
 import clearUrls from '../../../utils/clearUrls';
 

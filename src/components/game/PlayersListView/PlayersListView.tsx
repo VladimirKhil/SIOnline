@@ -4,7 +4,7 @@ import State from '../../../state/State';
 import { Action, Dispatch } from 'redux';
 import PlayerInfo from '../../../model/PlayerInfo';
 import roomActionCreators from '../../../state/room/roomActionCreators';
-import NumericTextBox from '../../common/NumericTextBox';
+import NumericTextBox from '../../common/NumericTextBox/NumericTextBox';
 import Persons from '../../../model/Persons';
 import getAvatarClass from '../../../utils/AccountHelpers';
 import { useAppDispatch } from '../../../state/new/hooks';

@@ -8,6 +8,7 @@ config = {
     enableNoSleep: false,
     askForConsent: false,
     siStatisticsServiceUri: 'https://vladimirkhil.com/sistatistics',
+    appRegistryServiceUri: 'https://vladimirkhil.com/appregistry',
     clearUrls: false,
 };
 

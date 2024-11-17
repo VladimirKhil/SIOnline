@@ -1,8 +1,8 @@
 import * as React from 'react';
-import localization from '../model/resources/localization';
-import Selector from './common/Selector';
-import { useAppDispatch, useAppSelector } from '../state/new/hooks';
-import { languageChanged } from '../state/new/settingsSlice';
+import localization from '../../../model/resources/localization';
+import Selector from '../../common/Selector/Selector';
+import { useAppDispatch, useAppSelector } from '../../../state/new/hooks';
+import { languageChanged } from '../../../state/new/settingsSlice';
 
 import './LanguageView.css';
 

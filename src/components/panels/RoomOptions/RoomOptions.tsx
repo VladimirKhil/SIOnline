@@ -14,8 +14,8 @@ import { setHumanPlayersCount,
 
 import Constants from '../../../model/enums/Constants';
 import PackageType from '../../../model/enums/PackageType';
-import FlyoutButton, { FlyoutTheme } from '../../common/FlyoutButton';
-import PackageFileSelector from '../../PackageFileSelector';
+import FlyoutButton, { FlyoutTheme } from '../../common/FlyoutButton/FlyoutButton';
+import PackageFileSelector from '../PackageFileSelector/PackageFileSelector';
 import { AppDispatch } from '../../../state/new/store';
 import State from '../../../state/State';
 import PackageSources from '../PackageSources/PackageSources';

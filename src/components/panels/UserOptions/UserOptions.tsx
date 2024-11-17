@@ -1,8 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import SettingsButton from '../../SettingsButton';
+import SettingsButton from '../SettingsButton/SettingsButton';
 import { useAppSelector } from '../../../state/new/hooks';
-import FlyoutButton, { FlyoutHorizontalOrientation, FlyoutVerticalOrientation } from '../../common/FlyoutButton';
+import FlyoutButton, { FlyoutHorizontalOrientation, FlyoutVerticalOrientation } from '../../common/FlyoutButton/FlyoutButton';
 import localization from '../../../model/resources/localization';
 import roomActionCreators from '../../../state/room/roomActionCreators';
 import Path from '../../../model/enums/Path';

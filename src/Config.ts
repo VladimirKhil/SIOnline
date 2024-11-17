@@ -8,6 +8,7 @@ export default interface Config {
 	enableNoSleep?: boolean;
 	askForConsent?: boolean;
 	siStatisticsServiceUri: string;
+	appRegistryServiceUri: string;
 	emojiCultures?: string[];
 	clearUrls?: boolean;
 }

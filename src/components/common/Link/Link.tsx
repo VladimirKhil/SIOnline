@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import State from '../../state/State';
+import State from '../../../state/State';
 
 interface LinkProps {
 	clearUrls?: boolean;

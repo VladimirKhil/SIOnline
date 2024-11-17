@@ -5,7 +5,7 @@ import React from 'react';
 import PlayersView from './components/game/PlayersView';
 import GameTable from './components/gameTable/GameTable/GameTable';
 import IGameClient from './client/game/IGameClient';
-import AudioController from './components/common/AudioController';
+import AudioController from './components/common/AudioController/AudioController';
 import { showLogo } from './state/new/tableSlice';
 import { setAppSound } from './state/new/settingsSlice';
 import QRCodeView from './components/panels/QRCodeView/QRCodeView';

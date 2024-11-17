@@ -1,6 +1,6 @@
 import * as React from 'react';
 import localization from '../../../model/resources/localization';
-import LanguageView from '../../LanguageView';
+import LanguageView from '../../panels/LanguageView/LanguageView';
 import Constants from '../../../model/enums/Constants';
 import { useAppDispatch, useAppSelector } from '../../../state/new/hooks';
 

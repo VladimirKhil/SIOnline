@@ -1,7 +1,7 @@
 ﻿import * as React from 'react';
 import localization from '../../../model/resources/localization';
 import Dialog from '../../common/Dialog/Dialog';
-import Link from '../../common/Link';
+import Link from '../../common/Link/Link';
 import State from '../../../state/State';
 import { connect } from 'react-redux';
 

@@ -76,6 +76,10 @@ function processMessage(controller: ClientController, payload: any, appDispatch:
 			controller.onAskAnswer();
 			break;
 
+		case 'askStake':
+			controller.onAskStake(payload.stakeModes, payload.minimum, payload.maximum, payload.step, payload.reason, payload.playerName);
+			break;
+
 		case 'beginPressButton':
 			controller.onBeginPressButton();
 			break;
@@ -284,6 +288,7 @@ export default function runCore(game?: IGameClient): Store<State, AnyAction> {
 	const dataContext: DataContext = {
 		config: {
 			siStatisticsServiceUri: '',
+			appRegistryServiceUri: '',
 		},
 		serverUri: '',
 		connection: null,

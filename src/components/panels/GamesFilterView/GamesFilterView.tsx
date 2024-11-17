@@ -1,6 +1,6 @@
 import React from 'react';
-import FlyoutButton, { FlyoutHorizontalOrientation, FlyoutVerticalOrientation } from '../../common/FlyoutButton';
-import CheckBox from '../../common/CheckBox';
+import FlyoutButton, { FlyoutHorizontalOrientation, FlyoutVerticalOrientation } from '../../common/FlyoutButton/FlyoutButton';
+import CheckBox from '../../common/CheckBox/CheckBox';
 import getFilterValue from '../../../utils/getFilterValue';
 import GamesFilter from '../../../model/enums/GamesFilter';
 import State from '../../../state/State';

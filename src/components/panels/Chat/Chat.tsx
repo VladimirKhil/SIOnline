@@ -3,13 +3,13 @@ import { createRef } from 'react';
 import { connect } from 'react-redux';
 import { Action, Dispatch } from 'redux';
 import { EmojiClickData } from 'emoji-picker-react';
-import State from '../state/State';
-import Constants from '../model/enums/Constants';
-import onlineActionCreators from '../state/online/onlineActionCreators';
-import ChatMessage from '../model/ChatMessage';
-import ChatLog from './common/ChatLog';
-import ChatInputEmojiPicker from './common/ChatInputEmojiPicker/ChatInputEmojiPicker';
-import hasUserMentioned from '../utils/MentionHelpers';
+import State from '../../../state/State';
+import Constants from '../../../model/enums/Constants';
+import onlineActionCreators from '../../../state/online/onlineActionCreators';
+import ChatMessage from '../../../model/ChatMessage';
+import ChatLog from '../../common/ChatLog/ChatLog';
+import ChatInputEmojiPicker from '../../common/ChatInputEmojiPicker/ChatInputEmojiPicker';
+import hasUserMentioned from '../../../utils/MentionHelpers';
 
 import './Chat.css';
 

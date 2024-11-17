@@ -9,7 +9,7 @@ import Room from '../views/Room/Room';
 import SettingsDialog from '../settings/SettingsDialog/SettingsDialog';
 import ErrorView from '../views/Error/ErrorView';
 import CookiesWarning from '../panels/CookiesWarning/CookiesWarning';
-import AudioController from '../common/AudioController';
+import AudioController from '../common/AudioController/AudioController';
 import NewGame from '../views/NewGame/NewGame';
 import Path from '../../model/enums/Path';
 import JoinRoom from '../views/JoinRoom/JoinRoom';

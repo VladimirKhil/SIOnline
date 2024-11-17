@@ -1,6 +1,6 @@
 ﻿import * as React from 'react';
 import { connect, MapStateToProps } from 'react-redux';
-import State from '../state/State';
+import State from '../../../state/State';
 
 import './UsersList.css';
 

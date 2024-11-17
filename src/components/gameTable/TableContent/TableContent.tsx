@@ -4,7 +4,7 @@ import State from '../../../state/State';
 import TableBorder from '../TableBorder/TableBorder';
 import ContentType from '../../../model/enums/ContentType';
 import AudioContent from '../AudioContent/AudioContent';
-import VolumeButton from '../../common/VolumeButton';
+import VolumeButton from '../../common/VolumeButton/VolumeButton';
 import ContentGroup from '../../../model/ContentGroup';
 import LayoutMode from '../../../model/enums/LayoutMode';
 import AnswerOptions from '../AnswerOptions/AnswerOptions';
