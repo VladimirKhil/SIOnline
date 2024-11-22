@@ -200,7 +200,7 @@ const localization = new LocalizedStrings({
 		joinError: 'Cannot join game',
 		joinLobby: 'Join lobby',
 		joinMode: 'Join mode',
-		joinModeAnyRole: 'Forbidden',
+		joinModeAnyRole: 'Any role',
 		joinModeForbidden: 'Forbidden',
 		joinModeViewer: 'Only as viewer',
 		keyRight: 'Right arrow',
