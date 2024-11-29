@@ -203,7 +203,7 @@ All game functionality is available for free—donations do not affect gameplay 
 		joinError: 'Cannot join game',
 		joinLobby: 'Online game',
 		joinMode: 'Join mode',
-		joinModeAnyRole: 'Forbidden',
+		joinModeAnyRole: 'Any role',
 		joinModeForbidden: 'Forbidden',
 		joinModeViewer: 'Only as viewer',
 		keyRight: 'Right arrow',
