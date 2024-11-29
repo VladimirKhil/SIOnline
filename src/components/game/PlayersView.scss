@@ -86,7 +86,7 @@
     }
 }
 
-@media screen and (min-height: 700px), (max-width: 600px) {
+@media screen and (min-height: 600px), (max-width: 600px) {
     .playersPanel {
         flex: 0 0 100px;
     }
@@ -159,7 +159,7 @@
     }
 }
 
-@media screen and (min-width: 800px) and (min-height: 700px) {
+@media screen and (min-width: 800px) and (min-height: 600px) {
     .gamePlayers {
         justify-content: center;
     }
@@ -185,7 +185,7 @@
     }
 }
 
-@media screen and (min-width: 1100px) and (min-height: 700px) {
+@media screen and (min-width: 1100px) and (min-height: 600px) {
     .playersPanel {
         flex: 0.45 0 0 !important;
     }
@@ -264,7 +264,7 @@
     }
 }
 
-@media screen and (min-width: 1600px) and (min-height: 700px) {
+@media screen and (min-width: 1600px) and (min-height: 600px) {
     .gamePlayers li {
         height: calc(100% - 10px);
         margin: 5px 3px !important;

@@ -1,11 +1,18 @@
 @use "../../../scss/variables" as v;
 
 .answerValidationDialog {
-    background-color: #5A95E2;
+    background-color: #0A0E30;
+    color: white;
     z-index: 5;
 }
 
-.answerValidationDialog .validationHeader {
+.answerValidation {
+    width: 100%;
+    height: 100%;
+    font-size: 14px;
+}
+
+.answerValidation .validationHeader {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -20,21 +27,21 @@
     max-height: 120px;
 }
 
-.answerValidationDialog p {
+.answerValidation p {
     margin: 0;
     display: flex;
     align-items: center;
     text-align: center;
 }
 
-.answerValidationDialog .answersPanel {
+.answerValidation .answersPanel {
     margin: 13px;
     display: flex;
     flex: 1;
     overflow: hidden;
 }
 
-.answerValidationDialog .answers {
+.answerValidation .answers {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -42,14 +49,14 @@
     flex: 1;
 }
 
-.answerValidationDialog .answers p {
+.answerValidation .answers p {
     font-weight: bold;
     text-align: center;
     vertical-align: top;
     height: 40px;
 }
 
-.answerValidationDialog .answers ul {
+.answerValidation .answers ul {
     overflow-y: auto;
     overflow-x: hidden;
     scrollbar-width: thin;
@@ -57,48 +64,48 @@
     flex: 1;
 }
 
-.answerValidationDialog .answers li {
+.answerValidation .answers li {
     vertical-align: middle;
     font-size: larger;
     text-align: center;
 }
 
-.answerValidationDialog .answers li span {
+.answerValidation .answers li span {
     line-height: 40px;
     vertical-align: middle;
 }
 
-.answerValidationDialog .buttonsPanel {
+.answerValidation .buttonsPanel {
     flex: 0 0 45px;
 }
 
-.answerValidationDialog .buttonsPanel .buttonsArea {
+.answerValidation .buttonsPanel .buttonsArea {
     position: relative;
     margin: 0 2px;
 }
 
-.answerValidationDialog .validationButton {
+.answerValidation .validationButton {
     width: calc(100% - 4px);
     height: 100%;
 }
 
-.answerValidationDialog .acceptButton {
+.answerValidation .acceptButton {
     background: v.$accept-button-background;
 }
 
-.answerValidationDialog .acceptButton:hover {
+.answerValidation .acceptButton:hover {
     background: linear-gradient(180deg, #97c7a6 14.29%, #54996a 100%);
 }
 
-.answerValidationDialog .rejectButton {
+.answerValidation .rejectButton {
     background: v.$reject-button-background;
 }
 
-.answerValidationDialog .rejectButton:hover {
+.answerValidation .rejectButton:hover {
     background: linear-gradient(180deg, #d0726c 14.29%, #a8372f 100%);
 }
 
-.answerValidationDialog .extraButton {
+.answerValidation .extraButton {
     position: absolute;
     font-family: 'Arial';
     font-size: 14px;
@@ -107,53 +114,66 @@
     height: 100%;
 }
 
-.answerValidationDialog .extraButton:hover {
+.answerValidation .extraButton:hover {
     background-color: #98B9FF;
 }
 
-.answerValidationDialog .extraButton.halfPrice {
+.answerValidation .extraButton.halfPrice {
     left: 0;
 }
 
-.answerValidationDialog .extraButton.doublePrice {
+.answerValidation .extraButton.doublePrice {
     right: 0;
 }
 
-.answerValidationDialog .cancelAnswer {
+.answerValidation .cancelAnswer {
     color: white;
     background: v.$cancel-button-background;
     margin: 1px 2px;
 }
 
-.answerValidationDialog .cancelAnswer:hover {
+.answerValidation .cancelAnswer:hover {
     background: v.$cancel-hover-button-background;
 }
 
-.answerValidationDialog .mainMessage {
+.answerValidation .mainMessage {
     flex: 1;
 }
 
-.answerValidationDialog .playerTitle {
+.answerValidation .playerTitle {
     display: block !important;
 }
 
-.answerValidationDialog .playerAnswer {
+.answerValidation .playerAnswer {
     font-weight: bold;
     text-align: center;
     display: block !important;
-    font-size: 25px;
+    font-size: 20px;
     margin-top: 5px;
 }
 
-.answerValidationDialog .answersPanel.answersHidden {
+.answerValidation .answersPanel.answersHidden {
     opacity: 0;
 }
 
-.answerValidationDialogBody {
-    height: calc(100% - 60px);
+.answerValidation {
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    border: 1px solid white;
+    border-radius: 4px;
+}
+
+.answerValidationDialog .answerValidation {
+    height: calc(100% - 60px);
+}
+
+.rightAnswers {
+    color: #54996a;
+}
+
+.wrongAnswers {
+    color: #a8372f;
 }
 
 @media screen and (min-width: 1100px) {
@@ -162,31 +182,29 @@
         right: 0;
         left: auto;
         top: 0;
-        bottom: 45px;
+        bottom: 0;
         vertical-align: middle;
-        border: 1px solid white;
-        border-radius: 4px;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
         overflow: hidden;
         background-color: #0A0E30;
         color: white;
     }
 
-    .answerValidationDialog .validationHeader {
+    .answerValidation .validationHeader {
         color: orange;
     }
 
-    .answerValidationDialog h1 {
+    .answerValidation h1 {
         font-size: 25px;
     }
 
-    .answerValidationDialog .answersPanel {
+    .answerValidation .answersPanel {
         flex-direction: column;
         overflow-y: auto;
         height: initial;
     }
 
-    .answerValidationDialog .buttonsPanel {
+    .answerValidation .buttonsPanel {
         position: static;
     }
 }

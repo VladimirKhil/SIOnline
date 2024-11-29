@@ -11,8 +11,12 @@ const enum Messages {
 	/** User avatar info. */
 	Avatar = 'AVATAR',
 
+	Ban = 'BAN',
+
 	/** Question selection. */
 	Choice = 'CHOICE',
+
+	Config = 'CONFIG',
 
 	Delete = 'DELETE',
 

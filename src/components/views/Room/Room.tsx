@@ -9,7 +9,7 @@ import SideControlPanel from '../../game/SideControlPanel';
 import ShowmanReplicView from '../../game/ShowmanReplicView';
 import PersonsDialog from '../../game/PersonsDialog/PersonsDialog';
 import GameLogView from '../../game/GameLogView';
-import AnswerValidationDialog from '../../game/AnswerValidationDialog/AnswerValidationDialog';
+import AnswerValidation from '../../game/AnswerValidation/AnswerValidation';
 import RoundProgress from '../../game/RoundProgress';
 import localization from '../../../model/resources/localization';
 import roomActionCreators from '../../../state/room/roomActionCreators';
@@ -29,10 +29,11 @@ import { userErrorChanged } from '../../../state/new/commonSlice';
 import AvatarViewDialog from '../../panels/AvatarViewDialog/AvatarViewDialog';
 import { AppDispatch, RootState } from '../../../state/new/store';
 import { useAppDispatch, useAppSelector } from '../../../state/new/hooks';
-import { DialogView } from '../../../state/new/room2Slice';
+import { DialogView, rejectAnswer } from '../../../state/new/room2Slice';
 import ComplainDialog from '../../panels/ComplainDialog/ComplainDialog';
 import ReportDialog from '../../panels/ReportDialog/ReportDialog';
 import GameState from '../../game/GameState/GameState';
+import Role from '../../../model/Role';
 
 import './Room.css';
 
@@ -53,6 +54,8 @@ interface RoomProps {
 	isConnected: boolean;
 	isConnectedReason: string;
 	avatarViewVisible: boolean;
+	validationHeader: string;
+	role: Role;
 
 	onPersonsDialogClose: () => void;
 	onTablesDialogClose: () => void;
@@ -63,6 +66,7 @@ interface RoomProps {
 	onExit: (appDispatch: AppDispatch) => void;
 	chatMessageAdded: (chatMessage: ChatMessage) => void;
 	onReconnect: () => void;
+	clearDecisions: () => void;
 }
 
 const mapStateToProps = (state: State) => ({
@@ -81,6 +85,8 @@ const mapStateToProps = (state: State) => ({
 	isConnected: state.common.isSIHostConnected,
 	isConnectedReason: state.common.isSIHostConnectedReason,
 	avatarViewVisible: state.room.avatarViewVivible,
+	validationHeader: state.room.validation.header,
+	role: state.room.role,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
@@ -110,6 +116,9 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	},
 	onReconnect: () => {
 		dispatch(roomActionCreators.onReconnect() as unknown as Action);
+	},
+	clearDecisions: () => {
+		dispatch(roomActionCreators.clearDecisions());
 	},
 });
 
@@ -158,6 +167,11 @@ export function Room(props: RoomProps) : JSX.Element {
 	}, [props.isConnected]);
 
 	const isScreenWide = props.windowWidth >= Constants.WIDE_WINDOW_WIDTH; // TODO: try to replace with CSS
+
+	const onReject = (factor: number) => {
+		appDispatch(rejectAnswer(factor));
+		props.clearDecisions();
+	};
 
 	return (
 		<section className="gameMain">
@@ -240,7 +254,11 @@ export function Room(props: RoomProps) : JSX.Element {
 				</Dialog>
 			) : null}
 
-			{props.isAnswerValidationDialogVisible ? <AnswerValidationDialog /> : null}
+			{props.isAnswerValidationDialogVisible && (!isScreenWide || props.role === Role.Player) ? (
+				<Dialog className='answerValidationDialog' title={props.validationHeader} onClose={() => onReject(1.0)}>
+					<AnswerValidation />
+				</Dialog>
+			) : null}
 			{props.avatarViewVisible ? <AvatarViewDialog /> : null}
 			{getDialog(state.dialogView)}
 		</section>

@@ -125,6 +125,10 @@ export class AudioContent extends React.Component<AudioContentProps> {
 
 	componentDidUpdate(prevProps: AudioContentProps) {
 		if (this.props.audio == '') {
+			if (prevProps.audio != '') {
+				this.stop();
+			}
+
 			return;
 		}
 

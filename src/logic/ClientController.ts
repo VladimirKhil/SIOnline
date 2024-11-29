@@ -288,8 +288,16 @@ export default class ClientController {
 		}
 	}
 
+	onAds(ads: string) {
+		this.appDispatch(showText(ads));
+	}
+
 	onAnswers(answers: string[]) {
 		this.appDispatch(playersAnswersChanged(answers));
+	}
+
+	onApellationEnabled(enabled: boolean) {
+		this.dispatch(roomActionCreators.areApellationsEnabledChanged(enabled));
 	}
 
 	onAskAnswer() {
@@ -327,6 +335,18 @@ export default class ClientController {
 		}
 	}
 
+	onBanned(ip: string, name: string) {
+		this.dispatch(roomActionCreators.banned(ip, name));
+	}
+
+	onBannedList(bannedList: Record<string, string>) {
+		this.dispatch(roomActionCreators.bannedListChanged(bannedList));
+	}
+
+	onButtonBlockingTimeChanged(blockingTime: number) {
+		this.dispatch(roomActionCreators.buttonBlockingTimeChanged(blockingTime));
+	}
+
 	onCancel() {
 		this.dispatch(roomActionCreators.clearDecisions());
 		this.appDispatch(deselectPlayers());
@@ -362,6 +382,22 @@ export default class ClientController {
 			},
 			6000
 		);
+	}
+
+	onDisconnected(name: string) {
+		this.dispatch(roomActionCreators.personRemoved(name));
+		const state = this.getState();
+
+		if (state.room2.persons.showman.name === name) {
+			this.appDispatch(showmanChanged({ name: Constants.ANY_NAME, isHuman: false, isReady: false }));
+		} else {
+			for (let i = 0; i < state.room2.persons.players.length; i++) {
+				if (state.room2.persons.players[i].name === name) {
+					this.appDispatch(playerChanged({ index: i, name: Constants.ANY_NAME, isHuman: false, isReady: false }));
+					break;
+				}
+			}
+		}
 	}
 
 	onGameClosed() {

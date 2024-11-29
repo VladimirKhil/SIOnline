@@ -72,7 +72,6 @@ export default interface RoomState {
 		message: string;
 		messages: ChatMessage[];
 		usersMode: UsersMode;
-		selectedPersonName: string | null;
 	};
 
 	selectedTableIndex: number; // 0 for showman; {N} for player {N - 1}
@@ -197,7 +196,6 @@ export const initialState: RoomState = {
 		message: '',
 		messages: [],
 		usersMode: UsersMode.Users,
-		selectedPersonName: null,
 	},
 
 	selectedTableIndex: -1,

@@ -238,7 +238,7 @@ export const tableSlice = createSlice({
 			state.loadTimer.state = TimerStates.Stopped;
 		},
 		setAnswerView: (state, action: PayloadAction<string>) => {
-			state.content = [];
+			// Do not reset content so that it will be preserved in answer options mode
 			state.prependText = '';
 			state.appendText = action.payload;
 			state.audio = '';

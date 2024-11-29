@@ -144,15 +144,6 @@ const roomReducer: Reducer<RoomState> = (state: RoomState = initialState, anyAct
 				}
 			};
 
-		case RoomActionTypes.ChatPersonSelected:
-			return {
-				...state,
-				chat: {
-					...state.chat,
-					selectedPersonName: action.personName
-				}
-			};
-
 		case RoomActionTypes.TableSelected:
 			return {
 				...state,

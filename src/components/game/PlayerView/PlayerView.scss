@@ -195,13 +195,14 @@
 	font-size: 15px;
 }
 
-@media screen and (min-width: 1100px) and (min-height: 700px) {
+@media screen and (min-width: 1100px) and (min-height: 600px) {
 	.stakeHost {
 		flex: 0 0 45px;
 		color: white;
 		display: flex;
 		align-items: center;
 		justify-content: center;
+		font-size: 18px;
 	}
 
 	.gamePlayer .progress {

@@ -7,13 +7,23 @@ export default interface IGameClient {
 
 	shouldClose: boolean;
 
+	addTable(): Promise<boolean>;
+
 	approveAnswer(factor: number): Promise<boolean>;
 
+	changeTableType(isShowman: boolean, tableIndex: number): Promise<boolean>;
+
+	deleteTable(tableIndex: number): Promise<boolean>;
+
 	deleteTheme(themeIndex: number): Promise<boolean>;
+
+	freeTable(isShowman: boolean, tableIndex: number): Promise<boolean>;
 
 	getPin(): Promise<boolean>;
 
 	info(): Promise<boolean>;
+
+	kick(personName: string): Promise<boolean>;
 
 	markQuestion(questionId: number, comment: string): Promise<boolean>;
 
@@ -55,6 +65,8 @@ export default interface IGameClient {
 
 	/** Sets game join mode. */
 	setJoinMode(joinMode: JoinMode): Promise<boolean>;
+
+	setTable(isShowman: boolean, tableIndex: number, name: string): Promise<boolean>;
 
 	/** Toggles (removes or restores) a question on game table. */
 	toggle(themeIndex: number, questionIndex: number): Promise<boolean>;

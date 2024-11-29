@@ -27,7 +27,6 @@ export const enum RoomActionTypes {
 	LastReplicChanged = 'LAST_REPLIC_CHANGED',
 	ActivateChat = 'ACTIVATE_CHAT',
 	InfoChanged = 'INFO_CHANGED',
-	ChatPersonSelected = 'CHAT_PERSON_SELECTED',
 	TableSelected = 'TABLE_SELECTED',
 	PersonAvatarChanged = 'PERSON_AVATAR_CHANGED',
 	PersonAvatarVideoChanged = 'PERSON_AVATAR_VIDEO_CHANGED',
@@ -102,7 +101,6 @@ export type ChatMessageAddedAction = { type: RoomActionTypes.ChatMessageAdded, c
 export type LastReplicChangedAction = { type: RoomActionTypes.LastReplicChanged, chatMessage: ChatMessage | null };
 export type ActivateChatAction = { type: RoomActionTypes.ActivateChat };
 export type InfoChangedAction = { type: RoomActionTypes.InfoChanged, all: Persons };
-export type ChatPersonSelectedAction = { type: RoomActionTypes.ChatPersonSelected, personName: string };
 export type TableSelectedAction = { type: RoomActionTypes.TableSelected, tableIndex: number };
 export type PersonAvatarChangedAction = { type: RoomActionTypes.PersonAvatarChanged, personName: string, avatarUri: string };
 export type PersonAvatarVideoChangedAction = { type: RoomActionTypes.PersonAvatarVideoChanged, personName: string, avatarUri: string };
@@ -201,7 +199,6 @@ export type KnownRoomAction =
 	| LastReplicChangedAction
 	| ActivateChatAction
 	| InfoChangedAction
-	| ChatPersonSelectedAction
 	| TableSelectedAction
 	| PersonAvatarChangedAction
 	| PersonAvatarVideoChangedAction

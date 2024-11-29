@@ -205,10 +205,6 @@ const infoChanged: ActionCreator<RunActions.InfoChangedAction> = (all: Persons) 
 	type: RunActions.RoomActionTypes.InfoChanged, all,
 });
 
-const chatPersonSelected: ActionCreator<RunActions.ChatPersonSelectedAction> = (personName: string) => ({
-	type: RunActions.RoomActionTypes.ChatPersonSelected, personName
-});
-
 const tableSelected: ActionCreator<RunActions.TableSelectedAction> = (tableIndex: number) => ({
 	type: RunActions.RoomActionTypes.TableSelected, tableIndex
 });
@@ -225,7 +221,7 @@ const addTable: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (
 		return;
 	}
 
-	await dataContext.game.gameServerClient.msgAsync('CONFIG', 'ADDTABLE');
+	await dataContext.game.addTable();
 };
 
 const deleteTable: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
@@ -239,7 +235,7 @@ const deleteTable: ActionCreator<ThunkAction<void, State, DataContext, Action>> 
 		return;
 	}
 
-	await dataContext.game.gameServerClient.msgAsync('CONFIG', 'DELETETABLE', tableIndex);
+	await dataContext.game.deleteTable(tableIndex);
 };
 
 const freeTable: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
@@ -248,13 +244,12 @@ const freeTable: ActionCreator<ThunkAction<void, State, DataContext, Action>> = 
 	dataContext: DataContext
 	) => {
 	const tableIndex = getState().room.selectedTableIndex;
+
 	if (tableIndex < 0 || tableIndex >= getState().room2.persons.players.length + 1) {
 		return;
 	}
 
-	const isShowman = tableIndex === 0;
-
-	await dataContext.game.gameServerClient.msgAsync('CONFIG', 'FREE', isShowman ? 'showman' : 'player', isShowman ? '' : tableIndex - 1);
+	await dataContext.game.freeTable(tableIndex === 0, tableIndex - 1);
 };
 
 const setTable: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (name: string) => async (
@@ -263,13 +258,12 @@ const setTable: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (
 	dataContext: DataContext
 	) => {
 	const tableIndex = getState().room.selectedTableIndex;
+
 	if (tableIndex < 0 || tableIndex >= getState().room2.persons.players.length + 1) {
 		return;
 	}
 
-	const isShowman = tableIndex === 0;
-
-	await dataContext.game.gameServerClient.msgAsync('CONFIG', 'SET', isShowman ? 'showman' : 'player', isShowman ? '' : tableIndex - 1, name);
+	await dataContext.game.setTable(tableIndex === 0, tableIndex - 1, name);
 };
 
 const changeType: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
@@ -278,53 +272,12 @@ const changeType: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 	dataContext: DataContext
 	) => {
 	const tableIndex = getState().room.selectedTableIndex;
+
 	if (tableIndex < 0 || tableIndex >= getState().room2.persons.players.length + 1) {
 		return;
 	}
 
-	const isShowman = tableIndex === 0;
-
-	await dataContext.game.gameServerClient.msgAsync('CONFIG', 'CHANGETYPE', isShowman ? 'showman' : 'player', isShowman ? '' : tableIndex - 1);
-};
-
-const kickPerson: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
-	_dispatch: Dispatch<RunActions.KnownRoomAction>,
-	getState: () => State,
-	dataContext: DataContext
-	) => {
-	const personName = getState().room.chat.selectedPersonName;
-	if (!personName) {
-		return;
-	}
-
-	await dataContext.game.gameServerClient.msgAsync('KICK', personName);
-};
-
-const banPerson: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
-	_dispatch: Dispatch<RunActions.KnownRoomAction>,
-	getState: () => State,
-	dataContext: DataContext
-	) => {
-	const personName = getState().room.chat.selectedPersonName;
-	if (!personName) {
-		return;
-	}
-
-	await dataContext.game.gameServerClient.msgAsync('BAN', personName);
-};
-
-const setHost: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
-	_dispatch: Dispatch<RunActions.KnownRoomAction>,
-	getState: () => State,
-	dataContext: DataContext
-	) => {
-	const personName = getState().room.chat.selectedPersonName;
-
-	if (!personName) {
-		return;
-	}
-
-	await dataContext.game.setHost(personName);
+	await dataContext.game.changeTableType(tableIndex === 0, tableIndex - 1);
 };
 
 const personAvatarChanged: ActionCreator<RunActions.PersonAvatarChangedAction> = (personName: string, avatarUri: string) => ({
@@ -813,16 +766,12 @@ const roomActionCreators = {
 	lastReplicChanged,
 	activateChat,
 	infoChanged,
-	chatPersonSelected,
 	tableSelected,
 	addTable,
 	deleteTable,
 	freeTable,
 	setTable,
 	changeType,
-	kickPerson,
-	banPerson,
-	setHost,
 	personAvatarChanged,
 	personAvatarVideoChanged,
 	gameStarted,

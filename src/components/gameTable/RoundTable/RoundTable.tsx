@@ -67,7 +67,7 @@ export function RoundTable(props: RoundTableProps) {
 				const hasQuestions = themeInfo.questions.some(q => q > -1);
 
 				return (<div key={themeIndex} className={`roundTableRow ${className}`}>
-					<AutoSizedText className="roundTableCell themeHeader" maxFontSize={72}>
+					<AutoSizedText className="roundTableCell themeHeader" maxFontSize={60}>
 						{hasQuestions ? themeInfo.name : ''}
 					</AutoSizedText>
 

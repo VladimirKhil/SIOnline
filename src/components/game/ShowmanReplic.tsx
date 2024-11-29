@@ -21,7 +21,7 @@ export function ShowmanReplic(props: ShowmanReplicProps): JSX.Element {
 	const isScreenWide = props.windowWidth >= Constants.WIDE_WINDOW_WIDTH;
 
 	return (
-		<AutoSizedText className={`showmanReplic replic ${replic || !isScreenWide ? '' : 'hidden'}`} maxFontSize={48}>
+		<AutoSizedText className={`showmanReplic replic ${replic || !isScreenWide ? '' : 'hidden'}`} maxFontSize={32}>
 			{replic || ''}
 		</AutoSizedText>
 	);

@@ -40,6 +40,7 @@ export function About(props: AboutProps): JSX.Element {
 				{props.clearUrls ? null
 				: <section>
 					<header><h1 className='subHeader'>{localization.donate}</h1></header>
+					<p>{localization.donateComment}</p>
 					<p><a href='https://www.patreon.com/vladimirkhil'>Patreon</a></p>
 					<p><a href='https://boosty.to/vladimirkhil'>Boosty</a></p>
 				</section>}

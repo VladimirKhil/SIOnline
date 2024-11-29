@@ -1,6 +1,11 @@
 .validationArea {
 	background-color: #0A0E30;
 	color: white;
+	flex: 1;
+	display: flex;
+	overflow: hidden;
+	align-items: stretch;
+	justify-content: stretch;
 }
 
 .singleAnswer {
@@ -8,7 +13,8 @@
 	justify-content: center;
 	align-items: center;
 	text-align: center;
-	height: 60px;
+	height: 100%;
+	width: 100%;
 	padding: 4px;
 	color: lightgray;
 }

@@ -105,7 +105,7 @@ export function MainMenu(props: MainMenuProps): JSX.Element {
 						className='standard welcomeRow right'
 						disabled={!props.isConnected}
 						onClick={() => appDispatch(navigate({ navigation: { path: Path.NewRoom, newGameMode: 'single' }, saveState: true }))}>
-						{localization.singlePlay}
+						{localization.singlePlay.toUpperCase()}
 					</button>
 
 					<button
@@ -113,7 +113,7 @@ export function MainMenu(props: MainMenuProps): JSX.Element {
 						className='standard welcomeRow left'
 						disabled={!props.isConnected}
 						onClick={() => props.anyonePlay(appDispatch)}>
-						{localization.anyonePlay}
+						{localization.anyonePlay.toUpperCase()}
 					</button>
 
 					<button
@@ -121,7 +121,7 @@ export function MainMenu(props: MainMenuProps): JSX.Element {
 						className='standard welcomeRow right'
 						disabled={!props.isConnected}
 						onClick={() => appDispatch(navigate({ navigation: { path: Path.JoinByPin }, saveState: true }))}>
-						{localization.joinByPin}
+						{localization.joinByPin.toUpperCase()}
 					</button>
 
 					<button
@@ -129,7 +129,7 @@ export function MainMenu(props: MainMenuProps): JSX.Element {
 						className='standard welcomeRow left'
 						disabled={!props.isConnected}
 						onClick={() => appDispatch(navigate({ navigation: { path: Path.Lobby }, saveState: true }))}>
-						{localization.joinLobby}
+						{localization.joinLobby.toUpperCase()}
 					</button>
 				</div>
 

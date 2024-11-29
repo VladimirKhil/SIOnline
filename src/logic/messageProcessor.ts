@@ -30,13 +30,11 @@ import { playAudio, userInfoChanged } from '../state/new/commonSlice';
 import clearUrls from '../utils/clearUrls';
 import ThemesPlayMode from '../model/enums/ThemesPlayMode';
 import { AppDispatch } from '../state/new/store';
-import { captionChanged, showText } from '../state/new/tableSlice';
-import { playerChanged,
-	playerInGameChanged,
+import { captionChanged } from '../state/new/tableSlice';
+import { playerInGameChanged,
 	playerMediaLoaded,
 	playerStakeChanged,
-	playerStateChanged,
-	showmanChanged } from '../state/new/room2Slice';
+	playerStateChanged } from '../state/new/room2Slice';
 import StakeTypes from '../model/enums/StakeTypes';
 
 const MAX_APPEND_TEXT_LENGTH = 150;
@@ -67,9 +65,9 @@ const processSystemMessage: ActionCreator<ThunkAction<void, State, DataContext, 
 		viewerHandler(controller, dispatch, appDispatch, state, dataContext, args);
 
 		if (role === Role.Player) {
-			playerHandler(controller, dispatch, appDispatch, state, args);
+			playerHandler(controller, dispatch, args);
 		} else if (role === Role.Showman) {
-			showmanHandler(controller, dispatch, state, args);
+			showmanHandler(controller, dispatch, args);
 		}
 	};
 
@@ -153,7 +151,7 @@ const viewerHandler = (
 				ads = clearUrls(ads);
 			}
 
-			appDispatch(showText(ads));
+			controller.onAds(ads);
 			break;
 
 		case GameMessages.Answers:
@@ -164,12 +162,12 @@ const viewerHandler = (
 			controller.onAnswers(args.slice(1));
 			break;
 
-		case 'APELLATION_ENABLES':
+		case GameMessages.ApellationEnabled:
 			if (args.length === 1) {
 				break;
 			}
 
-			dispatch(roomActionCreators.areApellationsEnabledChanged(args[1] === '+'));
+			controller.onApellationEnabled(args[1] === '+');
 			break;
 
 		case GameMessages.AtomHint:
@@ -198,7 +196,7 @@ const viewerHandler = (
 				break;
 			}
 
-			dispatch(roomActionCreators.banned(args[1], args[2]));
+			controller.onBanned(args[1], args[2]);
 			break;
 
 		case GameMessages.BannedList:
@@ -208,15 +206,15 @@ const viewerHandler = (
 				bannedList[args[i]] = args[i + 1];
 			}
 
-			dispatch(roomActionCreators.bannedListChanged(bannedList));
+			controller.onBannedList(bannedList);
 			break;
 
-		case 'BUTTON_BLOCKING_TIME':
+		case GameMessages.ButtonBlockingTime:
 			if (args.length === 1) {
 				break;
 			}
 
-			dispatch(roomActionCreators.buttonBlockingTimeChanged(parseInt(args[1], 10)));
+			controller.onButtonBlockingTimeChanged(parseInt(args[1], 10));
 			break;
 
 		case GameMessages.Choice:
@@ -347,10 +345,18 @@ const viewerHandler = (
 		}
 
 		case GameMessages.Disconnected:
-			disconnected(dispatch, appDispatch, state, ...args);
+			if (args.length < 2) {
+				return;
+			}
+
+			controller.onDisconnected(args[1]);
 			break;
 
 		case GameMessages.EndTry: {
+			if (args.length < 2) {
+				return;
+			}
+
 			const index = (Number)(args[1]);
 
 			if (!isNaN(index) && index > -1 && index < state.room2.persons.players.length) {
@@ -360,10 +366,6 @@ const viewerHandler = (
 			}
 			break;
 		}
-
-		case 'FALSESTART':
-			// Not used - game button is always available
-			break;
 
 		case GameMessages.FinalRound:
 			const playersLength = state.room2.persons.players.length;
@@ -384,20 +386,18 @@ const viewerHandler = (
 			break;
 
 		case GameMessages.GameMetadata:
-			{
-				if (args.length < 4) {
-					break;
-				}
-
-				dispatch(roomActionCreators.gameMetadataChanged(args[1], args[2], args[3], args.length > 4 ? args[4] : null));
+			if (args.length < 4) {
+				break;
 			}
+
+			dispatch(roomActionCreators.gameMetadataChanged(args[1], args[2], args[3], args.length > 4 ? args[4] : null));
 			break;
 
 		case GameMessages.GameThemes:
 			controller.onGameThemes(args.slice(1));
 			break;
 
-		case 'HOSTNAME':
+		case GameMessages.HostName:
 			if (args.length > 1) {
 				dispatch(roomActionCreators.hostNameChanged(args[1]));
 
@@ -938,8 +938,6 @@ function onAskStake(controller: ClientController, args: string[]) {
 const playerHandler = (
 	controller: ClientController,
 	dispatch: Dispatch<any>,
-	appDispatch: AppDispatch,
-	state: State,
 	args: string[]) => {
 	switch (args[0]) {
 		case GameMessages.Answer:
@@ -989,7 +987,7 @@ const playerHandler = (
 	}
 };
 
-const showmanHandler = (controller: ClientController, dispatch: Dispatch<any>, state: State, args: string[]) => {
+const showmanHandler = (controller: ClientController, dispatch: Dispatch<any>, args: string[]) => {
 	switch (args[0]) {
 		case GameMessages.AskSelectPlayer:
 			if (args.length < 3) {
@@ -1187,23 +1185,6 @@ function info(controller: ClientController, ...args: string[]) {
 	}
 
 	controller.onInfo(all, showman, players);
-}
-
-function disconnected(dispatch: Dispatch<RoomActions.KnownRoomAction>, appDispatch: AppDispatch, state: State, ...args: string[]) {
-	const name = args[1];
-
-	dispatch(roomActionCreators.personRemoved(name));
-
-	if (state.room2.persons.showman.name === name) {
-		appDispatch(showmanChanged({ name: Constants.ANY_NAME, isHuman: false, isReady: false }));
-	} else {
-		for (let i = 0; i < state.room2.persons.players.length; i++) {
-			if (state.room2.persons.players[i].name === name) {
-				appDispatch(playerChanged({ index: i, name: Constants.ANY_NAME, isHuman: false, isReady: false }));
-				break;
-			}
-		}
-	}
 }
 
 function playGameSound(appDispatch: Dispatch<any>, isSoundEnabled: boolean, sound: GameSound, loop = false): void {

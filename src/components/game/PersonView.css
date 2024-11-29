@@ -1,21 +1,13 @@
 .personItem {
 	padding-left: 5px;
-	cursor: pointer;
-	height: 50px;
+	height: 35px;
 	line-height: 40px;
 	vertical-align: middle;
 	display: flex;
+	align-items: center;
 	overflow: hidden;
 	padding: 5px 0;
 }
-
-	.personItem:hover {
-		background-color: #98B9FF;
-	}
-
-	.personItem.active {
-		background-color: #5A95E2;
-	}
 
 	.personItem.me {
 		font-weight: bold;
@@ -64,4 +56,15 @@
 .joinMode select {
 	padding: 5px;
 	margin: 0 10px;
+}
+
+.personItem_menuHost {
+	flex: 1;
+	display: flex;
+	justify-content: flex-end;
+}
+
+.personMenu {
+	border: 1px solid white;
+	border-radius: 5px;
 }

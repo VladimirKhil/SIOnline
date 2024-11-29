@@ -243,6 +243,10 @@ function processMessage(controller: ClientController, payload: any, appDispatch:
 			controller.onTheme(payload.themeName);
 			break;
 
+		case 'themeComments':
+			controller.onThemeComments(payload.themeComments);
+			break;
+
 		case 'themeDeleted':
 			controller.onThemeDeleted(payload.themeIndex);
 			break;

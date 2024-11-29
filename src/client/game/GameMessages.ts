@@ -8,6 +8,8 @@ const enum GameMessages {
 
 	Answers = 'ANSWERS',
 
+	ApellationEnabled = 'APELLATION_ENABLES',
+
 	AskSelectPlayer = 'ASK_SELECT_PLAYER',
 
 	AskStake = 'ASK_STAKE',
@@ -23,6 +25,8 @@ const enum GameMessages {
 
 	/** Person has been banned. */
 	BannedList = 'BANNEDLIST',
+
+	ButtonBlockingTime = 'BUTTON_BLOCKING_TIME',
 
 	Cancel = 'CANCEL',
 
@@ -63,6 +67,8 @@ const enum GameMessages {
 	GameThemes = 'GAMETHEMES',
 
 	Hint = 'HINT',
+
+	HostName = 'HOSTNAME',
 
 	Info = 'INFO2',
 

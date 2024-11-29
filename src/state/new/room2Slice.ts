@@ -136,6 +136,22 @@ export const getPin = createAsyncThunk(
 	},
 );
 
+export const setHost = createAsyncThunk(
+	'room2/setHost',
+	async (arg: string, thunkAPI) => {
+		const dataContext = thunkAPI.extra as DataContext;
+		await dataContext.game.setHost(arg);
+	},
+);
+
+export const kick = createAsyncThunk(
+	'room2/kick',
+	async (arg: string, thunkAPI) => {
+		const dataContext = thunkAPI.extra as DataContext;
+		await dataContext.game.kick(arg);
+	},
+);
+
 export const room2Slice = createSlice({
 	name: 'room2',
 	initialState,

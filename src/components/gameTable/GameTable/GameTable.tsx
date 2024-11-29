@@ -120,7 +120,7 @@ export function GameTable(props: GameTableProps): JSX.Element {
 
 			{(props.isPaused && !props.isEditEnabled) || !props.isConnected ? (
 				<AutoSizedText
-					maxFontSize={288}
+					maxFontSize={144}
 					className={`pauseLogo tableText tableTextCenter ${props.isConnected ? '' : 'warning'}`}
 				>
 					{props.isPaused ? localization.pause : localization.connectionClosed}

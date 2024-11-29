@@ -21,38 +21,20 @@ interface PersonsViewProps {
 	isHost: boolean;
 	all: Persons;
 	login: string;
-	selectedPerson: Account | null;
 	joinMode: JoinMode;
 
-	kick: () => void;
-	ban: () => void;
-	setHost: () => void;
 	onJoinModeChanged(joinMode: JoinMode): void;
 }
 
-const mapStateToProps = (state: State) => {
-	const { selectedPersonName } = state.room.chat;
-
-	return {
-		isConnected: state.common.isSIHostConnected,
-		isHost: isHost(state),
-		all: state.room.persons.all,
-		login: state.room.name,
-		selectedPerson: selectedPersonName ? state.room.persons.all[selectedPersonName] : null,
-		joinMode: state.room.joinMode,
-	};
-};
+const mapStateToProps = (state: State) => ({
+	isConnected: state.common.isSIHostConnected,
+	isHost: isHost(state),
+	all: state.room.persons.all,
+	login: state.room.name,
+	joinMode: state.room.joinMode,
+});
 
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => ({
-	kick: () => {
-		dispatch((roomActionCreators.kickPerson() as object) as AnyAction);
-	},
-	ban: () => {
-		dispatch((roomActionCreators.banPerson() as object) as AnyAction);
-	},
-	setHost: () => {
-		dispatch((roomActionCreators.setHost() as object) as AnyAction);
-	},
 	onJoinModeChanged(joinMode: JoinMode) {
 		dispatch((roomActionCreators.setJoinMode(joinMode) as object) as AnyAction);
 	}
@@ -86,8 +68,6 @@ export function PersonsView(props: PersonsViewProps): JSX.Element {
 		.filter(name => name !== roomState.persons.showman.name && !playersNames.includes(name))
 		.map(name => props.all[name])
 		.sort((p1, p2) => p1.name.localeCompare(p2.name));
-
-	const canKick = props.isHost && props.selectedPerson && props.selectedPerson.name !== props.login && props.selectedPerson.isHuman;
 
 	const onJoinModeChanged = (e: React.ChangeEvent<HTMLSelectElement>) => {
 		props.onJoinModeChanged(parseInt(e.target.value, 10) as JoinMode);
@@ -132,6 +112,7 @@ export function PersonsView(props: PersonsViewProps): JSX.Element {
 				<span className='joinModeTitle'>{localization.joinMode}</span>
 
 				<select
+					title={localization.joinMode}
 					value = {props.joinMode}
 					onChange={onJoinModeChanged}
 					disabled={!props.isConnected || !props.isHost}>
@@ -139,30 +120,6 @@ export function PersonsView(props: PersonsViewProps): JSX.Element {
 					<option value={JoinMode.OnlyViewer}>{localization.joinModeViewer}</option>
 					<option value={JoinMode.Forbidden}>{localization.joinModeForbidden}</option>
 				</select>
-			</div>
-
-			<div className="buttonsPanel sidePanel">
-				<button
-					type="button"
-					className='standard'
-					onClick={() => props.setHost()}
-					disabled={!props.isConnected || !canKick}>
-					{localization.setHost}
-				</button>
-			</div>
-
-			<div className="buttonsPanel sidePanel">
-				<button
-					type="button"
-					className='standard'
-					onClick={() => props.kick()}
-					disabled={!props.isConnected || !canKick}>
-					{localization.kick}
-				</button>
-
-				<button type="button" className='standard' onClick={() => props.ban()} disabled={!props.isConnected || !canKick}>
-					{localization.ban}
-				</button>
 			</div>
 		</>
 	);
