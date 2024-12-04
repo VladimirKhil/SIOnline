@@ -188,6 +188,7 @@ export const room2Slice = createSlice({
 			state.persons.players.forEach(p => {
 				p.state = PlayerStates.None;
 				p.stake = 0;
+				p.answer = '';
 				p.mediaLoaded = false;
 				p.canBeSelected = false;
 			});
