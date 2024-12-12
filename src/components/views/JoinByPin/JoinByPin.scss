@@ -6,18 +6,31 @@
 
 .enterPinBody {
 	display: flex;
+	flex-direction: column;
 	align-items: center;
 	justify-content: center;
 	height: 100%;
+	color: white;
 }
 
-.pin {
+.enterPinBody .field-header {
+	width: 100px;
+	display: inline-block;
+}
+
+.enterPinBody input {
 	margin: 10px;
 	font-size: 20px;
+	background: #181B64 !important;
+	color: white;
+	border: 1px solid #347DFF;
+	border-radius: 5px;
+	padding: 3px 6px;
 }
 
 .pinJoin {
 	padding: 7px 20px;
+	margin: 15px 0;
 }
 
 @media screen and (min-width: 800px) {

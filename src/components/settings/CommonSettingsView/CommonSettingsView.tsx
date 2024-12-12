@@ -9,7 +9,6 @@ import { setAppSound,
 	setBindNextButton,
 	setFloatingControls,
 	setMainMenuSound,
-	setShowPersonsAtBottomOnWideScreen,
 	setShowVideoAvatars,
 	setSound,
 	setSoundVolume } from '../../../state/new/settingsSlice';
@@ -85,17 +84,6 @@ export function CommonSettingsView(): JSX.Element {
 					value={settings.soundVolume}
 					onChange={(e) => appDispatch(setSoundVolume(Number(e.target.value)))}
 				/>
-			</div>
-
-			<div className="settingItem">
-				<input
-					id="showPersonsAtBottomOnWideScreen"
-					type="checkbox"
-					checked={settings.showPersonsAtBottomOnWideScreen}
-					onChange={() => appDispatch(setShowPersonsAtBottomOnWideScreen(!settings.showPersonsAtBottomOnWideScreen))}
-				/>
-
-				<label htmlFor="showPersonsAtBottomOnWideScreen">{localization.showPersonsAtBottomOnWideScreen}</label>
 			</div>
 
 			<div className="settingItem">

@@ -50,6 +50,7 @@ import { changeAvatar, changeLogin } from '../state/new/userSlice';
 import { saveStateToStorage } from '../state/new/StateHelpers';
 import { INavigationState } from '../state/new/uiSlice';
 import { navigate } from '../utils/Navigator';
+import registerApp from '../utils/registerApp';
 
 interface ConnectResult {
 	success: boolean;
@@ -402,6 +403,10 @@ const navigateAsync = async (
 		}
 	}
 
+	if (view.path === Path.Root || view.path === Path.Menu) {
+		await registerApp(dataContext.config.appRegistryServiceUri);
+	}
+
 	appDispatch(navigate({ navigation: view, saveState: true }));
 };
 
@@ -410,9 +415,10 @@ const checkLicenseAsync = async (
 	dispatch: Dispatch<Action>,
 	appDispatch: AppDispatch,
 	getState: () => State,
-	dataContext: DataContext) => {
+	dataContext: DataContext
+) => {
 	const licenseAccepted = dataContext.state.isLicenseAccepted();
-	const defaultView = view.path === Path.About ? { path: Path.Menu } : view;
+	const defaultView = view.path === Path.About || view.path === Path.JoinByPin ? { path: Path.Menu } : view;
 
 	await navigateAsync(
 		licenseAccepted ? defaultView : { path: Path.AcceptLicense, callbackState: view },
@@ -462,7 +468,7 @@ const init: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 				appDispatch(navigate({
 					navigation: {
 						path: Path.Login,
-						callbackState: initialView.path === Path.About ? { path: Path.Menu } : initialView
+						callbackState: initialView.path === Path.About || initialView.path === Path.JoinByPin ? { path: Path.Menu } : initialView
 					},
 					saveState: true,
 				}));

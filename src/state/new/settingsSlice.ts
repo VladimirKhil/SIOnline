@@ -10,7 +10,6 @@ export interface SettingsState {
 	sound: boolean;
 	appSound: boolean;
 	mainMenuSound: boolean;
-	showPersonsAtBottomOnWideScreen: boolean;
 	floatingControls: boolean;
 	sex: Sex;
 	avatarKey: string | null;
@@ -29,7 +28,6 @@ const initialState: SettingsState = {
 	sound: true,
 	appSound: false,
 	mainMenuSound: false,
-	showPersonsAtBottomOnWideScreen: true,
 	floatingControls: false,
 	sex: Sex.Male,
 	avatarKey: null,
@@ -58,9 +56,6 @@ export const settingsSlice = createSlice({
 		},
 		setMainMenuSound: (state: SettingsState, action: PayloadAction<boolean>) => {
 			state.mainMenuSound = action.payload;
-		},
-		setShowPersonsAtBottomOnWideScreen: (state: SettingsState, action: PayloadAction<boolean>) => {
-			state.showPersonsAtBottomOnWideScreen = action.payload;
 		},
 		setSex: (state: SettingsState, action: PayloadAction<Sex>) => {
 			state.sex = action.payload;
@@ -164,7 +159,6 @@ export const {
 	setSound,
 	setAppSound,
 	setMainMenuSound,
-	setShowPersonsAtBottomOnWideScreen,
 	setSex,
 	setAvatarKey,
 	setOral,

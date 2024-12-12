@@ -4,7 +4,7 @@
 }
 
 #gameinfo {
-    background-color: #000061;
+    background-color: #000451;
     height: 100%;
     padding: 20px 0 0 0;
     position: relative;
@@ -76,6 +76,10 @@
     display: block;
     margin: 5px 15px;
     padding: 2px 5px;
+	background: #181B64 !important;
+	color: white;
+	border: 1px solid #347DFF;
+	border-radius: 5px;
 }
 
 .joinGameProgress {

@@ -35,7 +35,7 @@
     overflow: auto;
     scrollbar-width: thin;
     width: 100%;
-    background-color: rgba(0,0,0,0.2);
+    background-color: #000451AA;
     margin: 0;
     flex: 1;
 }

@@ -41,7 +41,6 @@ interface RoomProps {
 	windowWidth: number;
 	// eslint-disable-next-line react/no-unused-prop-types
 	isChatOpen: boolean;
-	showPersonsAtBottomOnWideScreen: boolean;
 	isPersonsDialogVisible: boolean;
 	isTablesDialogVisible: boolean;
 	isBannedDialogVisible: boolean;
@@ -72,7 +71,6 @@ interface RoomProps {
 const mapStateToProps = (state: State) => ({
 	windowWidth: state.ui.windowWidth,
 	isChatOpen: state.room.chat.isVisible,
-	showPersonsAtBottomOnWideScreen: state.settings.showPersonsAtBottomOnWideScreen,
 	isPersonsDialogVisible: state.room.personsVisible,
 	isTablesDialogVisible: state.room.tablesVisible,
 	isBannedDialogVisible: state.room.bannedVisible,
@@ -176,7 +174,7 @@ export function Room(props: RoomProps) : JSX.Element {
 	return (
 		<section className="gameMain">
 			<div className="game__tableArea">
-				<div className={`gameMainView ${props.showPersonsAtBottomOnWideScreen && isScreenWide ? 'reversed' : ''}`}>
+				<div className={`gameMainView ${isScreenWide ? 'reversed' : ''}`}>
 					<PlayersView />
 
 					<div className="showmanTableArea">

@@ -31,7 +31,6 @@ interface PlayerViewProps {
 	isSumEditable: boolean;
 	windowWidth: number;
 	windowHeight: number;
-	showPersonsAtBottomOnWideScreen: boolean;
 
 	listRef: React.RefObject<HTMLUListElement>;
 
@@ -48,7 +47,6 @@ const mapStateToProps = (state: State) => ({
 	showVideoAvatars: state.settings.showVideoAvatars,
 	windowWidth: state.ui.windowWidth,
 	windowHeight: state.ui.windowHeight,
-	showPersonsAtBottomOnWideScreen: state.settings.showPersonsAtBottomOnWideScreen,
 });
 
 const mapDispatchToProps = (dispatch: React.Dispatch<Action>) => ({
@@ -93,7 +91,7 @@ export function PlayerView(props: PlayerViewProps): JSX.Element {
 		}
 
 		const isScreenWide = props.windowWidth >= Constants.WIDE_WINDOW_WIDTH;
-		const playersAreAtBottom = props.showPersonsAtBottomOnWideScreen && isScreenWide;
+		const playersAreAtBottom = isScreenWide;
 
 		const replic = replicRef.current;
 		const list = props.listRef.current;
@@ -129,7 +127,7 @@ export function PlayerView(props: PlayerViewProps): JSX.Element {
 
 	React.useEffect(() => {
 		moveReplic();
-	}, [props.windowHeight, props.windowWidth, props.showPersonsAtBottomOnWideScreen]);
+	}, [props.windowHeight, props.windowWidth]);
 
 	return (
 		<li

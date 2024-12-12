@@ -320,18 +320,6 @@ async function run(stateManager: IStateManager) {
 
 		const initialView = getInitialView(dataContext.state.loadNavigationState() as INavigationState);
 		store.dispatch(actionCreators.init(initialView, store.dispatch) as unknown as Action);
-
-		try {
-			const appRegistryClient = new AppRegistryClient({ serviceUri: config.appRegistryServiceUri });
-
-			await appRegistryClient.postAppUsageAsync('1d83d2b8-908f-422f-b3de-4febf96f9665', {
-				appVersion: '8.0.0',
-				osArchitecture: Architecture.X64,
-				osVersion: '10.0.0'
-			});
-		} catch (e) {
-			console.log(e);
-		}
 	} catch (e: any) {
 		ReactDOM.render(
 			<ErrorView error={e.message} />,
