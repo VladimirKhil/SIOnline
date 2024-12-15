@@ -12,13 +12,9 @@ export const enum OnlineActionTypes {
 	ClearGames = 'CLEAR_GAMES',
 	ReceiveGamesStart = 'RECEIVE_GAMES_START',
 	ReceiveGames = 'RECEIVE_GAMES',
-	ReceiveUsers = 'RECEIVE_USERS',
-	ReceiveMessage = 'RECEIVE_MESSAGE',
 	GameCreated = 'GAME_CREATED',
 	GameChanged = 'GAME_CHANGED',
 	GameDeleted = 'GAME_DELETED',
-	UserJoined = 'USER_JOINED',
-	UserLeaved = 'USER_LEAVED',
 	OnlineLoadFinished = 'ONLINE_LOAD_FINISHED',
 	OnlineLoadError = 'ONLINE_LOAD_ERROR',
 	GamesFilterToggle = 'GAMES_FILTER_TOGGLE',
@@ -26,14 +22,10 @@ export const enum OnlineActionTypes {
 	SelectGame = 'SELECT_GAME',
 	PasswordChanged = 'PASSWORD_CHANGED',
 	ChatModeChanged = 'CHAT_MODE_CHANGED',
-	MessageChanged = 'MESSAGE_CHANGED',
 	NewGame = 'NEW_GAME',
 	NewGameCancel = 'NEW_GAME_CANCEL',
 	GameCreationStart = 'GAME_CREATION_START',
 	GameCreationEnd = 'GAME_CREATION_END',
-	UploadPackageStarted = 'UPLOAD_PACKAGE_STARTED',
-	UploadPackageFinished = 'UPLOAD_PACKAGE_FINISHED',
-	UploadPackageProgress = 'UPLOAD_PACKAGE_PROGRESS',
 	JoinGameStarted = 'JOIN_GAME_STARTED',
 	JoinGameFinished = 'JOIN_GAME_FINISHED',
 	LatestGamesLoaded = 'LATEST_GAMES_LOADED',
@@ -44,8 +36,6 @@ export const enum OnlineActionTypes {
 export type ClearGamesAction = { type: OnlineActionTypes.ClearGames };
 export type ReceiveGamesStartAction = { type: OnlineActionTypes.ReceiveGamesStart };
 export type ReceiveGamesAction = { type: OnlineActionTypes.ReceiveGames, games: GameInfo[] };
-export type ReceiveUsersAction = { type: OnlineActionTypes.ReceiveUsers, users: string[] };
-export type ReceiveMessageAction = { type: OnlineActionTypes.ReceiveMessage, sender: string, message: string };
 export type OnlineLoadFinishedAction = { type: OnlineActionTypes.OnlineLoadFinished };
 export type OnlineLoadErrorAction = { type: OnlineActionTypes.OnlineLoadError, error: string };
 export type GamesFilterToggleAction = { type: OnlineActionTypes.GamesFilterToggle, filter: GamesFilter };
@@ -58,14 +48,8 @@ export type ChatModeChangedAction = { type: OnlineActionTypes.ChatModeChanged, c
 export type GameCreatedAction = { type: OnlineActionTypes.GameCreated, game: GameInfo };
 export type GameChangedAction = { type: OnlineActionTypes.GameChanged, game: GameInfo };
 export type GameDeletedAction = { type: OnlineActionTypes.GameDeleted, gameId: number };
-export type UserJoinedAction = { type: OnlineActionTypes.UserJoined, login: string };
-export type UserLeavedAction = { type: OnlineActionTypes.UserLeaved, login: string };
-export type MessageChangedAction = { type: OnlineActionTypes.MessageChanged, message: string };
 export type GameCreationStartAction = { type: OnlineActionTypes.GameCreationStart };
 export type GameCreationEndAction = { type: OnlineActionTypes.GameCreationEnd };
-export type UploadPackageStartedAction = { type: OnlineActionTypes.UploadPackageStarted };
-export type UploadPackageFinishedAction = { type: OnlineActionTypes.UploadPackageFinished };
-export type UploadPackageProgressAction = { type: OnlineActionTypes.UploadPackageProgress, progress: number };
 export type UnselectGameAction = { type: OnlineActionTypes.UnselectGame };
 export type DropSelectedGameAction = { type: OnlineActionTypes.DropSelectedGame };
 export type ResetLobbyAction = { type: OnlineActionTypes.ResetLobby };
@@ -80,8 +64,6 @@ export type KnownOnlineAction =
 	| DropSelectedGameAction
 	| ReceiveGamesStartAction
 	| ReceiveGamesAction
-	| ReceiveUsersAction
-	| ReceiveMessageAction
 	| OnlineLoadFinishedAction
 	| OnlineLoadErrorAction
 	| GamesFilterToggleAction
@@ -94,14 +76,8 @@ export type KnownOnlineAction =
 	| GameCreatedAction
 	| GameChangedAction
 	| GameDeletedAction
-	| UserJoinedAction
-	| UserLeavedAction
-	| MessageChangedAction
 	| GameCreationStartAction
 	| GameCreationEndAction
-	| UploadPackageStartedAction
-	| UploadPackageFinishedAction
-	| UploadPackageProgressAction
 	| UnselectGameAction
 	| UnselectGameAction
 	| ResetLobbyAction

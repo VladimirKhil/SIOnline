@@ -34,7 +34,7 @@ import ServerSex from '../../client/contracts/ServerSex';
 import IGameClient from '../../client/game/IGameClient';
 import ServerRole from '../../client/contracts/ServerRole';
 import clearUrls from '../../utils/clearUrls';
-import { userErrorChanged } from '../new/commonSlice';
+import { userErrorChanged, userWarnChanged } from '../new/commonSlice';
 import WellKnownSIContentServiceErrorCode from 'sicontent-client/dist/models/WellKnownSIContentServiceErrorCode';
 import RandomPackageParameters from 'sistorage-client/dist/models/RandomPackageParameters';
 import { AppDispatch } from '../new/store';
@@ -45,6 +45,7 @@ import { saveStateToStorage } from '../new/StateHelpers';
 import { INavigationState } from '../new/uiSlice';
 import { navigate } from '../../utils/Navigator';
 import { UnknownAction } from '@reduxjs/toolkit';
+import { uploadPackageFinished, uploadPackageProgress, uploadPackageStarted } from '../new/online2Slice';
 
 const selectGame: ActionCreator<OnlineActions.SelectGameAction> = (gameId: number) => ({
 	type: OnlineActions.OnlineActionTypes.SelectGame,
@@ -111,18 +112,7 @@ const navigateToLobby: ActionCreator<ThunkAction<void, State, DataContext, Actio
 			try {
 				await loadStatisticsAsync(dispatch, dataContext);
 			} catch (error) {
-				dispatch(receiveMessage(localization.errorHappened, getErrorMessage(error)));
-			}
-
-			const users = await dataContext.gameClient.getUsersAsync();
-			const sortedUsers = users.sort((user1: string, user2: string) => user1.localeCompare(user2));
-
-			dispatch(receiveUsers(sortedUsers));
-
-			const news = await dataContext.gameClient.getNewsAsync();
-
-			if (news !== null) {
-				dispatch(receiveMessage(localization.news, news));
+				appDispatch(userWarnChanged(getErrorMessage(error)));
 			}
 
 			dispatch(onlineLoadFinish());
@@ -130,17 +120,6 @@ const navigateToLobby: ActionCreator<ThunkAction<void, State, DataContext, Actio
 			dispatch(onlineLoadError(getErrorMessage(error)));
 		}
 	};
-
-const receiveUsers: ActionCreator<OnlineActions.ReceiveUsersAction> = (users: string[]) => ({
-	type: OnlineActions.OnlineActionTypes.ReceiveUsers,
-	users
-});
-
-const receiveMessage: ActionCreator<OnlineActions.ReceiveMessageAction> = (sender: string, message: string) => ({
-	type: OnlineActions.OnlineActionTypes.ReceiveMessage,
-	sender,
-	message
-});
 
 const onGamesFilterToggle: ActionCreator<OnlineActions.GamesFilterToggleAction> = (filter: GamesFilter) => ({
 	type: OnlineActions.OnlineActionTypes.GamesFilterToggle,
@@ -189,33 +168,6 @@ const gameDeleted: ActionCreator<OnlineActions.GameDeletedAction> = (gameId: num
 	gameId
 });
 
-const userJoined: ActionCreator<OnlineActions.UserJoinedAction> = (login: string) => ({
-	type: OnlineActions.OnlineActionTypes.UserJoined,
-	login
-});
-
-const userLeaved: ActionCreator<OnlineActions.UserLeavedAction> = (login: string) => ({
-	type: OnlineActions.OnlineActionTypes.UserLeaved,
-	login
-});
-
-const messageChanged: ActionCreator<OnlineActions.MessageChangedAction> = (message: string) => ({
-	type: OnlineActions.OnlineActionTypes.MessageChanged,
-	message
-});
-
-const sendMessage: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
-	() => (dispatch: Dispatch<OnlineActions.KnownOnlineAction>, getState: () => State, dataContext: DataContext) => {
-		const state = getState();
-
-		const text = state.online.currentMessage.trim();
-		if (text.length > 0) {
-			dataContext.gameClient.sayInLobbyAsync(text);
-		}
-
-		dispatch(messageChanged(''));
-	};
-
 const gameCreationStart: ActionCreator<OnlineActions.GameCreationStartAction> = () => ({
 	type: OnlineActions.OnlineActionTypes.GameCreationStart
 });
@@ -223,19 +175,6 @@ const gameCreationStart: ActionCreator<OnlineActions.GameCreationStartAction> = 
 const gameCreationEnd: ActionCreator<OnlineActions.GameCreationEndAction> = (error: string | null = null) => ({
 	type: OnlineActions.OnlineActionTypes.GameCreationEnd,
 	error
-});
-
-const uploadPackageStarted: ActionCreator<OnlineActions.UploadPackageStartedAction> = () => ({
-	type: OnlineActions.OnlineActionTypes.UploadPackageStarted
-});
-
-const uploadPackageFinished: ActionCreator<OnlineActions.UploadPackageFinishedAction> = () => ({
-	type: OnlineActions.OnlineActionTypes.UploadPackageFinished
-});
-
-const uploadPackageProgress: ActionCreator<OnlineActions.UploadPackageProgressAction> = (progress: number) => ({
-	type: OnlineActions.OnlineActionTypes.UploadPackageProgress,
-	progress
 });
 
 async function loadStatisticsAsync(dispatch: Dispatch<OnlineActions.KnownOnlineAction>, dataContext: DataContext) {
@@ -265,24 +204,37 @@ async function loadStatisticsAsync(dispatch: Dispatch<OnlineActions.KnownOnlineA
 async function uploadPackageAsync2(
 	contentClient: SIContentClient,
 	packageData: File,
-	dispatch: Dispatch<any>
+	dispatch: AppDispatch,
 ): Promise<PackageInfo> {
-	const packageUri = await contentClient.uploadPackageIfNotExistAsync(
-		packageData.name,
-		packageData,
-		() => dispatch(uploadPackageStarted()),
-		(progress: number) => {
-			dispatch(uploadPackageProgress(progress));
-		},
-		() => dispatch(uploadPackageFinished())
-	);
+	try {
+		const packageUri = await contentClient.uploadPackageIfNotExistAsync(
+			packageData.name,
+			packageData,
+			() => dispatch(uploadPackageStarted()),
+			(progress: number) => {
+				dispatch(uploadPackageProgress(progress));
+			},
+			() => dispatch(uploadPackageFinished())
+		);
 
-	return {
-		Type: PackageType2.Content,
-		Uri: packageUri,
-		ContentServiceUri: contentClient.options.serviceUri,
-		Secret: null
-	};
+		return {
+			Type: PackageType2.Content,
+			Uri: packageUri,
+			ContentServiceUri: contentClient.options.serviceUri,
+			Secret: null
+		};
+	} catch (error) {
+		switch ((error as SIContentServiceError)?.errorCode) {
+			case WellKnownSIContentServiceErrorCode.BadPackageFile:
+				throw new Error(localization.badPackage);
+
+			case WellKnownSIContentServiceErrorCode.FileTooLarge:
+				throw new Error(localization.packageIsTooBig);
+
+			default:
+				throw error;
+		}
+	}
 }
 
 function getRandomValue(): number {
@@ -499,7 +451,7 @@ function createGameSettings(
 	return gameSettings;
 }
 
-async function getPackageInfoAsync(state: State, game: GameState, dataContext: DataContext, dispatch: Dispatch<any>): Promise<PackageInfo> {
+async function getPackageInfoAsync(state: State, game: GameState, dataContext: DataContext, dispatch: AppDispatch): Promise<PackageInfo> {
 	switch (game.package.type) {
 		case PackageType.File:
 			if (!game.package.data) {
@@ -625,10 +577,7 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 				dispatch(joinGame(result.HostUri, result.GameId, state.user.login, role, null, appDispatch));
 			}
 		} catch (error) {
-			const userError = (error as SIContentServiceError)?.errorCode === WellKnownSIContentServiceErrorCode.BadPackageFile
-				? localization.badPackage
-				: getErrorMessage(error);
-
+			const userError = getErrorMessage(error);
 			appDispatch(userErrorChanged(userError));
 		} finally {
 			dispatch(gameCreationEnd());
@@ -685,11 +634,6 @@ const onlineActionCreators = {
 	gameCreated,
 	gameChanged,
 	gameDeleted,
-	userJoined,
-	userLeaved,
-	messageChanged,
-	sendMessage,
-	receiveMessage,
 	createNewGame,
 	createNewAutoGame,
 	initGameAsync,

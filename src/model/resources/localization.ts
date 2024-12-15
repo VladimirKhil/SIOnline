@@ -267,6 +267,8 @@ All game functionality is available for free—donations do not affect gameplay 
 		packageAuthor: 'Author',
 		packageAuthors: 'Authors',
 		packageDifficulty: 'Difficulty',
+		packageFileWarning: `By uploading a package to the server, you take responsibility for the content of the package.
+The package will be automatically deleted from the server after the game ends`,
 		packagePublishedDate: 'Publish date',
 		packagePublisher: 'Publisher',
 		packageRestriction: 'Restriction',
@@ -683,6 +685,8 @@ All game functionality is available for free—donations do not affect gameplay 
 		packageAuthor: 'Автор',
 		packageAuthors: 'Авторы',
 		packageDifficulty: 'Сложность',
+		packageFileWarning: `Загружая пакет на сервер, вы берёте на себя ответственность за содержимое пакета.
+Пакет будет автоматически удалён с сервера после окончания игры`,
 		packagePublishedDate: 'Дата публикации',
 		packagePublisher: 'Издатель',
 		packageRestriction: 'Ограничение',

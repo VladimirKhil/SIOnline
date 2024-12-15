@@ -18,9 +18,6 @@ export function attachListeners(
 	dispatch: Dispatch<AnyAction>,
 	appDispatch: AppDispatch,
 ): void {
-	connection.on('Joined', (login: string) => dispatch(onlineActionCreators.userJoined(login)));
-	connection.on('Leaved', (login: string) => dispatch(onlineActionCreators.userLeaved(login)));
-	connection.on('Say', (name: string, text: string) => dispatch(onlineActionCreators.receiveMessage(name, text)));
 	connection.on('GameCreated', (game: GameInfo) => dispatch(onlineActionCreators.gameCreated(game)));
 	connection.on('GameChanged', (game: GameInfo) => dispatch(onlineActionCreators.gameChanged(game)));
 	connection.on('GameDeleted', (id: number) => dispatch(onlineActionCreators.gameDeleted(id)));
@@ -72,9 +69,6 @@ export function attachListeners(
 }
 
 export function detachListeners(connection: signalR.HubConnection): void {
-	connection.off('Joined');
-	connection.off('Leaved');
-	connection.off('Say');
 	connection.off('GameCreated');
 	connection.off('GameChanged');
 	connection.off('GameDeleted');

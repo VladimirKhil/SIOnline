@@ -2,8 +2,6 @@ import { AnyAction, Reducer } from 'redux';
 import OnlineState, { initialState } from './OnlineState';
 import { KnownOnlineAction, OnlineActionTypes } from './OnlineActions';
 import { create, remove, set } from '../../utils/RecordExtensions';
-import MessageLevel from '../../model/enums/MessageLevel';
-import { removeFromArray } from '../../utils/ArrayExtensions';
 
 const onlineReducer: Reducer<OnlineState> = (state: OnlineState = initialState, anyAction: AnyAction): OnlineState => {
 	const action = anyAction as KnownOnlineAction;
@@ -31,8 +29,6 @@ const onlineReducer: Reducer<OnlineState> = (state: OnlineState = initialState, 
 			return {
 				...state,
 				games: [],
-				users: [],
-				messages: [],
 				inProgress: true,
 				error: ''
 			};
@@ -47,23 +43,6 @@ const onlineReducer: Reducer<OnlineState> = (state: OnlineState = initialState, 
 			return {
 				...state,
 				games: { ...state.games, ...create(action.games, game => game.GameID) }
-			};
-
-		case OnlineActionTypes.ReceiveUsers:
-			return {
-				...state,
-				users: action.users
-			};
-
-		case OnlineActionTypes.ReceiveMessage:
-			return {
-				...state,
-				messages: [
-				...state.messages, {
-					sender: action.sender,
-					text: action.message,
-					level: MessageLevel.Information,
-				}]
 			};
 
 		case OnlineActionTypes.GameCreated:
@@ -83,22 +62,6 @@ const onlineReducer: Reducer<OnlineState> = (state: OnlineState = initialState, 
 				...state,
 				games: remove(state.games, action.gameId),
 				selectedGameId: state.selectedGameId === action.gameId ? -1 : state.selectedGameId
-			};
-
-		case OnlineActionTypes.UserJoined:
-			if (state.users.indexOf(action.login) > -1) {
-				return state;
-			}
-
-			return {
-				...state,
-				users: [...state.users, action.login]
-			};
-
-		case OnlineActionTypes.UserLeaved:
-			return {
-				...state,
-				users: removeFromArray(state.users, action.login)
 			};
 
 		case OnlineActionTypes.OnlineLoadFinished:
@@ -141,13 +104,6 @@ const onlineReducer: Reducer<OnlineState> = (state: OnlineState = initialState, 
 			};
 		}
 
-		case OnlineActionTypes.MessageChanged: {
-			return {
-				...state,
-				currentMessage: action.message
-			};
-		}
-
 		case OnlineActionTypes.ChatModeChanged: {
 			return {
 				...state,
@@ -184,25 +140,6 @@ const onlineReducer: Reducer<OnlineState> = (state: OnlineState = initialState, 
 				gameCreationProgress: false,
 			};
 		}
-
-		case OnlineActionTypes.UploadPackageStarted:
-			return {
-				...state,
-				uploadPackageProgress: true,
-				uploadPackagePercentage: 0
-			};
-
-		case OnlineActionTypes.UploadPackageFinished:
-			return {
-				...state,
-				uploadPackageProgress: false
-			};
-
-		case OnlineActionTypes.UploadPackageProgress:
-			return {
-				...state,
-				uploadPackagePercentage: action.progress
-			};
 
 		case OnlineActionTypes.JoinGameStarted: {
 			return {

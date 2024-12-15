@@ -1,0 +1,25 @@
+.packageSelector input[type='file'] {
+    display: none;
+}
+
+.packageSelector {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+	overflow: hidden;
+	height: 100%;
+}
+
+.packageFileWarning {
+	overflow: hidden;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 100%;
+	width: 50%;
+	margin-left: 20px;
+}
+
+.block.forPackage {
+    height: 108px;
+}

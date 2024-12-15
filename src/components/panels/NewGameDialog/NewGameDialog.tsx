@@ -22,8 +22,6 @@ interface NewGameDialogProps {
 	isConnected: boolean;
 	isSingleGame: boolean;
 	inProgress: boolean;
-	uploadPackageProgress: boolean;
-	uploadPackagePercentage: number;
 
 	onCreate: (isSingleGame: boolean, appDispatch: AppDispatch) => void;
 	onClose: () => void;
@@ -32,8 +30,6 @@ interface NewGameDialogProps {
 const mapStateToProps = (state: State) => ({
 	isConnected: state.common.isConnected,
 	inProgress: state.online.gameCreationProgress,
-	uploadPackageProgress:  state.online.uploadPackageProgress,
-	uploadPackagePercentage: state.online.uploadPackagePercentage,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
@@ -48,6 +44,7 @@ export function NewGameDialog(props: NewGameDialogProps) {
 	const appDispatch = useAppDispatch();
 	const ui = useAppSelector(state => state.ui);
 	const game = useAppSelector(state => state.game);
+	const online = useAppSelector(state => state.online2);
 
 	React.useEffect(() => {
 		if (ui.navigation.packageUri) {
@@ -113,11 +110,11 @@ export function NewGameDialog(props: NewGameDialogProps) {
 
 				{props.inProgress ? <ProgressBar isIndeterminate /> : null}
 
-				{props.uploadPackageProgress ? (
+				{online.uploadPackageProgress ? (
 					<div className="uploadPackagePanel">
 						<div className="uploadPackageMessage">
 							<span>{localization.sendingPackage}</span>
-							<ProgressBar isIndeterminate={false} value={props.uploadPackagePercentage} />
+							<ProgressBar isIndeterminate={false} value={online.uploadPackagePercentage} />
 						</div>
 					</div>
 				) : null}

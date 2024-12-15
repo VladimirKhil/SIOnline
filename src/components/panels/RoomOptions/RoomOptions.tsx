@@ -26,14 +26,15 @@ import onlineActionCreators from '../../../state/online/onlineActionCreators';
 import { Dispatch } from 'react';
 import { Action } from 'redux';
 import { INavigationState } from '../../../state/new/uiSlice';
+import AutoSizedText from '../../common/AutoSizedText/AutoSizedText';
+
+import './RoomOptions.scss';
 
 interface RoomOptionsProps {
 	isConnected: boolean;
 	isSingleGame: boolean;
 	isOralGame: boolean;
 	inProgress: boolean;
-	uploadPackageProgress: boolean;
-	uploadPackagePercentage: number;
 	navigation: INavigationState;
 	clearUrls?: boolean;
 	isSIStorageOpen: boolean;
@@ -52,8 +53,6 @@ const mapStateToProps = (state: State) => ({
 	isConnected: state.common.isConnected,
 	isOralGame: state.settings.appSettings.oral,
 	inProgress: state.online.gameCreationProgress,
-	uploadPackageProgress:  state.online.uploadPackageProgress,
-	uploadPackagePercentage: state.online.uploadPackagePercentage,
 	navigation: state.ui.navigation,
 	clearUrls: state.common.clearUrls,
 });
@@ -174,7 +173,7 @@ export function RoomOptions(props: RoomOptionsProps) {
 			</>
 		)}
 
-		<div className="block">
+		<div className="block forPackage">
 			<div className='blockName newGameHeader'>{localization.questionPackage}</div>
 
 			<div className='blockValue packageSelector'>
@@ -199,6 +198,10 @@ export function RoomOptions(props: RoomOptionsProps) {
 					ref={childRef}
 					onGamePackageTypeChanged={(type) => appDispatch(setPackageType(type))}
 					onGamePackageDataChanged={onGamePackageDataChanged} />
+
+				{game.package.type === PackageType.File
+					? <AutoSizedText className='packageFileWarning' maxFontSize={16}>{localization.packageFileWarning}</AutoSizedText>
+					: null}
 			</div>
 		</div>
 

@@ -1,9 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import ChatMessage from '../../model/ChatMessage';
 import GamesFilter from '../../model/enums/GamesFilter';
-import localization from '../../model/resources/localization';
 import GameInfo from '../../client/contracts/GameInfo';
-import MessageLevel from '../../model/enums/MessageLevel';
 import LobbySideMode from '../../model/enums/LobbySideMode';
 
 interface OnlineState {
@@ -13,16 +10,11 @@ interface OnlineState {
 	gamesSearch: string;
 	games: Record<number, GameInfo>;
 	selectedGameId: number;
-	users: string[];
-	currentMessage: string;
-	messages: ChatMessage[];
 	password: string;
 	chatMode: LobbySideMode;
 	newGameShown: boolean;
 	gameCreationProgress: boolean;
 	joinGameProgress: boolean;
-	uploadPackageProgress: boolean;
-	uploadPackagePercentage: number;
 }
 
 const initialState: OnlineState = {
@@ -32,22 +24,11 @@ const initialState: OnlineState = {
 	gamesSearch: '',
 	games: {},
 	selectedGameId: -1,
-	users: [],
-	currentMessage: '',
-	messages: [
-		{
-			sender: localization.appUser,
-			text: localization.greeting,
-			level: MessageLevel.System
-		}
-	],
 	password: '',
 	chatMode: LobbySideMode.Trends,
 	newGameShown: false,
 	gameCreationProgress: false,
 	joinGameProgress: false,
-	uploadPackageProgress: false,
-	uploadPackagePercentage: 0
 };
 
 export const onlineSlice = createSlice({

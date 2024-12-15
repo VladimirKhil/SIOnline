@@ -95,16 +95,6 @@ input.blockValue[type="text"], input.blockValue[type="number"], input.blockValue
     margin-left: 10px;
 }
 
-.packageSelector input[type='file'] {
-    display: none;
-}
-
-.packageSelector {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-}
-
 .newGameDialog .packageName {
     vertical-align: middle;
     margin: 3px 0 0 5px;
