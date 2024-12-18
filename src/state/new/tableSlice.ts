@@ -14,6 +14,7 @@ export interface TableState {
 	layoutMode: LayoutMode;
 	caption: string;
 	header: string;
+	largeHeader: boolean;
 	text: string;
 	tail: string;
 	hint: string;
@@ -41,6 +42,7 @@ const initialState: TableState = {
 	layoutMode: LayoutMode.Simple,
 	caption: '',
 	header: '',
+	largeHeader: false,
 	text: '',
 	tail: '',
 	hint: '',
@@ -81,9 +83,10 @@ export const tableSlice = createSlice({
 			state.mode = TableMode.GameThemes;
 			state.gameThemes = action.payload;
 		},
-		showObject: (state: TableState, action: PayloadAction<{ header: string, text: string, hint: string }>) => {
+		showObject: (state: TableState, action: PayloadAction<{ header: string, text: string, hint: string, large: boolean }>) => {
 			state.mode = TableMode.Object;
 			state.header = action.payload.header;
+			state.largeHeader = action.payload.large;
 			state.text = action.payload.text;
 			state.hint = action.payload.hint;
 			state.rotate = false;

@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { Dispatch, Action } from 'redux';
 import { connect } from 'react-redux';
-import localization from '../../model/resources/localization';
-import State from '../../state/State';
-import roomActionCreators from '../../state/room/roomActionCreators';
+import localization from '../../../model/resources/localization';
+import State from '../../../state/State';
+import roomActionCreators from '../../../state/room/roomActionCreators';
 
 import './BannedView.css';
 

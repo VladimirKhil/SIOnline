@@ -14,7 +14,7 @@ export default function ObjectView() {
 
 			<AutoSizedText
 				className={`tableText tableTextCenter objectName ${state.rotate ? 'rotate' : ''}`}
-				maxFontSize={144}>
+				maxFontSize={state.largeHeader ? 216 : 144}>
 				{state.text}
 			</AutoSizedText>
 

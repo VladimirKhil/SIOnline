@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { connect, MapStateToProps } from 'react-redux';
-import localization from '../../model/resources/localization';
-import State from '../../state/State';
-import Constants from '../../model/enums/Constants';
+import localization from '../../../model/resources/localization';
+import State from '../../../state/State';
+import Constants from '../../../model/enums/Constants';
 
 import './GameMetadataView.css';
 

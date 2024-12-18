@@ -98,6 +98,19 @@
         overflow: hidden;
     }
 
+    #table .tableText.fadeIn {
+        animation: fadeIn 0.2s ease-in forwards;
+    }
+
+    @keyframes fadeIn {
+        from {
+          opacity: 0; /* Start at 0 opacity */
+        }
+        to {
+          opacity: 1; /* End at full opacity */
+        }
+      }
+
     .mainContent .tableText {
         padding: 5px;
     }

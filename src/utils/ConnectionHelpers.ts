@@ -1,12 +1,11 @@
 import * as signalR from '@microsoft/signalr';
-import { Dispatch, AnyAction } from 'redux';
 import localization from '../model/resources/localization';
 import GameInfo from '../client/contracts/GameInfo';
-import onlineActionCreators from '../state/online/onlineActionCreators';
 import IGameServerClient from '../client/IGameServerClient';
 import getErrorMessage from './ErrorHelpers';
 import { AppDispatch } from '../state/new/store';
 import { isConnectedChanged, userErrorChanged } from '../state/new/commonSlice';
+import { gameChanged, gameCreated, gameDeleted } from '../state/new/online2Slice';
 
 export const activeConnections: string[] = [];
 
@@ -15,12 +14,11 @@ const detachedConnections: signalR.HubConnection[] = [];
 export function attachListeners(
 	gameClient: IGameServerClient,
 	connection: signalR.HubConnection,
-	dispatch: Dispatch<AnyAction>,
 	appDispatch: AppDispatch,
 ): void {
-	connection.on('GameCreated', (game: GameInfo) => dispatch(onlineActionCreators.gameCreated(game)));
-	connection.on('GameChanged', (game: GameInfo) => dispatch(onlineActionCreators.gameChanged(game)));
-	connection.on('GameDeleted', (id: number) => dispatch(onlineActionCreators.gameDeleted(id)));
+	connection.on('GameCreated', (game: GameInfo) => appDispatch(gameCreated(game)));
+	connection.on('GameChanged', (game: GameInfo) => appDispatch(gameChanged(game)));
+	connection.on('GameDeleted', (id: number) => appDispatch(gameDeleted(id)));
 
 	connection.onreconnecting((e) => {
 		if (detachedConnections.includes(connection)) {

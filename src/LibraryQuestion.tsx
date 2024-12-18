@@ -3,7 +3,7 @@ import { Provider } from 'react-redux';
 import runCore from './LibraryCore';
 import React from 'react';
 import GameTable from './components/gameTable/GameTable/GameTable';
-import ShowmanReplic from './components/game/ShowmanReplic';
+import ShowmanReplic from './components/game/ShowmanReplic/ShowmanReplic';
 
 import './scss/style.scss';
 

@@ -21,15 +21,12 @@ interface LoginProps {
 	login: string;
 	culture: string;
 
-	selectedGameId: number;
 	onLogin: (appDispatch: AppDispatch) => void;
 }
 
 const mapStateToProps = (state: State) => ({
 	login: state.user.login,
 	culture: state.settings.appSettings.culture || localization.getLanguage(),
-
-	selectedGameId: state.online.selectedGameId,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({

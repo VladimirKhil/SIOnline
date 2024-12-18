@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import State from '../../state/State';
-import ProgressBar from '../common/ProgressBar/ProgressBar';
-import TimerInfo from '../../model/TimerInfo';
-import { isRunning } from '../../utils/TimerInfoHelpers';
-import localization from '../../model/resources/localization';
-import GameStage from '../../model/enums/GameStage';
+import State from '../../../state/State';
+import ProgressBar from '../../common/ProgressBar/ProgressBar';
+import TimerInfo from '../../../model/TimerInfo';
+import { isRunning } from '../../../utils/TimerInfoHelpers';
+import localization from '../../../model/resources/localization';
+import GameStage from '../../../model/enums/GameStage';
 
 import './RoundProgress.css';
 

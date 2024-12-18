@@ -1,10 +1,10 @@
 import * as React from 'react';
-import ChatMessage from '../../model/ChatMessage';
-import State from '../../state/State';
+import ChatMessage from '../../../model/ChatMessage';
+import State from '../../../state/State';
 import { connect } from 'react-redux';
-import ChatLog from '../common/ChatLog/ChatLog';
-import hasUserMentioned from '../../utils/MentionHelpers';
-import roomActionCreators from '../../state/room/roomActionCreators';
+import ChatLog from '../../common/ChatLog/ChatLog';
+import hasUserMentioned from '../../../utils/MentionHelpers';
+import roomActionCreators from '../../../state/room/roomActionCreators';
 import { Action, Dispatch } from 'redux';
 
 import './GameLogView.css';

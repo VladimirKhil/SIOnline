@@ -3,7 +3,6 @@ import * as signalR from '@microsoft/signalr';
 import userReducer from './userSlice';
 import loginReducer from './loginSlice';
 import uiReducer from './uiSlice';
-import onlineReducer from './onlineSlice';
 import online2Reducer from './online2Slice';
 import gameReducer from './gameSlice';
 import roomReducer from './roomSlice';
@@ -51,7 +50,6 @@ const store = configureStore({
 		user: userReducer,
 		login: loginReducer,
 		ui: uiReducer,
-		online: onlineReducer,
 		online2: online2Reducer,
 		game: gameReducer,
 		room: roomReducer,

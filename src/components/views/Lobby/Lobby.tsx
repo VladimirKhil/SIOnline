@@ -6,7 +6,6 @@ import GameInfoView from '../../panels/GameInfoView/GameInfoView';
 import UsersView from '../../panels/UsersView/UsersView';
 import OnlineMode from '../../../model/enums/OnlineMode';
 import NewGameDialog from '../../panels/NewGameDialog/NewGameDialog';
-import GameInfo from '../../../client/contracts/GameInfo';
 import Dialog from '../../common/Dialog/Dialog';
 import onlineActionCreators from '../../../state/online/onlineActionCreators';
 import { Dispatch, Action } from 'redux';
@@ -19,15 +18,12 @@ import GamesControlPanel from '../../panels/GamesControlPanel/GamesControlPanel'
 import LobbyBottomPanel from '../../panels/LobbyBottomPanel/LobbyBottomPanel';
 import { navigate } from '../../../utils/Navigator';
 import { closeGameInfo } from '../../../state/new/uiSlice';
+import { useAppSelector } from '../../../state/new/hooks';
 
 import './Lobby.css';
 import exitImg from '../../../../assets/images/exit.png';
 
 interface LobbyProps {
-	inProgress: boolean;
-	filteredGames: GameInfo[];
-	selectedGameId: number;
-	selectedGame?: GameInfo;
 	windowWidth: number;
 	mode: OnlineMode;
 	newGameShown: boolean;
@@ -36,23 +32,12 @@ interface LobbyProps {
 	closeNewGame: () => void;
 }
 
-const mapStateToProps = (state: State) => {
-	const filteredGames = filterGames(Object.values(state.online.games), state.online.gamesFilter, state.online.gamesSearch);
-
-	const hasSelectedGame = filteredGames.some(game => game.GameID === state.online.selectedGameId);
-	const selectedGameId = hasSelectedGame ? state.online.selectedGameId : (filteredGames.length > 0 ? filteredGames[0].GameID : -1);
-
-	return {
-		inProgress: state.online.inProgress,
-		filteredGames,
-		selectedGameId,
-		selectedGame: state.online.games[selectedGameId],
-		windowWidth: state.ui.windowWidth,
-		mode: state.ui.onlineView,
-		newGameShown: state.online.newGameShown,
-		isLobbyChatHidden: state.settings.isLobbyChatHidden
-	};
-};
+const mapStateToProps = (state: State) => ({
+	windowWidth: state.ui.windowWidth,
+	mode: state.ui.onlineView,
+	newGameShown: state.online.newGameShown,
+	isLobbyChatHidden: state.settings.isLobbyChatHidden
+});
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	closeNewGame: () => {
@@ -82,6 +67,13 @@ const topMenu = (onExit: () => void) => (
 
 export function Lobby(props: LobbyProps) {
 	const appDispatch = useDispatch();
+	const online = useAppSelector(state => state.online2);
+
+	const filteredGames = filterGames(Object.values(online.games), online.gamesFilter, online.gamesSearch);
+
+	const hasSelectedGame = filteredGames.some(game => game.GameID === online.selectedGameId);
+	const selectedGameId = hasSelectedGame ? online.selectedGameId : (filteredGames.length > 0 ? filteredGames[0].GameID : -1);
+	const selectedGame = online.games[selectedGameId];
 
 	const newGame = (
 		<div className={`newGameArea ${props.isLobbyChatHidden ? 'newWide' : null}`}>
@@ -96,10 +88,10 @@ export function Lobby(props: LobbyProps) {
 	};
 
 	if (props.windowWidth < 1100) { // TODO: this should be solved purely in CSS
-		if (props.mode === OnlineMode.GameInfo && props.selectedGame) {
+		if (props.mode === OnlineMode.GameInfo && selectedGame) {
 			return (
-				<Dialog id="gameInfoDialog" title={props.selectedGame.GameName} onClose={onCloseGameInfo}>
-					<GameInfoView game={props.selectedGame} showGameName={false} />
+				<Dialog id="gameInfoDialog" title={selectedGame.GameName} onClose={onCloseGameInfo}>
+					<GameInfoView game={selectedGame} showGameName={false} />
 				</Dialog>
 			);
 		}
@@ -108,12 +100,12 @@ export function Lobby(props: LobbyProps) {
 			return (
 				<div className="lobby">
 					<div className="onlineView">
-						{props.inProgress ? <ProgressBar isIndeterminate /> : null}
+						{online.inProgress ? <ProgressBar isIndeterminate /> : null}
 
 						<div className='gamesBlock'>
 							{topMenu(onExit)}
-							<GamesControlPanel games={props.filteredGames} />
-							<GamesList games={props.filteredGames} selectedGameId={props.selectedGameId} showInfo />
+							<GamesControlPanel games={filteredGames} />
+							<GamesList games={filteredGames} selectedGameId={selectedGameId} showInfo />
 							<LobbyBottomPanel />
 						</div>
 
@@ -138,17 +130,17 @@ export function Lobby(props: LobbyProps) {
 			{topMenu(onExit)}
 
 			<div className='onlineView'>
-				{props.inProgress ? <ProgressBar isIndeterminate /> : null}
+				{online.inProgress ? <ProgressBar isIndeterminate /> : null}
 
 				<div className='gamesArea'>
-					<GamesControlPanel games={props.filteredGames} />
+					<GamesControlPanel games={filteredGames} />
 
 					<div className='gamesView'>
-						<GamesList games={props.filteredGames} selectedGameId={props.selectedGameId} showInfo={false} />
+						<GamesList games={filteredGames} selectedGameId={selectedGameId} showInfo={false} />
 
 						<div className='gameInfoArea'>
 							<header />
-							<div className='gameInfoAreaContent'><GameInfoView game={props.selectedGame} showGameName /></div>
+							<div className='gameInfoAreaContent'><GameInfoView game={selectedGame} showGameName /></div>
 						</div>
 					</div>
 				</div>

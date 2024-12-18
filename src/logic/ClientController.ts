@@ -477,7 +477,7 @@ export default class ClientController {
 				value: packageName
 			}]);
 		} else {
-			this.appDispatch(showObject({ header: localization.package, text: packageName, hint: '' }));
+			this.appDispatch(showObject({ header: localization.package, text: packageName, hint: '', large: false }));
 		}
 	}
 
@@ -608,7 +608,7 @@ export default class ClientController {
 			this.playGameSound(GameSound.ROUND_BEGIN);
 			const { roundTail } = localization;
 			const roundName = stageName.endsWith(roundTail) ? stageName.substring(0, stageName.length - roundTail.length) : stageName;
-			this.appDispatch(showObject({ header: localization.round, text: roundName, hint: getRuleString(rules) }));
+			this.appDispatch(showObject({ header: localization.round, text: roundName, hint: getRuleString(rules), large: true }));
 
 			if (stage === GameStage.Round) {
 				for	(let i = 0; i < state.room2.persons.players.length; i++) {
@@ -829,7 +829,7 @@ export default class ClientController {
 						this.appDispatch(updateQuestion({ themeIndex, questionIndex, price: -1 }));
 
 						if (this.getState().table.mode === TableMode.RoundTable) {
-							this.appDispatch(showObject({ header: themeInfo.name, text: price.toString(), hint: '' }));
+							this.appDispatch(showObject({ header: themeInfo.name, text: price.toString(), hint: '', large: true }));
 						}
 					},
 					500
@@ -841,7 +841,7 @@ export default class ClientController {
 	onTheme(themeName: string) {
 		this.appDispatch(playersStateCleared());
 		this.appDispatch(showmanReplicChanged(''));
-		this.appDispatch(showObject({ header: localization.theme, text: themeName, hint: '' }));
+		this.appDispatch(showObject({ header: localization.theme, text: themeName, hint: '', large: false }));
 		this.dispatch(roomActionCreators.afterQuestionStateChanged(false));
 		this.dispatch(roomActionCreators.themeNameChanged(themeName));
 		this.appDispatch(canPressChanged(false));
@@ -852,7 +852,7 @@ export default class ClientController {
 		const { themeName } = this.getState().room.stage;
 		this.appDispatch(playersStateCleared());
 		this.dispatch(roomActionCreators.afterQuestionStateChanged(false));
-		this.appDispatch(showObject({ header: themeName, text: questionPrice, hint: '' }));
+		this.appDispatch(showObject({ header: themeName, text: questionPrice, hint: '', large: true }));
 		this.appDispatch(captionChanged(`${themeName}, ${questionPrice}`));
 		this.appDispatch(questionReset());
 	}

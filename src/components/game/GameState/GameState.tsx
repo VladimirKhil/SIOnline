@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { AppDispatch } from '../../../state/new/store';
 import { Action } from 'redux';
 import roomActionCreators from '../../../state/room/roomActionCreators';
-import GameProgress from '../GameProgress';
+import GameProgress from '../GameProgress/GameProgress';
 import MoveRoundButton from '../MoveRoundButton/MoveRoundButton';
 import State from '../../../state/State';
 import Role from '../../../model/Role';

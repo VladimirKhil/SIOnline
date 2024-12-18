@@ -1,5 +1,5 @@
 import * as React from 'react';
-import PersonInfo from '../../model/PersonInfo';
+import PersonInfo from '../../../model/PersonInfo';
 
 import './TableView.css';
 

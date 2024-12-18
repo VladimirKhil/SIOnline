@@ -1,5 +1,6 @@
 import DataContext from '../model/DataContext';
 import Path from '../model/enums/Path';
+import { loadLobby } from '../state/new/online2Slice';
 import { RootState } from '../state/new/store';
 import { INavigationState, navigateCore } from '../state/new/uiSlice';
 import onlineActionCreators from '../state/online/onlineActionCreators';
@@ -33,9 +34,6 @@ export const navigate = createAsyncThunk(
 
 		if (navigation.path === Path.Room) {
 			nav = { ...navigation, returnToLobby: (thunkAPI.getState() as RootState).ui.navigation.path === Path.Lobby };
-		} else if (navigation.path === Path.JoinRoom) {
-			thunkAPI.dispatch(onlineActionCreators.receiveGameStart());
-			nav = navigation;
 		} else {
 			nav = navigation;
 		}
@@ -44,7 +42,7 @@ export const navigate = createAsyncThunk(
 
 		switch (nav.path) {
 			case Path.Lobby:
-				thunkAPI.dispatch(onlineActionCreators.navigateToLobby(thunkAPI.dispatch) as unknown as UnknownAction);
+				thunkAPI.dispatch(loadLobby());
 				break;
 
 			default:

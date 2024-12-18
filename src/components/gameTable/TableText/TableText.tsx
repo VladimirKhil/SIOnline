@@ -15,7 +15,7 @@ const mapStateToProps = (state: State) => ({
 
 export function TableText(props: TableTextProps) {
 	return (
-		<AutoSizedText className="tableText tableTextCenter margined" maxFontSize={72}>{props.text}</AutoSizedText>
+		<AutoSizedText className="tableText fadeIn tableTextCenter margined" maxFontSize={72}>{props.text}</AutoSizedText>
 	);
 }
 

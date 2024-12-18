@@ -1,7 +1,7 @@
 import * as React from 'react';
-import State from '../../state/State';
+import State from '../../../state/State';
 import { connect } from 'react-redux';
-import roomActionCreators from '../../state/room/roomActionCreators';
+import roomActionCreators from '../../../state/room/roomActionCreators';
 import { Action, Dispatch } from 'redux';
 
 import './ManageGameView.css';

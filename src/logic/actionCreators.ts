@@ -245,7 +245,7 @@ const tryConnectAsync = async (
 		appDispatch(computerAccountsChanged(computerAccounts));
 
 		// Listeners should be attached after first successfull request to be sure that connection is working
-		attachListeners(dataContext.gameClient, dataContext.connection, dispatch, appDispatch);
+		attachListeners(dataContext.gameClient, dataContext.connection, appDispatch);
 
 		await loadHostInfoAsync(appDispatch, dataContext, requestCulture);
 		await uploadAvatarAsync(appDispatch, dataContext);

@@ -1,15 +1,15 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import State from '../../state/State';
-import ShowmanReplic from './ShowmanReplic';
-import ProgressBar from '../common/ProgressBar/ProgressBar';
-import TimerInfo from '../../model/TimerInfo';
-import { isRunning } from '../../utils/TimerInfoHelpers';
-import getAvatarClass from '../../utils/AccountHelpers';
-import Sex from '../../model/enums/Sex';
-import localization from '../../model/resources/localization';
-import { useAppSelector } from '../../state/new/hooks';
-import Persons from '../../model/Persons';
+import State from '../../../state/State';
+import ShowmanReplic from '../ShowmanReplic/ShowmanReplic';
+import ProgressBar from '../../common/ProgressBar/ProgressBar';
+import TimerInfo from '../../../model/TimerInfo';
+import { isRunning } from '../../../utils/TimerInfoHelpers';
+import getAvatarClass from '../../../utils/AccountHelpers';
+import Sex from '../../../model/enums/Sex';
+import localization from '../../../model/resources/localization';
+import { useAppSelector } from '../../../state/new/hooks';
+import Persons from '../../../model/Persons';
 
 import './ShowmanReplicView.scss';
 

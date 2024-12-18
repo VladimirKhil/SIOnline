@@ -1,13 +1,9 @@
 import { Action, ActionCreator, Dispatch } from 'redux';
 import * as OnlineActions from './OnlineActions';
-import IGameServerClient from '../../client/IGameServerClient';
-import Slice from '../../client/contracts/Slice';
-import GameInfo from '../../client/contracts/GameInfo';
 import State from '../State';
 import DataContext from '../../model/DataContext';
 import getErrorMessage from '../../utils/ErrorHelpers';
 import localization from '../../model/resources/localization';
-import GamesFilter from '../../model/enums/GamesFilter';
 import SIContentClient, { SIContentServiceError } from 'sicontent-client';
 import PackageInfo from '../../client/contracts/PackageInfo';
 import { ThunkAction } from 'redux-thunk';
@@ -25,16 +21,11 @@ import roomActionCreators from '../room/roomActionCreators';
 import * as GameErrorsHelper from '../../utils/GameErrorsHelper';
 import actionCreators from '../../logic/actionCreators';
 import ServerTimeSettings from '../../client/contracts/ServerTimeSettings';
-import LobbySideMode from '../../model/enums/LobbySideMode';
-import SIStatisticsClient from 'sistatistics-client';
-import GamePlatforms from 'sistatistics-client/dist/models/GamePlatforms';
-import StatisticFilter from 'sistatistics-client/dist/models/StatisticFilter';
 import Path from '../../model/enums/Path';
 import ServerSex from '../../client/contracts/ServerSex';
 import IGameClient from '../../client/game/IGameClient';
 import ServerRole from '../../client/contracts/ServerRole';
-import clearUrls from '../../utils/clearUrls';
-import { userErrorChanged, userWarnChanged } from '../new/commonSlice';
+import { userErrorChanged } from '../new/commonSlice';
 import WellKnownSIContentServiceErrorCode from 'sicontent-client/dist/models/WellKnownSIContentServiceErrorCode';
 import RandomPackageParameters from 'sistorage-client/dist/models/RandomPackageParameters';
 import { AppDispatch } from '../new/store';
@@ -45,95 +36,9 @@ import { saveStateToStorage } from '../new/StateHelpers';
 import { INavigationState } from '../new/uiSlice';
 import { navigate } from '../../utils/Navigator';
 import { UnknownAction } from '@reduxjs/toolkit';
-import { uploadPackageFinished, uploadPackageProgress, uploadPackageStarted } from '../new/online2Slice';
-
-const selectGame: ActionCreator<OnlineActions.SelectGameAction> = (gameId: number) => ({
-	type: OnlineActions.OnlineActionTypes.SelectGame,
-	gameId
-});
-
-const clearGames: ActionCreator<OnlineActions.ClearGamesAction> = () => ({
-	type: OnlineActions.OnlineActionTypes.ClearGames
-});
-
-const receiveGames: ActionCreator<OnlineActions.ReceiveGamesAction> = (games: any[]) => ({
-	type: OnlineActions.OnlineActionTypes.ReceiveGames,
-	games
-});
-
-async function loadGamesAsync(dispatch: Dispatch<OnlineActions.KnownOnlineAction>, gameClient: IGameServerClient, clear: boolean | undefined) {
-	dispatch(clearGames());
-
-	let gamesSlice: Slice<GameInfo> = { Data: [], IsLastSlice: false };
-	let whileGuard = 100;
-	do {
-		const fromId = gamesSlice.Data.length > 0 ? gamesSlice.Data[gamesSlice.Data.length - 1].GameID + 1 : 0;
-
-		gamesSlice = await gameClient.getGamesSliceAsync(fromId);
-
-		dispatch(receiveGames(clear ? gamesSlice.Data.map(d => ({ ...d, PackageName: clearUrls(d.PackageName) })) : gamesSlice.Data));
-
-		whileGuard--;
-	} while (!gamesSlice.IsLastSlice && whileGuard > 0);
-}
-
-const onlineLoadFinish: ActionCreator<OnlineActions.OnlineLoadFinishedAction> = () => ({
-	type: OnlineActions.OnlineActionTypes.OnlineLoadFinished
-});
-
-const onlineLoadError: ActionCreator<OnlineActions.OnlineLoadErrorAction> = (error: string) => ({
-	type: OnlineActions.OnlineActionTypes.OnlineLoadError,
-	error
-});
-
-const receiveGameStart: ActionCreator<OnlineActions.ReceiveGamesStartAction> = () => ({
-	type: OnlineActions.OnlineActionTypes.ReceiveGamesStart
-});
-
-const resetLobby: ActionCreator<OnlineActions.ResetLobbyAction> = () => ({
-	type: OnlineActions.OnlineActionTypes.ResetLobby
-});
-
-const navigateToLobby: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
-	(appDispatch: AppDispatch) => async (
-		dispatch: Dispatch<Action>,
-		getState: () => State,
-		dataContext: DataContext) => {
-		const state = getState();
-		const requestCulture = getFullCulture(state);
-
-		await dataContext.gameClient.joinLobbyAsync(requestCulture);
-		dispatch(resetLobby());
-
-		// Games filtering is performed on client
-		try {
-			await loadGamesAsync(dispatch, dataContext.gameClient, dataContext.config.clearUrls);
-
-			try {
-				await loadStatisticsAsync(dispatch, dataContext);
-			} catch (error) {
-				appDispatch(userWarnChanged(getErrorMessage(error)));
-			}
-
-			dispatch(onlineLoadFinish());
-		} catch (error) {
-			dispatch(onlineLoadError(getErrorMessage(error)));
-		}
-	};
-
-const onGamesFilterToggle: ActionCreator<OnlineActions.GamesFilterToggleAction> = (filter: GamesFilter) => ({
-	type: OnlineActions.OnlineActionTypes.GamesFilterToggle,
-	filter
-});
-
-const onGamesSearchChanged: ActionCreator<OnlineActions.GamesSearchChangedAction> = (search: string) => ({
-	type: OnlineActions.OnlineActionTypes.GamesSearchChanged,
-	search
-});
-
-const unselectGame: ActionCreator<OnlineActions.UnselectGameAction> = () => ({
-	type: OnlineActions.OnlineActionTypes.UnselectGame
-});
+import { uploadPackageFinished,
+	uploadPackageProgress,
+	uploadPackageStarted } from '../new/online2Slice';
 
 const newGame: ActionCreator<OnlineActions.NewGameAction> = () => ({
 	type: OnlineActions.OnlineActionTypes.NewGame
@@ -148,26 +53,6 @@ const passwordChanged: ActionCreator<OnlineActions.PasswordChangedAction> = (new
 	newPassword
 });
 
-const chatModeChanged: ActionCreator<OnlineActions.ChatModeChangedAction> = (chatMode: LobbySideMode) => ({
-	type: OnlineActions.OnlineActionTypes.ChatModeChanged,
-	chatMode
-});
-
-const gameCreated: ActionCreator<OnlineActions.GameCreatedAction> = (game: GameInfo) => ({
-	type: OnlineActions.OnlineActionTypes.GameCreated,
-	game
-});
-
-const gameChanged: ActionCreator<OnlineActions.GameChangedAction> = (game: GameInfo) => ({
-	type: OnlineActions.OnlineActionTypes.GameChanged,
-	game
-});
-
-const gameDeleted: ActionCreator<OnlineActions.GameDeletedAction> = (gameId: number) => ({
-	type: OnlineActions.OnlineActionTypes.GameDeleted,
-	gameId
-});
-
 const gameCreationStart: ActionCreator<OnlineActions.GameCreationStartAction> = () => ({
 	type: OnlineActions.OnlineActionTypes.GameCreationStart
 });
@@ -176,30 +61,6 @@ const gameCreationEnd: ActionCreator<OnlineActions.GameCreationEndAction> = (err
 	type: OnlineActions.OnlineActionTypes.GameCreationEnd,
 	error
 });
-
-async function loadStatisticsAsync(dispatch: Dispatch<OnlineActions.KnownOnlineAction>, dataContext: DataContext) {
-	const siStatisticsClient = new SIStatisticsClient({ serviceUri: dataContext.config.siStatisticsServiceUri });
-
-	const now = new Date();
-	const ONE_DAY = 24 * 60 * 60 * 1000;
-
-	const filter: StatisticFilter = {
-		platform: GamePlatforms.GameServer,
-		from: new Date(now.getTime() - ONE_DAY),
-		to: now,
-		count: 5,
-		languageCode: localization.getLanguage()
-	};
-
-	const packagesStatistics = await siStatisticsClient.getLatestTopPackagesAsync({ ...filter, count: 6 });
-	dispatch({ type: OnlineActions.OnlineActionTypes.PackagesStatisticsLoaded, packagesStatistics });
-
-	const gamesStatistics = await siStatisticsClient.getLatestGamesStatisticAsync(filter);
-	dispatch({ type: OnlineActions.OnlineActionTypes.GamesStatisticLoaded, gamesStatistics });
-
-	const latestGames = await siStatisticsClient.getLatestGamesInfoAsync({ ...filter, count: 25 });
-	dispatch({ type: OnlineActions.OnlineActionTypes.LatestGamesLoaded, latestGames });
-}
 
 async function uploadPackageAsync2(
 	contentClient: SIContentClient,
@@ -619,21 +480,11 @@ async function gameInit(gameClient: IGameClient, role: Role) {
 }
 
 const onlineActionCreators = {
-	receiveGameStart,
-	navigateToLobby,
-	onGamesFilterToggle,
-	onGamesSearchChanged,
-	selectGame,
-	unselectGame,
 	newGame,
 	newGameCancel,
 	joinGame,
 	joinByPin,
 	passwordChanged,
-	chatModeChanged,
-	gameCreated,
-	gameChanged,
-	gameDeleted,
 	createNewGame,
 	createNewAutoGame,
 	initGameAsync,

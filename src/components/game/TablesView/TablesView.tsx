@@ -2,15 +2,15 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch, AnyAction } from 'redux';
-import State from '../../state/State';
-import localization from '../../model/resources/localization';
-import roomActionCreators from '../../state/room/roomActionCreators';
-import PersonInfo from '../../model/PersonInfo';
-import TableView from './TableView';
-import Constants from '../../model/enums/Constants';
-import Account from '../../model/Account';
-import FlyoutButton, { FlyoutHorizontalOrientation, FlyoutVerticalOrientation } from '../common/FlyoutButton/FlyoutButton';
-import { useAppSelector } from '../../state/new/hooks';
+import State from '../../../state/State';
+import localization from '../../../model/resources/localization';
+import roomActionCreators from '../../../state/room/roomActionCreators';
+import PersonInfo from '../../../model/PersonInfo';
+import TableView from '../TableView/TableView';
+import Constants from '../../../model/enums/Constants';
+import Account from '../../../model/Account';
+import FlyoutButton, { FlyoutHorizontalOrientation, FlyoutVerticalOrientation } from '../../common/FlyoutButton/FlyoutButton';
+import { useAppSelector } from '../../../state/new/hooks';
 
 import './TablesView.css';
 

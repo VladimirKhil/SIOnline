@@ -1,23 +1,23 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch, Action } from 'redux';
-import State from '../../state/State';
-import roomActionCreators from '../../state/room/roomActionCreators';
-import localization from '../../model/resources/localization';
-import FlyoutButton, { FlyoutVerticalOrientation, FlyoutTheme, FlyoutHorizontalOrientation } from '../common/FlyoutButton/FlyoutButton';
-import Role from '../../model/Role';
-import ChatMessage from '../../model/ChatMessage';
-import { isHost } from '../../utils/StateHelpers';
-import isWellFormedUri from '../../utils/isWellFormedUri';
-import { useAppDispatch } from '../../state/new/hooks';
-import { AppDispatch } from '../../state/new/store';
-import { selectPlayers } from '../../state/new/room2Slice';
-import { showSettings } from '../../state/new/uiSlice';
+import State from '../../../state/State';
+import roomActionCreators from '../../../state/room/roomActionCreators';
+import localization from '../../../model/resources/localization';
+import FlyoutButton, { FlyoutVerticalOrientation, FlyoutTheme, FlyoutHorizontalOrientation } from '../../common/FlyoutButton/FlyoutButton';
+import Role from '../../../model/Role';
+import ChatMessage from '../../../model/ChatMessage';
+import { isHost } from '../../../utils/StateHelpers';
+import isWellFormedUri from '../../../utils/isWellFormedUri';
+import { useAppDispatch } from '../../../state/new/hooks';
+import { AppDispatch } from '../../../state/new/store';
+import { selectPlayers } from '../../../state/new/room2Slice';
+import { showSettings } from '../../../state/new/uiSlice';
 
 import './SideControlPanel.css';
-import nextImg from '../../../assets/images/next.png';
-import pauseImg from '../../../assets/images/pause.png';
-import exitImg from '../../../assets/images/exit.png';
+import nextImg from '../../../../assets/images/next.png';
+import pauseImg from '../../../../assets/images/pause.png';
+import exitImg from '../../../../assets/images/exit.png';
 
 interface SideControlPanelProps {
 	isConnected: boolean;

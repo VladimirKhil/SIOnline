@@ -2,7 +2,7 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import runCore from './LibraryCore';
 import React from 'react';
-import PlayersView from './components/game/PlayersView';
+import PlayersView from './components/game/PlayersView/PlayersView';
 import GameTable from './components/gameTable/GameTable/GameTable';
 import IGameClient from './client/game/IGameClient';
 import AudioController from './components/common/AudioController/AudioController';

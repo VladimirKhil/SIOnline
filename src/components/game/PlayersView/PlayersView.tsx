@@ -1,14 +1,14 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch, Action } from 'redux';
-import State from '../../state/State';
-import roomActionCreators from '../../state/room/roomActionCreators';
-import PlayerInfo from '../../model/PlayerInfo';
-import Persons from '../../model/Persons';
-import getAvatarClass from '../../utils/AccountHelpers';
-import PlayerView from './PlayerView/PlayerView';
-import { useAppDispatch } from '../../state/new/hooks';
-import { playerSelected } from '../../state/new/room2Slice';
+import State from '../../../state/State';
+import roomActionCreators from '../../../state/room/roomActionCreators';
+import PlayerInfo from '../../../model/PlayerInfo';
+import Persons from '../../../model/Persons';
+import getAvatarClass from '../../../utils/AccountHelpers';
+import PlayerView from '../PlayerView/PlayerView';
+import { useAppDispatch } from '../../../state/new/hooks';
+import { playerSelected } from '../../../state/new/room2Slice';
 
 import './PlayersView.scss';
 

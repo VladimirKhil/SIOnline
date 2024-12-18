@@ -1,18 +1,18 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch, AnyAction } from 'redux';
-import State from '../../state/State';
-import localization from '../../model/resources/localization';
-import Account from '../../model/Account';
-import roomActionCreators from '../../state/room/roomActionCreators';
-import PersonView from './PersonView';
-import { isHost } from '../../utils/StateHelpers';
-import JoinMode from '../../client/game/JoinMode';
-import Persons from '../../model/Persons';
-import { useAppDispatch, useAppSelector } from '../../state/new/hooks';
-import { getPin } from '../../state/new/room2Slice';
-import { AppDispatch } from '../../state/new/store';
-import { userInfoChanged } from '../../state/new/commonSlice';
+import State from '../../../state/State';
+import localization from '../../../model/resources/localization';
+import Account from '../../../model/Account';
+import roomActionCreators from '../../../state/room/roomActionCreators';
+import PersonView from '../PersonView/PersonView';
+import { isHost } from '../../../utils/StateHelpers';
+import JoinMode from '../../../client/game/JoinMode';
+import Persons from '../../../model/Persons';
+import { useAppDispatch, useAppSelector } from '../../../state/new/hooks';
+import { getPin } from '../../../state/new/room2Slice';
+import { AppDispatch } from '../../../state/new/store';
+import { userInfoChanged } from '../../../state/new/commonSlice';
 
 import './PersonsView.css';
 

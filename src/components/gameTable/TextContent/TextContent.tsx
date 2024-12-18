@@ -39,7 +39,7 @@ function getAnimatableContent(text: string, readingSpeed: number) {
 export function TextContent(props: TextContentProps) {
 	return (
 		<div className='textHost'>
-			<AutoSizedText className="tableText tableTextCenter" maxFontSize={72}>
+			<AutoSizedText className="tableText fadeIn tableTextCenter" maxFontSize={72}>
 				{props.animateReading && props.readingSpeed > 0 ? getAnimatableContent(props.text, props.readingSpeed) : props.text}
 			</AutoSizedText>
 		</div>
