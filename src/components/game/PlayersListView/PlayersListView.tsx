@@ -7,7 +7,7 @@ import roomActionCreators from '../../../state/room/roomActionCreators';
 import NumericTextBox from '../../common/NumericTextBox/NumericTextBox';
 import Persons from '../../../model/Persons';
 import getAvatarClass from '../../../utils/AccountHelpers';
-import { useAppDispatch } from '../../../state/new/hooks';
+import { useAppDispatch, useAppSelector } from '../../../state/new/hooks';
 import { playerSelected } from '../../../state/new/room2Slice';
 
 import './PlayersListView.css';
@@ -15,7 +15,6 @@ import './PlayersListView.css';
 interface PlayersListViewProps {
 	players: PlayerInfo[];
 	all: Persons;
-	login: string;
 	avatar: string | null;
 	isSumEditable: boolean;
 
@@ -26,7 +25,6 @@ interface PlayersListViewProps {
 const mapStateToProps = (state: State) => ({
 	players: state.room2.persons.players,
 	all: state.room.persons.all,
-	login: state.room.name,
 	avatar: state.user.avatar,
 	isSumEditable: state.room.areSumsEditable,
 });
@@ -42,6 +40,7 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 
 export function PlayersListView(props: PlayersListViewProps): JSX.Element {
 	const appDispatch = useAppDispatch();
+	const room = useAppSelector(state => state.room2);
 
 	const onSumChanged = (index: number, value: number) => {
 		props.onSumChanged(index, value);
@@ -54,7 +53,7 @@ export function PlayersListView(props: PlayersListViewProps): JSX.Element {
 	return <div className='playerListView'>
 		<ul>{props.players.map((player, index) => {
 			const account = props.all[player.name];
-			const isMe = player.name === props.login;
+			const isMe = player.name === room.name;
 			const avatarClass = getAvatarClass(account);
 
 			const avatar = isMe && props.avatar ? props.avatar : account?.avatar;

@@ -99,6 +99,8 @@ const enum GameMessages {
 	/** Current question price. */
 	Question = 'QUESTION',
 
+	QuestionAnswers = 'QUESTION_ANSWERS',
+
 	QuestionCaption = 'QUESTIONCAPTION',
 
 	/** Question has ended. */

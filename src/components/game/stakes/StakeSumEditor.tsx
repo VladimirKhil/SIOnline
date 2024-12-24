@@ -41,6 +41,13 @@ export function StakeSumEditor(props: StakeSumEditorProps) {
 		props.onStakeChanged(stake);
 	};
 
+	const onBlur = (stake: number) => {
+		if (stake < props.minimum) {
+			props.onStakeChanged(props.minimum);
+			return;
+		}
+	};
+
 	return (
 		<input
 			aria-label='Stake'
@@ -52,6 +59,7 @@ export function StakeSumEditor(props: StakeSumEditorProps) {
 			step={props.step}
 			value={props.stake}
 			onChange={e => onStakeChanged(parseInt(e.target.value, 10))}
+			onBlur={e => onBlur(parseInt(e.target.value, 10))}
 		/>
 	);
 }

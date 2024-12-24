@@ -15,7 +15,6 @@ export default interface RoomState {
 		hostName: string | null;
 	};
 
-	name: string;
 	role: Role;
 	answer: string | null;
 	lastReplic: ChatMessage | null;
@@ -51,18 +50,6 @@ export default interface RoomState {
 		maximum: number;
 		step: number;
 		stake: number;
-	};
-
-	validation: {
-		isVisible: boolean;
-		header: string;
-		name: string;
-		answer: string;
-		message: string;
-		isCompact: boolean;
-		rightAnswers: string[];
-		wrongAnswers: string[];
-		showExtraRightButtons: boolean;
 	};
 
 	chat: {
@@ -114,7 +101,6 @@ export const initialState: RoomState = {
 		hostName: null
 	},
 
-	name: '',
 	role: Role.Player,
 	answer: null,
 	lastReplic: null,
@@ -175,18 +161,6 @@ export const initialState: RoomState = {
 		maximum: 0,
 		step: 0,
 		stake: 0,
-	},
-
-	validation: {
-		isVisible: false,
-		header: '',
-		name: '',
-		answer: '',
-		message: '',
-		isCompact: true,
-		rightAnswers: [],
-		wrongAnswers: [],
-		showExtraRightButtons: false,
 	},
 
 	chat: {

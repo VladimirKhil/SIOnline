@@ -4,7 +4,7 @@ import Account from '../../../model/Account';
 import localization from '../../../model/resources/localization';
 import State from '../../../state/State';
 import FlyoutButton, { FlyoutHorizontalOrientation } from '../../common/FlyoutButton/FlyoutButton';
-import { useAppDispatch } from '../../../state/new/hooks';
+import { useAppDispatch, useAppSelector } from '../../../state/new/hooks';
 import { kick, setHost } from '../../../state/new/room2Slice';
 import getAvatarClass from '../../../utils/AccountHelpers';
 
@@ -12,24 +12,23 @@ import './PersonView.css';
 
 interface PersonViewProps {
 	account: Account;
-	login: string;
 	avatar: string | null;
 	hostName: string | null;
 }
 
 const mapStateToProps = (state: State) => ({
-	login: state.room.name,
 	avatar: state.user.avatar,
 	hostName: state.room.persons.hostName
 });
 
 export function PersonView(props: PersonViewProps): JSX.Element {
 	const appDispatch = useAppDispatch();
-	const isMe = props.account.name === props.login;
+	const room = useAppSelector(state => state.room2);
+	const isMe = props.account.name === room.name;
 	const isHost = props.account.name === props.hostName;
 
 	const avatar = isMe ? props.avatar : props.account.avatar;
-	const canManage = props.hostName === props.login && !isMe && props.account.isHuman;
+	const canManage = props.hostName === room.name && !isMe && props.account.isHuman;
 
 	return (
 		<li className={`personItem ${isMe ? 'me' : ''}`}>

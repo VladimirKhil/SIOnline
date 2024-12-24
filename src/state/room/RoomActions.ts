@@ -37,7 +37,6 @@ export const enum RoomActionTypes {
 	CurrentPriceChanged = 'CURRENT_PRICE_CHANGED',
 	PersonAdded = 'PERSON_ADDED',
 	PersonRemoved = 'PERSON_REMOVED',
-	NameChanged = 'NAME_CHANGED',
 	RoleChanged = 'ROLE_CHANGED',
 	IsPausedChanged = 'IS_PAUSED_CHANGED',
 	DecisionNeededChanged = 'DECISION_NEEDED_CHANGED',
@@ -45,7 +44,6 @@ export const enum RoomActionTypes {
 	IsGameButtonEnabledChanged = 'IS_GAME_BUTTON_ENABLED',
 	IsAnswering = 'IS_ANSWERING',
 	AnswerChanged = 'ANSWER_CHANGED',
-	Validate = 'VALIDATE',
 	SetStakes = 'SET_STAKES',
 	StakeChanged = 'STAKE_CHANGED',
 	SelectionEnabled = 'SELECTION_ENABLED',
@@ -111,7 +109,6 @@ export type AfterQuestionStateChangedAction = { type: RoomActionTypes.AfterQuest
 export type CurrentPriceChangedAction = { type: RoomActionTypes.CurrentPriceChanged, currentPrice: number };
 export type PersonAddedAction = { type: RoomActionTypes.PersonAdded, person: Account };
 export type PersonRemovedAction = { type: RoomActionTypes.PersonRemoved, name: string };
-export type NameChangedAction = { type: RoomActionTypes.NameChanged, name: string };
 export type RoleChangedAction = { type: RoomActionTypes.RoleChanged, role: Role };
 export type IsPausedChangedAction = { type: RoomActionTypes.IsPausedChanged, isPaused: boolean };
 export type DecisionNeededChangedAction = { type: RoomActionTypes.DecisionNeededChanged, decisionNeeded: boolean };
@@ -122,17 +119,6 @@ export type AnswerChangedAction = { type: RoomActionTypes.AnswerChanged, answer:
 export type ClearRoomChatAction = { type: RoomActionTypes.ClearRoomChat };
 export type KickedAction = { type: RoomActionTypes.Kicked };
 export type AvatarVisibleChangedAction = { type: RoomActionTypes.AvatarVisibleChanged, isVisible: boolean };
-
-export type ValidateAction = {
-	type: RoomActionTypes.Validate,
-	name: string,
-	answer: string,
-	rightAnswers: string[],
-	wrongAnswers: string[],
-	header: string,
-	message: string,
-	showExtraRightButtons: boolean;
-};
 
 export type SetStakesAction = {
 	type: RoomActionTypes.SetStakes,
@@ -209,7 +195,6 @@ export type KnownRoomAction =
 	| CurrentPriceChangedAction
 	| PersonAddedAction
 	| PersonRemovedAction
-	| NameChangedAction
 	| RoleChangedAction
 	| IsPausedChangedAction
 	| DecisionNeededChangedAction
@@ -217,7 +202,6 @@ export type KnownRoomAction =
 	| IsGameButtonEnabledChangedAction
 	| IsAnsweringAction
 	| AnswerChangedAction
-	| ValidateAction
 	| SetStakesAction
 	| StakeChangedAction
 	| SelectionEnabledAction

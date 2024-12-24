@@ -62,19 +62,10 @@ export default function RulesSettingsView(): JSX.Element {
 					<div className='hint gameTypeHint'>
 						{game.type === GameType.Classic ? localization.gameTypeClassicHint : localization.gameTypeSimpleHint}
 					</div>
-				</div>
-			</div>
 
-			<div className="block">
-				<label className='blockName' htmlFor="playAllQuestionsInFinalRound">{localization.playAllQuestionsInFinalRound}</label>
-
-				<div className='blockValue'>
-					<input
-						id="playAllQuestionsInFinalRound"
-						type="checkbox"
-						checked={settings.appSettings.playAllQuestionsInFinalRound}
-						onChange={() => appDispatch(setPlayAllQuestionsInFinalRound(!settings.appSettings.playAllQuestionsInFinalRound))}
-					/>
+					<div className='hint gameTypeHint'>
+						{localization.gameTypeFinalHint}
+					</div>
 				</div>
 			</div>
 
@@ -106,6 +97,38 @@ export default function RulesSettingsView(): JSX.Element {
 					/>
 				</div>
 			</div>
+
+			<div className="block">
+				<label htmlFor="managed" className='blockName'>{localization.managed}</label>
+
+				<div className='blockValue'>
+					<input
+						id="managed"
+						type="checkbox"
+						checked={settings.appSettings.managed}
+						onChange={() => appDispatch(setManaged(!settings.appSettings.managed))}
+					/>
+
+					<div className="hint">{localization.managedHint}</div>
+				</div>
+			</div>
+
+			<div className='headerBlock'>{localization.round}: {localization.final}</div>
+
+			<div className="block">
+				<label className='blockName' htmlFor="playAllQuestionsInFinalRound">{localization.playAllQuestionsInFinalRound}</label>
+
+				<div className='blockValue'>
+					<input
+						id="playAllQuestionsInFinalRound"
+						type="checkbox"
+						checked={settings.appSettings.playAllQuestionsInFinalRound}
+						onChange={() => appDispatch(setPlayAllQuestionsInFinalRound(!settings.appSettings.playAllQuestionsInFinalRound))}
+					/>
+				</div>
+			</div>
+
+			<div className='headerBlock'>{localization.question}: {localization.withButton}</div>
 
 			<div className="block">
 				<label className='blockName' htmlFor="falseStarts">{localization.falseStarts}</label>
@@ -155,6 +178,35 @@ export default function RulesSettingsView(): JSX.Element {
 			</div>
 
 			<div className="block">
+				<label className='blockName' htmlFor="ignoreWrong">{localization.ignoreWrong}</label>
+
+				<div className='blockValue'>
+					<input
+						id="ignoreWrong"
+						type="checkbox"
+						checked={!settings.appSettings.ignoreWrong}
+						onChange={() => appDispatch(setIgnoreWrong(!settings.appSettings.ignoreWrong))}
+					/>
+				</div>
+			</div>
+
+			<div className="block">
+				<div className='blockName'>{localization.buttonPressMode}</div>
+
+				<select
+					aria-label='Game type'
+					className='blockValue'
+					value={settings.appSettings.buttonPressMode}
+					onChange={onButtonPressModeChanged}>
+					<option value={ButtonPressMode.RandomWithinInterval}>{localization.buttonPressModeRandomWithinInterval}</option>
+					<option value={ButtonPressMode.FirstWins}>{localization.buttonPressModeFirstWins}</option>
+					<option value={ButtonPressMode.FirstWinsClient}>{localization.buttonPressModeFirstWinsClient}</option>
+				</select>
+			</div>
+
+			<div className='headerBlock'>{localization.question}: {localization.withStakeForAll}</div>
+
+			<div className="block">
 				<label className='blockName' htmlFor="allowEveryoneToPlayHiddenStakes">{localization.allowEveryoneToPlayHiddenStakes}</label>
 
 				<div className='blockValue'>
@@ -168,6 +220,8 @@ export default function RulesSettingsView(): JSX.Element {
 					<div className="hint">{localization.allowEveryoneToPlayHiddenStakesHint}</div>
 				</div>
 			</div>
+
+			<div className='headerBlock'>{localization.other}</div>
 
 			<div className="block">
 				<label className='blockName' htmlFor="hintShowman">{localization.hintShowman}</label>
@@ -206,21 +260,8 @@ export default function RulesSettingsView(): JSX.Element {
 						max={100}
 						onChange={onReadingSpeedChanged}
 					/>
-				</div>
-			</div>
 
-			<div className="block">
-				<label htmlFor="managed" className='blockName'>{localization.managed}</label>
-
-				<div className='blockValue'>
-					<input
-						id="managed"
-						type="checkbox"
-						checked={settings.appSettings.managed}
-						onChange={() => appDispatch(setManaged(!settings.appSettings.managed))}
-					/>
-
-					<div className="hint">{localization.managedHint}</div>
+					<span className="smallHint">{localization.symbolsPerSecond}</span>
 				</div>
 			</div>
 
@@ -263,34 +304,7 @@ export default function RulesSettingsView(): JSX.Element {
 						onChange={() => appDispatch(setDisplayAnswerOptionsLabels(!settings.appSettings.displayAnswerOptionsLabels))}
 					/>
 				</div>
-			</div>
-
-			<div className="block">
-				<label className='blockName' htmlFor="ignoreWrong">{localization.ignoreWrong}</label>
-
-				<div className='blockValue'>
-					<input
-						id="ignoreWrong"
-						type="checkbox"
-						checked={settings.appSettings.ignoreWrong}
-						onChange={() => appDispatch(setIgnoreWrong(!settings.appSettings.ignoreWrong))}
-					/>
-				</div>
-			</div>
-
-			<div className="block">
-				<div className='blockName'>{localization.buttonPressMode}</div>
-
-				<select
-					aria-label='Game type'
-					className='blockValue'
-					value={settings.appSettings.buttonPressMode}
-					onChange={onButtonPressModeChanged}>
-					<option value={ButtonPressMode.RandomWithinInterval}>{localization.buttonPressModeRandomWithinInterval}</option>
-					<option value={ButtonPressMode.FirstWins}>{localization.buttonPressModeFirstWins}</option>
-					<option value={ButtonPressMode.FirstWinsClient}>{localization.buttonPressModeFirstWinsClient}</option>
-				</select>
-			</div>
+			</div>			
 
 			<div className='block'>
 				<label className='blockName' htmlFor="preloadRoundContent">{localization.preloadRoundContent}</label>

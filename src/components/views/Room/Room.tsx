@@ -45,7 +45,6 @@ interface RoomProps {
 	isTablesDialogVisible: boolean;
 	isBannedDialogVisible: boolean;
 	isGameInfoDialogVisible: boolean;
-	isAnswerValidationDialogVisible: boolean;
 	isManageGameDialogVisible: boolean;
 	areSumsEditable: boolean;
 	floatingControls: boolean;
@@ -53,7 +52,6 @@ interface RoomProps {
 	isConnected: boolean;
 	isConnectedReason: string;
 	avatarViewVisible: boolean;
-	validationHeader: string;
 	role: Role;
 
 	onPersonsDialogClose: () => void;
@@ -76,14 +74,12 @@ const mapStateToProps = (state: State) => ({
 	isBannedDialogVisible: state.room.bannedVisible,
 	isGameInfoDialogVisible: state.room.gameInfoVisible,
 	isManageGameDialogVisible: state.room.manageGameVisible,
-	isAnswerValidationDialogVisible: state.room.validation.isVisible,
 	areSumsEditable: state.room.areSumsEditable,
 	floatingControls: state.settings.floatingControls,
 	kicked: state.room.kicked,
 	isConnected: state.common.isSIHostConnected,
 	isConnectedReason: state.common.isSIHostConnectedReason,
 	avatarViewVisible: state.room.avatarViewVivible,
-	validationHeader: state.room.validation.header,
 	role: state.room.role,
 });
 
@@ -252,8 +248,8 @@ export function Room(props: RoomProps) : JSX.Element {
 				</Dialog>
 			) : null}
 
-			{props.isAnswerValidationDialogVisible && (!isScreenWide || props.role === Role.Player) ? (
-				<Dialog className='answerValidationDialog' title={props.validationHeader} onClose={() => onReject(1.0)}>
+			{state.validation.isVisible && (!isScreenWide || props.role === Role.Player) ? (
+				<Dialog className='answerValidationDialog' title={state.validation.header} onClose={() => onReject(1.0)}>
 					<AnswerValidation />
 				</Dialog>
 			) : null}

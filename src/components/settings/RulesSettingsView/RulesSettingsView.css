@@ -10,6 +10,14 @@
 	height: 130px;
 }
 
+.rulesSettingsView .headerBlock {
+	height: 40px;
+	display: flex;
+	align-items: center;
+	font-size: 22px;
+	margin-left: 5px;
+}
+
 .rulesSettingsView .blockName {
     flex: 0 0 150px;
 }
@@ -41,6 +49,10 @@
 .rulesSettingsView .hint {
 	margin-top: 5px;
 	font-size: 12px;
+}
+
+.rulesSettingsView .smallHint {
+	margin-left: 20px;
 }
 
 .rulesSettingsView .valueEditor {

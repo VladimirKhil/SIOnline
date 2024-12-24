@@ -18,7 +18,6 @@ interface ShowmanReplicViewProps {
 	decisionNeeded: boolean;
 	decisionTimer: TimerInfo;
 	hasGameStarted: boolean;
-	login: string;
 	avatar: string | null;
 	showVideoAvatars: boolean;
 }
@@ -28,7 +27,6 @@ const mapStateToProps = (state: State) => ({
 	decisionNeeded: state.room.stage.isDecisionNeeded,
 	decisionTimer: state.room.timers.decision,
 	hasGameStarted: state.room.stage.isGameStarted,
-	login: state.room.name,
 	avatar: state.user.avatar,
 	showVideoAvatars: state.settings.showVideoAvatars,
 });
@@ -37,7 +35,7 @@ export function ShowmanReplicView(props: ShowmanReplicViewProps): JSX.Element {
 	const roomState = useAppSelector(state => state.room2);
 	const account = props.all[roomState.persons.showman.name];
 	const { isReady, isDeciding } = roomState.persons.showman;
-	const isMe = account?.name === props.login;
+	const isMe = account?.name === roomState.name;
 
 	const avatar = isMe && props.avatar ? props.avatar : account?.avatar;
 

@@ -85,7 +85,9 @@ import {
 	setReport,
 	showmanChanged,
 	showmanReplicChanged,
-	sumsChanged
+	stopValidation,
+	sumsChanged,
+	validate
 } from '../state/new/room2Slice';
 
 import PersonInfo from '../model/PersonInfo';
@@ -349,11 +351,12 @@ export default class ClientController {
 
 	onCancel() {
 		this.dispatch(roomActionCreators.clearDecisions());
+		this.appDispatch(stopValidation());
 		this.appDispatch(deselectPlayers());
 	}
 
 	onConnected(account: Account, role: string, index: number) {
-		if (account.name === this.getState().room.name) {
+		if (account.name === this.getState().room2.name) {
 			return;
 		}
 
@@ -624,6 +627,7 @@ export default class ClientController {
 
 		this.dispatch(playersStateCleared());
 		this.dispatch(roomActionCreators.gameStateCleared());
+		this.appDispatch(stopValidation());
 		this.appDispatch(isSelectableChanged(false));
 		this.appDispatch(clearActiveState());
 		this.appDispatch(canPressChanged(false));
@@ -640,6 +644,18 @@ export default class ClientController {
 		if (stage === GameStage.After) {
 			this.appDispatch(showLogo());
 		}
+	}
+
+	onValidation(
+		header: string,
+		name: string,
+		answer: string,
+		message: string,
+		rightAnswers:
+		string[],
+		wrongAnswers: string[],
+		showExtraRightButtons: boolean) {
+		this.appDispatch(validate({ header, name, answer, message, rightAnswers, wrongAnswers, showExtraRightButtons }));
 	}
 
 	onWrongTry(playerIndex: number) {
@@ -1048,7 +1064,7 @@ export default class ClientController {
 
 		if (person && !person.isHuman) {
 			this.dispatch(roomActionCreators.personRemoved(person.name));
-		} else if (player.name === state.room.name) {
+		} else if (player.name === state.room2.name) {
 			this.dispatch(roomActionCreators.roleChanged(Role.Viewer));
 		}
 	}
@@ -1129,7 +1145,7 @@ export default class ClientController {
 			this.dispatch(roomActionCreators.personRemoved(person.name));
 		}
 
-		if (person && person.name === state.room.name) {
+		if (person && person.name === state.room2.name) {
 			this.dispatch(roomActionCreators.roleChanged(Role.Viewer));
 		}
 	}
@@ -1162,9 +1178,9 @@ export default class ClientController {
 			this.appDispatch(showmanChanged({ name: account.name, isHuman: true, isReady: account.isReady }));
 			this.appDispatch(playerChanged({ index, name: replacer, isHuman: true, isReady: state.room2.persons.showman.isReady }));
 
-			if (account.name === state.room.name) {
+			if (account.name === state.room2.name) {
 				this.dispatch(roomActionCreators.roleChanged(Role.Showman));
-			} else if (replacer === state.room.name) {
+			} else if (replacer === state.room2.name) {
 				this.dispatch(roomActionCreators.roleChanged(Role.Player));
 			}
 
@@ -1181,9 +1197,9 @@ export default class ClientController {
 					this.appDispatch(playerChanged({ index: i, name: account.name, isReady: account.isReady }));
 					this.appDispatch(showmanChanged({ name: replacer, isReady }));
 
-					if (state.room2.persons.showman.name === state.room.name) {
+					if (state.room2.persons.showman.name === state.room2.name) {
 						this.dispatch(roomActionCreators.roleChanged(Role.Player));
-					} else if (replacer === state.room.name) {
+					} else if (replacer === state.room2.name) {
 						this.dispatch(roomActionCreators.roleChanged(Role.Showman));
 					}
 				}
@@ -1196,9 +1212,9 @@ export default class ClientController {
 			? playerChanged({ index, name: replacer, isReady: false })
 			: showmanChanged({ name: replacer, isReady: false }));
 
-		if (account.name === state.room.name) {
+		if (account.name === state.room2.name) {
 			this.dispatch(roomActionCreators.roleChanged(Role.Viewer));
-		} else if (replacer === state.room.name) {
+		} else if (replacer === state.room2.name) {
 			this.dispatch(roomActionCreators.roleChanged(isPlayer ? Role.Player : Role.Showman));
 		}
 	}
@@ -1213,7 +1229,7 @@ export default class ClientController {
 
 		const account = isPlayer ? state.room2.persons.players[index] : state.room2.persons.showman;
 
-		if (account.name === state.room.name) {
+		if (account.name === state.room2.name) {
 			this.dispatch(roomActionCreators.roleChanged(Role.Viewer));
 		}
 	}
@@ -1223,6 +1239,14 @@ export default class ClientController {
 
 		if (setActive) {
 			this.appDispatch(playerStateChanged({ index: chooserIndex, state: PlayerStates.Press }));
+
+			const state = this.getState();
+
+			const indices = state.room2.persons.players
+				.map((_, i) => i)
+				.filter(i => i !== chooserIndex);
+
+			this.appDispatch(playerStatesChanged({ indices, state: PlayerStates.Pass }));
 		}
 	}
 

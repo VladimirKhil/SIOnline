@@ -4,9 +4,9 @@ import PlayerInfo from '../../model/PlayerInfo';
 import PersonInfo from '../../model/PersonInfo';
 import PlayerStates from '../../model/enums/PlayerStates';
 import Messages from '../../client/game/Messages';
-import { RootState } from './store';
 import localization from '../../model/resources/localization';
 import roomActionCreators from '../room/roomActionCreators';
+import State from '../State';
 
 export enum DialogView {
 	None,
@@ -25,12 +25,26 @@ export interface Room2State {
 		players: PlayerInfo[];
 	};
 
+	name: string;
+
 	playState: {
 		report: string;
 	};
 
 	dialogView: DialogView;
 	contextView: ContextView;
+
+	validation: {
+		isVisible: boolean;
+		header: string;
+		name: string;
+		answer: string;
+		message: string;
+		isCompact: boolean;
+		rightAnswers: string[];
+		wrongAnswers: string[];
+		showExtraRightButtons: boolean;
+	};
 }
 
 const initialState: Room2State = {
@@ -45,12 +59,26 @@ const initialState: Room2State = {
 		players: [],
 	},
 
+	name: '',
+
 	playState: {
 		report: '',
 	},
 
 	dialogView: DialogView.None,
 	contextView: ContextView.None,
+
+	validation: {
+		isVisible: false,
+		header: '',
+		name: '',
+		answer: '',
+		message: '',
+		isCompact: true,
+		rightAnswers: [],
+		wrongAnswers: [],
+		showExtraRightButtons: false,
+	},
 };
 
 export const complain = createAsyncThunk(
@@ -73,7 +101,7 @@ export const playerSelected = createAsyncThunk(
 	'room2/playerSelected',
 	async (arg: number, thunkAPI) => {
 		const dataContext = thunkAPI.extra as DataContext;
-		const { message } = (thunkAPI.getState() as RootState).room.selection;
+		const { message } = (thunkAPI.getState() as State).room.selection;
 		await dataContext.game.gameServerClient.msgAsync(message, arg);
 		// TODO: move to fulfilled section after migrating the property to Redux Toolkit
 		thunkAPI.dispatch(roomActionCreators.decisionNeededChanged(false));
@@ -307,6 +335,29 @@ export const room2Slice = createSlice({
 		playerMediaLoaded(state: Room2State, action: PayloadAction<number>) {
 			state.persons.players[action.payload].mediaLoaded = true;
 		},
+		validate(state: Room2State, action: PayloadAction<{
+			header: string,
+			name: string,
+			answer: string,
+			message: string,
+			rightAnswers: string[],
+			wrongAnswers: string[],
+			showExtraRightButtons: boolean }>) {
+			state.validation.isVisible = true;
+			state.validation.header = action.payload.header;
+			state.validation.name = action.payload.name;
+			state.validation.answer = action.payload.answer;
+			state.validation.message = action.payload.message;
+			state.validation.rightAnswers = action.payload.rightAnswers;
+			state.validation.wrongAnswers = action.payload.wrongAnswers;
+			state.validation.showExtraRightButtons = action.payload.showExtraRightButtons;
+		},
+		stopValidation(state: Room2State) {
+			state.validation.isVisible = false;
+		},
+		nameChanged(state: Room2State, action: PayloadAction<string>) {
+			state.name = action.payload;
+		},
 	},
 	extraReducers: (builder) => {
 		builder.addCase(complain.fulfilled, (state) => {
@@ -321,6 +372,14 @@ export const room2Slice = createSlice({
 		builder.addCase(playerSelected.fulfilled, (state) => {
 			state.persons.players.forEach(p => p.canBeSelected = false);
 			state.persons.showman.replic = null;
+		});
+
+		builder.addCase(approveAnswer.fulfilled, (state) => {
+			state.validation.isVisible = false;
+		});
+
+		builder.addCase(rejectAnswer.fulfilled, (state) => {
+			state.validation.isVisible = false;
 		});
 	},
 });
@@ -355,6 +414,9 @@ export const {
 	chooserChanged,
 	playerInGameChanged,
 	playerMediaLoaded,
+	validate,
+	stopValidation,
+	nameChanged,
 } = room2Slice.actions;
 
 

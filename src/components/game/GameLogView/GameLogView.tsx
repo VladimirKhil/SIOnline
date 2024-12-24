@@ -6,19 +6,18 @@ import ChatLog from '../../common/ChatLog/ChatLog';
 import hasUserMentioned from '../../../utils/MentionHelpers';
 import roomActionCreators from '../../../state/room/roomActionCreators';
 import { Action, Dispatch } from 'redux';
+import { useAppSelector } from '../../../state/new/hooks';
 
 import './GameLogView.css';
 
 interface GameLogViewProps {
 	messages: ChatMessage[];
-	user: string;
 	message: string;
 	onMention: (message: string) => void;
 }
 
 const mapStateToProps = (state: State) => ({
 	messages: state.room.chat.messages,
-	user: state.room.name,
 	message: state.room.chat.message,
 });
 
@@ -29,6 +28,8 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 });
 
 export function GameLogView(props: GameLogViewProps) {
+	const room = useAppSelector(state => state.room2);
+
 	const appendMentionedUser = (nickname: string) => {
 		if (hasUserMentioned(props.message, nickname)) {
 			return;
@@ -42,7 +43,7 @@ export function GameLogView(props: GameLogViewProps) {
 			<ChatLog
 				className="gameLog"
 				messages={props.messages}
-				user={props.user}
+				user={room.name}
 				message={props.message}
 				onNicknameClick={appendMentionedUser}
 			/>

@@ -43,49 +43,6 @@ function unescapeNewLines(value: string): string {
 	return value.replaceAll('\\n', '\n').replaceAll('\\\\', '\\');
 }
 
-export default function messageProcessor(controller: ClientController, dispatch: Dispatch<AnyAction>, appDispatch: AppDispatch, message: Message) {
-	if (message.IsSystem) {
-		dispatch((processSystemMessage(controller, message, appDispatch) as object) as AnyAction);
-		return;
-	}
-
-	dispatch((userMessageReceived(message) as object) as AnyAction);
-}
-
-const processSystemMessage: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (
-	controller: ClientController,
-	message: Message,
-	appDispatch: AppDispatch
-) =>
-	(dispatch: Dispatch<RoomActions.KnownRoomAction>, getState: () => State, dataContext: DataContext) => {
-		const state = getState();
-		const { role } = state.room;
-		const args = message.Text.split('\n');
-
-		viewerHandler(controller, dispatch, appDispatch, state, dataContext, args);
-
-		if (role === Role.Player) {
-			playerHandler(controller, dispatch, args);
-		} else if (role === Role.Showman) {
-			showmanHandler(controller, dispatch, args);
-		}
-	};
-
-const userMessageReceived: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (message: Message) =>
-	(dispatch: Dispatch<any>, getState: () => State) => {
-		if (message.Sender === getState().room.name) {
-			return;
-		}
-
-		const replic: ChatMessage = {
-			sender: message.Sender,
-			text: message.Text,
-			level: MessageLevel.Information,
-		};
-
-		dispatch(roomActionCreators.chatMessageAdded(replic));
-	};
-
 function onConfig(controller: ClientController, ...args: string[]) {
 	switch (args[1]) {
 		case 'ADDTABLE':
@@ -130,6 +87,31 @@ function onConfig(controller: ClientController, ...args: string[]) {
 		default:
 			break;
 	}
+}
+
+function onValidation(controller: ClientController, title: string, args: string[]) {
+	if (args.length < 6) {
+		return;
+	}
+
+	const name = args[1];
+	const answer = args[2];
+	const showExtraRightButtons = args[4] == '+';
+	const rightAnswersCount = Math.min(parseInt(args[5], 10), args.length - 5);
+
+	const right = [];
+
+	for (let i = 0; i < rightAnswersCount; i++) {
+		right.push(args[6 + i]);
+	}
+
+	const wrong = [];
+
+	for (let i = 6 + rightAnswersCount; i < args.length; i++) {
+		wrong.push(args[i]);
+	}
+
+	controller.onValidation(title, name, answer, '', right, wrong, showExtraRightButtons);
 }
 
 const viewerHandler = (
@@ -935,10 +917,7 @@ function onAskStake(controller: ClientController, args: string[]) {
 	controller.onAskStake(stakeModes, minimum, maximum, step, reason, playerName);
 }
 
-const playerHandler = (
-	controller: ClientController,
-	dispatch: Dispatch<any>,
-	args: string[]) => {
+const playerHandler = (controller: ClientController, args: string[]) => {
 	switch (args[0]) {
 		case GameMessages.Answer:
 			controller.onAskAnswer();
@@ -974,12 +953,8 @@ const playerHandler = (
 			controller.onReport(report);
 			break;
 
-		case GameMessages.Validation:
-			startValidation(dispatch, localization.apellation, args);
-			break;
-
 		case GameMessages.Validation2:
-			startValidation2(dispatch, localization.apellation, args);
+			onValidation(controller, localization.apellation, args);
 			break;
 
 		default:
@@ -1017,12 +992,8 @@ const showmanHandler = (controller: ClientController, dispatch: Dispatch<any>, a
 			dispatch(roomActionCreators.hintChanged(null));
 			break;
 
-		case GameMessages.Validation:
-			startValidation(dispatch, localization.answerChecking, args);
-			break;
-
 		case GameMessages.Validation2:
-			startValidation2(dispatch, localization.answerChecking, args);
+			onValidation(controller, localization.answerChecking, args);
 			break;
 
 		// Player commands for oral game
@@ -1042,55 +1013,6 @@ const showmanHandler = (controller: ClientController, dispatch: Dispatch<any>, a
 			break;
 	}
 };
-
-function startValidation(dispatch: Dispatch<RoomActions.KnownRoomAction>, title: string, args: string[]) {
-	if (args.length < 5) {
-		return;
-	}
-
-	const name = args[1];
-	const answer = args[2];
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	const isVoteForTheRightAnswer = args[3] === '+'; // Not used
-	const rightAnswersCount = Math.min(parseInt(args[4], 10), args.length - 5);
-
-	const right = [];
-	for (let i = 0; i < rightAnswersCount; i++) {
-		right.push(args[5 + i]);
-	}
-
-	const wrong = [];
-	for (let i = 5 + rightAnswersCount; i < args.length; i++) {
-		wrong.push(args[i]);
-	}
-
-	dispatch(roomActionCreators.validate(name, answer, right, wrong, title, '', false));
-}
-
-function startValidation2(dispatch: Dispatch<RoomActions.KnownRoomAction>, title: string, args: string[]) {
-	if (args.length < 6) {
-		return;
-	}
-
-	const name = args[1];
-	const answer = args[2];
-	const showExtraRightButtons = args[4] == '+';
-	const rightAnswersCount = Math.min(parseInt(args[5], 10), args.length - 5);
-
-	const right = [];
-
-	for (let i = 0; i < rightAnswersCount; i++) {
-		right.push(args[6 + i]);
-	}
-
-	const wrong = [];
-
-	for (let i = 6 + rightAnswersCount; i < args.length; i++) {
-		wrong.push(args[i]);
-	}
-
-	dispatch(roomActionCreators.validate(name, answer, right, wrong, title, '', showExtraRightButtons));
-}
 
 function getIndices(args: string[]): number[] {
 	const indices: number[] = [];
@@ -1193,4 +1115,47 @@ function playGameSound(appDispatch: Dispatch<any>, isSoundEnabled: boolean, soun
 	}
 
 	appDispatch(playAudio({ audio: sound, loop }));
+}
+
+const processSystemMessage: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (
+	controller: ClientController,
+	message: Message,
+	appDispatch: AppDispatch
+) => (dispatch: Dispatch<RoomActions.KnownRoomAction>, getState: () => State, dataContext: DataContext) => {
+		const state = getState();
+		const { role } = state.room;
+		const args = message.Text.split('\n');
+
+		viewerHandler(controller, dispatch, appDispatch, state, dataContext, args);
+
+		if (role === Role.Player) {
+			playerHandler(controller, args);
+		} else if (role === Role.Showman) {
+			showmanHandler(controller, dispatch, args);
+		}
+	};
+
+const userMessageReceived: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (message: Message) => (
+	dispatch: Dispatch<any>,
+	getState: () => State) => {
+		if (message.Sender === getState().room2.name) {
+			return;
+		}
+
+		const replic: ChatMessage = {
+			sender: message.Sender,
+			text: message.Text,
+			level: MessageLevel.Information,
+		};
+
+		dispatch(roomActionCreators.chatMessageAdded(replic));
+	};
+
+export default function messageProcessor(controller: ClientController, dispatch: Dispatch<AnyAction>, appDispatch: AppDispatch, message: Message) {
+	if (message.IsSystem) {
+		dispatch((processSystemMessage(controller, message, appDispatch) as object) as AnyAction);
+		return;
+	}
+
+	dispatch((userMessageReceived(message) as object) as AnyAction);
 }

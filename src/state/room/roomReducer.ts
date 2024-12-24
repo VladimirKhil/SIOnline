@@ -211,10 +211,6 @@ const roomReducer: Reducer<RoomState> = (state: RoomState = initialState, anyAct
 					isAnswering: false,
 					isDecisionNeeded: false
 				},
-				validation: {
-					...state.validation,
-					isVisible: false
-				},
 				stakes: {
 					...state.stakes,
 					areVisible: false,
@@ -273,12 +269,6 @@ const roomReducer: Reducer<RoomState> = (state: RoomState = initialState, anyAct
 				}
 			};
 
-		case RoomActionTypes.NameChanged:
-			return {
-				...state,
-				name: action.name
-			};
-
 		case RoomActionTypes.RoleChanged:
 			return {
 				...state,
@@ -312,10 +302,6 @@ const roomReducer: Reducer<RoomState> = (state: RoomState = initialState, anyAct
 					isAnswering: false,
 					isDecisionNeeded: false
 				},
-				validation: {
-					...state.validation,
-					isVisible: false
-				},
 				selection: {
 					...state.selection,
 					isEnabled: false
@@ -348,23 +334,6 @@ const roomReducer: Reducer<RoomState> = (state: RoomState = initialState, anyAct
 			return {
 				...state,
 				answer: action.answer
-			};
-
-		case RoomActionTypes.Validate:
-			return {
-				...state,
-				answer: action.answer,
-				validation: {
-					...state.validation,
-					isVisible: true,
-					rightAnswers: action.rightAnswers,
-					wrongAnswers: action.wrongAnswers,
-					header: action.header,
-					name: action.name,
-					answer: action.answer,
-					message: action.message,
-					showExtraRightButtons: action.showExtraRightButtons,
-				}
 			};
 
 		case RoomActionTypes.SetStakes:

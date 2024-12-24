@@ -30,7 +30,7 @@ export default function PackageSources(props: PackageSourcesProps): JSX.Element 
 			<li>
 				<a
 					className='simpleLink'
-					href="https://vk.com/topic-135725718_34975471"
+					href="https://vk.com/topic-135725718_53119401"
 					target='_blank'
 					rel='noopener noreferrer'>
 					{`${localization.userPackages}…`}

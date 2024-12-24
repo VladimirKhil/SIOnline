@@ -7,7 +7,7 @@ import PlayerInfo from '../../../model/PlayerInfo';
 import Persons from '../../../model/Persons';
 import getAvatarClass from '../../../utils/AccountHelpers';
 import PlayerView from '../PlayerView/PlayerView';
-import { useAppDispatch } from '../../../state/new/hooks';
+import { useAppDispatch, useAppSelector } from '../../../state/new/hooks';
 import { playerSelected } from '../../../state/new/room2Slice';
 
 import './PlayersView.scss';
@@ -15,7 +15,6 @@ import './PlayersView.scss';
 interface PlayersViewProps {
 	players: PlayerInfo[];
 	all: Persons;
-	login: string;
 	avatar: string | null;
 	isVisible: boolean;
 
@@ -26,7 +25,6 @@ interface PlayersViewProps {
 const mapStateToProps = (state: State) => ({
 	players: state.room2.persons.players,
 	all: state.room.persons.all,
-	login: state.room.name,
 	avatar: state.user.avatar,
 	isVisible: state.ui.showPlayers,
 });
@@ -42,6 +40,7 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 
 const PlayersView: React.FC<PlayersViewProps> = (props) => {
 	const appDispatch = useAppDispatch();
+	const room = useAppSelector(state => state.room2);
 	const listRef = React.useRef<HTMLUListElement>(null);
 
 	const onPlayerSelected = (index: number) => {
@@ -52,7 +51,7 @@ const PlayersView: React.FC<PlayersViewProps> = (props) => {
 
 	const renderPlayer = (player: PlayerInfo, index: number): JSX.Element => {
 		const account = props.all[player.name];
-		const isMe = player.name === props.login;
+		const isMe = player.name === room.name;
 		const avatar = isMe && props.avatar ? props.avatar : account?.avatar;
 		const avatarClass = getAvatarClass(account);
 

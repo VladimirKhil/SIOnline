@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import localization from '../../../model/resources/localization';
-import State from '../../../state/State';
 import Dialog from '../../common/Dialog/Dialog';
 import GameSound from '../../../model/enums/GameSound';
 import { playAudio, stopAudio } from '../../../state/new/commonSlice';
@@ -18,27 +17,9 @@ import './MainMenu.css';
 import exitImg from '../../../../assets/images/exit.png';
 
 interface MainMenuProps {
-	isConnected: boolean;
-	serverName: string | null;
-	serverLicense: string | null;
-	windowWidth: number;
-	mainMenuSound: boolean;
-	userName: string;
-	avatar: string | null;
-
 	anyonePlay: (appDispatch: AppDispatch) => void;
 	exit: (appDispatch: AppDispatch) => void;
 }
-
-const mapStateToProps = (state: State) => ({
-	isConnected: state.common.isConnected,
-	serverName: state.common.serverName,
-	serverLicense: state.common.serverLicense,
-	windowWidth: state.ui.windowWidth,
-	mainMenuSound: state.settings.mainMenuSound,
-	userName: state.user.login,
-	avatar: state.user.avatar,
-});
 
 const mapDispatchToProps = (dispatch: any) => ({
 	anyonePlay: (appDispatch: AppDispatch) => {
@@ -53,17 +34,21 @@ export function MainMenu(props: MainMenuProps): JSX.Element {
 	const [showLicense, setShowLicense] = React.useState(false);
 	const appDispatch = useAppDispatch();
 	const common = useAppSelector(state => state.common);
+	const settings = useAppSelector(state => state.settings);
 
 	const stopAudioPlay = () => { appDispatch(stopAudio()); };
 
 	React.useEffect(() => {
-		if (props.mainMenuSound) {
+		if (settings.mainMenuSound) {
 			appDispatch(playAudio({ audio: GameSound.MAIN_MENU, loop: true }));
 			return stopAudioPlay;
 		}
 	}, []);
 
 	const onExit = () => props.exit(appDispatch);
+
+	// setTimeout() is to forcibly load window.history before navigating
+	const onJoinByPin = () => setTimeout(() => appDispatch(navigate({ navigation: { path: Path.JoinByPin }, saveState: true })), 0);
 
 	return (
 		<section className="welcomeView">
@@ -78,7 +63,7 @@ export function MainMenu(props: MainMenuProps): JSX.Element {
 							<img src={exitImg} alt='Exit' />
 						</button>
 
-						<span className="serverName" title={localization.server}>{props.serverName || localization.appUser}</span>
+						<span className="serverName" title={localization.server}>{common.serverName || localization.appUser}</span>
 
 						<button
 							type='button'
@@ -99,11 +84,11 @@ export function MainMenu(props: MainMenuProps): JSX.Element {
 			<div className='mainArea'>
 				<div className={common.clearUrls ? 'logoMini' : 'logo'} />
 
-				<div className={`welcomeViewActions ${props.isConnected ? '' : 'disconnected'}`}>
+				<div className={`welcomeViewActions ${common.isConnected ? '' : 'disconnected'}`}>
 					<button
 						type='button'
 						className='standard welcomeRow right'
-						disabled={!props.isConnected}
+						disabled={!common.isConnected}
 						onClick={() => appDispatch(navigate({ navigation: { path: Path.NewRoom, newGameMode: 'single' }, saveState: true }))}>
 						{localization.singlePlay.toUpperCase()}
 					</button>
@@ -111,7 +96,7 @@ export function MainMenu(props: MainMenuProps): JSX.Element {
 					<button
 						type='button'
 						className='standard welcomeRow left'
-						disabled={!props.isConnected}
+						disabled={!common.isConnected}
 						onClick={() => props.anyonePlay(appDispatch)}>
 						{localization.anyonePlay.toUpperCase()}
 					</button>
@@ -119,15 +104,15 @@ export function MainMenu(props: MainMenuProps): JSX.Element {
 					<button
 						type='button'
 						className='standard welcomeRow right'
-						disabled={!props.isConnected}
-						onClick={() => appDispatch(navigate({ navigation: { path: Path.JoinByPin }, saveState: true }))}>
+						disabled={!common.isConnected}
+						onClick={onJoinByPin}>
 						{localization.joinByPin.toUpperCase()}
 					</button>
 
 					<button
 						type='button'
 						className='standard welcomeRow left'
-						disabled={!props.isConnected}
+						disabled={!common.isConnected}
 						onClick={() => appDispatch(navigate({ navigation: { path: Path.Lobby }, saveState: true }))}>
 						{localization.joinLobby.toUpperCase()}
 					</button>
@@ -139,7 +124,7 @@ export function MainMenu(props: MainMenuProps): JSX.Element {
 			{showLicense ? (
 				<Dialog className='licenseDialog' title={localization.serverLicense} onClose={() => setShowLicense(false)}>
 					<div className='licenseText'>
-						{props.serverLicense?.split('\n').map((text, index) => <p key={index}>{text}</p>)}
+						{common.serverLicense?.split('\n').map((text, index) => <p key={index}>{text}</p>)}
 					</div>
 				</Dialog>
 			)
@@ -148,4 +133,4 @@ export function MainMenu(props: MainMenuProps): JSX.Element {
 	);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(MainMenu);
+export default connect(null, mapDispatchToProps)(MainMenu);

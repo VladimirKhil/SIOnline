@@ -14,7 +14,6 @@ import './ReadyButton.css';
 interface ReadyButtonProps {
 	isConnected: boolean;
 	role: Role;
-	myName: string;
 	sex: Sex;
 
 	onReady: (isReady: boolean) => void;
@@ -42,7 +41,6 @@ const mapStateToProps = (state: State) => ({
 	isConnected: state.common.isSIHostConnected,
 	sex: state.settings.sex,
 	role: state.room.role,
-	myName: state.room.name,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
@@ -61,7 +59,7 @@ function getReadyMessage(props: ReadyButtonProps) {
 
 export function ReadyButton(props: ReadyButtonProps): JSX.Element | null {
 	const roomState = useAppSelector(state => state.room2);
-	const isReady = getIsReady(roomState, props.role, props.myName);
+	const isReady = getIsReady(roomState, props.role, roomState.name);
 	const enabledClass = props.isConnected ? '' : 'disabled';
 	const label = isReady ? getReadyMessage(props) : getNotReadyMessage(props);
 

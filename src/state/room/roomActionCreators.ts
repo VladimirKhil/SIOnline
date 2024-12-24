@@ -49,7 +49,7 @@ const runChatMessageSend: ActionCreator<ThunkAction<void, State, DataContext, Ac
 		dispatch(runChatMessageChanged(''));
 
 		// Temporary
-		dispatch(chatMessageAdded({ sender: state.room.name, text, level: MessageLevel.Information }) as unknown as Action);
+		dispatch(chatMessageAdded({ sender: state.room2.name, text, level: MessageLevel.Information }) as unknown as Action);
 
 		if (!state.room.chat.isVisible) {
 			dispatch(activateChat());
@@ -318,10 +318,6 @@ const personRemoved: ActionCreator<RunActions.PersonRemovedAction> = (name: stri
 	type: RunActions.RoomActionTypes.PersonRemoved, name
 });
 
-const nameChanged: ActionCreator<RunActions.NameChangedAction> = (name: string) => ({
-	type: RunActions.RoomActionTypes.NameChanged, name
-});
-
 const roleChanged: ActionCreator<RunActions.RoleChangedAction> = (role: Role) => ({
 	type: RunActions.RoomActionTypes.RoleChanged, role
 });
@@ -488,18 +484,6 @@ const sendAnswer: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 
 	dispatch(clearDecisions());
 };
-
-const validate: ActionCreator<RunActions.ValidateAction> = (
-	name: string,
-	answer: string,
-	rightAnswers: string[],
-	wrongAnswers: string[],
-	header: string,
-	message: string,
-	showExtraRightButtons: boolean,
-) => ({
-	type: RunActions.RoomActionTypes.Validate, name, answer, rightAnswers, wrongAnswers, header, message, showExtraRightButtons
-});
 
 const setStakes: ActionCreator<RunActions.SetStakesAction> = (
 	stakeModes: StakeModes,
@@ -782,7 +766,6 @@ const roomActionCreators = {
 	currentPriceChanged,
 	personAdded,
 	personRemoved,
-	nameChanged,
 	roleChanged,
 	isPausedChanged,
 	decisionNeededChanged,
@@ -796,7 +779,6 @@ const roomActionCreators = {
 	isAnswering,
 	updateAnswer,
 	sendAnswer,
-	validate,
 	setStakes,
 	stakeChanged,
 	selectionEnabled,

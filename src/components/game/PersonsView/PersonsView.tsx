@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { Dispatch, AnyAction } from 'redux';
 import State from '../../../state/State';
 import localization from '../../../model/resources/localization';
-import Account from '../../../model/Account';
 import roomActionCreators from '../../../state/room/roomActionCreators';
 import PersonView from '../PersonView/PersonView';
 import { isHost } from '../../../utils/StateHelpers';
@@ -20,7 +19,6 @@ interface PersonsViewProps {
 	isConnected: boolean;
 	isHost: boolean;
 	all: Persons;
-	login: string;
 	joinMode: JoinMode;
 
 	onJoinModeChanged(joinMode: JoinMode): void;
@@ -30,7 +28,6 @@ const mapStateToProps = (state: State) => ({
 	isConnected: state.common.isSIHostConnected,
 	isHost: isHost(state),
 	all: state.room.persons.all,
-	login: state.room.name,
 	joinMode: state.room.joinMode,
 });
 

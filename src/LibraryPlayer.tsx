@@ -34,7 +34,7 @@ export function run(elementId: string): void {
 
 	store.subscribe(() => {
 		const state = store.getState();
-		const { name } = state.room;
+		const { name } = state.room2;
 
 		if (name !== login && name.length > 0) {
 			login = name;
