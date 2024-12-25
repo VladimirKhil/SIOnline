@@ -557,6 +557,7 @@ export default class ClientController {
 		// }
 
 		// Straight but working method
+		const timeoutValue = 1000;
 		const failedLoadsToRetry: string[] = [];
 
 		content.forEach((url, index) => {
@@ -584,14 +585,16 @@ export default class ClientController {
 						console.error(url + ' ' + getErrorMessage(e));
 					}
 				},
-				index * 1000
+				index * timeoutValue
 			);
 		});
 
-		if(failedLoadsToRetry.length > 0){
-			this.onRoundContent(failedLoadsToRetry);
-		}
-
+		window.setTimeout(() => {
+			if(failedLoadsToRetry.length > 0){
+				this.onRoundContent(failedLoadsToRetry);
+			}
+		}, content.length * timeoutValue)
+		
 		// Chrome does not support audio and video preload
 		// We can return to this method later
 		// const link = document.createElement('link');
