@@ -557,6 +557,8 @@ export default class ClientController {
 		// }
 
 		// Straight but working method
+		const failedLoadsToRetry: string[] = [];
+
 		content.forEach((url, index) => {
 			const contentUri = this.preprocessServerUri(url);
 
@@ -567,6 +569,11 @@ export default class ClientController {
 						const response = await fetch(contentUri);
 
 						if (!response.ok) {
+							if(response.status >= 500){
+								// retry because sometimes server returns 503 in case of large number players/medias
+								failedLoadsToRetry.push(url);
+							}
+
 							this.dispatch(roomActionCreators.chatMessageAdded({
 								sender: '',
 								text: response.statusText,
@@ -580,6 +587,10 @@ export default class ClientController {
 				index * 1000
 			);
 		});
+
+		if(failedLoadsToRetry.length > 0){
+			this.onRoundContent(failedLoadsToRetry);
+		}
 
 		// Chrome does not support audio and video preload
 		// We can return to this method later
