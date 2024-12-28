@@ -4,6 +4,7 @@ import Link from '../../common/Link/Link';
 import Constants from '../../../model/enums/Constants';
 import clearUrls from '../../../utils/clearUrls';
 import { useAppSelector } from '../../../state/new/hooks';
+import { trimLength } from '../../../utils/StringHelpers';
 
 import './Trends.css';
 
@@ -29,32 +30,37 @@ export default function Trends(): JSX.Element {
 				? <div>
 					<div className='trendCategory'>{localization.topPackages}</div>
 					{online.packagesStatistics.packages.filter(p => p.package.name !== Constants.RANDOM_PACKAGE).map(
-						(p, i) => <div key={i} className='trendPackage'>
-							<div><span className='packageName'>
-								{common.clearUrls ? clearUrls(p.package.name) : p.package.name}</span>
-							</div>
+						(p, i) => {
+							const trimmedPackageName = trimLength(p.package.name, 75);
+							const trimmedAuthors = trimLength(p.package.authors.join(', '), 75);
 
-							<div className='property'>
-								<div>{localization.games}</div>
-								<div>{p.gameCount}</div>
-							</div>
-
-							<div className='property'>
-								<div>{localization.packageAuthor}</div>
-
-								<div>
-									<span className='packageAuthors'>
-									{isValidLink(p.package.authorsContacts)
-										? <Link href={p.package.authorsContacts} target='_blank' rel='noopener noreferrer'>{p.package.authors}</Link>
-										: <span
-											title={common.clearUrls ? undefined : p.package.authorsContacts}
-											className={p.package.authorsContacts && p.package.authorsContacts.length > 0 ? 'hasContact' : ''}>
-											{p.package.authors}
-										</span>}
-									</span>
+							return <div key={i} className='trendPackage'>
+								<div><span className='packageName'>
+									{common.clearUrls ? clearUrls(trimmedPackageName) : trimmedPackageName}</span>
 								</div>
-							</div>
-						</div>)}
+
+								<div className='property'>
+									<div className='propertyHeader'>{localization.games}</div>
+									<div className='propertyValue'>{p.gameCount}</div>
+								</div>
+
+								<div className='property'>
+									<div className='propertyHeader'>{localization.packageAuthor}</div>
+
+									<div className='propertyValue'>
+										<span className='packageAuthors'>
+										{isValidLink(p.package.authorsContacts)
+											? <Link href={p.package.authorsContacts} target='_blank' rel='noopener noreferrer'>{trimmedAuthors}</Link>
+											: <span
+												title={common.clearUrls ? undefined : p.package.authorsContacts}
+												className={p.package.authorsContacts && p.package.authorsContacts.length > 0 ? 'hasContact' : ''}>
+												{trimmedAuthors}
+											</span>}
+										</span>
+									</div>
+								</div>
+							</div>;
+							})}
 					</div>
 				: null}
 

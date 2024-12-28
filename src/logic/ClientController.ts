@@ -62,6 +62,7 @@ import {
 	ContextView,
 	activatePlayerDecision,
 	activateShowmanDecision,
+	askValidation,
 	chooserChanged,
 	clearDecisions,
 	deselectPlayers,
@@ -80,6 +81,7 @@ import {
 	playersAnswersChanged,
 	playersStateCleared,
 	playersSwap,
+	questionAnswersChanged,
 	selectPlayers,
 	setContext,
 	setReport,
@@ -322,6 +324,10 @@ export default class ClientController {
 		this.dispatch(roomActionCreators.decisionNeededChanged(true));
 	}
 
+	onAskValidate(playerIndex: number, answer: string) {
+		this.appDispatch(askValidation({ playerIndex, answer }));
+	}
+
 	onAvatarChanged(personName: string, contentType: string, uri: string) {
 		switch (contentType) {
 			case 'image':
@@ -505,6 +511,10 @@ export default class ClientController {
 		this.appDispatch(setQrCode(qrCode));
 	}
 
+	onQuestionAnswers(rightAnswers: string[], wrongAnswers: string[]) {
+		this.appDispatch(questionAnswersChanged({ rightAnswers, wrongAnswers }));
+	}
+
 	onReadingSpeedChanged(readingSpeed: number) {
 		this.dispatch(roomActionCreators.readingSpeedChanged(readingSpeed));
 	}
@@ -627,11 +637,13 @@ export default class ClientController {
 
 		this.dispatch(playersStateCleared());
 		this.dispatch(roomActionCreators.gameStateCleared());
+		this.dispatch(roomActionCreators.clearDecisionsAndMainTimer());
 		this.appDispatch(stopValidation());
 		this.appDispatch(isSelectableChanged(false));
 		this.appDispatch(clearActiveState());
 		this.appDispatch(canPressChanged(false));
 		this.appDispatch(setContext(ContextView.None));
+		this.appDispatch(clearAudio());
 	}
 
 	onStageInfo(stage: string, _stageName: string, stageIndex: number) {
@@ -1031,6 +1043,7 @@ export default class ClientController {
 		this.dispatch(roomActionCreators.stopTimer(2));
 
 		this.appDispatch(showLogo());
+		this.dispatch(roomActionCreators.clearDecisionsAndMainTimer());
 	}
 
 	onToggle(themeIndex: number, questionIndex: number, price: number) {

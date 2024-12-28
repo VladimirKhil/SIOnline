@@ -14,6 +14,8 @@ const enum GameMessages {
 
 	AskStake = 'ASK_STAKE',
 
+	AskValidate = 'ASK_VALIDATE',
+
 	/** Small hint fragment. Displayed separately from the main content. */
 	AtomHint = 'ATOM_HINT',
 
@@ -124,6 +126,8 @@ const enum GameMessages {
 
 	RoundContent = 'ROUNDCONTENT',
 
+	RoundsNames = 'ROUNDSNAMES',
+
 	/** Round themes names. */
 	RoundThemes = 'ROUNDTHEMES',
 
@@ -152,6 +156,8 @@ const enum GameMessages {
 	/** Theme comments. */
 	ThemeComments = 'THEME_COMMENTS',
 
+	Timeout = 'TIMEOUT',
+
 	Timer = 'TIMER',
 
 	/** Toggles (removes or restores a question). */
@@ -169,6 +175,8 @@ const enum GameMessages {
 
 	/** Answer validation. */
 	Validation2 = 'VALIDATION2',
+
+	Winner = 'WINNER',
 
 	WrongTry = 'WRONGTRY',
 }

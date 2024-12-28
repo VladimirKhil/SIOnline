@@ -20,7 +20,7 @@ const localization = new LocalizedStrings({
 			`"Secret Question" must be given to another player. 
 			The player who received it must (if it is included in the question) choose the price of the question and answer it. 
 			The theme of the question may differ from the main theme in which the question was opened.`,
-			`"No-risk Question" is answered by the player who opened it. 
+			`"Question for yourself without risk" is answered by the player who opened it. 
 			In case of a correct answer to the question, he receives doubled question price. 
 			In case of an incorrect answer to the question, the player loses nothing.`,
 			`The game can also have a final round in which each of the players makes a bet. 
@@ -299,7 +299,7 @@ The package will be automatically deleted from the server after the game ends`,
 		questionReadingSpeed: 'Question reading speed',
 		questionTypeForAll: 'FOR ALL',
 		questionTypeForAllHint: 'Question is played by all players',
-		questionTypeNoRisk: 'WITHOUT RISK',
+		questionTypeNoRisk: 'FOR YOURSELF WITHOUT RISK',
 		questionTypeNoRiskHint: `Question is played by player who opened it, for the doubled price.
 		If answer is wrong, the player does not lose money`,
 		questionTypeSecret: 'WITH SECRET',
@@ -444,7 +444,8 @@ The package will be automatically deleted from the server after the game ends`,
 	кто поставит наибольшую сумму. При этом "Ва-банк" (т.е. ставка всей суммы на кон) может быть перебит только другим "Ва-банком".`,
 			`"Вопрос с секретом" открывший его участник должен передать другому участнику. Получивший его игрок должен (если это заложено в вопросе)
 	выбрать стоимость вопроса и ответить на него. Тема вопроса может отличаться от основной темы, в которой находился вопрос.`,
-			`На "Вопрос без риска" отвечает открывший его игрок. В случае правильного ответа на вопрос он получает удвоенную стоимость вопроса.
+			`На "Вопрос для себя без риска" отвечает открывший его игрок.
+	В случае правильного ответа на вопрос он получает удвоенную стоимость вопроса.
 	В случае неверного ответа на вопрос игрок ничего не теряет.`,
 			`В игре также может быть финальный раунд, в котором каждый из игроков делает ставку. Звучит вопрос, даётся время на размышление,
 	и каждый из игроков письменно сдаёт свой ответ. После этого оглашается правильный ответ, и каждый из игроков получает или теряет деньги.`,
@@ -721,7 +722,7 @@ The package will be automatically deleted from the server after the game ends`,
 		questionReadingSpeed: 'Скорость чтения вопроса',
 		questionTypeForAll: 'ДЛЯ ВСЕХ',
 		questionTypeForAllHint: 'Вопрос играется всеми игроками',
-		questionTypeNoRisk: 'БЕЗ РИСКА',
+		questionTypeNoRisk: 'ДЛЯ СЕБЯ БЕЗ РИСКА',
 		questionTypeNoRiskHint: 'Вопрос играет открывший его игрок за двойную стоимость. В случае неправильного ответа очки не снимаются',
 		questionTypeSecret: 'С СЕКРЕТОМ',
 		questionTypeSecretHint: 'Вопрос отдаётся игроку, и тот обязан отвечать',

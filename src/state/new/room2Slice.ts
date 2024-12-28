@@ -19,6 +19,11 @@ export enum ContextView {
 	Report,
 }
 
+interface ValidationInfo {
+	name: string;
+	answer: string;
+}
+
 export interface Room2State {
 	persons: {
 		showman: PersonInfo;
@@ -35,15 +40,14 @@ export interface Room2State {
 	contextView: ContextView;
 
 	validation: {
-		isVisible: boolean;
 		header: string;
-		name: string;
-		answer: string;
 		message: string;
 		isCompact: boolean;
 		rightAnswers: string[];
 		wrongAnswers: string[];
+		queue: ValidationInfo[];
 		showExtraRightButtons: boolean;
+		newVersion: boolean;
 	};
 }
 
@@ -69,15 +73,14 @@ const initialState: Room2State = {
 	contextView: ContextView.None,
 
 	validation: {
-		isVisible: false,
 		header: '',
-		name: '',
-		answer: '',
 		message: '',
 		isCompact: true,
 		rightAnswers: [],
 		wrongAnswers: [],
+		queue: [],
 		showExtraRightButtons: false,
+		newVersion: false,
 	},
 };
 
@@ -118,17 +121,29 @@ export const sendAnswer = createAsyncThunk(
 
 export const approveAnswer = createAsyncThunk(
 	'room2/approveAnswer',
-	async (factor: number, thunkAPI) => {
+	async (arg: any, thunkAPI) => {
 		const dataContext = thunkAPI.extra as DataContext;
-		await dataContext.game.approveAnswer(factor);
+		const { newVersion } = (thunkAPI.getState() as State).room2.validation;
+
+		if (newVersion) {
+			await dataContext.game.validateAnswer(arg.answer, true);
+		} else {
+			await dataContext.game.approveAnswer(arg.factor);
+		}
 	},
 );
 
 export const rejectAnswer = createAsyncThunk(
 	'room2/rejectAnswer',
-	async (factor: number, thunkAPI) => {
+	async (arg: any, thunkAPI) => {
 		const dataContext = thunkAPI.extra as DataContext;
-		await dataContext.game.rejectAnswer(factor);
+		const { newVersion } = (thunkAPI.getState() as State).room2.validation;
+
+		if (newVersion) {
+			await dataContext.game.validateAnswer(arg.answer, false);
+		} else {
+			await dataContext.game.rejectAnswer(arg.factor);
+		}
 	},
 );
 
@@ -335,6 +350,10 @@ export const room2Slice = createSlice({
 		playerMediaLoaded(state: Room2State, action: PayloadAction<number>) {
 			state.persons.players[action.payload].mediaLoaded = true;
 		},
+		questionAnswersChanged(state: Room2State, action: PayloadAction<{ rightAnswers: string[], wrongAnswers: string[] }>) {
+			state.validation.rightAnswers = action.payload.rightAnswers;
+			state.validation.wrongAnswers = action.payload.wrongAnswers;
+		},
 		validate(state: Room2State, action: PayloadAction<{
 			header: string,
 			name: string,
@@ -343,17 +362,28 @@ export const room2Slice = createSlice({
 			rightAnswers: string[],
 			wrongAnswers: string[],
 			showExtraRightButtons: boolean }>) {
-			state.validation.isVisible = true;
 			state.validation.header = action.payload.header;
-			state.validation.name = action.payload.name;
-			state.validation.answer = action.payload.answer;
 			state.validation.message = action.payload.message;
 			state.validation.rightAnswers = action.payload.rightAnswers;
 			state.validation.wrongAnswers = action.payload.wrongAnswers;
+			state.validation.queue = [{ name: action.payload.name, answer: action.payload.answer }];
 			state.validation.showExtraRightButtons = action.payload.showExtraRightButtons;
+			state.validation.newVersion = false;
+		},
+		askValidation(state: Room2State, action: PayloadAction<{ playerIndex: number, answer: string }>) {
+			if (action.payload.playerIndex === -1 || action.payload.playerIndex >= state.persons.players.length) {
+				return;
+			}
+
+			const player = state.persons.players[action.payload.playerIndex];
+			state.validation.queue.push({ name: player.name, answer: action.payload.answer });
+			state.validation.header = localization.answerChecking;
+			state.validation.message = '';
+			state.validation.showExtraRightButtons = false;
+			state.validation.newVersion = true;
 		},
 		stopValidation(state: Room2State) {
-			state.validation.isVisible = false;
+			state.validation.queue = [];
 		},
 		nameChanged(state: Room2State, action: PayloadAction<string>) {
 			state.name = action.payload;
@@ -375,11 +405,11 @@ export const room2Slice = createSlice({
 		});
 
 		builder.addCase(approveAnswer.fulfilled, (state) => {
-			state.validation.isVisible = false;
+			state.validation.queue.shift();
 		});
 
 		builder.addCase(rejectAnswer.fulfilled, (state) => {
-			state.validation.isVisible = false;
+			state.validation.queue.shift();
 		});
 	},
 });
@@ -414,7 +444,9 @@ export const {
 	chooserChanged,
 	playerInGameChanged,
 	playerMediaLoaded,
+	questionAnswersChanged,
 	validate,
+	askValidation,
 	stopValidation,
 	nameChanged,
 } = room2Slice.actions;

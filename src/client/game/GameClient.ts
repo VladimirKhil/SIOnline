@@ -129,4 +129,8 @@ export default class GameClient implements IGameClient {
 	unban(ip: string): Promise<boolean> {
 		return this.gameServerClient.msgAsync(Messages.Unban, ip);
 	}
+
+	validateAnswer(answer: string, isRight: boolean): Promise<boolean> {
+		return this.gameServerClient.msgAsync(Messages.Validate, answer, isRight ? '+' : '-');
+	}
 }

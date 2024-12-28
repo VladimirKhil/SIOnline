@@ -114,6 +114,27 @@ function onValidation(controller: ClientController, title: string, args: string[
 	controller.onValidation(title, name, answer, '', right, wrong, showExtraRightButtons);
 }
 
+function onQuestionAnswers(controller: ClientController, args: string[]) {
+	if (args.length < 3) {
+		return;
+	}
+
+	const rightAnswerCount = Math.min(parseInt(args[1], 10), args.length - 2);
+	const right = [];
+
+	for (let i = 0; i < rightAnswerCount; i++) {
+		right.push(args[2 + i]);
+	}
+
+	const wrong = [];
+
+	for (let i = 2 + rightAnswerCount; i < args.length; i++) {
+		wrong.push(args[i]);
+	}
+
+	controller.onQuestionAnswers(right, wrong);
+}
+
 const viewerHandler = (
 	controller: ClientController,
 	dispatch: Dispatch<any>,
@@ -661,7 +682,7 @@ const viewerHandler = (
 			controller.onRoundContent(args.slice(1));
 			break;
 
-		case 'ROUNDSNAMES':
+		case GameMessages.RoundsNames:
 			dispatch(roomActionCreators.roundsNamesChanged(args.slice(1)));
 			break;
 
@@ -778,7 +799,7 @@ const viewerHandler = (
 			controller.onTable(newRoundInfo, state.room.stage.name === 'Final');
 			break;
 
-		case 'TIMEOUT':
+		case GameMessages.Timeout:
 			playGameSound(dispatch, state.settings.appSound, GameSound.ROUND_TIMEOUT);
 			break;
 
@@ -881,7 +902,7 @@ const viewerHandler = (
 			}
 			break;
 
-		case 'WINNER':
+		case GameMessages.Winner:
 			playGameSound(dispatch, state.settings.appSound, GameSound.APPLAUSE_FINAL);
 			break;
 
@@ -973,6 +994,14 @@ const showmanHandler = (controller: ClientController, dispatch: Dispatch<any>, a
 			controller.onAskSelectPlayer(args[1], indices);
 			break;
 
+		case GameMessages.AskValidate:
+			if (args.length < 3) {
+				return;
+			}
+
+			controller.onAskValidate(parseInt(args[1], 10), args[2]);
+			break;
+
 		case GameMessages.Cancel:
 			controller.onCancel();
 			break;
@@ -981,6 +1010,10 @@ const showmanHandler = (controller: ClientController, dispatch: Dispatch<any>, a
 			if (args.length > 1) {
 				dispatch(roomActionCreators.hintChanged(args[1]));
 			}
+			break;
+
+		case GameMessages.QuestionAnswers:
+			onQuestionAnswers(controller, args);
 			break;
 
 		case GameMessages.RightAnswer:

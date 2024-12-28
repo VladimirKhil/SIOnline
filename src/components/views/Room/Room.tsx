@@ -248,7 +248,7 @@ export function Room(props: RoomProps) : JSX.Element {
 				</Dialog>
 			) : null}
 
-			{state.validation.isVisible && (!isScreenWide || props.role === Role.Player) ? (
+			{state.validation.queue.length > 0 && (!isScreenWide || props.role === Role.Player) ? (
 				<Dialog className='answerValidationDialog' title={state.validation.header} onClose={() => onReject(1.0)}>
 					<AnswerValidation />
 				</Dialog>

@@ -78,6 +78,7 @@ export const tableSlice = createSlice({
 		showLogo: (state: TableState) => {
 			state.mode = TableMode.Logo;
 			state.caption = '';
+			state.audio = '';
 		},
 		showGameThemes: (state: TableState, action: PayloadAction<string[]>) => {
 			state.mode = TableMode.GameThemes;

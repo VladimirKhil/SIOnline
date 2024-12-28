@@ -73,4 +73,7 @@ export default interface IGameClient {
 
 	/** Sends command to unban the person by IP. */
 	unban(ip: string): Promise<boolean>;
+
+	/** Validates player answer. */
+	validateAnswer(answer: string, isRight: boolean): Promise<boolean>;
 }

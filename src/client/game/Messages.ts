@@ -64,6 +64,8 @@ const enum Messages {
 
 	/** Unbans the person. */
 	Unban = 'UNBAN',
+
+	Validate = 'VALIDATE',
 }
 
 export default Messages;

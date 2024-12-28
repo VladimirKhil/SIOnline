@@ -38,3 +38,11 @@
 	justify-content: space-between;
 	overflow: hidden;
 }
+
+.propertyHeader {
+	margin-right: 5px;
+}
+
+.propertyValue {
+	text-align: right;
+}
