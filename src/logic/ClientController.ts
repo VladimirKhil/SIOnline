@@ -544,7 +544,7 @@ export default class ClientController {
 		this.appDispatch(setReport(report));
 	}
 
-	onRoundContent(content: string[]) {
+	onRoundContent(content: string[], retryCount: number = 0) {
 		// Clearing old preloads
 		// for (let i = 0; i < document.head.children.length; i++) {
 		// 	const child = document.head.children[i];
@@ -590,10 +590,10 @@ export default class ClientController {
 		});
 
 		window.setTimeout(() => {
-			if(failedLoadsToRetry.length > 0){
-				this.onRoundContent(failedLoadsToRetry);
+			if(failedLoadsToRetry.length > 0 && retryCount < 3){
+				this.onRoundContent(failedLoadsToRetry, retryCount++);
 			}
-		}, content.length * timeoutValue)
+		}, (content.length + 1) * timeoutValue)
 		
 		// Chrome does not support audio and video preload
 		// We can return to this method later
