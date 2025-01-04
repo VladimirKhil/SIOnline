@@ -591,7 +591,7 @@ export default class ClientController {
 
 		window.setTimeout(() => {
 			if(failedLoadsToRetry.length > 0 && retryCount < 3){
-				this.onRoundContent(failedLoadsToRetry, retryCount++);
+				this.onRoundContent(failedLoadsToRetry, ++retryCount);
 			}
 		}, (content.length + 1) * timeoutValue)
 		
