@@ -544,7 +544,7 @@ export default class ClientController {
 		this.appDispatch(setReport(report));
 	}
 
-	onRoundContent(content: string[]) {
+	onRoundContent(content: string[], retryCount: number = 0) {
 		// Clearing old preloads
 		// for (let i = 0; i < document.head.children.length; i++) {
 		// 	const child = document.head.children[i];
@@ -557,6 +557,9 @@ export default class ClientController {
 		// }
 
 		// Straight but working method
+		const timeoutValue = 1000;
+		const failedLoadsToRetry: string[] = [];
+
 		content.forEach((url, index) => {
 			const contentUri = this.preprocessServerUri(url);
 
@@ -567,6 +570,11 @@ export default class ClientController {
 						const response = await fetch(contentUri);
 
 						if (!response.ok) {
+							if(response.status >= 500){
+								// retry because sometimes server returns 503 in case of large number players/medias
+								failedLoadsToRetry.push(url);
+							}
+
 							this.dispatch(roomActionCreators.chatMessageAdded({
 								sender: '',
 								text: response.statusText,
@@ -577,10 +585,16 @@ export default class ClientController {
 						console.error(url + ' ' + getErrorMessage(e));
 					}
 				},
-				index * 1000
+				index * timeoutValue
 			);
 		});
 
+		window.setTimeout(() => {
+			if(failedLoadsToRetry.length > 0 && retryCount < 3){
+				this.onRoundContent(failedLoadsToRetry, ++retryCount);
+			}
+		}, (content.length + 1) * timeoutValue)
+		
 		// Chrome does not support audio and video preload
 		// We can return to this method later
 		// const link = document.createElement('link');
