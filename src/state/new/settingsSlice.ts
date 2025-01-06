@@ -16,7 +16,6 @@ export interface SettingsState {
 	appSettings: AppSettings;
 	gameButtonKey: string | null;
 	nextButtonKey: string | null;
-	isLobbyChatHidden: boolean;
 	bindNextButton: boolean;
 	attachContentToTable: boolean;
 	showVideoAvatars: boolean;
@@ -33,7 +32,6 @@ const initialState: SettingsState = {
 	appSettings: initialAppSettings,
 	gameButtonKey: Constants.KEY_CTRL,
 	nextButtonKey: Constants.KEY_RIGHT,
-	isLobbyChatHidden: false,
 	bindNextButton: true,
 	attachContentToTable: true,
 	showVideoAvatars: true,
@@ -106,9 +104,6 @@ export const settingsSlice = createSlice({
 		setGameButtonKey: (state: SettingsState, action: PayloadAction<string | null>) => {
 			state.gameButtonKey = action.payload;
 		},
-		setLobbyChatVisibility: (state: SettingsState, action: PayloadAction<boolean>) => {
-			state.isLobbyChatHidden = !action.payload;
-		},
 		setPlayAllQuestionsInFinalRound: (state: SettingsState, action: PayloadAction<boolean>) => {
 			state.appSettings.playAllQuestionsInFinalRound = action.payload;
 		},
@@ -171,7 +166,6 @@ export const {
 	setTimeSetting,
 	languageChanged,
 	setGameButtonKey,
-	setLobbyChatVisibility,
 	setPlayAllQuestionsInFinalRound,
 	setOralPlayersActions,
 	setAllowEveryoneToPlayHiddenStakes,

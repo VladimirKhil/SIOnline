@@ -54,6 +54,7 @@ import { answerOptions,
 	showRoundThemes,
 	showText,
 	startLoadTimer,
+	switchToContent,
 	updateOption,
 	updateOptionState,
 	updateQuestion } from '../state/new/tableSlice';
@@ -715,6 +716,8 @@ export default class ClientController {
 				if (replic.type === 'text') {
 					this.onReplic('s', replic.value);
 				}
+
+				this.dispatch(switchToContent());
 				break;
 
 			case 'background':

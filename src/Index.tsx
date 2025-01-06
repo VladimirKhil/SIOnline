@@ -203,7 +203,19 @@ async function getServerUri(serverDiscoveryUri: string) {
 }
 
 function getInitialView(historyState: INavigationState): INavigationState {
-	const urlParams = new URLSearchParams(window.location.search);
+	const { search } = window.location;
+
+	if (search.startsWith('?_') && search.length > 3 && config?.siHostsIdUriMap) {
+		const [,,siHostKey] = search;
+		const gameId = parseInt(search.substring(3), 10);
+		const hostUri = config.siHostsIdUriMap[siHostKey];
+
+		if (hostUri) {
+			return { path: Path.JoinRoom, gameId, hostUri };
+		}
+	}
+
+	const urlParams = new URLSearchParams(search);
 	const gameId = urlParams.get('gameId');
 	const hostUri = urlParams.get('host');
 	const packageUri = urlParams.get('packageUri');

@@ -164,6 +164,9 @@ export const tableSlice = createSlice({
 			state.content = action.payload;
 			state.isMediaStopped = false;
 		},
+		switchToContent: (state: TableState) => {
+			state.mode = TableMode.Content;
+		},
 		canPressChanged: (state: TableState, action: PayloadAction<boolean>) => {
 			state.canPress = action.payload;
 			state.canPressUpdateTime = Date.now();
@@ -287,6 +290,7 @@ export const {
 	showBackgroundAudio,
 	clearAudio,
 	showContent,
+	switchToContent,
 	canPressChanged,
 	isSelectableChanged,
 	resumeMedia,

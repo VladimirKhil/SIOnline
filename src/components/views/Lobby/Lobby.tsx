@@ -27,7 +27,6 @@ interface LobbyProps {
 	windowWidth: number;
 	mode: OnlineMode;
 	newGameShown: boolean;
-	isLobbyChatHidden: boolean;
 
 	closeNewGame: () => void;
 }
@@ -36,7 +35,6 @@ const mapStateToProps = (state: State) => ({
 	windowWidth: state.ui.windowWidth,
 	mode: state.ui.onlineView,
 	newGameShown: state.online.newGameShown,
-	isLobbyChatHidden: state.settings.isLobbyChatHidden
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
@@ -68,6 +66,7 @@ const topMenu = (onExit: () => void) => (
 export function Lobby(props: LobbyProps) {
 	const appDispatch = useDispatch();
 	const online = useAppSelector(state => state.online2);
+	const common = useAppSelector(state => state.common);
 
 	const filteredGames = filterGames(Object.values(online.games), online.gamesFilter, online.gamesSearch);
 
@@ -76,7 +75,7 @@ export function Lobby(props: LobbyProps) {
 	const selectedGame = online.games[selectedGameId];
 
 	const newGame = (
-		<div className={`newGameArea ${props.isLobbyChatHidden ? 'newWide' : null}`}>
+		<div className='newGameArea'>
 			<NewGameDialog isSingleGame={false} onClose={props.closeNewGame} />
 		</div>
 	);
@@ -91,7 +90,7 @@ export function Lobby(props: LobbyProps) {
 		if (props.mode === OnlineMode.GameInfo && selectedGame) {
 			return (
 				<Dialog id="gameInfoDialog" title={selectedGame.GameName} onClose={onCloseGameInfo}>
-					<GameInfoView game={selectedGame} showGameName={false} />
+					<GameInfoView isConnected={common.isConnected} game={selectedGame} showGameName={false} />
 				</Dialog>
 			);
 		}
@@ -117,12 +116,14 @@ export function Lobby(props: LobbyProps) {
 
 		return <div className="lobby">
 			{topMenu(onExit)}
+
 			<div className="onlineView">
 				<UsersView />
 			</div>
+
 			<LobbyBottomPanel />
 			{props.newGameShown ? newGame : null}
-			</div>;
+		</div>;
 	}
 
 	return (
@@ -140,7 +141,10 @@ export function Lobby(props: LobbyProps) {
 
 						<div className='gameInfoArea'>
 							<header />
-							<div className='gameInfoAreaContent'><GameInfoView game={selectedGame} showGameName /></div>
+
+							<div className='gameInfoAreaContent'>
+								<GameInfoView isConnected={common.isConnected} game={selectedGame} showGameName />
+							</div>
 						</div>
 					</div>
 				</div>

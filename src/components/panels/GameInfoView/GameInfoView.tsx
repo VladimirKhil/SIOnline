@@ -36,7 +36,6 @@ interface GameInfoViewProps extends GameInfoViewOwnProps, GameInfoViewStateProps
 }
 
 const mapStateToProps = (state: State) => ({
-	isConnected: state.common.isConnected,
 	culture: state.settings.appSettings.culture,
 	login: state.user.login,
 	password: state.online.password,
