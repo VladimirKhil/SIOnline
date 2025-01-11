@@ -86,7 +86,10 @@
 }
 
 .flyoutButton_flyout.dark > ul.gamesFilter > li {
-    padding: 10pt 30pt 10pt 0;
+    padding: 0 30px 0 0;
+    height: 50px;
+    display: flex;
+    align-items: center;
 }
 
 ul.gamesFilter > li.disabled {

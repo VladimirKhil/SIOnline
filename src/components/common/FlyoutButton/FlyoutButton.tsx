@@ -87,6 +87,7 @@ export default class FlyoutButton extends React.Component<FlyoutButtonProps, Fly
 		}
 
 		window.removeEventListener('mousedown', this.hideFlyout);
+		window.removeEventListener('mouseup', this.hideFlyout);
 		window.removeEventListener('resize', this.hideFlyout);
 
 		if (this.timerRef) {
@@ -103,6 +104,7 @@ export default class FlyoutButton extends React.Component<FlyoutButtonProps, Fly
 		}
 
 		window.addEventListener('mousedown', this.hideFlyout);
+		window.addEventListener('mouseup', this.hideFlyout);
 		window.addEventListener('resize', this.hideFlyout);
 
 		const rect = this.buttonRef.current.getBoundingClientRect();
@@ -116,11 +118,12 @@ export default class FlyoutButton extends React.Component<FlyoutButtonProps, Fly
 	};
 
 	private hideFlyout = (e: Event) => {
-		if (e.target instanceof Node && this.layout.contains(e.target as Node) && !this.props.hideOnClick) {
+		if (e.target instanceof Node && this.layout.contains(e.target as Node) && (e.type === 'mousedown' || !this.props.hideOnClick)) {
 			return;
 		}
 
 		window.removeEventListener('mousedown', this.hideFlyout);
+		window.removeEventListener('mouseup', this.hideFlyout);
 		window.removeEventListener('resize', this.hideFlyout);
 
 		this.timerRef = window.setTimeout(
@@ -133,7 +136,7 @@ export default class FlyoutButton extends React.Component<FlyoutButtonProps, Fly
 					isOpen: false
 				});
 			},
-			200 // When small value is set, onClick for internal items could may not sometimes work
+			1
 		);
 	};
 
@@ -170,6 +173,8 @@ export default class FlyoutButton extends React.Component<FlyoutButtonProps, Fly
 			overflowY: 'auto'
 		};
 
+		const colorClass = this.props.theme === FlyoutTheme.Light ? 'light' : 'dark';
+
 		return (
 			<button
 				type="button"
@@ -183,7 +188,7 @@ export default class FlyoutButton extends React.Component<FlyoutButtonProps, Fly
 				{this.state.isOpen
 					? ReactDOM.createPortal(
 						<section
-							className={`flyoutButton_flyout ${this.props.theme === FlyoutTheme.Light ? 'light' : 'dark'}`}
+							className={`flyoutButton_flyout ${colorClass} ${this.state.isOpen ? 'visible' : 'hidden'}`}
 							style={flyoutStyle}
 						>
 							{this.props.flyout}
