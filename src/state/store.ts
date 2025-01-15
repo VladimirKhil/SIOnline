@@ -10,13 +10,13 @@ import commonReducer from './commonSlice';
 import tableReducer from './tableSlice';
 import siPackagesReducer from './siPackagesSlice';
 import settingsReducer from './settingsSlice';
-import DataContext from '../../model/DataContext';
-import Config from '../../Config';
-import GameClient from '../../client/game/GameClient';
-import GameServerClient from '../../client/GameServerClient';
+import DataContext from '../model/DataContext';
+import Config from '../Config';
+import GameClient from '../client/game/GameClient';
+import GameServerClient from '../client/GameServerClient';
 import SIContentClient from 'sicontent-client';
-import StateManager from '../../utils/StateManager';
-import SIHostClient from '../../client/SIHostClient';
+import StateManager from '../utils/StateManager';
+import SIHostClient from '../client/SIHostClient';
 
 /* New version of store. Not used yet */
 
@@ -29,13 +29,11 @@ if (!serverUri) {
 }
 
 const noOpHubConnection = new signalR.HubConnectionBuilder().withUrl('http://fake').build();
-
-const gameClient = new GameServerClient(noOpHubConnection, () => { });
+const gameClient = new GameServerClient();
 
 const dataContext: DataContext = {
 	config,
 	serverUri,
-	connection: null,
 	gameClient,
 	game: new GameClient(new SIHostClient(noOpHubConnection, () => { }), false),
 	contentUris: null,

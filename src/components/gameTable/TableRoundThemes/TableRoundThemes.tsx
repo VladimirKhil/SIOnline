@@ -2,9 +2,9 @@ import * as React from 'react';
 import State from '../../../state/State';
 import { connect } from 'react-redux';
 import AutoSizedText from '../../common/AutoSizedText/AutoSizedText';
-import { showRoundTable } from '../../../state/new/tableSlice';
-import { useAppDispatch } from '../../../state/new/hooks';
-import { stopAudio } from '../../../state/new/commonSlice';
+import { showRoundTable } from '../../../state/tableSlice';
+import { useAppDispatch } from '../../../state/hooks';
+import { stopAudio } from '../../../state/commonSlice';
 
 import './TableRoundThemes.css';
 

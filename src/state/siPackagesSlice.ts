@@ -1,12 +1,12 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import PackagesPage from 'sistorage-client/dist/models/PackagesPage';
 import Restriction from 'sistorage-client/dist/models/Restriction';
-import DataContext from '../../model/DataContext';
+import DataContext from '../model/DataContext';
 import { RootState } from './store';
-import getErrorMessage from '../../utils/ErrorHelpers';
-import { arrayToRecord, arrayToValue } from '../../utils/ArrayExtensions';
-import { getFullCulture } from '../../utils/StateHelpers';
-import State from '../State';
+import getErrorMessage from '../utils/ErrorHelpers';
+import { arrayToRecord, arrayToValue } from '../utils/ArrayExtensions';
+import { getFullCulture } from '../utils/StateHelpers';
+import State from './State';
 
 export interface SIPackagesState {
 	packages: PackagesPage;

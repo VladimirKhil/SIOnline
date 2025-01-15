@@ -23,8 +23,8 @@ import ClientController from './ClientController';
 import Path from '../model/enums/Path';
 import Sex from '../model/enums/Sex';
 import onlineActionCreators from '../state/online/onlineActionCreators';
-import { endLogin, startLogin } from '../state/new/loginSlice';
-import { AppDispatch } from '../state/new/store';
+import { endLogin, startLogin } from '../state/loginSlice';
+import { AppDispatch } from '../state/store';
 import SIHostClient from '../client/SIHostClient';
 import { activeSIHostConnections, attachSIHostListeners, detachSIHostListeners, removeSIHostConnection } from '../utils/SIHostConnectionHelpers';
 import ISIHostClient from '../client/ISIHostClient';
@@ -33,8 +33,8 @@ import ServerRole from '../client/contracts/ServerRole';
 import ServerSex from '../client/contracts/ServerSex';
 import WellKnownSIContentServiceErrorCode from 'sicontent-client/dist/models/WellKnownSIContentServiceErrorCode';
 import { getJoinErrorMessage } from '../utils/GameErrorsHelper';
-import { selectGame } from '../state/new/online2Slice';
-import { setAvatarKey } from '../state/new/settingsSlice';
+import { selectGame } from '../state/online2Slice';
+import { setAvatarKey } from '../state/settingsSlice';
 
 import {
 	avatarLoadEnd,
@@ -44,11 +44,11 @@ import {
 	computerAccountsChanged,
 	serverInfoChanged,
 	userErrorChanged,
-} from '../state/new/commonSlice';
+} from '../state/commonSlice';
 
-import { changeAvatar, changeLogin } from '../state/new/userSlice';
-import { saveStateToStorage } from '../state/new/StateHelpers';
-import { INavigationState } from '../state/new/uiSlice';
+import { changeAvatar, changeLogin } from '../state/userSlice';
+import { saveStateToStorage } from '../state/StateHelpers';
+import { INavigationState } from '../state/uiSlice';
 import { navigate } from '../utils/Navigator';
 import registerApp from '../utils/registerApp';
 
@@ -123,10 +123,6 @@ const sendAvatar: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 
 const reloadComputerAccounts: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 	(appDispatch: AppDispatch) => async (_dispatch: Dispatch<Action>, getState: () => State, dataContext: DataContext) => {
-	if (!dataContext.connection) {
-		return;
-	}
-
 	const state = getState();
 	const requestCulture = getFullCulture(state);
 
@@ -159,70 +155,58 @@ function getLoginErrorByCode(response: Response): string {
 async function loadHostInfoAsync(appDispatch: AppDispatch, dataContext: DataContext, culture: string) {
 	const hostInfo = await dataContext.gameClient.getGameHostInfoAsync(culture);
 	// eslint-disable-next-line no-param-reassign
-	dataContext.contentUris = hostInfo.ContentPublicBaseUrls;
+	dataContext.contentUris = hostInfo.contentPublicBaseUrls;
 
-	if (hostInfo.ContentInfos && hostInfo.ContentInfos.length > 0) {
-		const contentIndex = Math.floor(Math.random() * hostInfo.ContentInfos.length);
-		const { ServiceUri } = hostInfo.ContentInfos[contentIndex];
+	if (hostInfo.contentInfos && hostInfo.contentInfos.length > 0) {
+		const contentIndex = Math.floor(Math.random() * hostInfo.contentInfos.length);
+		const { serviceUri } = hostInfo.contentInfos[contentIndex];
 
 		dataContext.contentClient = new SIContentClient({
-			serviceUri: ServiceUri
+			serviceUri: serviceUri
 		});
 	} else {
 		throw new Error('No SIContent service found');
 	}
 
-	if (hostInfo.StorageInfos && hostInfo.StorageInfos.length > 0) {
-		const { ServiceUri } = hostInfo.StorageInfos[0];
+	if (hostInfo.storageInfos && hostInfo.storageInfos.length > 0) {
+		const { serviceUri } = hostInfo.storageInfos[0];
 
 		dataContext.storageClient = new SIStorageClient({
-			serviceUri: ServiceUri
+			serviceUri: serviceUri
 		});
 	}
 
 	appDispatch(serverInfoChanged({
-		serverName: hostInfo.Name,
-		serverLicense: hostInfo.License,
-		maxPackageSizeMb: hostInfo.MaxPackageSizeMb,
+		serverName: hostInfo.name,
+		serverLicense: hostInfo.license,
+		maxPackageSizeMb: hostInfo.maxPackageSizeMb,
 	}));
 }
 
 const tryConnectAsync = async (
-	dispatch: Dispatch<Action>,
 	appDispatch: AppDispatch,
 	getState: () => State,
 	dataContext: DataContext
 ): Promise<ConnectResult> => {
-	if (dataContext.connection && dataContext.connection.state === signalR.HubConnectionState.Connected) {
+	if (dataContext.gameClient.isConnected()) {
 		await uploadAvatarAsync(appDispatch, dataContext);
 		return { success: true, authenticationRequired: false };
 	}
 
-	const connectionBuilder = new signalR.HubConnectionBuilder()
-		.withAutomaticReconnect({
-			nextRetryDelayInMilliseconds: (retryContext: signalR.RetryContext) => 1000 * (retryContext.previousRetryCount + 1)
-		})
-		.withUrl(`${dataContext.serverUri}/sionline`)
-		.withHubProtocol(new signalRMsgPack.MessagePackHubProtocol());
+	const state = getState();
+	const localLogin = state.user.login;
 
-	const connection = connectionBuilder.build();
+	if (localLogin === null || localLogin === '') {
+		// Login is required to continue
+		return { success: false, authenticationRequired: true };
+	}
 
-	// eslint-disable-next-line no-param-reassign
-	dataContext.connection = connection;
-
-	// eslint-disable-next-line no-param-reassign
-	const gameServerClient = new GameServerClient(
-		connection,
-		e => dispatch(roomActionCreators.operationError(getErrorMessage(e)) as object as AnyAction)
-	);
-
+	const gameServerClient = new GameServerClient(dataContext.serverUri);
 	dataContext.gameClient = gameServerClient;
 
 	try {
-		await dataContext.connection.start();
+		await gameServerClient.connect();
 	} catch (error: any) {
-		dataContext.connection = null;
-
 		return {
 			success: false,
 			error: getErrorMessage(error),
@@ -231,34 +215,24 @@ const tryConnectAsync = async (
 	}
 
 	try {
-		if (dataContext.connection.connectionId) {
-			activeConnections.push(dataContext.connection.connectionId);
+		if (gameServerClient.connection.connectionId) {
+			activeConnections.push(gameServerClient.connection.connectionId);
 		}
 
-		const state = getState();
 		const requestCulture = getFullCulture(state);
 
-		const login = await dataContext.gameClient.getLoginAsync();
-		const localLogin = state.user.login;
-
-		const computerAccounts = await dataContext.gameClient.getComputerAccountsAsync(requestCulture);
+		const computerAccounts = await gameServerClient.getComputerAccountsAsync(requestCulture);
 		appDispatch(computerAccountsChanged(computerAccounts));
 
 		// Listeners should be attached after first successfull request to be sure that connection is working
-		attachListeners(dataContext.gameClient, dataContext.connection, appDispatch);
+		attachListeners(gameServerClient, appDispatch);
 
 		await loadHostInfoAsync(appDispatch, dataContext, requestCulture);
 		await uploadAvatarAsync(appDispatch, dataContext);
 
-		if ((login === null || login === '') && (localLogin === null || localLogin === '')) {
-			// Login is required to continue
-			return { success: false, authenticationRequired: true };
-		}
-
 		return { success: true, authenticationRequired: false };
 	} catch (error) {
-		const authenticationRequired = dataContext.connection.state === signalR.HubConnectionState.Disconnected;
-		dataContext.connection = null;
+		const authenticationRequired = !gameServerClient.isConnected();
 		return { success: false, error: getErrorMessage(error), authenticationRequired: authenticationRequired };
 	}
 };
@@ -324,24 +298,20 @@ const closeSIHostClientAsync = async (appDispatch: AppDispatch, dataContext: Dat
 };
 
 const disconnectAsync = async (appDispatch: AppDispatch, dataContext: DataContext) => {
-	const { connection } = dataContext;
+	const { connection } = dataContext.gameClient;
 
 	if (!connection) {
 		return;
 	}
 
 	try {
-		await dataContext.gameClient.logOutAsync();
-
 		if (connection.connectionId) {
 			activeConnections.splice(activeConnections.indexOf(connection.connectionId), 1);
 		}
 
 		detachListeners(connection);
-		await connection.stop();
+		await dataContext.gameClient.disconnect();
 		removeConnection(connection);
-
-		dataContext.connection = null;
 	} catch (error) {
 		appDispatch(userErrorChanged(getErrorMessage(error)) as any); // TODO: normal error message
 	}
@@ -460,7 +430,7 @@ const init: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 				}
 			}
 
-			const connectResult = await tryConnectAsync(dispatch, appDispatch, getState, dataContext);
+			const connectResult = await tryConnectAsync(appDispatch, getState, dataContext);
 
 			if (connectResult.success) {
 				await checkLicenseAsync(initialView, dispatch, appDispatch, getState, dataContext);
@@ -503,7 +473,7 @@ const login: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 			}
 
 			saveStateToStorage(state);
-			const connectResult = await tryConnectAsync(dispatch, appDispatch, getState, dataContext);
+			const connectResult = await tryConnectAsync(appDispatch, getState, dataContext);
 
 			if (connectResult.success) {
 				appDispatch(changeLogin(state.user.login.trim())); // Normalize login

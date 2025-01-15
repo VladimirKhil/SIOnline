@@ -1,8 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import GameType from '../../model/GameType';
-import PackageType from '../../model/enums/PackageType';
-import Role from '../../model/Role';
-import localization from '../../model/resources/localization';
+import GameType from '../model/GameType';
+import PackageType from '../model/enums/PackageType';
+import Role from '../model/Role';
+import localization from '../model/resources/localization';
 
 export interface GameState {
 	name: string;

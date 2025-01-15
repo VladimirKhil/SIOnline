@@ -2,7 +2,7 @@ import * as React from 'react';
 import localization from '../../../model/resources/localization';
 import GameType from '../../../model/GameType';
 import ButtonPressMode from '../../../model/ButtonPressMode';
-import { useAppDispatch, useAppSelector } from '../../../state/new/hooks';
+import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 
 import { resetSettings,
 	setAllowEveryoneToPlayHiddenStakes,
@@ -21,9 +21,9 @@ import { resetSettings,
 	setPlayAllQuestionsInFinalRound,
 	setPreloadRoundContent,
 	setReadingSpeed,
-	setUseApellations } from '../../../state/new/settingsSlice';
+	setUseApellations } from '../../../state/settingsSlice';
 
-import { setType } from '../../../state/new/gameSlice';
+import { setType } from '../../../state/gameSlice';
 
 import './RulesSettingsView.css';
 

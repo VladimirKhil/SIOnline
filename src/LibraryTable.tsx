@@ -6,8 +6,8 @@ import PlayersView from './components/game/PlayersView/PlayersView';
 import GameTable from './components/gameTable/GameTable/GameTable';
 import IGameClient from './client/game/IGameClient';
 import AudioController from './components/common/AudioController/AudioController';
-import { showLogo } from './state/new/tableSlice';
-import { setAppSound } from './state/new/settingsSlice';
+import { showLogo } from './state/tableSlice';
+import { setAppSound } from './state/settingsSlice';
 import QRCodeView from './components/panels/QRCodeView/QRCodeView';
 
 import './scss/style.scss';

@@ -2,8 +2,8 @@ import * as React from 'react';
 import Dialog from '../../common/Dialog/Dialog';
 import GameInfoView from '../../panels/GameInfoView/GameInfoView';
 import Path from '../../../model/enums/Path';
-import { userErrorChanged } from '../../../state/new/commonSlice';
-import { useAppDispatch, useAppSelector } from '../../../state/new/hooks';
+import { userErrorChanged } from '../../../state/commonSlice';
+import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 import localization from '../../../model/resources/localization';
 import { navigate } from '../../../utils/Navigator';
 

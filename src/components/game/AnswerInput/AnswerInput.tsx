@@ -5,8 +5,8 @@ import roomActionCreators from '../../../state/room/roomActionCreators';
 import State from '../../../state/State';
 import Constants from '../../../model/enums/Constants';
 import localization from '../../../model/resources/localization';
-import { useAppDispatch } from '../../../state/new/hooks';
-import { sendAnswer } from '../../../state/new/room2Slice';
+import { useAppDispatch } from '../../../state/hooks';
+import { sendAnswer } from '../../../state/room2Slice';
 
 import './AnswerInput.scss';
 

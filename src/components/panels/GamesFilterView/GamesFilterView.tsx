@@ -1,10 +1,10 @@
 import React from 'react';
 import FlyoutButton, { FlyoutHorizontalOrientation, FlyoutVerticalOrientation } from '../../common/FlyoutButton/FlyoutButton';
 import CheckBox from '../../common/CheckBox/CheckBox';
-import { useAppDispatch, useAppSelector } from '../../../state/new/hooks';
+import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 import GamesFilter from '../../../model/enums/GamesFilter';
 import localization from '../../../model/resources/localization';
-import { onGameFilterToggle } from '../../../state/new/online2Slice';
+import { onGameFilterToggle } from '../../../state/online2Slice';
 
 import './GamesFilterView.scss';
 

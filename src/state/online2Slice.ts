@@ -1,23 +1,23 @@
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import GameInfo from '../../client/contracts/GameInfo';
-import PersonInfo from '../../client/contracts/PersonInfo';
+import GameInfo from '../client/contracts/GameInfo';
+import PersonInfo from '../client/contracts/PersonInfo';
 import GamesResponse from 'sistatistics-client/dist/models/GamesResponse';
 import GamesStatistic from 'sistatistics-client/dist/models/GamesStatistic';
 import PackagesStatistic from 'sistatistics-client/dist/models/PackagesStatistic';
-import GamesFilter from '../../model/enums/GamesFilter';
-import DataContext from '../../model/DataContext';
-import { getFullCulture } from '../../utils/StateHelpers';
-import State from '../State';
-import IGameServerClient from '../../client/IGameServerClient';
+import GamesFilter from '../model/enums/GamesFilter';
+import DataContext from '../model/DataContext';
+import { getFullCulture } from '../utils/StateHelpers';
+import State from './State';
+import IGameServerClient from '../client/IGameServerClient';
 import { AppDispatch } from './store';
 import { userWarnChanged } from './commonSlice';
-import getErrorMessage from '../../utils/ErrorHelpers';
+import getErrorMessage from '../utils/ErrorHelpers';
 import StatisticFilter from 'sistatistics-client/dist/models/StatisticFilter';
 import GamePlatforms from 'sistatistics-client/dist/models/GamePlatforms';
-import localization from '../../model/resources/localization';
+import localization from '../model/resources/localization';
 import SIStatisticsClient from 'sistatistics-client';
-import Slice from '../../client/contracts/Slice';
-import clearUrls from '../../utils/clearUrls';
+import Slice from '../client/contracts/Slice';
+import clearUrls from '../utils/clearUrls';
 
 export interface Online2State {
 	inProgress: boolean;
@@ -89,12 +89,8 @@ async function loadStatisticsAsync(dispatch: AppDispatch, dataContext: DataConte
 export const loadLobby = createAsyncThunk(
 	'online2/loadLobby',
 	async (arg: void, thunkAPI) => {
-		const { dispatch, getState } = thunkAPI;
-		const state = getState() as State;
+		const { dispatch } = thunkAPI;
 		const dataContext = thunkAPI.extra as DataContext;
-		const requestCulture = getFullCulture(state);
-
-		await dataContext.gameClient.joinLobbyAsync(requestCulture);
 
 		// Games filtering is performed on client
 		await loadGamesAsync(dispatch as AppDispatch, dataContext.gameClient, dataContext.config.clearUrls);

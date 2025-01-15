@@ -3,7 +3,7 @@ import localization from '../../../model/resources/localization';
 import Link from '../../common/Link/Link';
 import Constants from '../../../model/enums/Constants';
 import clearUrls from '../../../utils/clearUrls';
-import { useAppSelector } from '../../../state/new/hooks';
+import { useAppSelector } from '../../../state/hooks';
 import { trimLength } from '../../../utils/StringHelpers';
 
 import './Trends.css';

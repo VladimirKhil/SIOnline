@@ -1,7 +1,7 @@
 import * as React from 'react';
 import localization from '../../../model/resources/localization';
-import { useAppDispatch } from '../../../state/new/hooks';
-import { showSettings } from '../../../state/new/uiSlice';
+import { useAppDispatch } from '../../../state/hooks';
+import { showSettings } from '../../../state/uiSlice';
 
 import './SettingsButton.css';
 

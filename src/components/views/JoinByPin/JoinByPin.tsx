@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Dialog from '../../common/Dialog/Dialog';
 import localization from '../../../model/resources/localization';
-import { useAppDispatch, useAppSelector } from '../../../state/new/hooks';
+import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 import onlineActionCreators from '../../../state/online/onlineActionCreators';
 import Role from '../../../model/Role';
 import Constants from '../../../model/enums/Constants';

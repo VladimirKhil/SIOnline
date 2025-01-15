@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { useAppDispatch, useAppSelector } from '../../../state/new/hooks';
-import { setPackageType } from '../../../state/new/gameSlice';
+import { useAppDispatch, useAppSelector } from '../../../state/hooks';
+import { setPackageType } from '../../../state/gameSlice';
 import PackageType from '../../../model/enums/PackageType';
 import localization from '../../../model/resources/localization';
 import isWindowsOS from '../../../utils/isWindowsOS';

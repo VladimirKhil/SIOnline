@@ -5,8 +5,8 @@ import { connect } from 'react-redux';
 import AutoSizedText from '../../common/AutoSizedText/AutoSizedText';
 import ThemeInfo from '../../../model/ThemeInfo';
 import roomActionCreators from '../../../state/room/roomActionCreators';
-import { useAppDispatch } from '../../../state/new/hooks';
-import { AppDispatch } from '../../../state/new/store';
+import { useAppDispatch } from '../../../state/hooks';
+import { AppDispatch } from '../../../state/store';
 
 import './RoundTable.scss';
 

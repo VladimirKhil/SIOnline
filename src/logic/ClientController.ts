@@ -21,7 +21,7 @@ import TableMode from '../model/enums/TableMode';
 import Role from '../model/Role';
 import Sex from '../model/enums/Sex';
 import RoundRules from '../model/enums/RoundRules';
-import { AppDispatch } from '../state/new/store';
+import { AppDispatch } from '../state/store';
 import TimerStates from '../model/enums/TimeStates';
 
 import { answerOptions,
@@ -57,7 +57,7 @@ import { answerOptions,
 	switchToContent,
 	updateOption,
 	updateOptionState,
-	updateQuestion } from '../state/new/tableSlice';
+	updateQuestion } from '../state/tableSlice';
 
 import {
 	ContextView,
@@ -91,7 +91,7 @@ import {
 	stopValidation,
 	sumsChanged,
 	validate
-} from '../state/new/room2Slice';
+} from '../state/room2Slice';
 
 import PersonInfo from '../model/PersonInfo';
 import Persons from '../model/Persons';
@@ -99,9 +99,9 @@ import PlayerInfo from '../model/PlayerInfo';
 import actionCreators from './actionCreators';
 import Messages from '../client/game/Messages';
 import StakeModes from '../client/game/StakeModes';
-import { playAudio, stopAudio, userWarnChanged } from '../state/new/commonSlice';
+import { playAudio, stopAudio, userWarnChanged } from '../state/commonSlice';
 import getErrorMessage, { getUserError } from '../utils/ErrorHelpers';
-import { playersVisibilityChanged, setQrCode } from '../state/new/uiSlice';
+import { playersVisibilityChanged, setQrCode } from '../state/uiSlice';
 import ErrorCode from '../client/contracts/ErrorCode';
 
 function initGroup(group: ContentGroup) {
@@ -545,7 +545,7 @@ export default class ClientController {
 		this.appDispatch(setReport(report));
 	}
 
-	onRoundContent(content: string[], retryCount: number = 0) {
+	onRoundContent(content: string[], retryCount = 0) {
 		// Clearing old preloads
 		// for (let i = 0; i < document.head.children.length; i++) {
 		// 	const child = document.head.children[i];
@@ -571,7 +571,7 @@ export default class ClientController {
 						const response = await fetch(contentUri);
 
 						if (!response.ok) {
-							if(response.status >= 500){
+							if (response.status >= 500){
 								// retry because sometimes server returns 503 in case of large number players/medias
 								failedLoadsToRetry.push(url);
 							}
@@ -591,11 +591,11 @@ export default class ClientController {
 		});
 
 		window.setTimeout(() => {
-			if(failedLoadsToRetry.length > 0 && retryCount < 3){
+			if (failedLoadsToRetry.length > 0 && retryCount < 3){
 				this.onRoundContent(failedLoadsToRetry, ++retryCount);
 			}
-		}, (content.length + 1) * timeoutValue)
-		
+		}, (content.length + 1) * timeoutValue);
+
 		// Chrome does not support audio and video preload
 		// We can return to this method later
 		// const link = document.createElement('link');

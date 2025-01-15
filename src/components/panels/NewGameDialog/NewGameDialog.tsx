@@ -8,13 +8,13 @@ import State from '../../../state/State';
 import PackageType from '../../../model/enums/PackageType';
 import SIStorageDialog from '../SIStorageDialog/SIStorageDialog';
 import onlineActionCreators from '../../../state/online/onlineActionCreators';
-import { AppDispatch } from '../../../state/new/store';
-import { useAppDispatch, useAppSelector } from '../../../state/new/hooks';
+import { AppDispatch } from '../../../state/store';
+import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 import TabControl from '../../common/TabControl/TabControl';
 import RulesSettingsView from '../../settings/RulesSettingsView/RulesSettingsView';
 import TimeSettingsView from '../../settings/TimeSettingsView/TimeSettingsView';
 import RoomOptions from '../RoomOptions/RoomOptions';
-import { setPackageLibrary, setPackageType } from '../../../state/new/gameSlice';
+import { setPackageLibrary, setPackageType } from '../../../state/gameSlice';
 
 import './NewGameDialog.css';
 

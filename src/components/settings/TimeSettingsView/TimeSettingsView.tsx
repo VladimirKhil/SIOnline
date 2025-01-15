@@ -2,8 +2,8 @@ import * as React from 'react';
 import localization from '../../../model/resources/localization';
 import TimeSettingItem from '../TimeSettingItem/TimeSettingItem';
 import TimeSettings from '../../../model/TimeSettings';
-import { useAppDispatch, useAppSelector } from '../../../state/new/hooks';
-import { resetSettings, setTimeSetting } from '../../../state/new/settingsSlice';
+import { useAppDispatch, useAppSelector } from '../../../state/hooks';
+import { resetSettings, setTimeSetting } from '../../../state/settingsSlice';
 
 import './TimeSettingsView.css';
 

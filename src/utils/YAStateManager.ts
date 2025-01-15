@@ -1,6 +1,6 @@
 import { Store } from 'redux';
 import IStateManager from './IStateManager';
-import { changeLogin } from '../state/new/userSlice';
+import { changeLogin } from '../state/userSlice';
 
 const SDK_PATH = 'https://sdk.games.s3.yandex.net/sdk.js';
 

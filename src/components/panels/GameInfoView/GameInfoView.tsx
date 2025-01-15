@@ -12,8 +12,8 @@ import { getReadableTimeSpan } from '../../../utils/TimeHelpers';
 import GameStage from '../../../client/contracts/GameStage';
 import GameRules, { parseRulesFromString } from '../../../client/contracts/GameRules';
 import Constants from '../../../model/enums/Constants';
-import { AppDispatch } from '../../../state/new/store';
-import { useAppDispatch } from '../../../state/new/hooks';
+import { AppDispatch } from '../../../state/store';
+import { useAppDispatch } from '../../../state/hooks';
 
 import './GameInfoView.css';
 

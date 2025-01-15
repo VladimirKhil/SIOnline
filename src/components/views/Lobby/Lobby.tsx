@@ -17,8 +17,8 @@ import UserOptions from '../../panels/UserOptions/UserOptions';
 import GamesControlPanel from '../../panels/GamesControlPanel/GamesControlPanel';
 import LobbyBottomPanel from '../../panels/LobbyBottomPanel/LobbyBottomPanel';
 import { navigate } from '../../../utils/Navigator';
-import { closeGameInfo } from '../../../state/new/uiSlice';
-import { useAppSelector } from '../../../state/new/hooks';
+import { closeGameInfo } from '../../../state/uiSlice';
+import { useAppSelector } from '../../../state/hooks';
 
 import './Lobby.css';
 import exitImg from '../../../../assets/images/exit.png';

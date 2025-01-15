@@ -1,8 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import OnlineMode from '../../model/enums/OnlineMode';
-import Path from '../../model/enums/Path';
-import Role from '../../model/Role';
-import Sex from '../../model/enums/Sex';
+import OnlineMode from '../model/enums/OnlineMode';
+import Path from '../model/enums/Path';
+import Role from '../model/Role';
+import Sex from '../model/enums/Sex';
 
 export interface INavigationState {
 	path: Path;

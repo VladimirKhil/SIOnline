@@ -1,7 +1,7 @@
 import React from 'react';
-import { useAppDispatch, useAppSelector } from '../../../state/new/hooks';
+import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 import localization from '../../../model/resources/localization';
-import { onGamesSearchChanged } from '../../../state/new/online2Slice';
+import { onGamesSearchChanged } from '../../../state/online2Slice';
 
 import './GamesSearch.scss';
 

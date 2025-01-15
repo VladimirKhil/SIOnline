@@ -4,8 +4,8 @@ import Account from '../../../model/Account';
 import localization from '../../../model/resources/localization';
 import State from '../../../state/State';
 import FlyoutButton, { FlyoutHorizontalOrientation } from '../../common/FlyoutButton/FlyoutButton';
-import { useAppDispatch, useAppSelector } from '../../../state/new/hooks';
-import { kick, setHost } from '../../../state/new/room2Slice';
+import { useAppDispatch, useAppSelector } from '../../../state/hooks';
+import { kick, setHost } from '../../../state/room2Slice';
 import getAvatarClass from '../../../utils/AccountHelpers';
 
 import './PersonView.css';

@@ -1,4 +1,4 @@
 export default interface GetGameByPinResponse {
-	HostUri: string;
-	GameId: number;
+	hostUri: string;
+	gameId: number;
 }

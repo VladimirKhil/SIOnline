@@ -1,14 +1,14 @@
 ﻿import RoomState, { initialState as roomInitialState } from './room/RoomState';
-import * as settings from './new/settingsSlice';
-import * as table from './new/tableSlice';
-import * as user from './new/userSlice';
-import * as login from './new/loginSlice';
-import * as room2 from './new/room2Slice';
-import * as online2 from './new/online2Slice';
-import * as common from './new/commonSlice';
-import * as game from './new/gameSlice';
-import * as siPackages from './new/siPackagesSlice';
-import * as ui from './new/uiSlice';
+import * as settings from './settingsSlice';
+import * as table from './tableSlice';
+import * as user from './userSlice';
+import * as login from './loginSlice';
+import * as room2 from './room2Slice';
+import * as online2 from './online2Slice';
+import * as common from './commonSlice';
+import * as game from './gameSlice';
+import * as siPackages from './siPackagesSlice';
+import * as ui from './uiSlice';
 
 import OnlineState, { initialState as onlineInitialState } from './online/OnlineState';
 

@@ -13,13 +13,13 @@ import Constants from '../../model/enums/Constants';
 import MessageLevel from '../../model/enums/MessageLevel';
 import Messages from '../../client/game/Messages';
 import JoinMode from '../../client/game/JoinMode';
-import { stopAudio, userErrorChanged } from '../new/commonSlice';
+import { stopAudio, userErrorChanged } from '../commonSlice';
 import Path from '../../model/enums/Path';
 import actionCreators from '../../logic/actionCreators';
 import AppSettings from '../../model/AppSettings';
-import { AppDispatch } from '../new/store';
-import { isSelectableChanged } from '../new/tableSlice';
-import { showmanReplicChanged } from '../new/room2Slice';
+import { AppDispatch } from '../store';
+import { isSelectableChanged } from '../tableSlice';
+import { showmanReplicChanged } from '../room2Slice';
 import StakeModes from '../../client/game/StakeModes';
 import UsersMode from '../../model/enums/UsersMode';
 

@@ -6,10 +6,10 @@ import localization from '../../../model/resources/localization';
 import actionCreators from '../../../logic/actionCreators';
 import State from '../../../state/State';
 import FlyoutButton from '../../common/FlyoutButton/FlyoutButton';
-import { userErrorChanged } from '../../../state/new/commonSlice';
-import { useAppDispatch, useAppSelector } from '../../../state/new/hooks';
-import { setAvatarKey } from '../../../state/new/settingsSlice';
-import { AppDispatch } from '../../../state/new/store';
+import { userErrorChanged } from '../../../state/commonSlice';
+import { useAppDispatch, useAppSelector } from '../../../state/hooks';
+import { setAvatarKey } from '../../../state/settingsSlice';
+import { AppDispatch } from '../../../state/store';
 import Sex from '../../../model/enums/Sex';
 
 import './AvatarView.css';

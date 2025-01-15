@@ -1,9 +1,9 @@
 import React, { Dispatch } from 'react';
 import localization from '../../../model/resources/localization';
 import FlyoutButton, { FlyoutHorizontalOrientation, FlyoutTheme, FlyoutVerticalOrientation } from '../../common/FlyoutButton/FlyoutButton';
-import { useAppDispatch, useAppSelector } from '../../../state/new/hooks';
+import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 import { connect } from 'react-redux';
-import { AppDispatch } from '../../../state/new/store';
+import { AppDispatch } from '../../../state/store';
 import { Action } from 'redux';
 import roomActionCreators from '../../../state/room/roomActionCreators';
 import GameProgress from '../GameProgress/GameProgress';

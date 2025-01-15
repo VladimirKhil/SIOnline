@@ -31,10 +31,10 @@ import StateManager from './utils/StateManager';
 import YAStateManager from './utils/YAStateManager';
 import IStateManager from './utils/IStateManager';
 import SIHostClient from './client/SIHostClient';
-import { setGameButtonKey } from './state/new/settingsSlice';
-import { commonErrorChanged, setFontsReady } from './state/new/commonSlice';
-import { saveStateToStorage } from './state/new/StateHelpers';
-import { INavigationState, isSettingGameButtonKeyChanged, visibilityChanged, windowSizeChanged } from './state/new/uiSlice';
+import { setGameButtonKey } from './state/settingsSlice';
+import { commonErrorChanged, setFontsReady } from './state/commonSlice';
+import { saveStateToStorage } from './state/StateHelpers';
+import { INavigationState, isSettingGameButtonKeyChanged, visibilityChanged, windowSizeChanged } from './state/uiSlice';
 import { navigate } from './utils/Navigator';
 import AppRegistryClient from 'appregistry-client';
 import Architecture from 'appregistry-client/dist/requests/Architecture';
@@ -270,13 +270,11 @@ async function run(stateManager: IStateManager) {
 		const state = setState(initialState, savedState, config);
 
 		const noOpHubConnection = new signalR.HubConnectionBuilder().withUrl('http://fake').build();
-
-		const gameClient = new GameServerClient(noOpHubConnection, () => { });
+		const gameClient = new GameServerClient();
 
 		const dataContext: DataContext = {
 			config,
 			serverUri,
-			connection: null,
 			gameClient,
 			game: new GameClient(new SIHostClient(noOpHubConnection, () => { }), false),
 			contentUris: null,

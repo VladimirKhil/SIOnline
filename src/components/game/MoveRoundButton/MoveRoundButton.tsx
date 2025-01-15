@@ -1,6 +1,6 @@
 import React from 'react';
 import FlyoutButton, { FlyoutHorizontalOrientation, FlyoutVerticalOrientation } from '../../common/FlyoutButton/FlyoutButton';
-import { useAppSelector } from '../../../state/new/hooks';
+import { useAppSelector } from '../../../state/hooks';
 import { connect } from 'react-redux';
 import State from '../../../state/State';
 import localization from '../../../model/resources/localization';

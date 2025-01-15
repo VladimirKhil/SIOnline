@@ -1,5 +1,5 @@
 import React from 'react';
-import { useAppSelector } from '../../../state/new/hooks';
+import { useAppSelector } from '../../../state/hooks';
 
 import './MiniGameStatus.scss';
 

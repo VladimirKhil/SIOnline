@@ -4,7 +4,7 @@ import State from '../../../state/State';
 import { connect } from 'react-redux';
 import AutoSizedText from '../../common/AutoSizedText/AutoSizedText';
 import AnswerValidation from '../AnswerValidation/AnswerValidation';
-import { useAppSelector } from '../../../state/new/hooks';
+import { useAppSelector } from '../../../state/hooks';
 
 import './ValidationArea.scss';
 

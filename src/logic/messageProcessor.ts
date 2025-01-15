@@ -26,15 +26,15 @@ import ClientController from './ClientController';
 import ContentInfo from '../model/ContentInfo';
 import ItemState from '../model/enums/ItemState';
 import GameSound from '../model/enums/GameSound';
-import { playAudio, userInfoChanged } from '../state/new/commonSlice';
+import { playAudio, userInfoChanged } from '../state/commonSlice';
 import clearUrls from '../utils/clearUrls';
 import ThemesPlayMode from '../model/enums/ThemesPlayMode';
-import { AppDispatch } from '../state/new/store';
-import { captionChanged } from '../state/new/tableSlice';
+import { AppDispatch } from '../state/store';
+import { captionChanged } from '../state/tableSlice';
 import { playerInGameChanged,
 	playerMediaLoaded,
 	playerStakeChanged,
-	playerStateChanged } from '../state/new/room2Slice';
+	playerStateChanged } from '../state/room2Slice';
 import StakeTypes from '../model/enums/StakeTypes';
 
 const MAX_APPEND_TEXT_LENGTH = 150;

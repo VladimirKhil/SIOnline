@@ -1,8 +1,8 @@
 import DataContext from '../model/DataContext';
 import Path from '../model/enums/Path';
-import { loadLobby } from '../state/new/online2Slice';
-import { RootState } from '../state/new/store';
-import { INavigationState, navigateCore } from '../state/new/uiSlice';
+import { loadLobby } from '../state/online2Slice';
+import { RootState } from '../state/store';
+import { INavigationState, navigateCore } from '../state/uiSlice';
 import onlineActionCreators from '../state/online/onlineActionCreators';
 import { createAsyncThunk, UnknownAction } from '@reduxjs/toolkit';
 

@@ -8,7 +8,7 @@ import { isRunning } from '../../../utils/TimerInfoHelpers';
 import getAvatarClass from '../../../utils/AccountHelpers';
 import Sex from '../../../model/enums/Sex';
 import localization from '../../../model/resources/localization';
-import { useAppSelector } from '../../../state/new/hooks';
+import { useAppSelector } from '../../../state/hooks';
 import Persons from '../../../model/Persons';
 
 import './ShowmanReplicView.scss';

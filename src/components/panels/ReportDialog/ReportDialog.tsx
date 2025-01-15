@@ -2,8 +2,8 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import Dialog from '../../common/Dialog/Dialog';
-import { DialogView, sendGameReport, showDialog } from '../../../state/new/room2Slice';
-import { useAppDispatch, useAppSelector } from '../../../state/new/hooks';
+import { DialogView, sendGameReport, showDialog } from '../../../state/room2Slice';
+import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 import localization from '../../../model/resources/localization';
 import State from '../../../state/State';
 

@@ -1,4 +1,4 @@
-import { saveState } from '../SavedState';
+import { saveState } from './SavedState';
 import { RootState } from './store';
 
 export function saveStateToStorage(state: RootState): void {

@@ -14,9 +14,6 @@ export default interface DataContext {
 	/** Game server uri. */
 	serverUri: string;
 
-	/** Underlying SignalR connection. */
-	connection: signalR.HubConnection | null;
-
 	/** Game server client. */
 	gameClient: IGameServerClient;
 

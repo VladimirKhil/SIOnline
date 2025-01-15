@@ -9,10 +9,10 @@ import Role from '../../../model/Role';
 import ChatMessage from '../../../model/ChatMessage';
 import { isHost } from '../../../utils/StateHelpers';
 import isWellFormedUri from '../../../utils/isWellFormedUri';
-import { useAppDispatch } from '../../../state/new/hooks';
-import { AppDispatch } from '../../../state/new/store';
-import { selectPlayers } from '../../../state/new/room2Slice';
-import { showSettings } from '../../../state/new/uiSlice';
+import { useAppDispatch } from '../../../state/hooks';
+import { AppDispatch } from '../../../state/store';
+import { selectPlayers } from '../../../state/room2Slice';
+import { showSettings } from '../../../state/uiSlice';
 
 import './SideControlPanel.css';
 import nextImg from '../../../../assets/images/next.png';

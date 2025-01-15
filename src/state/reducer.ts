@@ -2,18 +2,18 @@
 import State, { initialState } from './State';
 import { KnownRoomAction } from './room/RoomActions';
 import roomReducer from './room/roomReducer';
-import settingsReducer from './new/settingsSlice';
-import tableReducer from './new/tableSlice';
-import userReducer from './new/userSlice';
-import room2Reducer from './new/room2Slice';
-import online2Reducer from './new/online2Slice';
-import loginReducer from './new/loginSlice';
-import commonReducer from './new/commonSlice';
-import uiReducer from './new/uiSlice';
-import siPackagesReducer from './new/siPackagesSlice';
+import settingsReducer from './settingsSlice';
+import tableReducer from './tableSlice';
+import userReducer from './userSlice';
+import room2Reducer from './room2Slice';
+import online2Reducer from './online2Slice';
+import loginReducer from './loginSlice';
+import commonReducer from './commonSlice';
+import uiReducer from './uiSlice';
+import siPackagesReducer from './siPackagesSlice';
 import onlineReducer from './online/onlineReducer';
 import { KnownOnlineAction } from './online/OnlineActions';
-import gameReducer from './new/gameSlice';
+import gameReducer from './gameSlice';
 import { UnknownAction } from '@reduxjs/toolkit';
 
 const reducer: Reducer<State> = (

@@ -4,8 +4,8 @@ import roomActionCreators from '../../../state/room/roomActionCreators';
 import State from '../../../state/State';
 import { Dispatch, Action } from 'redux';
 import localization from '../../../model/resources/localization';
-import { useAppDispatch } from '../../../state/new/hooks';
-import { sendStake } from '../../../state/new/room2Slice';
+import { useAppDispatch } from '../../../state/hooks';
+import { sendStake } from '../../../state/room2Slice';
 import StakeModes from '../../../client/game/StakeModes';
 
 interface SendStakeButtonProps {

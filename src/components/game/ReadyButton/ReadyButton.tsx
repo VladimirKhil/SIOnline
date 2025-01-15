@@ -6,8 +6,8 @@ import localization from '../../../model/resources/localization';
 import roomActionCreators from '../../../state/room/roomActionCreators';
 import Sex from '../../../model/enums/Sex';
 import Role from '../../../model/Role';
-import { useAppSelector } from '../../../state/new/hooks';
-import { Room2State } from '../../../state/new/room2Slice';
+import { useAppSelector } from '../../../state/hooks';
+import { Room2State } from '../../../state/room2Slice';
 
 import './ReadyButton.css';
 

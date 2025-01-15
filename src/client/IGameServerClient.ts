@@ -8,14 +8,19 @@ import GetGameByPinResponse from './contracts/GetGameByPinResponse';
 
 /** Defines the SIGame Server client. */
 export default interface IGameServerClient {
+	connection: signalR.HubConnection;
+
+	isConnected(): boolean;
+
+	connect(): Promise<void>;
+
+	disconnect(): Promise<void>;
+
 	/** Gets default computer accounts names. */
 	getComputerAccountsAsync(culture: string): Promise<string[]>;
 
 	/** Gets server global info. */
 	getGameHostInfoAsync(culture: string): Promise<HostInfo>;
-
-	/** Joins server lobby. */
-	joinLobbyAsync(culture: string): Promise<boolean>;
 
 	/**
 	 * Gets partial running games list starting from the first game after the game with id {@link fromId}.
@@ -24,18 +29,6 @@ export default interface IGameServerClient {
 	 * @param fromId gameId to start with.
 	 */
 	getGamesSliceAsync(fromId: number): Promise<Slice<GameInfo>>;
-
-	/** Gets active users list in the lobby. */
-	getUsersAsync(): Promise<string[]>;
-
-	/** Gets server news string. */
-	getNewsAsync(): Promise<string | null>;
-
-	/** Gets user login. */
-	getLoginAsync(): Promise<string | null>;
-
-	/** Sends a message to the lobby chat. */
-	sayInLobbyAsync(text: string): Promise<any>;
 
 	/**
 	 * Runs a new game.
@@ -54,10 +47,4 @@ export default interface IGameServerClient {
 	 * @param pin Game PIN.
 	 */
 	getGameByPinAsync(pin: number): Promise<GetGameByPinResponse | null>;
-
-	/** Logs out from the server. */
-	logOutAsync(): Promise<any>;
-
-	/** Reconnects to server after re-establishing connection. */
-	reconnectAsync(): Promise<any>;
 }

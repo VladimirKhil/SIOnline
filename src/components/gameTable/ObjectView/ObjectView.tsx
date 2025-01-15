@@ -1,7 +1,7 @@
 ﻿import * as React from 'react';
 import AutoSizedText from '../../common/AutoSizedText/AutoSizedText';
-import { useAppSelector } from '../../../state/new/hooks';
-import { RootState } from '../../../state/new/store';
+import { useAppSelector } from '../../../state/hooks';
+import { RootState } from '../../../state/store';
 
 import './ObjectView.css';
 

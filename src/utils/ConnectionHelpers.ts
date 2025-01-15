@@ -3,9 +3,9 @@ import localization from '../model/resources/localization';
 import GameInfo from '../client/contracts/GameInfo';
 import IGameServerClient from '../client/IGameServerClient';
 import getErrorMessage from './ErrorHelpers';
-import { AppDispatch } from '../state/new/store';
-import { isConnectedChanged, userErrorChanged } from '../state/new/commonSlice';
-import { gameChanged, gameCreated, gameDeleted } from '../state/new/online2Slice';
+import { AppDispatch } from '../state/store';
+import { isConnectedChanged, userErrorChanged } from '../state/commonSlice';
+import { gameChanged, gameCreated, gameDeleted } from '../state/online2Slice';
 
 export const activeConnections: string[] = [];
 
@@ -13,9 +13,10 @@ const detachedConnections: signalR.HubConnection[] = [];
 
 export function attachListeners(
 	gameClient: IGameServerClient,
-	connection: signalR.HubConnection,
 	appDispatch: AppDispatch,
 ): void {
+	const { connection } = gameClient;
+
 	connection.on('GameCreated', (game: GameInfo) => appDispatch(gameCreated(game)));
 	connection.on('GameChanged', (game: GameInfo) => appDispatch(gameChanged(game)));
 	connection.on('GameDeleted', (id: number) => appDispatch(gameDeleted(id)));
@@ -54,7 +55,6 @@ export function attachListeners(
 
 			try {
 				await connection.start();
-				await gameClient.reconnectAsync();
 				return;
 			} catch {
 				// empty

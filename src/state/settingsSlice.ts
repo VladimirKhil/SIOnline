@@ -1,9 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import AppSettings, { initialState as initialAppSettings } from '../../model/AppSettings';
-import Constants from '../../model/enums/Constants';
-import Sex from '../../model/enums/Sex';
-import ButtonPressMode from '../../model/ButtonPressMode';
-import TimeSettings from '../../model/TimeSettings';
+import AppSettings, { initialState as initialAppSettings } from '../model/AppSettings';
+import Constants from '../model/enums/Constants';
+import Sex from '../model/enums/Sex';
+import ButtonPressMode from '../model/ButtonPressMode';
+import TimeSettings from '../model/TimeSettings';
 
 export interface SettingsState {
 	soundVolume: number;

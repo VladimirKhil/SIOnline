@@ -2,7 +2,7 @@ import * as React from 'react';
 import localization from '../../../model/resources/localization';
 import LanguageView from '../../panels/LanguageView/LanguageView';
 import Constants from '../../../model/enums/Constants';
-import { useAppDispatch, useAppSelector } from '../../../state/new/hooks';
+import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 
 import { setAppSound,
 	setAttachContentToTable,
@@ -11,8 +11,8 @@ import { setAppSound,
 	setMainMenuSound,
 	setShowVideoAvatars,
 	setSound,
-	setSoundVolume } from '../../../state/new/settingsSlice';
-import { isSettingGameButtonKeyChanged } from '../../../state/new/uiSlice';
+	setSoundVolume } from '../../../state/settingsSlice';
+import { isSettingGameButtonKeyChanged } from '../../../state/uiSlice';
 
 function getKeyName(key: string) {
 	switch (key) {

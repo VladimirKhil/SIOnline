@@ -8,9 +8,9 @@ import AnswerInput from '../AnswerInput/AnswerInput';
 import PlayerButtonsPanel from '../PlayerButtonsPanel/PlayerButtonsPanel';
 import ReadyButton from '../ReadyButton/ReadyButton';
 import GameHint from '../GameHint/GameHint';
-import { useAppSelector } from '../../../state/new/hooks';
-import { RootState } from '../../../state/new/store';
-import { ContextView } from '../../../state/new/room2Slice';
+import { useAppSelector } from '../../../state/hooks';
+import { RootState } from '../../../state/store';
+import { ContextView } from '../../../state/room2Slice';
 import ReportButton from '../ReportButton/ReportButton';
 
 import './TableContextView.css';

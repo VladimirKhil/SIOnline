@@ -25,20 +25,20 @@ import Path from '../../model/enums/Path';
 import ServerSex from '../../client/contracts/ServerSex';
 import IGameClient from '../../client/game/IGameClient';
 import ServerRole from '../../client/contracts/ServerRole';
-import { userErrorChanged } from '../new/commonSlice';
+import { userErrorChanged } from '../commonSlice';
 import WellKnownSIContentServiceErrorCode from 'sicontent-client/dist/models/WellKnownSIContentServiceErrorCode';
 import RandomPackageParameters from 'sistorage-client/dist/models/RandomPackageParameters';
-import { AppDispatch } from '../new/store';
-import { showText, tableReset } from '../new/tableSlice';
-import { ContextView, nameChanged, setContext } from '../new/room2Slice';
-import { GameState, setGameSet } from '../new/gameSlice';
-import { saveStateToStorage } from '../new/StateHelpers';
-import { INavigationState } from '../new/uiSlice';
+import { AppDispatch } from '../store';
+import { showText, tableReset } from '../tableSlice';
+import { ContextView, nameChanged, setContext } from '../room2Slice';
+import { GameState, setGameSet } from '../gameSlice';
+import { saveStateToStorage } from '../StateHelpers';
+import { INavigationState } from '../uiSlice';
 import { navigate } from '../../utils/Navigator';
 import { UnknownAction } from '@reduxjs/toolkit';
 import { uploadPackageFinished,
 	uploadPackageProgress,
-	uploadPackageStarted } from '../new/online2Slice';
+	uploadPackageStarted } from '../online2Slice';
 
 const newGame: ActionCreator<OnlineActions.NewGameAction> = () => ({
 	type: OnlineActions.OnlineActionTypes.NewGame
@@ -214,7 +214,7 @@ const joinByPin: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 		return;
 	}
 
-	appDispatch(joinGame(gameInfo.HostUri, gameInfo.GameId, userName, role, pin, appDispatch) as unknown as UnknownAction);
+	appDispatch(joinGame(gameInfo.hostUri, gameInfo.gameId, userName, role, pin, appDispatch) as unknown as UnknownAction);
 };
 
 function createGameSettings(

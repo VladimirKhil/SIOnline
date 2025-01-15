@@ -1,9 +1,9 @@
 import React from 'react';
 import NewGameButton from '../NewGameButton/NewGameButton';
-import { useAppDispatch, useAppSelector } from '../../../state/new/hooks';
+import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 import OnlineMode from '../../../model/enums/OnlineMode';
 import localization from '../../../model/resources/localization';
-import { onlineModeChanged } from '../../../state/new/uiSlice';
+import { onlineModeChanged } from '../../../state/uiSlice';
 
 import './LobbyBottomPanel.scss';
 

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { MessageLevel } from '../../../state/new/commonSlice';
+import { MessageLevel } from '../../../state/commonSlice';
 
 import './UserError.css';
 

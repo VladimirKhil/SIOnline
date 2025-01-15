@@ -8,10 +8,10 @@ import PersonView from '../PersonView/PersonView';
 import { isHost } from '../../../utils/StateHelpers';
 import JoinMode from '../../../client/game/JoinMode';
 import Persons from '../../../model/Persons';
-import { useAppDispatch, useAppSelector } from '../../../state/new/hooks';
-import { getPin } from '../../../state/new/room2Slice';
-import { AppDispatch } from '../../../state/new/store';
-import { userInfoChanged } from '../../../state/new/commonSlice';
+import { useAppDispatch, useAppSelector } from '../../../state/hooks';
+import { getPin } from '../../../state/room2Slice';
+import { AppDispatch } from '../../../state/store';
+import { userInfoChanged } from '../../../state/commonSlice';
 
 import './PersonsView.css';
 

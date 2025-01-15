@@ -1,8 +1,8 @@
 /* eslint-disable react/no-array-index-key */
 import * as React from 'react';
 import localization from '../../../model/resources/localization';
-import { useAppDispatch, useAppSelector } from '../../../state/new/hooks';
-import { approveAnswer, rejectAnswer } from '../../../state/new/room2Slice';
+import { useAppDispatch, useAppSelector } from '../../../state/hooks';
+import { approveAnswer, rejectAnswer } from '../../../state/room2Slice';
 
 import './AnswerValidation.scss';
 

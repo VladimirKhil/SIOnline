@@ -3,8 +3,8 @@ import { connect } from 'react-redux';
 import { useState } from 'react';
 import localization from '../../../model/resources/localization';
 import actionCreators from '../../../logic/actionCreators';
-import { useAppDispatch, useAppSelector } from '../../../state/new/hooks';
-import { AppDispatch } from '../../../state/new/store';
+import { useAppDispatch, useAppSelector } from '../../../state/hooks';
+import { AppDispatch } from '../../../state/store';
 
 import './ServerLicense.css';
 

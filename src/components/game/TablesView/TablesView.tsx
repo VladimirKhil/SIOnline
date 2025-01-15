@@ -10,7 +10,7 @@ import TableView from '../TableView/TableView';
 import Constants from '../../../model/enums/Constants';
 import Account from '../../../model/Account';
 import FlyoutButton, { FlyoutHorizontalOrientation, FlyoutVerticalOrientation } from '../../common/FlyoutButton/FlyoutButton';
-import { useAppSelector } from '../../../state/new/hooks';
+import { useAppSelector } from '../../../state/hooks';
 
 import './TablesView.css';
 

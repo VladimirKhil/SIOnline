@@ -18,8 +18,8 @@ import Role from './model/Role';
 import IGameClient from './client/game/IGameClient';
 import { gameSoundPlayer } from './utils/GameSoundPlayer';
 import GameSound from './model/enums/GameSound';
-import { AppDispatch } from './state/new/store';
-import { setAppSound } from './state/new/settingsSlice';
+import { AppDispatch } from './state/store';
+import { setAppSound } from './state/settingsSlice';
 import { loadState } from './state/SavedState';
 
 declare global {
@@ -287,7 +287,7 @@ function processMessage(controller: ClientController, payload: any, appDispatch:
 export default function runCore(game?: IGameClient): Store<State, AnyAction> {
 	const noOpHubConnection = new HubConnectionBuilder().withUrl('http://fake').build();
 
-	const gameClient = new GameServerClient(noOpHubConnection, () => { });
+	const gameClient = new GameServerClient();
 
 	const dataContext: DataContext = {
 		config: {
@@ -295,7 +295,6 @@ export default function runCore(game?: IGameClient): Store<State, AnyAction> {
 			appRegistryServiceUri: '',
 		},
 		serverUri: '',
-		connection: null,
 		gameClient,
 		game: game ?? new GameClient(new SIHostClient(noOpHubConnection, () => { }), false),
 		contentUris: null,

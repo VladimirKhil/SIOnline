@@ -1,6 +1,6 @@
 import * as React from 'react';
 import NewGameDialog from '../../panels/NewGameDialog/NewGameDialog';
-import { useAppSelector } from '../../../state/new/hooks';
+import { useAppSelector } from '../../../state/hooks';
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export function NewGame(): JSX.Element | null {

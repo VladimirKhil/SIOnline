@@ -7,10 +7,10 @@ import ClientController from '../logic/ClientController';
 import roomActionCreators from '../state/room/roomActionCreators';
 import ISIHostClient from '../client/ISIHostClient';
 import getErrorMessage from './ErrorHelpers';
-import { AppDispatch } from '../state/new/store';
+import { AppDispatch } from '../state/store';
 import PersonInfo from '../client/contracts/PersonInfo';
-import { onGamePersonsChanged } from '../state/new/online2Slice';
-import { isSIHostConnectedChanged, userErrorChanged } from '../state/new/commonSlice';
+import { onGamePersonsChanged } from '../state/online2Slice';
+import { isSIHostConnectedChanged, userErrorChanged } from '../state/commonSlice';
 
 export const activeSIHostConnections: string[] = [];
 

@@ -15,7 +15,7 @@ import ProgressBar from '../../common/ProgressBar/ProgressBar';
 import { isRunning } from '../../../utils/TimerInfoHelpers';
 import TableContent from '../TableContent/TableContent';
 import ObjectView from '../ObjectView/ObjectView';
-import { useAppSelector } from '../../../state/new/hooks';
+import { useAppSelector } from '../../../state/hooks';
 
 import './GameTable.css';
 

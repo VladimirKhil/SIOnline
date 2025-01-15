@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import GameSound from '../../model/enums/GameSound';
-import { gameSoundPlayer } from '../../utils/GameSoundPlayer';
+import GameSound from '../model/enums/GameSound';
+import { gameSoundPlayer } from '../utils/GameSoundPlayer';
 
 export enum MessageLevel {
 	Information,

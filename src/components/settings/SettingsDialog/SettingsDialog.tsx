@@ -2,9 +2,9 @@ import * as React from 'react';
 import Dialog from '../../common/Dialog/Dialog';
 import localization from '../../../model/resources/localization';
 import CommonSettingsView from '../CommonSettingsView/CommonSettingsView';
-import { useAppDispatch } from '../../../state/new/hooks';
-import { resetSettings } from '../../../state/new/settingsSlice';
-import { showSettings } from '../../../state/new/uiSlice';
+import { useAppDispatch } from '../../../state/hooks';
+import { resetSettings } from '../../../state/settingsSlice';
+import { showSettings } from '../../../state/uiSlice';
 
 import './SettingsDialog.css';
 

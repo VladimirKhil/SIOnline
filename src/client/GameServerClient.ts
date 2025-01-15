@@ -6,56 +6,75 @@ import RunGameResponse from './contracts/RunGameResponse';
 import RunGameRequest from './contracts/RunGameRequest';
 import RunAutoGameRequest from './contracts/RunAutoGameRequest';
 import GetGameByPinResponse from './contracts/GetGameByPinResponse';
-
-const enum State { None, Lobby, Game }
+import * as signalR from '@microsoft/signalr';
+import * as signalRMsgPack from '@microsoft/signalr-protocol-msgpack';
 
 /** Represents a connection to a SIGame Server. */
 export default class GameServerClient implements IGameServerClient {
-	private state: State = State.None;
-
-	private culture = '';
+	/** Underlying SignalR connection. */
+	public connection: signalR.HubConnection;
 
 	/**
 	 * Initializes a new instance of {@link GameServerClient}.
-	 * @param connection Underlying SignalR connection.
 	 */
-	constructor(public connection: signalR.HubConnection, private errorHandler: (error: any) => void) { }
+	constructor(private serverUri?: string) {
+		if (!serverUri) {
+			this.connection = new signalR.HubConnectionBuilder().withUrl('http://fake').build();
+			return;
+		}
 
-	getComputerAccountsAsync(culture: string): Promise<string[]> {
-		return this.connection.invoke<string[]>('GetComputerAccountsNew', culture);
+		const connectionBuilder = new signalR.HubConnectionBuilder()
+			.withAutomaticReconnect({
+				nextRetryDelayInMilliseconds: (retryContext: signalR.RetryContext) => 1000 * (retryContext.previousRetryCount + 1)
+			})
+			.withUrl(`${serverUri}/sionline`)
+			.withHubProtocol(new signalRMsgPack.MessagePackHubProtocol());
+
+		this.connection = connectionBuilder.build();
 	}
 
-	getGameHostInfoAsync(culture: string): Promise<HostInfo> {
-		return this.connection.invoke<HostInfo>('GetGamesHostInfoNew', culture);
+	isConnected(): boolean {
+		return this.connection.state === signalR.HubConnectionState.Connected;
 	}
 
-	async joinLobbyAsync(culture: string): Promise<boolean> {
-		await this.connection.invoke<boolean>('JoinLobby2', culture);
+	async connect(): Promise<void> {
+		await this.connection.start();
+	}
 
-		this.state = State.Lobby;
-		this.culture = culture;
+	async disconnect(): Promise<void> {
+		await this.connection.stop();
+	}
 
-		return true;
+	async getComputerAccountsAsync(culture: string): Promise<string[]> {
+		const response = await fetch(`${this.serverUri}/api/v1/info/bots`, {
+			headers: {
+				'Accept-Language': culture
+			}
+		});
+
+		if (!response.ok) {
+			throw new Error(`Error while retrieving computer accounts: ${response.status} ${await response.text()}`);
+		}
+
+		return <string[]>(await response.json());
+	}
+
+	async getGameHostInfoAsync(culture: string): Promise<HostInfo> {
+		const response = await fetch(`${this.serverUri}/api/v1/info/host`, {
+			headers: {
+				'Accept-Language': culture
+			}
+		});
+
+		if (!response.ok) {
+			throw new Error(`Error while retrieving computer accounts: ${response.status} ${await response.text()}`);
+		}
+
+		return <HostInfo>(await response.json());
 	}
 
 	getGamesSliceAsync(fromId: number): Promise<Slice<GameInfo>> {
 		return this.connection.invoke<Slice<GameInfo>>('GetGamesSlice', fromId);
-	}
-
-	getUsersAsync(): Promise<string[]> {
-		return this.connection.invoke<string[]>('GetUsers');
-	}
-
-	getLoginAsync(): Promise<string | null> {
-		return this.connection.invoke<string | null>('GetLogin');
-	}
-
-	getNewsAsync(): Promise<string | null> {
-		return this.connection.invoke<string | null>('GetNews');
-	}
-
-	sayInLobbyAsync(text: string): Promise<any> {
-		return this.connection.invoke('Say', text);
 	}
 
 	runGameAsync(runGameRequest: RunGameRequest): Promise<RunGameResponse> {
@@ -72,20 +91,17 @@ export default class GameServerClient implements IGameServerClient {
 		);
 	}
 
-	getGameByPinAsync(pin: number): Promise<GetGameByPinResponse | null> {
-		return this.connection.invoke<GetGameByPinResponse | null>(
-			'GetGameByPin',
-			pin,
-		);
-	}
+	async getGameByPinAsync(pin: number): Promise<GetGameByPinResponse | null> {
+		const response = await fetch(`${this.serverUri}/api/v1/info/games/${pin}`);
 
-	logOutAsync(): Promise<any> {
-		return this.connection.invoke('LogOut');
-	}
+		if (!response.ok) {
+			if (response.status === 404) {
+				return null;
+			}
 
-	async reconnectAsync(): Promise<any> {
-		if (this.state === State.Lobby) {
-			await this.joinLobbyAsync(this.culture);
+			throw new Error(`Error while retrieving game by pin: ${response.status} ${await response.text()}`);
 		}
+
+		return <GetGameByPinResponse>(await response.json());
 	}
 }

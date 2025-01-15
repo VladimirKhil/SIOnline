@@ -1,12 +1,12 @@
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import DataContext from '../../model/DataContext';
-import PlayerInfo from '../../model/PlayerInfo';
-import PersonInfo from '../../model/PersonInfo';
-import PlayerStates from '../../model/enums/PlayerStates';
-import Messages from '../../client/game/Messages';
-import localization from '../../model/resources/localization';
-import roomActionCreators from '../room/roomActionCreators';
-import State from '../State';
+import DataContext from '../model/DataContext';
+import PlayerInfo from '../model/PlayerInfo';
+import PersonInfo from '../model/PersonInfo';
+import PlayerStates from '../model/enums/PlayerStates';
+import Messages from '../client/game/Messages';
+import localization from '../model/resources/localization';
+import roomActionCreators from './room/roomActionCreators';
+import State from './State';
 
 export enum DialogView {
 	None,

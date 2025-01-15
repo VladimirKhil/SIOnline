@@ -5,8 +5,8 @@ import State from '../../../state/State';
 import localization from '../../../model/resources/localization';
 import Sex from '../../../model/enums/Sex';
 import roomActionCreators from '../../../state/room/roomActionCreators';
-import { useAppDispatch, useAppSelector } from '../../../state/new/hooks';
-import { DialogView, showDialog } from '../../../state/new/room2Slice';
+import { useAppDispatch, useAppSelector } from '../../../state/hooks';
+import { DialogView, showDialog } from '../../../state/room2Slice';
 
 import './ReactionPanel.css';
 

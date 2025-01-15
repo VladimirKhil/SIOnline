@@ -12,7 +12,7 @@ import PackageFilters from 'sistorage-client/dist/models/PackageFilters';
 import PackageSelectionParameters from 'sistorage-client/dist/models/PackageSelectionParameters';
 import { keys, sortRecord } from '../../../utils/RecordExtensions';
 import { getFullCulture } from '../../../utils/StateHelpers';
-import { useAppDispatch } from '../../../state/new/hooks';
+import { useAppDispatch } from '../../../state/hooks';
 
 import {
 	receiveAuthors,
@@ -20,7 +20,7 @@ import {
 	receivePublishers,
 	receiveRestrictions,
 	receiveTags,
-	searchPackages } from '../../../state/new/siPackagesSlice';
+	searchPackages } from '../../../state/siPackagesSlice';
 
 import './SIStorageDialog.css';
 import defaultLogo from '../../../../assets/images/qlogo.png';

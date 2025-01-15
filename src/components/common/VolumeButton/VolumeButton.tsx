@@ -1,7 +1,7 @@
 import * as React from 'react';
 import localization from '../../../model/resources/localization';
-import { useAppDispatch, useAppSelector } from '../../../state/new/hooks';
-import { setSoundVolume } from '../../../state/new/settingsSlice';
+import { useAppDispatch, useAppSelector } from '../../../state/hooks';
+import { setSoundVolume } from '../../../state/settingsSlice';
 
 import './VolumeButton.css';
 

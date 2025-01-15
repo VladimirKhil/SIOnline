@@ -16,7 +16,7 @@ import JoinRoom from '../views/JoinRoom/JoinRoom';
 import Loading from '../views/Loading/Loading';
 import ServerLicense from '../views/ServerLicense/ServerLicense';
 import UserError from '../panels/UserError/UserError';
-import { MessageLevel } from '../../state/new/commonSlice';
+import { MessageLevel } from '../../state/commonSlice';
 import JoinByPin from '../views/JoinByPin/JoinByPin';
 
 import './App.css';

@@ -7,8 +7,8 @@ import roomActionCreators from '../../../state/room/roomActionCreators';
 import NumericTextBox from '../../common/NumericTextBox/NumericTextBox';
 import Persons from '../../../model/Persons';
 import getAvatarClass from '../../../utils/AccountHelpers';
-import { useAppDispatch, useAppSelector } from '../../../state/new/hooks';
-import { playerSelected } from '../../../state/new/room2Slice';
+import { useAppDispatch, useAppSelector } from '../../../state/hooks';
+import { playerSelected } from '../../../state/room2Slice';
 
 import './PlayersListView.css';
 

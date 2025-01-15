@@ -1,6 +1,6 @@
 import * as React from 'react';
 import localization from '../../../model/resources/localization';
-import { useAppDispatch, useAppSelector } from '../../../state/new/hooks';
+import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 
 import { setHumanPlayersCount,
 	setName,
@@ -10,22 +10,22 @@ import { setHumanPlayersCount,
 	setPlayersCount,
 	setRole,
 	setShowmanHuman,
-	setVoiceChat } from '../../../state/new/gameSlice';
+	setVoiceChat } from '../../../state/gameSlice';
 
 import Constants from '../../../model/enums/Constants';
 import PackageType from '../../../model/enums/PackageType';
 import FlyoutButton, { FlyoutTheme } from '../../common/FlyoutButton/FlyoutButton';
 import PackageFileSelector from '../PackageFileSelector/PackageFileSelector';
-import { AppDispatch } from '../../../state/new/store';
+import { AppDispatch } from '../../../state/store';
 import State from '../../../state/State';
 import PackageSources from '../PackageSources/PackageSources';
 import Role from '../../../model/Role';
-import { userErrorChanged } from '../../../state/new/commonSlice';
+import { userErrorChanged } from '../../../state/commonSlice';
 import { connect } from 'react-redux';
 import onlineActionCreators from '../../../state/online/onlineActionCreators';
 import { Dispatch } from 'react';
 import { Action } from 'redux';
-import { INavigationState } from '../../../state/new/uiSlice';
+import { INavigationState } from '../../../state/uiSlice';
 import AutoSizedText from '../../common/AutoSizedText/AutoSizedText';
 
 import './RoomOptions.scss';

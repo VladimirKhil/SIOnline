@@ -10,9 +10,9 @@ import AvatarView from '../../panels/AvatarView/AvatarView';
 import SexView from '../../panels/SexView/SexView';
 import LanguageView from '../../panels/LanguageView/LanguageView';
 import Path from '../../../model/enums/Path';
-import { useAppDispatch, useAppSelector } from '../../../state/new/hooks';
-import { AppDispatch, RootState } from '../../../state/new/store';
-import { changeLogin } from '../../../state/new/userSlice';
+import { useAppDispatch, useAppSelector } from '../../../state/hooks';
+import { AppDispatch, RootState } from '../../../state/store';
+import { changeLogin } from '../../../state/userSlice';
 import { navigate } from '../../../utils/Navigator';
 
 import './Login.scss';

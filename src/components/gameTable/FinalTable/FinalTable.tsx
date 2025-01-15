@@ -3,8 +3,8 @@ import { Dispatch, Action } from 'redux';
 import { connect } from 'react-redux';
 import AutoSizedText from '../../common/AutoSizedText/AutoSizedText';
 import roomActionCreators from '../../../state/room/roomActionCreators';
-import { AppDispatch, RootState } from '../../../state/new/store';
-import { useAppDispatch, useAppSelector } from '../../../state/new/hooks';
+import { AppDispatch, RootState } from '../../../state/store';
+import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 
 import './FinalTable.scss';
 

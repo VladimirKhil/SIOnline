@@ -1,13 +1,13 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import AnswerOption from '../../model/AnswerOption';
-import ContentGroup from '../../model/ContentGroup';
-import ThemeInfo from '../../model/ThemeInfo';
-import LayoutMode from '../../model/enums/LayoutMode';
-import TableMode from '../../model/enums/TableMode';
-import ContentType from '../../model/enums/ContentType';
-import ItemState from '../../model/enums/ItemState';
-import TimerInfo from '../../model/TimerInfo';
-import TimerStates from '../../model/enums/TimeStates';
+import AnswerOption from '../model/AnswerOption';
+import ContentGroup from '../model/ContentGroup';
+import ThemeInfo from '../model/ThemeInfo';
+import LayoutMode from '../model/enums/LayoutMode';
+import TableMode from '../model/enums/TableMode';
+import ContentType from '../model/enums/ContentType';
+import ItemState from '../model/enums/ItemState';
+import TimerInfo from '../model/TimerInfo';
+import TimerStates from '../model/enums/TimeStates';
 
 export interface TableState {
 	mode: TableMode;

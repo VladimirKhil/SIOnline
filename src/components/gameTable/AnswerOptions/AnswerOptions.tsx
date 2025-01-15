@@ -9,8 +9,8 @@ import ItemState from '../../../model/enums/ItemState';
 import { Action, Dispatch } from 'redux';
 import roomActionCreators from '../../../state/room/roomActionCreators';
 import AutoSizedText from '../../common/AutoSizedText/AutoSizedText';
-import { useAppDispatch, useAppSelector } from '../../../state/new/hooks';
-import { AppDispatch, RootState } from '../../../state/new/store';
+import { useAppDispatch, useAppSelector } from '../../../state/hooks';
+import { AppDispatch, RootState } from '../../../state/store';
 
 import './AnswerOptions.scss';
 
