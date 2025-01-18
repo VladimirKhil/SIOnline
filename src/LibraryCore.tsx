@@ -160,7 +160,7 @@ function processMessage(controller: ClientController, payload: any, appDispatch:
 			controller.onQuestionType(payload.questionType, payload.isDefault);
 			break;
 
-		case 'setReadingSpeed':
+		case 'setReadingSpeed': // non-SIHost compatible API
 			controller.onReadingSpeedChanged(payload.readingSpeed);
 			break;
 
@@ -186,6 +186,10 @@ function processMessage(controller: ClientController, payload: any, appDispatch:
 
 		case 'setChooser':
 			controller.onSetChooser(payload.chooserIndex, payload.setAnswerer);
+			break;
+
+		case 'setAttachContentToTable':
+			controller.onSetAttachContentToTable(payload.attach);
 			break;
 
 		case 'setLanguage': // non-SIHost compatible API

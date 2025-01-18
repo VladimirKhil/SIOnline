@@ -45,9 +45,9 @@
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	padding: 3px;
 	background-color: transparent;
 	margin: 2px;
+	padding: 0.5%;
 	transition: background-color 1s, transform 0.2s;
 	overflow: hidden;
 	border: 2px solid transparent;
@@ -98,18 +98,10 @@
 	#table .roundTable .themeHeader {
 		padding: 6px;
 	}
-
-	#table .roundTable .roundTableCell {
-		padding: 6px;
-	}
 }
 
 @media screen and (min-width: 1600px) {
 	#table .roundTable .themeHeader {
-		padding: 12px;
-	}
-
-	#table .roundTable .roundTableCell {
 		padding: 12px;
 	}
 }

@@ -103,6 +103,7 @@ import { playAudio, stopAudio, userWarnChanged } from '../state/commonSlice';
 import getErrorMessage, { getUserError } from '../utils/ErrorHelpers';
 import { playersVisibilityChanged, setQrCode } from '../state/uiSlice';
 import ErrorCode from '../client/contracts/ErrorCode';
+import { setAttachContentToTable } from '../state/settingsSlice';
 
 function initGroup(group: ContentGroup) {
 	let bestRowCount = 1;
@@ -423,6 +424,7 @@ export default class ClientController {
 
 	onGameThemes(gameThemes: string[]) {
 		this.appDispatch(showGameThemes(gameThemes));
+		this.playGameSound(GameSound.GAME_THEMES);
 	}
 
 	onInfo(all: Persons, showman: PersonInfo, players: PlayerInfo[]) {
@@ -622,6 +624,10 @@ export default class ClientController {
 		this.appDispatch(questionReset());
 	}
 
+	onSetAttachContentToTable(attach: boolean) {
+		this.appDispatch(setAttachContentToTable(attach));
+	}
+
 	onStage(stage: string, stageName: string, stageIndex: number, rules: string) {
 		const state = this.getState();
 
@@ -812,6 +818,7 @@ export default class ClientController {
 		this.appDispatch(canPressChanged(false));
 		this.appDispatch(playerStateChanged({ index, state: PlayerStates.Press }));
 		this.pauseLoadTimerIfNeeded();
+		this.playGameSound(GameSound.BUTTON_PRESSED);
 	}
 
 	onEndPressButtonByTimeout() {
@@ -858,6 +865,7 @@ export default class ClientController {
 		this.appDispatch(playersStateCleared());
 		this.dispatch(roomActionCreators.afterQuestionStateChanged(false));
 		this.appDispatch(questionReset());
+		this.playGameSound(GameSound.QUESTION_SELECTED);
 
 		const themeInfo = this.getState().table.roundInfo[themeIndex];
 
