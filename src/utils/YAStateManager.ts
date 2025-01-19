@@ -64,4 +64,10 @@ export default class YAStateManager implements IStateManager {
 
 		window.history.pushState(state, '', url);
 	}
+
+	isFullScreenSupported(): boolean {
+		return false; // Yandex has its own fullscreen button
+	}
+
+	async setFullScreen(): Promise<boolean> { return false; }
 }

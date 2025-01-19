@@ -61,12 +61,12 @@ export function ReadyButton(props: ReadyButtonProps): JSX.Element | null {
 	const roomState = useAppSelector(state => state.room2);
 	const isReady = getIsReady(roomState, props.role, roomState.name);
 	const enabledClass = props.isConnected ? '' : 'disabled';
-	const label = isReady ? getReadyMessage(props) : getNotReadyMessage(props);
+	const label = isReady ? getNotReadyMessage(props) : getReadyMessage(props);
 
 	return (
 		<button
 			type="button"
-			className={`ready_button mainAction ${enabledClass} ${isReady ? 'active' : ''}`}
+			className={`ready_button mainAction active ${enabledClass}}`}
 			onClick={() => props.onReady(!isReady)}
 		>
 			<span>{label?.toLocaleUpperCase()}</span>

@@ -1,34 +1,16 @@
 import * as React from 'react';
 import localization from '../../../model/resources/localization';
 import LanguageView from '../../panels/LanguageView/LanguageView';
-import Constants from '../../../model/enums/Constants';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 
 import { setAppSound,
 	setAttachContentToTable,
-	setBindNextButton,
 	setFloatingControls,
+	setFullScreen,
 	setMainMenuSound,
 	setShowVideoAvatars,
 	setSound,
 	setSoundVolume } from '../../../state/settingsSlice';
-import { isSettingGameButtonKeyChanged } from '../../../state/uiSlice';
-
-function getKeyName(key: string) {
-	switch (key) {
-		case Constants.KEY_CTRL:
-			return 'Ctrl';
-
-		case Constants.KEY_SPACE:
-			return localization.keySpace;
-
-		case Constants.KEY_RIGHT:
-			return localization.keyRight;
-
-		default:
-			return key;
-	}
-}
 
 export function CommonSettingsView(): JSX.Element {
 	const settings = useAppSelector(state => state.settings);
@@ -40,6 +22,19 @@ export function CommonSettingsView(): JSX.Element {
 			<p className="header">{localization.language}</p>
 
 			<LanguageView disabled={false} />
+
+			{ui.isFullScreenSupported
+				? <div className="settingItem">
+					<input
+						id="fullScreen"
+						type="checkbox"
+						checked={settings.fullScreen}
+						onChange={() => appDispatch(setFullScreen(!settings.fullScreen))}
+					/>
+
+					<label htmlFor="fullScreen">{localization.fullScreen}</label>
+				</div>
+			: null}
 
 			<div className="settingItem">
 				<input
@@ -95,29 +90,6 @@ export function CommonSettingsView(): JSX.Element {
 				/>
 
 				<label htmlFor="floatingControls">{localization.floatingControls}</label>
-			</div>
-
-			<p className="header">{localization.gameButtonKey}</p>
-
-			<button
-				type='button'
-				className={`gameButtonKey standard ${ui.isSettingGameButtonKey ? 'active' : ''}`}
-				title={localization.set}
-				disabled={ui.isSettingGameButtonKey}
-				onClick={() => appDispatch(isSettingGameButtonKeyChanged(true))}
-			>
-				{getKeyName(settings.gameButtonKey ?? localization.notSet)}
-			</button>
-
-			<div className="settingItem">
-				<input
-					id="bindNextButton"
-					type="checkbox"
-					checked={settings.bindNextButton}
-					onChange={() => appDispatch(setBindNextButton(!settings.bindNextButton))}
-				/>
-
-				<label htmlFor="bindNextButton">{localization.bindNextButton}</label>
 			</div>
 
 			<div className="settingItem">

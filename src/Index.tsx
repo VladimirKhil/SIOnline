@@ -31,13 +31,11 @@ import StateManager from './utils/StateManager';
 import YAStateManager from './utils/YAStateManager';
 import IStateManager from './utils/IStateManager';
 import SIHostClient from './client/SIHostClient';
-import { setGameButtonKey } from './state/settingsSlice';
+import { setFullScreen, setGameButtonKey } from './state/settingsSlice';
 import { commonErrorChanged, setFontsReady } from './state/commonSlice';
 import { saveStateToStorage } from './state/StateHelpers';
-import { INavigationState, isSettingGameButtonKeyChanged, visibilityChanged, windowSizeChanged } from './state/uiSlice';
+import { INavigationState, isSettingGameButtonKeyChanged, setFullScreenSupported, visibilityChanged, windowSizeChanged } from './state/uiSlice';
 import { navigate } from './utils/Navigator';
-import AppRegistryClient from 'appregistry-client';
-import Architecture from 'appregistry-client/dist/requests/Architecture';
 
 import './utils/polyfills';
 import './scss/style.scss';
@@ -126,7 +124,16 @@ function setState(state: State, savedState: SavedState | null, c: Config): State
 function subscribeToExternalEvents(store: Store<State, any>) {
 	// TODO use ResizeObserver for body element instead of this as app could be hosted inside iframe
 	// and window dimensions will be irrelevant
-	window.onresize = () => store.dispatch(windowSizeChanged({ width: window.innerWidth, height: window.innerHeight }));
+	window.onresize = () => {
+		store.dispatch(windowSizeChanged({ width: window.innerWidth, height: window.innerHeight }));
+
+		if (window.innerHeight == screen.height && window.innerWidth == screen.width) {
+			store.dispatch(setFullScreen(true));
+		} else {
+			store.dispatch(setFullScreen(false));
+		}
+	};
+
 	window.onpopstate = (e) => { if (e.state) { store.dispatch(navigate({ navigation: e.state, saveState: false })); } };
 
 	window.onkeydown = (e: KeyboardEvent) => {
@@ -300,6 +307,8 @@ async function run(stateManager: IStateManager) {
 					localization.setLanguage(newSettings.appSettings.culture || localization.getInterfaceLanguage());
 					document.title = localization.appName;
 					store.dispatch(actionCreators.reloadComputerAccounts(store.dispatch) as any);
+				} else if (newSettings.fullScreen !== currentSettings.fullScreen) {
+					stateManager.setFullScreen(newSettings.fullScreen);
 				}
 
 				currentSettings = newSettings;
@@ -310,9 +319,18 @@ async function run(stateManager: IStateManager) {
 		subscribeToExternalEvents(store);
 
 		store.dispatch(windowSizeChanged({ width: window.innerWidth, height: window.innerHeight }));
+		store.dispatch(setFullScreenSupported(stateManager.isFullScreenSupported()));
 
 		if (state.settings.appSettings.culture) {
 			localization.setLanguage(state.settings.appSettings.culture);
+		}
+
+		if (state.settings.fullScreen) {
+			const result = await stateManager.setFullScreen(true);
+
+			if (!result) {
+				store.dispatch(setFullScreen(false));
+			}
 		}
 
 		document.title = localization.appName;

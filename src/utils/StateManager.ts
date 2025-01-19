@@ -27,4 +27,23 @@ export default class StateManager implements IStateManager {
 	saveNavigationState(state: any, url: string | null | undefined) {
 		window.history.pushState(state, '', url);
 	}
+
+	isFullScreenSupported(): boolean {
+		return document.fullscreenEnabled;
+	}
+
+	async setFullScreen(fullScreen: boolean): Promise<boolean> {
+		if (fullScreen && !document.fullscreenElement) {
+			try {
+				await document.documentElement.requestFullscreen();
+			} catch (e) {
+				console.error(e);
+				return false;
+			}
+		} else if (!fullScreen && document.fullscreenElement) {
+			document.exitFullscreen();
+		}
+
+		return true;
+	}
 }

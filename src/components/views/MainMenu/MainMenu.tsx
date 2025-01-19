@@ -117,8 +117,6 @@ export function MainMenu(props: MainMenuProps): JSX.Element {
 						{localization.joinLobby.toUpperCase()}
 					</button>
 				</div>
-
-				<Ads />
 			</div>
 
 			{showLicense ? (

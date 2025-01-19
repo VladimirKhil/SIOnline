@@ -12,4 +12,8 @@ export default interface IStateManager {
 	loadNavigationState(): any;
 
 	saveNavigationState(state: any, url: string | null | undefined): void;
+
+	isFullScreenSupported(): boolean;
+
+	setFullScreen(fullScreen: boolean): Promise<boolean>;
 }

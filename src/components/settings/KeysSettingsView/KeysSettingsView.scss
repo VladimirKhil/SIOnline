@@ -1,0 +1,10 @@
+.gameButtonKey {
+    font-size: 24px;
+    padding: 5px 20px;
+    min-height: 40px;
+    min-width: 100px;
+}
+
+button.standard.gameButtonKey.active {
+    background-color: lightyellow;
+}

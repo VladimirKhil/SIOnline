@@ -11,6 +11,7 @@ export interface SettingsState {
 	appSound: boolean;
 	mainMenuSound: boolean;
 	floatingControls: boolean;
+	fullScreen: boolean;
 	sex: Sex;
 	avatarKey: string | null;
 	appSettings: AppSettings;
@@ -27,6 +28,7 @@ const initialState: SettingsState = {
 	appSound: false,
 	mainMenuSound: false,
 	floatingControls: false,
+	fullScreen: false,
 	sex: Sex.Male,
 	avatarKey: null,
 	appSettings: initialAppSettings,
@@ -119,6 +121,9 @@ export const settingsSlice = createSlice({
 		setFloatingControls: (state: SettingsState, action: PayloadAction<boolean>) => {
 			state.floatingControls = action.payload;
 		},
+		setFullScreen: (state: SettingsState, action: PayloadAction<boolean>) => {
+			state.fullScreen = action.payload;
+		},
 		setBindNextButton: (state: SettingsState, action: PayloadAction<boolean>) => {
 			state.bindNextButton = action.payload;
 		},
@@ -171,6 +176,7 @@ export const {
 	setAllowEveryoneToPlayHiddenStakes,
 	setDisplaySources,
 	setFloatingControls,
+	setFullScreen,
 	setBindNextButton,
 	setAttachContentToTable,
 	setShowVideoAvatars,

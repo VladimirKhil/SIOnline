@@ -198,7 +198,7 @@ button.standard.welcomeExit {
 @media screen and (min-height: 600px) {
 	.welcomeViewActions {
 		font-size: 25px;
-		margin-top: 30px;
+		margin-top: 70px;
 	}
 
 	.welcomeViewActions button {
@@ -213,7 +213,7 @@ button.standard.welcomeExit {
 
 @media screen and (min-height: 800px) {
 	.welcomeViewActions {
-		margin-top: 40px;
+		margin-top: 100px;
 	}
 
 	.welcomeViewActions button {
@@ -231,6 +231,6 @@ button.standard.welcomeExit {
 
 @media screen and (min-height: 800px) and (min-width: 1600px) {
 	.welcomeViewActions {
-		margin-top: 80px;
+		margin-top: 150px;
 	}
 }
