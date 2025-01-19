@@ -6,9 +6,11 @@
   "build": {
     "devUrl": "https://sigame.vladimirkhil.com",
     "beforeDevCommand": "npm run dev",
-    "beforeBuildCommand": ""
+    "beforeBuildCommand": "npm run build",
+    "frontendDist": "../dist"
   },
   "app": {
+    "withGlobalTauri": true,
     "windows": [
       {
         "title": "SIGame",

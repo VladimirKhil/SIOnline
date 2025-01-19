@@ -1,12 +1,14 @@
-import { Store } from 'redux';
 import { getCookie, setCookie } from './CookieHelpers';
 import IStateManager, { FullScreenMode } from './IStateManager';
+import { Store } from 'redux';
 
 const ACCEPT_LICENSE_KEY = 'ACCEPT_LICENSE';
 
-export default class StateManager implements IStateManager {
-	initAsync(store: Store): Promise<void> {
-		return Promise.resolve();
+export default class TauriStateManager implements IStateManager {
+	constructor(private isLegacy: boolean) { }
+
+	async initAsync(store: Store): Promise<void> {
+		console.log('Loaded from Tauri');
 	}
 
 	onReady() {
@@ -29,24 +31,15 @@ export default class StateManager implements IStateManager {
 	}
 
 	isFullScreenSupported(): boolean {
-		return document.fullscreenEnabled;
+		return !this.isLegacy;
 	}
 
 	detectFullScreen(): FullScreenMode {
-		return window.innerHeight == screen.height && window.innerWidth == screen.width ? FullScreenMode.Yes : FullScreenMode.No;
+		return FullScreenMode.Undefined;
 	}
 
 	async setFullScreen(fullScreen: boolean): Promise<boolean> {
-		if (fullScreen && !document.fullscreenElement) {
-			try {
-				await document.documentElement.requestFullscreen();
-			} catch (e) {
-				return false;
-			}
-		} else if (!fullScreen && document.fullscreenElement) {
-			document.exitFullscreen();
-		}
-
+		window.parent.postMessage({ type: 'fullscreen', payload: fullScreen }, '*');
 		return true;
 	}
 }

@@ -29,13 +29,14 @@ import ButtonPressMode from './model/ButtonPressMode';
 import Path from './model/enums/Path';
 import StateManager from './utils/StateManager';
 import YAStateManager from './utils/YAStateManager';
-import IStateManager from './utils/IStateManager';
+import IStateManager, { FullScreenMode } from './utils/IStateManager';
 import SIHostClient from './client/SIHostClient';
 import { setFullScreen, setGameButtonKey } from './state/settingsSlice';
 import { commonErrorChanged, setFontsReady } from './state/commonSlice';
 import { saveStateToStorage } from './state/StateHelpers';
 import { INavigationState, isSettingGameButtonKeyChanged, setFullScreenSupported, visibilityChanged, windowSizeChanged } from './state/uiSlice';
 import { navigate } from './utils/Navigator';
+import TauriStateManager from './utils/TauriStateManager';
 
 import './utils/polyfills';
 import './scss/style.scss';
@@ -43,10 +44,17 @@ import './scss/style.scss';
 declare const config: Config | undefined;
 declare const firebaseConfig: FirebaseOptions | undefined;
 
+declare global {
+	interface Window {
+        __TAURI_INTERNALS__: any;
+    }
+}
+
 export let app: FirebaseApp | null = null;
 export let analytics: Analytics | null = null;
 
 const OriginYandex = 'https://yandex.ru';
+const OriginTauri = 'TAURI';
 
 if (!config) {
 	throw new Error('Config is undefined!');
@@ -121,15 +129,17 @@ function setState(state: State, savedState: SavedState | null, c: Config): State
 	};
 }
 
-function subscribeToExternalEvents(store: Store<State, any>) {
+function subscribeToExternalEvents(store: Store<State, any>, stateManager: IStateManager) {
 	// TODO use ResizeObserver for body element instead of this as app could be hosted inside iframe
 	// and window dimensions will be irrelevant
 	window.onresize = () => {
 		store.dispatch(windowSizeChanged({ width: window.innerWidth, height: window.innerHeight }));
 
-		if (window.innerHeight == screen.height && window.innerWidth == screen.width) {
+		const fullScreenMode = stateManager.detectFullScreen();
+
+		if (fullScreenMode === FullScreenMode.Yes) {
 			store.dispatch(setFullScreen(true));
-		} else {
+		} else if (fullScreenMode === FullScreenMode.No) {
 			store.dispatch(setFullScreen(false));
 		}
 	};
@@ -316,7 +326,7 @@ async function run(stateManager: IStateManager) {
 			}
 		});
 
-		subscribeToExternalEvents(store);
+		subscribeToExternalEvents(store, stateManager);
 
 		store.dispatch(windowSizeChanged({ width: window.innerWidth, height: window.innerHeight }));
 		store.dispatch(setFullScreenSupported(stateManager.isFullScreenSupported()));
@@ -368,9 +378,16 @@ if (origin === OriginYandex) {
 	config.rewriteUrl = false;
 	config.clearUrls = true;
 	config.ads = '';
+} else if (origin === OriginTauri) {
+	console.log('Loading from Tauri');
+	config.askForConsent = false;
+	config.enableNoSleep = false;
+	config.registerServiceWorker = false;
 }
 
-run(origin === OriginYandex ? new YAStateManager() : new StateManager());
+run(origin === OriginYandex
+	? new YAStateManager()
+	: (origin === OriginTauri || window.__TAURI_INTERNALS__ ? new TauriStateManager(origin !== OriginTauri) : new StateManager()));
 
 if ('serviceWorker' in navigator && config && config.registerServiceWorker) {
 	window.addEventListener('load', registerServiceWorker2);

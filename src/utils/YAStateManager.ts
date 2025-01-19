@@ -1,5 +1,5 @@
 import { Store } from 'redux';
-import IStateManager from './IStateManager';
+import IStateManager, { FullScreenMode } from './IStateManager';
 import { changeLogin } from '../state/userSlice';
 
 const SDK_PATH = 'https://sdk.games.s3.yandex.net/sdk.js';
@@ -67,6 +67,10 @@ export default class YAStateManager implements IStateManager {
 
 	isFullScreenSupported(): boolean {
 		return false; // Yandex has its own fullscreen button
+	}
+
+	detectFullScreen(): FullScreenMode {
+		return FullScreenMode.Undefined;
 	}
 
 	async setFullScreen(): Promise<boolean> { return false; }
