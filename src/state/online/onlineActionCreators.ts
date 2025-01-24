@@ -29,7 +29,7 @@ import { userErrorChanged } from '../commonSlice';
 import WellKnownSIContentServiceErrorCode from 'sicontent-client/dist/models/WellKnownSIContentServiceErrorCode';
 import RandomPackageParameters from 'sistorage-client/dist/models/RandomPackageParameters';
 import { AppDispatch } from '../store';
-import { showText, tableReset } from '../tableSlice';
+import { showText, showWelcome, tableReset } from '../tableSlice';
 import { ContextView, nameChanged, setContext } from '../room2Slice';
 import { GameState, setGameSet } from '../gameSlice';
 import { saveStateToStorage } from '../StateHelpers';
@@ -116,7 +116,7 @@ const initGameAsync = async (
 ) => {
 	appDispatch(setGameSet({ id: gameId, isAutomatic }));
 	appDispatch(tableReset());
-	appDispatch(showText(localization.tableHint));
+	appDispatch(showWelcome());
 	appDispatch(setContext(ContextView.None));
 	// TODO: provide single action to reset room state
 	appDispatch(nameChanged(name));

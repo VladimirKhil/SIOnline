@@ -377,7 +377,7 @@ const navigateAsync = async (
 		await registerApp(dataContext.config.appRegistryServiceUri);
 	}
 
-	appDispatch(navigate({ navigation: view, saveState: true }));
+	appDispatch(navigate({ navigation: view, saveState: true, replaceState: true }));
 };
 
 const checkLicenseAsync = async (

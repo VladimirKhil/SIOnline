@@ -80,14 +80,15 @@ export function RoundTable(props: RoundTableProps) {
 						const questionClassName = 'roundTableCell questHeader ' +
 							`${props.isEditEnabled ? 'editable' : ''} ${isActive ? 'active' : ''} ${isBlinking ? 'blink' : ''}`;
 
+						// Parent div is needed for padding with percentages to work correctly
 						return (
-							<AutoSizedText
-								key={questionIndex}
-								className={questionClassName}
-								maxFontSize={144}
-								onClick={() => onSelectQuestion(themeIndex, questionIndex)}>
-								{isActive ? question.toString() : ''}
-							</AutoSizedText>
+							<div key={questionIndex} className={questionClassName}>
+								<AutoSizedText
+									maxFontSize={144}
+									onClick={() => onSelectQuestion(themeIndex, questionIndex)}>
+									{isActive ? question.toString() : ''}
+								</AutoSizedText>
+							</div>
 						);
 					})}
 				</div>);

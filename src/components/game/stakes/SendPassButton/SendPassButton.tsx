@@ -1,12 +1,14 @@
 import { connect } from 'react-redux';
 import * as React from 'react';
-import roomActionCreators from '../../../state/room/roomActionCreators';
-import State from '../../../state/State';
+import roomActionCreators from '../../../../state/room/roomActionCreators';
+import State from '../../../../state/State';
 import { Dispatch, Action } from 'redux';
-import localization from '../../../model/resources/localization';
-import { useAppDispatch } from '../../../state/hooks';
-import { sendPass } from '../../../state/room2Slice';
-import StakeModes from '../../../client/game/StakeModes';
+import localization from '../../../../model/resources/localization';
+import { useAppDispatch } from '../../../../state/hooks';
+import { sendPass } from '../../../../state/room2Slice';
+import StakeModes from '../../../../client/game/StakeModes';
+
+import './SendPassButton.scss';
 
 interface SendPassButtonProps {
 	isConnected: boolean;
@@ -35,7 +37,9 @@ export function SendPassButton(props: SendPassButtonProps) {
 	};
 
 	return props.stakeModes & StakeModes.Pass
-		? (<button type='button' className={props.className} disabled={!props.isConnected} onClick={sendPass2}>{localization.pass}</button>)
+		? (<button type='button' className={`stake-pass ${props.className}`} disabled={!props.isConnected} onClick={sendPass2}>
+			{localization.pass.toUpperCase()}
+		</button>)
 		: null;
 }
 

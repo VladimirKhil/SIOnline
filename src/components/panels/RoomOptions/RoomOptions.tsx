@@ -190,9 +190,9 @@ export function RoomOptions(props: RoomOptionsProps) {
 					📂
 				</FlyoutButton>
 
-				<span className='packageName'>
+				<div className='packageName'>
 					{getPackageName(game.package.type, game.package.name, game.package.data)}
-				</span>
+				</div>
 
 				<PackageFileSelector
 					ref={childRef}

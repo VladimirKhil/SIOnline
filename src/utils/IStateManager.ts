@@ -17,7 +17,7 @@ export default interface IStateManager {
 
 	loadNavigationState(): any;
 
-	saveNavigationState(state: any, url: string | null | undefined): void;
+	saveNavigationState(state: any, url: string | null | undefined, popCurrentState: boolean): void;
 
 	isFullScreenSupported(): boolean;
 

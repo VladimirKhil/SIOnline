@@ -114,6 +114,9 @@ export const tableSlice = createSlice({
 			state.text = action.payload;
 			state.audio = '';
 		},
+		showWelcome: (state: TableState) => {
+			state.mode = TableMode.Welcome;
+		},
 		showRoundTable: (state: TableState) => {
 			state.mode = TableMode.RoundTable;
 			state.activeThemeIndex = -1;
@@ -280,6 +283,7 @@ export const {
 	showQuestionType,
 	showRoundThemes,
 	showText,
+	showWelcome,
 	showRoundTable,
 	blinkQuestion,
 	blinkTheme,

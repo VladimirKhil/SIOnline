@@ -26,8 +26,12 @@ export default class TauriStateManager implements IStateManager {
 		return window.history.state;
 	}
 
-	saveNavigationState(state: any, url: string | null | undefined) {
-		window.history.pushState(state, '', url);
+	saveNavigationState(state: any, url: string | null | undefined, popCurrentState: boolean) {
+		if (popCurrentState) {
+			window.history.replaceState(state, '', url);
+		} else {
+			window.history.pushState(state, '', url);
+		}
 	}
 
 	isFullScreenSupported(): boolean {

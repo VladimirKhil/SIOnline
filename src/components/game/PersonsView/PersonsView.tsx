@@ -10,8 +10,7 @@ import JoinMode from '../../../client/game/JoinMode';
 import Persons from '../../../model/Persons';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 import { getPin } from '../../../state/room2Slice';
-import { AppDispatch } from '../../../state/store';
-import { userInfoChanged } from '../../../state/commonSlice';
+import inviteLink from '../../../utils/inviteLink';
 
 import './PersonsView.css';
 
@@ -36,18 +35,6 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => ({
 		dispatch((roomActionCreators.setJoinMode(joinMode) as object) as AnyAction);
 	}
 });
-
-function inviteLink(appDispatch: AppDispatch) {
-	const link = window.location.href;
-
-	if (navigator.clipboard) {
-		navigator.clipboard.writeText(link);
-	} else {
-		alert(link);
-	}
-
-	appDispatch(userInfoChanged(localization.inviteLinkCopied));
-}
 
 export function PersonsView(props: PersonsViewProps): JSX.Element {
 	const roomState = useAppSelector(state => state.room2);
@@ -102,7 +89,7 @@ export function PersonsView(props: PersonsViewProps): JSX.Element {
 
 			<div className="buttonsPanel inviteLinkHost sidePanel">
 				<button type="button" className='standard' onClick={() => inviteLink(appDispatch)}>{localization.inviteLink}</button>
-				<button type='button' className='standard' onClick={getPinCore}>{localization.getPin}</button>
+				{props.isHost ? <button type='button' className='standard' onClick={getPinCore}>{localization.getPin}</button> : null}
 			</div>
 
 			<div className="buttonsPanel sidePanel joinMode">

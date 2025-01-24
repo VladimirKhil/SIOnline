@@ -54,7 +54,7 @@ export default class YAStateManager implements IStateManager {
 		return window.history.state ?? this.playerData.state;
 	}
 
-	saveNavigationState(state: any, url: string | null | undefined) {
+	saveNavigationState(state: any, url: string | null | undefined, popCurrentState: boolean) {
 		this.playerData = {
 			...this.playerData,
 			state: state

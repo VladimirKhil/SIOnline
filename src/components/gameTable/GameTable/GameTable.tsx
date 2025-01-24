@@ -16,6 +16,7 @@ import { isRunning } from '../../../utils/TimerInfoHelpers';
 import TableContent from '../TableContent/TableContent';
 import ObjectView from '../ObjectView/ObjectView';
 import { useAppSelector } from '../../../state/hooks';
+import TableWelcome from '../TableWelcome/TableWelcome';
 
 import './GameTable.css';
 
@@ -45,6 +46,9 @@ function getContent(mode: TableMode) {
 	switch (mode) {
 		case TableMode.Logo:
 			return <TableLogo />;
+
+		case TableMode.Welcome:
+			return <TableWelcome />;
 
 		case TableMode.Text:
 			return <TableText />;

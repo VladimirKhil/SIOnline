@@ -47,10 +47,18 @@
 	align-items: center;
 	background-color: transparent;
 	margin: 2px;
-	padding: 0.5%;
 	transition: background-color 1s, transform 0.2s;
 	overflow: hidden;
 	border: 2px solid transparent;
+}
+
+#table .roundTable .roundTableCell div {
+	padding: 10%;
+	height: 100%;
+	width: 100%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 
 #table .roundTable .themeHeader {

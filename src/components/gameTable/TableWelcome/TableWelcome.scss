@@ -1,0 +1,25 @@
+.table-welcome {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+
+	.table-welcome__content {
+		flex: 1 0 0;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+	}
+
+	.table-welcome__buttons {
+		flex: 0 0 45px;
+		margin: 40px 0;
+		display: flex;
+		flex-direction: row;
+		justify-content: space-around;
+
+		button {
+			width: 30%;
+		}
+	}
+}

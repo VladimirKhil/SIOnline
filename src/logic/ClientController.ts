@@ -870,9 +870,8 @@ export default class ClientController {
 		const themeInfo = this.getState().table.roundInfo[themeIndex];
 
 		if (themeInfo) {
-			const price = themeInfo.questions[questionIndex];
-
-			if (price) {
+			if (questionIndex > -1 && questionIndex <= themeInfo.questions.length) {
+				const price = themeInfo.questions[questionIndex]; // Can be 0
 				this.dispatch(roomActionCreators.currentPriceChanged(price));
 				this.appDispatch(captionChanged(`${themeInfo.name}, ${price}`));
 				this.appDispatch(blinkQuestion({ themeIndex, questionIndex }));

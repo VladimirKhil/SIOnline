@@ -1,6 +1,7 @@
 ﻿const enum TableMode {
 	Void,
 	Logo,
+	Welcome,
 	Text,
 	GameThemes,
 	RoundThemes,
