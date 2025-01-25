@@ -58,23 +58,6 @@ interface ConnectResult {
 	authenticationRequired: boolean;
 }
 
-const onAvatarSelectedLocal: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
-	(avatar: File, appDispatch: AppDispatch) => async () => {
-		try {
-			const buffer = await avatar.arrayBuffer();
-			const base64 = window.btoa(new Uint8Array(buffer).reduce((data, byte) => data + String.fromCharCode(byte), ''));
-
-			const key = crypto.randomUUID ? crypto.randomUUID() : Math.random().toString();
-
-			localStorage.setItem(Constants.AVATAR_KEY, base64);
-			localStorage.setItem(Constants.AVATAR_NAME_KEY, avatar.name);
-
-			appDispatch(setAvatarKey(key));
-		} catch (error) {
-			appDispatch(userErrorChanged(getErrorMessage(error)) as any);
-		}
-	};
-
 async function uploadAvatarAsync(appDispatch: AppDispatch, dataContext: DataContext) {
 	const base64 = localStorage.getItem(Constants.AVATAR_KEY);
 	const fileName = localStorage.getItem(Constants.AVATAR_NAME_KEY);
@@ -111,6 +94,30 @@ async function uploadAvatarAsync(appDispatch: AppDispatch, dataContext: DataCont
 		appDispatch(avatarLoadError(errorMessage));
 	}
 }
+
+const onAvatarSelectedLocal: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
+	(avatar: File, appDispatch: AppDispatch) => async (_dispatch: Dispatch<AnyAction>, getState: () => State, dataContext: DataContext) => {
+		try {
+			const buffer = await avatar.arrayBuffer();
+			const base64 = window.btoa(new Uint8Array(buffer).reduce((data, byte) => data + String.fromCharCode(byte), ''));
+
+			const key = crypto.randomUUID ? crypto.randomUUID() : Math.random().toString();
+
+			localStorage.setItem(Constants.AVATAR_KEY, base64);
+			localStorage.setItem(Constants.AVATAR_NAME_KEY, avatar.name);
+
+			appDispatch(setAvatarKey(key));
+			await uploadAvatarAsync(appDispatch, dataContext);
+
+			const state = getState();
+
+			if (state.ui.navigation.path === Path.Room && state.user.avatar) {
+				await dataContext.game.sendImageAvatar(state.user.avatar);
+			}
+		} catch (error) {
+			appDispatch(userErrorChanged(getErrorMessage(error)) as any);
+		}
+	};
 
 const sendAvatar: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 	() => async (_dispatch: Dispatch<AnyAction>, getState: () => State, dataContext: DataContext) => {

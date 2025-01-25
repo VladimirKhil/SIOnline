@@ -55,6 +55,8 @@ export default interface IGameClient {
 
 	sendGameReport(reportText: string): Promise<boolean>;
 
+	sendImageAvatar(avatarUri: string): Promise<boolean>;
+
 	sendVideoAvatar(avatarUri: string): Promise<boolean>;
 
 	/** Gives turn to player. */

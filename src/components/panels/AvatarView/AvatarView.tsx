@@ -98,7 +98,7 @@ export function AvatarView(props: AvatarViewProps): JSX.Element {
 					className={`avatarArea ${props.disabled ? 'unselectable' : ''}`}
 					title={localization.selectAvatar}
 					flyout={
-						<ul>
+						<ul className='avatar-menu'>
 							<li onClick={onAreaClick}>{localization.selectAvatar}</li>
 							<li onClick={onAvatarDeleted}>{localization.deleteAvatar}</li>
 						</ul>

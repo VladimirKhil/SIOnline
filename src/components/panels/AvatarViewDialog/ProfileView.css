@@ -1,16 +1,38 @@
-.avatarViewDialog {
+.profile-view {
     background-color: #000451;
     color: white;
     z-index: 4;
     overflow-y: hidden;
+
+    h2 {
+        margin-left: 15px;
+    }
+
+    .emptyAvatar, .avatarView {
+        height: 180px;
+        width: 180px;
+    }
+
+    .avatarArea {
+        height: 200px;
+        width: 200px;
+        margin-top: 10px;
+        margin-left: 15px;
+    }
+
+    .videoUrl {
+        &:disabled {
+            background-color: darkgray;
+        }
+    }
 }
 
-.avatarViewDialog .option {
-	margin: 10px;
+.profile-view .option {
+	margin: 10px 10px 10px 15px;
 	font-size: 20px;
 }
 
-.avatarViewDialog input {
+.profile-view input[type="text"] {
 	display: block;
 	width: 100%;
 	margin: 10px 0;
@@ -18,22 +40,22 @@
 	color: black !important;
 }
 
-.avatarViewDialog .buttons {
+.profile-view .buttons {
 	display: flex;
 	justify-content: end;
 	flex-direction: row;
 }
 
-.avatarViewDialog button.set {
+.profile-view button.set {
 	padding: 5px 30px;
     flex: 1;
 }
 
-.avatarViewDialog button.set:first-child {
+.profile-view button.set:first-child {
 	margin-right: 5px;
 }
 
-.avatarViewDialog button.set:hover:enabled {
+.profile-view button.set:hover:enabled {
 	background-color: #98B9FF;
 }
 
@@ -42,7 +64,7 @@
 }
 
 @media screen and (min-width: 800px) {
-    .avatarViewDialog {
+    .profile-view {
         width: 300px;
         left: initial;
         border-left: 1px solid #FFFFFF;
@@ -50,13 +72,13 @@
 }
 
 @media screen and (min-width: 1100px) {
-    .avatarViewDialog {
+    .profile-view {
         width: 400px;
     }
 }
 
 @media screen and (min-width: 1600px) {
-    .avatarViewDialog {
+    .profile-view {
         width: 550px;
     }
 }

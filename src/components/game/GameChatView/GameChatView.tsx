@@ -35,13 +35,11 @@ interface GameChatViewProps {
 	areSumsEditable: boolean;
 	isHost: boolean;
 	isPaused: boolean;
-	isEditEnabled: boolean;
 	voiceChatUri: string | null;
 
 	onChatModeChanged: (chatMode: ChatMode) => void;
 	onUsersModeChanged: (usersMode: UsersMode) => void;
 	onEditSums: (enable: boolean) => void;
-	onEditTable: () => void;
 	onGiveTurn: () => void;
 }
 
@@ -54,7 +52,6 @@ const mapStateToProps = (state: State) => ({
 	areSumsEditable: state.room.areSumsEditable,
 	isHost: isHost(state),
 	isPaused: state.room.stage.isGamePaused,
-	isEditEnabled: state.room.stage.isEditEnabled,
 	voiceChatUri: state.room.metadata.voiceChatUri,
 });
 
@@ -67,9 +64,6 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	},
 	onEditSums: (enable: boolean) => {
 		dispatch(roomActionCreators.areSumsEditableChanged(enable) as unknown as Action);
-	},
-	onEditTable: () => {
-		dispatch(roomActionCreators.editTable());
 	},
 	onGiveTurn: () => {
 		dispatch(roomActionCreators.giveTurn() as unknown as Action);
@@ -192,16 +186,6 @@ export function GameChatView(props: GameChatViewProps): JSX.Element {
 					<ValidationArea />
 
 					<div className="sideButtonHost">
-						<button
-							type="button"
-							className={`standard imageButton wide commandButton bottomButton ${props.isEditEnabled ? 'active' : ''}`}
-							disabled={!props.isConnected || !props.isPaused}
-							onClick={() => props.onEditTable()}
-							title={localization.editTable}
-						>
-							<img src={editImg} />
-						</button>
-
 						<button
 							type="button"
 							className={`sumsButton standard imageButton wide commandButton bottomButton ${props.areSumsEditable ? 'active' : ''}`}

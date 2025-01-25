@@ -5,14 +5,17 @@ import State from '../../../state/State';
 import localization from '../../../model/resources/localization';
 import Dialog from '../../common/Dialog/Dialog';
 import roomActionCreators from '../../../state/room/roomActionCreators';
+import { useAppDispatch, useAppSelector } from '../../../state/hooks';
+import { showProfile } from '../../../state/uiSlice';
+import AvatarView from '../AvatarView/AvatarView';
+import Path from '../../../model/enums/Path';
 
-import './AvatarViewDialog.css';
+import './ProfileView.css';
 
 interface AvatarViewDialogProps {
 	webCameraUrl: string;
 	clearUrls?: boolean;
 
-	onAvatarClose: () => void;
 	onSetWebCamera: (webCameraUrl: string) => void;
 	onunsetWebCamera: () => void;
 }
@@ -23,26 +26,29 @@ const mapStateToProps = (state: State) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
-	onAvatarClose: () => {
-		dispatch(roomActionCreators.avatarVisibleChanged(false));
-	},
 	onSetWebCamera: (webCameraUrl: string) => {
 		dispatch(roomActionCreators.setWebCamera(webCameraUrl) as any as Action);
-		dispatch(roomActionCreators.avatarVisibleChanged(false));
 	},
 	onunsetWebCamera: () => {
 		dispatch(roomActionCreators.setWebCamera('') as any as Action);
-		dispatch(roomActionCreators.avatarVisibleChanged(false));
 	},
 });
 
 const layout: React.RefObject<HTMLDivElement> = React.createRef();
 
-export function AvatarViewDialog(props: AvatarViewDialogProps): JSX.Element {
+export function ProfileView(props: AvatarViewDialogProps): JSX.Element {
+	const appDispatch = useAppDispatch();
 	const [webCameraUrl, setWebCameraUrl] = React.useState(props.webCameraUrl);
+	const ui = useAppSelector(state => state.ui);
+
+	const inRoom = 	ui.navigation.path === Path.Room;
 
 	const onCameraChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setWebCameraUrl(e.target.value);
+	};
+
+	const close = () => {
+		appDispatch(showProfile(false));
 	};
 
 	const hide = (e: Event): void => {
@@ -50,23 +56,34 @@ export function AvatarViewDialog(props: AvatarViewDialogProps): JSX.Element {
 			return;
 		}
 
-		props.onAvatarClose();
+		const avatarMenu = document.querySelector('.avatar-menu');
+
+		if (avatarMenu && avatarMenu.contains(e.target as Node)) {
+			return;
+		}
+
+		close();
 	};
 
 	React.useEffect(() => {
-		window.addEventListener('mousedown', hide);
+		window.addEventListener('mouseup', hide);
 
 		return () => {
-			window.removeEventListener('mousedown', hide);
+			window.removeEventListener('mouseup', hide);
 		};
 	}, []);
 
 	return (
 		<Dialog
 			ref={layout}
-			className='avatarViewDialog'
-			title={localization.avatar}
-			onClose={props.onAvatarClose}>
+			className='profile-view'
+			title={localization.profile}
+			onClose={close}>
+			<h2>{localization.avatar}</h2>
+			<AvatarView disabled={false} />
+
+			<h2>{localization.videoAvatar}</h2>
+
 			<div className='option'>
 				<label htmlFor='videoUrl'>
 					<span>{localization.webCameraUrl} </span>
@@ -76,11 +93,11 @@ export function AvatarViewDialog(props: AvatarViewDialogProps): JSX.Element {
 						: <a className='videoSiteUrl' href='https://vdo.ninja' target='_blank' rel='noopener noreferrer'>vdo.ninja</a>}
 				</label>
 
-				<input id='videoUrl' type='text' value={webCameraUrl} onChange={onCameraChanged} />
+				<input id='videoUrl' className='videoUrl' type='text' value={webCameraUrl} disabled={!inRoom} onChange={onCameraChanged} />
 
 				<div className='buttons'>
 					<button
-						disabled={webCameraUrl === ''}
+						disabled={!inRoom || webCameraUrl === ''}
 						type='button'
 						className='standard set'
 						onClick={() => props.onSetWebCamera(webCameraUrl)}>
@@ -88,7 +105,7 @@ export function AvatarViewDialog(props: AvatarViewDialogProps): JSX.Element {
 					</button>
 
 					<button
-						disabled={webCameraUrl === ''}
+						disabled={!inRoom || webCameraUrl === ''}
 						type='button'
 						className='standard set'
 						onClick={() => { props.onunsetWebCamera(); setWebCameraUrl(''); }}>
@@ -100,4 +117,4 @@ export function AvatarViewDialog(props: AvatarViewDialogProps): JSX.Element {
 	);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(AvatarViewDialog);
+export default connect(mapStateToProps, mapDispatchToProps)(ProfileView);

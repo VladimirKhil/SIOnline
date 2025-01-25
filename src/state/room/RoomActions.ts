@@ -75,7 +75,6 @@ export const enum RoomActionTypes {
 	ClearRoomChat = 'ROOM_CHAT_CLEAR',
 	JoinModeChanged = 'JOIN_MODE_CHANGED',
 	Kicked = 'KICKED',
-	AvatarVisibleChanged = 'AVATAR_VISIBLE_CHANGED',
 	WebCameraUrlChanged = 'WEB_CAMERA_URL_CHANGED',
 	SettingsChanged = 'SettingsChanged',
 	IsQuestionChanged = 'IsQuestionChanged',
@@ -118,7 +117,6 @@ export type IsAnsweringAction = { type: RoomActionTypes.IsAnswering };
 export type AnswerChangedAction = { type: RoomActionTypes.AnswerChanged, answer: string };
 export type ClearRoomChatAction = { type: RoomActionTypes.ClearRoomChat };
 export type KickedAction = { type: RoomActionTypes.Kicked };
-export type AvatarVisibleChangedAction = { type: RoomActionTypes.AvatarVisibleChanged, isVisible: boolean };
 
 export type SetStakesAction = {
 	type: RoomActionTypes.SetStakes,
@@ -230,7 +228,6 @@ export type KnownRoomAction =
 	| ClearRoomChatAction
 	| JoinModeChangedAction
 	| KickedAction
-	| AvatarVisibleChangedAction
 	| WebCameraUrlChangedAction
 	| SettingsChangedAction
 	| IsQuestionChangedAction;

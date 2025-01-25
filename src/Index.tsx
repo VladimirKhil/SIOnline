@@ -144,7 +144,11 @@ function subscribeToExternalEvents(store: Store<State, any>, stateManager: IStat
 		}
 	};
 
-	window.onpopstate = (e) => { if (e.state) { store.dispatch(navigate({ navigation: e.state, saveState: false })); } };
+	window.onpopstate = (e) => {
+		if (e.state) {
+			store.dispatch(navigate({ navigation: e.state, saveState: false }));
+		}
+	};
 
 	window.onkeydown = (e: KeyboardEvent) => {
 		const state = store.getState();
@@ -220,6 +224,10 @@ async function getServerUri(serverDiscoveryUri: string) {
 }
 
 function getInitialView(historyState: INavigationState): INavigationState {
+	if (historyState && historyState.path) {
+		return historyState;
+	}
+
 	const { search } = window.location;
 
 	if (search.startsWith('?_') && search.length > 3 && config?.siHostsIdUriMap) {
@@ -238,16 +246,12 @@ function getInitialView(historyState: INavigationState): INavigationState {
 	const packageUri = urlParams.get('packageUri');
 	const packageName = urlParams.get('packageName');
 
-	if (historyState && historyState.path) {
-		return historyState;
-	}
-
 	if (gameId && hostUri) {
 		return { path: Path.JoinRoom, gameId: parseInt(gameId, 10), hostUri };
 	}
 
 	if (packageUri) {
-		return { path: Path.NewRoom, newGameMode: 'multi', packageUri: packageUri, packageName: packageName ?? undefined };
+		return { path: Path.NewRoom, newGameMode: null, packageUri: packageUri, packageName: packageName ?? undefined };
 	}
 
 	return { path: Path.Root };

@@ -577,12 +577,6 @@ const roomReducer: Reducer<RoomState> = (state: RoomState = initialState, anyAct
 				kicked: true,
 			};
 
-		case RoomActionTypes.AvatarVisibleChanged:
-			return {
-				...state,
-				avatarViewVivible: action.isVisible,
-			};
-
 		case RoomActionTypes.WebCameraUrlChanged:
 			return {
 				...state,

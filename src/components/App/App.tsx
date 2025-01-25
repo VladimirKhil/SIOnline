@@ -17,12 +17,14 @@ import Loading from '../views/Loading/Loading';
 import ServerLicense from '../views/ServerLicense/ServerLicense';
 import UserError from '../panels/UserError/UserError';
 import { MessageLevel } from '../../state/commonSlice';
+import ProfileView from '../panels/AvatarViewDialog/ProfileView';
 import JoinByPin from '../views/JoinByPin/JoinByPin';
 
 import './App.css';
 
 interface AppProps {
 	areSettingsVisible: boolean;
+	profileVisible: boolean;
 	commonError: string | null;
 	userError: string | null;
 	messageLevel: MessageLevel;
@@ -32,6 +34,7 @@ interface AppProps {
 
 const mapStateToProps = (state: State) => ({
 	areSettingsVisible: state.ui.areSettingsVisible,
+	profileVisible: state.ui.isProfileVisible,
 	commonError: state.common.error,
 	userError: state.common.userError,
 	messageLevel: state.common.messageLevel,
@@ -91,6 +94,7 @@ export class App extends React.Component<AppProps> {
 			<div className="app">
 				{this.getContent()}
 				{this.props.areSettingsVisible ? <SettingsDialog /> : null}
+				{this.props.profileVisible ? <ProfileView /> : null}
 				{this.props.askForConsent ? <CookiesWarning /> : null}
 				{this.props.userError ? <UserError error={this.props.userError} messageLevel={this.props.messageLevel} /> : null}
 				<AudioController />

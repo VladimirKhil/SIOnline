@@ -704,10 +704,6 @@ const onReconnect: ActionCreator<ThunkAction<void, State, DataContext, Action>> 
 	await dataContext.game.info();
 };
 
-const avatarVisibleChanged: ActionCreator<RunActions.AvatarVisibleChangedAction> = (isVisible: boolean) => ({
-	type: RunActions.RoomActionTypes.AvatarVisibleChanged, isVisible
-});
-
 const webCameraUrlChanged: ActionCreator<RunActions.WebCameraUrlChangedAction> = (webCameraUrl: string) => ({
 	type: RunActions.RoomActionTypes.WebCameraUrlChanged, webCameraUrl
 });
@@ -818,7 +814,6 @@ const roomActionCreators = {
 	selectAnswerOption,
 	onKicked,
 	onReconnect,
-	avatarVisibleChanged,
 	setWebCamera,
 	settingsChanged,
 };

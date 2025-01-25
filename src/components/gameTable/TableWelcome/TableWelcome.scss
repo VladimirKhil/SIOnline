@@ -2,6 +2,7 @@
 	display: flex;
 	flex-direction: column;
 	width: 100%;
+	overflow: hidden;
 
 	.table-welcome__content {
 		flex: 1 0 0;
@@ -9,6 +10,7 @@
 		flex-direction: column;
 		justify-content: center;
 		align-items: center;
+		overflow: hidden;
 	}
 
 	.table-welcome__buttons {

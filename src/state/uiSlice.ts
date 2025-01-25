@@ -11,7 +11,7 @@ export interface INavigationState {
 	packageName?: string;
 	hostUri?: string;
 	gameId?: number;
-	newGameMode?: 'single' | 'multi';
+	newGameMode?: 'single' | 'multi' | null;
 	callbackState?: INavigationState;
 	role?: Role;
 	sex?: Sex;
@@ -24,6 +24,7 @@ export interface UIState {
 	windowWidth: number;
 	windowHeight: number;
 	areSettingsVisible: boolean;
+	isProfileVisible: boolean;
 	isSettingGameButtonKey: boolean;
 	isVisible: boolean;
 	navigation: INavigationState;
@@ -37,6 +38,7 @@ const initialState: UIState = {
 	windowWidth: window.innerWidth,
 	windowHeight: window.innerHeight,
 	areSettingsVisible: false,
+	isProfileVisible: false,
 	isSettingGameButtonKey: false,
 	isVisible: true,
 	navigation: {
@@ -54,6 +56,9 @@ export const uiSlice = createSlice({
 		showSettings: (state: UIState, action: PayloadAction<boolean>) => {
 			state.areSettingsVisible = action.payload;
 			state.isSettingGameButtonKey = state.isSettingGameButtonKey && action.payload;
+		},
+		showProfile: (state: UIState, action: PayloadAction<boolean>) => {
+			state.isProfileVisible = action.payload;
 		},
 		closeGameInfo: (state: UIState) => {
 			state.onlineView = OnlineMode.Games;
@@ -88,6 +93,7 @@ export const uiSlice = createSlice({
 
 export const {
 	showSettings,
+	showProfile,
 	closeGameInfo,
 	onlineModeChanged,
 	windowSizeChanged,

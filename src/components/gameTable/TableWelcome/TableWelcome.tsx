@@ -33,17 +33,21 @@ const TableWelcome: React.FC<TableWelcomeProps> = (props: TableWelcomeProps) => 
 			</AutoSizedText>
 		</div>
 
-		<div className='table-welcome__buttons'>
-			<button type="button" className='standard' disabled={!common.isConnected} onClick={() => inviteLink(appDispatch)}>
-				{localization.inviteLink}
-			</button>
+		{!common.clearUrls || props.isHost
+			? <div className='table-welcome__buttons'>
+				{common.clearUrls
+					? null
+					: <button type="button" className='standard' disabled={!common.isConnected} onClick={() => inviteLink(appDispatch)}>
+						{localization.inviteLink}
+					</button>}
 
-			{props.isHost
-				? <button type='button' className='standard' disabled={!common.isConnected} onClick={getPinCore}>
-					{localization.getPin}
-				</button>
-				: null}
-		</div>
+				{props.isHost
+					? <button type='button' className='standard' disabled={!common.isConnected} onClick={getPinCore}>
+						{localization.getPin}
+					</button>
+					: null}
+			</div>
+			: null}
 	</div>;
 };
 

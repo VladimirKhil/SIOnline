@@ -12,7 +12,7 @@ import isWellFormedUri from '../../../utils/isWellFormedUri';
 import { useAppDispatch } from '../../../state/hooks';
 import { AppDispatch } from '../../../state/store';
 import { selectPlayers } from '../../../state/room2Slice';
-import { showSettings } from '../../../state/uiSlice';
+import { showProfile, showSettings } from '../../../state/uiSlice';
 
 import './SideControlPanel.css';
 import nextImg from '../../../../assets/images/next.png';
@@ -27,7 +27,6 @@ interface SideControlPanelProps {
 	isHost: boolean;
 	hasGameStarted: boolean;
 	isPaused: boolean;
-	isEditEnabled: boolean;
 	lastReplic: ChatMessage | null;
 	areStakesVisible: boolean;
 	areSumsEditable: boolean;
@@ -40,7 +39,6 @@ interface SideControlPanelProps {
 	onShowBanned: () => void;
 	onShowGameInfo: () => void;
 	onPause: () => void;
-	onEditTable: () => void;
 	onGiveTurn: () => void;
 	onExit: (appDispatch: AppDispatch) => void;
 	onEditSums: (enable: boolean) => void;
@@ -48,7 +46,6 @@ interface SideControlPanelProps {
 	showGameManageDialog: () => void;
 	onStart: () => void;
 	onPass: () => void;
-	onShowAvatars: () => void;
 }
 
 const mapStateToProps = (state: State) => ({
@@ -59,7 +56,6 @@ const mapStateToProps = (state: State) => ({
 	isHost: isHost(state),
 	hasGameStarted: state.room.stage.isGameStarted,
 	isPaused: state.room.stage.isGamePaused,
-	isEditEnabled: state.room.stage.isEditEnabled,
 	lastReplic: state.room.lastReplic,
 	areStakesVisible: state.room.stakes.areVisible,
 	areSumsEditable: state.room.areSumsEditable,
@@ -86,9 +82,6 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	onPause: () => {
 		dispatch(roomActionCreators.pause() as unknown as Action);
 	},
-	onEditTable: () => {
-		dispatch(roomActionCreators.editTable());
-	},
 	onGiveTurn: () => {
 		dispatch(roomActionCreators.giveTurn() as unknown as Action);
 	},
@@ -110,9 +103,6 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	onPass: () => {
 		dispatch(roomActionCreators.onPass() as unknown as Action);
 	},
-	onShowAvatars: () => {
-		dispatch(roomActionCreators.avatarVisibleChanged(true));
-	},
 });
 
 export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
@@ -129,7 +119,6 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 
 	const enabledClass = props.isConnected ? '' : 'disabled';
 	const enabledManagementClass = props.isConnected && props.roundsNames && props.roundsNames.length >= 2 ? '' : 'disabled';
-	const enabledEditClass = props.isConnected && props.isPaused ? '' : 'disabled';
 
 	const canStart = !props.hasGameStarted && props.isHost;
 
@@ -178,17 +167,16 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 									<li onClick={() => props.onShowBanned()}>{localization.bannedList}</li>
 									<li onClick={() => props.onShowGameInfo()}>{localization.gameInfo}</li>
 
-									{props.role === Role.Showman ? (<>
-										<li className={enabledEditClass} onClick={() => props.onEditTable()}>{localization.editTable}</li>
+									{props.role === Role.Showman ? (
 										<li className={enabledClass} onClick={onGiveTurn}>{localization.giveTurn}</li>
-										</>) : null}
+										) : null}
 
 									{voiceChatUri && isWellFormedUri(voiceChatUri) ? (
 										<li title={voiceChatUri} onClick={() => window.open(voiceChatUri, '_blank')}>{localization.voiceChat}</li>
 									) : null}
 
 									<li onClick={() => appDispatch(showSettings(true))}>{localization.settings}</li>
-									<li onClick={() => props.onShowAvatars()}>{localization.avatar}</li>
+									<li onClick={() => appDispatch(showProfile(true))}>{localization.profile}</li>
 								</ul>
 							)}
 							theme={FlyoutTheme.Dark}

@@ -1,0 +1,40 @@
+.new__selector {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  flex-direction: column;
+
+	.logo, .logoMini {
+		max-width: 600px;
+		width: 90%;
+		background-size: contain;
+		background-repeat: no-repeat;
+		background-position: center;
+		margin-top: 10px;
+		margin-bottom: 50px;
+		flex: 100px 0 0;
+	}
+
+  .logo {
+    background-image: url('../../../../assets/images/logo.png');
+  }
+
+  .logoMini {
+	background-image: url('../../../../assets/images/sigame.png');
+  }
+
+  .new__selector__buttons {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+
+	button {
+	  font-size: 20px;
+	  width: 300px;
+	  margin: 5px;
+	  padding: 10px 40px;
+	}
+  }
+}
