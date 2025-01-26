@@ -4,6 +4,7 @@ import Constants from '../model/enums/Constants';
 import Sex from '../model/enums/Sex';
 import ButtonPressMode from '../model/ButtonPressMode';
 import TimeSettings from '../model/TimeSettings';
+import ThemeSettings from '../model/ThemeSettings';
 
 export interface SettingsState {
 	soundVolume: number;
@@ -20,6 +21,7 @@ export interface SettingsState {
 	bindNextButton: boolean;
 	attachContentToTable: boolean;
 	showVideoAvatars: boolean;
+	theme: ThemeSettings;
 }
 
 const initialState: SettingsState = {
@@ -37,6 +39,12 @@ const initialState: SettingsState = {
 	bindNextButton: true,
 	attachContentToTable: true,
 	showVideoAvatars: true,
+	theme: {
+		table: {
+			textColor: '#FFFFFF',
+			backgroundColor: '#0A0E30',
+		},
+	},
 };
 
 export const settingsSlice = createSlice({
@@ -142,6 +150,12 @@ export const settingsSlice = createSlice({
 		setNextButtonKey: (state: SettingsState, action: PayloadAction<string | null>) => {
 			state.nextButtonKey = action.payload;
 		},
+		setTableTextColor: (state: SettingsState, action: PayloadAction<string>) => {
+			state.theme.table.textColor = action.payload;
+		},
+		setTableBackgroundColor: (state: SettingsState, action: PayloadAction<string>) => {
+			state.theme.table.backgroundColor = action.payload;
+		},
 		resetSettings: (state: SettingsState) => {
 			const { culture } = state.appSettings;
 			Object.assign(state, initialState, { appSettings: { ...initialAppSettings, culture } });
@@ -183,6 +197,8 @@ export const {
 	setDisplayAnswerOptionsOneByOne,
 	setDisplayAnswerOptionsLabels,
 	setNextButtonKey,
+	setTableTextColor,
+	setTableBackgroundColor,
 	resetSettings,
 } = settingsSlice.actions;
 

@@ -1,6 +1,7 @@
 #table {
     flex: 1 0 0;
     margin: 0;
+    color: #FFFFFF;
     background: #0A0E30;
     display: flex;
     flex-direction: column;
@@ -13,7 +14,6 @@
 .tableCaption {
     flex: 0 0 45px;
     font-size: 22px;
-    color: #FFFFFF;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -90,7 +90,6 @@
         height: 100%;
         width: 100%;
         font-size: 36px;
-        color: #FFFFFF;
         text-shadow: 1px 1px 0 #000;
         white-space: pre-line;
         display: flex;

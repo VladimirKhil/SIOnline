@@ -3,6 +3,7 @@ import State from '../../../state/State';
 import { connect } from 'react-redux';
 import TimerInfo from '../../../model/TimerInfo';
 import { isRunning } from '../../../utils/TimerInfoHelpers';
+import { useAppSelector } from '../../../state/hooks';
 
 import './TableBorder.css';
 
@@ -18,6 +19,7 @@ const mapStateToProps = (state: State) => ({
 });
 
 export function TableBorder(props: TableBorderProps) {
+	const theme = useAppSelector(state => state.settings.theme);
 	const isTimerRunning = props.canTry && isRunning(props.pressTimer);
 	const animatingClass = isTimerRunning ? ' animate' : '';
 	const animationDuration = `${(props.pressTimer.maximum - props.pressTimer.value) / 10}s`;
@@ -35,6 +37,11 @@ export function TableBorder(props: TableBorderProps) {
 		animationDuration,
 		height: `${initialSize}%`
 	};
+
+	if (theme.table.textColor) {
+		styleHorizontal.backgroundColor = theme.table.textColor;
+		styleVertical.backgroundColor = theme.table.textColor;
+	}
 
 	return (
 		<div className="tableBorder tableBorderCentered">

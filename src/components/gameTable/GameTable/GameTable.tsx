@@ -98,10 +98,21 @@ function getCaption(props: GameTableProps): string | null {
 
 export function GameTable(props: GameTableProps): JSX.Element {
 	const tableState = useAppSelector((state) => state.table);
+	const theme = useAppSelector((state) => state.settings.theme);
 	const caption = getCaption(props);
 
+	const themeProperties: React.CSSProperties = {};
+
+	if (theme.table.textColor) {
+		themeProperties.color = theme.table.textColor;
+	}
+
+	if (theme.table.backgroundColor) {
+		themeProperties.backgroundColor = theme.table.backgroundColor;
+	}
+
 	return (
-		<div id="table">
+		<div id="table" style={themeProperties}>
 			{caption ? (
 				<div className="tableCaption">
 					<div className='tableCaptionContent'>{caption}</div>
