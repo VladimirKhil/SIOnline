@@ -35,7 +35,7 @@ const initialState: GameState = {
 		id: null,
 		uri: null,
 	},
-	type: GameType.Simple,
+	type: GameType.Classic,
 	role: Role.Player,
 	isShowmanHuman: false,
 	playersCount: 3,

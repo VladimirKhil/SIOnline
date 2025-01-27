@@ -3,14 +3,14 @@ import PackageType from './PackageType';
 /** Contains public game package info. */
 export default interface PackageInfo {
 	/** Package type. */
-	Type: PackageType;
+	type: PackageType;
 
 	/** Package relative or absolute uri. */
-	Uri: string;
+	uri: string;
 
 	/** Content service uri. */
-	ContentServiceUri: string | null;
+	contentServiceUri: string | null;
 
 	/** Secret used for accessing package root content file when a custom Content service is used. */
-	Secret: string | null;
+	secret: string | null;
 }

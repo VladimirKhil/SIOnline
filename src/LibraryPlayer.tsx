@@ -28,7 +28,7 @@ export function run(elementId: string): void {
 	const initialView: INavigationState = { path: Path.JoinRoom, gameId, hostUri };
 
 	const store = runCore();
-	store.dispatch(actionCreators.init(initialView, store.dispatch) as unknown as Action);
+	store.dispatch(actionCreators.initStage0(initialView, store.dispatch) as unknown as Action);
 
 	let { login } = store.getState().user;
 

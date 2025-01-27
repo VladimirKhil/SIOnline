@@ -5,11 +5,11 @@ import PackageInfo from './PackageInfo';
 /** Defines a game run request. */
 export default interface RunGameRequest {
 	/** Game options. */
-	GameSettings: GameSettings;
+	gameSettings: GameSettings;
 
 	/** Game package descriptor. */
-	PackageInfo: PackageInfo;
+	packageInfo: PackageInfo;
 
 	/** Custom computer accounts information. */
-	ComputerAccounts: ComputerAccount[];
+	computerAccounts: ComputerAccount[];
 }

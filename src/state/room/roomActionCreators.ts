@@ -22,6 +22,7 @@ import { isSelectableChanged } from '../tableSlice';
 import { showmanReplicChanged } from '../room2Slice';
 import StakeModes from '../../client/game/StakeModes';
 import UsersMode from '../../model/enums/UsersMode';
+import { navigate } from '../../utils/Navigator';
 
 let timerRef: number | null = null;
 
@@ -161,7 +162,7 @@ const exitGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (
 	appDispatch(stopAudio());
 
 	const state = getState();
-	dispatch(actionCreators.init({ path: state.ui.navigation.returnToLobby ? Path.Lobby : Path.Menu }, appDispatch) as unknown as Action);
+	dispatch(navigate({ navigation: { path: state.ui.navigation.returnToLobby ? Path.Lobby : Path.Menu }, saveState: true }) as unknown as Action);
 };
 
 let lastReplicLock: number;

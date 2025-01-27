@@ -6,10 +6,8 @@ import GameSound from '../../../model/enums/GameSound';
 import { playAudio, stopAudio } from '../../../state/commonSlice';
 import onlineActionCreators from '../../../state/online/onlineActionCreators';
 import Path from '../../../model/enums/Path';
-import actionCreators from '../../../logic/actionCreators';
 import { AppDispatch } from '../../../state/store';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
-import Ads from '../../panels/Ads/Ads';
 import UserOptions from '../../panels/UserOptions/UserOptions';
 import { navigate } from '../../../utils/Navigator';
 
@@ -18,15 +16,11 @@ import exitImg from '../../../../assets/images/exit.png';
 
 interface MainMenuProps {
 	anyonePlay: (appDispatch: AppDispatch) => void;
-	exit: (appDispatch: AppDispatch) => void;
 }
 
 const mapDispatchToProps = (dispatch: any) => ({
 	anyonePlay: (appDispatch: AppDispatch) => {
 		dispatch(onlineActionCreators.createNewAutoGame(appDispatch));
-	},
-	exit: (appDispatch: AppDispatch) => {
-		dispatch(actionCreators.onExit(appDispatch));
 	},
 });
 
@@ -45,7 +39,9 @@ export function MainMenu(props: MainMenuProps): JSX.Element {
 		}
 	}, []);
 
-	const onExit = () => props.exit(appDispatch);
+	const onExit = () => {
+		appDispatch(navigate({ navigation: { path: Path.Login }, saveState: true }));
+	};
 
 	// setTimeout() is to forcibly load window.history before navigating
 	const onJoinByPin = () => setTimeout(() => appDispatch(navigate({ navigation: { path: Path.JoinByPin }, saveState: true })), 0);

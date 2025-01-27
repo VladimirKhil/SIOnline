@@ -361,7 +361,7 @@ async function run(stateManager: IStateManager) {
 		await dataContext.state.initAsync(store);
 
 		const initialView = getInitialView(dataContext.state.loadNavigationState() as INavigationState);
-		store.dispatch(actionCreators.init(initialView, store.dispatch) as unknown as Action);
+		store.dispatch(actionCreators.initStage0(initialView, store.dispatch) as unknown as Action);
 	} catch (e: any) {
 		ReactDOM.render(
 			<ErrorView error={e.message} />,

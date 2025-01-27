@@ -1,46 +1,48 @@
+import ButtonPressMode from '../../model/ButtonPressMode';
+import GameType from '../../model/GameType';
 import ServerTimeSettings from './ServerTimeSettings';
 
 /** Defines game rules. */
 export default interface ServerAppSettings {
-	TimeSettings: ServerTimeSettings;
-	ReadingSpeed: number;
-	FalseStart: boolean;
-	HintShowman: boolean;
+	timeSettings: ServerTimeSettings;
+	readingSpeed: number;
+	falseStart: boolean;
+	hintShowman: boolean;
 
-	PartialText: boolean;
+	partialText: boolean;
 
-	PartialImages: boolean;
+	partialImages: boolean;
 
 	/** Play all questions in final round. */
-	PlayAllQuestionsInFinalRound: boolean;
+	playAllQuestionsInFinalRound: boolean;
 
 	/** Allow all players to play hidden stakes question. */
-	AllowEveryoneToPlayHiddenStakes: boolean;
+	allowEveryoneToPlayHiddenStakes: boolean;
 
-	Oral: boolean;
+	oral: boolean;
 
 	/** Oral players actions game flag. */
-	OralPlayersActions: boolean;
+	oralPlayersActions: boolean;
 
-	Managed: boolean;
-	IgnoreWrong: boolean;
+	managed: boolean;
+	ignoreWrong: boolean;
 
 	/** Display package items sources. */
-	DisplaySources: boolean;
+	displaySources: boolean;
 
-	GameMode: string;
-	RandomQuestionsBasePrice: number;
-	RandomRoundsCount: number;
-	RandomThemesCount: number;
-	Culture: string;
-	UsePingPenalty: boolean;
+	gameMode: GameType;
+	randomQuestionsBasePrice: number;
+	randomRoundsCount: number;
+	randomThemesCount: number;
+	culture: string;
+	usePingPenalty: boolean;
 
 	/** Button press mode. */
-	ButtonPressMode: string;
+	buttonPressMode: ButtonPressMode;
 
-	PreloadRoundContent: boolean;
-	UseApellations: boolean;
+	preloadRoundContent: boolean;
+	useApellations: boolean;
 
-	DisplayAnswerOptionsLabels: boolean;
-	DisplayAnswerOptionsOneByOne: boolean;
+	displayAnswerOptionsLabels: boolean;
+	displayAnswerOptionsOneByOne: boolean;
 }

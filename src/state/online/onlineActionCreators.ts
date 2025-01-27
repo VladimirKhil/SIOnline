@@ -25,7 +25,7 @@ import Path from '../../model/enums/Path';
 import ServerSex from '../../client/contracts/ServerSex';
 import IGameClient from '../../client/game/IGameClient';
 import ServerRole from '../../client/contracts/ServerRole';
-import { userErrorChanged } from '../commonSlice';
+import { commonErrorChanged, userErrorChanged } from '../commonSlice';
 import WellKnownSIContentServiceErrorCode from 'sicontent-client/dist/models/WellKnownSIContentServiceErrorCode';
 import RandomPackageParameters from 'sistorage-client/dist/models/RandomPackageParameters';
 import { AppDispatch } from '../store';
@@ -79,10 +79,10 @@ async function uploadPackageAsync2(
 		);
 
 		return {
-			Type: PackageType2.Content,
-			Uri: packageUri,
-			ContentServiceUri: contentClient.options.serviceUri,
-			Secret: null
+			type: PackageType2.Content,
+			uri: packageUri,
+			contentServiceUri: contentClient.options.serviceUri,
+			secret: null,
 		};
 	} catch (error) {
 		switch ((error as SIContentServiceError)?.errorCode) {
@@ -179,7 +179,6 @@ const joinGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 		}
 
 		await initGameAsync(dispatch, appDispatch, dataContext.game, gameId, userName, role, false);
-		await actionCreators.disconnectAsync(appDispatch, dataContext);
 		saveStateToStorage(getState()); // use state that could be changed by initGameAsync
 
 		const navigation: INavigationState = {
@@ -238,12 +237,12 @@ function createGameSettings(
 	}
 
 	for (let i = 0; i < humanPlayersCount; i++) {
-		players.push({ Name: Constants.ANY_NAME, IsHuman: true });
+		players.push({ name: Constants.ANY_NAME, isHuman: true });
 	}
 
 	for (let i = 0; i < compPlayersCount; i++) {
 		const ind = Math.floor(Math.random() * compIndicies.length);
-		players.push({ Name: computerAccounts[compIndicies[ind]], IsHuman: false });
+		players.push({ name: computerAccounts[compIndicies[ind]], isHuman: false });
 		compIndicies.splice(ind, 1);
 	}
 
@@ -252,61 +251,60 @@ function createGameSettings(
 	const ts = state.settings.appSettings.timeSettings;
 
 	const timeSettings: ServerTimeSettings = {
-		TimeForChoosingQuestion: ts.timeForChoosingQuestion,
-		TimeForThinkingOnQuestion: ts.timeForThinkingOnQuestion,
-		TimeForPrintingAnswer: ts.timeForPrintingAnswer,
-		TimeForGivingACat: ts.timeForGivingACat,
-		TimeForMakingStake: ts.timeForMakingStake,
-		TimeForThinkingOnSpecial: ts.timeForThinkingOnSpecial,
-		TimeOfRound: ts.timeOfRound,
-		TimeForChoosingFinalTheme: ts.timeForChoosingFinalTheme,
-		TimeForFinalThinking: ts.timeForFinalThinking,
-		TimeForShowmanDecisions: ts.timeForShowmanDecisions,
-		TimeForRightAnswer: ts.timeForRightAnswer,
-		TimeForMediaDelay: ts.timeForMediaDelay,
-		TimeForBlockingButton: ts.timeForBlockingButton,
-		PartialImageTime: ts.partialImageTime,
+		timeForChoosingQuestion: ts.timeForChoosingQuestion,
+		timeForThinkingOnQuestion: ts.timeForThinkingOnQuestion,
+		timeForPrintingAnswer: ts.timeForPrintingAnswer,
+		timeForGivingACat: ts.timeForGivingACat,
+		timeForMakingStake: ts.timeForMakingStake,
+		timeForThinkingOnSpecial: ts.timeForThinkingOnSpecial,
+		timeOfRound: ts.timeOfRound,
+		timeForChoosingFinalTheme: ts.timeForChoosingFinalTheme,
+		timeForFinalThinking: ts.timeForFinalThinking,
+		timeForShowmanDecisions: ts.timeForShowmanDecisions,
+		timeForRightAnswer: ts.timeForRightAnswer,
+		timeForMediaDelay: ts.timeForMediaDelay,
+		timeForBlockingButton: ts.timeForBlockingButton,
+		partialImageTime: ts.partialImageTime,
 	};
 
 	const appSettings: ServerAppSettings = {
-		TimeSettings: timeSettings,
-		ReadingSpeed: state.settings.appSettings.readingSpeed,
-		FalseStart: state.settings.appSettings.falseStart,
-		HintShowman: state.settings.appSettings.hintShowman,
-		Oral: state.settings.appSettings.oral,
-		OralPlayersActions: state.settings.appSettings.oralPlayersActions,
-		IgnoreWrong: state.settings.appSettings.ignoreWrong,
-		Managed: state.settings.appSettings.managed,
-		GameMode: gameMode.toString(),
-		PartialText: state.settings.appSettings.partialText,
-		PartialImages: state.settings.appSettings.partialImages,
-		PlayAllQuestionsInFinalRound: state.settings.appSettings.playAllQuestionsInFinalRound,
-		AllowEveryoneToPlayHiddenStakes: state.settings.appSettings.allowEveryoneToPlayHiddenStakes,
-		DisplaySources: state.settings.appSettings.displaySources,
-		RandomQuestionsBasePrice: gameMode === GameType.Simple ? 10 : 100,
-		RandomRoundsCount: gameMode === GameType.Simple ? 1 : 3,
-		RandomThemesCount: gameMode === GameType.Simple ? 5 : 6,
-		Culture: getFullCulture(state),
-		UsePingPenalty: state.settings.appSettings.usePingPenalty,
-		ButtonPressMode: state.settings.appSettings.buttonPressMode.toString(),
-		PreloadRoundContent: state.settings.appSettings.preloadRoundContent,
-		UseApellations: state.settings.appSettings.useApellations,
-		DisplayAnswerOptionsOneByOne: state.settings.appSettings.displayAnswerOptionsOneByOne,
-		DisplayAnswerOptionsLabels: state.settings.appSettings.displayAnswerOptionsLabels,
+		timeSettings: timeSettings,
+		readingSpeed: state.settings.appSettings.readingSpeed,
+		falseStart: state.settings.appSettings.falseStart,
+		hintShowman: state.settings.appSettings.hintShowman,
+		oral: state.settings.appSettings.oral,
+		oralPlayersActions: state.settings.appSettings.oralPlayersActions,
+		ignoreWrong: state.settings.appSettings.ignoreWrong,
+		managed: state.settings.appSettings.managed,
+		gameMode: gameMode,
+		partialText: state.settings.appSettings.partialText,
+		partialImages: state.settings.appSettings.partialImages,
+		playAllQuestionsInFinalRound: state.settings.appSettings.playAllQuestionsInFinalRound,
+		allowEveryoneToPlayHiddenStakes: state.settings.appSettings.allowEveryoneToPlayHiddenStakes,
+		displaySources: state.settings.appSettings.displaySources,
+		randomQuestionsBasePrice: gameMode === GameType.Simple ? 10 : 100,
+		randomRoundsCount: gameMode === GameType.Simple ? 1 : 3,
+		randomThemesCount: gameMode === GameType.Simple ? 5 : 6,
+		culture: getFullCulture(state),
+		usePingPenalty: state.settings.appSettings.usePingPenalty,
+		buttonPressMode: state.settings.appSettings.buttonPressMode,
+		preloadRoundContent: state.settings.appSettings.preloadRoundContent,
+		useApellations: state.settings.appSettings.useApellations,
+		displayAnswerOptionsOneByOne: state.settings.appSettings.displayAnswerOptionsOneByOne,
+		displayAnswerOptionsLabels: state.settings.appSettings.displayAnswerOptionsLabels,
 	};
 
 	const gameSettings: GameSettings = {
-		HumanPlayerName: state.user.login,
-		RandomSpecials: game.package.type === PackageType.Random,
-		NetworkGameName: game.name.trim(),
-		NetworkGamePassword: game.password,
-		NetworkVoiceChat: game.voiceChat,
-		IsPrivate: isSingleGame,
-		AllowViewers: true,
-		Showman: showman,
-		Players: players,
-		Viewers: viewers,
-		AppSettings: appSettings
+		humanPlayerName: state.user.login,
+		networkGameName: game.name.trim(),
+		networkGamePassword: game.password,
+		networkVoiceChat: game.voiceChat,
+		isPrivate: isSingleGame,
+		allowViewers: true,
+		showman: showman,
+		players: players,
+		viewers: viewers,
+		appSettings: appSettings
 	};
 
 	return gameSettings;
@@ -328,10 +326,10 @@ async function getPackageInfoAsync(state: State, game: GameState, dataContext: D
 			}
 
 			return {
-				Type: PackageType2.LibraryItem,
-				Uri: game.package.uri,
-				ContentServiceUri: null,
-				Secret: null
+				type: PackageType2.LibraryItem,
+				uri: game.package.uri,
+				contentServiceUri: null,
+				secret: null,
 			};
 
 		default:
@@ -356,10 +354,10 @@ async function getPackageInfoAsync(state: State, game: GameState, dataContext: D
 			}
 
 			return {
-				Type: PackageType2.LibraryItem,
-				Uri: randomPackage.directContentUri,
-				ContentServiceUri: null,
-				Secret: null
+				type: PackageType2.LibraryItem,
+				uri: randomPackage.directContentUri,
+				contentServiceUri: null,
+				secret: null,
 			};
 	}
 }
@@ -369,12 +367,12 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 		const state = getState();
 
 		if (!isSingleGame && state.game.name.length === 0) {
-			dispatch(gameCreationEnd(localization.gameNameMustBeSpecified));
+			appDispatch(userErrorChanged(localization.gameNameMustBeSpecified));
 			return;
 		}
 
 		if (state.common.computerAccounts === null) {
-			dispatch(gameCreationEnd(localization.computerAccountsMissing));
+			appDispatch(userErrorChanged(localization.computerAccountsMissing));
 			return;
 		}
 
@@ -390,13 +388,13 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 			} : state.game;
 
 		const { playersCount, humanPlayersCount, role } = game;
-		const me: AccountSettings = { Name: state.user.login, IsHuman: true, IsMale: state.settings.sex === Sex.Male };
+		const me: AccountSettings = { name: state.user.login, isHuman: true, isMale: state.settings.sex === Sex.Male };
 
 		const showman: AccountSettings = role === Role.Showman
 			? me
 			: game.isShowmanHuman
-				? { Name: Constants.ANY_NAME, IsHuman: true }
-				: { Name: localization.defaultShowman };
+				? { name: Constants.ANY_NAME, isHuman: true }
+				: { name: localization.defaultShowman };
 
 		const players: AccountSettings[] = [];
 		const viewers: AccountSettings[] = [];
@@ -424,18 +422,18 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 			const packageInfo = await getPackageInfoAsync(state, game, dataContext, dispatch);
 
 			const result = await dataContext.gameClient.runGameAsync({
-				GameSettings: gameSettings,
-				PackageInfo: packageInfo,
-				ComputerAccounts: []
+				gameSettings: gameSettings,
+				packageInfo: packageInfo,
+				computerAccounts: []
 			});
 
 			saveStateToStorage(state);
 
-			if (!result.IsSuccess) {
-				appDispatch(userErrorChanged(GameErrorsHelper.getMessage(result.ErrorType)));
+			if (!result.isSuccess) {
+				appDispatch(userErrorChanged(GameErrorsHelper.getMessage(result.errorType)));
 			} else {
-				dispatch(passwordChanged(gameSettings.NetworkGamePassword));
-				dispatch(joinGame(result.HostUri, result.GameId, state.user.login, role, null, appDispatch));
+				dispatch(passwordChanged(gameSettings.networkGamePassword));
+				dispatch(joinGame(result.hostUri, result.gameId, state.user.login, role, null, appDispatch));
 			}
 		} catch (error) {
 			const userError = getErrorMessage(error);
@@ -453,15 +451,15 @@ const createNewAutoGame: ActionCreator<ThunkAction<void, State, DataContext, Act
 
 		try {
 			const result = await dataContext.gameClient.runAutoGameAsync({
-				Culture: getFullCulture(state)
+				culture: getFullCulture(state),
 			});
 
 			saveStateToStorage(state);
 
-			if (!result.IsSuccess) {
-				appDispatch(userErrorChanged(GameErrorsHelper.getMessage(result.ErrorType)));
+			if (!result.isSuccess) {
+				appDispatch(userErrorChanged(GameErrorsHelper.getMessage(result.errorType)));
 			} else {
-				dispatch(joinGame(result.HostUri, result.GameId, state.user.login, Role.Player, null, appDispatch));
+				dispatch(joinGame(result.hostUri, result.gameId, state.user.login, Role.Player, null, appDispatch));
 			}
 		} catch (error) {
 			appDispatch(userErrorChanged(getErrorMessage(error)));

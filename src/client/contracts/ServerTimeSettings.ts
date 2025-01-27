@@ -1,17 +1,17 @@
 /** Defines game time settings. */
 export default interface ServerTimeSettings {
-	TimeForChoosingQuestion: number;
-	TimeForThinkingOnQuestion: number;
-	TimeForPrintingAnswer: number;
-	TimeForGivingACat: number;
-	TimeForMakingStake: number;
-	TimeForThinkingOnSpecial: number;
-	TimeOfRound: number;
-	TimeForChoosingFinalTheme: number;
-	TimeForFinalThinking: number;
-	TimeForShowmanDecisions: number;
-	TimeForRightAnswer: number;
-	TimeForMediaDelay: number;
-	TimeForBlockingButton: number;
-	PartialImageTime: number;
+	timeForChoosingQuestion: number;
+	timeForThinkingOnQuestion: number;
+	timeForPrintingAnswer: number;
+	timeForGivingACat: number;
+	timeForMakingStake: number;
+	timeForThinkingOnSpecial: number;
+	timeOfRound: number;
+	timeForChoosingFinalTheme: number;
+	timeForFinalThinking: number;
+	timeForShowmanDecisions: number;
+	timeForRightAnswer: number;
+	timeForMediaDelay: number;
+	timeForBlockingButton: number;
+	partialImageTime: number;
 }

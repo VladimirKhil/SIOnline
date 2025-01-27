@@ -3,17 +3,17 @@ import GameCreationResultCode from './GameCreationResultCode';
 /** Defines a run game response. */
 export default interface RunGameResponse {
 	/** Is run successfull. */
-	IsSuccess: boolean;
+	isSuccess: boolean;
 
 	/** Game host uri. */
-	HostUri: string;
+	hostUri: string;
 
 	/** Game identifier. */
-	GameId: number;
+	gameId: number;
 
 	/** Should the person be a game host. */
-	IsHost: boolean;
+	isHost: boolean;
 
 	/** Creation error code. */
-	ErrorType: GameCreationResultCode;
+	errorType: GameCreationResultCode;
 }

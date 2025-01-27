@@ -77,22 +77,42 @@ export default class GameServerClient implements IGameServerClient {
 		return this.connection.invoke<Slice<GameInfo>>('GetGamesSlice', fromId);
 	}
 
-	runGameAsync(runGameRequest: RunGameRequest): Promise<RunGameResponse> {
-		return this.connection.invoke<RunGameResponse>(
-			'RunGame',
-			runGameRequest
-		);
+	async runGameAsync(runGameRequest: RunGameRequest): Promise<RunGameResponse> {
+		const response = await fetch(`${this.serverUri}/api/v1/games`, {
+			method: 'POST',
+			headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(runGameRequest)
+		});
+
+		if (!response.ok) {
+			// TODO: no special handling is needed for now
+		}
+
+		return <RunGameResponse>(await response.json());
 	}
 
-	runAutoGameAsync(runAutoGameRequest: RunAutoGameRequest): Promise<RunGameResponse> {
-		return this.connection.invoke<RunGameResponse>(
-			'RunAutoGame',
-			runAutoGameRequest
-		);
+	async runAutoGameAsync(runAutoGameRequest: RunAutoGameRequest): Promise<RunGameResponse> {
+		const response = await fetch(`${this.serverUri}/api/v1/games/auto`, {
+			method: 'POST',
+			headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(runAutoGameRequest)
+		});
+
+		if (!response.ok) {
+			// TODO: no special handling is needed for now
+		}
+
+		return <RunGameResponse>(await response.json());
 	}
 
 	async getGameByPinAsync(pin: number): Promise<GetGameByPinResponse | null> {
-		const response = await fetch(`${this.serverUri}/api/v1/info/games/${pin}`);
+		const response = await fetch(`${this.serverUri}/api/v1/games?pin=${pin}`);
 
 		if (!response.ok) {
 			if (response.status === 404) {
