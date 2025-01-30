@@ -22,7 +22,6 @@ interface TablesViewProps {
 	computerAccounts: string[] | null;
 
 	selectTable: (tableIndex: number) => void;
-	addTable: () => void;
 	deleteTable: () => void;
 	freeTable: () => void;
 	changeType: () => void;
@@ -40,9 +39,6 @@ const mapStateToProps = (state: State) => ({
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => ({
 	selectTable: (tableIndex: number) => {
 		dispatch(roomActionCreators.tableSelected(tableIndex));
-	},
-	addTable: () => {
-		dispatch(roomActionCreators.addTable() as unknown as AnyAction);
 	},
 	deleteTable: () => {
 		dispatch(roomActionCreators.deleteTable() as unknown as AnyAction);
@@ -80,8 +76,6 @@ function loadPersonReplacementList(selectedPerson: PersonInfo | null, props: Tab
 export function TablesView(props: TablesViewProps): JSX.Element {
 	const roomState = useAppSelector(state => state.room2);
 	const { showman, players } = roomState.persons;
-	// You cannot add unlimited number of tables
-	const canAdd = players.length < Constants.MAX_PLAYER_COUNT;
 
 	const isPlayerSelected = props.selectedIndex > 0 && props.selectedIndex <= players.length;
 
@@ -111,16 +105,6 @@ export function TablesView(props: TablesViewProps): JSX.Element {
 
 				<div className="tablesHeader">
 					<span>{localization.players}</span>
-
-					<button
-						type="button"
-						className="addTableButton"
-						onClick={() => props.addTable()}
-						disabled={!props.isConnected || !canAdd}
-						title={localization.addTable}
-					>
-						<span>+</span>
-					</button>
 				</div>
 
 				<ul>

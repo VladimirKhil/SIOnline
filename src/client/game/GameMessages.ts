@@ -82,6 +82,8 @@ const enum GameMessages {
 
 	Options = 'OPTIONS',
 
+	OralAnswer = 'ORAL_ANSWER',
+
 	Out = 'OUT',
 
 	Package = 'PACKAGE',

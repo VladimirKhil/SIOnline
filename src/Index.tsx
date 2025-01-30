@@ -113,6 +113,7 @@ function setState(state: State, savedState: SavedState | null, c: Config): State
 				timeSettings: appSettings.timeSettings ? {
 					...appSettings.timeSettings,
 					partialImageTime: appSettings.timeSettings.partialImageTime ?? 3,
+					imageTime: appSettings.timeSettings.imageTime ?? 5,
 				} : state.settings.appSettings.timeSettings,
 				readingSpeed: appSettings.readingSpeed || state.settings.appSettings.readingSpeed,
 				preloadRoundContent: appSettings.preloadRoundContent ?? true,

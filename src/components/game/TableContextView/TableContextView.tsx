@@ -14,6 +14,7 @@ import { ContextView } from '../../../state/room2Slice';
 import ReportButton from '../ReportButton/ReportButton';
 import EditTableButton from '../EditTableButton/EditTableButton';
 import TableMode from '../../../model/enums/TableMode';
+import OralAnswer from '../OralAnswer/OralAnswer';
 
 import './TableContextView.css';
 
@@ -21,7 +22,6 @@ interface TableContextViewProps {
 	role: Role;
 	areStakesVisible: boolean;
 	isAfterQuestion: boolean;
-	isAnswering: boolean;
 	hasGameStarted: boolean;
 	isAutomatic: boolean;
 	hint: string | null;
@@ -32,7 +32,6 @@ const mapStateToProps = (state: State) => ({
 	role: state.room.role,
 	areStakesVisible: state.room.stakes.areVisible,
 	isAfterQuestion: state.room.stage.isAfterQuestion,
-	isAnswering: state.room.stage.isAnswering,
 	hasGameStarted: state.room.stage.isGameStarted,
 	isAutomatic: state.game.isAutomatic,
 	hint: state.room.hint,
@@ -42,6 +41,12 @@ const mapStateToProps = (state: State) => ({
 function renderBody(props: TableContextViewProps, contextView: ContextView, windowWidth: number, tableMode: TableMode) : JSX.Element | null {
 	// TODO: Switch to enum to select view to display
 	switch (contextView) {
+		case ContextView.Answer:
+			return <AnswerInput id="answerBoxWide" />;
+
+		case ContextView.OralAnswer:
+			return <OralAnswer />;
+
 		case ContextView.Report:
 			return <ReportButton />;
 
@@ -55,10 +60,6 @@ function renderBody(props: TableContextViewProps, contextView: ContextView, wind
 
 	if (props.areStakesVisible) {
 		return <StakePanel />;
-	}
-
-	if (props.isAnswering) {
-		return <AnswerInput id="answerBoxWide" />;
 	}
 
 	const defaultView = props.role === Role.Showman ? <div className='emptyContext' /> : null;

@@ -13,4 +13,5 @@ export default interface TimeSettings {
 	timeForMediaDelay: number;
 	timeForBlockingButton: number;
 	partialImageTime: number;
+	imageTime: number;
 }

@@ -961,6 +961,11 @@ const playerHandler = (controller: ClientController, args: string[]) => {
 			controller.onCancel();
 			break;
 
+		case GameMessages.OralAnswer:
+			// TODO: disabled until server send cancellations for this state
+			// controller.onOralAnswer();
+			break;
+
 		case GameMessages.Choose:
 			controller.onChoose();
 			break;

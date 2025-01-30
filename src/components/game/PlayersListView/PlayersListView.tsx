@@ -62,7 +62,7 @@ export function PlayersListView(props: PlayersListViewProps): JSX.Element {
 				? { backgroundImage: `url("${avatar}")` }
 				: {};
 
-			return <li onClick={() => onPlayerSelected(index)}>
+			return <li key={index} onClick={() => onPlayerSelected(index)}>
 				<div className={`playerAvatar2 ${avatarClass}`} style={avatarStyle} title={`${player.name} ${player.sum}`} />
 
 				<div className="playerInfo2">

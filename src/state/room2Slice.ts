@@ -7,6 +7,7 @@ import Messages from '../client/game/Messages';
 import localization from '../model/resources/localization';
 import roomActionCreators from './room/roomActionCreators';
 import State from './State';
+import Constants from '../model/enums/Constants';
 
 export enum DialogView {
 	None,
@@ -16,6 +17,8 @@ export enum DialogView {
 
 export enum ContextView {
 	None,
+	Answer,
+	OralAnswer,
 	Report,
 }
 
@@ -192,6 +195,18 @@ export const kick = createAsyncThunk(
 	async (arg: string, thunkAPI) => {
 		const dataContext = thunkAPI.extra as DataContext;
 		await dataContext.game.kick(arg);
+	},
+);
+
+export const addTable = createAsyncThunk(
+	'room2/addTable',
+	async (_arg: void, thunkAPI) => {
+		if ((thunkAPI.getState() as State).room2.persons.players.length >= Constants.MAX_PLAYER_COUNT) {
+			return;
+		}
+
+		const dataContext = thunkAPI.extra as DataContext;
+		await dataContext.game.addTable();
 	},
 );
 
@@ -390,6 +405,22 @@ export const room2Slice = createSlice({
 		},
 	},
 	extraReducers: (builder) => {
+		builder.addCase(sendAnswer.fulfilled, (state) => {
+			state.contextView = ContextView.None;
+		});
+
+		builder.addCase(sendPass.fulfilled, (state) => {
+			state.contextView = ContextView.None;
+		});
+
+		builder.addCase(sendStake.fulfilled, (state) => {
+			state.contextView = ContextView.None;
+		});
+
+		builder.addCase(sendAllIn.fulfilled, (state) => {
+			state.contextView = ContextView.None;
+		});
+
 		builder.addCase(complain.fulfilled, (state) => {
 			state.dialogView = DialogView.None;
 		});

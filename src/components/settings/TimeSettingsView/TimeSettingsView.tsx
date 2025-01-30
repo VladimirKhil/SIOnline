@@ -24,6 +24,18 @@ export default function TimeSettingsView(): JSX.Element {
 				onValueChanged={value => onTimeSettingChanged('timeForChoosingQuestion', value)} />
 
 			<TimeSettingItem
+				label={localization.timeForChoosingFinalTheme}
+				value={settings.timeForChoosingFinalTheme}
+				maximum={120}
+				onValueChanged={value => onTimeSettingChanged('timeForChoosingFinalTheme', value)} />
+
+			<TimeSettingItem
+				label={localization.timeForGivingACat}
+				value={settings.timeForGivingACat}
+				maximum={120}
+				onValueChanged={value => onTimeSettingChanged('timeForGivingACat', value)} />
+
+			<TimeSettingItem
 				label={localization.timeForThinkingOnQuestion}
 				value={settings.timeForThinkingOnQuestion}
 				maximum={120}
@@ -36,40 +48,10 @@ export default function TimeSettingsView(): JSX.Element {
 				onValueChanged={value => onTimeSettingChanged('timeForPrintingAnswer', value)} />
 
 			<TimeSettingItem
-				label={localization.timeForGivingACat}
-				value={settings.timeForGivingACat}
-				maximum={120}
-				onValueChanged={value => onTimeSettingChanged('timeForGivingACat', value)} />
-
-			<TimeSettingItem
-				label={localization.timeForMakingStake}
-				value={settings.timeForMakingStake}
-				maximum={120}
-				onValueChanged={value => onTimeSettingChanged('timeForMakingStake', value)} />
-
-			<TimeSettingItem
 				label={localization.timeForThinkingOnSpecial}
 				value={settings.timeForThinkingOnSpecial}
 				maximum={120}
 				onValueChanged={value => onTimeSettingChanged('timeForThinkingOnSpecial', value)} />
-
-			<TimeSettingItem
-				label={localization.timeForRightAnswer}
-				value={settings.timeForRightAnswer}
-				maximum={10}
-				onValueChanged={value => onTimeSettingChanged('timeForRightAnswer', value)} />
-
-			<TimeSettingItem
-				label={localization.timeOfRound}
-				value={settings.timeOfRound}
-				maximum={10800}
-				onValueChanged={value => onTimeSettingChanged('timeOfRound', value)} />
-
-			<TimeSettingItem
-				label={localization.timeForChoosingFinalTheme}
-				value={settings.timeForChoosingFinalTheme}
-				maximum={120}
-				onValueChanged={value => onTimeSettingChanged('timeForChoosingFinalTheme', value)} />
 
 			<TimeSettingItem
 				label={localization.timeForFinalThinking}
@@ -78,10 +60,22 @@ export default function TimeSettingsView(): JSX.Element {
 				onValueChanged={value => onTimeSettingChanged('timeForFinalThinking', value)} />
 
 			<TimeSettingItem
+				label={localization.timeForMakingStake}
+				value={settings.timeForMakingStake}
+				maximum={120}
+				onValueChanged={value => onTimeSettingChanged('timeForMakingStake', value)} />
+
+			<TimeSettingItem
 				label={localization.timeForShowmanDecisions}
 				value={settings.timeForShowmanDecisions}
 				maximum={300}
 				onValueChanged={value => onTimeSettingChanged('timeForShowmanDecisions', value)} />
+
+			<TimeSettingItem
+				label={localization.timeOfRound}
+				value={settings.timeOfRound}
+				maximum={10800}
+				onValueChanged={value => onTimeSettingChanged('timeOfRound', value)} />
 
 			<TimeSettingItem
 				label={localization.timeForMediaDelay}
@@ -94,6 +88,18 @@ export default function TimeSettingsView(): JSX.Element {
 				value={settings.timeForBlockingButton}
 				maximum={10}
 				onValueChanged={value => onTimeSettingChanged('timeForBlockingButton', value)} />
+
+			<TimeSettingItem
+				label={localization.timeForRightAnswer}
+				value={settings.timeForRightAnswer}
+				maximum={10}
+				onValueChanged={value => onTimeSettingChanged('timeForRightAnswer', value)} />
+
+			<TimeSettingItem
+				label={localization.imageTime}
+				value={settings.imageTime}
+				maximum={10}
+				onValueChanged={value => onTimeSettingChanged('imageTime', value)} />
 
 			<TimeSettingItem
 				label={localization.partialImageTime}

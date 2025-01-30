@@ -307,10 +307,12 @@ export default class ClientController {
 	}
 
 	onAskAnswer() {
+		this.dispatch(roomActionCreators.decisionNeededChanged(true));
+
 		if (this.getState().table.layoutMode === LayoutMode.Simple) {
 			this.dispatch(roomActionCreators.isAnswering());
+			this.appDispatch(setContext(ContextView.Answer));
 		} else {
-			this.dispatch(roomActionCreators.decisionNeededChanged(true));
 			this.appDispatch(isSelectableChanged(true));
 		}
 	}
@@ -361,6 +363,7 @@ export default class ClientController {
 		this.dispatch(roomActionCreators.clearDecisions());
 		this.appDispatch(stopValidation());
 		this.appDispatch(deselectPlayers());
+		this.appDispatch(setContext(ContextView.None));
 	}
 
 	onConnected(account: Account, role: string, index: number) {
@@ -475,6 +478,11 @@ export default class ClientController {
 			default:
 				break;
 		}
+	}
+
+	onOralAnswer() {
+		this.appDispatch(setContext(ContextView.OralAnswer));
+		this.dispatch(roomActionCreators.decisionNeededChanged(true));
 	}
 
 	onPackage(packageName: string, packageLogo: string | null) {

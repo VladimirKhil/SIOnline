@@ -15,11 +15,12 @@ import { isHost } from '../../../utils/StateHelpers';
 import GameMetadataView from '../GameMetadataView/GameMetadataView';
 import BannedView from '../BannedView/BannedView';
 import isWellFormedUri from '../../../utils/isWellFormedUri';
-import { useAppDispatch } from '../../../state/hooks';
-import { selectPlayers } from '../../../state/room2Slice';
+import { useAppDispatch, useAppSelector } from '../../../state/hooks';
+import { addTable, selectPlayers } from '../../../state/room2Slice';
 import UserOptions from '../../panels/UserOptions/UserOptions';
 import TabControl from '../../common/TabControl/TabControl';
 import ValidationArea from '../ValidationArea/ValidationArea';
+import Constants from '../../../model/enums/Constants';
 
 import './GameChatView.css';
 import sumsImg from '../../../../assets/images/sums.png';
@@ -125,11 +126,25 @@ function getSideArea(props: GameChatViewProps): React.ReactNode {
 
 export function GameChatView(props: GameChatViewProps): JSX.Element {
 	const appDispatch = useAppDispatch();
+	const room = useAppSelector(state => state.room2);
+	const canAddTable = room.persons.players.length < Constants.MAX_PLAYER_COUNT;
 
 	const onGiveTurn = () =>{
 		props.onGiveTurn();
 		appDispatch(selectPlayers([]));
 	};
+
+	const hostUI = props.isHost
+		? <button
+			type="button"
+			className='sumsButton standard imageButton wide commandButton bottomButton'
+			onClick={() => appDispatch(addTable())}
+			disabled={!props.isConnected || !canAddTable}
+			title={localization.addTable}
+		>
+			<span>➕🕹️</span>
+		</button>
+		: null;
 
 	return (
 		<div id="gameLogHost" className='gameSideView'>
@@ -186,9 +201,11 @@ export function GameChatView(props: GameChatViewProps): JSX.Element {
 					<ValidationArea />
 
 					<div className="sideButtonHost">
+						{hostUI}
+
 						<button
 							type="button"
-							className={`sumsButton standard imageButton wide commandButton bottomButton ${props.areSumsEditable ? 'active' : ''}`}
+							className='sumsButton standard imageButton wide commandButton bottomButton'
 							disabled={!props.isConnected}
 							onClick={onGiveTurn}
 							title={localization.giveTurn}
@@ -206,7 +223,7 @@ export function GameChatView(props: GameChatViewProps): JSX.Element {
 							<img src={sumsImg} />
 						</button>
 					</div>
-				</>) : null}
+				</>) : hostUI}
 		</div>
 	);
 }

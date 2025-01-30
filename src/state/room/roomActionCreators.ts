@@ -214,17 +214,6 @@ const operationError: ActionCreator<RunActions.OperationErrorAction> = (error: s
 	type: RunActions.RoomActionTypes.OperationError, error
 });
 
-const addTable: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
-	_dispatch: Dispatch<RunActions.KnownRoomAction>,
-	getState: () => State, dataContext: DataContext
-) => {
-	if (getState().room2.persons.players.length >= Constants.MAX_PLAYER_COUNT) {
-		return;
-	}
-
-	await dataContext.game.addTable();
-};
-
 const deleteTable: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
 	_dispatch: Dispatch<RunActions.KnownRoomAction>,
 	getState: () => State,
@@ -748,7 +737,6 @@ const roomActionCreators = {
 	activateChat,
 	infoChanged,
 	tableSelected,
-	addTable,
 	deleteTable,
 	freeTable,
 	setTable,

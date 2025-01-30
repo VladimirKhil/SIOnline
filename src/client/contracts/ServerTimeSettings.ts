@@ -14,4 +14,5 @@ export default interface ServerTimeSettings {
 	timeForMediaDelay: number;
 	timeForBlockingButton: number;
 	partialImageTime: number;
+	imageTime: number;
 }

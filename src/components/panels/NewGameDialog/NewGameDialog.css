@@ -44,7 +44,7 @@ input.blockValue[type="text"], input.blockValue[type="number"], input.blockValue
 }
 
 .blockValue input[type="range"] {
-    accent-color: #181B64;
+    accent-color: darkblue;
 }
 
 .newGameDialog .settings {

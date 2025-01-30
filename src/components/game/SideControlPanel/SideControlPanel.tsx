@@ -9,10 +9,11 @@ import Role from '../../../model/Role';
 import ChatMessage from '../../../model/ChatMessage';
 import { isHost } from '../../../utils/StateHelpers';
 import isWellFormedUri from '../../../utils/isWellFormedUri';
-import { useAppDispatch } from '../../../state/hooks';
+import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 import { AppDispatch } from '../../../state/store';
-import { selectPlayers } from '../../../state/room2Slice';
+import { addTable, selectPlayers } from '../../../state/room2Slice';
 import { showProfile, showSettings } from '../../../state/uiSlice';
+import Constants from '../../../model/enums/Constants';
 
 import './SideControlPanel.css';
 import nextImg from '../../../../assets/images/next.png';
@@ -124,6 +125,8 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 
 	const { voiceChatUri } = props;
 	const appDispatch = useAppDispatch();
+	const room = useAppSelector(state => state.room2);
+	const canAddTable = room.persons.players.length < Constants.MAX_PLAYER_COUNT;
 
 	const onGiveTurn = () =>{
 		props.onGiveTurn();
@@ -161,7 +164,10 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 									<li onClick={() => props.onShowPersons()}>{localization.members}</li>
 
 									{props.isHost
-										? <li onClick={() => props.onShowTables()}>{localization.tables}</li>
+										? <>
+											<li onClick={() => props.onShowTables()}>{localization.tables}</li>
+											{canAddTable ? <li onClick={() => appDispatch(addTable())}>{localization.addTable}</li> : null}
+										</>
 										: null}
 
 									<li onClick={() => props.onShowBanned()}>{localization.bannedList}</li>

@@ -265,6 +265,7 @@ function createGameSettings(
 		timeForMediaDelay: ts.timeForMediaDelay,
 		timeForBlockingButton: ts.timeForBlockingButton,
 		partialImageTime: ts.partialImageTime,
+		imageTime: ts.imageTime,
 	};
 
 	const appSettings: ServerAppSettings = {

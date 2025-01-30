@@ -70,6 +70,7 @@ export const initialState: AppSettings = {
 		timeForMediaDelay: 0,
 		timeForBlockingButton: 3,
 		partialImageTime: 3,
+		imageTime: 5,
 	},
 	usePingPenalty: false,
 	buttonPressMode: ButtonPressMode.RandomWithinInterval,

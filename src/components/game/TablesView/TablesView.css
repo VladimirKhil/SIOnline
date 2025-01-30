@@ -17,15 +17,6 @@
     align-items: center;
 }
 
-.addTableButton {
-    border: 0;
-    margin-left: 5px;
-    font-size: 22px;
-    font-weight: bold;
-    padding: 0;
-    width: 23px;
-}
-
 .replacePersonButton, .freeTableButton {
     font-size: 14px !important;
 }
