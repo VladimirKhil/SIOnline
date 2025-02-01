@@ -19,7 +19,7 @@ import IGameClient from './client/game/IGameClient';
 import { gameSoundPlayer } from './utils/GameSoundPlayer';
 import GameSound from './model/enums/GameSound';
 import { AppDispatch } from './state/store';
-import { setAppSound } from './state/settingsSlice';
+import { setAppSound, setTableBackgroundColor, setTableTextColor } from './state/settingsSlice';
 import { loadState } from './state/SavedState';
 
 declare global {
@@ -200,6 +200,11 @@ function processMessage(controller: ClientController, payload: any, appDispatch:
 			appDispatch(setAppSound(payload.isEnabled));
 			break;
 
+		case 'setOptions': // non-SIHost compatible API
+			appDispatch(setTableTextColor(payload.tableTextColor));
+			appDispatch(setTableBackgroundColor(payload.tableBackgroundColor));
+			break;
+
 		case 'setSoundMap': // non-SIHost compatible API
 			Object.keys(payload.soundMap).forEach((key: string) => gameSoundPlayer.setSound(
 				key as any as GameSound,
@@ -303,7 +308,7 @@ export default function runCore(game?: IGameClient): Store<State, AnyAction> {
 		game: game ?? new GameClient(new SIHostClient(noOpHubConnection, () => { }), false),
 		contentUris: null,
 		contentClient: new SIContentClient({ serviceUri: 'http://fake' }),
-		storageClient: null,
+		storageClients: [],
 		state: new StateManager(),
 	};
 

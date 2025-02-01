@@ -5,20 +5,19 @@ import { connect } from 'react-redux';
 import AutoSizedText from '../../common/AutoSizedText/AutoSizedText';
 import ThemeInfo from '../../../model/ThemeInfo';
 import roomActionCreators from '../../../state/room/roomActionCreators';
-import { useAppDispatch } from '../../../state/hooks';
+import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 import { AppDispatch } from '../../../state/store';
 
 import './RoundTable.scss';
+import { toggleQuestion } from '../../../state/room2Slice';
 
 interface RoundTableProps {
 	roundInfo: ThemeInfo[];
 	isSelectable: boolean;
 	activeThemeIndex: number;
 	actionQuestionIndex: number;
-	isEditEnabled: boolean;
 
 	onSelectQuestion: (themeIndex: number, questionIndex: number, appDispatch: AppDispatch) => void;
-	onToggleQuestion: (themeIndex: number, questionIndex: number) => void;
 }
 
 const mapStateToProps = (state: State) => ({
@@ -26,24 +25,21 @@ const mapStateToProps = (state: State) => ({
 	isSelectable: state.table.isSelectable,
 	activeThemeIndex: state.table.activeThemeIndex,
 	actionQuestionIndex: state.table.actionQuestionIndex,
-	isEditEnabled: state.room.stage.isEditEnabled,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	onSelectQuestion: (themeIndex: number, questionIndex: number, appDispatch: AppDispatch) => {
 		dispatch((roomActionCreators.selectQuestion(themeIndex, questionIndex, appDispatch) as object) as Action);
 	},
-	onToggleQuestion: (themeIndex: number, questionIndex: number) => {
-		dispatch((roomActionCreators.toggleQuestion(themeIndex, questionIndex) as object) as Action);
-	},
 });
 
 export function RoundTable(props: RoundTableProps) {
+	const room = useAppSelector(state => state.room2);
 	const appDispatch = useAppDispatch();
 
 	const onSelectQuestion = (themeIndex: number, questionIndex: number) => {
-		if (props.isEditEnabled) {
-			props.onToggleQuestion(themeIndex, questionIndex);
+		if (room.isEditTableEnabled) {
+			appDispatch(toggleQuestion({ themeIndex, questionIndex }));
 			return;
 		}
 
@@ -78,7 +74,7 @@ export function RoundTable(props: RoundTableProps) {
 							questionIndex === props.actionQuestionIndex;
 
 						const questionClassName = 'roundTableCell questHeader ' +
-							`${props.isEditEnabled ? 'editable' : ''} ${isActive ? 'active' : ''} ${isBlinking ? 'blink' : ''}`;
+							`${room.isEditTableEnabled ? 'editable' : ''} ${isActive ? 'active' : ''} ${isBlinking ? 'blink' : ''}`;
 
 						// Parent div is needed for padding with percentages to work correctly
 						return (

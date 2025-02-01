@@ -1,0 +1,175 @@
+.siStorageDialog {
+	background-color: #000451;
+	overflow-y: hidden;
+	display: flex;
+	flex-flow: column;
+	color: white;
+
+	.search {
+		display: flex;
+		flex-flow: row;
+		justify-content: center;
+		align-items: center;
+		padding: 10px;
+		width: 100%;
+
+		.textFilter {
+			width: 500px;
+			height: 35px;
+			font-size: 20px;
+			color: white;
+			background: #181B64;
+			border: 1px solid #347DFF;
+			border-radius: 5px;
+			padding: 0 7px;
+		}
+	}
+
+	.container {
+		overflow: hidden;
+		display: flex;
+		flex-direction: column;
+		margin-left: 10px;
+	}
+
+	.filters {
+		display: flex;
+		flex-direction: row;
+		flex-wrap: wrap;
+		justify-content: center;
+
+		.filter {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			margin: 0 10px;
+
+			.selector, .selectorsGroup {
+				margin-top: 5px;
+				width: 220px;
+			}
+
+			select {
+				color: white;
+				background: #181B64;
+				border: 1px solid #347DFF;
+			}
+		}
+	}
+
+	.packages {
+		overflow: auto;
+		scrollbar-width: thin;
+		flex: 1;
+	}
+}
+
+.siStorageDialog .selector {
+	width: 300px;
+	height: 25px;
+}
+
+.siStorageDialog .selectorName {
+	font-size: 18px;
+	display: inline-block;
+	margin-top: 5px;
+}
+
+.siStorageDialog .selectorGroup {
+	white-space: nowrap;
+	display: inline-block;
+}
+
+.siStorageDialog .textFilter {
+	width: 300px;
+	height: 25px;
+}
+
+.siStorageDialog .selectorDifRel {
+	height: 25px;
+	width: 80%;
+}
+
+.siStorageDialog .selectorDif {
+	height: 25px;
+	width: calc(20% - 4px);
+	margin-left: 4px;
+}
+
+.siStorageDialog .selectorSortMode {
+	height: 25px;
+	width: 50%;
+}
+
+.siStorageDialog .selectorSortDir {
+	height: 25px;
+	width: calc(50% - 4px);
+	margin-left: 4px;
+}
+
+.siStorageDialog .selectorsGroup {
+	white-space: nowrap;
+	display: inline-block;
+	width: 300px;
+}
+
+.packagesHeader {
+	display: flex;
+	align-items: center;
+}
+
+.siStorageDialog .loading {
+	display: inline-block;
+	margin-left: 10px;
+}
+
+.siStorageDialog .sistorage_error {
+	color: darkred;
+	text-align: center;
+	display: inline-block;
+}
+
+.pagination .header {
+	display: inline-block;
+	vertical-align: middle;
+	font-size: 20px;
+	margin: 0px 5px 2px 5px;
+}
+
+.page {
+	display: inline-block;
+	margin: 2px 5px;
+	font-size: 23px;
+	vertical-align: middle;
+}
+
+.page.active {
+	font-weight: bold;
+}
+
+.page.inactive {
+	cursor: pointer;
+}
+
+.packageItemHeader {
+	font-weight: 500;
+}
+
+.packageItemValue {
+	display: inline-block;
+	margin: 0 2px;
+}
+
+.rounds {
+	font-size: 14px;
+	margin-left: 20px !important;
+	list-style-type: disc !important;
+}
+
+.roundInfo {
+	padding: 0 !important;
+}
+
+.roundName {
+	font-weight: bold;
+}

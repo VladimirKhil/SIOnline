@@ -334,11 +334,13 @@ async function getPackageInfoAsync(state: State, game: GameState, dataContext: D
 			};
 
 		default:
-			if (!dataContext.storageClient) {
+			if (dataContext.storageClients.length === 0) {
 				throw new Error('Storage client not found');
 			}
 
-			const languages = await dataContext.storageClient.facets.getLanguagesAsync();
+			const storageClient = dataContext.storageClients[0];
+
+			const languages = await storageClient.facets.getLanguagesAsync();
 			const currentLanguage = getFullCulture(state);
 			const language = languages.find(l => l.code === currentLanguage);
 
@@ -348,7 +350,7 @@ async function getPackageInfoAsync(state: State, game: GameState, dataContext: D
 				randomPackageParameters.languageId = language.id;
 			}
 
-			const randomPackage = await dataContext.storageClient?.packages.getRandomPackageAsync(randomPackageParameters);
+			const randomPackage = await storageClient.packages.getRandomPackageAsync(randomPackageParameters);
 
 			if (!randomPackage || !randomPackage.directContentUri) {
 				throw new Error('Random package creation error');

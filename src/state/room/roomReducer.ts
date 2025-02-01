@@ -280,7 +280,6 @@ const roomReducer: Reducer<RoomState> = (state: RoomState = initialState, anyAct
 				stage: {
 					...state.stage,
 					isGamePaused: action.isPaused,
-					isEditEnabled: action.isPaused && state.stage.isEditEnabled,
 				}
 			};
 
@@ -547,15 +546,6 @@ const roomReducer: Reducer<RoomState> = (state: RoomState = initialState, anyAct
 					...state.banned,
 					selectedIp: action.ip
 				},
-			};
-
-		case RoomActionTypes.EditTable:
-			return {
-				...state,
-				stage: {
-					...state.stage,
-					isEditEnabled: !state.stage.isEditEnabled,
-				}
 			};
 
 		case RoomActionTypes.JoinModeChanged:

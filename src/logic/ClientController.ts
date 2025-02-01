@@ -363,7 +363,12 @@ export default class ClientController {
 		this.dispatch(roomActionCreators.clearDecisions());
 		this.appDispatch(stopValidation());
 		this.appDispatch(deselectPlayers());
-		this.appDispatch(setContext(ContextView.None));
+
+		// TODO: remove setTimeout after server adjustement
+		setTimeout(
+			() => this.appDispatch(setContext(ContextView.None)),
+			500,
+		);
 	}
 
 	onConnected(account: Account, role: string, index: number) {

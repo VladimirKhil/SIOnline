@@ -71,7 +71,6 @@ export const enum RoomActionTypes {
 	Unbanned = 'UNBANNED',
 	SelectBannedItem = 'SELECT_BANNED_ITEM',
 	PlayerMediaLoaded = 'PLAYER_MEDIA_LOADED',
-	EditTable = 'EDIT_TABLE',
 	ClearRoomChat = 'ROOM_CHAT_CLEAR',
 	JoinModeChanged = 'JOIN_MODE_CHANGED',
 	Kicked = 'KICKED',
@@ -158,7 +157,6 @@ export type BannedListChangedAction = { type: RoomActionTypes.BannedListChanged,
 export type BannedAction = { type: RoomActionTypes.Banned, ip: string, name: string };
 export type UnbannedAction = { type: RoomActionTypes.Unbanned, ip: string };
 export type SelectBannedItemAction = { type: RoomActionTypes.SelectBannedItem, ip: string };
-export type EditTableAction = { type: RoomActionTypes.EditTable };
 export type JoinModeChangedAction = { type: RoomActionTypes.JoinModeChanged, joinMode: JoinMode };
 export type WebCameraUrlChangedAction = { type: RoomActionTypes.WebCameraUrlChanged, webCameraUrl: string };
 export type SettingsChangedAction = { type: RoomActionTypes.SettingsChanged, settings: AppSettings };
@@ -224,7 +222,6 @@ export type KnownRoomAction =
 	| BannedAction
 	| UnbannedAction
 	| SelectBannedItemAction
-	| EditTableAction
 	| ClearRoomChatAction
 	| JoinModeChangedAction
 	| KickedAction

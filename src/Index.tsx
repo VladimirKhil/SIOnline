@@ -301,7 +301,7 @@ async function run(stateManager: IStateManager) {
 			game: new GameClient(new SIHostClient(noOpHubConnection, () => { }), false),
 			contentUris: null,
 			contentClient: new SIContentClient({ serviceUri: 'http://fake' }),
-			storageClient: null,
+			storageClients: [],
 			state: stateManager,
 		};
 

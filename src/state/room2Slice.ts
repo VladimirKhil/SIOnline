@@ -52,6 +52,8 @@ export interface Room2State {
 		showExtraRightButtons: boolean;
 		newVersion: boolean;
 	};
+
+	isEditTableEnabled: boolean;
 }
 
 const initialState: Room2State = {
@@ -85,6 +87,8 @@ const initialState: Room2State = {
 		showExtraRightButtons: false,
 		newVersion: false,
 	},
+
+	isEditTableEnabled: false,
 };
 
 export const complain = createAsyncThunk(
@@ -207,6 +211,14 @@ export const addTable = createAsyncThunk(
 
 		const dataContext = thunkAPI.extra as DataContext;
 		await dataContext.game.addTable();
+	},
+);
+
+export const toggleQuestion = createAsyncThunk(
+	'room2/toggleQuestion',
+	async (arg: { themeIndex: number, questionIndex: number }, thunkAPI) => {
+		const dataContext = thunkAPI.extra as DataContext;
+		await dataContext.game.toggle(arg.themeIndex, arg.questionIndex);
 	},
 );
 
@@ -403,6 +415,9 @@ export const room2Slice = createSlice({
 		nameChanged(state: Room2State, action: PayloadAction<string>) {
 			state.name = action.payload;
 		},
+		toggleEditTable(state: Room2State) {
+			state.isEditTableEnabled = !state.isEditTableEnabled;
+		},
 	},
 	extraReducers: (builder) => {
 		builder.addCase(sendAnswer.fulfilled, (state) => {
@@ -480,6 +495,7 @@ export const {
 	askValidation,
 	stopValidation,
 	nameChanged,
+	toggleEditTable,
 } = room2Slice.actions;
 
 

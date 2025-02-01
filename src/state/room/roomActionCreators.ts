@@ -73,10 +73,6 @@ const pause: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () =
 		await dataContext.game.pause(!getState().room.stage.isGamePaused);
 	};
 
-const editTable: ActionCreator<RunActions.EditTableAction> = () => ({
-	type: RunActions.RoomActionTypes.EditTable
-});
-
 const giveTurn: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (dispatch: Dispatch<RunActions.KnownRoomAction>) => {
 	dispatch(selectionEnabled(Messages.SetChooser));
 };
@@ -342,17 +338,6 @@ const selectQuestion: ActionCreator<ThunkAction<void, State, DataContext, Action
 				dispatch(decisionNeededChanged(false));
 			}
 		}
-	}
-};
-
-const toggleQuestion: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (themeIndex: number, questionIndex: number) => async (
-	_dispatch: Dispatch<Action>,
-	getState: () => State, dataContext: DataContext
-) => {
-	const theme = getState().table.roundInfo[themeIndex];
-
-	if (theme && theme.questions[questionIndex]) {
-		await dataContext.game.toggle(themeIndex, questionIndex);
 	}
 };
 
@@ -718,7 +703,6 @@ const roomActionCreators = {
 	runChatMessageSend,
 	onPass,
 	pause,
-	editTable,
 	giveTurn,
 	runShowPersons,
 	runHidePersons,
@@ -756,7 +740,6 @@ const roomActionCreators = {
 	decisionNeededChanged,
 	clearDecisions,
 	selectQuestion,
-	toggleQuestion,
 	selectTheme,
 	pressGameButton,
 	apellate,

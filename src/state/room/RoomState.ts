@@ -23,7 +23,6 @@ export default interface RoomState {
 		name: string;
 		roundIndex: number;
 		isGamePaused: boolean;
-		isEditEnabled: boolean;
 		isGameStarted: boolean;
 		isDecisionNeeded: boolean;
 		isAfterQuestion: boolean;
@@ -108,7 +107,6 @@ export const initialState: RoomState = {
 		name: '',
 		roundIndex: -1,
 		isGamePaused: false,
-		isEditEnabled: false,
 		isGameStarted: false,
 		isDecisionNeeded: false,
 		isAfterQuestion: false,

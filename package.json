@@ -36,7 +36,7 @@
     "redux-thunk": "^2.4.1",
     "sicontent-client": "1.0.15",
     "sistatistics-client": "1.1.1",
-    "sistorage-client": "1.1.0",
+    "sistorage-client": "1.2.0",
     "appregistry-client": "1.0.0"
   },
   "overrides": {

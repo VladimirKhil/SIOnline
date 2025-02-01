@@ -9,6 +9,7 @@ import { getFullCulture } from '../utils/StateHelpers';
 import State from './State';
 
 export interface SIPackagesState {
+	storageIndex: number;
 	packages: PackagesPage;
 	authors: Record<number, string>;
 	tags: Record<number, string>;
@@ -21,6 +22,7 @@ export interface SIPackagesState {
 }
 
 const initialState: SIPackagesState = {
+	storageIndex: 0,
 	authors: {},
 	isLoading: false,
 
@@ -39,14 +41,16 @@ const initialState: SIPackagesState = {
 export const receiveAuthors = createAsyncThunk(
 	'siPackages/receiveAuthors',
 	async (arg: void, thunkAPI) => {
+		const state = thunkAPI.getState() as RootState;
+		const { languageId, storageIndex } = state.siPackages;
 		const dataContext = thunkAPI.extra as DataContext;
-		const { storageClient } = dataContext;
+		const { storageClients } = dataContext;
+		const storageClient = storageClients[storageIndex];
 
 		if (!storageClient) {
 			return;
 		}
 
-		const { languageId } = (thunkAPI.getState() as RootState).siPackages;
 		const authors = await storageClient.facets.getAuthorsAsync(languageId);
 		return authors;
 	}
@@ -55,14 +59,16 @@ export const receiveAuthors = createAsyncThunk(
 export const receiveTags = createAsyncThunk(
 	'siPackages/receiveTags',
 	async (arg: void, thunkAPI) => {
+		const state = thunkAPI.getState() as RootState;
+		const { languageId, storageIndex } = state.siPackages;
 		const dataContext = thunkAPI.extra as DataContext;
-		const { storageClient } = dataContext;
+		const { storageClients } = dataContext;
+		const storageClient = storageClients[storageIndex];
 
 		if (!storageClient) {
 			return;
 		}
 
-		const { languageId } = (thunkAPI.getState() as RootState).siPackages;
 		const tags = await storageClient.facets.getTagsAsync(languageId);
 		return tags;
 	}
@@ -71,14 +77,16 @@ export const receiveTags = createAsyncThunk(
 export const receivePublishers = createAsyncThunk(
 	'siPackages/receivePublishers',
 	async (arg: void, thunkAPI) => {
+		const state = thunkAPI.getState() as RootState;
+		const { languageId, storageIndex } = state.siPackages;
 		const dataContext = thunkAPI.extra as DataContext;
-		const { storageClient } = dataContext;
+		const { storageClients } = dataContext;
+		const storageClient = storageClients[storageIndex];
 
 		if (!storageClient) {
 			return;
 		}
 
-		const { languageId } = (thunkAPI.getState() as RootState).siPackages;
 		const publishers = await storageClient.facets.getPublishersAsync(languageId);
 		return publishers;
 	}
@@ -87,15 +95,18 @@ export const receivePublishers = createAsyncThunk(
 export const receiveLanguages = createAsyncThunk(
 	'siPackages/receiveLanguages',
 	async (arg: void, thunkAPI) => {
+		const state = thunkAPI.getState() as RootState;
+		const { storageIndex } = state.siPackages;
 		const dataContext = thunkAPI.extra as DataContext;
-		const { storageClient } = dataContext;
+		const { storageClients } = dataContext;
+		const storageClient = storageClients[storageIndex];
 
 		if (!storageClient) {
 			return;
 		}
 
 		const languages = await storageClient.facets.getLanguagesAsync();
-		const currentLanguage = getFullCulture(thunkAPI.getState() as State);
+		const currentLanguage = getFullCulture(state as State);
 
 		return { languages, currentLanguage };
 	}
@@ -104,8 +115,11 @@ export const receiveLanguages = createAsyncThunk(
 export const receiveRestrictions = createAsyncThunk(
 	'siPackages/receiveRestrictions',
 	async (arg: void, thunkAPI) => {
+		const state = thunkAPI.getState() as RootState;
+		const { storageIndex } = state.siPackages;
 		const dataContext = thunkAPI.extra as DataContext;
-		const { storageClient } = dataContext;
+		const { storageClients } = dataContext;
+		const storageClient = storageClients[storageIndex];
 
 		if (!storageClient) {
 			return;
@@ -119,14 +133,16 @@ export const receiveRestrictions = createAsyncThunk(
 export const searchPackages = createAsyncThunk(
 	'siPackages/searchPackages',
 	async (arg: any, thunkAPI) => {
+		const state = thunkAPI.getState() as RootState;
+		const { storageIndex, languageId } = state.siPackages;
 		const dataContext = thunkAPI.extra as DataContext;
-		const { storageClient } = dataContext;
+		const { storageClients } = dataContext;
+		const storageClient = storageClients[storageIndex];
 
 		if (!storageClient) {
 			return;
 		}
 
-		const { languageId } = (thunkAPI.getState() as RootState).siPackages;
 		const { filters, selectionParameters } = arg;
 		const packagesPage = await storageClient.packages.getPackagesAsync({ ...filters, languageId }, selectionParameters);
 		return packagesPage;

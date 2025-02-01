@@ -13,6 +13,7 @@ import PackageSelectionParameters from 'sistorage-client/dist/models/PackageSele
 import { keys, sortRecord } from '../../../utils/RecordExtensions';
 import { getFullCulture } from '../../../utils/StateHelpers';
 import { useAppDispatch } from '../../../state/hooks';
+import SIStoragePackage from '../SIStoragePackage/SIStoragePackage';
 
 import {
 	receiveAuthors,
@@ -22,8 +23,7 @@ import {
 	receiveTags,
 	searchPackages } from '../../../state/siPackagesSlice';
 
-import './SIStorageDialog.css';
-import defaultLogo from '../../../../assets/images/qlogo.png';
+import './SIStorageDialog.scss';
 
 const PAGE_SIZE = 20;
 
@@ -202,21 +202,6 @@ const SIStorageDialog: React.FC<SIStorageDialogProps> = (props) => {
 		runSearchPackages();
 	}, [filters, selectionParameters, pageIndex]);
 
-	const getContentName = (contentKey: string) => {
-		switch (contentKey) {
-			case 'image':
-				return localization.images;
-			case 'audio':
-				return localization.audio;
-			case 'video':
-				return localization.video;
-			case 'html':
-				return localization.html;
-			default:
-				return localization.text;
-		}
-	};
-
 	const filterTagIds = filters.tagIds;
 	const filterRestrictionIds = filters.restrictionIds;
 	const tagId = filterTagIds && filterTagIds.length > 0 ? filterTagIds[0] : -2;
@@ -228,26 +213,43 @@ const SIStorageDialog: React.FC<SIStorageDialogProps> = (props) => {
 	const pages = Array.from({ length: pageCount }, (_, i) => i + 1);
 
 	return (
-		<Dialog id="siStorageDialog" title={localization.libraryTitle} onClose={props.onClose}>
+		<Dialog className="siStorageDialog" title={localization.libraryTitle} onClose={props.onClose}>
 			<div className="container">
+				<div className='search'>
+					<input
+						aria-label='text filter'
+						className="textFilter"
+						type="text"
+						value={filters.searchText}
+						placeholder={localization.search}
+						onChange={e => onTextChanged(e.target.value)} />
+				</div>
+
 				<div className="filters">
-					<div>
-						<span className="selectorName">{localization.packageSubject}</span>
+					<div className="filter">
+						<div className="selectorName">{localization.packageSubject}</div>
+
 						<select aria-label='tag filter' className="selector" value={tagId} onChange={e => onTagIdChanged(e.target.value)}>
 							<option key={undefined} value={undefined}>
 								{localization.librarySearchAll}
 							</option>
+
 							<option key={-1} value={-1}>
 								{localization.librarySearchNotSet}
 							</option>
+
 							{sortRecord(props.tags).map(({ id, value }) => (
 								<option key={id} value={id}>
 									{value}
 								</option>
 							))}
 						</select>
-						<br />
-						<span className="selectorName">{localization.packageDifficulty}</span>
+					</div>
+
+
+					<div className="filter">
+						<div className="selectorName">{localization.packageDifficulty}</div>
+
 						<div className="selectorsGroup">
 							<select
 								aria-label='difficulty relation filter'
@@ -258,6 +260,7 @@ const SIStorageDialog: React.FC<SIStorageDialogProps> = (props) => {
 								<option value={CompareMode.GreaterThan | CompareMode.EqualTo}>{localization.librarySearchMoreOrEqual}</option>
 								<option value={CompareMode.LessThan | CompareMode.EqualTo}>{localization.librarySearchLessOrEqual}</option>
 							</select>
+
 							<select
 								aria-label='difficulty value filter'
 								className="selectorDif"
@@ -273,8 +276,11 @@ const SIStorageDialog: React.FC<SIStorageDialogProps> = (props) => {
 									))}
 							</select>
 						</div>
-						<br />
-						<span className="selectorName">{localization.packagePublisher}</span>
+					</div>
+
+					<div className="filter">
+						<div className="selectorName">{localization.packagePublisher}</div>
+
 						<select
 							aria-label='publisher filter'
 							className="selector"
@@ -284,17 +290,22 @@ const SIStorageDialog: React.FC<SIStorageDialogProps> = (props) => {
 							<option key={undefined} value={undefined}>
 								{localization.librarySearchAll}
 							</option>
+
 							<option key={-1} value={-1}>
 								{localization.librarySearchNotSet}
 							</option>
+
 							{sortRecord(props.publishers).map(({ id, value }) => (
 								<option key={id} value={id}>
 									{value}
 								</option>
 							))}
 						</select>
-						<br />
-						<span className="selectorName">{localization.packageAuthor}</span>
+					</div>
+
+					<div className="filter">
+						<div className="selectorName">{localization.packageAuthor}</div>
+
 						<select
 							aria-label='author filter'
 							className="selector"
@@ -304,41 +315,37 @@ const SIStorageDialog: React.FC<SIStorageDialogProps> = (props) => {
 							<option key={undefined} value={undefined}>
 								{localization.librarySearchAll}
 							</option>
+
 							{sortRecord(props.authors).map(({ id, value }) => (
 								<option key={id} value={id}>
 									{value}
 								</option>
 							))}
 						</select>
-						<br />
 					</div>
-					<div>
-						{props.clearUrls ? null : <>
-							<span className="selectorName">{localization.packageRestriction}</span>
-							<select
-								aria-label='restriction filter'
-								className="selector"
-								value={restrictionId}
-								onChange={e => onRestrictionIdChanged(e.target.value)}>
-								<option key={undefined} value={undefined}>{localization.librarySearchAll}</option>
-								<option key={-1} value={-1}>{localization.librarySearchNotSet}</option>
-								{keys(props.restrictions).map((id) => (
-									<option key={id} value={id}>
-										{props.restrictions[id].value}
-									</option>
-								))}
-							</select>
-							<br />
-						</>}
-						<span className="selectorName">{localization.filter}</span>
-						<input
-							aria-label='text filter'
-							className="textFilter"
-							type="text"
-							value={filters.searchText}
-							onChange={e => onTextChanged(e.target.value)} />
-						<br />
-						<span className="selectorName">{localization.sort}</span>
+
+					{props.clearUrls ? null : <div className="filter">
+						<div className="selectorName">{localization.packageRestriction}</div>
+
+						<select
+							aria-label='restriction filter'
+							className="selector"
+							value={restrictionId}
+							onChange={e => onRestrictionIdChanged(e.target.value)}>
+							<option key={undefined} value={undefined}>{localization.librarySearchAll}</option>
+							<option key={-1} value={-1}>{localization.librarySearchNotSet}</option>
+
+							{keys(props.restrictions).map((id) => (
+								<option key={id} value={id}>
+									{props.restrictions[id].value}
+								</option>
+							))}
+						</select>
+					</div>}
+
+					<div className="filter">
+						<div className="selectorName">{localization.sort}</div>
+
 						<div className="selectorsGroup">
 							<select
 								aria-label='sort mode'
@@ -349,6 +356,7 @@ const SIStorageDialog: React.FC<SIStorageDialogProps> = (props) => {
 								<option value={PackageSortMode.Name}>{localization.name}</option>
 								<option value={PackageSortMode.CreatedDate}>{localization.packagePublishedDate}</option>
 							</select>
+
 							<select
 								aria-label='sort direction'
 								className="selectorSortDir"
@@ -361,11 +369,13 @@ const SIStorageDialog: React.FC<SIStorageDialogProps> = (props) => {
 						</div>
 					</div>
 				</div>
+
 				<div className='packagesHeader'>
 					<h2>{`${localization.packages} (${props.packages.total})`}</h2>
 					{props.error != null ? <div className='sistorage_error'>{props.error}</div> : null}
 					{props.isLoading && <span className='loading'>{localization.loading}</span>}
 				</div>
+
 				<div className='pagination'>
 					<span className='header'>{localization.page}:</span>
 					{pages.map(i => (
@@ -377,85 +387,17 @@ const SIStorageDialog: React.FC<SIStorageDialogProps> = (props) => {
 						</div>
 					))}
 				</div>
-				<ul>
-					{props.packages.packages.map(({
-						authorIds,
-						name,
-						difficulty,
-						id,
-						createDate,
-						publisherId,
-						restrictionIds,
-						tagIds,
-						contentUri,
-						size,
-						rounds,
-						questionCount,
-						contentTypeStatistic,
-						downloadCount,
-						logoUri,
-					}) => (
-						<li key={id}>
-							<img src={logoUri ?? defaultLogo} alt='logo' className='storagePackageLogo' />
-							<span className="storagePackageName">{name}</span>
-							<br />
-							<span className='packageItemHeader'>{`${localization.packageSubject}: `}</span>
-							<span>{tagIds?.map(t => <div key={t} className='packageItemValue'>{props.tags[t]}</div>)}</span>
-							<br />
-							<span className='packageItemHeader'>{`${localization.packageDifficulty}: `}</span>
-							<span>{difficulty}</span>
-							<br />
-							<span className='packageItemHeader'>{`${localization.packagePublisher}: `}</span>
-							<span>{publisherId ? props.publishers[publisherId] : ''}</span>
-							<br />
-							<span className='packageItemHeader'>{`${localization.packageAuthors}: `}</span>
-							<span className="breakable">
-								{authorIds?.map(a => <div key={a} className='packageItemValue'>{props.authors[a]}</div>)}
-							</span>
-							<br />
-							<span className='packageItemHeader'>{`${localization.packageRestriction}: `}</span>
-							<span className="breakable">
-								{restrictionIds?.map(r => <div key={r} className='packageItemValue'>
-									{props.restrictions[r]?.value}
-								</div>)}
-							</span>
-							<br />
-							<span className='packageItemHeader'>{`${localization.packagePublishedDate}: `}</span>
-							<span>{createDate ? new Date(createDate).toLocaleDateString(props.culture) : ''}</span>
-							{size ? (<>
-								<br />
-								<span className='packageItemHeader'>{`${localization.size}: `}</span>
-								<span>{Math.round(size / 1024 / 1024 * 100) / 100} MB</span>
-							</>) : null}
-							<br />
-							<span className='packageItemHeader'>{`${localization.questionCount}: `}</span>
-							<span>{questionCount}</span>
-							{contentTypeStatistic ? (<>
-								<br />
-								<span className='packageItemHeader'>{`${localization.content}: `}</span>
-								<span>{Object.keys(contentTypeStatistic).map(
-									key => `${getContentName(key)} (${contentTypeStatistic[key]})`).join(', ')}
-								</span>
-							</>) : null}
-							<br />
-							<span className='packageItemHeader'>{`${localization.roundsAndThemes}: `}</span>
-							<ul className='rounds'>{rounds?.map((r, i) => <li key={i} className='roundInfo'>
-								<span className='roundName'>{r.name}</span>: {r.themeNames.join(', ')}
-							</li>)}
-							</ul>
-							<span className='packageItemHeader'>{`${localization.downloadCount}: `}</span>
-							<span>{downloadCount}</span>
-							<br />
-							{contentUri ? <div className="selectButton">
-								<button
-									type="button"
-									className='standard'
-									onClick={() => props.onSelect(id, name ?? '', contentUri)}>
-									{localization.librarySelect}
-								</button>
-							</div> : null}
-						</li>
-					))}
+
+				<ul className='packages'>
+					{props.packages.packages.map((p) => <SIStoragePackage
+						key={p.id}
+						package={p}
+						authors={props.authors}
+						restrictions={props.restrictions}
+						culture={props.culture}
+						tags={props.tags}
+						publishers={props.publishers}
+						onSelect={props.onSelect} />)}
 				</ul>
 			</div>
 		</Dialog>

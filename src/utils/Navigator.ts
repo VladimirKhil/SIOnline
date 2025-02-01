@@ -18,7 +18,7 @@ function saveNavigationState(navigation: INavigationState, dataContext: DataCont
 		if (navigation.path === Path.Room && navigation.gameId) {
 			let gameLink = null;
 
-			if (config.siHostsIdUriMap) {
+			if (typeof config !== 'undefined' && config.siHostsIdUriMap) {
 				for (const [key, value] of Object.entries(config.siHostsIdUriMap)) {
 					if (value === navigation.hostUri) {
 						gameLink = '_' + key + navigation.gameId;

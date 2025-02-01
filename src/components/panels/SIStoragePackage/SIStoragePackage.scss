@@ -1,0 +1,80 @@
+.siStorageDialog li {
+	padding: 10px 10px 60px 10px;
+	background-color: #181B64;
+	color: white;
+	margin: 3px;
+	width: 350px;
+	position: relative;
+	border-radius: 5px;
+}
+
+.siStorageDialog ul {
+	list-style-type: none;
+	padding: 0;
+	margin: 0 0 10px 0;
+	display: flex;
+	flex-wrap: wrap;
+	font-size: 20px;
+}
+
+.storagePackage {
+	header {
+		padding-left: 0;
+		display: flex;
+		align-items: center;
+
+		.storagePackageInfo {
+		}
+	}
+
+	main {
+		margin-top: 10px;
+	}
+}
+
+.storagePackageLogo {
+	margin-right: 10px;
+    margin-bottom: 10px;
+    max-width: 100%;
+    max-height: 500px;
+}
+
+.siStorageDialog .storagePackageName {
+	font-weight: bold;
+	font-size: 25px;
+	vertical-align: top;
+	margin-top: 5px;
+}
+
+.siStorageDialog .breakable {
+	word-wrap: break-word;
+}
+
+.siStorageDialog .selectButton {
+	bottom: 10px;
+	right: 10px;
+	position: absolute;
+	font-size: 20px;
+
+	button {
+		padding: 5px 20px;
+	}
+}
+
+.package-info {
+	color: white;
+	padding: 10px;
+}
+
+.info-button {
+	margin-right: 5px;
+}
+
+.package-info, .flyoutButton_flyout .package-info li {
+	font-size: 18px;
+}
+
+.flyoutButton_flyout .package-info li:hover {
+	background-color: initial;
+	cursor: initial;
+}

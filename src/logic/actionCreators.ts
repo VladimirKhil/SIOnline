@@ -146,13 +146,9 @@ async function loadHostInfoAsync(appDispatch: AppDispatch, dataContext: DataCont
 		throw new Error('No SIContent service found');
 	}
 
-	if (hostInfo.storageInfos && hostInfo.storageInfos.length > 0) {
-		const { serviceUri } = hostInfo.storageInfos[0];
-
-		dataContext.storageClient = new SIStorageClient({
-			serviceUri: serviceUri
-		});
-	}
+	dataContext.storageClients = hostInfo.storageInfos.map(storageInfo => new SIStorageClient({
+		serviceUri: storageInfo.serviceUri,
+	}));
 
 	appDispatch(serverInfoChanged({
 		serverName: hostInfo.name,
@@ -344,6 +340,15 @@ const initStage1CheckLicenseAsync = async (
 	await initStage2CompleteInitializaionAsync(view, dispatch, appDispatch, getState, dataContext);
 };
 
+const initStageSkipLoginLicenseAsync: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
+	(view: INavigationState, appDispatch: AppDispatch) => async (
+		dispatch: Dispatch<Action>,
+		getState: () => State,
+		dataContext: DataContext
+	) => {
+		await initStage2CompleteInitializaionAsync(view, dispatch, appDispatch, getState, dataContext);
+	};
+
 const initStage0: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 	(initialView: INavigationState, appDispatch: AppDispatch) => async (
 		dispatch: Dispatch<Action>,
@@ -398,6 +403,7 @@ const acceptLicense: ActionCreator<ThunkAction<void, State, DataContext, Action>
 
 const actionCreators = {
 	initStage0,
+	initStageSkipLoginLicenseAsync,
 	reloadComputerAccounts,
 	onAvatarSelectedLocal,
 	sendAvatar,
