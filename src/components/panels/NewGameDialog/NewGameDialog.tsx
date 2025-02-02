@@ -15,6 +15,7 @@ import RulesSettingsView from '../../settings/RulesSettingsView/RulesSettingsVie
 import TimeSettingsView from '../../settings/TimeSettingsView/TimeSettingsView';
 import RoomOptions from '../RoomOptions/RoomOptions';
 import { setPackageLibrary, setPackageType } from '../../../state/gameSlice';
+import { setStorageIndex } from '../../../state/siPackagesSlice';
 
 import './NewGameDialog.css';
 
@@ -58,6 +59,11 @@ export function NewGameDialog(props: NewGameDialogProps) {
 		}
 	});
 
+	const openStorage = (isOpen: boolean, storageIndex: number) => {
+		appDispatch(setStorageIndex(storageIndex));
+		setIsSIStorageOpen(isOpen);
+	};
+
 	const onSelectSIPackage = async (id: string, name: string, uri: string) => {
 		setIsSIStorageOpen(false);
 
@@ -71,7 +77,7 @@ export function NewGameDialog(props: NewGameDialogProps) {
 				return <RoomOptions
 					isSingleGame={props.isSingleGame}
 					isSIStorageOpen={isSIStorageOpen}
-					setIsSIStorageOpen={setIsSIStorageOpen}
+					setIsSIStorageOpen={openStorage}
 				/>;
 
 			case 1:

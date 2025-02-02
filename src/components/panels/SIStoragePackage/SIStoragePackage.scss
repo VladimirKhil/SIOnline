@@ -22,9 +22,6 @@
 		padding-left: 0;
 		display: flex;
 		align-items: center;
-
-		.storagePackageInfo {
-		}
 	}
 
 	main {
@@ -35,8 +32,12 @@
 .storagePackageLogo {
 	margin-right: 10px;
     margin-bottom: 10px;
-    max-width: 100%;
-    max-height: 500px;
+    max-width: 150px;
+    max-height: 150px;
+}
+
+.storagePackageInfo {
+	overflow: hidden;
 }
 
 .siStorageDialog .storagePackageName {
@@ -44,6 +45,9 @@
 	font-size: 25px;
 	vertical-align: top;
 	margin-top: 5px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 }
 
 .siStorageDialog .breakable {

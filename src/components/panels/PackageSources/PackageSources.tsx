@@ -8,13 +8,14 @@ import isWindowsOS from '../../../utils/isWindowsOS';
 import './PackageSources.scss';
 
 interface PackageSourcesProps {
-	setIsSIStorageOpen: (isOpen: boolean) => void;
+	setIsSIStorageOpen: (isOpen: boolean, storageIndex: number) => void;
 	onFilePackageSelected: () => void;
 }
 
 export default function PackageSources(props: PackageSourcesProps): JSX.Element {
 	const appDispatch = useAppDispatch();
 	const common = useAppSelector(state => state.common);
+	const siPackages = useAppSelector(state => state.siPackages);
 
 	const onRandomThemesSelected = () => {
 		appDispatch(setPackageType(PackageType.Random));
@@ -23,7 +24,8 @@ export default function PackageSources(props: PackageSourcesProps): JSX.Element 
 	return <ul className='packageSources'>
 		<li onClick={onRandomThemesSelected}>{localization.randomThemes}</li>
 		<li onClick={props.onFilePackageSelected}>{`${localization.file}…`}</li>
-		<li onClick={() => props.setIsSIStorageOpen(true)}>{`${localization.libraryTitle}…`}</li>
+
+		{siPackages.storages.map((storage, index) => <li key={index} onClick={() => props.setIsSIStorageOpen(true, index)}>{`${storage.name}…`}</li>)}
 
 		{!common.clearUrls && localization.userPackages.length > 0
 		? <>

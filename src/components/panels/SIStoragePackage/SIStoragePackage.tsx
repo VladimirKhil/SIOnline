@@ -1,10 +1,11 @@
 import React from 'react';
 import Package from 'sistorage-client/dist/models/Package';
 import localization from '../../../model/resources/localization';
+import FlyoutButton from '../../common/FlyoutButton/FlyoutButton';
 
 import './SIStoragePackage.scss';
 import defaultLogo from '../../../../assets/images/qlogo.png';
-import FlyoutButton from '../../common/FlyoutButton/FlyoutButton';
+import { StorageInfo } from '../../../state/siPackagesSlice';
 
 interface SIStoragePackageProps {
 	package: Package;
@@ -13,6 +14,7 @@ interface SIStoragePackageProps {
 	restrictions: { [id: string]: { value: string } };
 	tags: { [id: string]: string };
 	culture: string;
+	storage: StorageInfo;
 	onSelect: (id: string, name: string, uri: string) => void;
 }
 
@@ -55,13 +57,14 @@ const SIStoragePackage: React.FC<SIStoragePackageProps> = (props: SIStoragePacka
 	} = props.package;
 
 	const publisher = publisherId ? props.publishers[publisherId] : '';
+	const logo = logoUri ? (logoUri.startsWith('http') ? logoUri : props.storage.uri + logoUri) : defaultLogo;
 
 	return <li className='storagePackage'>
 		<header>
-			<img src={logoUri ?? defaultLogo} alt='logo' className='storagePackageLogo' />
+			<img src={logo} alt='logo' className='storagePackageLogo' />
 
 			<div className='storagePackageInfo'>
-				<div className="storagePackageName">{name}</div>
+				<div className="storagePackageName" title={name}>{name}</div>
 
 				<div className="breakable">
 					{authorIds?.map(a => <div key={a} className='packageItemValue'>{props.authors[a]}</div>)}

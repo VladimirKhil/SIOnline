@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import PackagesPage from 'sistorage-client/dist/models/PackagesPage';
 import Restriction from 'sistorage-client/dist/models/Restriction';
 import DataContext from '../model/DataContext';
@@ -8,7 +8,17 @@ import { arrayToRecord, arrayToValue } from '../utils/ArrayExtensions';
 import { getFullCulture } from '../utils/StateHelpers';
 import State from './State';
 
+export interface StorageInfo {
+	name: string;
+	randomPackagesSupported: boolean;
+	useIdentifiers: boolean;
+	facets: string[];
+	pageSize: number;
+	uri?: string;
+}
+
 export interface SIPackagesState {
+	storages: StorageInfo[];
 	storageIndex: number;
 	packages: PackagesPage;
 	authors: Record<number, string>;
@@ -22,6 +32,7 @@ export interface SIPackagesState {
 }
 
 const initialState: SIPackagesState = {
+	storages: [],
 	storageIndex: 0,
 	authors: {},
 	isLoading: false,
@@ -46,8 +57,9 @@ export const receiveAuthors = createAsyncThunk(
 		const dataContext = thunkAPI.extra as DataContext;
 		const { storageClients } = dataContext;
 		const storageClient = storageClients[storageIndex];
+		const storage = state.siPackages.storages[storageIndex];
 
-		if (!storageClient) {
+		if (!storageClient || !storage || (storage.facets.length > 0 && storage.facets.indexOf('authors') === -1)) {
 			return;
 		}
 
@@ -64,12 +76,18 @@ export const receiveTags = createAsyncThunk(
 		const dataContext = thunkAPI.extra as DataContext;
 		const { storageClients } = dataContext;
 		const storageClient = storageClients[storageIndex];
+		const storage = state.siPackages.storages[storageIndex];
 
-		if (!storageClient) {
+		if (!storageClient || !storage || (storage.facets.length > 0 && storage.facets.indexOf('tags') === -1)) {
 			return;
 		}
 
-		const tags = await storageClient.facets.getTagsAsync(languageId);
+		let tags = await storageClient.facets.getTagsAsync(languageId);
+
+		if (!storage.useIdentifiers) {
+			tags = tags.map((tag, index) => ({ ...tag, id: index }));
+		}
+
 		return tags;
 	}
 );
@@ -82,8 +100,9 @@ export const receivePublishers = createAsyncThunk(
 		const dataContext = thunkAPI.extra as DataContext;
 		const { storageClients } = dataContext;
 		const storageClient = storageClients[storageIndex];
+		const storage = state.siPackages.storages[storageIndex];
 
-		if (!storageClient) {
+		if (!storageClient || !storage || (storage.facets.length > 0 && storage.facets.indexOf('publishers') === -1)) {
 			return;
 		}
 
@@ -100,13 +119,21 @@ export const receiveLanguages = createAsyncThunk(
 		const dataContext = thunkAPI.extra as DataContext;
 		const { storageClients } = dataContext;
 		const storageClient = storageClients[storageIndex];
+		const storage = state.siPackages.storages[storageIndex];
+		const currentLanguage = getFullCulture(state as State);
 
-		if (!storageClient) {
-			return;
+		if (!storageClient || !storage || (storage.facets.length > 0 && storage.facets.indexOf('languages') === -1)) {
+			return {
+				languages: [{
+					id: 0,
+					code: currentLanguage,
+					name: currentLanguage,
+				}],
+				currentLanguage,
+			};
 		}
 
 		const languages = await storageClient.facets.getLanguagesAsync();
-		const currentLanguage = getFullCulture(state as State);
 
 		return { languages, currentLanguage };
 	}
@@ -120,8 +147,9 @@ export const receiveRestrictions = createAsyncThunk(
 		const dataContext = thunkAPI.extra as DataContext;
 		const { storageClients } = dataContext;
 		const storageClient = storageClients[storageIndex];
+		const storage = state.siPackages.storages[storageIndex];
 
-		if (!storageClient) {
+		if (!storageClient || !storage || (storage.facets.length > 0 && storage.facets.indexOf('restrictions') === -1)) {
 			return;
 		}
 
@@ -149,10 +177,37 @@ export const searchPackages = createAsyncThunk(
 	}
 );
 
+export const searchPackagesByValueFilters = createAsyncThunk(
+	'siPackages/searchPackagesByValueFilters',
+	async (arg: any, thunkAPI) => {
+		const state = thunkAPI.getState() as RootState;
+		const { storageIndex, languageId } = state.siPackages;
+		const language = languageId ? state.siPackages.languages[languageId] : null;
+		const dataContext = thunkAPI.extra as DataContext;
+		const { storageClients } = dataContext;
+		const storageClient = storageClients[storageIndex];
+
+		if (!storageClient) {
+			return;
+		}
+
+		const { valueFilters, selectionParameters } = arg;
+		const packagesPage = await storageClient.packages.getPackagesByValueFiltersAsync({ ...valueFilters, language }, selectionParameters);
+		return packagesPage;
+	}
+);
+
 export const siPackagesSlice = createSlice({
 	name: 'siPackages',
 	initialState,
-	reducers: { },
+	reducers: {
+		setStorages: (state, action) => {
+			state.storages = action.payload;
+		},
+		setStorageIndex: (state, action) => {
+			state.storageIndex = action.payload;
+		},
+	},
 	extraReducers: (builder) => {
 		builder.addCase(receiveAuthors.fulfilled, (state, action) => {
 			if (action.payload) {
@@ -161,7 +216,7 @@ export const siPackagesSlice = createSlice({
 		});
 
 		builder.addCase(receiveAuthors.rejected, (state, action) => {
-			state.error = getErrorMessage(action.error);
+			state.error = getErrorMessage(action.error.message);
 		});
 
 		builder.addCase(receiveTags.fulfilled, (state, action) => {
@@ -171,7 +226,7 @@ export const siPackagesSlice = createSlice({
 		});
 
 		builder.addCase(receiveTags.rejected, (state, action) => {
-			state.error = getErrorMessage(action.error);
+			state.error = getErrorMessage(action.error.message);
 		});
 
 		builder.addCase(receivePublishers.fulfilled, (state, action) => {
@@ -181,7 +236,7 @@ export const siPackagesSlice = createSlice({
 		});
 
 		builder.addCase(receivePublishers.rejected, (state, action) => {
-			state.error = getErrorMessage(action.error);
+			state.error = getErrorMessage(action.error.message);
 		});
 
 		builder.addCase(receiveLanguages.fulfilled, (state, action) => {
@@ -197,7 +252,7 @@ export const siPackagesSlice = createSlice({
 		});
 
 		builder.addCase(receiveLanguages.rejected, (state, action) => {
-			state.error = getErrorMessage(action.error);
+			state.error = getErrorMessage(action.error.message);
 		});
 
 		builder.addCase(receiveRestrictions.fulfilled, (state, action) => {
@@ -207,10 +262,15 @@ export const siPackagesSlice = createSlice({
 		});
 
 		builder.addCase(receiveRestrictions.rejected, (state, action) => {
-			state.error = getErrorMessage(action.error);
+			state.error = getErrorMessage(action.error.message);
 		});
 
 		builder.addCase(searchPackages.pending, (state) => {
+			state.isLoading = true;
+			state.error = null;
+		});
+
+		builder.addCase(searchPackagesByValueFilters.pending, (state) => {
 			state.isLoading = true;
 			state.error = null;
 		});
@@ -223,11 +283,29 @@ export const siPackagesSlice = createSlice({
 			state.isLoading = false;
 		});
 
+		builder.addCase(searchPackagesByValueFilters.fulfilled, (state, action) => {
+			if (action.payload) {
+				state.packages = action.payload;
+			}
+
+			state.isLoading = false;
+		});
+
 		builder.addCase(searchPackages.rejected, (state, action) => {
 			state.isLoading = false;
-			state.error = getErrorMessage(action.error);
+			state.error = getErrorMessage(action.error.message);
+		});
+
+		builder.addCase(searchPackagesByValueFilters.rejected, (state, action) => {
+			state.isLoading = false;
+			state.error = getErrorMessage(action.error.message);
 		});
 	},
 });
+
+export const {
+	setStorages,
+	setStorageIndex,
+} = siPackagesSlice.actions;
 
 export default siPackagesSlice.reducer;

@@ -5,6 +5,15 @@
 	flex-flow: column;
 	color: white;
 
+	.storage__open {
+		width: 200px;
+		margin: 10px 0 0 15px;
+	}
+
+	.disclaimer {
+		margin: 10px 0 0 15px;
+	}
+
 	.search {
 		display: flex;
 		flex-flow: row;
@@ -12,6 +21,7 @@
 		align-items: center;
 		padding: 10px;
 		width: 100%;
+		margin-top: 5px;
 
 		.textFilter {
 			width: 500px;

@@ -9,7 +9,10 @@
             "request": "launch",
             "name": "Chrome launch",
             "url":"http://localhost:8080/",
-            "webRoot": "${workspaceFolder}"
+            "webRoot": "${workspaceFolder}",
+            "runtimeArgs": [
+                "--disable-web-security"
+            ]
         },
         {
             "type": "firefox",

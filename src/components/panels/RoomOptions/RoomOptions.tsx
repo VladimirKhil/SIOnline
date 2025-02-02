@@ -40,7 +40,7 @@ interface RoomOptionsProps {
 	isSIStorageOpen: boolean;
 
 	onCreate: (isSingleGame: boolean, appDispatch: AppDispatch) => void;
-	setIsSIStorageOpen: (isOpen: boolean) => void;
+	setIsSIStorageOpen: (isOpen: boolean, storageIndex: number) => void;
 }
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({

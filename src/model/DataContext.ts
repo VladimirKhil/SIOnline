@@ -1,10 +1,9 @@
-﻿import * as signalR from '@microsoft/signalr';
-import IGameClient from '../client/game/IGameClient';
+﻿import IGameClient from '../client/game/IGameClient';
 import IGameServerClient from '../client/IGameServerClient';
 import Config from '../Config';
 import SIContentClient from 'sicontent-client';
-import SIStorageClient from 'sistorage-client';
 import IStateManager from '../utils/IStateManager';
+import SIStorageClient from 'sistorage-client';
 
 /** Provides globally available Redux store data context. */
 export default interface DataContext {
