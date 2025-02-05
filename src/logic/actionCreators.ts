@@ -49,9 +49,7 @@ import { saveStateToStorage } from '../state/StateHelpers';
 import { INavigationState } from '../state/uiSlice';
 import { navigate } from '../utils/Navigator';
 import registerApp from '../utils/registerApp';
-import SIBrowserStorageAdapter from '../utils/SIStorage';
-import SIStorage from '../utils/SIStorage';
-import { setStorages, StorageInfo } from '../state/siPackagesSlice';
+import { setStorages } from '../state/siPackagesSlice';
 import SIStorageInfo from '../client/contracts/SIStorageInfo';
 
 async function uploadAvatarAsync(appDispatch: AppDispatch, dataContext: DataContext) {
@@ -133,36 +131,10 @@ const reloadComputerAccounts: ActionCreator<ThunkAction<void, State, DataContext
 	appDispatch(computerAccountsChanged(computerAccounts));
 };
 
-function createStorageFromInfo(storageInfo: SIStorageInfo): { client: SIStorageClient, info: StorageInfo } {
-	const storageClient = new SIStorageClient({
+function createStorageClientFromInfo(storageInfo: SIStorageInfo): SIStorageClient {
+	return new SIStorageClient({
 		serviceUri: storageInfo.serviceUri,
 	});
-
-	// TODO: fill all this data on server side
-	if (storageInfo.serviceUri.startsWith('https://www.sibrowser.ru/')) { // Special case for sibrowser.ru
-		return {
-			client: storageClient,
-			info: {
-				name: storageInfo.name,
-				randomPackagesSupported: false,
-				useIdentifiers: false,
-				facets: ['tags'],
-				pageSize: 10,
-				uri: 'https://www.sibrowser.ru',
-			},
-		};
-	}
-
-	return {
-		client: storageClient,
-		info: {
-			name: storageInfo.name,
-			randomPackagesSupported: true,
-			useIdentifiers: true,
-			facets: [],
-			pageSize: 20,
-		},
-	};
 }
 
 async function loadHostInfoAsync(appDispatch: AppDispatch, dataContext: DataContext, culture: string) {
@@ -181,17 +153,8 @@ async function loadHostInfoAsync(appDispatch: AppDispatch, dataContext: DataCont
 		throw new Error('No SIContent service found');
 	}
 
-	if (culture === 'ru-RU') {
-		hostInfo.storageInfos = [...hostInfo.storageInfos, {
-			name: localization.libraryTitle + ' SI BROWSER',
-			serviceUri: 'https://www.sibrowser.ru/sistorage',
-		}];
-	}
-
-	const storageData = hostInfo.storageInfos.map(createStorageFromInfo);
-
-	dataContext.storageClients = storageData.map(x => x.client);
-	appDispatch(setStorages(storageData.map(x => x.info)));
+	dataContext.storageClients = hostInfo.storageInfos.map(createStorageClientFromInfo);
+	appDispatch(setStorages(hostInfo.storageInfos));
 
 	appDispatch(serverInfoChanged({
 		serverName: hostInfo.name,

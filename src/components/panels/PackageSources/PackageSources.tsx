@@ -58,16 +58,6 @@ export default function PackageSources(props: PackageSourcesProps): JSX.Element 
 					{`${localization.library} sigame.xyz…`}
 				</a>
 			</li>
-
-			<li>
-				<a
-					className='simpleLink'
-					href="https://www.sibrowser.ru"
-					target='_blank'
-					rel='noopener noreferrer'>
-					{`${localization.library} sibrowser.ru…`}
-				</a>
-			</li>
 		</>
 		: null}
 

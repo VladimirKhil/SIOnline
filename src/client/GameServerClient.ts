@@ -8,6 +8,7 @@ import RunAutoGameRequest from './contracts/RunAutoGameRequest';
 import GetGameByPinResponse from './contracts/GetGameByPinResponse';
 import * as signalR from '@microsoft/signalr';
 import * as signalRMsgPack from '@microsoft/signalr-protocol-msgpack';
+import StorageFilter from './contracts/StorageFilter';
 
 /** Represents a connection to a SIGame Server. */
 export default class GameServerClient implements IGameServerClient {
@@ -71,6 +72,16 @@ export default class GameServerClient implements IGameServerClient {
 		}
 
 		return <HostInfo>(await response.json());
+	}
+
+	async getStorageFilterAsync(storageId: string): Promise<StorageFilter> {
+		const response = await fetch(`${this.serverUri}/api/v1/info/storage-filter/${storageId}`);
+
+		if (!response.ok) {
+			return { packages: {}, tags: [] };
+		}
+
+		return <StorageFilter>(await response.json());
 	}
 
 	getGamesSliceAsync(fromId: number): Promise<Slice<GameInfo>> {

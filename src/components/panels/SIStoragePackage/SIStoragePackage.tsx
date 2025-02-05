@@ -2,10 +2,10 @@ import React from 'react';
 import Package from 'sistorage-client/dist/models/Package';
 import localization from '../../../model/resources/localization';
 import FlyoutButton from '../../common/FlyoutButton/FlyoutButton';
+import SIStorageInfo from '../../../client/contracts/SIStorageInfo';
 
 import './SIStoragePackage.scss';
 import defaultLogo from '../../../../assets/images/qlogo.png';
-import { StorageInfo } from '../../../state/siPackagesSlice';
 
 interface SIStoragePackageProps {
 	package: Package;
@@ -14,7 +14,7 @@ interface SIStoragePackageProps {
 	restrictions: { [id: string]: { value: string } };
 	tags: { [id: string]: string };
 	culture: string;
-	storage: StorageInfo;
+	storage: SIStorageInfo;
 	onSelect: (id: string, name: string, uri: string) => void;
 }
 
@@ -48,6 +48,7 @@ const SIStoragePackage: React.FC<SIStoragePackageProps> = (props: SIStoragePacka
 		restrictionIds,
 		tagIds,
 		contentUri,
+		directContentUri,
 		size,
 		rounds,
 		questionCount,
@@ -58,10 +59,11 @@ const SIStoragePackage: React.FC<SIStoragePackageProps> = (props: SIStoragePacka
 
 	const publisher = publisherId ? props.publishers[publisherId] : '';
 	const logo = logoUri ? (logoUri.startsWith('http') ? logoUri : props.storage.uri + logoUri) : defaultLogo;
+	const content = contentUri ?? directContentUri;
 
 	return <li className='storagePackage'>
 		<header>
-			<img src={logo} alt='logo' className='storagePackageLogo' />
+			{props.storage.packageProperties.includes('logo') ? <img src={logo} alt='logo' className='storagePackageLogo' /> : null}
 
 			<div className='storagePackageInfo'>
 				<div className="storagePackageName" title={name}>{name}</div>
@@ -101,41 +103,43 @@ const SIStoragePackage: React.FC<SIStoragePackageProps> = (props: SIStoragePacka
 
 			<div>{createDate ? new Date(createDate).toLocaleDateString(props.culture) : ''}</div>
 			{size ? <div title={localization.size}>{Math.round(size / 1024 / 1024 * 100) / 100} MB</div> : null}
-			<div title={localization.packageDifficulty}>🎓{difficulty}</div>
+			{difficulty ? <div title={localization.packageDifficulty}>🎓{difficulty}</div> : null}
 			<div title={localization.downloadCount}>⬇️{downloadCount}</div>
 		</main>
 
 		<div className="selectButton">
-			<FlyoutButton className='info-button standard' flyout={
-				<div className='package-info'>
-					<div>
-						<span className='packageItemHeader'>{`${localization.questionCount}: `}</span>
-						<span>{questionCount}</span>
+			{questionCount || contentTypeStatistic || rounds ?
+				<FlyoutButton className='info-button standard' flyout={
+					<div className='package-info'>
+						<div>
+							<span className='packageItemHeader'>{`${localization.questionCount}: `}</span>
+							<span>{questionCount}</span>
+						</div>
+
+						{contentTypeStatistic ? (<div>
+							<span className='packageItemHeader'>{`${localization.content}: `}</span>
+
+							<span>{Object.keys(contentTypeStatistic).map(
+								key => `${getContentName(key)} (${contentTypeStatistic[key]})`).join(', ')}
+							</span>
+						</div>) : null}
+
+						<span className='packageItemHeader'>{`${localization.roundsAndThemes}: `}</span>
+
+						<ul className='rounds'>{rounds?.map((r, i) => <li key={i} className='roundInfo'>
+								<span className='roundName'>{r.name}</span>: {r.themeNames.join(', ')}
+							</li>)}
+						</ul>
 					</div>
+				}>
+					{localization.info}
+				</FlyoutButton>
+			: null}
 
-					{contentTypeStatistic ? (<div>
-						<span className='packageItemHeader'>{`${localization.content}: `}</span>
-
-						<span>{Object.keys(contentTypeStatistic).map(
-							key => `${getContentName(key)} (${contentTypeStatistic[key]})`).join(', ')}
-						</span>
-					</div>) : null}
-
-					<span className='packageItemHeader'>{`${localization.roundsAndThemes}: `}</span>
-
-					<ul className='rounds'>{rounds?.map((r, i) => <li key={i} className='roundInfo'>
-							<span className='roundName'>{r.name}</span>: {r.themeNames.join(', ')}
-						</li>)}
-					</ul>
-				</div>
-			}>
-				{localization.info}
-			</FlyoutButton>
-
-			{contentUri ? <button
+			{content ? <button
 				type="button"
 				className='standard'
-				onClick={() => props.onSelect(id, name ?? '', contentUri)}>
+				onClick={() => props.onSelect(id, name ?? '', content)}>
 				{localization.librarySelect}
 			</button> : null}
 		</div>

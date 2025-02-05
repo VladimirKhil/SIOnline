@@ -13,8 +13,12 @@ import { keys, sortRecord } from '../../../utils/RecordExtensions';
 import { getFullCulture } from '../../../utils/StateHelpers';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 import SIStoragePackage from '../SIStoragePackage/SIStoragePackage';
+import getVisiblePageNumbers from '../../../utils/getVisiblePageNumbers';
+import { trimLength } from '../../../utils/StringHelpers';
+import { djb2Hash } from '../../../utils/djb2Hash';
 
 import { receiveAuthors,
+	receiveFilters,
 	receiveLanguages,
 	receivePublishers,
 	receiveRestrictions,
@@ -24,7 +28,6 @@ import { receiveAuthors,
 } from '../../../state/siPackagesSlice';
 
 import './SIStorageDialog.scss';
-import getVisiblePageNumbers from '../../../utils/getVisiblePageNumbers';
 
 interface StateProps {
 	culture: string;
@@ -66,7 +69,7 @@ const SIStorageDialog: React.FC<SIStorageDialogProps> = (props) => {
 		sortDirection: PackageSortDirection.Descending,
 		sortMode: PackageSortMode.CreatedDate,
 		from: 0,
-		count: storage.pageSize,
+		count: storage.maximumPageSize,
 	});
 
 	const [pageIndex, setPageIndex] = React.useState(0);
@@ -74,11 +77,12 @@ const SIStorageDialog: React.FC<SIStorageDialogProps> = (props) => {
 	const appDispatch = useAppDispatch();
 
 	React.useEffect(() => {
+		appDispatch(receiveFilters());
 		appDispatch(receiveLanguages());
 	}, []);
 
 	const onLanguageLoaded = () => {
-		if (storage.useIdentifiers) {
+		if (storage.identifiersSupported) {
 			appDispatch(searchPackages({ filters, selectionParameters }));
 		} else {
 			appDispatch(searchPackagesByValueFilters({ valueFilters, selectionParameters }));
@@ -99,7 +103,7 @@ const SIStorageDialog: React.FC<SIStorageDialogProps> = (props) => {
 	const onTagIdChanged = (value: string) => {
 		const tagId = parseInt(value, 10);
 
-		if (storage.useIdentifiers) {
+		if (storage.identifiersSupported) {
 			setFilters({
 				...filters,
 				tagIds: isNaN(tagId) ? undefined : [tagId]
@@ -166,10 +170,18 @@ const SIStorageDialog: React.FC<SIStorageDialogProps> = (props) => {
 	};
 
 	const onTextChanged = (value: string) => {
-		setFilters({
-			...filters,
-			searchText: value,
-		});
+		if (storage.identifiersSupported) {
+			setFilters({
+				...filters,
+				searchText: value,
+			});
+		} else {
+			setValueFilters({
+				...valueFilters,
+				searchText: value,
+			});
+		}
+
 		setPageIndex(0);
 	};
 
@@ -192,13 +204,13 @@ const SIStorageDialog: React.FC<SIStorageDialogProps> = (props) => {
 	};
 
 	const runSearchPackages = () => {
-		if (storage.useIdentifiers) {
+		if (storage.identifiersSupported) {
 			appDispatch(searchPackages({
 				filters,
 				selectionParameters:{
 					sortDirection: selectionParameters.sortDirection,
 					sortMode: selectionParameters.sortMode,
-					from: pageIndex * storage.pageSize,
+					from: pageIndex * storage.maximumPageSize,
 					count: selectionParameters.count,
 				}
 			}));
@@ -208,7 +220,7 @@ const SIStorageDialog: React.FC<SIStorageDialogProps> = (props) => {
 				selectionParameters:{
 					sortDirection: selectionParameters.sortDirection,
 					sortMode: selectionParameters.sortMode,
-					from: pageIndex * storage.pageSize,
+					from: pageIndex * storage.maximumPageSize,
 					count: selectionParameters.count,
 				}
 			}));
@@ -219,13 +231,28 @@ const SIStorageDialog: React.FC<SIStorageDialogProps> = (props) => {
 		runSearchPackages();
 	}, [filters, valueFilters, selectionParameters, pageIndex]);
 
-	const filterTagIds = filters.tagIds;
+	let tagId: number;
+
+	if (storage.identifiersSupported) {
+		const filterTagIds = filters.tagIds;
+		tagId = filterTagIds && filterTagIds.length > 0 ? filterTagIds[0] : -2;
+	} else {
+		const filterTags = valueFilters.tags;
+
+		if (filterTags && filterTags.length > 0) {
+			const [tag] = filterTags;
+			const indexStr = Object.entries(siPackages.tags).find(([_, value]) => value === tag)?.[0];
+			tagId = indexStr ? parseInt(indexStr, 10) : -2;
+		} else {
+			tagId = -2;
+		}
+	}
+
 	const filterRestrictionIds = filters.restrictionIds;
-	const tagId = filterTagIds && filterTagIds.length > 0 ? filterTagIds[0] : -2;
 	const restrictionId = filterRestrictionIds && filterRestrictionIds.length > 0 ? filterRestrictionIds[0] : -2;
 
 	const packageLength = siPackages.packages.packages.length;
-	const pageCount = packageLength === 0 ? 0 : Math.ceil(siPackages.packages.total / storage.pageSize);
+	const pageCount = packageLength === 0 ? 0 : Math.ceil(siPackages.packages.total / storage.maximumPageSize);
 
 	const pages = getVisiblePageNumbers(pageIndex, pageCount);
 
@@ -236,7 +263,7 @@ const SIStorageDialog: React.FC<SIStorageDialogProps> = (props) => {
 					type='button'
 					className='standard storage__open'
 					onClick={() => window.open(storage.uri, '_blank')}>
-						{localization.open}
+						{localization.openLibrary}
 					</button>
 				: null}
 
@@ -254,7 +281,7 @@ const SIStorageDialog: React.FC<SIStorageDialogProps> = (props) => {
 				</div>
 
 				<div className="filters">
-					{storage.facets.length === 0 || storage.facets.includes('tags')
+					{storage.facets.includes('tags')
 						? <div className="filter">
 							<div className="selectorName">{localization.packageSubject}</div>
 
@@ -267,16 +294,18 @@ const SIStorageDialog: React.FC<SIStorageDialogProps> = (props) => {
 									{localization.librarySearchNotSet}
 								</option>
 
-								{sortRecord(siPackages.tags).map(({ id, value }) => (
+								{sortRecord(siPackages.tags).filter(({ value }) => !siPackages.filter.tags
+									.includes(djb2Hash(value).toString()))
+									.map(({ id, value }) => (
 									<option key={id} value={id}>
-										{value}
+										{trimLength(value, 100)}
 									</option>
 								))}
 							</select>
 						</div>
 						: null}
 
-					{storage.facets.length === 0 || storage.facets.includes('difficulty')
+					{storage.facets.includes('difficulty')
 						? <div className="filter">
 							<div className="selectorName">{localization.packageDifficulty}</div>
 
@@ -309,7 +338,7 @@ const SIStorageDialog: React.FC<SIStorageDialogProps> = (props) => {
 						</div>
 						: null}
 
-					{storage.facets.length === 0 || storage.facets.includes('publishers')
+					{storage.facets.includes('publishers')
 						? <div className="filter">
 							<div className="selectorName">{localization.packagePublisher}</div>
 
@@ -336,7 +365,7 @@ const SIStorageDialog: React.FC<SIStorageDialogProps> = (props) => {
 						</div>
 						: null}
 
-					{storage.facets.length === 0 || storage.facets.includes('authors')
+					{storage.facets.includes('authors')
 						? <div className="filter">
 							<div className="selectorName">{localization.packageAuthor}</div>
 
@@ -359,7 +388,7 @@ const SIStorageDialog: React.FC<SIStorageDialogProps> = (props) => {
 						</div>
 						: null}
 
-					{clearUrls || (storage.facets.length > 0 && !storage.facets.includes('restrictions')) ? null : <div className="filter">
+					{clearUrls || !storage.facets.includes('restrictions') ? null : <div className="filter">
 						<div className="selectorName">{localization.packageRestriction}</div>
 
 						<select
@@ -411,32 +440,37 @@ const SIStorageDialog: React.FC<SIStorageDialogProps> = (props) => {
 					{siPackages.isLoading && <span className='loading'>{localization.loading}</span>}
 				</div>
 
-				<div className='pagination'>
-					<span className='header'>{localization.page}:</span>
+				{pages.length > 0
+					? <div className='pagination'>
+						<span className='header'>{localization.page}:</span>
 
-					{pages.map(i => (
-						typeof i === 'string'
-							? <span key={i} className='page'>{i}</span>
-							: <div
-								key={i}
-								className={`page ${pageIndex === i ? 'active' : 'inactive'}`}
-								onClick={() => setPageIndex(i)}>
-								{i + 1}
-							</div>
-					))}
-				</div>
+						{pages.map((i, index) => (
+							typeof i === 'string'
+								? <span key={index < 4 ? -1 : -2} className='page'>{i}</span>
+								: <div
+									key={i}
+									className={`page ${pageIndex === i ? 'active' : 'inactive'}`}
+									onClick={() => setPageIndex(i)}>
+									{i + 1}
+								</div>
+						))}
+					</div>
+					: null}
 
 				<ul className='packages'>
-					{siPackages.packages.packages.map((p) => <SIStoragePackage
-						key={p.id}
-						package={p}
-						authors={siPackages.authors}
-						restrictions={siPackages.restrictions}
-						culture={props.culture}
-						tags={siPackages.tags}
-						publishers={siPackages.publishers}
-						storage={storage}
-						onSelect={props.onSelect} />)}
+					{siPackages.packages.packages.map(
+						(p) => siPackages.filter.packages[parseInt(p.id, 10)] === 0
+						? <div>(Blocked)</div>
+						: <SIStoragePackage
+							key={p.id}
+							package={p}
+							authors={siPackages.authors}
+							restrictions={siPackages.restrictions}
+							culture={props.culture}
+							tags={siPackages.tags}
+							publishers={siPackages.publishers}
+							storage={storage}
+							onSelect={props.onSelect} />)}
 				</ul>
 			</div>
 		</Dialog>

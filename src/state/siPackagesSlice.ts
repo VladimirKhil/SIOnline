@@ -7,19 +7,13 @@ import getErrorMessage from '../utils/ErrorHelpers';
 import { arrayToRecord, arrayToValue } from '../utils/ArrayExtensions';
 import { getFullCulture } from '../utils/StateHelpers';
 import State from './State';
-
-export interface StorageInfo {
-	name: string;
-	randomPackagesSupported: boolean;
-	useIdentifiers: boolean;
-	facets: string[];
-	pageSize: number;
-	uri?: string;
-}
+import SIStorageInfo from '../client/contracts/SIStorageInfo';
+import StorageFilter from '../client/contracts/StorageFilter';
 
 export interface SIPackagesState {
-	storages: StorageInfo[];
+	storages: SIStorageInfo[];
 	storageIndex: number;
+	filter: StorageFilter;
 	packages: PackagesPage;
 	authors: Record<number, string>;
 	tags: Record<number, string>;
@@ -34,6 +28,10 @@ export interface SIPackagesState {
 const initialState: SIPackagesState = {
 	storages: [],
 	storageIndex: 0,
+	filter: {
+		packages: {},
+		tags: [],
+	},
 	authors: {},
 	isLoading: false,
 
@@ -49,6 +47,23 @@ const initialState: SIPackagesState = {
 	error: '',
 };
 
+export const receiveFilters = createAsyncThunk(
+	'siPackages/receiveFilters',
+	async (arg: void, thunkAPI) => {
+		const state = thunkAPI.getState() as RootState;
+		const { storageIndex } = state.siPackages;
+		const dataContext = thunkAPI.extra as DataContext;
+		const storage = state.siPackages.storages[storageIndex];
+
+		if (!storage) {
+			return;
+		}
+
+		const filters = await dataContext.gameClient.getStorageFilterAsync(storage.id);
+		return filters;
+	}
+);
+
 export const receiveAuthors = createAsyncThunk(
 	'siPackages/receiveAuthors',
 	async (arg: void, thunkAPI) => {
@@ -59,7 +74,7 @@ export const receiveAuthors = createAsyncThunk(
 		const storageClient = storageClients[storageIndex];
 		const storage = state.siPackages.storages[storageIndex];
 
-		if (!storageClient || !storage || (storage.facets.length > 0 && storage.facets.indexOf('authors') === -1)) {
+		if (!storageClient || !storage || (storage.facets.indexOf('authors') === -1)) {
 			return;
 		}
 
@@ -78,13 +93,13 @@ export const receiveTags = createAsyncThunk(
 		const storageClient = storageClients[storageIndex];
 		const storage = state.siPackages.storages[storageIndex];
 
-		if (!storageClient || !storage || (storage.facets.length > 0 && storage.facets.indexOf('tags') === -1)) {
+		if (!storageClient || !storage || (storage.facets.indexOf('tags') === -1)) {
 			return;
 		}
 
 		let tags = await storageClient.facets.getTagsAsync(languageId);
 
-		if (!storage.useIdentifiers) {
+		if (!storage.identifiersSupported) {
 			tags = tags.map((tag, index) => ({ ...tag, id: index }));
 		}
 
@@ -102,7 +117,7 @@ export const receivePublishers = createAsyncThunk(
 		const storageClient = storageClients[storageIndex];
 		const storage = state.siPackages.storages[storageIndex];
 
-		if (!storageClient || !storage || (storage.facets.length > 0 && storage.facets.indexOf('publishers') === -1)) {
+		if (!storageClient || !storage || (storage.facets.indexOf('publishers') === -1)) {
 			return;
 		}
 
@@ -122,7 +137,7 @@ export const receiveLanguages = createAsyncThunk(
 		const storage = state.siPackages.storages[storageIndex];
 		const currentLanguage = getFullCulture(state as State);
 
-		if (!storageClient || !storage || (storage.facets.length > 0 && storage.facets.indexOf('languages') === -1)) {
+		if (!storageClient || !storage || (storage.facets.indexOf('languages') === -1)) {
 			return {
 				languages: [{
 					id: 0,
@@ -149,7 +164,7 @@ export const receiveRestrictions = createAsyncThunk(
 		const storageClient = storageClients[storageIndex];
 		const storage = state.siPackages.storages[storageIndex];
 
-		if (!storageClient || !storage || (storage.facets.length > 0 && storage.facets.indexOf('restrictions') === -1)) {
+		if (!storageClient || !storage || (storage.facets.indexOf('restrictions') === -1)) {
 			return;
 		}
 
@@ -209,6 +224,12 @@ export const siPackagesSlice = createSlice({
 		},
 	},
 	extraReducers: (builder) => {
+		builder.addCase(receiveFilters.fulfilled, (state, action) => {
+			if (action.payload) {
+				state.filter = action.payload;
+			}
+		});
+
 		builder.addCase(receiveAuthors.fulfilled, (state, action) => {
 			if (action.payload) {
 				state.authors = arrayToValue(action.payload, author => author.id, author => author.name);

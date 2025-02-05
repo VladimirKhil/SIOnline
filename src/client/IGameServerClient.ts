@@ -5,6 +5,7 @@ import RunGameRequest from './contracts/RunGameRequest';
 import RunGameResponse from './contracts/RunGameResponse';
 import RunAutoGameRequest from './contracts/RunAutoGameRequest';
 import GetGameByPinResponse from './contracts/GetGameByPinResponse';
+import StorageFilter from './contracts/StorageFilter';
 
 /** Defines the SIGame Server client. */
 export default interface IGameServerClient {
@@ -21,6 +22,8 @@ export default interface IGameServerClient {
 
 	/** Gets server global info. */
 	getGameHostInfoAsync(culture: string): Promise<HostInfo>;
+
+	getStorageFilterAsync(storageId: string): Promise<StorageFilter>;
 
 	/**
 	 * Gets partial running games list starting from the first game after the game with id {@link fromId}.
