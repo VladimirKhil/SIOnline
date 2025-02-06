@@ -9,6 +9,7 @@ import { getFullCulture } from '../utils/StateHelpers';
 import State from './State';
 import SIStorageInfo from '../client/contracts/SIStorageInfo';
 import StorageFilter from '../client/contracts/StorageFilter';
+import { userWarnChanged } from './commonSlice';
 
 export interface SIPackagesState {
 	storages: SIStorageInfo[];
@@ -187,8 +188,14 @@ export const searchPackages = createAsyncThunk(
 		}
 
 		const { filters, selectionParameters } = arg;
-		const packagesPage = await storageClient.packages.getPackagesAsync({ ...filters, languageId }, selectionParameters);
-		return packagesPage;
+
+		try {
+			const packagesPage = await storageClient.packages.getPackagesAsync({ ...filters, languageId }, selectionParameters);
+			return packagesPage;
+		} catch (error) {
+			thunkAPI.dispatch(userWarnChanged(getErrorMessage(error)));
+			return;
+		}
 	}
 );
 
@@ -288,7 +295,6 @@ export const siPackagesSlice = createSlice({
 
 		builder.addCase(searchPackages.pending, (state) => {
 			state.isLoading = true;
-			state.error = null;
 		});
 
 		builder.addCase(searchPackagesByValueFilters.pending, (state) => {
@@ -312,9 +318,8 @@ export const siPackagesSlice = createSlice({
 			state.isLoading = false;
 		});
 
-		builder.addCase(searchPackages.rejected, (state, action) => {
+		builder.addCase(searchPackages.rejected, (state) => {
 			state.isLoading = false;
-			state.error = getErrorMessage(action.error.message);
 		});
 
 		builder.addCase(searchPackagesByValueFilters.rejected, (state, action) => {

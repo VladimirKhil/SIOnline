@@ -228,7 +228,14 @@ const SIStorageDialog: React.FC<SIStorageDialogProps> = (props) => {
 	};
 
 	React.useEffect(() => {
-		runSearchPackages();
+		// Debounce search
+		const handler = setTimeout(() => {
+			runSearchPackages();
+		}, 500);
+
+		return () => {
+			clearTimeout(handler);
+		};
 	}, [filters, valueFilters, selectionParameters, pageIndex]);
 
 	let tagId: number;
@@ -460,7 +467,7 @@ const SIStorageDialog: React.FC<SIStorageDialogProps> = (props) => {
 				<ul className='packages'>
 					{siPackages.packages.packages.map(
 						(p) => siPackages.filter.packages[parseInt(p.id, 10)] === 0
-						? <div>(Blocked)</div>
+						? <li key={p.id} className='blocked'>{localization.blocked}</li>
 						: <SIStoragePackage
 							key={p.id}
 							package={p}
