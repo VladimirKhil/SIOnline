@@ -1,7 +1,6 @@
 import React from 'react';
 import localization from '../../../model/resources/localization';
-import State from '../../../state/State';
-import { connect, useSelector } from 'react-redux';
+import { connect } from 'react-redux';
 import onlineActionCreators from '../../../state/online/onlineActionCreators';
 
 import './NewGameButton.scss';
@@ -16,19 +15,14 @@ const mapDispatchToProps = (dispatch: any) => ({
 	}
 });
 
-const NewGameButton: React.FC<NewGameButtonProps> = (props: NewGameButtonProps) => {
-	const common = useSelector((state: State) => state.common);
-
-	return (
-		<button
-			className='newGame standard'
-			type="button"
-			disabled={!common.isConnected}
-			onClick={props.onNewGame}
-		>
-			{localization.newGame.toLocaleUpperCase()}
-		</button>
-	);
-};
+const NewGameButton: React.FC<NewGameButtonProps> = (props: NewGameButtonProps) => (
+	<button
+		className='newGame standard'
+		type="button"
+		onClick={props.onNewGame}
+	>
+		{localization.newGame.toLocaleUpperCase()}
+	</button>
+);
 
 export default connect(null, mapDispatchToProps)(NewGameButton);

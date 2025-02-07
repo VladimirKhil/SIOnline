@@ -31,7 +31,6 @@ import AutoSizedText from '../../common/AutoSizedText/AutoSizedText';
 import './RoomOptions.scss';
 
 interface RoomOptionsProps {
-	isConnected: boolean;
 	isSingleGame: boolean;
 	isOralGame: boolean;
 	inProgress: boolean;
@@ -50,7 +49,6 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 });
 
 const mapStateToProps = (state: State) => ({
-	isConnected: state.common.isConnected,
 	isOralGame: state.settings.appSettings.oral,
 	inProgress: state.online.gameCreationProgress,
 	navigation: state.ui.navigation,

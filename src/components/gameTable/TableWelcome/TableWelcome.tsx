@@ -37,12 +37,12 @@ const TableWelcome: React.FC<TableWelcomeProps> = (props: TableWelcomeProps) => 
 			? <div className='table-welcome__buttons'>
 				{common.clearUrls
 					? null
-					: <button type="button" className='standard' disabled={!common.isConnected} onClick={() => inviteLink(appDispatch)}>
+					: <button type="button" className='standard' disabled={!common.isSIHostConnected} onClick={() => inviteLink(appDispatch)}>
 						{localization.inviteLink}
 					</button>}
 
 				{props.isHost
-					? <button type='button' className='standard' disabled={!common.isConnected} onClick={getPinCore}>
+					? <button type='button' className='standard' disabled={!common.isSIHostConnected} onClick={getPinCore}>
 						{localization.getPin}
 					</button>
 					: null}

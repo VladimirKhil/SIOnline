@@ -33,6 +33,7 @@ interface GameInfoViewStateProps {
 interface GameInfoViewProps extends GameInfoViewOwnProps, GameInfoViewStateProps {
 	game?: GameInfo;
 	showGameName: boolean;
+	canJoinAsViewer: boolean;
 }
 
 const mapStateToProps = (state: State) => ({
@@ -150,11 +151,18 @@ export function GameInfoView(props: GameInfoViewProps): JSX.Element {
 
 	const onKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
 		if (e.key === Constants.KEY_ENTER_NEW) {
+			if (!props.isConnected ||
+				props.joinGameProgress ||
+				userName.length === 0 ||
+				(game.PasswordRequired && !props.password)) {
+				return;
+			}
+
 			if (canJoinAsPlayer) {
 				props.onJoin(game.HostUri, game.GameID, userName, Role.Player, appDispatch);
 			} else if (canJoinAsShowman) {
 				props.onJoin(game.HostUri, game.GameID, userName, Role.Showman, appDispatch);
-			} else {
+			} else if (props.canJoinAsViewer) {
 				props.onJoin(game.HostUri, game.GameID, userName, Role.Viewer, appDispatch);
 			}
 		}
@@ -264,7 +272,8 @@ export function GameInfoView(props: GameInfoViewProps): JSX.Element {
 									disabled={!props.isConnected ||
 										props.joinGameProgress ||
 										userName.length === 0 ||
-										(game.PasswordRequired && !props.password)}
+										(game.PasswordRequired && !props.password) ||
+										!props.canJoinAsViewer}
 								>
 									{localization.joinAsViewer}
 								</button>

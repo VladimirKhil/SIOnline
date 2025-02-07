@@ -80,11 +80,10 @@ export function MainMenu(props: MainMenuProps): JSX.Element {
 			<div className='mainArea'>
 				<div className={common.clearUrls ? 'logoMini' : 'logo'} />
 
-				<div className={`welcomeViewActions ${common.isConnected ? '' : 'disconnected'}`}>
+				<div className='welcomeViewActions'>
 					<button
 						type='button'
 						className='standard welcomeRow right'
-						disabled={!common.isConnected}
 						onClick={() => appDispatch(navigate({ navigation: { path: Path.NewRoom, newGameMode: 'single' }, saveState: true }))}>
 						{localization.singlePlay.toUpperCase()}
 					</button>
@@ -92,7 +91,6 @@ export function MainMenu(props: MainMenuProps): JSX.Element {
 					<button
 						type='button'
 						className='standard welcomeRow left'
-						disabled={!common.isConnected}
 						onClick={() => props.anyonePlay(appDispatch)}>
 						{localization.anyonePlay.toUpperCase()}
 					</button>
@@ -100,7 +98,6 @@ export function MainMenu(props: MainMenuProps): JSX.Element {
 					<button
 						type='button'
 						className='standard welcomeRow right'
-						disabled={!common.isConnected}
 						onClick={onJoinByPin}>
 						{localization.joinByPin.toUpperCase()}
 					</button>
@@ -108,7 +105,6 @@ export function MainMenu(props: MainMenuProps): JSX.Element {
 					<button
 						type='button'
 						className='standard welcomeRow left'
-						disabled={!common.isConnected}
 						onClick={() => appDispatch(navigate({ navigation: { path: Path.Lobby }, saveState: true }))}>
 						{localization.joinLobby.toUpperCase()}
 					</button>

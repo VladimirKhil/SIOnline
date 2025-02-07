@@ -20,7 +20,6 @@ import { setStorageIndex } from '../../../state/siPackagesSlice';
 import './NewGameDialog.css';
 
 interface NewGameDialogProps {
-	isConnected: boolean;
 	isSingleGame: boolean;
 	inProgress: boolean;
 
@@ -29,7 +28,6 @@ interface NewGameDialogProps {
 }
 
 const mapStateToProps = (state: State) => ({
-	isConnected: state.common.isConnected,
 	inProgress: state.online.gameCreationProgress,
 });
 
@@ -107,7 +105,7 @@ export function NewGameDialog(props: NewGameDialogProps) {
 					<button
 						type="button"
 						className="startGame mainAction active"
-						disabled={!props.isConnected || props.inProgress || (!props.isSingleGame && game.name.length === 0)}
+						disabled={props.inProgress || (!props.isSingleGame && game.name.length === 0)}
 						onClick={() => props.onCreate(props.isSingleGame, appDispatch)}
 					>
 						{localization.startGame.toLocaleUpperCase()}

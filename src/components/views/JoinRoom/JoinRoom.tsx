@@ -9,8 +9,12 @@ import { navigate } from '../../../utils/Navigator';
 
 import './JoinRoom.css';
 
+interface JoinRoomProps {
+	canJoinAsViewer: boolean;
+}
+
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export default function JoinRoom(): JSX.Element | null {
+export default function JoinRoom(props: JoinRoomProps): JSX.Element | null {
 	const onlineState = useAppSelector(state => state.online2);
 	const common = useAppSelector(state => state.common);
 	const { selectedGame } = onlineState;
@@ -38,7 +42,7 @@ export default function JoinRoom(): JSX.Element | null {
 			className="joinRoom"
 			title={`${localization.gameJoin}: ${selectedGame.GameName}`}
 			onClose={navigateToLogin}>
-			<GameInfoView isConnected={common.isSIHostConnected} game={selectedGame} showGameName={false} />
+			<GameInfoView canJoinAsViewer={props.canJoinAsViewer} isConnected={common.isSIHostConnected} game={selectedGame} showGameName={false} />
 		</Dialog>
 	</div>;
 }

@@ -77,7 +77,7 @@ export class App extends React.Component<AppProps> {
 				return <Room />;
 
 			case Path.JoinRoom:
-				return <JoinRoom />;
+				return <JoinRoom canJoinAsViewer={true} />;
 
 			case Path.JoinByPin:
 				return <JoinByPin />;

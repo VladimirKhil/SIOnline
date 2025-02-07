@@ -90,7 +90,7 @@ export function Lobby(props: LobbyProps) {
 		if (props.mode === OnlineMode.GameInfo && selectedGame) {
 			return (
 				<Dialog id="gameInfoDialog" title={selectedGame.GameName} onClose={onCloseGameInfo}>
-					<GameInfoView isConnected={common.isConnected} game={selectedGame} showGameName={false} />
+					<GameInfoView canJoinAsViewer={true} isConnected={common.isConnected} game={selectedGame} showGameName={false} />
 				</Dialog>
 			);
 		}
@@ -143,7 +143,7 @@ export function Lobby(props: LobbyProps) {
 							<header />
 
 							<div className='gameInfoAreaContent'>
-								<GameInfoView isConnected={common.isConnected} game={selectedGame} showGameName />
+								<GameInfoView canJoinAsViewer={true} isConnected={common.isConnected} game={selectedGame} showGameName />
 							</div>
 						</div>
 					</div>
