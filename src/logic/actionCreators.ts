@@ -284,13 +284,10 @@ const initStage3NavigateAsync = async (
 	appDispatch(navigate({ navigation: view, saveState: true, replaceState: true }));
 };
 
-const initStage2CompleteInitializaionAsync = async (
-	initialView: INavigationState,
-	dispatch: Dispatch<Action>,
+const connectTOServerAsync = async (
 	appDispatch: AppDispatch,
 	getState: () => State,
-	dataContext: DataContext,
-) => {
+	dataContext: DataContext) => {
 	const gameServerClient = new GameServerClient(dataContext.serverUri);
 	dataContext.gameClient = gameServerClient;
 
@@ -304,7 +301,15 @@ const initStage2CompleteInitializaionAsync = async (
 	await uploadAvatarAsync(appDispatch, dataContext);
 
 	dataContext.state.onReady();
+};
 
+const initStage2CompleteInitializaionAsync = async (
+	initialView: INavigationState,
+	dispatch: Dispatch<Action>,
+	appDispatch: AppDispatch,
+	getState: () => State,
+	dataContext: DataContext,
+) => {
 	if (initialView.path == Path.JoinRoom && initialView.gameId && initialView.hostUri) {
 		try {
 			const siHostClient = await connectToSIHostAsync(initialView.hostUri, dispatch, appDispatch, getState, dataContext);
@@ -336,6 +341,7 @@ const initStage1CheckLicenseAsync = async (
 	getState: () => State,
 	dataContext: DataContext
 ) => {
+	await connectTOServerAsync(appDispatch, getState, dataContext);
 	const licenseAccepted = dataContext.state.isLicenseAccepted();
 
 	if (!licenseAccepted) {
@@ -352,6 +358,7 @@ const initStageSkipLoginLicenseAsync: ActionCreator<ThunkAction<void, State, Dat
 		getState: () => State,
 		dataContext: DataContext
 	) => {
+		await connectTOServerAsync(appDispatch, getState, dataContext);
 		await initStage2CompleteInitializaionAsync(view, dispatch, appDispatch, getState, dataContext);
 	};
 
