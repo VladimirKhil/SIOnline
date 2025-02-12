@@ -5,7 +5,7 @@ import { Store } from 'redux';
 const ACCEPT_LICENSE_KEY = 'ACCEPT_LICENSE';
 
 export default class TauriStateManager implements IStateManager {
-	constructor(private isLegacy: boolean) { }
+	constructor(private isLegacy: boolean, private licenseAccepted: boolean) { }
 
 	async initAsync(store: Store): Promise<void> {
 		console.log('Loaded from Tauri');
@@ -15,10 +15,11 @@ export default class TauriStateManager implements IStateManager {
 	}
 
 	isLicenseAccepted(): boolean {
-		return getCookie(ACCEPT_LICENSE_KEY) !== '';
+		return this.licenseAccepted || getCookie(ACCEPT_LICENSE_KEY) === '1';
 	}
 
 	acceptLicense() {
+		window.parent.postMessage({ type: 'acceptLicense' }, '*');
 		setCookie(ACCEPT_LICENSE_KEY, '1', 365);
 	}
 

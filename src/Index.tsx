@@ -373,6 +373,7 @@ async function run(stateManager: IStateManager) {
 
 const urlParams = new URLSearchParams(window.location.hash.substring(1));
 const origin = urlParams.get('origin');
+let licenseAccepted = false;
 
 if (origin === OriginYandex) {
 	console.log('Loading from Yandex');
@@ -388,11 +389,12 @@ if (origin === OriginYandex) {
 	config.askForConsent = false;
 	config.enableNoSleep = false;
 	config.registerServiceWorker = false;
+	licenseAccepted = urlParams.get('licenseAccepted') === 'true';
 }
 
 run(origin === OriginYandex
 	? new YAStateManager()
-	: (origin === OriginTauri || window.__TAURI_INTERNALS__ ? new TauriStateManager(origin !== OriginTauri) : new StateManager()));
+	: (origin === OriginTauri || window.__TAURI_INTERNALS__ ? new TauriStateManager(origin !== OriginTauri, licenseAccepted) : new StateManager()));
 
 if ('serviceWorker' in navigator && config && config.registerServiceWorker) {
 	window.addEventListener('load', registerServiceWorker2);

@@ -9,6 +9,32 @@
   </head>
 
   <body>
-    <iframe title="Main" src="https://sigame.vladimirkhil.com#origin=TAURI" style="width: 100%; height: 100%; border: none;" sandbox="allow-same-origin allow-scripts"></iframe>
+    <div id="iframe-container"></div>
+
+    <script>
+        function getCookie(name) {
+            const cookies = document.cookie.split("; ");
+            for (let cookie of cookies) {
+                const [key, value] = cookie.split("=");
+                if (key === name) return value;
+            }
+            return null;
+        }
+
+        // Check if the ACCEPT_LICENSE cookie is set
+        const isLicenseAccepted = getCookie("ACCEPT_LICENSE") !== null;
+
+        // Create and insert the iframe dynamically
+        const iframe = document.createElement("iframe");
+        iframe.title = "Main";
+        //iframe.src = `https://sigame.vladimirkhil.com#origin=TAURI&isLicenseAccepted=${isLicenseAccepted}`;
+        iframe.src = `http://localhost:8080#origin=TAURI&isLicenseAccepted=${isLicenseAccepted}`;
+        iframe.style.width = "100%";
+        iframe.style.height = "100%";
+        iframe.style.border = "none";
+        iframe.sandbox = "allow-same-origin allow-scripts";
+
+        document.getElementById("iframe-container").appendChild(iframe);
+    </script>
   </body>
 </html>
