@@ -24,4 +24,6 @@ export default interface IStateManager {
 	detectFullScreen(): FullScreenMode;
 
 	setFullScreen(fullScreen: boolean): Promise<boolean>;
+
+	copyToClipboard(text: string): void;
 }

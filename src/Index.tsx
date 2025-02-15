@@ -32,7 +32,7 @@ import YAStateManager from './utils/YAStateManager';
 import IStateManager, { FullScreenMode } from './utils/IStateManager';
 import SIHostClient from './client/SIHostClient';
 import { setFullScreen, setGameButtonKey } from './state/settingsSlice';
-import { commonErrorChanged, setFontsReady } from './state/commonSlice';
+import { commonErrorChanged, setClipboardSupported, setFontsReady } from './state/commonSlice';
 import { saveStateToStorage } from './state/StateHelpers';
 import { INavigationState, isSettingGameButtonKeyChanged, setFullScreenSupported, visibilityChanged, windowSizeChanged } from './state/uiSlice';
 import { navigate } from './utils/Navigator';
@@ -258,7 +258,7 @@ function getInitialView(historyState: INavigationState): INavigationState {
 	return { path: Path.Root };
 }
 
-async function run(stateManager: IStateManager) {
+async function run(stateManager: IStateManager, clipboardSupported: boolean) {
 	try {
 		if (!config) {
 			throw new Error('Config is undefined!');
@@ -348,6 +348,10 @@ async function run(stateManager: IStateManager) {
 			}
 		}
 
+		if (!clipboardSupported) {
+			store.dispatch(setClipboardSupported(false));
+		}
+
 		document.title = localization.appName;
 
 		ReactDOM.render(
@@ -374,6 +378,7 @@ async function run(stateManager: IStateManager) {
 const urlParams = new URLSearchParams(window.location.hash.substring(1));
 const origin = urlParams.get('origin');
 let licenseAccepted = false;
+let clipboardSupported = true;
 
 if (origin === OriginYandex) {
 	console.log('Loading from Yandex');
@@ -390,11 +395,13 @@ if (origin === OriginYandex) {
 	config.enableNoSleep = false;
 	config.registerServiceWorker = false;
 	licenseAccepted = urlParams.get('licenseAccepted') === 'true';
+	clipboardSupported = urlParams.get('clipboardSupported') === 'true';
 }
 
 run(origin === OriginYandex
 	? new YAStateManager()
-	: (origin === OriginTauri || window.__TAURI_INTERNALS__ ? new TauriStateManager(origin !== OriginTauri, licenseAccepted) : new StateManager()));
+	: (origin === OriginTauri || window.__TAURI_INTERNALS__ ? new TauriStateManager(origin !== OriginTauri, licenseAccepted) : new StateManager()),
+	clipboardSupported);
 
 if ('serviceWorker' in navigator && config && config.registerServiceWorker) {
 	window.addEventListener('load', registerServiceWorker2);

@@ -74,4 +74,12 @@ export default class YAStateManager implements IStateManager {
 	}
 
 	async setFullScreen(): Promise<boolean> { return false; }
+
+	copyToClipboard(text: string): void {
+		if (navigator.clipboard) {
+			navigator.clipboard.writeText(text);
+		} else {
+			alert(text);
+		}
+	}
 }

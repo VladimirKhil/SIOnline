@@ -47,4 +47,8 @@ export default class TauriStateManager implements IStateManager {
 		window.parent.postMessage({ type: 'fullscreen', payload: fullScreen }, '*');
 		return true;
 	}
+
+	copyToClipboard(text: string): void {
+		window.parent.postMessage({ type: 'copyToClipboard', payload: text }, '*');
+	}
 }

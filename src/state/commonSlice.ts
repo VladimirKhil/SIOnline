@@ -28,6 +28,7 @@ export interface CommonState {
 	audio: string | null;
 	audioLoop: boolean;
 	fontsReady: boolean;
+	clipboardSupported: boolean;
 }
 
 const initialState: CommonState = {
@@ -48,6 +49,7 @@ const initialState: CommonState = {
 	audio: null,
 	audioLoop: false,
 	fontsReady: false,
+	clipboardSupported: true,
 };
 
 export const commonSlice = createSlice({
@@ -99,6 +101,9 @@ export const commonSlice = createSlice({
 		setFontsReady: (state: CommonState, action: PayloadAction<boolean>) => {
 			state.fontsReady = action.payload;
 		},
+		setClipboardSupported: (state: CommonState, action: PayloadAction<boolean>) => {
+			state.clipboardSupported = action.payload;
+		},
 	}
 });
 
@@ -144,6 +149,7 @@ export const {
 	playAudio,
 	stopAudio,
 	setFontsReady,
+	setClipboardSupported,
 } = commonSlice.actions;
 
 export default commonSlice.reducer;

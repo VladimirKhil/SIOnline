@@ -99,11 +99,12 @@ import PlayerInfo from '../model/PlayerInfo';
 import actionCreators from './actionCreators';
 import Messages from '../client/game/Messages';
 import StakeModes from '../client/game/StakeModes';
-import { playAudio, stopAudio, userWarnChanged } from '../state/commonSlice';
+import { playAudio, stopAudio, userInfoChanged, userWarnChanged } from '../state/commonSlice';
 import getErrorMessage, { getUserError } from '../utils/ErrorHelpers';
 import { playersVisibilityChanged, setQrCode } from '../state/uiSlice';
 import ErrorCode from '../client/contracts/ErrorCode';
 import { setAttachContentToTable } from '../state/settingsSlice';
+import { copyToClipboard } from '../state/globalActions';
 
 function initGroup(group: ContentGroup) {
 	let bestRowCount = 1;
@@ -508,6 +509,11 @@ export default class ClientController {
 
 	onPass(playerIndex: number) {
 		this.appDispatch(playerStateChanged({ index: playerIndex, state: PlayerStates.Pass }));
+	}
+
+	onPin(pin: string) {
+		this.appDispatch(copyToClipboard(pin));
+		this.appDispatch(userInfoChanged(localization.pinCopied));
 	}
 
 	onPlayerState(state: PlayerStates, playerIndicies: number[]) {

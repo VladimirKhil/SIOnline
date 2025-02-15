@@ -33,7 +33,7 @@ const TableWelcome: React.FC<TableWelcomeProps> = (props: TableWelcomeProps) => 
 			</AutoSizedText>
 		</div>
 
-		{!common.clearUrls || props.isHost
+		{common.clipboardSupported && (!common.clearUrls || props.isHost)
 			? <div className='table-welcome__buttons'>
 				{common.clearUrls
 					? null

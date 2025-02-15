@@ -15,7 +15,6 @@ import inviteLink from '../../../utils/inviteLink';
 import './PersonsView.css';
 
 interface PersonsViewProps {
-	isConnected: boolean;
 	isHost: boolean;
 	all: Persons;
 	joinMode: JoinMode;
@@ -24,7 +23,6 @@ interface PersonsViewProps {
 }
 
 const mapStateToProps = (state: State) => ({
-	isConnected: state.common.isSIHostConnected,
 	isHost: isHost(state),
 	all: state.room.persons.all,
 	joinMode: state.room.joinMode,
@@ -37,11 +35,12 @@ const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => ({
 });
 
 export function PersonsView(props: PersonsViewProps): JSX.Element {
-	const roomState = useAppSelector(state => state.room2);
+	const room = useAppSelector(state => state.room2);
+	const common = useAppSelector(state => state.common);
 	const appDispatch = useAppDispatch();
 
-	const showman = props.all[roomState.persons.showman.name];
-	const playersNames = roomState.persons.players.map(p => p.name);
+	const showman = props.all[room.persons.showman.name];
+	const playersNames = room.persons.players.map(p => p.name);
 
 	const players = playersNames
 		.map(name => props.all[name])
@@ -49,7 +48,7 @@ export function PersonsView(props: PersonsViewProps): JSX.Element {
 		.sort((p1, p2) => p1.name.localeCompare(p2.name));
 
 	const viewers = Object.keys(props.all)
-		.filter(name => name !== roomState.persons.showman.name && !playersNames.includes(name))
+		.filter(name => name !== room.persons.showman.name && !playersNames.includes(name))
 		.map(name => props.all[name])
 		.sort((p1, p2) => p1.name.localeCompare(p2.name));
 
@@ -87,10 +86,12 @@ export function PersonsView(props: PersonsViewProps): JSX.Element {
 				</ul>
 			</div>
 
-			<div className="buttonsPanel inviteLinkHost sidePanel">
-				<button type="button" className='standard' onClick={() => inviteLink(appDispatch)}>{localization.inviteLink}</button>
-				{props.isHost ? <button type='button' className='standard' onClick={getPinCore}>{localization.getPin}</button> : null}
-			</div>
+			{common.clipboardSupported
+				? <div className="buttonsPanel inviteLinkHost sidePanel">
+					<button type="button" className='standard' onClick={() => inviteLink(appDispatch)}>{localization.inviteLink}</button>
+					{props.isHost ? <button type='button' className='standard' onClick={getPinCore}>{localization.getPin}</button> : null}
+				</div>
+				: null}
 
 			<div className="buttonsPanel sidePanel joinMode">
 				<span className='joinModeTitle'>{localization.joinMode}</span>
@@ -99,7 +100,7 @@ export function PersonsView(props: PersonsViewProps): JSX.Element {
 					title={localization.joinMode}
 					value = {props.joinMode}
 					onChange={onJoinModeChanged}
-					disabled={!props.isConnected || !props.isHost}>
+					disabled={!common.isSIHostConnected || !props.isHost}>
 					<option value={JoinMode.AnyRole}>{localization.joinModeAnyRole}</option>
 					<option value={JoinMode.OnlyViewer}>{localization.joinModeViewer}</option>
 					<option value={JoinMode.Forbidden}>{localization.joinModeForbidden}</option>

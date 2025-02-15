@@ -53,4 +53,12 @@ export default class StateManager implements IStateManager {
 
 		return true;
 	}
+
+	copyToClipboard(text: string): void {
+		if (navigator.clipboard) {
+			navigator.clipboard.writeText(text);
+		} else {
+			alert(text);
+		}
+	}
 }

@@ -26,7 +26,7 @@ import ClientController from './ClientController';
 import ContentInfo from '../model/ContentInfo';
 import ItemState from '../model/enums/ItemState';
 import GameSound from '../model/enums/GameSound';
-import { playAudio, userInfoChanged } from '../state/commonSlice';
+import { playAudio } from '../state/commonSlice';
 import clearUrls from '../utils/clearUrls';
 import ThemesPlayMode from '../model/enums/ThemesPlayMode';
 import { AppDispatch } from '../state/store';
@@ -581,14 +581,7 @@ const viewerHandler = (
 		case GameMessages.Pin:
 			if (args.length > 1) {
 				const pin = args[1];
-
-				if (navigator.clipboard) {
-					navigator.clipboard.writeText(pin);
-				} else {
-					alert(pin);
-				}
-
-				appDispatch(userInfoChanged(localization.pinCopied));
+				controller.onPin(pin);
 			}
 			break;
 

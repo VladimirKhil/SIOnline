@@ -27,8 +27,7 @@
         // Create and insert the iframe dynamically
         const iframe = document.createElement("iframe");
         iframe.title = "Main";
-        //iframe.src = `https://sigame.vladimirkhil.com#origin=TAURI&isLicenseAccepted=${isLicenseAccepted}`;
-        iframe.src = `http://localhost:8080#origin=TAURI&isLicenseAccepted=${isLicenseAccepted}`;
+        iframe.src = `https://sigame.vladimirkhil.com#origin=TAURI&licenseAccepted=${isLicenseAccepted}&clipboardSupported=true`;
         iframe.style.width = "100%";
         iframe.style.height = "100%";
         iframe.style.border = "none";

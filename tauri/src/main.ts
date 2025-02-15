@@ -1,4 +1,5 @@
 import { getCurrentWebviewWindow } from "@tauri-apps/api/webviewWindow";
+import { writeText } from '@tauri-apps/plugin-clipboard-manager';
 
 async function fullScreen(fullScreen: boolean) {
 	try {
@@ -21,5 +22,7 @@ window.addEventListener('message', (event) => {
 		fullScreen(event.data.payload);
 	} else if (event.data.type === 'acceptLicense') {
 		setCookie('ACCEPT_LICENSE', '1', 365);
+	} else if (event.data.type === 'copyToClipboard') {
+		writeText(event.data.payload);
 	}
 });
