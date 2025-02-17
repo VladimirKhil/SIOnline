@@ -1,0 +1,41 @@
+.siquester {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	height: 100%;
+	width: 100%;
+	color: white;
+	font-size: 20px;
+
+	.siquester__content {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+
+		.siquester__logo {
+			width: 100%;
+			flex: 0 0 150px;
+			background-image: url('../../../../assets/images/siquester.jpg');
+			background-position: center;
+			background-repeat: no-repeat;
+		}
+
+		.siquester__title {
+			margin-top: 10px;
+			font-size: 30px;
+		}
+
+		.siquester__actions {
+			margin-top: 40px;
+			display: flex;
+			flex-direction: column;
+
+			button.standard {
+				margin-top: 6px;
+				padding: 15px 100px;
+				width: 100%;
+			}
+		}
+	}
+}

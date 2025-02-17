@@ -10,6 +10,7 @@ import commonReducer from './commonSlice';
 import tableReducer from './tableSlice';
 import siPackagesReducer from './siPackagesSlice';
 import settingsReducer from './settingsSlice';
+import siquesterReducer from './siquesterSlice';
 import DataContext from '../model/DataContext';
 import Config from '../Config';
 import GameClient from '../client/game/GameClient';
@@ -54,6 +55,7 @@ const store = configureStore({
 		siPackages: siPackagesReducer,
 		settings: settingsReducer,
 		table: tableReducer,
+		siquester: siquesterReducer,
 	},
 	middleware: (getDefaultMiddleware) => getDefaultMiddleware({
 		thunk: {

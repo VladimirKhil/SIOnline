@@ -19,6 +19,8 @@ import UserError from '../panels/UserError/UserError';
 import { MessageLevel } from '../../state/commonSlice';
 import ProfileView from '../panels/AvatarViewDialog/ProfileView';
 import JoinByPin from '../views/JoinByPin/JoinByPin';
+import SIQuester from '../views/SIQuester/SIQuester';
+import PackageView from '../siquester/PackageView/PackageView';
 
 import './App.css';
 
@@ -81,6 +83,12 @@ export class App extends React.Component<AppProps> {
 
 			case Path.JoinByPin:
 				return <JoinByPin />;
+
+			case Path.SIQuester:
+				return <SIQuester />;
+
+			case Path.SIQuesterPackage:
+				return <PackageView />;
 
 			default:
 				return null;

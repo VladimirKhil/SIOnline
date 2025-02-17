@@ -30,4 +30,7 @@ export default interface DataContext {
 
 	/** State manager. */
 	state: IStateManager;
+
+	/** Package file. */
+	file?: File;
 }

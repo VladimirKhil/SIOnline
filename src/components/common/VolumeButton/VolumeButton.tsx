@@ -2,13 +2,12 @@ import * as React from 'react';
 import localization from '../../../model/resources/localization';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 import { setSoundVolume } from '../../../state/settingsSlice';
+import FlyoutButton, { FlyoutHorizontalOrientation, FlyoutVerticalOrientation } from '../FlyoutButton/FlyoutButton';
 
 import './VolumeButton.css';
 
 interface VolumeButtonProps {
 	canPlayAudio: boolean;
-	isVolumeControlVisible: boolean;
-	toggleVisibility: () => void;
 }
 
 export default function VolumeButton(props: VolumeButtonProps) {
@@ -21,27 +20,28 @@ export default function VolumeButton(props: VolumeButtonProps) {
 
 	return (
 		<>
-			<button
-				type="button"
-				onClick={props.toggleVisibility}
+			<FlyoutButton
 				className="volumeButton"
-				style={{ background: props.isVolumeControlVisible ? 'lightgrey' : 'none' }}
-				title={settings.soundVolume ? localization.enableSound : localization.disableSound}
+				title={localization.soundVolume}
+				flyout={
+					<div className="volumeFlyout">
+						<input
+							aria-label='Volume range'
+							min={0}
+							max={1}
+							step={0.1}
+							type="range"
+							value={settings.soundVolume}
+							onChange={changeVolumeHandler}
+							className="volumeButtonControl"
+						/>
+					</div>
+				}
+				verticalOrientation={FlyoutVerticalOrientation.Top}
+				horizontalOrientation={FlyoutHorizontalOrientation.Left}
 			>
 				{settings.soundVolume && props.canPlayAudio ? '🔈' : '🔇'}
-			</button>
-
-			<input
-				aria-label='Volume range'
-				min={0}
-				max={1}
-				step={0.1}
-				type="range"
-				value={settings.soundVolume}
-				onChange={changeVolumeHandler}
-				style={{ display: props.isVolumeControlVisible ? 'block' : 'none' }}
-				className="volumeButtonControl"
-			/>
+			</FlyoutButton>
 		</>
 	);
 }

@@ -344,7 +344,14 @@ async function getPackageInfoAsync(state: State, game: GameState, dataContext: D
 			const currentLanguage = getFullCulture(state);
 			const language = languages.find(l => l.code === currentLanguage);
 
-			const randomPackageParameters: RandomPackageParameters = { restrictionIds: [-1], tagIds: [-1] };
+			const randomPackageParameters: RandomPackageParameters = {
+				restrictionIds: [-1],
+				tagIds: [-1],
+				roundCount: 2,
+				tableThemeCount: 6,
+				themeListThemeCount: 4,
+				baseQuestionPrice: 100,
+			};
 
 			if (language) {
 				randomPackageParameters.languageId = language.id;

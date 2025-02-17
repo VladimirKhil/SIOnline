@@ -15,6 +15,7 @@ import onlineReducer from './online/onlineReducer';
 import { KnownOnlineAction } from './online/OnlineActions';
 import gameReducer from './gameSlice';
 import { UnknownAction } from '@reduxjs/toolkit';
+import siquesterReducer from './siquesterSlice';
 
 const reducer: Reducer<State> = (
 	state: State = initialState,
@@ -31,6 +32,7 @@ const reducer: Reducer<State> = (
 	online: onlineReducer(state.online, action as KnownOnlineAction),
 	online2: online2Reducer(state.online2, action as UnknownAction),
 	game: gameReducer(state.game, action as UnknownAction),
+	siquester: siquesterReducer(state.siquester, action as UnknownAction),
 });
 
 export default reducer;

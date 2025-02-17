@@ -10,6 +10,8 @@ const enum Path {
 	Room = '/room',
 	JoinRoom = '/join',
 	JoinByPin = '/joinByPin',
+	SIQuester = '/siquester',
+	SIQuesterPackage = '/siquester/package',
 }
 
 export default Path;

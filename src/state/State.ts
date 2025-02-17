@@ -9,6 +9,7 @@ import * as common from './commonSlice';
 import * as game from './gameSlice';
 import * as siPackages from './siPackagesSlice';
 import * as ui from './uiSlice';
+import * as siquester from './siquesterSlice';
 
 import OnlineState, { initialState as onlineInitialState } from './online/OnlineState';
 
@@ -25,6 +26,7 @@ export default interface State {
 	common: common.CommonState;
 	siPackages: siPackages.SIPackagesState;
 	settings: settings.SettingsState;
+	siquester: siquester.SIQuesterState;
 }
 
 export const initialState: State = {
@@ -40,4 +42,5 @@ export const initialState: State = {
 	table: table.tableSlice.getInitialState(),
 	common: common.commonSlice.getInitialState(),
 	settings: settings.settingsSlice.getInitialState(),
+	siquester: siquester.siquesterSlice.getInitialState(),
 };

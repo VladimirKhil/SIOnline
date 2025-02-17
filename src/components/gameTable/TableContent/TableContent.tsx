@@ -26,7 +26,6 @@ interface TableContentProps {
 
 interface TableContentState {
 	canPlayAudio: boolean;
-	isVolumeControlVisible: boolean;
 }
 
 const mapStateToProps = (state: State) => ({
@@ -44,6 +43,8 @@ function getLayout(layoutMode: LayoutMode, mainContent: JSX.Element) {
 		: <div className='optionsLayout'>{mainContent}<AnswerOptions /></div>;
 }
 
+// TODO: move audio controlling out of this component
+
 export class TableContent extends React.Component<TableContentProps, TableContentState> {
 	audioContextEventListener: () => void = () => {};
 
@@ -52,8 +53,22 @@ export class TableContent extends React.Component<TableContentProps, TableConten
 
 		this.state = {
 			canPlayAudio: audioContext.state === 'running',
-			isVolumeControlVisible: false,
 		};
+
+		this.runAudioContext = this.runAudioContext.bind(this);
+	}
+
+	runAudioContext() {
+		if (!this.state.canPlayAudio) {
+			audioContext.resume();
+			audioContext.createGain();
+
+			this.setState({
+				canPlayAudio: true
+			});
+		}
+
+		window.removeEventListener('click', this.runAudioContext);
 	}
 
 	componentDidMount(): void {
@@ -71,24 +86,15 @@ export class TableContent extends React.Component<TableContentProps, TableConten
 
 		audioContext.addEventListener('statechange', this.audioContextEventListener);
 		audioContext.resume().then(this.audioContextEventListener);
+
+		if (!this.state.canPlayAudio) {
+			window.addEventListener('click', this.runAudioContext);
+		}
 	}
 
 	componentWillUnmount(): void {
 		audioContext.removeEventListener('statechange', this.audioContextEventListener);
 	}
-
-	toggleVisibility = () => {
-		if (!this.state.canPlayAudio) {
-			audioContext.resume();
-			audioContext.createGain();
-
-			this.setState({
-				canPlayAudio: true
-			});
-		} else {
-			this.setState((state) => ({ ...state, isVolumeControlVisible: !this.state.isVolumeControlVisible }));
-		}
-	};
 
 	getAudioContent(): React.ReactNode {
 		return this.props.audio.length > 0
@@ -145,12 +151,11 @@ export class TableContent extends React.Component<TableContentProps, TableConten
 			<TableBorder>
 				<div className='table-content'>
 					{getLayout(this.props.layoutMode, mainContent)}
+
 					{hasSound
-						? <VolumeButton
-							canPlayAudio={this.state.canPlayAudio}
-							isVolumeControlVisible={this.state.isVolumeControlVisible}
-							toggleVisibility={this.toggleVisibility} />
+						? <VolumeButton canPlayAudio={this.state.canPlayAudio} />
 						: null}
+
 					<AudioContent audioContext={audioContext} autoPlayEnabled={this.state.canPlayAudio} />
 				</div>
 			</TableBorder>

@@ -82,6 +82,10 @@
 	padding-top: 2px;
 }
 
+.gameSideView {
+	overflow: hidden;
+}
+
 .gameSideView header {
 	color: white;
 	text-align: center;
