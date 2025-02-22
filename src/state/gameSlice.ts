@@ -19,7 +19,6 @@ export interface GameState {
 	role: Role;
 	isShowmanHuman: boolean;
 	playersCount: number;
-	humanPlayersCount: number;
 	id: number;
 	isAutomatic: boolean;
 }
@@ -39,7 +38,6 @@ const initialState: GameState = {
 	role: Role.Player,
 	isShowmanHuman: false,
 	playersCount: 3,
-	humanPlayersCount: 0,
 	id: -1,
 	isAutomatic: false
 };
@@ -74,17 +72,12 @@ export const gameSlice = createSlice({
 		},
 		setRole: (state: GameState, action: PayloadAction<Role>) => {
 			state.role = action.payload;
-			state.humanPlayersCount = Math.min(state.humanPlayersCount, state.playersCount - (action.payload === Role.Player ? 1 : 0));
 		},
 		setShowmanHuman: (state: GameState, action: PayloadAction<boolean>) => {
 			state.isShowmanHuman = action.payload;
 		},
 		setPlayersCount: (state: GameState, action: PayloadAction<number>) => {
 			state.playersCount = action.payload;
-			state.humanPlayersCount = Math.min(state.humanPlayersCount, action.payload - (state.role === Role.Player ? 1 : 0));
-		},
-		setHumanPlayersCount: (state: GameState, action: PayloadAction<number>) => {
-			state.humanPlayersCount = action.payload;
 		},
 		setGameSet: (state: GameState, action: PayloadAction<{ id: number, isAutomatic: boolean }>) => {
 			state.id = action.payload.id;
@@ -107,7 +100,6 @@ export const {
 	setRole,
 	setShowmanHuman,
 	setPlayersCount,
-	setHumanPlayersCount,
 	setGameSet,
 	newGame2,
 } = gameSlice.actions;

@@ -2,8 +2,7 @@ import * as React from 'react';
 import localization from '../../../model/resources/localization';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 
-import { setHumanPlayersCount,
-	setName,
+import { setName,
 	setPackageData,
 	setPackageType,
 	setPassword,
@@ -110,13 +109,6 @@ export function RoomOptions(props: RoomOptionsProps) {
 	const onPlayersCountChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
 		appDispatch(setPlayersCount(parseInt(e.target.value, 10)));
 	};
-
-	const onHumanPlayersCountChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
-		appDispatch(setHumanPlayersCount(parseInt(e.target.value, 10)));
-	};
-
-	const humanPlayersMaxCount = game.playersCount - (game.role === Role.Player ? 1 : 0);
-	const botsCount = Math.max(0, humanPlayersMaxCount - game.humanPlayersCount);
 
 	const onGamePackageDataChanged = (name: string, packageData: File | null) => {
 		if (packageData && packageData.size > maxPackageSizeMb * 1024 * 1024) {
@@ -246,37 +238,6 @@ export function RoomOptions(props: RoomOptionsProps) {
 				/>
 			</div>
 		</div>
-
-		{props.isSingleGame ? null : (
-			<>
-				<div className="block">
-					<div className="blockName">{localization.humanPlayers}</div>
-
-					<div className="blockValue playersBlock">
-						<span className="playersCountValue">{game.humanPlayersCount}</span>
-
-						<input
-							aria-label='Human players count'
-							type="range"
-							className="playersCount"
-							min={0}
-							max={humanPlayersMaxCount}
-							disabled={humanPlayersMaxCount === 0}
-							value={game.humanPlayersCount}
-							onChange={onHumanPlayersCountChanged}
-						/>
-					</div>
-				</div>
-
-				<div className="block">
-					<div className="blockName">{localization.computerPlayers}</div>
-
-					<div className="blockValue playersBlock">
-						<span className="playersCountValue">{botsCount}</span>
-					</div>
-				</div>
-			</>
-		)}
 	</>;
 }
 

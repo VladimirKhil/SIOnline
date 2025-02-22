@@ -94,7 +94,6 @@ function setState(state: State, savedState: SavedState | null, c: Config): State
 			role: savedState.game.role,
 			type: savedState.game.type,
 			playersCount: savedState.game.playersCount,
-			humanPlayersCount: savedState.game.humanPlayersCount || 0
 		} : state.game,
 		settings: savedState.settings ? {
 			...state.settings,

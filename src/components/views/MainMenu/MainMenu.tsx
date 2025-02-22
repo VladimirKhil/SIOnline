@@ -84,15 +84,15 @@ export function MainMenu(props: MainMenuProps): JSX.Element {
 					<button
 						type='button'
 						className='standard welcomeRow right'
-						onClick={() => appDispatch(navigate({ navigation: { path: Path.NewRoom, newGameMode: 'single' }, saveState: true }))}>
-						{localization.singlePlay.toUpperCase()}
+						onClick={() => appDispatch(navigate({ navigation: { path: Path.Lobby }, saveState: true }))}>
+						{localization.joinLobby.toUpperCase()}
 					</button>
 
 					<button
 						type='button'
 						className='standard welcomeRow left'
-						onClick={() => appDispatch(navigate({ navigation: { path: Path.Lobby }, saveState: true }))}>
-						{localization.joinLobby.toUpperCase()}
+						onClick={() => appDispatch(navigate({ navigation: { path: Path.NewRoom, newGameMode: 'single' }, saveState: true }))}>
+						{localization.singlePlay.toUpperCase()}
 					</button>
 
 					<button

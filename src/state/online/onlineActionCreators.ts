@@ -218,7 +218,6 @@ const joinByPin: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 
 function createGameSettings(
 	playersCount: number,
-	humanPlayersCount: number,
 	role: Role,
 	state: State,
 	players: AccountSettings[],
@@ -228,7 +227,9 @@ function createGameSettings(
 	viewers: AccountSettings[],
 	computerAccounts: string[],
 ) {
-	const compPlayersCount = playersCount - humanPlayersCount - (role === Role.Player ? 1 : 0);
+	const otherPlayerCount = playersCount - (role === Role.Player ? 1 : 0);
+	const humanPlayerCount = isSingleGame ? 0 : otherPlayerCount;
+	const compPlayersCount = otherPlayerCount - humanPlayerCount;
 
 	const compIndicies = [];
 
@@ -236,7 +237,7 @@ function createGameSettings(
 		compIndicies.push(i);
 	}
 
-	for (let i = 0; i < humanPlayersCount; i++) {
+	for (let i = 0; i < humanPlayerCount; i++) {
 		players.push({ name: Constants.ANY_NAME, isHuman: true });
 	}
 
@@ -397,7 +398,7 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 				humanPlayersCount: 0
 			} : state.game;
 
-		const { playersCount, humanPlayersCount, role } = game;
+		const { playersCount, role } = game;
 		const me: AccountSettings = { name: state.user.login, isHuman: true, isMale: state.settings.sex === Sex.Male };
 
 		const showman: AccountSettings = role === Role.Showman
@@ -417,7 +418,6 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 
 		const gameSettings = createGameSettings(
 			playersCount,
-			humanPlayersCount,
 			role,
 			state,
 			players,

@@ -13,7 +13,6 @@ export default interface SavedState {
 		role: Role;
 		type: GameType;
 		playersCount: number;
-		humanPlayersCount: number;
 	};
 
 	settings: SettingsState;

@@ -10,7 +10,6 @@ export function saveStateToStorage(state: RootState): void {
 			role: state.game.role,
 			type: state.game.type,
 			playersCount: state.game.playersCount,
-			humanPlayersCount: state.game.humanPlayersCount
 		},
 		settings: state.settings
 	});
