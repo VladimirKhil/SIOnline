@@ -10,6 +10,7 @@ import { AppDispatch } from '../../../state/store';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 import UserOptions from '../../panels/UserOptions/UserOptions';
 import { navigate } from '../../../utils/Navigator';
+import { exitApp } from '../../../state/globalActions';
 
 import './MainMenu.css';
 import exitImg from '../../../../assets/images/exit.png';
@@ -115,6 +116,15 @@ export function MainMenu(props: MainMenuProps): JSX.Element {
 						onClick={() => appDispatch(navigate({ navigation: { path: Path.SIQuester }, saveState: true }))}>
 						{localization.questionEditor.toUpperCase()}
 					</button> */}
+
+					{common.exitSupported ? (
+						<button
+							type='button'
+							className='standard welcomeRow right'
+							onClick={() => appDispatch(exitApp())}>
+							{localization.exit.toUpperCase()}
+						</button>
+					) : null}
 				</div>
 			</div>
 

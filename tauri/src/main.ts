@@ -1,5 +1,6 @@
 import { getCurrentWebviewWindow } from "@tauri-apps/api/webviewWindow";
 import { writeText } from '@tauri-apps/plugin-clipboard-manager';
+import { exit } from '@tauri-apps/plugin-process';
 
 async function fullScreen(fullScreen: boolean) {
 	try {
@@ -18,11 +19,24 @@ export function setCookie(cookieName: string, cookieValue: string, expirationDay
 }
 
 window.addEventListener('message', (event) => {
-	if (event.data.type === 'fullscreen') {
-		fullScreen(event.data.payload);
-	} else if (event.data.type === 'acceptLicense') {
-		setCookie('ACCEPT_LICENSE', '1', 365);
-	} else if (event.data.type === 'copyToClipboard') {
-		writeText(event.data.payload);
+	switch (event.data.type) {
+		case 'acceptLicense':
+			setCookie('ACCEPT_LICENSE', '1', 365);
+			break;
+
+		case 'copyToClipboard':
+			writeText(event.data.payload);
+			break;
+
+		case 'exit':
+			exit(0);
+			break;
+
+		case 'fullscreen':
+			fullScreen(event.data.payload);
+			break;
+
+		default:
+			console.warn('Unknown message type:', event.data.type);
 	}
 });

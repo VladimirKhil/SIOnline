@@ -1,13 +1,19 @@
-import { getCookie, setCookie } from './CookieHelpers';
-import IStateManager, { FullScreenMode } from './IStateManager';
+import { setIsDesktop } from '../state/commonSlice';
+import { getCookie, setCookie } from '../utils/CookieHelpers';
+import IHost, { FullScreenMode } from './IHost';
 import { Store } from 'redux';
 
 const ACCEPT_LICENSE_KEY = 'ACCEPT_LICENSE';
 
-export default class TauriStateManager implements IStateManager {
+export default class TauriHost implements IHost {
 	constructor(private isLegacy: boolean, private licenseAccepted: boolean) { }
 
+	isDesktop(): boolean {
+		return true;
+	}
+
 	async initAsync(store: Store): Promise<void> {
+		store.dispatch(setIsDesktop(true));
 		console.log('Loaded from Tauri');
 	}
 
@@ -50,5 +56,9 @@ export default class TauriStateManager implements IStateManager {
 
 	copyToClipboard(text: string): void {
 		window.parent.postMessage({ type: 'copyToClipboard', payload: text }, '*');
+	}
+
+	exitApp() : void {
+		window.parent.postMessage({ type: 'exit' }, '*');
 	}
 }

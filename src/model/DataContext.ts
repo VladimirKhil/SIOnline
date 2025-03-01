@@ -2,7 +2,7 @@
 import IGameServerClient from '../client/IGameServerClient';
 import Config from '../Config';
 import SIContentClient from 'sicontent-client';
-import IStateManager from '../utils/IStateManager';
+import IHost from '../host/IHost';
 import SIStorageClient from 'sistorage-client';
 
 /** Provides globally available Redux store data context. */
@@ -29,7 +29,7 @@ export default interface DataContext {
 	storageClients: SIStorageClient[];
 
 	/** State manager. */
-	state: IStateManager;
+	state: IHost;
 
 	/** Package file. */
 	file?: File;

@@ -9,6 +9,7 @@
     "core:default",
     "opener:default",
     "core:window:allow-set-fullscreen",
-    "clipboard-manager:allow-write-text"
+    "clipboard-manager:allow-write-text",
+    "process:default"
   ]
 }

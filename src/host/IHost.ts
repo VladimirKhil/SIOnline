@@ -6,7 +6,9 @@ export enum FullScreenMode {
 	No,
 }
 
-export default interface IStateManager {
+export default interface IHost {
+	isDesktop(): boolean;
+
 	initAsync(store: Store): Promise<void>;
 
 	onReady(): void;
@@ -26,4 +28,7 @@ export default interface IStateManager {
 	setFullScreen(fullScreen: boolean): Promise<boolean>;
 
 	copyToClipboard(text: string): void;
+
+	/** Exits application. */
+	exitApp(): void;
 }

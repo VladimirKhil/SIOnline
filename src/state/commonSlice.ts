@@ -29,6 +29,8 @@ export interface CommonState {
 	audioLoop: boolean;
 	fontsReady: boolean;
 	clipboardSupported: boolean;
+	exitSupported?: boolean;
+	isDesktop?: boolean;
 }
 
 const initialState: CommonState = {
@@ -50,6 +52,8 @@ const initialState: CommonState = {
 	audioLoop: false,
 	fontsReady: false,
 	clipboardSupported: true,
+	exitSupported: false,
+	isDesktop: false,
 };
 
 export const commonSlice = createSlice({
@@ -104,6 +108,16 @@ export const commonSlice = createSlice({
 		setClipboardSupported: (state: CommonState, action: PayloadAction<boolean>) => {
 			state.clipboardSupported = action.payload;
 		},
+		setExitSupported: (state: CommonState, action: PayloadAction<boolean>) => {
+			state.exitSupported = action.payload;
+		},
+		setIsDesktop: (state: CommonState, action: PayloadAction<boolean>) => {
+			state.isDesktop = action.payload;
+
+			if (state.isDesktop) {
+				state.askForConsent = false;
+			}
+		},
 	}
 });
 
@@ -150,6 +164,8 @@ export const {
 	stopAudio,
 	setFontsReady,
 	setClipboardSupported,
+	setExitSupported,
+	setIsDesktop,
 } = commonSlice.actions;
 
 export default commonSlice.reducer;

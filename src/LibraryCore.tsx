@@ -11,7 +11,7 @@ import GameClient from './client/game/GameClient';
 import DataContext from './model/DataContext';
 import ClientController from './logic/ClientController';
 import TableMode from './model/enums/TableMode';
-import StateManager from './utils/StateManager';
+import BrowserHost from './host/BrowserHost';
 import SIHostClient from './client/SIHostClient';
 import localization from './model/resources/localization';
 import Role from './model/Role';
@@ -309,7 +309,7 @@ export default function runCore(game?: IGameClient): Store<State, AnyAction> {
 		contentUris: null,
 		contentClient: new SIContentClient({ serviceUri: 'http://fake' }),
 		storageClients: [],
-		state: new StateManager(),
+		state: new BrowserHost(),
 	};
 
 	const savedState = loadState();

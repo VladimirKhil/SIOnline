@@ -27,16 +27,16 @@ import GameServerClient from './client/GameServerClient';
 import SIContentClient from 'sicontent-client';
 import ButtonPressMode from './model/ButtonPressMode';
 import Path from './model/enums/Path';
-import StateManager from './utils/StateManager';
-import YAStateManager from './utils/YAStateManager';
-import IStateManager, { FullScreenMode } from './utils/IStateManager';
+import BrowserHost from './host/BrowserHost';
+import YandexHost from './host/YandexHost';
+import IHost, { FullScreenMode } from './host/IHost';
 import SIHostClient from './client/SIHostClient';
 import { setFullScreen, setGameButtonKey } from './state/settingsSlice';
-import { commonErrorChanged, setClipboardSupported, setFontsReady } from './state/commonSlice';
+import { commonErrorChanged, setClipboardSupported, setExitSupported, setFontsReady } from './state/commonSlice';
 import { saveStateToStorage } from './state/StateHelpers';
 import { INavigationState, isSettingGameButtonKeyChanged, setFullScreenSupported, visibilityChanged, windowSizeChanged } from './state/uiSlice';
 import { navigate } from './utils/Navigator';
-import TauriStateManager from './utils/TauriStateManager';
+import TauriHost from './host/TauriHost';
 
 import './utils/polyfills';
 import './scss/style.scss';
@@ -60,7 +60,7 @@ if (!config) {
 	throw new Error('Config is undefined!');
 }
 
-function setState(state: State, savedState: SavedState | null, c: Config): State {
+function setState(state: State, savedState: SavedState | null, c: Config, isDesktop: boolean): State {
 	if (!savedState) {
 		return {
 			...state,
@@ -69,6 +69,10 @@ function setState(state: State, savedState: SavedState | null, c: Config): State
 				askForConsent: !!c.askForConsent,
 				emojiCultures: c.emojiCultures,
 				clearUrls: c.clearUrls,
+			},
+			settings: {
+				...state.settings,
+				appSound: isDesktop,
 			},
 		};
 	}
@@ -124,12 +128,12 @@ function setState(state: State, savedState: SavedState | null, c: Config): State
 				displayAnswerOptionsLabels: appSettings.displayAnswerOptionsLabels ?? true,
 				displayAnswerOptionsOneByOne: appSettings.displayAnswerOptionsOneByOne ?? true,
 			},
-			gameButtonKey: savedState.settings.gameButtonKey || Constants.KEY_CTRL
+			gameButtonKey: savedState.settings.gameButtonKey || Constants.KEY_CTRL,
 		} : state.settings,
 	};
 }
 
-function subscribeToExternalEvents(store: Store<State, any>, stateManager: IStateManager) {
+function subscribeToExternalEvents(store: Store<State, any>, stateManager: IHost) {
 	// TODO use ResizeObserver for body element instead of this as app could be hosted inside iframe
 	// and window dimensions will be irrelevant
 	window.onresize = () => {
@@ -181,10 +185,12 @@ function subscribeToExternalEvents(store: Store<State, any>, stateManager: IStat
 		return false;
 	});
 
-	window.addEventListener('visibilitychange', () => {
-		store.dispatch(visibilityChanged(document.visibilityState === 'visible'));
-		return false;
-	});
+	if (!host.isDesktop()) {
+		window.addEventListener('visibilitychange', () => {
+			store.dispatch(visibilityChanged(document.visibilityState === 'visible'));
+			return false;
+		});
+	}
 
 	document.fonts.ready.then(() => {
 		window.setTimeout(() => store.dispatch(setFontsReady(true)), 1000);
@@ -257,7 +263,7 @@ function getInitialView(historyState: INavigationState): INavigationState {
 	return { path: Path.Root };
 }
 
-async function run(stateManager: IStateManager, clipboardSupported: boolean) {
+async function run(stateManager: IHost, clipboardSupported: boolean, exitSupported: boolean) {
 	try {
 		if (!config) {
 			throw new Error('Config is undefined!');
@@ -288,7 +294,7 @@ async function run(stateManager: IStateManager, clipboardSupported: boolean) {
 		}
 
 		const savedState = loadState();
-		const state = setState(initialState, savedState, config);
+		const state = setState(initialState, savedState, config, host.isDesktop());
 
 		const noOpHubConnection = new signalR.HubConnectionBuilder().withUrl('http://fake').build();
 		const gameClient = new GameServerClient();
@@ -351,6 +357,10 @@ async function run(stateManager: IStateManager, clipboardSupported: boolean) {
 			store.dispatch(setClipboardSupported(false));
 		}
 
+		if (exitSupported) {
+			store.dispatch(setExitSupported(true));
+		}
+
 		document.title = localization.appName;
 
 		ReactDOM.render(
@@ -378,6 +388,7 @@ const urlParams = new URLSearchParams(window.location.hash.substring(1));
 const origin = urlParams.get('origin');
 let licenseAccepted = false;
 let clipboardSupported = true;
+let exitSupported = false;
 
 if (origin === OriginYandex) {
 	console.log('Loading from Yandex');
@@ -395,12 +406,14 @@ if (origin === OriginYandex) {
 	config.registerServiceWorker = false;
 	licenseAccepted = urlParams.get('licenseAccepted') === 'true';
 	clipboardSupported = urlParams.get('clipboardSupported') === 'true';
+	exitSupported = urlParams.get('exitSupported') === 'true';
 }
 
-run(origin === OriginYandex
-	? new YAStateManager()
-	: (origin === OriginTauri || window.__TAURI_INTERNALS__ ? new TauriStateManager(origin !== OriginTauri, licenseAccepted) : new StateManager()),
-	clipboardSupported);
+const host = origin === OriginYandex
+	? new YandexHost()
+	: (origin === OriginTauri || window.__TAURI_INTERNALS__ ? new TauriHost(origin !== OriginTauri, licenseAccepted) : new BrowserHost());
+
+run(host, clipboardSupported, exitSupported);
 
 if ('serviceWorker' in navigator && config && config.registerServiceWorker) {
 	window.addEventListener('load', registerServiceWorker2);

@@ -16,7 +16,7 @@ import Config from '../Config';
 import GameClient from '../client/game/GameClient';
 import GameServerClient from '../client/GameServerClient';
 import SIContentClient from 'sicontent-client';
-import StateManager from '../utils/StateManager';
+import BrowserHost from '../host/BrowserHost';
 import SIHostClient from '../client/SIHostClient';
 
 /* New version of store. Not used yet */
@@ -40,7 +40,7 @@ const dataContext: DataContext = {
 	contentUris: null,
 	contentClient: new SIContentClient({ serviceUri: 'http://fake' }),
 	storageClients: [],
-	state: new StateManager(),
+	state: new BrowserHost(),
 };
 
 const store = configureStore({

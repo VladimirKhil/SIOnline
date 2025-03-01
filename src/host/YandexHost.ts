@@ -1,16 +1,20 @@
 import { Store } from 'redux';
-import IStateManager, { FullScreenMode } from './IStateManager';
+import IHost, { FullScreenMode } from './IHost';
 import { changeLogin } from '../state/userSlice';
 
 const SDK_PATH = 'https://sdk.games.s3.yandex.net/sdk.js';
 
 declare const YaGames: any;
 
-export default class YAStateManager implements IStateManager {
+export default class YandexHost implements IHost {
 	private ysdk: any;
 	private player: any;
 
 	private playerData: any;
+
+	isDesktop(): boolean {
+		return false;
+	}
 
 	async initAsync(store: Store): Promise<void> {
 		const scriptPromise = new Promise((resolve, reject) => {
@@ -82,4 +86,6 @@ export default class YAStateManager implements IStateManager {
 			alert(text);
 		}
 	}
+
+	exitApp() {}
 }

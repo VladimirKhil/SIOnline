@@ -8,3 +8,11 @@ export const copyToClipboard = createAsyncThunk(
 		dataContext.state.copyToClipboard(arg);
 	},
 );
+
+export const exitApp = createAsyncThunk(
+	'global/exitApp',
+	async (_, thunkAPI) => {
+		const dataContext = thunkAPI.extra as DataContext;
+		dataContext.state.exitApp();
+	},
+);

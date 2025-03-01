@@ -1,10 +1,14 @@
 import { Store } from 'redux';
-import { getCookie, setCookie } from './CookieHelpers';
-import IStateManager, { FullScreenMode } from './IStateManager';
+import { getCookie, setCookie } from '../utils/CookieHelpers';
+import IHost, { FullScreenMode } from './IHost';
 
 const ACCEPT_LICENSE_KEY = 'ACCEPT_LICENSE';
 
-export default class StateManager implements IStateManager {
+export default class BrowserHost implements IHost {
+	isDesktop(): boolean {
+		return false;
+	}
+
 	initAsync(store: Store): Promise<void> {
 		return Promise.resolve();
 	}
@@ -61,4 +65,6 @@ export default class StateManager implements IStateManager {
 			alert(text);
 		}
 	}
+
+	exitApp() {}
 }
