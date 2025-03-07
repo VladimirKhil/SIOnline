@@ -403,7 +403,7 @@ const apellate: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (
 	_getState: () => State,
 	dataContext: DataContext
 	) => {
-	await dataContext.game.gameServerClient.msgAsync('APELLATE', '+');
+	await dataContext.game.apellate(true);
 };
 
 const disagree: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
@@ -411,7 +411,7 @@ const disagree: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (
 	_getState: () => State,
 	dataContext: DataContext
 	) => {
-	await dataContext.game.gameServerClient.msgAsync('APELLATE', '-');
+	await dataContext.game.apellate(false);
 };
 
 const isAnswering: ActionCreator<RunActions.IsAnsweringAction> = () => ({
@@ -517,7 +517,7 @@ const changePlayerSum: ActionCreator<ThunkAction<void, State, DataContext, Actio
 	_getState: () => State,
 	dataContext: DataContext
 	) => {
-	await dataContext.game.gameServerClient.msgAsync('CHANGE', playerIndex + 1, sum); // playerIndex here starts with 1
+	await dataContext.game.setPlayerScore(playerIndex, sum);
 };
 
 const readingSpeedChanged: ActionCreator<RunActions.ReadingSpeedChangedAction> = (readingSpeed: number) => ({
@@ -561,7 +561,7 @@ const startGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> = 
 	_getState: () => State,
 	dataContext: DataContext
 ) => {
-	await dataContext.game.gameServerClient.msgAsync('START');
+	await dataContext.game.start();
 };
 
 const ready: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (isReady: boolean) => async (
@@ -569,7 +569,7 @@ const ready: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (isR
 	_getState: () => State,
 	dataContext: DataContext
 ) => {
-	await dataContext.game.gameServerClient.msgAsync('READY', isReady ? '+' : '-');
+	await dataContext.game.ready(isReady);
 };
 
 const roundsNamesChanged: ActionCreator<RunActions.RoundsNamesChangedAction> = (roundsNames: string[]) => ({
@@ -587,15 +587,17 @@ const themeNameChanged: ActionCreator<RunActions.ThemeNameChangedAction> = (them
 const moveNext: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
 	_dispatch: Dispatch<any>,
 	_getState: () => State,
-	dataContext: DataContext) => {
-	await dataContext.game.gameServerClient.msgAsync('MOVE', '1');
+	dataContext: DataContext
+) => {
+	await dataContext.game.moveNext();
 };
 
 const navigateToRound: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (roundIndex: number) => async (
 	_dispatch: Dispatch<any>,
 	_getState: () => State,
-	dataContext: DataContext) => {
-	await dataContext.game.gameServerClient.msgAsync('MOVE', '3', roundIndex);
+	dataContext: DataContext
+) => {
+	await dataContext.game.moveToRound(roundIndex);
 };
 
 const areApellationsEnabledChanged: ActionCreator<RunActions.AreApellationsEnabledChangedAction> = (areApellationsEnabled: boolean) => ({

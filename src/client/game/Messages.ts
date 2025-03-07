@@ -6,12 +6,16 @@ const enum Messages {
 	/** Answer version. Denotes a preliminary answer printed by player. */
 	AnswerVersion = 'ANSWER_VERSION',
 
+	Apellate = 'APELLATE',
+
 	Atom = 'ATOM',
 
 	/** User avatar info. */
 	Avatar = 'AVATAR',
 
 	Ban = 'BAN',
+
+	Change = 'CHANGE',
 
 	/** Question selection. */
 	Choice = 'CHOICE',
@@ -31,6 +35,8 @@ const enum Messages {
 
 	/** Notifies that media has been successfully loaded. */
 	MediaLoaded = 'MEDIALOADED',
+
+	Move = 'MOVE',
 
 	Moveable = 'MOVEABLE',
 
@@ -58,6 +64,8 @@ const enum Messages {
 	SetJoinMode = 'SETJOINMODE',
 
 	SetStake = 'SET_STAKE',
+
+	Start = 'START',
 
 	/** Toggles (removes or restores a question). */
 	Toggle = 'TOGGLE',

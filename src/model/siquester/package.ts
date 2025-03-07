@@ -254,7 +254,7 @@ function parseContentParam(paramElement: Element): ContentParam {
 			isRef: item.getAttribute('isRef') === 'True',
 			placement: item.getAttribute('placement') as 'replic' | 'background' | undefined,
 			duration: item.getAttribute('duration') || undefined,
-			waitForFinish: item.getAttribute('waitForFinish') === 'True',
+			waitForFinish: item.getAttribute('waitForFinish') !== 'False',
 		})),
 	};
 }

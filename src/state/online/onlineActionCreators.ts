@@ -483,7 +483,7 @@ async function gameInit(gameClient: IGameClient, role: Role) {
 	await gameClient.moveable();
 
 	if (role === Role.Player || role === Role.Showman) {
-		await gameClient.ready();
+		await gameClient.ready(true);
 	}
 }
 

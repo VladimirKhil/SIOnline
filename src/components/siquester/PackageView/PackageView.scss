@@ -9,7 +9,9 @@
 	overflow: hidden;
 
 	.packageView__structure {
-		flex: 1;
+		flex: 2;
+		overflow: auto;
+		margin-right: 10px;
 
 		.packageView__package {
 			font-size: 25px;
@@ -53,7 +55,7 @@
 
 			.packageView__theme__name {
 				margin: 3px;
-				width: 200px;
+				flex: 200px 0 0;
 				display: flex;
 				justify-content: center;
 				align-items: center;
@@ -73,7 +75,7 @@
 
 			.packageView__question {
 				margin: 3px;
-				width: 60px;
+				flex: 60px 0 0;
 				background-color: rgb(56, 56, 56);
 				display: flex;
 				justify-content: center;
@@ -96,15 +98,24 @@
 	.packageView__object {
 		flex: 1;
 		background-color: rgb(59, 59, 59);
-		padding: 15px;
 		border-radius: 5px;
+		padding: 15px;
+		position: absolute;
+		overflow: hidden;
+		left: 0;
+		top: 0;
+		width: 100%;
+		height: 100%;
 
 		.info {
+			overflow: hidden;
 			display: flex;
 			flex-direction: column;
+			height: 100%;
 
 			header {
 				display: flex;
+				flex: 45p 0 0;
 			}
 
 			.main__header {
@@ -119,10 +130,63 @@
 				margin-top: 10px;
 			}
 
+			.info__content {
+				overflow-y: auto;
+				display: flex;
+				flex-direction: column;
+				flex: 1;
+				margin-top: 10px;
+			}
+
 			input {
 				margin: 5px 0;
 				padding: 5px;
 				font-size: 16px;
+			}
+
+			textarea {
+				margin: 5px 0;
+				padding: 5px;
+				font-size: 16px;
+			}
+
+			.packageView__theme__info__comments {
+				flex: 100px 0 0;
+			}
+
+			.packageView__question__screens {
+				display: flex;
+				flex-direction: row;
+				flex: 50px 0 0;
+			}
+
+			.packageView__question__screen {
+				width: 50px;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				overflow: hidden;
+				background-color: #000000;
+				margin: 5px 5px 5px 0;
+				cursor: pointer;
+
+				&.selected {
+					background-color: white;
+					color: black;
+					cursor: default;
+				}
+			}
+
+			.packageView__question__current__screen {
+				width: 250px;
+				flex: 250px 0 0;
+				padding: 5px;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				text-align: center;
+				overflow: hidden;
+				background-color: #000000;
 			}
 		}
 	}
@@ -130,4 +194,16 @@
 
 h1 {
 	margin: 0;
+}
+
+@media screen and (min-width: 800px) {
+	.packageView {
+		.packageView__object {
+			position: relative;
+			left: initial;
+			top: initial;
+			width: initial;
+			height: initial;
+		}
+	}
 }

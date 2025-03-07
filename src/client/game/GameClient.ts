@@ -14,6 +14,10 @@ export default class GameClient implements IGameClient {
 		return this.gameServerClient.msgAsync(Messages.Config, 'ADDTABLE');
 	}
 
+	apellate(forRightAnswer: boolean): Promise<boolean> {
+		return this.gameServerClient.msgAsync(Messages.Apellate, forRightAnswer ? '+' : '-');
+	}
+
 	approveAnswer(factor: number): Promise<boolean> {
 		return this.gameServerClient.msgAsync(Messages.IsRight, '+', factor);
 	}
@@ -58,6 +62,14 @@ export default class GameClient implements IGameClient {
 		return this.gameServerClient.msgAsync(Messages.Moveable);
 	}
 
+	moveNext(): Promise<boolean> {
+		return this.gameServerClient.msgAsync(Messages.Move, '1');
+	}
+
+	moveToRound(roundIndex: number): Promise<boolean> {
+		return this.gameServerClient.msgAsync(Messages.Move, '3', roundIndex);
+	}
+
 	onMediaCompleted(): Promise<boolean> {
 		return this.gameServerClient.msgAsync(Messages.Atom);
 	}
@@ -74,8 +86,8 @@ export default class GameClient implements IGameClient {
 		return this.gameServerClient.msgAsync(Messages.I, deltaTime);
 	}
 
-	ready(): Promise<boolean> {
-		return this.gameServerClient.msgAsync(Messages.Ready);
+	ready(isReady: boolean): Promise<boolean> {
+		return this.gameServerClient.msgAsync(Messages.Ready, isReady ? '+' : '-');
 	}
 
 	rejectAnswer(factor: number): Promise<boolean> {
@@ -122,8 +134,16 @@ export default class GameClient implements IGameClient {
 		return this.gameServerClient.msgAsync(Messages.SetJoinMode, JoinMode[joinMode]);
 	}
 
+	setPlayerScore(playerIndex: number, score: number): Promise<boolean> {
+		return this.gameServerClient.msgAsync(Messages.Change, playerIndex + 1, score); // playerIndex here starts with 1
+	}
+
 	setTable(isShowman: boolean, tableIndex: number, name: string): Promise<boolean> {
 		return this.gameServerClient.msgAsync(Messages.Config, 'SET', isShowman ? 'showman' : 'player', isShowman ? '' : tableIndex, name);
+	}
+
+	start(): Promise<boolean> {
+		return this.gameServerClient.msgAsync(Messages.Start);
 	}
 
 	toggle(themeIndex: number, questionIndex: number): Promise<boolean> {

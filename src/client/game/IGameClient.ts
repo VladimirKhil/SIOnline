@@ -9,6 +9,8 @@ export default interface IGameClient {
 
 	addTable(): Promise<boolean>;
 
+	apellate(forRightAnswer: boolean): Promise<boolean>;
+
 	approveAnswer(factor: number): Promise<boolean>;
 
 	changeTableType(isShowman: boolean, tableIndex: number): Promise<boolean>;
@@ -32,6 +34,10 @@ export default interface IGameClient {
 
 	moveable(): Promise<boolean>;
 
+	moveNext(): Promise<boolean>;
+
+	moveToRound(roundIndex: number): Promise<boolean>;
+
 	onMediaCompleted(): Promise<boolean>;
 
 	pass(): Promise<boolean>;
@@ -40,7 +46,7 @@ export default interface IGameClient {
 
 	pressButton(deltaTime: number): Promise<boolean>;
 
-	ready(): Promise<boolean>;
+	ready(isReady: boolean): Promise<boolean>;
 
 	rejectAnswer(factor: number): Promise<boolean>;
 
@@ -68,7 +74,11 @@ export default interface IGameClient {
 	/** Sets game join mode. */
 	setJoinMode(joinMode: JoinMode): Promise<boolean>;
 
+	setPlayerScore(playerIndex: number, score: number): Promise<boolean>;
+
 	setTable(isShowman: boolean, tableIndex: number, name: string): Promise<boolean>;
+
+	start(): Promise<boolean>;
 
 	/** Toggles (removes or restores) a question on game table. */
 	toggle(themeIndex: number, questionIndex: number): Promise<boolean>;
