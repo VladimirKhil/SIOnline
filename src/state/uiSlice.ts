@@ -10,6 +10,7 @@ export interface INavigationState {
 	packageUri?: string;
 	packageName?: string;
 	hostUri?: string;
+	siHostKey?: string;
 	gameId?: number;
 	newGameMode?: 'single' | 'multi' | null;
 	callbackState?: INavigationState;

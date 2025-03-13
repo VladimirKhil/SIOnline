@@ -1,11 +1,16 @@
 import React from 'react';
 import { useAppSelector } from '../../../state/hooks';
+import { useDispatch } from 'react-redux';
 import { ContentParam, Package, Question, Round, Theme } from '../../../model/siquester/package';
+import localization from '../../../model/resources/localization';
+import { navigate } from '../../../utils/Navigator';
+import Path from '../../../model/enums/Path';
 
 import './PackageView.scss';
-import localization from '../../../model/resources/localization';
+import exitImg from '../../../../assets/images/exit.png';
 
 const PackageView: React.FC = () => {
+	const appDispatch = useDispatch();
 	const siquester = useAppSelector(state => state.siquester);
 	const { pack } = siquester;
 	const [roundIndex, setRoundIndex] = React.useState(0);
@@ -16,13 +21,76 @@ const PackageView: React.FC = () => {
 		return <div>Loading...</div>;
 	}
 
+	const onExit = () => appDispatch(navigate({ navigation: { path: Path.SIQuester }, saveState: true }));
+
 	const round = pack.rounds[roundIndex];
+	const isThemeList = round?.type === 'final';
 
 	function getItemView(item: Package | Round | Theme | Question): React.ReactNode {
 		if ('rounds' in item) { // Package
-			return (
-				<div className='packageView__package__info'>
+			const pack = item as Package;
 
+			return (
+				<div className='info packageView__package__info'>
+					<header>
+						<div className='main__header'>{localization.package}</div>
+						<button type='button' className='standard' onClick={() => setItem(null)}>{localization.close}</button>
+					</header>
+
+					<section className='info__content'>
+						<label htmlFor='name' className='header'>{localization.name}</label>
+						<input id='name' type='text' className='packageView__package__info__name' value={pack.name} readOnly />
+
+						{pack.logo ? <img src={pack.logo} alt='Logo' className='packageView__package__info__logo' /> : null}
+
+						<label htmlFor='date' className='header'>{localization.date}</label>
+						<input id='date' type='text' className='packageView__package__info__date' value={pack.date} readOnly />
+
+						<label htmlFor='language' className='header'>{localization.language}</label>
+						<input id='language' type='text' className='packageView__package__info__language' value={pack.language} readOnly />
+
+						<label htmlFor='publisher' className='header'>{localization.publisher}</label>
+						<input id='publisher' type='text' className='packageView__package__info__publisher' value={pack.publisher} readOnly />
+
+						<label htmlFor='restriction' className='header'>{localization.restriction}</label>
+						<input id='restriction' type='text' className='packageView__package__info__restriction' value={pack.restriction} readOnly />
+
+						<label htmlFor='difficulty' className='header'>{localization.difficulty}</label>
+						<input id='difficulty' type='text' className='packageView__package__info__difficulty' value={pack.difficulty} readOnly />
+
+						{pack.tags.length > 0
+							? <>
+								<label className='header'>{localization.tags}</label>
+
+								{pack.tags.map((tag, ti) => (
+									<input aria-label='tag' key={ti} className='packageView__package__info__tag' value={tag.value} readOnly />
+								))}
+							</> : null}
+
+						{pack.info?.authors
+							? <>
+								<label className='header'>{localization.authors}</label>
+
+								{pack.info?.authors.map((author, ai) => (
+									<input aria-label='author' key={ai} className='packageView__theme__info__author' value={author.name} readOnly />
+								))}
+							</> : null}
+
+						{pack.info?.sources
+							? <>
+								<label className='header' htmlFor='sources'>{localization.sources}</label>
+
+								{pack.info?.sources?.map((source, si) => (
+									<input id='sources' key={si} className='packageView__theme__info__source' value={source.value} readOnly />
+								))}
+							</> : null}
+
+						{pack.info?.comments
+							? <>
+								<label className='header' htmlFor='comments'>{localization.comments}</label>
+								<textarea id='comments' className='packageView__theme__info__comments' value={pack.info.comments} readOnly />
+							</> : null}
+					</section>
 				</div>
 			);
 		}
@@ -260,7 +328,21 @@ const PackageView: React.FC = () => {
 	return (
 		<div className='packageView'>
 			<div className='packageView__structure'>
-				<div className='packageView__package'>{pack.name}</div>
+				<header className='packageView__header'>
+					<button
+						type='button'
+						className='standard imageButton welcomeExit'
+						onClick={onExit}
+						title={localization.exit}>
+						<img src={exitImg} alt='Exit' />
+					</button>
+
+					<div
+						className={`packageView__package ${item === pack ? 'selected' : ''}`}
+						onClick={() => { setItem(pack); }}>
+						{pack.name}
+					</div>
+				</header>
 
 				<div className='packageView__rounds'>
 					{pack.rounds.map((round, ri) => (
@@ -283,9 +365,11 @@ const PackageView: React.FC = () => {
 							{theme.questions.map((question, qi) => (
 								<div
 									key={qi}
-									className={`packageView__question ${item === question ? 'selected' : ''}`}
+									className={`packageView__question
+										${item === question ? 'selected' : ''}
+										${isThemeList ? 'wide' : ''}`}
 									onClick={() => { setItem(question); setScreenIndex(0); }}>
-									{question.price}
+									{isThemeList ? localization.question : (question.price > -1 ? question.price : ' ')}
 								</div>
 							))}
 						</div>

@@ -236,13 +236,12 @@ function getInitialView(historyState: INavigationState): INavigationState {
 
 	const { search } = window.location;
 
-	if (search.startsWith('?_') && search.length > 3 && config?.siHostsIdUriMap) {
+	if (search.startsWith('?_') && search.length > 3) {
 		const [,,siHostKey] = search;
 		const gameId = parseInt(search.substring(3), 10);
-		const hostUri = config.siHostsIdUriMap[siHostKey];
 
-		if (hostUri) {
-			return { path: Path.JoinRoom, gameId, hostUri };
+		if (siHostKey) {
+			return { path: Path.JoinRoom, gameId, siHostKey };
 		}
 	}
 

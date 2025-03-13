@@ -9,6 +9,9 @@ export default interface HostInfo {
 	/** Server hostname. */
 	host: string;
 
+	/** Wel-known hosts. */
+	siHosts: Record<string, string>;
+
 	/** Port number for TCP-based connections. */
 	port: number;
 

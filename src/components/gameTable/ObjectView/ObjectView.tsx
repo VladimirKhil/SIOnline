@@ -9,8 +9,8 @@ export default function ObjectView() {
 	const state = useAppSelector((rootState: RootState) => rootState.table);
 
 	return (
-		<div className='objectView'>
-			<div className='objectHeader'>{state.header}</div>
+		<div className={`objectView ${state.animate ? 'animate' : ''}`} key={state.text}>
+			<div className={`objectHeader ${state.header.length === 0 ? 'empty' : ''}`}>{state.header}</div>
 
 			<AutoSizedText
 				className={`tableText tableTextCenter objectName ${state.rotate ? 'rotate' : ''}`}
@@ -18,7 +18,7 @@ export default function ObjectView() {
 				{state.text}
 			</AutoSizedText>
 
-			<div className={`objectHint ${state.hint.length === 0 ? 'empty' : ''} `}>{state.hint}</div>
+			<div className={`objectHint ${state.hint.length === 0 ? 'empty' : ''}`}>{state.hint}</div>
 		</div>
 	);
 }

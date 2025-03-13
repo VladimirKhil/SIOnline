@@ -42,6 +42,7 @@ import { answerOptions,
 	resumeMedia,
 	rightOption,
 	setAnswerView,
+	setThemesComments,
 	showBackgroundAudio,
 	showContent,
 	showContentHint,
@@ -75,7 +76,10 @@ import {
 	playerInGameChanged,
 	playerLostStateDropped,
 	playerLostStatesDropped,
+	playerMediaLoaded,
+	playerMediaPreloaded,
 	playerReplicChanged,
+	playerRoundStateCleared,
 	playerStateChanged,
 	playerStatesChanged,
 	playerSumChanged,
@@ -105,6 +109,8 @@ import { playersVisibilityChanged, setQrCode } from '../state/uiSlice';
 import ErrorCode from '../client/contracts/ErrorCode';
 import { setAttachContentToTable } from '../state/settingsSlice';
 import { copyToClipboard } from '../state/globalActions';
+import { mediaPreloaded } from '../state/serverActions';
+import stringFormat from '../utils/StringHelpers';
 
 function initGroup(group: ContentGroup) {
 	let bestRowCount = 1;
@@ -442,6 +448,28 @@ export default class ClientController {
 		this.dispatch(actionCreators.sendAvatar() as any);
 	}
 
+	onMediaLoaded(playerName: string) {
+		const { players } = this.getState().room2.persons;
+
+		for (let i = 0; i < players.length; i++) {
+			if (players[i].name === playerName) {
+				this.appDispatch(playerMediaLoaded(i));
+				break;
+			}
+		}
+	}
+
+	onMediaPreloaded(playerName: string) {
+		const { players } = this.getState().room2.persons;
+
+		for (let i = 0; i < players.length; i++) {
+			if (players[i].name === playerName) {
+				this.appDispatch(playerMediaPreloaded(i));
+				break;
+			}
+		}
+	}
+
 	onOptionChanged(name: string, value: string) {
 		const { settings } = this.getState().room;
 
@@ -503,7 +531,7 @@ export default class ClientController {
 				value: packageName
 			}]);
 		} else {
-			this.appDispatch(showObject({ header: localization.package, text: packageName, hint: '', large: false }));
+			this.appDispatch(showObject({ header: localization.package, text: packageName, hint: '', large: false, animate: false }));
 		}
 	}
 
@@ -625,6 +653,8 @@ export default class ClientController {
 		// link.setAttribute('href', uri);
 
 		// document.head.appendChild(link);
+
+		this.appDispatch(mediaPreloaded());
 	}
 
 	onRoundThemes(roundThemesNames: string[], playMode: ThemesPlayMode) {
@@ -632,15 +662,19 @@ export default class ClientController {
 			this.playGameSound(GameSound.ROUND_THEMES, true);
 		}
 
-		const roundThemes: ThemeInfo[] = roundThemesNames.map(t => ({ name: t, questions: [] }));
+		const roundThemes: ThemeInfo[] = roundThemesNames.map(t => ({ name: t, comment: '', questions: [] }));
 
 		this.appDispatch(showRoundThemes({
 			roundThemes,
 			isFinal: playMode === ThemesPlayMode.AllTogether,
-			display: playMode !== ThemesPlayMode.None,
+			display: playMode === ThemesPlayMode.AllTogether,
 		}));
 
 		this.appDispatch(questionReset());
+	}
+
+	onRoundThemesComments(comments: string[]) {
+		this.appDispatch(setThemesComments(comments));
 	}
 
 	onSetAttachContentToTable(attach: boolean) {
@@ -661,7 +695,7 @@ export default class ClientController {
 			this.playGameSound(GameSound.ROUND_BEGIN);
 			const { roundTail } = localization;
 			const roundName = stageName.endsWith(roundTail) ? stageName.substring(0, stageName.length - roundTail.length) : stageName;
-			this.appDispatch(showObject({ header: localization.round, text: roundName, hint: getRuleString(rules), large: true }));
+			this.appDispatch(showObject({ header: localization.round, text: roundName, hint: getRuleString(rules), large: true, animate: false }));
 
 			if (stage === GameStage.Round) {
 				for	(let i = 0; i < state.room2.persons.players.length; i++) {
@@ -675,7 +709,8 @@ export default class ClientController {
 			this.appDispatch(captionChanged(stage === GameStage.Begin ? localization.gameStarted : localization.gameFinished));
 		}
 
-		this.dispatch(playersStateCleared());
+		this.appDispatch(playersStateCleared());
+		this.appDispatch(playerRoundStateCleared());
 		this.dispatch(roomActionCreators.gameStateCleared());
 		this.dispatch(roomActionCreators.clearDecisionsAndMainTimer());
 		this.appDispatch(stopValidation());
@@ -708,6 +743,16 @@ export default class ClientController {
 		wrongAnswers: string[],
 		showExtraRightButtons: boolean) {
 		this.appDispatch(validate({ header, name, answer, message, rightAnswers, wrongAnswers, showExtraRightButtons }));
+	}
+
+	onUnbanned(name: string) {
+		this.dispatch(roomActionCreators.unbanned(name));
+
+		this.dispatch(roomActionCreators.chatMessageAdded({
+			sender: '',
+			text: stringFormat(localization.userUnbanned, name),
+			level: MessageLevel.System,
+		}) as unknown as Action);
 	}
 
 	onWrongTry(playerIndex: number) {
@@ -900,7 +945,7 @@ export default class ClientController {
 						this.appDispatch(updateQuestion({ themeIndex, questionIndex, price: -1 }));
 
 						if (this.getState().table.mode === TableMode.RoundTable) {
-							this.appDispatch(showObject({ header: themeInfo.name, text: price.toString(), hint: '', large: true }));
+							this.appDispatch(showObject({ header: themeInfo.name, text: price.toString(), hint: '', large: true, animate: false }));
 						}
 					},
 					500
@@ -909,21 +954,27 @@ export default class ClientController {
 		}
 	}
 
-	onTheme(themeName: string) {
-		this.appDispatch(playersStateCleared());
-		this.appDispatch(showmanReplicChanged(''));
-		this.appDispatch(showObject({ header: localization.theme, text: themeName, hint: '', large: false }));
-		this.dispatch(roomActionCreators.afterQuestionStateChanged(false));
+	onTheme(themeName: string, animate: boolean) {
+		if (!animate) {
+			// TODO: looks like all this is handled by endquestion message, so we can remove this
+			this.appDispatch(playersStateCleared());
+			this.appDispatch(showmanReplicChanged(''));
+			this.dispatch(roomActionCreators.afterQuestionStateChanged(false));
+			this.appDispatch(canPressChanged(false));
+			this.dispatch(roomActionCreators.stopTimer(1));
+		} else {
+			this.dispatch(captionChanged(localization.roundThemes));
+		}
+
+		this.appDispatch(showObject({ header: animate ? '' : localization.theme, text: themeName, hint: '', large: false, animate }));
 		this.dispatch(roomActionCreators.themeNameChanged(themeName));
-		this.appDispatch(canPressChanged(false));
-		this.dispatch(roomActionCreators.stopTimer(1));
 	}
 
 	onQuestion(questionPrice: string) {
 		const { themeName } = this.getState().room.stage;
 		this.appDispatch(playersStateCleared());
 		this.dispatch(roomActionCreators.afterQuestionStateChanged(false));
-		this.appDispatch(showObject({ header: themeName, text: questionPrice, hint: '', large: true }));
+		this.appDispatch(showObject({ header: themeName, text: questionPrice, hint: '', large: true, animate: false }));
 		this.appDispatch(captionChanged(`${themeName}, ${questionPrice}`));
 		this.appDispatch(questionReset());
 	}
@@ -1058,12 +1109,17 @@ export default class ClientController {
 		);
 	}
 
-	onRightAnswerStart(rightAnswer: string) {
+	onRightAnswerCore(rightAnswer: string) {
 		this.appDispatch(setAnswerView(this.getState().table.layoutMode === LayoutMode.Simple ? rightAnswer : ''));
 	}
 
+	onRightAnswerStart(rightAnswer: string) {
+		this.onRightAnswerCore(rightAnswer);
+		this.appDispatch(captionChanged(localization.rightAnswer));
+	}
+
 	onRightAnswer(answer: string) {
-		this.onRightAnswerStart(answer);
+		this.onRightAnswerCore(answer);
 
 		if (this.getState().table.layoutMode === LayoutMode.Simple) {
 			this.appDispatch(showText(answer));

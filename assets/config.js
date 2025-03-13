@@ -9,11 +9,7 @@ config = {
     askForConsent: false,
     siStatisticsServiceUri: 'https://vladimirkhil.com/sistatistics',
     appRegistryServiceUri: 'https://vladimirkhil.com/appregistry',
-    clearUrls: false,
-    siHostsIdUriMap: {
-        a: 'https://vladimirkhil.com/sigameserver-0/api/v1',
-        b: 'https://content.vladimirkhil.com:8080',
-    }
+    clearUrls: false
 };
 
 firebaseConfig = null;

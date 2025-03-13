@@ -15,7 +15,6 @@ data:
       askForConsent: {{ .Values.config.askForConsent }},
       siStatisticsServiceUri: '{{ .Values.config.siStatisticsServiceUri }}',
       appRegistryServiceUri: '{{ .Values.config.appRegistryServiceUri }}',
-      siHostsIdUriMap: {{ .Values.config.siHostsIdUriMap | toJson }},
     };
 
 {{ if .Values.firebase }}

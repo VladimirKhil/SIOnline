@@ -36,6 +36,8 @@ const enum Messages {
 	/** Notifies that media has been successfully loaded. */
 	MediaLoaded = 'MEDIALOADED',
 
+	MediaPreloaded = 'MEDIA_PRELOADED',
+
 	Move = 'MOVE',
 
 	Moveable = 'MOVEABLE',

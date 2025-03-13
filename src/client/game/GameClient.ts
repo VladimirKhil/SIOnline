@@ -58,6 +58,10 @@ export default class GameClient implements IGameClient {
 		return this.gameServerClient.msgAsync(Messages.MediaLoaded);
 	}
 
+	mediaPreloaded(): Promise<boolean> {
+		return this.gameServerClient.msgAsync(Messages.MediaPreloaded);
+	}
+
 	moveable(): Promise<boolean> {
 		return this.gameServerClient.msgAsync(Messages.Moveable);
 	}

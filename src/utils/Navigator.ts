@@ -1,5 +1,4 @@
 import IGameServerClient from '../client/IGameServerClient';
-import Config from '../Config';
 import DataContext from '../model/DataContext';
 import Path from '../model/enums/Path';
 import { loadLobby } from '../state/online2Slice';
@@ -11,19 +10,15 @@ import { userErrorChanged } from '../state/commonSlice';
 import localization from '../model/resources/localization';
 import getErrorMessage from './ErrorHelpers';
 
-declare const config: Config;
-
-function saveNavigationState(navigation: INavigationState, dataContext: DataContext, replaceState: boolean) {
+function saveNavigationState(navigation: INavigationState, dataContext: DataContext, siHosts: Record<string, string>, replaceState: boolean) {
 	if (window.history.length === 0 || !window.history.state || (window.history.state as INavigationState).path !== navigation.path) {
 		if (navigation.path === Path.Room && navigation.gameId) {
 			let gameLink = null;
 
-			if (typeof config !== 'undefined' && config.siHostsIdUriMap) {
-				for (const [key, value] of Object.entries(config.siHostsIdUriMap)) {
-					if (value === navigation.hostUri) {
-						gameLink = '_' + key + navigation.gameId;
-						break;
-					}
+			for (const [key, value] of Object.entries(siHosts)) {
+				if (value === navigation.hostUri) {
+					gameLink = '_' + key + navigation.gameId;
+					break;
 				}
 			}
 
@@ -94,14 +89,19 @@ export const navigate = createAsyncThunk(
 	'global/navigate',
 	async (arg: { navigation: INavigationState, saveState: boolean, replaceState?: boolean }, thunkAPI) => {
 		const { navigation } = arg;
+		const state = thunkAPI.getState() as RootState;
 
 		if (arg.saveState) {
-			saveNavigationState(arg.navigation, thunkAPI.extra as DataContext, arg.replaceState ?? false);
+			saveNavigationState(
+				arg.navigation,
+				thunkAPI.extra as DataContext,
+				state.common.siHosts,
+				arg.replaceState ?? false);
 		}
 
 		let nav: INavigationState;
 
-		const previousPath = (thunkAPI.getState() as RootState).ui.navigation.path;
+		const previousPath = state.ui.navigation.path;
 
 		if (navigation.path === Path.Room) {
 			nav = { ...navigation, returnToLobby: previousPath === Path.Lobby };

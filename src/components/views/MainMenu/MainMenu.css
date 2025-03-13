@@ -131,24 +131,35 @@
 	font-size: 25px;
 }
 
-@keyframes welcomeRows {
+@keyframes welcomeRowsLeft {
+	from {
+		transform: translate(-100%);
+	}
+	to {
+		transform: translate(0);
+	}
+}
+
+@keyframes welcomeRowsRight {
+	from {
+		transform: translate(100%);
+	}
 	to {
 		transform: translate(0);
 	}
 }
 
 button.standard.welcomeRow {
-	animation: welcomeRows;
 	animation-duration: .5s;
 	animation-fill-mode: forwards;
 }
 
 .welcomeRow.left {
-	transform: translate(-100%);
+	animation: welcomeRowsLeft;
 }
 
 .welcomeRow.right {
-	transform: translate(100%);
+	animation: welcomeRowsRight;
 }
 
 button.standard.welcomeExit {

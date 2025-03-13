@@ -30,7 +30,6 @@ import { playAudio } from '../state/commonSlice';
 import clearUrls from '../utils/clearUrls';
 import ThemesPlayMode from '../model/enums/ThemesPlayMode';
 import { AppDispatch } from '../state/store';
-import { captionChanged } from '../state/tableSlice';
 import { playerInGameChanged,
 	playerMediaLoaded,
 	playerStakeChanged,
@@ -438,15 +437,15 @@ const viewerHandler = (
 				break;
 			}
 
-			const { players } = state.room2.persons;
+			controller.onMediaLoaded(args[1]);
+			break;
 
-			for (let i = 0; i < players.length; i++) {
-				if (players[i].name === args[1]) {
-					appDispatch(playerMediaLoaded(i));
-					break;
-				}
+		case GameMessages.MediaPreloaded:
+			if (args.length < 2) {
+				break;
 			}
 
+			controller.onMediaPreloaded(args[1]);
 			break;
 
 		case GameMessages.Options:
@@ -500,7 +499,7 @@ const viewerHandler = (
 			}
 			break;
 
-		case 'PERSONAPELLATED':
+		case GameMessages.PersonApellated:
 			{
 				const playerIndex = parseInt(args[1], 10);
 
@@ -510,7 +509,7 @@ const viewerHandler = (
 			}
 			break;
 
-		case 'PERSONFINALANSWER':
+		case GameMessages.PersonFinalAnswer:
 			{
 				const playerIndex = parseInt(args[1], 10);
 
@@ -667,7 +666,6 @@ const viewerHandler = (
 			if (args.length > 2) {
 				const answer = trimLength(unescapeNewLines(args[2]), MAX_APPEND_TEXT_LENGTH);
 				controller.onRightAnswerStart(answer);
-				appDispatch(captionChanged(localization.rightAnswer));
 			}
 			break;
 
@@ -679,20 +677,27 @@ const viewerHandler = (
 			dispatch(roomActionCreators.roundsNamesChanged(args.slice(1)));
 			break;
 
-		case GameMessages.RoundThemes: {
-			const printThemes = args[1] === '+';
+		case GameMessages.RoundThemes2: {
+			const playMode = args[1] as ThemesPlayMode;
 			const roundThemes: string[] = [];
 
 			for (let i = 2; i < args.length; i++) {
 				roundThemes.push(args[i]);
 			}
 
-			controller.onRoundThemes(
-				roundThemes,
-				printThemes ? (state.room.stage.name !== 'Final' ? ThemesPlayMode.OneByOne : ThemesPlayMode.AllTogether) : ThemesPlayMode.None);
-
+			controller.onRoundThemes(roundThemes, playMode);
 			break;
 		}
+
+		case GameMessages.RoundThemesComments:
+			const themesComments: string[] = [];
+
+			for (let i = 1; i < args.length; i++) {
+				themesComments.push(args[i]);
+			}
+
+			controller.onRoundThemesComments(themesComments);
+			break;
 
 		case GameMessages.SetChooser:
 			const chooserIndex = parseInt(args[1], 10);
@@ -774,7 +779,7 @@ const viewerHandler = (
 
 				maxQuestionsInTheme = Math.max(maxQuestionsInTheme, questions.length);
 
-				const newTheme: ThemeInfo = { name: roundInfo[i].name, questions };
+				const newTheme: ThemeInfo = { name: roundInfo[i].name, comment: '', questions };
 				newRoundInfo.push(newTheme);
 
 				index++;
@@ -848,8 +853,9 @@ const viewerHandler = (
 			break;
 
 		case GameMessages.Theme:
-			if (args.length > 1) {
-				controller.onTheme(args[1]);
+		case GameMessages.Theme2:
+			if (args.length > 3) {
+				controller.onTheme(args[1], args[3] === '+'); // TODO: handle comments
 			}
 			break;
 
@@ -857,6 +863,12 @@ const viewerHandler = (
 			if (args.length > 1) {
 				const comments = trimLength(unescapeNewLines(args[1]), MAX_APPEND_TEXT_LENGTH);
 				controller.onThemeComments(comments);
+			}
+			break;
+
+		case GameMessages.ThemeInfo:
+			if (args.length > 1) {
+				controller.onTheme(args[1], false); // TODO: handle comments
 			}
 			break;
 
@@ -879,14 +891,7 @@ const viewerHandler = (
 				break;
 			}
 
-			dispatch(roomActionCreators.unbanned(args[1]));
-
-			dispatch(roomActionCreators.chatMessageAdded({
-				sender: '',
-				text: stringFormat(localization.userUnbanned, args[1]),
-				level: MessageLevel.System,
-			}));
-
+			controller.onUnbanned(args[1]);
 			break;
 
 		case GameMessages.UserError:
@@ -900,14 +905,12 @@ const viewerHandler = (
 			break;
 
 		case GameMessages.WrongTry:
-			{
-				if (args.length < 2) {
-					break;
-				}
-
-				const playerIndex = parseInt(args[1], 10);
-				controller.onWrongTry(playerIndex);
+			if (args.length < 2) {
+				break;
 			}
+
+			const playerIndex = parseInt(args[1], 10);
+			controller.onWrongTry(playerIndex);
 			break;
 
 		default:
@@ -1108,6 +1111,7 @@ function info(controller: ClientController, ...args: string[]) {
 			isChooser: false,
 			inGame: true,
 			mediaLoaded: false,
+			mediaPreloaded: false,
 			answer: '',
 		});
 

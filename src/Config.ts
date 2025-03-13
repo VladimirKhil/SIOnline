@@ -11,5 +11,4 @@ export default interface Config {
 	appRegistryServiceUri: string;
 	emojiCultures?: string[];
 	clearUrls?: boolean;
-	siHostsIdUriMap?: Record<string, string>;
 }

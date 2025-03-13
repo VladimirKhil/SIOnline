@@ -9,7 +9,6 @@ import ChatMessage from '../../model/ChatMessage';
 import Account from '../../model/Account';
 import Persons from '../../model/Persons';
 import Role from '../../model/Role';
-import Constants from '../../model/enums/Constants';
 import MessageLevel from '../../model/enums/MessageLevel';
 import Messages from '../../client/game/Messages';
 import JoinMode from '../../client/game/JoinMode';

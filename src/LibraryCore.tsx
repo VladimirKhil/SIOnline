@@ -249,7 +249,7 @@ function processMessage(controller: ClientController, payload: any, appDispatch:
 			break;
 
 		case 'theme':
-			controller.onTheme(payload.themeName);
+			controller.onTheme(payload.themeName, payload.animate);
 			break;
 
 		case 'themeComments':

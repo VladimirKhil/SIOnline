@@ -31,6 +31,7 @@ export interface CommonState {
 	clipboardSupported: boolean;
 	exitSupported?: boolean;
 	isDesktop?: boolean;
+	siHosts: Record<string, string>;
 }
 
 const initialState: CommonState = {
@@ -54,6 +55,7 @@ const initialState: CommonState = {
 	clipboardSupported: true,
 	exitSupported: false,
 	isDesktop: false,
+	siHosts: {},
 };
 
 export const commonSlice = createSlice({
@@ -71,10 +73,13 @@ export const commonSlice = createSlice({
 		computerAccountsChanged: (state: CommonState, action: PayloadAction<string[]>) => {
 			state.computerAccounts = action.payload;
 		},
-		serverInfoChanged: (state: CommonState, action: PayloadAction<{ serverName: string, serverLicense: string, maxPackageSizeMb: number }>) => {
+		serverInfoChanged: (
+			state: CommonState,
+			action: PayloadAction<{ serverName: string, serverLicense: string, maxPackageSizeMb: number, siHosts: Record<string, string> }>) => {
 			state.serverName = action.payload.serverName;
 			state.serverLicense = action.payload.serverLicense;
 			state.maxPackageSizeMb = action.payload.maxPackageSizeMb;
+			state.siHosts = action.payload.siHosts;
 		},
 		commonErrorChanged: (state: CommonState, action: PayloadAction<string | null>) => {
 			state.error = action.payload;

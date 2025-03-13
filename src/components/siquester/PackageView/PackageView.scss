@@ -13,8 +13,31 @@
 		overflow: auto;
 		margin-right: 10px;
 
+		.packageView__header {
+			display: flex;
+			flex-direction: row;
+			align-items: center;
+		}
+
 		.packageView__package {
 			font-size: 25px;
+			margin-left: 5px;
+			height: 42px;
+			padding: 0 20px;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			cursor: pointer;
+
+			&:hover {
+				background-color: #777777;
+			}
+
+			&.selected {
+				background-color: white;
+				color: black;
+				cursor: default;
+			}
 		}
 
 		.packageView__rounds {
@@ -81,6 +104,10 @@
 				justify-content: center;
 				align-items: center;
 				cursor: pointer;
+
+				&.wide {
+					flex: 180px 0 0;
+				}
 
 				&:hover {
 					background-color: #777777;

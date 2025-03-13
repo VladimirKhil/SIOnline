@@ -142,9 +142,11 @@ async function loadHostInfoAsync(appDispatch: AppDispatch, dataContext: DataCont
 	// eslint-disable-next-line no-param-reassign
 	dataContext.contentUris = hostInfo.contentPublicBaseUrls;
 
-	if (hostInfo.contentInfos && hostInfo.contentInfos.length > 0) {
-		const contentIndex = Math.floor(Math.random() * hostInfo.contentInfos.length);
-		const { serviceUri } = hostInfo.contentInfos[contentIndex];
+	const { contentInfos, storageInfos } = hostInfo;
+
+	if (contentInfos && contentInfos.length > 0) {
+		const contentIndex = Math.floor(Math.random() * contentInfos.length);
+		const { serviceUri } = contentInfos[contentIndex];
 
 		dataContext.contentClient = new SIContentClient({
 			serviceUri: serviceUri
@@ -153,13 +155,14 @@ async function loadHostInfoAsync(appDispatch: AppDispatch, dataContext: DataCont
 		throw new Error('No SIContent service found');
 	}
 
-	dataContext.storageClients = hostInfo.storageInfos.map(createStorageClientFromInfo);
-	appDispatch(setStorages(hostInfo.storageInfos));
+	dataContext.storageClients = storageInfos.map(createStorageClientFromInfo);
+	appDispatch(setStorages(storageInfos));
 
 	appDispatch(serverInfoChanged({
 		serverName: hostInfo.name,
 		serverLicense: hostInfo.license,
 		maxPackageSizeMb: hostInfo.maxPackageSizeMb,
+		siHosts: hostInfo.siHosts,
 	}));
 }
 
@@ -310,14 +313,20 @@ const initStage2CompleteInitializaionAsync = async (
 	getState: () => State,
 	dataContext: DataContext,
 ) => {
-	if (initialView.path == Path.JoinRoom && initialView.gameId && initialView.hostUri) {
+	let { hostUri } = initialView;
+
+	if (initialView.path == Path.JoinRoom && initialView.gameId && initialView.siHostKey) {
+		hostUri = getState().common.siHosts[initialView.siHostKey];
+	}
+
+	if (initialView.path == Path.JoinRoom && initialView.gameId && hostUri) {
 		try {
-			const siHostClient = await connectToSIHostAsync(initialView.hostUri, dispatch, appDispatch, getState, dataContext);
+			const siHostClient = await connectToSIHostAsync(hostUri, dispatch, appDispatch, getState, dataContext);
 			const gameInfo = await siHostClient.tryGetGameInfoAsync(initialView.gameId);
 
 			if (gameInfo) {
 				if (!gameInfo.HostUri) {
-					gameInfo.HostUri = initialView.hostUri;
+					gameInfo.HostUri = hostUri;
 				}
 
 				appDispatch(selectGame(gameInfo));

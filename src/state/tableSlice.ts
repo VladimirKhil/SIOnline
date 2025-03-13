@@ -21,6 +21,7 @@ export interface TableState {
 	contentHint: string;
 	audio: string;
 	rotate: boolean;
+	animate: boolean;
 	canPress: boolean;
 	canPressUpdateTime: number;
 	gameThemes: string[];
@@ -49,6 +50,7 @@ const initialState: TableState = {
 	contentHint: '',
 	audio: '',
 	rotate: false,
+	animate: false,
 	canPress: false,
 	canPressUpdateTime: 0,
 	gameThemes: [],
@@ -84,13 +86,14 @@ export const tableSlice = createSlice({
 			state.mode = TableMode.GameThemes;
 			state.gameThemes = action.payload;
 		},
-		showObject: (state: TableState, action: PayloadAction<{ header: string, text: string, hint: string, large: boolean }>) => {
+		showObject: (state: TableState, action: PayloadAction<{ header: string, text: string, hint: string, large: boolean, animate: boolean }>) => {
 			state.mode = TableMode.Object;
 			state.header = action.payload.header;
 			state.largeHeader = action.payload.large;
 			state.text = action.payload.text;
 			state.hint = action.payload.hint;
 			state.rotate = false;
+			state.animate = action.payload.animate;
 			state.content = [];
 			state.appendText = '';
 			state.prependText = '';
@@ -108,6 +111,11 @@ export const tableSlice = createSlice({
 		showRoundThemes: (state: TableState, action: PayloadAction<{ roundThemes: ThemeInfo[], isFinal: boolean, display: boolean }>) => {
 			state.mode = action.payload.display ? (action.payload.isFinal ? TableMode.Final : TableMode.RoundThemes) : state.mode;
 			state.roundInfo = action.payload.roundThemes;
+		},
+		setThemesComments: (state: TableState, action: PayloadAction<string[]>) => {
+			state.roundInfo.forEach((t, i) => {
+				t.comment = i < action.payload.length ? action.payload[i] : '';
+			});
 		},
 		showText: (state: TableState, action: PayloadAction<string>) => {
 			state.mode = TableMode.Text;
@@ -282,6 +290,7 @@ export const {
 	showObject,
 	showQuestionType,
 	showRoundThemes,
+	setThemesComments,
 	showText,
 	showWelcome,
 	showRoundTable,

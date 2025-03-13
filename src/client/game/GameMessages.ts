@@ -80,6 +80,8 @@ const enum GameMessages {
 	/** Notifies that the client has loaded the media. */
 	MediaLoaded = 'MEDIALOADED',
 
+	MediaPreloaded = 'MEDIA_PRELOADED',
+
 	Options = 'OPTIONS',
 
 	OralAnswer = 'ORAL_ANSWER',
@@ -93,6 +95,10 @@ const enum GameMessages {
 	Pause = 'PAUSE',
 
 	Person = 'PERSON',
+
+	PersonApellated = 'PERSONAPELLATED',
+
+	PersonFinalAnswer = 'PERSONFINALANSWER',
 
 	Pin = 'PIN',
 
@@ -131,7 +137,9 @@ const enum GameMessages {
 	RoundsNames = 'ROUNDSNAMES',
 
 	/** Round themes names. */
-	RoundThemes = 'ROUNDTHEMES',
+	RoundThemes2 = 'ROUND_THEMES2',
+
+	RoundThemesComments = 'ROUND_THEMES_COMMENTS',
 
 	SetChooser = 'SETCHOOSER',
 
@@ -155,8 +163,12 @@ const enum GameMessages {
 
 	Theme = 'THEME',
 
+	Theme2 = 'THEME2',
+
 	/** Theme comments. */
 	ThemeComments = 'THEME_COMMENTS',
+
+	ThemeInfo = 'THEME_INFO',
 
 	Timeout = 'TIMEOUT',
 

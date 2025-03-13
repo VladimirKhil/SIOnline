@@ -263,6 +263,11 @@ export const room2Slice = createSlice({
 				p.canBeSelected = false;
 			});
 		},
+		playerRoundStateCleared: (state: Room2State) => {
+			state.persons.players.forEach(p => {
+				p.mediaPreloaded = false;
+			});
+		},
 		sumsChanged: (state: Room2State, action: PayloadAction<number[]>) => {
 			state.persons.players.forEach((p, i) => {
 				p.sum = i < action.payload.length ? action.payload[i] : 0;
@@ -287,6 +292,7 @@ export const room2Slice = createSlice({
 				isChooser: false,
 				inGame: true,
 				mediaLoaded: false,
+				mediaPreloaded: false,
 				answer: '',
 			});
 		},
@@ -376,6 +382,9 @@ export const room2Slice = createSlice({
 		},
 		playerMediaLoaded(state: Room2State, action: PayloadAction<number>) {
 			state.persons.players[action.payload].mediaLoaded = true;
+		},
+		playerMediaPreloaded(state: Room2State, action: PayloadAction<number>) {
+			state.persons.players[action.payload].mediaPreloaded = true;
 		},
 		questionAnswersChanged(state: Room2State, action: PayloadAction<{ rightAnswers: string[], wrongAnswers: string[] }>) {
 			state.validation.rightAnswers = action.payload.rightAnswers;
@@ -468,6 +477,7 @@ export const {
 	playerReplicChanged,
 	infoChanged,
 	playersStateCleared,
+	playerRoundStateCleared,
 	sumsChanged,
 	showmanChanged,
 	playerAdded,
@@ -490,6 +500,7 @@ export const {
 	chooserChanged,
 	playerInGameChanged,
 	playerMediaLoaded,
+	playerMediaPreloaded,
 	questionAnswersChanged,
 	validate,
 	askValidation,

@@ -9,7 +9,7 @@
     <link rel="apple-touch-icon" href="../assets/images/sigame.png" />
     <script>
         window.addEventListener("error", (event) => {
-            if (event.target && event.target.tagName === "SCRIPT" && !event.target.src.includes("googletagmanager.com")) {
+            if (event.target && event.target.tagName === "SCRIPT" && !event.target.src.startsWith("https://www.googletagmanager.com/")) {
                 alert("Script loading error: " + event.target.src);
             }
         }, true);
