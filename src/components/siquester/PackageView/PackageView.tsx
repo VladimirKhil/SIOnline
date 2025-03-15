@@ -5,19 +5,36 @@ import { ContentParam, Package, Question, Round, Theme } from '../../../model/si
 import localization from '../../../model/resources/localization';
 import { navigate } from '../../../utils/Navigator';
 import Path from '../../../model/enums/Path';
+import JSZip from 'jszip';
 
 import './PackageView.scss';
 import exitImg from '../../../../assets/images/exit.png';
 
+enum Mode { Rounds, Questions }
+
 const PackageView: React.FC = () => {
 	const appDispatch = useDispatch();
 	const siquester = useAppSelector(state => state.siquester);
-	const { pack } = siquester;
+	const { zip, pack } = siquester;
 	const [roundIndex, setRoundIndex] = React.useState(0);
 	const [item, setItem] = React.useState<Package | Round | Theme | Question | null>(null);
 	const [screenIndex, setScreenIndex] = React.useState(0);
+	const [mode, setMode] = React.useState(Mode.Questions);
+	const [packageLogo, setPackageLogo] = React.useState<string | undefined>(undefined);
 
-	if (!pack) {
+	async function loadLogo(file: JSZip, logo: string) {
+		const data = file.file('Images/' + logo.substring(1));
+		const base64 = await data?.async('base64');
+		setPackageLogo(`data:image/png;base64,${base64}`);
+	}
+
+	React.useEffect(() => {
+		if (zip && pack && pack.logo) {
+			loadLogo(zip, pack.logo);
+		}
+	}, [pack]);
+
+	if (!zip || !pack) {
 		return <div>Loading...</div>;
 	}
 
@@ -25,6 +42,22 @@ const PackageView: React.FC = () => {
 
 	const round = pack.rounds[roundIndex];
 	const isThemeList = round?.type === 'final';
+
+	function getRoundType(type: string): string {
+		switch (type) {
+			case 'standart': case '': return localization.roundTypeTable;
+			case 'final': return localization.themeList;
+			default: return type;
+		}
+	}
+
+	function getLanguage(language: string): string {
+		switch (language) {
+			case 'ru-RU': return localization.languageRu;
+			case 'en-US': return localization.languageEn;
+			default: return language;
+		}
+	}
 
 	function getItemView(item: Package | Round | Theme | Question): React.ReactNode {
 		if ('rounds' in item) { // Package
@@ -41,13 +74,19 @@ const PackageView: React.FC = () => {
 						<label htmlFor='name' className='header'>{localization.name}</label>
 						<input id='name' type='text' className='packageView__package__info__name' value={pack.name} readOnly />
 
-						{pack.logo ? <img src={pack.logo} alt='Logo' className='packageView__package__info__logo' /> : null}
+						{packageLogo ? <img src={packageLogo} alt='Logo' className='packageView__package__info__logo' /> : null}
 
 						<label htmlFor='date' className='header'>{localization.date}</label>
 						<input id='date' type='text' className='packageView__package__info__date' value={pack.date} readOnly />
 
 						<label htmlFor='language' className='header'>{localization.language}</label>
-						<input id='language' type='text' className='packageView__package__info__language' value={pack.language} readOnly />
+
+						<input
+							id='language'
+							type='text'
+							className='packageView__package__info__language'
+							value={getLanguage(pack.language)}
+							readOnly />
 
 						<label htmlFor='publisher' className='header'>{localization.publisher}</label>
 						<input id='publisher' type='text' className='packageView__package__info__publisher' value={pack.publisher} readOnly />
@@ -99,9 +138,43 @@ const PackageView: React.FC = () => {
 			const round = item as Round;
 
 			return (
-				<div className='packageView__round__info'>
-					<div className='packageView__round__info__name'>{round.name}</div>
-					<div className='packageView__round__info__type'>{round.type}</div>
+				<div className='info packageView__round__info'>
+					<header>
+						<div className='main__header'>{localization.round}</div>
+						<button type='button' className='standard' onClick={() => setItem(null)}>{localization.close}</button>
+					</header>
+
+					<section className='info__content'>
+						<label htmlFor='name' className='header'>{localization.name}</label>
+						<input id='name' type='text' className='packageView__round__info__name' value={round.name} readOnly />
+
+						<label htmlFor='type' className='header'>{localization.type}</label>
+						<input id='type' type='text' className='packageView__round__info__type' value={getRoundType(round.type)} readOnly />
+
+						{round.info?.authors
+							? <>
+								<label className='header'>{localization.authors}</label>
+
+								{round.info?.authors.map((author, ai) => (
+									<input aria-label='author' key={ai} className='packageView__theme__info__author' value={author.name} readOnly />
+								))}
+							</> : null}
+
+						{round.info?.sources
+							? <>
+								<label className='header' htmlFor='sources'>{localization.sources}</label>
+
+								{round.info?.sources?.map((source, si) => (
+									<input id='sources' key={si} className='packageView__theme__info__source' value={source.value} readOnly />
+								))}
+							</> : null}
+
+						{round.info?.comments
+							? <>
+								<label className='header' htmlFor='comments'>{localization.comments}</label>
+								<textarea id='comments' className='packageView__theme__info__comments' value={round.info.comments} readOnly />
+							</> : null}
+					</section>
 				</div>
 			);
 		}
@@ -178,7 +251,7 @@ const PackageView: React.FC = () => {
 				case 'secret': return localization.questionTypeSecret;
 				case 'secretPublicPrice': return localization.questionTypeSecretPublicPrice;
 				case 'secretNoQuestion': return localization.questionTypeSecretNoQuestion;
-				case 'forALl': return localization.questionTypeForAll;
+				case 'forAll': return localization.questionTypeForAll;
 				case 'stakeAll': return localization.questionTypeStakeAll;
 				default: return type;
 			}
@@ -325,6 +398,59 @@ const PackageView: React.FC = () => {
 		);
 	}
 
+	function switchMode() {
+		setMode(mode === Mode.Questions ? Mode.Rounds : Mode.Questions);
+	}
+
+	function getQuestionsView(pack: Package): React.ReactNode {
+		return <>
+			<div className='packageView__rounds'>
+				{pack.rounds.map((round, ri) => (
+					<div
+						key={ri}
+						className={`packageView__round ${ri === roundIndex ? 'selected' : ''}`}
+						onClick={() => { setRoundIndex(ri); setItem(null); }}>
+						{round.name}
+					</div>
+				))}
+			</div>
+
+			{round ? <div className='packageView__table'>
+				{round.themes.map((theme, ti) => (
+					<div key={ti} className='packageView__theme'>
+						<div className={`packageView__theme__name ${item === theme ? 'selected' : ''}`} onClick={() => setItem(theme)}>
+							{theme.name}
+						</div>
+
+						{theme.questions.map((question, qi) => (
+							<div
+								key={qi}
+								className={`packageView__question
+									${item === question ? 'selected' : ''}
+									${isThemeList ? 'wide' : ''}`}
+								onClick={() => { setItem(question); setScreenIndex(0); }}>
+								{isThemeList ? localization.question : (question.price > -1 ? question.price : ' ')}
+							</div>
+						))}
+					</div>
+				))}
+			</div> : null}
+		</>;
+	}
+
+	function getRoundsView(pack: Package): React.ReactNode {
+		return <div className='packageView__roundInfo'>
+			{pack.rounds.map((round, ri) => (
+				<div
+					key={ri}
+					className={`packageView__roundInfo__round ${item === round ? 'selected' : ''}`}
+					onClick={() => setItem(round)}>
+					{round.name}
+				</div>
+			))}
+		</div>;
+	}
+
 	return (
 		<div className='packageView'>
 			<div className='packageView__structure'>
@@ -337,6 +463,14 @@ const PackageView: React.FC = () => {
 						<img src={exitImg} alt='Exit' />
 					</button>
 
+					<button
+						type='button'
+						className='standard imageButton modes'
+						title={localization.viewMode}
+						onClick={switchMode}>
+						{mode === Mode.Questions ? localization.questions : localization.rounds}
+					</button>
+
 					<div
 						className={`packageView__package ${item === pack ? 'selected' : ''}`}
 						onClick={() => { setItem(pack); }}>
@@ -344,37 +478,7 @@ const PackageView: React.FC = () => {
 					</div>
 				</header>
 
-				<div className='packageView__rounds'>
-					{pack.rounds.map((round, ri) => (
-						<div
-							key={ri}
-							className={`packageView__round ${ri === roundIndex ? 'selected' : ''}`}
-							onClick={() => { setRoundIndex(ri); setItem(null); }}>
-							{round.name}
-						</div>
-					))}
-				</div>
-
-				{round ? <div className='packageView__table'>
-					{round.themes.map((theme, ti) => (
-						<div key={ti} className='packageView__theme'>
-							<div className={`packageView__theme__name ${item === theme ? 'selected' : ''}`} onClick={() => setItem(theme)}>
-								{theme.name}
-							</div>
-
-							{theme.questions.map((question, qi) => (
-								<div
-									key={qi}
-									className={`packageView__question
-										${item === question ? 'selected' : ''}
-										${isThemeList ? 'wide' : ''}`}
-									onClick={() => { setItem(question); setScreenIndex(0); }}>
-									{isThemeList ? localization.question : (question.price > -1 ? question.price : ' ')}
-								</div>
-							))}
-						</div>
-					))}
-				</div> : null}
+				{mode === Mode.Questions ? getQuestionsView(pack) : getRoundsView(pack)}
 			</div>
 
 			{item ? <div className='packageView__object'>

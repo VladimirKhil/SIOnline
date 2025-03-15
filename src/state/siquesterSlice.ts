@@ -7,6 +7,7 @@ import Path from '../model/enums/Path';
 import DataContext from '../model/DataContext';
 
 export interface SIQuesterState {
+	zip?: JSZip;
 	pack?: Package;
 }
 
@@ -31,7 +32,7 @@ export const openFile = createAsyncThunk(
 		const pack = parseXMLtoPackage(xmlDoc);
 
 		thunkAPI.dispatch(navigate({ navigation: { path: Path.SIQuesterPackage }, saveState: true }));
-		return pack;
+		return { zip, pack };
 	},
 );
 
@@ -41,7 +42,8 @@ export const siquesterSlice = createSlice({
 	reducers: {},
 	extraReducers: builder => {
 		builder.addCase(openFile.fulfilled, (state, action) => {
-			state.pack = action.payload;
+			state.zip = action.payload.zip;
+			state.pack = action.payload.pack;
 		});
 	},
 });

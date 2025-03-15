@@ -17,12 +17,31 @@
 			display: flex;
 			flex-direction: row;
 			align-items: center;
+
+			button.standard {
+				display: flex !important;
+				height: 45px;
+				background: transparent;
+				border-radius: 0;
+				overflow: hidden;
+				justify-content: center;
+				align-items: center;
+
+				&.modes {
+					flex: 0 0 90px;
+					background: rgb(56, 56, 56);
+				}
+
+				&:hover, &.modes:hover {
+					background: linear-gradient(180deg, #2860ef 14.29%, rgb(39, 108, 237) 100%);
+				}
+			}
 		}
 
 		.packageView__package {
 			font-size: 25px;
 			margin-left: 5px;
-			height: 42px;
+			height: 45px;
 			padding: 0 20px;
 			display: flex;
 			justify-content: center;
@@ -37,6 +56,35 @@
 				background-color: white;
 				color: black;
 				cursor: default;
+			}
+		}
+
+		.packageView__roundInfo {
+			display: flex;
+			flex-direction: column;
+			margin-top: 10px;
+
+			.packageView__roundInfo__round {
+				height: 50px;
+				width: 400px;
+				margin: 3px;
+				display: flex;
+				background-color: rgb(56, 56, 56);
+				justify-content: center;
+				align-items: center;
+				padding: 0 20px;
+				font-size: 20px;
+				cursor: pointer;
+
+				&:hover {
+					background-color: #777777;
+				}
+
+				&.selected {
+					background-color: white;
+					color: black;
+					cursor: default;
+				}
 			}
 		}
 
@@ -175,6 +223,12 @@
 				margin: 5px 0;
 				padding: 5px;
 				font-size: 16px;
+			}
+
+			.packageView__package__info__logo {
+				height: 200px;
+				width: 200px;
+				margin-top: 5px;
 			}
 
 			.packageView__theme__info__comments {

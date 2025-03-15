@@ -713,6 +713,7 @@ export default class ClientController {
 		this.appDispatch(playerRoundStateCleared());
 		this.dispatch(roomActionCreators.gameStateCleared());
 		this.dispatch(roomActionCreators.clearDecisionsAndMainTimer());
+		this.appDispatch(clearDecisions());
 		this.appDispatch(stopValidation());
 		this.appDispatch(isSelectableChanged(false));
 		this.appDispatch(clearActiveState());
@@ -1027,12 +1028,21 @@ export default class ClientController {
 		}
 
 		switch (qType) {
+			case 'simple':
+				this.appDispatch(showQuestionType({
+					header: localization.question,
+					text: localization.questionTypeSimple.toUpperCase(),
+					hint: localization.questionTypeSimpleHint,
+				}));
+
+				break;
+
 			case 'forAll':
 				this.playGameSound(GameSound.QUESTION_ALL);
 
 				this.appDispatch(showQuestionType({
 					header: localization.question,
-					text: localization.questionTypeForAll,
+					text: localization.questionTypeForAll.toUpperCase(),
 					hint: localization.questionTypeForAllHint,
 				}));
 
@@ -1043,7 +1053,7 @@ export default class ClientController {
 
 				this.appDispatch(showQuestionType({
 					header: localization.question,
-					text: localization.questionTypeStake,
+					text: localization.questionTypeStake.toUpperCase(),
 					hint: localization.questionTypeStakeHint,
 				}));
 
@@ -1054,7 +1064,7 @@ export default class ClientController {
 
 				this.appDispatch(showQuestionType({
 					header: localization.question,
-					text: localization.questionTypeStakeAll,
+					text: localization.questionTypeStakeAll.toUpperCase(),
 					hint: localization.questionTypeStakeAllHint,
 				}));
 
@@ -1067,7 +1077,7 @@ export default class ClientController {
 
 				this.appDispatch(showQuestionType({
 					header: localization.question,
-					text: localization.questionTypeSecret,
+					text: localization.questionTypeSecret.toUpperCase(),
 					hint: localization.questionTypeSecretHint,
 				}));
 
@@ -1079,7 +1089,7 @@ export default class ClientController {
 
 				this.appDispatch(showQuestionType({
 					header: localization.question,
-					text: localization.questionTypeNoRisk,
+					text: localization.questionTypeNoRisk.toUpperCase(),
 					hint: localization.questionTypeNoRiskHint,
 				}));
 
@@ -1143,6 +1153,7 @@ export default class ClientController {
 
 		this.appDispatch(showLogo());
 		this.dispatch(roomActionCreators.clearDecisionsAndMainTimer());
+		this.appDispatch(clearDecisions());
 	}
 
 	onToggle(themeIndex: number, questionIndex: number, price: number) {

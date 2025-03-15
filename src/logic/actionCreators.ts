@@ -284,6 +284,11 @@ const initStage3NavigateAsync = async (
 		await registerApp(dataContext.config.appRegistryServiceUri);
 	}
 
+	if (view.path === Path.SIQuesterPackage && !getState().siquester.zip) {
+		appDispatch(navigate({ navigation: { path: Path.SIQuester }, saveState: true }));
+		return;
+	}
+
 	appDispatch(navigate({ navigation: view, saveState: true, replaceState: true }));
 };
 
