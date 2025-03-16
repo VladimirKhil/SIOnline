@@ -4,7 +4,6 @@ import { Dispatch, Action } from 'redux';
 import localization from '../../../model/resources/localization';
 import Dialog from '../../common/Dialog/Dialog';
 import ProgressBar from '../../common/ProgressBar/ProgressBar';
-import State from '../../../state/State';
 import PackageType from '../../../model/enums/PackageType';
 import SIStorageDialog from '../SIStorageDialog/SIStorageDialog';
 import onlineActionCreators from '../../../state/online/onlineActionCreators';
@@ -21,15 +20,10 @@ import './NewGameDialog.css';
 
 interface NewGameDialogProps {
 	isSingleGame: boolean;
-	inProgress: boolean;
 
 	onCreate: (isSingleGame: boolean, appDispatch: AppDispatch) => void;
 	onClose: () => void;
 }
-
-const mapStateToProps = (state: State) => ({
-	inProgress: state.online.gameCreationProgress,
-});
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	onCreate: (isSingleGame: boolean, appDispatch: AppDispatch) => {
@@ -105,14 +99,14 @@ export function NewGameDialog(props: NewGameDialogProps) {
 					<button
 						type="button"
 						className="startGame mainAction active"
-						disabled={props.inProgress || (!props.isSingleGame && game.name.length === 0)}
+						disabled={online.gameCreationProgress || (!props.isSingleGame && game.name.length === 0)}
 						onClick={() => props.onCreate(props.isSingleGame, appDispatch)}
 					>
 						{localization.startGame.toLocaleUpperCase()}
 					</button>
 				</div>
 
-				{props.inProgress ? <ProgressBar isIndeterminate /> : null}
+				{online.gameCreationProgress ? <ProgressBar isIndeterminate /> : null}
 
 				{online.uploadPackageProgress ? (
 					<div className="uploadPackagePanel">
@@ -131,4 +125,4 @@ export function NewGameDialog(props: NewGameDialogProps) {
 	);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(NewGameDialog);
+export default connect(null, mapDispatchToProps)(NewGameDialog);

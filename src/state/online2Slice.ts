@@ -30,6 +30,10 @@ export interface Online2State {
 	latestGames?: GamesResponse;
 	gamesStatistics?: GamesStatistic;
 	packagesStatistics?: PackagesStatistic;
+	password: string;
+	newGameShown: boolean;
+	gameCreationProgress: boolean;
+	joinGameProgress: boolean;
 }
 
 const initialState: Online2State = {
@@ -42,6 +46,10 @@ const initialState: Online2State = {
 	selectedGame: null,
 	uploadPackageProgress: false,
 	uploadPackagePercentage: 0,
+	password: '',
+	newGameShown: false,
+	gameCreationProgress: false,
+	joinGameProgress: false,
 };
 
 async function loadGamesAsync(dispatch: AppDispatch, gameClient: IGameServerClient, clear: boolean | undefined) {
@@ -157,6 +165,29 @@ export const online2Slice = createSlice({
 		packagesStatisticsLoaded: (state: Online2State, action: PayloadAction<PackagesStatistic>) => {
 			state.packagesStatistics = action.payload;
 		},
+		passwordChanged: (state: Online2State, action: PayloadAction<string>) => {
+			state.password = action.payload;
+		},
+		gameCreationStart: (state: Online2State) => {
+			state.gameCreationProgress = true;
+		},
+		gameCreationEnd: (state: Online2State) => {
+			state.gameCreationProgress = false;
+		},
+		joinGameStarted: (state: Online2State) => {
+			state.joinGameProgress = true;
+		},
+		joinGameFinished: (state: Online2State) => {
+			state.joinGameProgress = false;
+		},
+		newGame: (state: Online2State) => {
+			state.newGameShown = true;
+			state.gameCreationProgress = false;
+		},
+		newGameCancel: (state: Online2State) => {
+			state.newGameShown = false;
+			state.gameCreationProgress = false;
+		}
 	},
 	extraReducers: (builder) => {
 		builder.addCase(loadLobby.pending, (state) => {
@@ -189,6 +220,13 @@ export const {
 	latestGamesLoaded,
 	gamesStatisticLoaded,
 	packagesStatisticsLoaded,
+	passwordChanged,
+	gameCreationStart,
+	gameCreationEnd,
+	joinGameStarted,
+	joinGameFinished,
+	newGame,
+	newGameCancel,
 } = online2Slice.actions;
 
 

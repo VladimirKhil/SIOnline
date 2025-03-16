@@ -13,21 +13,19 @@ import GameStage from '../../../client/contracts/GameStage';
 import GameRules, { parseRulesFromString } from '../../../client/contracts/GameRules';
 import Constants from '../../../model/enums/Constants';
 import { AppDispatch } from '../../../state/store';
-import { useAppDispatch } from '../../../state/hooks';
+import { useAppDispatch, useAppSelector } from '../../../state/hooks';
+import { passwordChanged } from '../../../state/online2Slice';
 
 import './GameInfoView.css';
 
 interface GameInfoViewOwnProps {
 	isConnected: boolean;
 	culture: string | null;
-	onPasswordChanged: (password: string) => void;
 	onJoin: (hostUri: string, gameId: number, name: string, role: Role, appDispatch: AppDispatch) => void;
 }
 
 interface GameInfoViewStateProps {
 	login: string;
-	password: string;
-	joinGameProgress: boolean;
 }
 
 interface GameInfoViewProps extends GameInfoViewOwnProps, GameInfoViewStateProps {
@@ -39,14 +37,9 @@ interface GameInfoViewProps extends GameInfoViewOwnProps, GameInfoViewStateProps
 const mapStateToProps = (state: State) => ({
 	culture: state.settings.appSettings.culture,
 	login: state.user.login,
-	password: state.online.password,
-	joinGameProgress: state.online.joinGameProgress,
 });
 
 const mapDispatchToProps = (dispatch: any) => ({
-	onPasswordChanged: (newPassword: string) => {
-		dispatch(onlineActionCreators.passwordChanged(newPassword));
-	},
 	onJoin: (hostUri: string, gameId: number, name: string, role: Role, appDispatch: AppDispatch) => {
 		dispatch(onlineActionCreators.joinGame(hostUri, gameId, name, role, null, appDispatch));
 	}
@@ -54,7 +47,6 @@ const mapDispatchToProps = (dispatch: any) => ({
 
 const buildStage = (stage: GameStage, stageName: string, progressCurrent: number, progressTotal: number) => {
 	switch (stage) {
-
 		case GameStage.Created:
 			return localization.created;
 
@@ -107,6 +99,8 @@ export function GameInfoView(props: GameInfoViewProps): JSX.Element {
 	}
 
 	const appDispatch = useAppDispatch();
+	const online = useAppSelector(state => state.online2);
+	const { password, joinGameProgress } = online;
 
 	const [userName, setUserName] = React.useState(props.login);
 
@@ -152,9 +146,9 @@ export function GameInfoView(props: GameInfoViewProps): JSX.Element {
 	const onKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
 		if (e.key === Constants.KEY_ENTER_NEW) {
 			if (!props.isConnected ||
-				props.joinGameProgress ||
+				joinGameProgress ||
 				userName.length === 0 ||
-				(game.PasswordRequired && !props.password)) {
+				(game.PasswordRequired && !password)) {
 				return;
 			}
 
@@ -210,7 +204,7 @@ export function GameInfoView(props: GameInfoViewProps): JSX.Element {
 									id="name"
 									type="text"
 									aria-label='Name'
-									disabled={props.joinGameProgress}
+									disabled={joinGameProgress}
 									value={userName}
 									onChange={e => setUserName(e.target.value)}
 									onKeyPress={onKeyPress}
@@ -225,9 +219,9 @@ export function GameInfoView(props: GameInfoViewProps): JSX.Element {
 										id="password"
 										type="password"
 										aria-label='Password'
-										disabled={props.joinGameProgress}
-										value={props.password}
-										onChange={e => props.onPasswordChanged(e.target.value)}
+										disabled={joinGameProgress}
+										value={password}
+										onChange={e => appDispatch(passwordChanged(e.target.value))}
 										onKeyPress={onKeyPress}
 									/>
 								</div>
@@ -242,9 +236,9 @@ export function GameInfoView(props: GameInfoViewProps): JSX.Element {
 									onClick={() => props.onJoin(game.HostUri, game.GameID, userName, Role.Showman, appDispatch)}
 									title={localization.joinAsShowmanHint}
 									disabled={!props.isConnected ||
-										props.joinGameProgress ||
+										joinGameProgress ||
 										userName.length === 0 ||
-										(game.PasswordRequired && !props.password) ||
+										(game.PasswordRequired && !password) ||
 										!canJoinAsShowman}
 								>
 									{localization.joinAsShowman}
@@ -256,9 +250,9 @@ export function GameInfoView(props: GameInfoViewProps): JSX.Element {
 									onClick={() => props.onJoin(game.HostUri, game.GameID, userName, Role.Player, appDispatch)}
 									title={localization.joinAsPlayerHint}
 									disabled={!props.isConnected ||
-										props.joinGameProgress ||
+										joinGameProgress ||
 										userName.length === 0 ||
-										(game.PasswordRequired && !props.password) ||
+										(game.PasswordRequired && !password) ||
 										!canJoinAsPlayer}
 								>
 									{localization.joinAsPlayer}
@@ -270,9 +264,9 @@ export function GameInfoView(props: GameInfoViewProps): JSX.Element {
 									onClick={() => props.onJoin(game.HostUri, game.GameID, userName, Role.Viewer, appDispatch)}
 									title={localization.joinAsViewerHint}
 									disabled={!props.isConnected ||
-										props.joinGameProgress ||
+										joinGameProgress ||
 										userName.length === 0 ||
-										(game.PasswordRequired && !props.password) ||
+										(game.PasswordRequired && !password) ||
 										!props.canJoinAsViewer}
 								>
 									{localization.joinAsViewer}
@@ -282,7 +276,7 @@ export function GameInfoView(props: GameInfoViewProps): JSX.Element {
 					</div>
 				) : null}
 
-				{props.joinGameProgress ? <div className="joinGameProgress"><ProgressBar isIndeterminate /></div> : null}
+				{joinGameProgress ? <div className="joinGameProgress"><ProgressBar isIndeterminate /></div> : null}
 			</div>
 		</section>
 	);

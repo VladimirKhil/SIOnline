@@ -11,15 +11,14 @@ import loginReducer from './loginSlice';
 import commonReducer from './commonSlice';
 import uiReducer from './uiSlice';
 import siPackagesReducer from './siPackagesSlice';
-import onlineReducer from './online/onlineReducer';
-import { KnownOnlineAction } from './online/OnlineActions';
 import gameReducer from './gameSlice';
 import { UnknownAction } from '@reduxjs/toolkit';
 import siquesterReducer from './siquesterSlice';
 
 const reducer: Reducer<State> = (
 	state: State = initialState,
-	action: AnyAction): State => ({
+	action: AnyAction
+): State => ({
 	user: userReducer(state.user, action as UnknownAction),
 	login: loginReducer(state.login, action as UnknownAction),
 	room: roomReducer(state.room, action as KnownRoomAction),
@@ -29,7 +28,6 @@ const reducer: Reducer<State> = (
 	table: tableReducer(state.table, action as UnknownAction),
 	siPackages: siPackagesReducer(state.siPackages, action as UnknownAction),
 	ui: uiReducer(state.ui, action as UnknownAction),
-	online: onlineReducer(state.online, action as KnownOnlineAction),
 	online2: online2Reducer(state.online2, action as UnknownAction),
 	game: gameReducer(state.game, action as UnknownAction),
 	siquester: siquesterReducer(state.siquester, action as UnknownAction),

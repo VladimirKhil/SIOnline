@@ -11,13 +11,10 @@ import * as siPackages from './siPackagesSlice';
 import * as ui from './uiSlice';
 import * as siquester from './siquesterSlice';
 
-import OnlineState, { initialState as onlineInitialState } from './online/OnlineState';
-
 export default interface State {
 	user: user.UserState;
 	login: login.LoginState;
 	ui: ui.UIState;
-	online: OnlineState;
 	online2: online2.Online2State;
 	game: game.GameState;
 	room: RoomState;
@@ -33,7 +30,6 @@ export const initialState: State = {
 	user: user.userSlice.getInitialState(),
 	login: login.loginSlice.getInitialState(),
 	ui: ui.uiSlice.getInitialState(),
-	online: onlineInitialState,
 	online2: online2.online2Slice.getInitialState(),
 	game: game.gameSlice.getInitialState(),
 	siPackages: siPackages.siPackagesSlice.getInitialState(),

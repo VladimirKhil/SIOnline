@@ -12,8 +12,13 @@ import UserOptions from '../../panels/UserOptions/UserOptions';
 import { navigate } from '../../../utils/Navigator';
 import { exitApp } from '../../../state/globalActions';
 
-import './MainMenu.css';
+import './MainMenu.scss';
 import exitImg from '../../../../assets/images/exit.png';
+import twitchImg from '../../../../assets/images/twitch_logo.png';
+import boostyImg from '../../../../assets/images/boosty_logo.png';
+import patreonImg from '../../../../assets/images/patreon_logo.png';
+import steamImg from '../../../../assets/images/steam_logo.png';
+import simulatorImg from '../../../../assets/images/simulator_logo.png';
 
 interface MainMenuProps {
 	anyonePlay: (appDispatch: AppDispatch) => void;
@@ -127,6 +132,40 @@ export function MainMenu(props: MainMenuProps): JSX.Element {
 					) : null}
 				</div>
 			</div>
+
+			{common.clearUrls ? null : <div className='links'>
+				<ul>
+					<li>
+						<a href='https://store.steampowered.com/app/3553500/SIGame' target='_blank' rel='noreferrer noopener' title='Steam'>
+							<img src={steamImg} alt='Steam' />
+						</a>
+					</li>
+
+					<li>
+						<a href='https://www.twitch.tv/directory/category/sigame' target='_blank' rel='noreferrer noopener' title='Twitch'>
+							<img src={twitchImg} alt='Twitch' />
+						</a>
+					</li>
+
+					<li>
+						<a href='https://boosty.to/vladimirkhil' target='_blank' rel='noreferrer noopener' title='Boosty'>
+							<img src={boostyImg} alt='Boosty' />
+						</a>
+					</li>
+
+					<li>
+						<a href='https://patreon.com/vladimirkhil' target='_blank' rel='noreferrer noopener' title='Patreon'>
+							<img src={patreonImg} alt='Patreon' />
+						</a>
+					</li>
+
+					<li>
+						<a href='https://vladimirkhil.com/si/simulator' target='_blank' rel='noreferrer noopener' title='SImulator'>
+							<img src={simulatorImg} alt='SImulator' />
+						</a>
+					</li>
+				</ul>
+			</div>}
 
 			{showLicense ? (
 				<Dialog className='licenseDialog' title={localization.serverLicense} onClose={() => setShowLicense(false)}>

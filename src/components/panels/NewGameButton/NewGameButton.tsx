@@ -1,28 +1,20 @@
 import React from 'react';
 import localization from '../../../model/resources/localization';
-import { connect } from 'react-redux';
-import onlineActionCreators from '../../../state/online/onlineActionCreators';
+import { useAppDispatch } from '../../../state/hooks';
+import { newGame } from '../../../state/online2Slice';
 
 import './NewGameButton.scss';
 
-interface NewGameButtonProps {
-	onNewGame: () => void;
-}
+const NewGameButton: React.FC = () => {
+	const appDispatch = useAppDispatch();
 
-const mapDispatchToProps = (dispatch: any) => ({
-	onNewGame: () => {
-		dispatch(onlineActionCreators.newGame());
-	}
-});
-
-const NewGameButton: React.FC<NewGameButtonProps> = (props: NewGameButtonProps) => (
-	<button
+	return <button
 		className='newGame standard'
 		type="button"
-		onClick={props.onNewGame}
+		onClick={() => appDispatch(newGame())}
 	>
 		{localization.newGame.toLocaleUpperCase()}
-	</button>
-);
+	</button>;
+};
 
-export default connect(null, mapDispatchToProps)(NewGameButton);
+export default NewGameButton;

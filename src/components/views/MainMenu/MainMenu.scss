@@ -9,6 +9,38 @@
 	overflow-y: auto;
 	overflow-x: hidden;
 	scrollbar-width: thin;
+
+	.links {
+		display: none;
+		position: absolute;
+		right: 10px;
+		bottom: 10px;
+
+		ul {
+			display: flex;
+			flex-direction: row;
+		}
+
+		li {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			cursor: pointer;
+			width: 40px;
+			height: 40px;
+
+			&:hover {
+				background: linear-gradient(180deg, #2860ef 14.29%, rgb(39, 108, 237) 100%);
+			}
+
+			img {
+				width: 80%;
+				height: 80%;
+				margin-left: 5px;
+				margin-top: 5px;
+			}
+		}
+	}
 }
 
 .welcomeView .logo, .welcomeView .logoMini {
@@ -243,5 +275,13 @@ button.standard.welcomeExit {
 @media screen and (min-height: 800px) and (min-width: 1600px) {
 	.welcomeViewActions {
 		margin-top: 150px;
+	}
+}
+
+@media screen and (min-width: 800px) {
+    .welcomeView {
+		.links {
+        	display: initial;
+    	}
 	}
 }

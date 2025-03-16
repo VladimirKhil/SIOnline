@@ -32,7 +32,6 @@ import './RoomOptions.scss';
 interface RoomOptionsProps {
 	isSingleGame: boolean;
 	isOralGame: boolean;
-	inProgress: boolean;
 	navigation: INavigationState;
 	clearUrls?: boolean;
 	isSIStorageOpen: boolean;
@@ -49,7 +48,6 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 
 const mapStateToProps = (state: State) => ({
 	isOralGame: state.settings.appSettings.oral,
-	inProgress: state.online.gameCreationProgress,
 	navigation: state.ui.navigation,
 	clearUrls: state.common.clearUrls,
 });

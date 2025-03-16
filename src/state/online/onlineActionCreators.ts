@@ -1,5 +1,4 @@
 import { Action, ActionCreator, Dispatch } from 'redux';
-import * as OnlineActions from './OnlineActions';
 import State from '../State';
 import DataContext from '../../model/DataContext';
 import getErrorMessage from '../../utils/ErrorHelpers';
@@ -36,31 +35,9 @@ import { saveStateToStorage } from '../StateHelpers';
 import { INavigationState } from '../uiSlice';
 import { navigate } from '../../utils/Navigator';
 import { UnknownAction } from '@reduxjs/toolkit';
-import { uploadPackageFinished,
+import { gameCreationEnd, gameCreationStart, joinGameFinished, joinGameStarted, newGameCancel, passwordChanged, uploadPackageFinished,
 	uploadPackageProgress,
 	uploadPackageStarted } from '../online2Slice';
-
-const newGame: ActionCreator<OnlineActions.NewGameAction> = () => ({
-	type: OnlineActions.OnlineActionTypes.NewGame
-});
-
-const newGameCancel: ActionCreator<OnlineActions.NewGameCancelAction> = () => ({
-	type: OnlineActions.OnlineActionTypes.NewGameCancel
-});
-
-const passwordChanged: ActionCreator<OnlineActions.PasswordChangedAction> = (newPassword: string) => ({
-	type: OnlineActions.OnlineActionTypes.PasswordChanged,
-	newPassword
-});
-
-const gameCreationStart: ActionCreator<OnlineActions.GameCreationStartAction> = () => ({
-	type: OnlineActions.OnlineActionTypes.GameCreationStart
-});
-
-const gameCreationEnd: ActionCreator<OnlineActions.GameCreationEndAction> = (error: string | null = null) => ({
-	type: OnlineActions.OnlineActionTypes.GameCreationEnd,
-	error
-});
 
 async function uploadPackageAsync2(
 	contentClient: SIContentClient,
@@ -132,14 +109,6 @@ const initGameAsync = async (
 	await gameInit(gameClient, role);
 };
 
-const joinGameStarted: ActionCreator<OnlineActions.JoinGameStartedAction> = () => ({
-	type: OnlineActions.OnlineActionTypes.JoinGameStarted
-});
-
-const joinGameFinished: ActionCreator<OnlineActions.JoinGameFinishedAction> = () => ({
-	type: OnlineActions.OnlineActionTypes.JoinGameFinished,
-});
-
 function getServerRole(role: Role) {
 	if (role === Role.Viewer) {
 		return ServerRole.Viewer;
@@ -154,7 +123,7 @@ const joinGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 	getState: () => State,
 	dataContext: DataContext
 ) => {
-	dispatch(joinGameStarted());
+	appDispatch(joinGameStarted());
 
 	try {
 		const siHostClient = await actionCreators.connectToSIHostAsync(hostUri, dispatch, appDispatch, getState, dataContext);
@@ -167,7 +136,7 @@ const joinGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 			UserName: userName,
 			Role: serverRole,
 			Sex: state.settings.sex === Sex.Male ? ServerSex.Male : ServerSex.Female,
-			Password: state.online.password,
+			Password: state.online2.password,
 			Pin: pin,
 		});
 
@@ -187,7 +156,7 @@ const joinGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 			gameId: gameId,
 			role: role,
 			sex: state.settings.sex,
-			password: state.online.password,
+			password: state.online2.password,
 			isAutomatic: false,
 		};
 
@@ -195,8 +164,8 @@ const joinGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 	} catch (error) {
 		appDispatch(userErrorChanged(getErrorMessage(error)));
 	} finally {
-		dispatch(joinGameFinished());
-		dispatch(newGameCancel());
+		appDispatch(joinGameFinished());
+		appDispatch(newGameCancel());
 	}
 };
 
@@ -387,7 +356,7 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 			return;
 		}
 
-		dispatch(gameCreationStart());
+		appDispatch(gameCreationStart());
 
 		const game = isSingleGame
 			? {
@@ -442,14 +411,14 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 			if (!result.isSuccess) {
 				appDispatch(userErrorChanged(GameErrorsHelper.getMessage(result.errorType)));
 			} else {
-				dispatch(passwordChanged(gameSettings.networkGamePassword));
+				appDispatch(passwordChanged(gameSettings.networkGamePassword));
 				dispatch(joinGame(result.hostUri, result.gameId, state.user.login, role, null, appDispatch));
 			}
 		} catch (error) {
 			const userError = getErrorMessage(error);
 			appDispatch(userErrorChanged(userError));
 		} finally {
-			dispatch(gameCreationEnd());
+			appDispatch(gameCreationEnd());
 		}
 	};
 
@@ -457,7 +426,7 @@ const createNewAutoGame: ActionCreator<ThunkAction<void, State, DataContext, Act
 	(appDispatch: AppDispatch) => async (dispatch: Dispatch<any>, getState: () => State, dataContext: DataContext) => {
 		const state = getState();
 
-		dispatch(gameCreationStart());
+		appDispatch(gameCreationStart());
 
 		try {
 			const result = await dataContext.gameClient.runAutoGameAsync({
@@ -474,7 +443,7 @@ const createNewAutoGame: ActionCreator<ThunkAction<void, State, DataContext, Act
 		} catch (error) {
 			appDispatch(userErrorChanged(getErrorMessage(error)));
 		} finally {
-			dispatch(gameCreationEnd());
+			appDispatch(gameCreationEnd());
 		}
 	};
 
@@ -488,11 +457,8 @@ async function gameInit(gameClient: IGameClient, role: Role) {
 }
 
 const onlineActionCreators = {
-	newGame,
-	newGameCancel,
 	joinGame,
 	joinByPin,
-	passwordChanged,
 	createNewGame,
 	createNewAutoGame,
 	initGameAsync,

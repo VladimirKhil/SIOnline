@@ -7,8 +7,6 @@ import UsersView from '../../panels/UsersView/UsersView';
 import OnlineMode from '../../../model/enums/OnlineMode';
 import NewGameDialog from '../../panels/NewGameDialog/NewGameDialog';
 import Dialog from '../../common/Dialog/Dialog';
-import onlineActionCreators from '../../../state/online/onlineActionCreators';
-import { Dispatch, Action } from 'redux';
 import ProgressBar from '../../common/ProgressBar/ProgressBar';
 import { filterGames } from '../../../utils/GamesHelpers';
 import localization from '../../../model/resources/localization';
@@ -19,6 +17,7 @@ import LobbyBottomPanel from '../../panels/LobbyBottomPanel/LobbyBottomPanel';
 import { navigate } from '../../../utils/Navigator';
 import { closeGameInfo } from '../../../state/uiSlice';
 import { useAppSelector } from '../../../state/hooks';
+import { newGameCancel } from '../../../state/online2Slice';
 
 import './Lobby.css';
 import exitImg from '../../../../assets/images/exit.png';
@@ -26,21 +25,11 @@ import exitImg from '../../../../assets/images/exit.png';
 interface LobbyProps {
 	windowWidth: number;
 	mode: OnlineMode;
-	newGameShown: boolean;
-
-	closeNewGame: () => void;
 }
 
 const mapStateToProps = (state: State) => ({
 	windowWidth: state.ui.windowWidth,
 	mode: state.ui.onlineView,
-	newGameShown: state.online.newGameShown,
-});
-
-const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
-	closeNewGame: () => {
-		dispatch(onlineActionCreators.newGameCancel());
-	},
 });
 
 const topMenu = (onExit: () => void) => (
@@ -76,7 +65,7 @@ export function Lobby(props: LobbyProps) {
 
 	const newGame = (
 		<div className='newGameArea'>
-			<NewGameDialog isSingleGame={false} onClose={props.closeNewGame} />
+			<NewGameDialog isSingleGame={false} onClose={() => appDispatch(newGameCancel())} />
 		</div>
 	);
 
@@ -108,7 +97,7 @@ export function Lobby(props: LobbyProps) {
 							<LobbyBottomPanel />
 						</div>
 
-						{props.newGameShown ? newGame : null}
+						{online.newGameShown ? newGame : null}
 					</div>
 				</div>
 			);
@@ -122,7 +111,7 @@ export function Lobby(props: LobbyProps) {
 			</div>
 
 			<LobbyBottomPanel />
-			{props.newGameShown ? newGame : null}
+			{online.newGameShown ? newGame : null}
 		</div>;
 	}
 
@@ -150,10 +139,10 @@ export function Lobby(props: LobbyProps) {
 				</div>
 
 				<UsersView />
-				{props.newGameShown ? newGame : null}
+				{online.newGameShown ? newGame : null}
 			</div>
 		</div>
 	);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Lobby);
+export default connect(mapStateToProps)(Lobby);
