@@ -304,7 +304,7 @@ const PackageView: React.FC = () => {
 					{question.params.price
 						? <>
 							<label htmlFor='price' className='header'>{localization.price}</label>
-							<input id='price' type='text' value={question.params.price.numberSet.minimum} readOnly />
+							<input id='price' type='text' value={question.params.price.numberSet?.minimum} readOnly />
 						</>
 					: null}
 
