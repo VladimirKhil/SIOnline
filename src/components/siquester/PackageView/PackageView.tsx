@@ -1,12 +1,13 @@
 import React from 'react';
 import { useAppSelector } from '../../../state/hooks';
 import { useDispatch } from 'react-redux';
-import { ContentParam, InfoOwner, Package, Question, Round, Theme, SelectionMode, NumberSetParam, NumberSet, ContentItem } from '../../../model/siquester/package';
+import { ContentParam, InfoOwner, Package, Question, Round, Theme, SelectionMode, NumberSet } from '../../../model/siquester/package';
 import localization from '../../../model/resources/localization';
 import { navigate } from '../../../utils/Navigator';
 import Path from '../../../model/enums/Path';
 import MediaItem from '../MediaItem/MediaItem';
-import JSZip from 'jszip';
+import ScreensView from '../ScreensView/ScreensView';
+import AutoSizedText from '../../common/AutoSizedText/AutoSizedText';
 
 import './PackageView.scss';
 import exitImg from '../../../../assets/images/exit.png';
@@ -19,7 +20,6 @@ const PackageView: React.FC = () => {
 	const { zip, pack } = siquester;
 	const [roundIndex, setRoundIndex] = React.useState(0);
 	const [item, setItem] = React.useState<Package | Round | Theme | Question | null>(null);
-	const [screenIndex, setScreenIndex] = React.useState(0);
 	const [mode, setMode] = React.useState(Mode.Questions);
 
 	if (!zip || !pack) {
@@ -148,6 +148,18 @@ const PackageView: React.FC = () => {
 								))}
 							</> : null}
 
+						{pack.contactUri
+							? <>
+								<label htmlFor='contactUri' className='header'>{localization.contactUri}</label>
+
+								<input
+									id='contactUri'
+									type='text'
+									className='packageView__package__info__contactUri'
+									value={pack.contactUri}
+									readOnly />
+							</> : null}
+
 						{getInfo(pack)}
 					</section>
 				</div>
@@ -198,27 +210,6 @@ const PackageView: React.FC = () => {
 		const question = item as Question;
 		const { answerOptions } = question.params;
 
-		const screens = [];
-		const items = [];
-
-		if (question.params.question) {
-			for (let i = 0; i < question.params.question.items.length; i++) {
-				const contentItem = question.params.question.items[i];
-				items.push(contentItem);
-
-				if (contentItem.waitForFinish) {
-					screens.push([...items]);
-					items.length = 0;
-				}
-			}
-		}
-
-		if (items.length > 0) {
-			screens.push([...items]);
-		}
-
-		const screen = screens[screenIndex];
-
 		function getNumberSet(numberSet: NumberSet) {
 			if (numberSet.minimum === numberSet.maximum) {
 				if (numberSet.minimum === 0) {
@@ -247,13 +238,11 @@ const PackageView: React.FC = () => {
 			</>;
 		}
 
-		function getContentItem(contentItem: ContentItem): React.ReactNode {
-			switch (contentItem.type) {
-				case 'text': return contentItem.value;
-				case 'image': return <MediaItem src={contentItem.value} type='image' isRef={contentItem.isRef} />;
-				case 'audio': return <MediaItem src={contentItem.value} type='audio' isRef={contentItem.isRef} />;
-				case 'video': return <MediaItem src={contentItem.value} type='video' isRef={contentItem.isRef} />;
-				default: return null;
+		function getAnswerType(answerType: string): string {
+			switch (answerType) {
+				case 'text': return localization.text;
+				case 'select': return localization.answerTypeSelect;
+				default: return answerType;
 			}
 		}
 
@@ -283,13 +272,6 @@ const PackageView: React.FC = () => {
 							</>
 						: null}
 
-						{question.params.answerType
-							? <>
-								<label htmlFor='answerType' className='header'>{localization.answerType}</label>
-								<input id='answerType' type='text' value={question.params.answerType} readOnly />
-							</>
-						: null}
-
 						{question.params.theme
 							? <>
 								<label htmlFor='theme' className='header'>{localization.theme}</label>
@@ -315,39 +297,19 @@ const PackageView: React.FC = () => {
 							? <>
 								<label htmlFor='name' className='header'>{localization.question}</label>
 
-								<div className='packageView__question__screens'>
-									{screens.map((_, si) => (
-										<div
-											className={`packageView__question__screen ${screenIndex === si ? 'selected' : ''}`}
-											key={si}
-											onClick={() => setScreenIndex(si)}>
-											{si + 1}
-										</div>
-									))}
-								</div>
-
-								{screen && screen.length > 0
-									? <div className='packageView__question__current__screen'>
-										{screen.map((contentItem, ci) => <div
-											className='packageView__question__content__item__host'
-											key={contentItem.value}>
-												{getContentItem(contentItem)}
-											</div>)}
-									</div>
-									: null}
+								{question.params.question ? <ScreensView content={question.params.question} /> : null}
 
 								{question.params.answer
 									? <>
 										<label htmlFor='name' className='header'>{localization.answer}</label>
+										<ScreensView content={question.params.answer} />
+									</>
+								: null}
 
-										{question.params.answer.items.map((item, ii) => (
-											<input
-												aria-label='content'
-												key={ii}
-												className='packageView__theme__info__author'
-												value={item.value}
-												readOnly />
-										))}
+								{question.params.answerType
+									? <>
+										<label htmlFor='answerType' className='header'>{localization.answerType}</label>
+										<input id='answerType' type='text' value={getAnswerType(question.params.answerType)} readOnly />
 									</>
 								: null}
 
@@ -359,7 +321,7 @@ const PackageView: React.FC = () => {
 											const option = answerOptions[key] as ContentParam;
 
 											return (
-												<div className='packageView__answer__option__host'>
+												<div key={key} className='packageView__answer__option__host'>
 													<div className='packageView__answer__option__label'>{key}</div>
 
 													<input
@@ -428,7 +390,7 @@ const PackageView: React.FC = () => {
 				{round.themes.map((theme, ti) => (
 					<div key={ti} className='packageView__theme'>
 						<div className={`packageView__theme__name ${item === theme ? 'selected' : ''}`} onClick={() => setItem(theme)}>
-							{theme.name}
+							<AutoSizedText maxFontSize={18}>{theme.name}</AutoSizedText>
 						</div>
 
 						{theme.questions.map((question, qi) => (
@@ -437,7 +399,7 @@ const PackageView: React.FC = () => {
 								className={`packageView__question
 									${item === question ? 'selected' : ''}
 									${isThemeList ? 'wide' : ''}`}
-								onClick={() => { setItem(question); setScreenIndex(0); }}>
+								onClick={() => { setItem(question); }}>
 								{isThemeList ? localization.question : (question.price > -1 ? question.price : ' ')}
 							</div>
 						))}

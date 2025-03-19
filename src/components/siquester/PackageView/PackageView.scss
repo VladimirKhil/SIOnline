@@ -126,10 +126,12 @@
 
 			.packageView__theme__name {
 				margin: 3px;
+				padding: 3px;
 				flex: 200px 0 0;
 				display: flex;
 				justify-content: center;
 				align-items: center;
+				text-align: center;
 				background-color: rgb(56, 56, 56);
 				cursor: pointer;
 
@@ -265,6 +267,7 @@
 				width: 100%;
 				flex: 250px 0 0;
 				padding: 5px;
+				margin-top: 5px;
 				display: flex;
 				flex-direction: column;
 				justify-content: center;

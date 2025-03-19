@@ -10,6 +10,7 @@ export interface Package extends InfoOwner {
 	date: string;
 	publisher: string;
 	difficulty: number;
+	contactUri?: string;
 	logo?: string;
 	language: string;
 	tags: Tag[];
@@ -72,7 +73,7 @@ export interface ContentItem {
 	type: ContentType;
 	value: string;
 	isRef: boolean;
-	placement?: 'replic' | 'background' | 'screen';
+	placement: 'replic' | 'background' | 'screen';
 	duration?: string;
 	waitForFinish?: boolean;
 }
@@ -190,6 +191,7 @@ export function parseXMLtoPackage(xmlDoc: Document): Package {
 		difficulty: Number(packageElement.getAttribute('difficulty')) || 0,
 		language: packageElement.getAttribute('language') || '',
 		logo: packageElement.getAttribute('logo') || undefined,
+		contactUri: packageElement.getAttribute('contactUri') || undefined,
 		tags: parseTags(packageElement),
 		info: parseInfo(packageElement),
 		rounds: parseRounds(packageElement, version),
@@ -597,7 +599,7 @@ function parseContentParam(paramElement: Element): ContentParam {
 			type: item.getAttribute('type') as ContentType ?? 'text',
 			value: item.textContent || '',
 			isRef: item.getAttribute('isRef') === 'True',
-			placement: item.getAttribute('placement') as 'replic' | 'background' | undefined,
+			placement: item.getAttribute('placement') as 'replic' | 'background' | 'screen' ?? 'screen',
 			duration: item.getAttribute('duration') || undefined,
 			waitForFinish: item.getAttribute('waitForFinish') !== 'False',
 		})),
