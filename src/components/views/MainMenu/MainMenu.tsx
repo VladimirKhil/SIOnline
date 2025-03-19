@@ -115,12 +115,12 @@ export function MainMenu(props: MainMenuProps): JSX.Element {
 						{localization.joinByPin.toUpperCase()}
 					</button>
 
-					{/* <button
+					<button
 						type='button'
 						className='standard welcomeRow right'
 						onClick={() => appDispatch(navigate({ navigation: { path: Path.SIQuester }, saveState: true }))}>
 						{localization.questionEditor.toUpperCase()}
-					</button> */}
+					</button>
 
 					{common.exitSupported ? (
 						<button

@@ -69,9 +69,9 @@ export interface ContentParam {
 }
 
 export interface ContentItem {
-	type?: ContentType;
+	type: ContentType;
 	value: string;
-	isRef?: boolean;
+	isRef: boolean;
 	placement?: 'replic' | 'background' | 'screen';
 	duration?: string;
 	waitForFinish?: boolean;
@@ -571,13 +571,30 @@ function parseQuestionParams(questionElement: Element): QuestionParams {
 		params.answer = parseContentParam(answerParam);
 	}
 
+	const answerTypeParam = paramsElement.querySelector('param[name="answerType"]');
+
+	if (answerTypeParam) {
+		params.answerType = answerTypeParam.textContent || undefined;
+	}
+
+	const answerOptionsParam = paramsElement.querySelector('param[name="answerOptions"]');
+
+	if (answerOptionsParam) {
+		params.answerOptions = {};
+
+		Array.from(answerOptionsParam.getElementsByTagName('param')).forEach(option => {
+			const key = option.getAttribute('name') || '';
+			params.answerOptions![key] = parseContentParam(option);
+		});
+	}
+
 	return params;
 }
 
 function parseContentParam(paramElement: Element): ContentParam {
 	return {
 		items: Array.from(paramElement.getElementsByTagName('item')).map(item => ({
-			type: item.getAttribute('type') as ContentType | undefined,
+			type: item.getAttribute('type') as ContentType ?? 'text',
 			value: item.textContent || '',
 			isRef: item.getAttribute('isRef') === 'True',
 			placement: item.getAttribute('placement') as 'replic' | 'background' | undefined,

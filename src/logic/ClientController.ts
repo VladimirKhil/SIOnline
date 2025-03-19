@@ -470,7 +470,7 @@ export default class ClientController {
 		}
 	}
 
-	onOptionChanged(name: string, value: string) {
+	onOptionChanged(name: string, value: string, reason: string) {
 		const { settings } = this.getState().room;
 
 		switch (name) {

@@ -1,10 +1,11 @@
 import React from 'react';
 import { useAppSelector } from '../../../state/hooks';
 import { useDispatch } from 'react-redux';
-import { ContentParam, Package, Question, Round, Theme } from '../../../model/siquester/package';
+import { ContentParam, InfoOwner, Package, Question, Round, Theme, SelectionMode, NumberSetParam, NumberSet, ContentItem } from '../../../model/siquester/package';
 import localization from '../../../model/resources/localization';
 import { navigate } from '../../../utils/Navigator';
 import Path from '../../../model/enums/Path';
+import MediaItem from '../MediaItem/MediaItem';
 import JSZip from 'jszip';
 
 import './PackageView.scss';
@@ -20,19 +21,6 @@ const PackageView: React.FC = () => {
 	const [item, setItem] = React.useState<Package | Round | Theme | Question | null>(null);
 	const [screenIndex, setScreenIndex] = React.useState(0);
 	const [mode, setMode] = React.useState(Mode.Questions);
-	const [packageLogo, setPackageLogo] = React.useState<string | undefined>(undefined);
-
-	async function loadLogo(file: JSZip, logo: string) {
-		const data = file.file('Images/' + logo.substring(1));
-		const base64 = await data?.async('base64');
-		setPackageLogo(`data:image/png;base64,${base64}`);
-	}
-
-	React.useEffect(() => {
-		if (zip && pack && pack.logo) {
-			loadLogo(zip, pack.logo);
-		}
-	}, [pack]);
 
 	if (!zip || !pack) {
 		return <div>Loading...</div>;
@@ -59,6 +47,56 @@ const PackageView: React.FC = () => {
 		}
 	}
 
+	function getSetAnswererSelect(setAnswererSelect: SelectionMode): string {
+		switch (setAnswererSelect) {
+			case 'any': return localization.setAnswererSelectAny;
+			case 'exceptCurrent': return localization.setAnswererSelectExceptCurrent;
+			default: return setAnswererSelect;
+		}
+	}
+
+	function getQuestionTypeName(type: string): string {
+		switch (type) {
+			case 'simple': return localization.questionTypeSimple;
+			case 'stake': return localization.questionTypeStake;
+			case 'noRisk': return localization.questionTypeNoRisk;
+			case 'secret': return localization.questionTypeSecret;
+			case 'secretPublicPrice': return localization.questionTypeSecretPublicPrice;
+			case 'secretNoQuestion': return localization.questionTypeSecretNoQuestion;
+			case 'forAll': return localization.questionTypeForAll;
+			case 'stakeAll': return localization.questionTypeStakeAll;
+			default: return type;
+		}
+	}
+
+	function getInfo(infoOwner: InfoOwner): React.ReactNode {
+		return <>
+			{infoOwner.info?.authors && infoOwner.info.authors.length > 0
+				? <>
+					<label className='header'>{localization.authors}</label>
+
+					{infoOwner.info?.authors?.map((author, ai) => (
+						<input aria-label='author' key={ai} className='packageView__info__author' value={author.name} readOnly />
+					))}
+				</> : null}
+
+			{infoOwner.info?.sources && infoOwner.info.sources.length > 0
+				? <>
+					<label className='header' htmlFor='sources'>{localization.sources}</label>
+
+					{infoOwner.info?.sources?.map((source, si) => (
+						<input id='sources' key={si} className='packageView__info__source' value={source.value} readOnly />
+					))}
+				</> : null}
+
+			{infoOwner.info?.comments && infoOwner.info.comments.length > 0
+				? <>
+					<label className='header' htmlFor='comments'>{localization.comments}</label>
+					<textarea id='comments' className='packageView__info__comments' value={infoOwner.info.comments} readOnly />
+				</> : null}
+		</>;
+	}
+
 	function getItemView(item: Package | Round | Theme | Question): React.ReactNode {
 		if ('rounds' in item) { // Package
 			const pack = item as Package;
@@ -74,7 +112,11 @@ const PackageView: React.FC = () => {
 						<label htmlFor='name' className='header'>{localization.name}</label>
 						<input id='name' type='text' className='packageView__package__info__name' value={pack.name} readOnly />
 
-						{packageLogo ? <img src={packageLogo} alt='Logo' className='packageView__package__info__logo' /> : null}
+						{pack.logo
+							? <div className='packageView__package__logo__host'>
+								<MediaItem src={pack.logo.substring(1)} type='image' isRef={true} />
+							</div>
+							: null}
 
 						<label htmlFor='date' className='header'>{localization.date}</label>
 						<input id='date' type='text' className='packageView__package__info__date' value={pack.date} readOnly />
@@ -106,29 +148,7 @@ const PackageView: React.FC = () => {
 								))}
 							</> : null}
 
-						{pack.info?.authors
-							? <>
-								<label className='header'>{localization.authors}</label>
-
-								{pack.info?.authors.map((author, ai) => (
-									<input aria-label='author' key={ai} className='packageView__theme__info__author' value={author.name} readOnly />
-								))}
-							</> : null}
-
-						{pack.info?.sources
-							? <>
-								<label className='header' htmlFor='sources'>{localization.sources}</label>
-
-								{pack.info?.sources?.map((source, si) => (
-									<input id='sources' key={si} className='packageView__theme__info__source' value={source.value} readOnly />
-								))}
-							</> : null}
-
-						{pack.info?.comments
-							? <>
-								<label className='header' htmlFor='comments'>{localization.comments}</label>
-								<textarea id='comments' className='packageView__theme__info__comments' value={pack.info.comments} readOnly />
-							</> : null}
+						{getInfo(pack)}
 					</section>
 				</div>
 			);
@@ -151,29 +171,7 @@ const PackageView: React.FC = () => {
 						<label htmlFor='type' className='header'>{localization.type}</label>
 						<input id='type' type='text' className='packageView__round__info__type' value={getRoundType(round.type)} readOnly />
 
-						{round.info?.authors
-							? <>
-								<label className='header'>{localization.authors}</label>
-
-								{round.info?.authors.map((author, ai) => (
-									<input aria-label='author' key={ai} className='packageView__theme__info__author' value={author.name} readOnly />
-								))}
-							</> : null}
-
-						{round.info?.sources
-							? <>
-								<label className='header' htmlFor='sources'>{localization.sources}</label>
-
-								{round.info?.sources?.map((source, si) => (
-									<input id='sources' key={si} className='packageView__theme__info__source' value={source.value} readOnly />
-								))}
-							</> : null}
-
-						{round.info?.comments
-							? <>
-								<label className='header' htmlFor='comments'>{localization.comments}</label>
-								<textarea id='comments' className='packageView__theme__info__comments' value={round.info.comments} readOnly />
-							</> : null}
+						{getInfo(round)}
 					</section>
 				</div>
 			);
@@ -192,29 +190,7 @@ const PackageView: React.FC = () => {
 					<label htmlFor='name' className='header'>{localization.name}</label>
 					<input id='name' type='text' className='packageView__theme__info__name' value={theme.name} readOnly />
 
-					{theme.info?.authors
-						? <>
-							<label className='header'>{localization.authors}</label>
-
-							{theme.info?.authors?.map((author, ai) => (
-								<input aria-label='author' key={ai} className='packageView__theme__info__author' value={author.name} readOnly />
-							))}
-						</> : null}
-
-					{theme.info?.sources
-						? <>
-							<label className='header' htmlFor='sources'>{localization.sources}</label>
-
-							{theme.info?.sources?.map((source, si) => (
-								<input id='sources' key={si} className='packageView__theme__info__source' value={source.value} readOnly />
-							))}
-						</> : null}
-
-					{theme.info?.comments
-						? <>
-							<label className='header' htmlFor='comments'>{localization.comments}</label>
-							<textarea id='comments' className='packageView__theme__info__comments' value={theme.info.comments} readOnly />
-						</> : null}
+					{getInfo(theme)}
 				</div>
 			);
 		}
@@ -243,17 +219,41 @@ const PackageView: React.FC = () => {
 
 		const screen = screens[screenIndex];
 
-		function getQuestionTypeName(type: string): string {
-			switch (type) {
-				case 'simple': return localization.questionTypeSimple;
-				case 'stake': return localization.questionTypeStake;
-				case 'noRisk': return localization.questionTypeNoRisk;
-				case 'secret': return localization.questionTypeSecret;
-				case 'secretPublicPrice': return localization.questionTypeSecretPublicPrice;
-				case 'secretNoQuestion': return localization.questionTypeSecretNoQuestion;
-				case 'forAll': return localization.questionTypeForAll;
-				case 'stakeAll': return localization.questionTypeStakeAll;
-				default: return type;
+		function getNumberSet(numberSet: NumberSet) {
+			if (numberSet.minimum === numberSet.maximum) {
+				if (numberSet.minimum === 0) {
+					return <input aria-label='price' type='text' value={localization.minMaxInRound} readOnly />;
+				}
+
+				return <input aria-label='price' type='number' value={numberSet.minimum} readOnly />;
+			}
+
+			if (numberSet.step === 0 || numberSet.step === numberSet.maximum - numberSet.minimum) {
+				return <>
+					{localization.from}
+					<input aria-label='price' type='text' value={numberSet.minimum} readOnly />
+					{localization.to}
+					<input aria-label='price' type='text' value={numberSet.maximum} readOnly />
+				</>;
+			}
+
+			return <>
+				{localization.from}
+				<input aria-label='price' type='text' value={numberSet.minimum} readOnly />
+				{localization.to}
+				<input aria-label='price' type='text' value={numberSet.maximum} readOnly />
+				{localization.withStep}
+				<input aria-label='price' type='text' value={numberSet.step} readOnly />
+			</>;
+		}
+
+		function getContentItem(contentItem: ContentItem): React.ReactNode {
+			switch (contentItem.type) {
+				case 'text': return contentItem.value;
+				case 'image': return <MediaItem src={contentItem.value} type='image' isRef={contentItem.isRef} />;
+				case 'audio': return <MediaItem src={contentItem.value} type='audio' isRef={contentItem.isRef} />;
+				case 'video': return <MediaItem src={contentItem.value} type='video' isRef={contentItem.isRef} />;
+				default: return null;
 			}
 		}
 
@@ -265,134 +265,143 @@ const PackageView: React.FC = () => {
 				</header>
 
 				<section className='info__content'>
-					<label htmlFor='price' className='header'>{localization.price}</label>
-					<input id='price' type='text' className='packageView__question__info__price' value={question.price} readOnly />
-
-					{question.type
+					{question.price > -1
 						? <>
-							<label htmlFor='type' className='header'>{localization.type}</label>
-							<input
-								id='type'
-								type='text'
-								className='packageView__question__type'
-								value={getQuestionTypeName(question.type)}
-								readOnly />
-						</>
-					: null}
+						<label htmlFor='price' className='header'>{localization.price}</label>
+						<input id='price' type='text' className='packageView__question__info__price' value={question.price} readOnly />
 
-					{question.params.answerType
-						? <>
-							<label htmlFor='answerType' className='header'>{localization.answerType}</label>
-							<input id='answerType' type='text' value={question.params.answerType} readOnly />
-						</>
-					: null}
+						{question.type
+							? <>
+								<label htmlFor='type' className='header'>{localization.type}</label>
 
-					{question.params.theme
-						? <>
-							<label htmlFor='theme' className='header'>{localization.theme}</label>
-							<input id='theme' type='text' value={question.params.theme} readOnly />
-						</>
-					: null}
-
-					{question.params.selectionMode
-						? <>
-							<label htmlFor='selectionMode' className='header'>{localization.selectionMode}</label>
-							<input id='selectionMode' type='text' value={question.params.selectionMode} readOnly />
-						</>
-					: null}
-
-					{question.params.price
-						? <>
-							<label htmlFor='price' className='header'>{localization.price}</label>
-							<input id='price' type='text' value={question.params.price.numberSet?.minimum} readOnly />
-						</>
-					: null}
-
-					<label htmlFor='name' className='header'>{localization.question}</label>
-
-					<div className='packageView__question__screens'>
-						{screens.map((screen, si) => (
-							<div
-								className={`packageView__question__screen ${screenIndex === si ? 'selected' : ''}`}
-								key={si}
-								onClick={() => setScreenIndex(si)}>
-								T
-							</div>
-						))}
-					</div>
-
-					{screen && screen.length > 0
-						? <div className='packageView__question__current__screen'>
-							{screen[0].value}
-						</div>
+								<input
+									id='type'
+									type='text'
+									className='packageView__question__type'
+									value={getQuestionTypeName(question.type)}
+									readOnly />
+							</>
 						: null}
 
-					{question.params.answer
-						? <>
-							<label htmlFor='name' className='header'>{localization.answer}</label>
+						{question.params.answerType
+							? <>
+								<label htmlFor='answerType' className='header'>{localization.answerType}</label>
+								<input id='answerType' type='text' value={question.params.answerType} readOnly />
+							</>
+						: null}
 
-							{question.params.answer.items.map((item, ii) => (
-								<input aria-label='content' key={ii} className='packageView__theme__info__author' value={item.value} readOnly />
-							))}
+						{question.params.theme
+							? <>
+								<label htmlFor='theme' className='header'>{localization.theme}</label>
+								<input id='theme' type='text' value={question.params.theme} readOnly />
+							</>
+						: null}
+
+						{question.params.selectionMode
+							? <>
+								<label htmlFor='selectionMode' className='header'>{localization.selectionMode}</label>
+								<input id='selectionMode' type='text' value={getSetAnswererSelect(question.params.selectionMode)} readOnly />
+							</>
+						: null}
+
+						{question.params.price?.numberSet
+							? <>
+								<label htmlFor='price' className='header'>{localization.price}</label>
+								{getNumberSet(question.params.price.numberSet)}
+							</>
+						: null}
+
+						{question.type !== 'secretNoQuestion'
+							? <>
+								<label htmlFor='name' className='header'>{localization.question}</label>
+
+								<div className='packageView__question__screens'>
+									{screens.map((_, si) => (
+										<div
+											className={`packageView__question__screen ${screenIndex === si ? 'selected' : ''}`}
+											key={si}
+											onClick={() => setScreenIndex(si)}>
+											{si + 1}
+										</div>
+									))}
+								</div>
+
+								{screen && screen.length > 0
+									? <div className='packageView__question__current__screen'>
+										{screen.map((contentItem, ci) => <div
+											className='packageView__question__content__item__host'
+											key={contentItem.value}>
+												{getContentItem(contentItem)}
+											</div>)}
+									</div>
+									: null}
+
+								{question.params.answer
+									? <>
+										<label htmlFor='name' className='header'>{localization.answer}</label>
+
+										{question.params.answer.items.map((item, ii) => (
+											<input
+												aria-label='content'
+												key={ii}
+												className='packageView__theme__info__author'
+												value={item.value}
+												readOnly />
+										))}
+									</>
+								: null}
+
+								{answerOptions
+									? <>
+										<label htmlFor='name' className='header'>{localization.answerOptions}</label>
+
+										{Object.keys(answerOptions).map((key, ii) => {
+											const option = answerOptions[key] as ContentParam;
+
+											return (
+												<div className='packageView__answer__option__host'>
+													<div className='packageView__answer__option__label'>{key}</div>
+
+													<input
+														aria-label='content'
+														key={ii}
+														className='packageView__answer__option'
+														value={option.items[0].value}
+														readOnly />
+												</div>
+											);
+										})}
+									</>
+								: null}
+
+								<label htmlFor='name' className='header'>{localization.rightAnswers}</label>
+
+								{question.right.answer.map((answer, ri) => (
+									<input aria-label='author' key={ri} className='packageView__theme__info__author' value={answer} readOnly />
+								))}
+
+								{question.wrong
+									? <>
+										<label htmlFor='name' className='header'>{localization.wrongAnswers}</label>
+
+										{question.wrong.answer.map((answer, ri) => (
+											<input
+												aria-label='author'
+												key={ri}
+												className='packageView__theme__info__author'
+												value={answer}
+												readOnly />
+										))}
+									</>
+								: null}
+							</>
+							: null
+						}
 						</>
-					: null}
+						: null
+						}
 
-					<label htmlFor='name' className='header'>{localization.rightAnswers}</label>
-
-					{answerOptions
-						? <>
-							{Object.keys(answerOptions).map((key, ii) => {
-								const option = answerOptions[key] as ContentParam;
-
-								return (
-									<input
-										aria-label='content'
-										key={ii}
-										className='packageView__answer__option'
-										value={option.items[0].value}
-										readOnly />
-								);
-							})}
-						</>
-					: null}
-
-					{question.right.answer.map((answer, ri) => (
-						<input aria-label='author' key={ri} className='packageView__theme__info__author' value={answer} readOnly />
-					))}
-
-					{question.wrong
-						? <>
-							<label htmlFor='name' className='header'>{localization.wrongAnswers}</label>
-
-							{question.wrong.answer.map((answer, ri) => (
-								<input aria-label='author' key={ri} className='packageView__theme__info__author' value={answer} readOnly />
-							))}
-						</>
-					: null}
-
-					{question.info?.authors
-						? <>
-							<label className='header'>{localization.authors}</label>
-
-							{question.info?.authors.map((author, ai) => (
-								<input aria-label='author' key={ai} className='packageView__theme__info__author' value={author.name} readOnly />
-							))}
-						</> : null}
-
-					{question.info?.sources
-						? <>
-							<label className='header' htmlFor='sources'>{localization.sources}</label>
-
-							{question.info?.sources?.map((source, si) => (
-								<input id='sources' key={si} className='packageView__theme__info__source' value={source.value} readOnly />
-							))}
-						</> : null}
-
-					{question.info?.comments
-						? <>
-							<label className='header' htmlFor='comments'>{localization.comments}</label>
-							<textarea id='comments' className='packageView__theme__info__comments' value={question.info.comments} readOnly />
-						</> : null}
+					{getInfo(question)}
 				</section>
 			</div>
 		);

@@ -82,7 +82,7 @@ const enum GameMessages {
 
 	MediaPreloaded = 'MEDIA_PRELOADED',
 
-	Options = 'OPTIONS',
+	Options2 = 'OPTIONS2',
 
 	OralAnswer = 'ORAL_ANSWER',
 

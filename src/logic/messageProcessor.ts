@@ -448,12 +448,18 @@ const viewerHandler = (
 			controller.onMediaPreloaded(args[1]);
 			break;
 
-		case GameMessages.Options:
-			for (let i = 1; i + 1 < args.length; i += 2) {
+		case GameMessages.Options2:
+			if (args.length < 2) {
+				break;
+			}
+
+			const reason = args[1];
+
+			for (let i = 2; i + 1 < args.length; i += 2) {
 				const argName = args[i];
 				const value = args[i + 1];
 
-				controller.onOptionChanged(argName, value);
+				controller.onOptionChanged(argName, value, reason);
 			}
 
 			break;
