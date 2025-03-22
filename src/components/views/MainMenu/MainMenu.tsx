@@ -168,7 +168,7 @@ export function MainMenu(props: MainMenuProps): JSX.Element {
 			</div>}
 
 			{showLicense ? (
-				<Dialog className='licenseDialog' title={localization.serverLicense} onClose={() => setShowLicense(false)}>
+				<Dialog className='licenseDialog animated' title={localization.serverLicense} onClose={() => setShowLicense(false)}>
 					<div className='licenseText'>
 						{common.serverLicense?.split('\n').map((text, index) => <p key={index}>{text}</p>)}
 					</div>

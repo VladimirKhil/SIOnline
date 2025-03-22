@@ -18,7 +18,7 @@ const Dialog = React.forwardRef((props: DialogProps, ref: ForwardedRef<HTMLEleme
 	<section id={props.id} className={`dialog ${props.className ?? ''}`} ref={ref}>
 		<header><h1>{props.title}</h1></header>
 
-		<button type="button" className="dialog_closeButton" onClick={props.onClose}>
+		<button type="button" className="dialog_closeButton" onClick={props.onClose} title={localization.close}>
 			<img src={closeSvg} alt={localization.close} />
 		</button>
 

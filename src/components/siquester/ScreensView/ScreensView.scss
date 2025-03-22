@@ -12,3 +12,21 @@
 	justify-content: center;
 	align-items: center;
 }
+
+.packageView__question__duration__item {
+	display: flex;
+	flex-direction: column;
+}
+
+.packageView__question__content__item__group {
+	overflow: hidden;
+	display: grid;
+	gap: 7px;
+}
+
+.packageView__question__content__item {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	overflow: hidden;
+}

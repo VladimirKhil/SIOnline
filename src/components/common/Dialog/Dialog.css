@@ -7,10 +7,26 @@
     z-index: 1;
     overflow-y: auto;
     scrollbar-width: thin;
+    padding: 10px;
+}
+
+.dialog.animated {
+    animation: dialogIn 0.1s;
+}
+
+@keyframes dialogIn {
+    from {
+        transform: scale(0.8);
+        opacity: 0.8;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
 }
 
 .dialog_closeButton {
-    padding: 4px;
+    padding: 6px;
     width: 30px;
     height: 30px;
     border-width: 0;

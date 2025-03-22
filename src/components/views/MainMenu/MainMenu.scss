@@ -124,7 +124,9 @@
 }
 
 .licenseDialog {
-	background-color: #000451;
+	background-color: #000451dc;
+	backdrop-filter: blur(10px);
+	-webkit-backdrop-filter: blur(10px);
 	color: white;
 	overflow-y: hidden;
 }
@@ -134,7 +136,7 @@
 	padding: 10px;
 	height: calc(100% - 50px);
 	font-weight: normal;
-	font-size: 18px;
+	font-size: 22px;
 	overflow-y: auto;
 }
 
@@ -235,6 +237,7 @@ button.standard.welcomeExit {
 		left: 100px;
 		right: 100px;
 		border-radius: 12px;
+		border: rgba(160, 160, 160, 0.548) 1px solid;
 	}
 }
 
