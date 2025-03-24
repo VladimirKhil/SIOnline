@@ -2,6 +2,7 @@ import * as React from 'react';
 import { connect, useDispatch } from 'react-redux';
 import localization from '../../../model/resources/localization';
 import { copyToClipboard } from '../../../state/globalActions';
+import { Dispatch } from '@reduxjs/toolkit';
 
 import './ErrorView.css';
 
@@ -12,10 +13,16 @@ interface ErrorViewProps {
 // TODO: provide a button to send error to the server
 
 export function ErrorView(props: ErrorViewProps): JSX.Element {
-	const appDispatch = useDispatch();
+	let appDispatch : Dispatch<any> | null = null;
+
+	try {
+		appDispatch = useDispatch();
+	} catch (e) {
+		console.log('useDispatch not initialized');
+	}
 
 	const copyTextToClipboard = () => {
-		if (props.error) {
+		if (props.error && appDispatch) {
 			appDispatch(copyToClipboard(props.error));
 		}
 	};
@@ -25,15 +32,17 @@ export function ErrorView(props: ErrorViewProps): JSX.Element {
 			<div className='errorBox'>
 				<div className="errorTitle">{localization.errorHappened}</div>
 				<div className='errorBody'>{props.error}</div>
+
 				<div className='buttons'>
-					{<button
+					{appDispatch ? <button
 						type='button'
 						className='standard'
 						disabled={!props.error}
 						onClick={() => copyTextToClipboard()}
 					>
 						{localization.copyText}
-					</button>}
+					</button> : null}
+
 					<button
 						type='button'
 						className='standard'

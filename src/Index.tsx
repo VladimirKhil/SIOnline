@@ -377,7 +377,7 @@ async function run(stateManager: IHost, clipboardSupported: boolean, exitSupport
 		store.dispatch(actionCreators.initStage0(initialView, store.dispatch) as unknown as Action);
 	} catch (e: any) {
 		ReactDOM.render(
-			<ErrorView error={e.message} />,
+			<ErrorView error={getErrorMessage(e)} />,
 			document.getElementById('reactHost')
 		);
 	}
@@ -423,3 +423,4 @@ const deviceType = getDeviceType();
 if (config.enableNoSleep && deviceType == 'mobile' && !isSafari()) {
 	enableNoSleep();
 }
+
