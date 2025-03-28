@@ -61,9 +61,6 @@ export const uiSlice = createSlice({
 		showProfile: (state: UIState, action: PayloadAction<boolean>) => {
 			state.isProfileVisible = action.payload;
 		},
-		closeGameInfo: (state: UIState) => {
-			state.onlineView = OnlineMode.Games;
-		},
 		onlineModeChanged: (state: UIState, action: PayloadAction<OnlineMode>) => {
 			state.onlineView = action.payload;
 		},
@@ -95,7 +92,6 @@ export const uiSlice = createSlice({
 export const {
 	showSettings,
 	showProfile,
-	closeGameInfo,
 	onlineModeChanged,
 	windowSizeChanged,
 	isSettingGameButtonKeyChanged,

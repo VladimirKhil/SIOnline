@@ -4,7 +4,6 @@
 }
 
 #gameinfo {
-    background-color: #000451;
     height: 100%;
     padding: 20px 0 0 0;
     position: relative;
@@ -31,6 +30,28 @@
 .gameinfoHost dt {
     font-size: 14px;
     font-weight: normal;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.gameinfoHost dt img {
+    width: 25px;
+    margin-right: 5px;
+}
+
+.gameinfoHost dt span {
+    margin-left: 5px;
+    margin-top: 2px;
+    font-size: 17px;
+    vertical-align: middle;
+}
+
+.gameinfoHost dt .rule {
+    background-color: #2649FF;
+    margin-right: 8px;
+    padding: 2px 20px;
+    border-radius: 5px;
 }
 
 .gameinfoHost dd {
@@ -156,6 +177,10 @@
 @media screen and (min-width: 1600px) {
     .gameinfoHost dt {
         font-size: 18px;
+    }
+
+    .gameinfoHost dt span {
+        font-size: 22px;
     }
 
     .gameinfoHost dd {

@@ -7,7 +7,7 @@ import PackagesStatistic from 'sistatistics-client/dist/models/PackagesStatistic
 import GamesFilter from '../model/enums/GamesFilter';
 import DataContext from '../model/DataContext';
 import IGameServerClient from '../client/IGameServerClient';
-import { AppDispatch } from './store';
+import { AppDispatch, RootState } from './store';
 import { userWarnChanged } from './commonSlice';
 import getErrorMessage from '../utils/ErrorHelpers';
 import StatisticFilter from 'sistatistics-client/dist/models/StatisticFilter';
@@ -16,6 +16,8 @@ import localization from '../model/resources/localization';
 import SIStatisticsClient from 'sistatistics-client';
 import Slice from '../client/contracts/Slice';
 import clearUrls from '../utils/clearUrls';
+import { saveStateToStorage } from './StateHelpers';
+import { filterGames } from '../utils/GamesHelpers';
 
 export interface Online2State {
 	inProgress: boolean;
@@ -105,6 +107,15 @@ export const loadLobby = createAsyncThunk(
 			await loadStatisticsAsync(dispatch as AppDispatch, dataContext);
 		} catch (error) {
 			dispatch(userWarnChanged(getErrorMessage(error)));
+		}
+
+		const state = thunkAPI.getState() as RootState;
+		const online = state.online2;
+		const { ui } = state;
+		const filteredGames = filterGames(Object.values(online.games), online.gamesFilter, online.gamesSearch);
+
+		if (filteredGames.length > 1 && ui.windowWidth >= 1100) {
+			dispatch(selectGameById(filteredGames[0].GameID));
 		}
 	},
 );

@@ -17,6 +17,10 @@ import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 import { passwordChanged } from '../../../state/online2Slice';
 
 import './GameInfoView.css';
+import personSvg from '../../../../assets/images/person.svg';
+import personsSvg from '../../../../assets/images/persons.svg';
+import folderSvg from '../../../../assets/images/folder.svg';
+import timerSvg from '../../../../assets/images/timer.svg';
 
 interface GameInfoViewOwnProps {
 	isConnected: boolean;
@@ -45,7 +49,7 @@ const mapDispatchToProps = (dispatch: any) => ({
 	}
 });
 
-const buildStage = (stage: GameStage, stageName: string, progressCurrent: number, progressTotal: number) => {
+const buildStage = (stage: GameStage, progressCurrent: number, progressTotal: number) => {
 	switch (stage) {
 		case GameStage.Created:
 			return localization.created;
@@ -54,7 +58,7 @@ const buildStage = (stage: GameStage, stageName: string, progressCurrent: number
 			return localization.started;
 
 		case GameStage.Round:
-			return `${progressCurrent}/${progressTotal}: ${localization.round}: ${stageName}`;
+			return `${progressCurrent}/${progressTotal}`;
 
 		case GameStage.Final:
 			return localization.final;
@@ -122,11 +126,22 @@ export function GameInfoView(props: GameInfoViewProps): JSX.Element {
 
 	const { Persons } = props.game;
 
+	let freePlayers = 0;
+	let totalPlayers = 0;
+
 	for (let i = 0; i < Persons.length; i++) {
 		const person = Persons[i];
 
+		if (person.Role === ServerRole.Player) {
+			totalPlayers++;
+		}
+
 		if (!person.IsOnline) {
 			free[person.Role] = true;
+
+			if (person.Role === ServerRole.Player) {
+				freePlayers++;
+			}
 		} else if (person.Role === ServerRole.Showman) {
 			showman = person.Name;
 		} else if (person.Role === ServerRole.Player) {
@@ -171,27 +186,27 @@ export function GameInfoView(props: GameInfoViewProps): JSX.Element {
 
 						<div className="maininfo">
 							<dl>
-								<dt>{localization.host}</dt>
-								<dd>{game.Owner}</dd>
-								<dt>{localization.questionPackage}</dt>
-								<dd>{game.PackageName == Constants.RANDOM_PACKAGE ? localization.randomThemes : game.PackageName}</dd>
-								<dt>{localization.rules}</dt>
-								<dd>{rules.map(name => <div className='personName' key={name}>{name}</div>)}</dd>
-								<dt>{localization.showman}</dt>
-								<dd><div className='personName'>{showman ?? ' '}</div></dd>
-								<dt>{localization.players}</dt>
-								<dd>{players.map(name => <div className='personName' key={name}>{name}</div>)}</dd>
-								<dt>{localization.viewers}</dt>
-								<dd>{viewers.map(name => <div className='personName' key={name}>{name}</div>)}</dd>
-								<dt>{localization.status}</dt>
-								<dd>{buildStage(game.Stage, game.StageName, game.ProgressCurrent, game.ProgressTotal)}</dd>
+								<dt><img alt='host' title={localization.host} src={personSvg} /><span>{game.Owner}</span></dt>
+								<dt>
+									<img alt='package' title={localization.questionPackage} src={folderSvg} />
+									<span>{game.PackageName == Constants.RANDOM_PACKAGE ? localization.randomThemes : game.PackageName}</span>
+								</dt>
+								<dt>{rules.map(name => <div className='rule' key={name}>{name}</div>)}</dt>
+								<dt>
+									<img alt='players' title={localization.players} src={personsSvg} />
+									<span>{freePlayers}/{totalPlayers}</span>
+								</dt>
+								<dt>
+									<img alt='stage' title={localization.status} src={timerSvg} />
+									<span>{buildStage(game.Stage, game.ProgressCurrent, game.ProgressTotal)}</span>
+								</dt>
 
 								{duration.length > 0 ? (<>
-									<dt>{localization.duration}</dt>
-									<dd>{duration}</dd>
+									<dt></dt>
+									<dd title={localization.duration}>{duration}</dd>
 								</>) : (<>
-									<dt>{localization.created}</dt>
-									<dd>{createdTime}</dd>
+									<dt></dt>
+									<dd title={localization.created}>{createdTime}</dd>
 								</>)}
 							</dl>
 						</div>

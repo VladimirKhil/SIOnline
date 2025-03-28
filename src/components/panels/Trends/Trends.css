@@ -1,7 +1,6 @@
 .trends {
 	width: 100%;
 	height: 100%;
-    background-color: rgba(0,0,0,0.2);
 	color: white;
 	padding: 10px;
 	overflow-y: auto;
@@ -45,4 +44,10 @@
 
 .propertyValue {
 	text-align: right;
+}
+
+@media screen and (min-width: 1100px) {
+	.trends {
+		padding-left: 0;
+	}
 }

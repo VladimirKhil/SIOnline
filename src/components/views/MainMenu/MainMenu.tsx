@@ -104,20 +104,13 @@ export function MainMenu(props: MainMenuProps): JSX.Element {
 					<button
 						type='button'
 						className='standard welcomeRow right'
-						onClick={() => props.anyonePlay(appDispatch)}>
-						{localization.anyonePlay.toUpperCase()}
-					</button>
-
-					<button
-						type='button'
-						className='standard welcomeRow left'
 						onClick={onJoinByPin}>
 						{localization.joinByPin.toUpperCase()}
 					</button>
 
 					<button
 						type='button'
-						className='standard welcomeRow right'
+						className='standard welcomeRow left'
 						onClick={() => appDispatch(navigate({ navigation: { path: Path.SIQuester }, saveState: true }))}>
 						{localization.questionEditor.toUpperCase()}
 					</button>

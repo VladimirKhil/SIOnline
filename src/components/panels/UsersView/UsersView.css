@@ -4,6 +4,10 @@
     position: relative;
 }
 
+.chatHost.bottom {
+    display: none;
+}
+
 .chatHostTitle {
     display: flex;
 }
@@ -39,6 +43,10 @@
         display: block;
         flex: 0 0 300px;
         width: 300px;
+    }
+
+    .chatHost.bottom {
+        display: block;
     }
 
     .chatHostTitle {

@@ -4,6 +4,7 @@ import GameInfo from '../../../client/contracts/GameInfo';
 import GamesSearch from '../GamesSearch/GamesSearch';
 import GamesFilterView from '../GamesFilterView/GamesFilterView';
 import NewGameButton from '../NewGameButton/NewGameButton';
+import RandomGameButton from '../RandomGameButton/RandomGameButton';
 
 import './GamesControlPanel.scss';
 
@@ -22,6 +23,7 @@ const GamesControlPanel: React.FC<GamesControlPanelProps> = (props: GamesControl
 
 		<GamesSearch />
 		<GamesFilterView />
+		<RandomGameButton />
 		<NewGameButton />
 	</div>
 );

@@ -2,8 +2,6 @@
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 import localization from '../../../model/resources/localization';
 import GameInfo from '../../../client/contracts/GameInfo';
-import OnlineMode from '../../../model/enums/OnlineMode';
-import { onlineModeChanged } from '../../../state/uiSlice';
 import { selectGameById } from '../../../state/online2Slice';
 
 import './GamesList.css';
@@ -11,7 +9,6 @@ import './GamesList.css';
 interface GamesListProps {
 	games: GameInfo[];
 	selectedGameId: number;
-	showInfo: boolean;
 }
 
 export default function GamesList(props: GamesListProps): JSX.Element {
@@ -22,10 +19,6 @@ export default function GamesList(props: GamesListProps): JSX.Element {
 
 	const onSelectGame = (gameId: number) => {
 		appDispatch(selectGameById(gameId));
-
-		if (props.showInfo) {
-			appDispatch(onlineModeChanged(OnlineMode.GameInfo));
-		}
 	};
 
 	return (

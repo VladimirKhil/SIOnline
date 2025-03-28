@@ -29,12 +29,15 @@ export default function GamesFilterView() {
 					<li className={enabledClass} onClick={() => onToggleFilterItem(GamesFilter.New)}>
 						<CheckBox isChecked={(online.gamesFilter & GamesFilter.New) > 0} header={localization.new} />
 					</li>
+
 					<li className={enabledClass} onClick={() => onToggleFilterItem(GamesFilter.Sport)}>
 						<CheckBox isChecked={(online.gamesFilter & GamesFilter.Sport) > 0} header={localization.sportPlural} />
 					</li>
+
 					<li className={enabledClass} onClick={() => onToggleFilterItem(GamesFilter.Tv)}>
 						<CheckBox isChecked={(online.gamesFilter & GamesFilter.Tv) > 0} header={localization.tvPlural} />
 					</li>
+
 					<li className={enabledClass} onClick={() => onToggleFilterItem(GamesFilter.NoPassword)}>
 						<CheckBox isChecked={(online.gamesFilter & GamesFilter.NoPassword) > 0} header={localization.withoutPassword} />
 					</li>

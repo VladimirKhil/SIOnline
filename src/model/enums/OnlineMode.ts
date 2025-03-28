@@ -1,7 +1,6 @@
 ﻿const enum OnlineMode {
 	Games,
-	GameInfo,
-	Chat
+	Trends,
 }
 
 export default OnlineMode;

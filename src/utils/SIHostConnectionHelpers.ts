@@ -30,7 +30,7 @@ export function attachSIHostListeners(
 	});
 
 	connection.on('GamePersonsChanged', (gameId: number, persons: PersonInfo[]) => {
-		dispatch(appDispatch(onGamePersonsChanged({ gameId, persons })));
+		appDispatch(onGamePersonsChanged({ gameId, persons }));
 	});
 
 	connection.onreconnecting((e) => {

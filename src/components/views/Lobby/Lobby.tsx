@@ -1,10 +1,8 @@
 ﻿import * as React from 'react';
-import { connect, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import GamesList from '../../panels/GamesList/GamesList';
-import State from '../../../state/State';
 import GameInfoView from '../../panels/GameInfoView/GameInfoView';
 import UsersView from '../../panels/UsersView/UsersView';
-import OnlineMode from '../../../model/enums/OnlineMode';
 import NewGameDialog from '../../panels/NewGameDialog/NewGameDialog';
 import Dialog from '../../common/Dialog/Dialog';
 import ProgressBar from '../../common/ProgressBar/ProgressBar';
@@ -15,22 +13,11 @@ import UserOptions from '../../panels/UserOptions/UserOptions';
 import GamesControlPanel from '../../panels/GamesControlPanel/GamesControlPanel';
 import LobbyBottomPanel from '../../panels/LobbyBottomPanel/LobbyBottomPanel';
 import { navigate } from '../../../utils/Navigator';
-import { closeGameInfo } from '../../../state/uiSlice';
 import { useAppSelector } from '../../../state/hooks';
-import { newGameCancel } from '../../../state/online2Slice';
+import { newGameCancel, selectGameById } from '../../../state/online2Slice';
 
 import './Lobby.css';
 import exitImg from '../../../../assets/images/exit.png';
-
-interface LobbyProps {
-	windowWidth: number;
-	mode: OnlineMode;
-}
-
-const mapStateToProps = (state: State) => ({
-	windowWidth: state.ui.windowWidth,
-	mode: state.ui.onlineView,
-});
 
 const topMenu = (onExit: () => void) => (
 	<header className='main'>
@@ -52,16 +39,13 @@ const topMenu = (onExit: () => void) => (
 	</header>
 );
 
-export function Lobby(props: LobbyProps) {
+export function Lobby() {
 	const appDispatch = useDispatch();
 	const online = useAppSelector(state => state.online2);
 	const common = useAppSelector(state => state.common);
 
 	const filteredGames = filterGames(Object.values(online.games), online.gamesFilter, online.gamesSearch);
-
-	const hasSelectedGame = filteredGames.some(game => game.GameID === online.selectedGameId);
-	const selectedGameId = hasSelectedGame ? online.selectedGameId : (filteredGames.length > 0 ? filteredGames[0].GameID : -1);
-	const selectedGame = online.games[selectedGameId];
+	const selectedGame = online.games[online.selectedGameId];
 
 	const newGame = (
 		<div className='newGameArea'>
@@ -72,48 +56,8 @@ export function Lobby(props: LobbyProps) {
 	const onExit = () => appDispatch(navigate({ navigation: { path: Path.Menu }, saveState: true }));
 
 	const onCloseGameInfo = () => {
-		appDispatch(closeGameInfo());
+		appDispatch(selectGameById(-1));
 	};
-
-	if (props.windowWidth < 1100) { // TODO: this should be solved purely in CSS
-		if (props.mode === OnlineMode.GameInfo && selectedGame) {
-			return (
-				<Dialog id="gameInfoDialog" title={selectedGame.GameName} onClose={onCloseGameInfo}>
-					<GameInfoView canJoinAsViewer={true} isConnected={common.isConnected} game={selectedGame} showGameName={false} />
-				</Dialog>
-			);
-		}
-
-		if (props.mode === OnlineMode.Games || props.mode === OnlineMode.GameInfo) {
-			return (
-				<div className="lobby">
-					<div className="onlineView">
-						{online.inProgress ? <ProgressBar isIndeterminate /> : null}
-
-						<div className='gamesBlock'>
-							{topMenu(onExit)}
-							<GamesControlPanel games={filteredGames} />
-							<GamesList games={filteredGames} selectedGameId={selectedGameId} showInfo />
-							<LobbyBottomPanel />
-						</div>
-
-						{online.newGameShown ? newGame : null}
-					</div>
-				</div>
-			);
-		}
-
-		return <div className="lobby">
-			{topMenu(onExit)}
-
-			<div className="onlineView">
-				<UsersView />
-			</div>
-
-			<LobbyBottomPanel />
-			{online.newGameShown ? newGame : null}
-		</div>;
-	}
 
 	return (
 		<div className="lobby">
@@ -126,23 +70,23 @@ export function Lobby(props: LobbyProps) {
 					<GamesControlPanel games={filteredGames} />
 
 					<div className='gamesView'>
-						<GamesList games={filteredGames} selectedGameId={selectedGameId} showInfo={false} />
+						<GamesList games={filteredGames} selectedGameId={online.selectedGameId} />
 
-						<div className='gameInfoArea'>
-							<header />
-
-							<div className='gameInfoAreaContent'>
-								<GameInfoView canJoinAsViewer={true} isConnected={common.isConnected} game={selectedGame} showGameName />
-							</div>
-						</div>
+						{selectedGame
+							? <Dialog className="gameInfoView" title={selectedGame.GameName} onClose={onCloseGameInfo}>
+								<GameInfoView canJoinAsViewer={true} isConnected={common.isConnected} game={selectedGame} showGameName={false} />
+							</Dialog>
+							: null}
 					</div>
 				</div>
 
 				<UsersView />
 				{online.newGameShown ? newGame : null}
 			</div>
+
+			<LobbyBottomPanel />
 		</div>
 	);
 }
 
-export default connect(mapStateToProps)(Lobby);
+export default Lobby;

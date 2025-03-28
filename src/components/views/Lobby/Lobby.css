@@ -56,6 +56,18 @@
     flex-direction: column;
 }
 
+.gameInfoView {
+    position: absolute;
+    background-color: #0A0E30;
+    border-radius: 16px;
+    margin: 0 10px 10px 10px;
+    height: calc(100% - 10px);
+    width: calc(100% - 20px);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
 .newGameArea {
     position: absolute;
     z-index: 1;
@@ -77,6 +89,7 @@
     flex-direction: row;
     overflow: hidden;
     flex: 1;
+    position: relative;
 }
 
 .gameInfoArea {
@@ -95,8 +108,18 @@
         flex: 1;
     }
 
+    .gameInfoView {
+        position: relative;
+        margin-left: 0;
+        width: calc(100% - 10px);
+    }
+
     .gameInfoAreaContent {
         height: 100%;
         display: flex;
+    }
+
+    .gameInfoView .dialog_closeButton {
+        display: none;
     }
 }

@@ -11,3 +11,9 @@
     line-height: 25px;
 	margin: 2px;
 }
+
+@media screen and (min-width: 1100px) {
+	.lobbyBottomPanel {
+		display: none;
+	}
+}

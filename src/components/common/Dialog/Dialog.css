@@ -7,7 +7,6 @@
     z-index: 1;
     overflow-y: auto;
     scrollbar-width: thin;
-    padding: 10px;
 }
 
 .dialog.animated {

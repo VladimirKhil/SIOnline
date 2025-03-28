@@ -129,6 +129,7 @@
 	-webkit-backdrop-filter: blur(10px);
 	color: white;
 	overflow-y: hidden;
+	padding: 10px;
 }
 
 .licenseText {
@@ -248,7 +249,8 @@ button.standard.welcomeExit {
 	}
 
 	.welcomeViewActions button {
-		padding: 10px 40px;
+		width: 500px;
+		padding: 10px 50px;
 		margin: 3px 0;
 	}
 
@@ -263,6 +265,7 @@ button.standard.welcomeExit {
 	}
 
 	.welcomeViewActions button {
+		width: 800px;
 		padding: 17px 50px;
 		margin: 5px 0;
 		font-size: 35px;

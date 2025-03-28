@@ -43,8 +43,8 @@ export function getReadableTimeSpan(timeSpan: number): string {
 	const seconds = Math.floor(timeSpan % (60 * 1000) / 1000);
 
 	if (hours > 0) {
-		return hours + ' ' + getLocalizedHours(hours) + (minutes > 0 ? ' ' + minutes + ' ' + getLocalizedMinutes(minutes) : '');
+		return `${hours} ${getLocalizedHours(hours)}${minutes > 0 ? ' ' + minutes + ' ' + getLocalizedMinutes(minutes) : ''}`;
 	}
 
-	return minutes > 0 ? minutes + ' ' + getLocalizedMinutes(minutes) : seconds + ' ' + getLocalizedSeconds(seconds);
+	return minutes > 0 ? `${minutes} ${getLocalizedMinutes(minutes)}` : seconds + ' ' + getLocalizedSeconds(seconds);
 }

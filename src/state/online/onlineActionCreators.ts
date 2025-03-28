@@ -106,7 +106,12 @@ const initGameAsync = async (
 	dispatch(roomActionCreators.isQuestionChanged(false, ''));
 	dispatch(roomActionCreators.areSumsEditableChanged(false));
 
-	await gameInit(gameClient, role);
+	await gameClient.info();
+	await gameClient.moveable();
+
+	if (role === Role.Player || role === Role.Showman) {
+		await gameClient.ready(true);
+	}
 };
 
 function getServerRole(role: Role) {
@@ -446,15 +451,6 @@ const createNewAutoGame: ActionCreator<ThunkAction<void, State, DataContext, Act
 			appDispatch(gameCreationEnd());
 		}
 	};
-
-async function gameInit(gameClient: IGameClient, role: Role) {
-	await gameClient.info();
-	await gameClient.moveable();
-
-	if (role === Role.Player || role === Role.Showman) {
-		await gameClient.ready(true);
-	}
-}
 
 const onlineActionCreators = {
 	joinGame,

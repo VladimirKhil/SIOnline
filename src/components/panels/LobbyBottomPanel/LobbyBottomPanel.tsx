@@ -4,6 +4,7 @@ import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 import OnlineMode from '../../../model/enums/OnlineMode';
 import localization from '../../../model/resources/localization';
 import { onlineModeChanged } from '../../../state/uiSlice';
+import RandomGameButton from '../RandomGameButton/RandomGameButton';
 
 import './LobbyBottomPanel.scss';
 
@@ -16,10 +17,11 @@ const LobbyBottomPanel: React.FC = () => {
 	};
 
 	return (<div className='lobbyBottomPanel'>
+		<RandomGameButton />
 		<NewGameButton />
 
-		{ui.onlineView === OnlineMode.Games || ui.onlineView === OnlineMode.GameInfo ? (
-			<button type='button' className='standard' onClick={() => changeView(OnlineMode.Chat)}>{localization.trends}</button>
+		{ui.onlineView === OnlineMode.Games ? (
+			<button type='button' className='standard' onClick={() => changeView(OnlineMode.Trends)}>{localization.trends}</button>
 		) : <button type='button' className='standard' onClick={() => changeView(OnlineMode.Games)}>{localization.games}</button>}
 	</div>);
 };

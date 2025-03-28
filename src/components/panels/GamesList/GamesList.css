@@ -1,10 +1,14 @@
 .gameslistHost {
-    width: 100%;
+    width: calc(100% - 10px);
+    margin: 0 10px 10px 10px;
     flex: 1;
     position: relative;
     display: flex;
     overflow: hidden;
     flex-direction: column;
+    padding: 5px 0;
+    background-color: #0A0E30;
+    border-radius: 16px;
 }
 
 .gameslistHost header, .chatHost header {
@@ -35,8 +39,6 @@
     overflow: auto;
     scrollbar-width: thin;
     width: 100%;
-    background-color: #000451AA;
-    margin: 0;
     flex: 1;
 }
 
