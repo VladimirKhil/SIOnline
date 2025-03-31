@@ -95,7 +95,7 @@
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
-	overflow-y: auto;
+	overflow-y: hidden;
 	overflow-x: hidden;
 	width: 100%;
 	flex: 1;
@@ -164,6 +164,7 @@
 	justify-content: center;
 	padding: 0 15px;
 	font-size: 25px;
+	overflow: hidden;
 }
 
 @keyframes welcomeRowsLeft {
@@ -228,8 +229,15 @@ button.standard.welcomeExit {
 	.welcomeViewActions {
 		width: initial;
 		height: initial;
-		flex: initial;
 		overflow-x: initial;
+	}
+
+	.welcomeView .mainArea {
+		padding: 50px;
+	}
+
+	.welcomeViewActions button {
+		padding: 0 100px;
 	}
 
 	.licenseDialog {
@@ -249,9 +257,9 @@ button.standard.welcomeExit {
 	}
 
 	.welcomeViewActions button {
-		width: 500px;
-		padding: 10px 50px;
+		width: 100%;
 		margin: 3px 0;
+		font-size: 30px;
 	}
 
 	.welcomeView .logo {
@@ -265,8 +273,7 @@ button.standard.welcomeExit {
 	}
 
 	.welcomeViewActions button {
-		width: 800px;
-		padding: 17px 50px;
+		padding: 0 50px;
 		margin: 5px 0;
 		font-size: 35px;
 	}
@@ -276,11 +283,24 @@ button.standard.welcomeExit {
 	.welcomeView .logo {
 		flex: 300px 0 0;
 	}
+
+	.welcomeView .mainArea {
+		padding: 100px;
+	}
 }
 
 @media screen and (min-height: 800px) and (min-width: 1600px) {
 	.welcomeViewActions {
 		margin-top: 150px;
+	}
+
+	.welcomeViewActions button {
+		font-size: 45px;
+		padding: 0 150px;
+	}
+
+	.welcomeView .mainArea {
+		padding: 150px;
 	}
 }
 

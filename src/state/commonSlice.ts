@@ -23,6 +23,8 @@ export interface CommonState {
 	askForConsent: boolean;
 	emojiCultures?: string[];
 	clearUrls?: boolean;
+	minimalLogo?: boolean;
+	roomLinkEnabled: boolean;
 	avatarLoadProgress: boolean;
 	avatarLoadError: string | null;
 	audio: string | null;
@@ -47,6 +49,7 @@ const initialState: CommonState = {
 	userError: null,
 	messageLevel: MessageLevel.Error,
 	askForConsent: true,
+	roomLinkEnabled: true,
 	avatarLoadProgress: false,
 	avatarLoadError: null,
 	audio: null,
@@ -123,6 +126,15 @@ export const commonSlice = createSlice({
 				state.askForConsent = false;
 			}
 		},
+		setClearUrls: (state: CommonState, action: PayloadAction<boolean>) => {
+			state.clearUrls = action.payload;
+		},
+		setMinimalLogo: (state: CommonState, action: PayloadAction<boolean>) => {
+			state.minimalLogo = action.payload;
+		},
+		setRoomLinkEnabled: (state: CommonState, action: PayloadAction<boolean>) => {
+			state.roomLinkEnabled = action.payload;
+		},
 	}
 });
 
@@ -171,6 +183,9 @@ export const {
 	setClipboardSupported,
 	setExitSupported,
 	setIsDesktop,
+	setClearUrls,
+	setMinimalLogo,
+	setRoomLinkEnabled,
 } = commonSlice.actions;
 
 export default commonSlice.reducer;

@@ -66,5 +66,13 @@ export default class BrowserHost implements IHost {
 		}
 	}
 
+	copyUriToClipboard(): void {
+		if (navigator.clipboard) {
+			navigator.clipboard.writeText(window.location.href);
+		} else {
+			alert(window.location.href);
+		}
+	}
+
 	exitApp() {}
 }

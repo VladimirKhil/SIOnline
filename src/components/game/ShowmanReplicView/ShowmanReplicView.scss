@@ -64,7 +64,7 @@
 
 @media screen and (min-width: 1100px) {
     .showmanArea {
-        flex-direction: column !important;
+        flex-direction: column-reverse !important;
         margin: 10px 0 0 0;
         height: 85%;
         width: calc(100% - 20px);

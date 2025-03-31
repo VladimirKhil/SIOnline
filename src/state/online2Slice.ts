@@ -99,17 +99,16 @@ export const loadLobby = createAsyncThunk(
 	async (arg: void, thunkAPI) => {
 		const { dispatch } = thunkAPI;
 		const dataContext = thunkAPI.extra as DataContext;
+		const state = thunkAPI.getState() as RootState;
 
 		// Games filtering is performed on client
-		await loadGamesAsync(dispatch as AppDispatch, dataContext.gameClient, dataContext.config.clearUrls);
+		await loadGamesAsync(dispatch as AppDispatch, dataContext.gameClient, state.common.clearUrls);
 
 		try {
 			await loadStatisticsAsync(dispatch as AppDispatch, dataContext);
 		} catch (error) {
 			dispatch(userWarnChanged(getErrorMessage(error)));
 		}
-
-		const state = thunkAPI.getState() as RootState;
 		const online = state.online2;
 		const { ui } = state;
 		const filteredGames = filterGames(Object.values(online.games), online.gamesFilter, online.gamesSearch);

@@ -28,7 +28,7 @@ export default interface DataContext {
 	/** SIStorageService clients. */
 	storageClients: SIStorageClient[];
 
-	/** State manager. */
+	/** Host. */
 	state: IHost;
 
 	/** Package file. */

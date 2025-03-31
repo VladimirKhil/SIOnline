@@ -139,7 +139,6 @@ const viewerHandler = (
 	dispatch: Dispatch<any>,
 	appDispatch: AppDispatch,
 	state: State,
-	dataContext: DataContext,
 	args: string[]) => {
 	switch (args[0]) {
 		case GameMessages.Ads:
@@ -149,7 +148,7 @@ const viewerHandler = (
 
 			let ads = args[1];
 
-			if (dataContext.config.clearUrls) {
+			if (state.common.clearUrls) {
 				ads = clearUrls(ads);
 			}
 
@@ -650,7 +649,7 @@ const viewerHandler = (
 				text += args[i];
 			}
 
-			if (dataContext.config.clearUrls) {
+			if (state.common.clearUrls) {
 				text = clearUrls(text);
 			}
 
@@ -1161,12 +1160,12 @@ const processSystemMessage: ActionCreator<ThunkAction<void, State, DataContext, 
 	controller: ClientController,
 	message: Message,
 	appDispatch: AppDispatch
-) => (dispatch: Dispatch<RoomActions.KnownRoomAction>, getState: () => State, dataContext: DataContext) => {
+) => (dispatch: Dispatch<RoomActions.KnownRoomAction>, getState: () => State) => {
 		const state = getState();
 		const { role } = state.room;
 		const args = message.Text.split('\n');
 
-		viewerHandler(controller, dispatch, appDispatch, state, dataContext, args);
+		viewerHandler(controller, dispatch, appDispatch, state, args);
 
 		if (role === Role.Player) {
 			playerHandler(controller, args);

@@ -1,6 +1,7 @@
 import { Store } from 'redux';
 import IHost, { FullScreenMode } from './IHost';
 import { changeLogin } from '../state/userSlice';
+import { setClearUrls, setMinimalLogo, setRoomLinkEnabled } from '../state/commonSlice';
 
 const SDK_PATH = 'https://sdk.games.s3.yandex.net/sdk.js';
 
@@ -33,6 +34,10 @@ export default class YandexHost implements IHost {
 
 		this.playerData = await this.player.getData();
 		store.dispatch(changeLogin(this.player.getName()) as any);
+
+		store.dispatch(setMinimalLogo(true));
+		store.dispatch(setClearUrls(true));
+		store.dispatch(setRoomLinkEnabled(false));
 
 		console.log('Loaded from Yandex');
 	}
@@ -84,6 +89,14 @@ export default class YandexHost implements IHost {
 			navigator.clipboard.writeText(text);
 		} else {
 			alert(text);
+		}
+	}
+
+	copyUriToClipboard(): void {
+		if (navigator.clipboard) {
+			navigator.clipboard.writeText(window.location.href);
+		} else {
+			alert(window.location.href);
 		}
 	}
 

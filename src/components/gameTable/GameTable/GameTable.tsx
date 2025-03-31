@@ -91,7 +91,7 @@ function getCaption(props: GameTableProps): string | null {
 			return props.caption;
 
 		default:
-			return null;
+			return ' ';
 	}
 }
 

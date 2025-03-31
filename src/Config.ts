@@ -10,5 +10,4 @@ export default interface Config {
 	siStatisticsServiceUri: string;
 	appRegistryServiceUri: string;
 	emojiCultures?: string[];
-	clearUrls?: boolean;
 }

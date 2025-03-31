@@ -1,12 +1,9 @@
 import * as React from 'react';
-import { connect } from 'react-redux';
 import localization from '../../../model/resources/localization';
 import Dialog from '../../common/Dialog/Dialog';
 import GameSound from '../../../model/enums/GameSound';
 import { playAudio, stopAudio } from '../../../state/commonSlice';
-import onlineActionCreators from '../../../state/online/onlineActionCreators';
 import Path from '../../../model/enums/Path';
-import { AppDispatch } from '../../../state/store';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 import UserOptions from '../../panels/UserOptions/UserOptions';
 import { navigate } from '../../../utils/Navigator';
@@ -20,17 +17,7 @@ import patreonImg from '../../../../assets/images/patreon_logo.png';
 import steamImg from '../../../../assets/images/steam_logo.png';
 import simulatorImg from '../../../../assets/images/simulator_logo.png';
 
-interface MainMenuProps {
-	anyonePlay: (appDispatch: AppDispatch) => void;
-}
-
-const mapDispatchToProps = (dispatch: any) => ({
-	anyonePlay: (appDispatch: AppDispatch) => {
-		dispatch(onlineActionCreators.createNewAutoGame(appDispatch));
-	},
-});
-
-export function MainMenu(props: MainMenuProps): JSX.Element {
+export default function MainMenu(): JSX.Element {
 	const [showLicense, setShowLicense] = React.useState(false);
 	const appDispatch = useAppDispatch();
 	const common = useAppSelector(state => state.common);
@@ -51,6 +38,33 @@ export function MainMenu(props: MainMenuProps): JSX.Element {
 
 	// setTimeout() is to forcibly load window.history before navigating
 	const onJoinByPin = () => setTimeout(() => appDispatch(navigate({ navigation: { path: Path.JoinByPin }, saveState: true })), 0);
+
+	const commands = [
+		{
+			label: localization.joinLobby,
+			onClick: () => appDispatch(navigate({ navigation: { path: Path.Lobby }, saveState: true })),
+		},
+		{
+			label: localization.singlePlay,
+			onClick: () => appDispatch(navigate({ navigation: { path: Path.NewRoom, newGameMode: 'single' }, saveState: true })),
+		},
+		{
+			label: localization.joinByPin,
+			onClick: onJoinByPin,
+		},
+		{
+			label: localization.questionEditor,
+			onClick: () => appDispatch(navigate({ navigation: { path: Path.SIQuester }, saveState: true })),
+		},
+		...(common.exitSupported
+			? [
+				{
+					label: localization.exit,
+					onClick: () => appDispatch(exitApp()),
+				},
+			]
+			: []),
+	];
 
 	return (
 		<section className="welcomeView">
@@ -84,45 +98,18 @@ export function MainMenu(props: MainMenuProps): JSX.Element {
 			</header>
 
 			<div className='mainArea'>
-				<div className={common.clearUrls ? 'logoMini' : 'logo'} />
+				<div className={common.minimalLogo ? 'logoMini' : 'logo'} />
 
 				<div className='welcomeViewActions'>
-					<button
-						type='button'
-						className='standard welcomeRow right'
-						onClick={() => appDispatch(navigate({ navigation: { path: Path.Lobby }, saveState: true }))}>
-						{localization.joinLobby.toUpperCase()}
-					</button>
-
-					<button
-						type='button'
-						className='standard welcomeRow left'
-						onClick={() => appDispatch(navigate({ navigation: { path: Path.NewRoom, newGameMode: 'single' }, saveState: true }))}>
-						{localization.singlePlay.toUpperCase()}
-					</button>
-
-					<button
-						type='button'
-						className='standard welcomeRow right'
-						onClick={onJoinByPin}>
-						{localization.joinByPin.toUpperCase()}
-					</button>
-
-					<button
-						type='button'
-						className='standard welcomeRow left'
-						onClick={() => appDispatch(navigate({ navigation: { path: Path.SIQuester }, saveState: true }))}>
-						{localization.questionEditor.toUpperCase()}
-					</button>
-
-					{common.exitSupported ? (
+					{commands.map((command, index) => (
 						<button
+							key={index}
 							type='button'
-							className='standard welcomeRow right'
-							onClick={() => appDispatch(exitApp())}>
-							{localization.exit.toUpperCase()}
+							className={`standard welcomeRow ${index % 2 === 0 ? 'left' : 'right'}`}
+							onClick={command.onClick}>
+							{command.label.toUpperCase()}
 						</button>
-					) : null}
+					))}
 				</div>
 			</div>
 
@@ -165,11 +152,8 @@ export function MainMenu(props: MainMenuProps): JSX.Element {
 					<div className='licenseText'>
 						{common.serverLicense?.split('\n').map((text, index) => <p key={index}>{text}</p>)}
 					</div>
-				</Dialog>
-			)
-			: null}
+				</Dialog>)
+				: null}
 		</section>
 	);
 }
-
-export default connect(null, mapDispatchToProps)(MainMenu);

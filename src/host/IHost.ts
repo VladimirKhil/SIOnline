@@ -29,6 +29,8 @@ export default interface IHost {
 
 	copyToClipboard(text: string): void;
 
+	copyUriToClipboard(): void;
+
 	/** Exits application. */
 	exitApp(): void;
 }

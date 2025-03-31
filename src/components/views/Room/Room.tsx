@@ -26,7 +26,6 @@ import PlayersListView from '../../game/PlayersListView/PlayersListView';
 import ChatMessage from '../../../model/ChatMessage';
 import MessageLevel from '../../../model/enums/MessageLevel';
 import { userErrorChanged } from '../../../state/commonSlice';
-import AvatarViewDialog from '../../panels/AvatarViewDialog/ProfileView';
 import { AppDispatch, RootState } from '../../../state/store';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 import { DialogView, rejectAnswer } from '../../../state/room2Slice';

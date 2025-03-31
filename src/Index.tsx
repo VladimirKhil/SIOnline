@@ -32,7 +32,7 @@ import YandexHost from './host/YandexHost';
 import IHost, { FullScreenMode } from './host/IHost';
 import SIHostClient from './client/SIHostClient';
 import { setFullScreen, setGameButtonKey } from './state/settingsSlice';
-import { commonErrorChanged, setClipboardSupported, setExitSupported, setFontsReady } from './state/commonSlice';
+import { commonErrorChanged, setFontsReady } from './state/commonSlice';
 import { saveStateToStorage } from './state/StateHelpers';
 import { INavigationState, isSettingGameButtonKeyChanged, setFullScreenSupported, visibilityChanged, windowSizeChanged } from './state/uiSlice';
 import { navigate } from './utils/Navigator';
@@ -47,6 +47,7 @@ declare const firebaseConfig: FirebaseOptions | undefined;
 declare global {
 	interface Window {
         __TAURI_INTERNALS__: any;
+		__TAURI__: any;
     }
 }
 
@@ -68,7 +69,6 @@ function setState(state: State, savedState: SavedState | null, c: Config, isDesk
 				...state.common,
 				askForConsent: !!c.askForConsent,
 				emojiCultures: c.emojiCultures,
-				clearUrls: c.clearUrls,
 			},
 			settings: {
 				...state.settings,
@@ -85,7 +85,6 @@ function setState(state: State, savedState: SavedState | null, c: Config, isDesk
 			...state.common,
 			askForConsent: !!c.askForConsent,
 			emojiCultures: c.emojiCultures,
-			clearUrls: c.clearUrls,
 		},
 		user: {
 			...state.user,
@@ -155,6 +154,13 @@ function subscribeToExternalEvents(store: Store<State, any>, stateManager: IHost
 	};
 
 	window.onkeydown = (e: KeyboardEvent) => {
+		// Skip if the focus is inside a textbox or similar input element
+		const target = e.target as HTMLElement;
+
+		if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable) {
+			return true;
+		}
+
 		const state = store.getState();
 
 		if (state.ui.isSettingGameButtonKey) {
@@ -262,7 +268,7 @@ function getInitialView(historyState: INavigationState): INavigationState {
 	return { path: Path.Root };
 }
 
-async function run(stateManager: IHost, clipboardSupported: boolean, exitSupported: boolean) {
+async function run(stateManager: IHost) {
 	try {
 		if (!config) {
 			throw new Error('Config is undefined!');
@@ -352,14 +358,6 @@ async function run(stateManager: IHost, clipboardSupported: boolean, exitSupport
 			}
 		}
 
-		if (!clipboardSupported) {
-			store.dispatch(setClipboardSupported(false));
-		}
-
-		if (exitSupported) {
-			store.dispatch(setExitSupported(true));
-		}
-
 		document.title = localization.appName;
 
 		ReactDOM.render(
@@ -385,9 +383,6 @@ async function run(stateManager: IHost, clipboardSupported: boolean, exitSupport
 
 const urlParams = new URLSearchParams(window.location.hash.substring(1));
 const origin = urlParams.get('origin');
-let licenseAccepted = false;
-let clipboardSupported = true;
-let exitSupported = false;
 
 if (origin === OriginYandex) {
 	console.log('Loading from Yandex');
@@ -396,23 +391,19 @@ if (origin === OriginYandex) {
 	config.registerServiceWorker = false;
 	config.emojiCultures = ['en'];
 	config.rewriteUrl = false;
-	config.clearUrls = true;
 	config.ads = '';
-} else if (origin === OriginTauri) {
+} else if (origin === OriginTauri || window.__TAURI__) {
 	console.log('Loading from Tauri');
 	config.askForConsent = false;
 	config.enableNoSleep = false;
 	config.registerServiceWorker = false;
-	licenseAccepted = urlParams.get('licenseAccepted') === 'true';
-	clipboardSupported = urlParams.get('clipboardSupported') === 'true';
-	exitSupported = urlParams.get('exitSupported') === 'true';
 }
 
 const host = origin === OriginYandex
 	? new YandexHost()
-	: (origin === OriginTauri || window.__TAURI_INTERNALS__ ? new TauriHost(origin !== OriginTauri, licenseAccepted) : new BrowserHost());
+	: (origin === OriginTauri || window.__TAURI_INTERNALS__ ? new TauriHost(origin !== OriginTauri) : new BrowserHost());
 
-run(host, clipboardSupported, exitSupported);
+run(host);
 
 if ('serviceWorker' in navigator && config && config.registerServiceWorker) {
 	window.addEventListener('load', registerServiceWorker2);

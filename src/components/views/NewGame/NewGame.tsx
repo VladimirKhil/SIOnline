@@ -17,7 +17,7 @@ export function NewGame(): JSX.Element | null {
 
 	if (!newGameMode) {
 		return <div className='new__selector'>
-			<div className={common.clearUrls ? 'logoMini' : 'logo'} />
+			<div className={common.minimalLogo ? 'logoMini' : 'logo'} />
 
 			<div className='new__selector__buttons'>
 				<button type='button' className='standard' onClick={() => setNewGameMode('single')}>{localization.playWithBots}</button>

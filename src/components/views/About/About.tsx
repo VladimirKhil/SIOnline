@@ -2,21 +2,15 @@
 import localization from '../../../model/resources/localization';
 import Dialog from '../../common/Dialog/Dialog';
 import Link from '../../common/Link/Link';
-import State from '../../../state/State';
-import { connect } from 'react-redux';
+import { useAppSelector } from '../../../state/hooks';
 
 import './About.css';
 
-interface AboutProps {
-	clearUrls?: boolean;
-}
-
-const mapStateToProps = (state: State) => ({
-	clearUrls: state.common.clearUrls,
-});
-
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export function About(props: AboutProps): JSX.Element {
+export default function About(): JSX.Element {
+	const common = useAppSelector(state => state.common);
+	const { clearUrls } = common;
+
 	return (
 		<Dialog className="helpDialog" title={localization.aboutTitle} onClose={() => window.history.back()}>
 			<div className="helpText">
@@ -24,7 +18,7 @@ export function About(props: AboutProps): JSX.Element {
 					{localization.about.map(text => (<p key={text}>{text}</p>))}
 				</section>
 
-				{props.clearUrls ? null
+				{clearUrls ? null
 				: <section>
 					<header><h1 className="subHeader">{localization.aboutSupport}</h1></header>
 					<p><a href="https://vk.com/topic-135725718_34967839">{localization.supportInfo}</a></p>
@@ -37,7 +31,7 @@ export function About(props: AboutProps): JSX.Element {
 					<p><Link href="https://github.com/VladimirKhil/SIOnline">{localization.sourcesInfo}</Link></p>
 				</section>
 
-				{props.clearUrls ? null
+				{clearUrls ? null
 				: <section>
 					<header><h1 className='subHeader'>{localization.donate}</h1></header>
 					<p>{localization.donateComment}</p>
@@ -74,5 +68,3 @@ export function About(props: AboutProps): JSX.Element {
 		</Dialog>
 	);
 }
-
-export default connect(mapStateToProps)(About);

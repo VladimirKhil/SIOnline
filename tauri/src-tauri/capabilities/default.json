@@ -10,6 +10,10 @@
     "opener:default",
     "core:window:allow-set-fullscreen",
     "clipboard-manager:allow-write-text",
-    "process:default"
+    "process:default",
+    {
+      "identifier": "http:default",
+      "allow": [{ "url": "http://**" }, { "url": "https://**" }]
+    }
   ]
 }

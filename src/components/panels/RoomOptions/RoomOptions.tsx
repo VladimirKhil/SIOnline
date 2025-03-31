@@ -33,7 +33,6 @@ interface RoomOptionsProps {
 	isSingleGame: boolean;
 	isOralGame: boolean;
 	navigation: INavigationState;
-	clearUrls?: boolean;
 	isSIStorageOpen: boolean;
 
 	onCreate: (isSingleGame: boolean, appDispatch: AppDispatch) => void;
@@ -49,7 +48,6 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 const mapStateToProps = (state: State) => ({
 	isOralGame: state.settings.appSettings.oral,
 	navigation: state.ui.navigation,
-	clearUrls: state.common.clearUrls,
 });
 
 function getPackageName(packageType: PackageType, packageName: string, packageData: File | null): string {

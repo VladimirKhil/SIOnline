@@ -13,6 +13,7 @@
 
 .tableCaption {
     flex: 0 0 45px;
+    background-color: #04071B;
     font-size: 22px;
     display: flex;
     justify-content: center;

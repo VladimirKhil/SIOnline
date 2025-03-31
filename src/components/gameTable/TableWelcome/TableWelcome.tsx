@@ -33,13 +33,13 @@ const TableWelcome: React.FC<TableWelcomeProps> = (props: TableWelcomeProps) => 
 			</AutoSizedText>
 		</div>
 
-		{common.clipboardSupported && (!common.clearUrls || props.isHost)
+		{common.clipboardSupported && (common.roomLinkEnabled || props.isHost)
 			? <div className='table-welcome__buttons'>
-				{common.clearUrls
-					? null
-					: <button type="button" className='standard' disabled={!common.isSIHostConnected} onClick={() => inviteLink(appDispatch)}>
+				{common.roomLinkEnabled
+					? <button type="button" className='standard' disabled={!common.isSIHostConnected} onClick={() => inviteLink(appDispatch)}>
 						{localization.inviteLink}
-					</button>}
+					</button>
+					: null}
 
 				{props.isHost
 					? <button type='button' className='standard' disabled={!common.isSIHostConnected} onClick={getPinCore}>
