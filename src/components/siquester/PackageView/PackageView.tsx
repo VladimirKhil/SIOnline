@@ -8,6 +8,7 @@ import Path from '../../../model/enums/Path';
 import MediaItem from '../MediaItem/MediaItem';
 import ScreensView from '../ScreensView/ScreensView';
 import AutoSizedText from '../../common/AutoSizedText/AutoSizedText';
+import getLanguage from '../../../utils/getLanguage';
 
 import './PackageView.scss';
 import exitImg from '../../../../assets/images/exit.png';
@@ -36,14 +37,6 @@ const PackageView: React.FC = () => {
 			case 'standart': case '': return localization.roundTypeTable;
 			case 'final': return localization.themeList;
 			default: return type;
-		}
-	}
-
-	function getLanguage(language: string): string {
-		switch (language) {
-			case 'ru-RU': return localization.languageRu;
-			case 'en-US': return localization.languageEn;
-			default: return language;
 		}
 	}
 

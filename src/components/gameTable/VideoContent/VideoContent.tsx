@@ -44,6 +44,8 @@ export class VideoContent extends React.Component<VideoContentProps> {
 
 	private playPromise: Promise<void> | null = null;
 
+	private completed = false;
+
 	constructor(props: VideoContentProps) {
 		super(props);
 
@@ -83,7 +85,7 @@ export class VideoContent extends React.Component<VideoContentProps> {
 				} else {
 					video.pause();
 				}
-			} else {
+			} else if (!this.completed) {
 				this.playPromise = video.play().catch((e) => this.props.operationError(getErrorMessage(e)));
 			}
 		}
@@ -107,12 +109,19 @@ export class VideoContent extends React.Component<VideoContentProps> {
 	render() {
 		const { onMediaEnded, uri, isMediaStopped, isVisible } = this.props;
 
+		const onVideoEnded = () => {
+			if (!isMediaStopped && isVisible) {
+				this.completed = true;
+				onMediaEnded();
+			}
+		};
+
 		return (
 			<div className='video-host'>
 				<video
 					ref={this.videoRef}
 					autoPlay={!isMediaStopped && isVisible}
-					onEnded={onMediaEnded}
+					onEnded={onVideoEnded}
 					onLoadedData={() => this.props.mediaLoaded()}>
 					<source src={uri} />
 				</video>

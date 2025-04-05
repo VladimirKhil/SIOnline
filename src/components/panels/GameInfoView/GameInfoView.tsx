@@ -15,6 +15,7 @@ import Constants from '../../../model/enums/Constants';
 import { AppDispatch } from '../../../state/store';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 import { passwordChanged } from '../../../state/online2Slice';
+import getLanguage from '../../../utils/getLanguage';
 
 import './GameInfoView.css';
 import personSvg from '../../../../assets/images/person.svg';
@@ -200,6 +201,8 @@ export function GameInfoView(props: GameInfoViewProps): JSX.Element {
 									<img alt='stage' title={localization.status} src={timerSvg} />
 									<span>{buildStage(game.Stage, game.ProgressCurrent, game.ProgressTotal)}</span>
 								</dt>
+
+								<div className='language' title={localization.language}>{getLanguage(game.Language)}</div>
 
 								{duration.length > 0 ? (<>
 									<dt></dt>
