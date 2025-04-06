@@ -26,7 +26,7 @@ export interface UIState {
 	windowHeight: number;
 	areSettingsVisible: boolean;
 	isProfileVisible: boolean;
-	isSettingGameButtonKey: boolean;
+	settingKey: string | null;
 	isVisible: boolean;
 	navigation: INavigationState;
 	showPlayers: boolean;
@@ -40,7 +40,7 @@ const initialState: UIState = {
 	windowHeight: window.innerHeight,
 	areSettingsVisible: false,
 	isProfileVisible: false,
-	isSettingGameButtonKey: false,
+	settingKey: null,
 	isVisible: true,
 	navigation: {
 		path: Path.Loading,
@@ -56,7 +56,7 @@ export const uiSlice = createSlice({
 	reducers: {
 		showSettings: (state: UIState, action: PayloadAction<boolean>) => {
 			state.areSettingsVisible = action.payload;
-			state.isSettingGameButtonKey = state.isSettingGameButtonKey && action.payload;
+			state.settingKey = null;
 		},
 		showProfile: (state: UIState, action: PayloadAction<boolean>) => {
 			state.isProfileVisible = action.payload;
@@ -68,8 +68,8 @@ export const uiSlice = createSlice({
 			state.windowWidth = action.payload.width;
 			state.windowHeight = action.payload.height;
 		},
-		isSettingGameButtonKeyChanged: (state: UIState, action: PayloadAction<boolean>) => {
-			state.isSettingGameButtonKey = action.payload;
+		settingKeyChanged: (state: UIState, action: PayloadAction<string | null>) => {
+			state.settingKey = action.payload;
 		},
 		visibilityChanged: (state: UIState, action: PayloadAction<boolean>) => {
 			state.isVisible = action.payload;
@@ -94,7 +94,7 @@ export const {
 	showProfile,
 	onlineModeChanged,
 	windowSizeChanged,
-	isSettingGameButtonKeyChanged,
+	settingKeyChanged,
 	visibilityChanged,
 	navigateCore,
 	playersVisibilityChanged,

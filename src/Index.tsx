@@ -31,12 +31,13 @@ import BrowserHost from './host/BrowserHost';
 import YandexHost from './host/YandexHost';
 import IHost, { FullScreenMode } from './host/IHost';
 import SIHostClient from './client/SIHostClient';
-import { setFullScreen, setGameButtonKey } from './state/settingsSlice';
+import { setFullScreen, setGameButtonKey, setNextButtonKey, setNoButtonKey, setPassButtonKey, setYesButtonKey } from './state/settingsSlice';
 import { commonErrorChanged, setFontsReady } from './state/commonSlice';
 import { saveStateToStorage } from './state/StateHelpers';
-import { INavigationState, isSettingGameButtonKeyChanged, setFullScreenSupported, visibilityChanged, windowSizeChanged } from './state/uiSlice';
+import { INavigationState, setFullScreenSupported, settingKeyChanged, visibilityChanged, windowSizeChanged } from './state/uiSlice';
 import { navigate } from './utils/Navigator';
 import TauriHost from './host/TauriHost';
+import { approveAnswerDefault, rejectAnswerDefault } from './state/room2Slice';
 
 import './utils/polyfills';
 import './scss/style.scss';
@@ -163,13 +164,43 @@ function subscribeToExternalEvents(store: Store<State, any>, stateManager: IHost
 
 		const state = store.getState();
 
-		if (state.ui.isSettingGameButtonKey) {
-			store.dispatch(setGameButtonKey(e.key));
-			store.dispatch(isSettingGameButtonKeyChanged(false));
+		if (state.ui.settingKey) {
+			switch (state.ui.settingKey) {
+				case 'answer':
+					store.dispatch(setGameButtonKey(e.key));
+					break;
+
+				case 'pass':
+					store.dispatch(setPassButtonKey(e.key));
+					break;
+
+				case 'next':
+					store.dispatch(setNextButtonKey(e.key));
+					break;
+
+				case 'yes':
+					store.dispatch(setYesButtonKey(e.key));
+					break;
+
+				case 'no':
+					store.dispatch(setNoButtonKey(e.key));
+					break;
+
+				default:
+					break;
+			}
+
+			store.dispatch(settingKeyChanged(null));
 		} else if (e.key === state.settings.gameButtonKey) {
 			store.dispatch(roomActionCreators.pressGameButton());
-		} else if (e.key === state.settings.nextButtonKey && state.settings.bindNextButton) {
+		} else if (e.key === state.settings.passButtonKey) {
+			store.dispatch(roomActionCreators.onPass());
+		} else if (e.key === state.settings.nextButtonKey) {
 			store.dispatch(roomActionCreators.moveNext());
+		} else if (e.key === state.settings.yesButtonKey) {
+			store.dispatch(approveAnswerDefault());
+		} else if (e.key === state.settings.noButtonKey) {
+			store.dispatch(rejectAnswerDefault());
 		}
 
 		return true;

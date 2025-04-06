@@ -17,8 +17,10 @@ export interface SettingsState {
 	avatarKey: string | null;
 	appSettings: AppSettings;
 	gameButtonKey: string | null;
+	passButtonKey: string | null;
 	nextButtonKey: string | null;
-	bindNextButton: boolean;
+	yesButtonKey: string | null;
+	noButtonKey: string | null;
 	attachContentToTable: boolean;
 	showVideoAvatars: boolean;
 	theme: ThemeSettings;
@@ -35,8 +37,10 @@ const initialState: SettingsState = {
 	avatarKey: null,
 	appSettings: initialAppSettings,
 	gameButtonKey: Constants.KEY_CTRL,
+	passButtonKey: '/',
 	nextButtonKey: Constants.KEY_RIGHT,
-	bindNextButton: true,
+	yesButtonKey: '+',
+	noButtonKey: '-',
 	attachContentToTable: true,
 	showVideoAvatars: true,
 	theme: {
@@ -114,6 +118,9 @@ export const settingsSlice = createSlice({
 		setGameButtonKey: (state: SettingsState, action: PayloadAction<string | null>) => {
 			state.gameButtonKey = action.payload;
 		},
+		setPassButtonKey: (state: SettingsState, action: PayloadAction<string | null>) => {
+			state.passButtonKey = action.payload;
+		},
 		setPlayAllQuestionsInFinalRound: (state: SettingsState, action: PayloadAction<boolean>) => {
 			state.appSettings.playAllQuestionsInFinalRound = action.payload;
 		},
@@ -132,9 +139,6 @@ export const settingsSlice = createSlice({
 		setFullScreen: (state: SettingsState, action: PayloadAction<boolean>) => {
 			state.fullScreen = action.payload;
 		},
-		setBindNextButton: (state: SettingsState, action: PayloadAction<boolean>) => {
-			state.bindNextButton = action.payload;
-		},
 		setAttachContentToTable: (state: SettingsState, action: PayloadAction<boolean>) => {
 			state.attachContentToTable = action.payload;
 		},
@@ -149,6 +153,12 @@ export const settingsSlice = createSlice({
 		},
 		setNextButtonKey: (state: SettingsState, action: PayloadAction<string | null>) => {
 			state.nextButtonKey = action.payload;
+		},
+		setYesButtonKey: (state: SettingsState, action: PayloadAction<string | null>) => {
+			state.yesButtonKey = action.payload;
+		},
+		setNoButtonKey: (state: SettingsState, action: PayloadAction<string | null>) => {
+			state.noButtonKey = action.payload;
 		},
 		setTableTextColor: (state: SettingsState, action: PayloadAction<string>) => {
 			state.theme.table.textColor = action.payload;
@@ -185,18 +195,20 @@ export const {
 	setTimeSetting,
 	languageChanged,
 	setGameButtonKey,
+	setPassButtonKey,
 	setPlayAllQuestionsInFinalRound,
 	setOralPlayersActions,
 	setAllowEveryoneToPlayHiddenStakes,
 	setDisplaySources,
 	setFloatingControls,
 	setFullScreen,
-	setBindNextButton,
 	setAttachContentToTable,
 	setShowVideoAvatars,
 	setDisplayAnswerOptionsOneByOne,
 	setDisplayAnswerOptionsLabels,
 	setNextButtonKey,
+	setYesButtonKey,
+	setNoButtonKey,
 	setTableTextColor,
 	setTableBackgroundColor,
 	resetSettings,

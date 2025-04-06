@@ -5,6 +5,7 @@ import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 import GamesFilter from '../../../model/enums/GamesFilter';
 import localization from '../../../model/resources/localization';
 import { onGameFilterToggle } from '../../../state/online2Slice';
+import getLanguage from '../../../utils/getLanguage';
 
 import './GamesFilterView.scss';
 
@@ -18,6 +19,8 @@ export default function GamesFilterView() {
 	const onToggleFilterItem = (gamesFilterItem: GamesFilter) => {
 		appDispatch(onGameFilterToggle(gamesFilterItem));
 	};
+
+	const myLanguage = getLanguage(localization.getLanguage());
 
 	return (
 		<FlyoutButton
@@ -40,6 +43,10 @@ export default function GamesFilterView() {
 
 					<li className={enabledClass} onClick={() => onToggleFilterItem(GamesFilter.NoPassword)}>
 						<CheckBox isChecked={(online.gamesFilter & GamesFilter.NoPassword) > 0} header={localization.withoutPassword} />
+					</li>
+
+					<li className={enabledClass} onClick={() => onToggleFilterItem(GamesFilter.MyLanguage)}>
+						<CheckBox isChecked={(online.gamesFilter & GamesFilter.MyLanguage) > 0} header={localization.language + ': ' + myLanguage} />
 					</li>
 				</ul>
 			)}

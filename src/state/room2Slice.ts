@@ -126,6 +126,44 @@ export const sendAnswer = createAsyncThunk(
 	},
 );
 
+export const approveAnswerDefault = createAsyncThunk(
+	'room2/approveAnswerDefault',
+	async (arg: void, thunkAPI) => {
+		const dataContext = thunkAPI.extra as DataContext;
+		const { newVersion, queue } = (thunkAPI.getState() as State).room2.validation;
+
+		if (newVersion) {
+			if (queue.length === 0) {
+				return;
+			}
+
+			const [{ answer }] = queue;
+			await dataContext.game.validateAnswer(answer, true);
+		} else {
+			await dataContext.game.approveAnswer(1.0);
+		}
+	},
+);
+
+export const rejectAnswerDefault = createAsyncThunk(
+	'room2/rejectAnswerDefault',
+	async (arg: void, thunkAPI) => {
+		const dataContext = thunkAPI.extra as DataContext;
+		const { newVersion, queue } = (thunkAPI.getState() as State).room2.validation;
+
+		if (newVersion) {
+			if (queue.length === 0) {
+				return;
+			}
+
+			const [{ answer }] = queue;
+			await dataContext.game.validateAnswer(answer, false);
+		} else {
+			await dataContext.game.rejectAnswer(1.0);
+		}
+	},
+);
+
 export const approveAnswer = createAsyncThunk(
 	'room2/approveAnswer',
 	async (arg: any, thunkAPI) => {
@@ -457,6 +495,14 @@ export const room2Slice = createSlice({
 		builder.addCase(playerSelected.fulfilled, (state) => {
 			state.persons.players.forEach(p => p.canBeSelected = false);
 			state.persons.showman.replic = null;
+		});
+
+		builder.addCase(approveAnswerDefault.fulfilled, (state) => {
+			state.validation.queue.shift();
+		});
+
+		builder.addCase(rejectAnswerDefault.fulfilled, (state) => {
+			state.validation.queue.shift();
 		});
 
 		builder.addCase(approveAnswer.fulfilled, (state) => {

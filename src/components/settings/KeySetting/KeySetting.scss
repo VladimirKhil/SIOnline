@@ -1,0 +1,29 @@
+.key-setting {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	margin-top: 10px;
+	height: 80px;
+	background-color: rgba(150, 150, 150, 0.219);
+	border-radius: 5px;
+	padding: 5px 10px;
+
+	.key-setting-header {
+		flex: 1;
+		font-size: 20px;
+		height: 100%;
+		display: flex;
+		align-items: center;
+	}
+}
+
+.key-setting-button {
+    font-size: 24px;
+    padding: 5px 20px;
+    min-height: 40px;
+    flex: 0 0 140px;
+}
+
+button.standard.key-setting-button.active {
+    background-color: lightyellow;
+}
