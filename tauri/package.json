@@ -9,7 +9,9 @@
   "dependencies": {
     "@tauri-apps/api": "^2",
     "@tauri-apps/plugin-clipboard-manager": "^2.2.1",
+    "@tauri-apps/plugin-dialog": "^2.2.1",
     "@tauri-apps/plugin-http": "^2.4.2",
+    "@tauri-apps/plugin-log": "^2.3.1",
     "@tauri-apps/plugin-opener": "^2",
     "@tauri-apps/plugin-process": "^2.2.0"
   },

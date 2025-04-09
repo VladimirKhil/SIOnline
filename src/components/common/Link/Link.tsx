@@ -1,26 +1,36 @@
 import * as React from 'react';
-import { connect } from 'react-redux';
-import State from '../../../state/State';
+import { useAppDispatch, useAppSelector } from '../../../state/hooks';
+import { openLink } from '../../../state/globalActions';
 
 interface LinkProps {
-	clearUrls?: boolean;
 	href: string;
 	target?: React.HTMLAttributeAnchorTarget;
 	rel?: string;
 	children?: any;
 	title?: string;
+	className?: string;
 }
 
-const mapStateToProps = (state: State) => ({
-	clearUrls: state.common.clearUrls,
-});
+export default function Link(props: LinkProps): JSX.Element {
+	const common = useAppSelector(state => state.common);
+	const appDispatch = useAppDispatch();
+	const { clearUrls, hostManagedUrls } = common;
 
-export function Link(props: LinkProps): JSX.Element {
-	return props.clearUrls ? props.children : (
-		<a href={props.href} target={props.target} rel={props.rel} title={props.title}>
+	if (hostManagedUrls) {
+		const open = () => {
+			appDispatch(openLink(props.href));
+		};
+
+		return <a target={props.target} className={props.className} rel={props.rel} title={props.title} onClick={open}>
 			{props.children}
-		</a>
-	);
-}
+		</a>;
+	}
 
-export default connect(mapStateToProps)(Link);
+	if (clearUrls) {
+		return props.children;
+	}
+
+	return <a href={props.href} className={props.className} target={props.target} rel={props.rel} title={props.title}>
+		{props.children}
+	</a>;
+}

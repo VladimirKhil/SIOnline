@@ -68,6 +68,11 @@
     overflow: hidden;
 }
 
+.gameInfoView header {
+    margin-left: 10px;
+    margin-top: 5px;
+}
+
 .newGameArea {
     position: absolute;
     z-index: 1;
@@ -101,6 +106,10 @@
     height: 0;
 }
 
+.emptyGameInfo {
+    display: none;
+}
+
 @media screen and (min-width: 1100px) {
     .gameInfoArea {
         position: relative;
@@ -121,5 +130,15 @@
 
     .gameInfoView .dialog_closeButton {
         display: none;
+    }
+
+    .emptyGameInfo {
+        display: initial;
+        position: relative;
+        background-color: #0A0E30;
+        border-radius: 16px;
+        margin: 0 10px 10px 0;
+        height: calc(100% - 10px);
+        width: calc(100% - 10px);
     }
 }

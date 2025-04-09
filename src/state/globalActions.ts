@@ -17,6 +17,14 @@ export const copyUriToClipboard = createAsyncThunk(
 	},
 );
 
+export const openLink = createAsyncThunk(
+	'global/openLink',
+	async (arg: string, thunkAPI) => {
+		const dataContext = thunkAPI.extra as DataContext;
+		dataContext.state.openLink(arg);
+	},
+);
+
 export const exitApp = createAsyncThunk(
 	'global/exitApp',
 	async (_, thunkAPI) => {

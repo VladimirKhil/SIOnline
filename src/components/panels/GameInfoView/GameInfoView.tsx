@@ -188,21 +188,24 @@ export function GameInfoView(props: GameInfoViewProps): JSX.Element {
 						<div className="maininfo">
 							<dl>
 								<dt><img alt='host' title={localization.host} src={personSvg} /><span>{game.Owner}</span></dt>
+
 								<dt>
 									<img alt='package' title={localization.questionPackage} src={folderSvg} />
 									<span>{game.PackageName == Constants.RANDOM_PACKAGE ? localization.randomThemes : game.PackageName}</span>
 								</dt>
+
 								<dt>{rules.map(name => <div className='rule' key={name}>{name}</div>)}</dt>
+								<div className='language' title={localization.language}>{getLanguage(game.Language)}</div>
+
 								<dt>
 									<img alt='players' title={localization.players} src={personsSvg} />
-									<span>{freePlayers}/{totalPlayers}</span>
+									<span>{totalPlayers - freePlayers}/{totalPlayers}</span>
 								</dt>
+
 								<dt>
 									<img alt='stage' title={localization.status} src={timerSvg} />
 									<span>{buildStage(game.Stage, game.ProgressCurrent, game.ProgressTotal)}</span>
 								</dt>
-
-								<div className='language' title={localization.language}>{getLanguage(game.Language)}</div>
 
 								{duration.length > 0 ? (<>
 									<dt></dt>

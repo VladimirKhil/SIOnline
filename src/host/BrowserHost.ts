@@ -74,5 +74,7 @@ export default class BrowserHost implements IHost {
 		}
 	}
 
+	openLink(url: string): void {}
+
 	exitApp() {}
 }

@@ -1,4 +1,4 @@
-import { setClearUrls, setClipboardSupported, setExitSupported, setIsDesktop } from '../state/commonSlice';
+import { setClipboardSupported, setExitSupported, setHostManagedUrls, setIsDesktop, setSteamLinkSupported } from '../state/commonSlice';
 import { getCookie, setCookie } from '../utils/CookieHelpers';
 import IHost, { FullScreenMode } from './IHost';
 import { Store } from 'redux';
@@ -51,7 +51,8 @@ export default class TauriHost implements IHost {
 		console.log('Loaded from Tauri');
 
 		if (isSteam) {
-			store.dispatch(setClearUrls(true));
+			store.dispatch(setHostManagedUrls(true));
+			store.dispatch(setSteamLinkSupported(false)); // No need to navigate to Steam from here
 		}
 
 		if (!this.clipboardSupported) {
@@ -120,6 +121,14 @@ export default class TauriHost implements IHost {
 	copyUriToClipboard(): void {
 		const text = window.location.href.replace('http://tauri.localhost', 'https://sigame.vladimirkhil.com');
 		this.copyToClipboard(text);
+	}
+
+	openLink(url: string) {
+		try {
+			this.app.core.invoke('open_url_in_steam_overlay', { url });
+		} catch (e) {
+			console.error('Failed to open link:', e);
+		}
 	}
 
 	exitApp() : void {

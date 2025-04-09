@@ -13,7 +13,17 @@
     "process:default",
     {
       "identifier": "http:default",
-      "allow": [{ "url": "http://**" }, { "url": "https://**" }]
-    }
+      "allow": [
+        {
+          "url": "http://**"
+        },
+        {
+          "url": "https://**"
+        }
+      ]
+    },
+    "dialog:default",
+    "log:default",
+    "log:default"
   ]
 }

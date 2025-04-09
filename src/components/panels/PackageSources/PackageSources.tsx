@@ -4,6 +4,7 @@ import { setPackageType } from '../../../state/gameSlice';
 import PackageType from '../../../model/enums/PackageType';
 import localization from '../../../model/resources/localization';
 import isWindowsOS from '../../../utils/isWindowsOS';
+import Link from '../../common/Link/Link';
 
 import './PackageSources.scss';
 
@@ -30,46 +31,46 @@ export default function PackageSources(props: PackageSourcesProps): JSX.Element 
 		{!common.clearUrls && localization.userPackages.length > 0
 		? <>
 			<li>
-				<a
+				<Link
 					className='simpleLink'
 					href="https://vk.com/topic-135725718_53119401"
 					target='_blank'
 					rel='noopener noreferrer'>
 					{`${localization.userPackages}…`}
-				</a>
+				</Link>
 			</li>
 
 			<li>
-				<a
+				<Link
 					className='simpleLink'
 					href="https://sigame.ru"
 					target='_blank'
 					rel='noopener noreferrer'>
 					{`${localization.library} sigame.ru…`}
-				</a>
+				</Link>
 			</li>
 
 			<li>
-				<a
+				<Link
 					className='simpleLink'
 					href="https://sigame.xyz"
 					target='_blank'
 					rel='noopener noreferrer'>
 					{`${localization.library} sigame.xyz…`}
-				</a>
+				</Link>
 			</li>
 		</>
 		: null}
 
 		{!common.clearUrls && isWindowsOS()
 			? <li>
-				<a
+				<Link
 					className='simpleLink'
 					href="https://vladimirkhil.com/si/siquester"
 					target='_blank'
 					rel='noopener noreferrer'>
 					{`${localization.createOwnPackage}…`}
-				</a>
+				</Link>
 			</li>
 			: null}
 	</ul>;

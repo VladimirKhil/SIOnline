@@ -100,5 +100,7 @@ export default class YandexHost implements IHost {
 		}
 	}
 
+	openLink(url: string): void {}
+
 	exitApp() {}
 }

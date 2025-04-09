@@ -259,7 +259,7 @@ button.standard.welcomeExit {
 	.welcomeViewActions button {
 		width: 100%;
 		margin: 3px 0;
-		font-size: 30px;
+		font-size: 35px;
 	}
 
 	.welcomeView .logo {
@@ -267,7 +267,7 @@ button.standard.welcomeExit {
 	}
 }
 
-@media screen and (min-height: 800px) {
+@media screen and (min-height: 900px) {
 	.welcomeViewActions {
 		margin-top: 100px;
 	}
@@ -279,7 +279,7 @@ button.standard.welcomeExit {
 	}
 }
 
-@media screen and (min-height: 800px) and (min-width: 1100px) {
+@media screen and (min-height: 900px) and (min-width: 1100px) {
 	.welcomeView .logo {
 		flex: 300px 0 0;
 	}
@@ -289,7 +289,7 @@ button.standard.welcomeExit {
 	}
 }
 
-@media screen and (min-height: 800px) and (min-width: 1600px) {
+@media screen and (min-height: 900px) and (min-width: 1600px) {
 	.welcomeViewActions {
 		margin-top: 150px;
 	}

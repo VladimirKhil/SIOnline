@@ -21,7 +21,7 @@ export default function About(): JSX.Element {
 				{clearUrls ? null
 				: <section>
 					<header><h1 className="subHeader">{localization.aboutSupport}</h1></header>
-					<p><a href="https://vk.com/topic-135725718_34967839">{localization.supportInfo}</a></p>
+					<p><Link href="https://vk.com/topic-135725718_34967839">{localization.supportInfo}</Link></p>
 				</section>}
 
 				<section>
@@ -35,8 +35,8 @@ export default function About(): JSX.Element {
 				: <section>
 					<header><h1 className='subHeader'>{localization.donate}</h1></header>
 					<p>{localization.donateComment}</p>
-					<p><a href='https://www.patreon.com/vladimirkhil'>Patreon</a></p>
-					<p><a href='https://boosty.to/vladimirkhil'>Boosty</a></p>
+					<p><Link href='https://www.patreon.com/vladimirkhil'>Patreon</Link></p>
+					<p><Link href='https://boosty.to/vladimirkhil'>Boosty</Link></p>
 				</section>}
 
 				<section>

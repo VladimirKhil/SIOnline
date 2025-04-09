@@ -76,7 +76,7 @@ export function Lobby() {
 							? <Dialog className="gameInfoView" title={selectedGame.GameName} onClose={onCloseGameInfo}>
 								<GameInfoView canJoinAsViewer={true} isConnected={common.isConnected} game={selectedGame} showGameName={false} />
 							</Dialog>
-							: null}
+							: <div className='emptyGameInfo' />}
 					</div>
 				</div>
 

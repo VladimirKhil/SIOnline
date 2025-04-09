@@ -31,6 +31,8 @@ export default interface IHost {
 
 	copyUriToClipboard(): void;
 
+	openLink(url: string): void;
+
 	/** Exits application. */
 	exitApp(): void;
 }

@@ -39,6 +39,7 @@ export function StakePanel(props: StakePanelProps): JSX.Element | null {
 					<>
 						{Array.from(Array(stakeVariants).keys()).map(n => (
 							<SendStakeButton
+								key={n}
 								className='wideStake mainAction active'
 								stake={props.minimum + props.step * n}
 							/>

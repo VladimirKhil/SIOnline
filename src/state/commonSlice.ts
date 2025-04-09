@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import GameSound from '../model/enums/GameSound';
 import { gameSoundPlayer } from '../utils/GameSoundPlayer';
+import { setHost } from './room2Slice';
 
 export enum MessageLevel {
 	Information,
@@ -23,6 +24,8 @@ export interface CommonState {
 	askForConsent: boolean;
 	emojiCultures?: string[];
 	clearUrls?: boolean;
+	steamLinkSupported: boolean;
+	hostManagedUrls: boolean;
 	minimalLogo?: boolean;
 	roomLinkEnabled: boolean;
 	avatarLoadProgress: boolean;
@@ -49,6 +52,8 @@ const initialState: CommonState = {
 	userError: null,
 	messageLevel: MessageLevel.Error,
 	askForConsent: true,
+	steamLinkSupported: true,
+	hostManagedUrls: false,
 	roomLinkEnabled: true,
 	avatarLoadProgress: false,
 	avatarLoadError: null,
@@ -129,11 +134,17 @@ export const commonSlice = createSlice({
 		setClearUrls: (state: CommonState, action: PayloadAction<boolean>) => {
 			state.clearUrls = action.payload;
 		},
+		setSteamLinkSupported: (state: CommonState, action: PayloadAction<boolean>) => {
+			state.steamLinkSupported = action.payload;
+		},
 		setMinimalLogo: (state: CommonState, action: PayloadAction<boolean>) => {
 			state.minimalLogo = action.payload;
 		},
 		setRoomLinkEnabled: (state: CommonState, action: PayloadAction<boolean>) => {
 			state.roomLinkEnabled = action.payload;
+		},
+		setHostManagedUrls: (state: CommonState, action: PayloadAction<boolean>) => {
+			state.hostManagedUrls = action.payload;
 		},
 	}
 });
@@ -184,8 +195,10 @@ export const {
 	setExitSupported,
 	setIsDesktop,
 	setClearUrls,
+	setSteamLinkSupported,
 	setMinimalLogo,
 	setRoomLinkEnabled,
+	setHostManagedUrls,
 } = commonSlice.actions;
 
 export default commonSlice.reducer;

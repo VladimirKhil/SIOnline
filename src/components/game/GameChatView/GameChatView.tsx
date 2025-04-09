@@ -21,10 +21,10 @@ import UserOptions from '../../panels/UserOptions/UserOptions';
 import TabControl from '../../common/TabControl/TabControl';
 import ValidationArea from '../ValidationArea/ValidationArea';
 import Constants from '../../../model/enums/Constants';
+import Link from '../../common/Link/Link';
 
 import './GameChatView.css';
 import sumsImg from '../../../../assets/images/sums.png';
-import editImg from '../../../../assets/images/edit.png';
 import activePlayerImg from '../../../../assets/images/active_player.png';
 
 interface GameChatViewProps {
@@ -80,9 +80,9 @@ function getSideArea(props: GameChatViewProps): React.ReactNode {
 					<ChatInput />
 
 					{props.voiceChatUri && isWellFormedUri(props.voiceChatUri) ? (
-						<a href={props.voiceChatUri} className='voiceChatUrl' target='_blank' rel='noopener noreferrer' title={props.voiceChatUri}>
+						<Link href={props.voiceChatUri} className='voiceChatUrl' target='_blank' rel='noopener noreferrer' title={props.voiceChatUri}>
 							<button type='button' className="standard wide commandButton bottomButton">{localization.voiceChat}</button>
-						</a>
+						</Link>
 					) : null}
 				</div>
 			);

@@ -8,6 +8,7 @@ import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 import UserOptions from '../../panels/UserOptions/UserOptions';
 import { navigate } from '../../../utils/Navigator';
 import { exitApp } from '../../../state/globalActions';
+import Link from '../../common/Link/Link';
 
 import './MainMenu.scss';
 import exitImg from '../../../../assets/images/exit.png';
@@ -66,6 +67,36 @@ export default function MainMenu(): JSX.Element {
 			: []),
 	];
 
+	const { steamLinkSupported } = common;
+
+	const links = [
+		...(steamLinkSupported ? [{
+			href: 'https://store.steampowered.com/app/3553500/SIGame',
+			imgSrc: steamImg,
+			title: 'Steam',
+		}] : []),
+		{
+			href: 'https://www.twitch.tv/directory/category/sigame',
+			imgSrc: twitchImg,
+			title: 'Twitch',
+		},
+		{
+			href: 'https://boosty.to/vladimirkhil',
+			imgSrc: boostyImg,
+			title: 'Boosty',
+		},
+		{
+			href: 'https://patreon.com/vladimirkhil',
+			imgSrc: patreonImg,
+			title: 'Patreon',
+		},
+		{
+			href: 'https://vladimirkhil.com/si/simulator',
+			imgSrc: simulatorImg,
+			title: 'SImulator',
+		},
+	];
+
 	return (
 		<section className="welcomeView">
 			<header>
@@ -115,35 +146,18 @@ export default function MainMenu(): JSX.Element {
 
 			{common.clearUrls ? null : <div className='links'>
 				<ul>
-					<li>
-						<a href='https://store.steampowered.com/app/3553500/SIGame' target='_blank' rel='noreferrer noopener' title='Steam'>
-							<img src={steamImg} alt='Steam' />
-						</a>
-					</li>
-
-					<li>
-						<a href='https://www.twitch.tv/directory/category/sigame' target='_blank' rel='noreferrer noopener' title='Twitch'>
-							<img src={twitchImg} alt='Twitch' />
-						</a>
-					</li>
-
-					<li>
-						<a href='https://boosty.to/vladimirkhil' target='_blank' rel='noreferrer noopener' title='Boosty'>
-							<img src={boostyImg} alt='Boosty' />
-						</a>
-					</li>
-
-					<li>
-						<a href='https://patreon.com/vladimirkhil' target='_blank' rel='noreferrer noopener' title='Patreon'>
-							<img src={patreonImg} alt='Patreon' />
-						</a>
-					</li>
-
-					<li>
-						<a href='https://vladimirkhil.com/si/simulator' target='_blank' rel='noreferrer noopener' title='SImulator'>
-							<img src={simulatorImg} alt='SImulator' />
-						</a>
-					</li>
+					{links.map((link, index) => (
+						<li key={index}>
+							<Link
+								href={link.href}
+								target='_blank'
+								rel='noreferrer noopener'
+								title={link.title}
+							>
+								<img src={link.imgSrc} alt={link.title} />
+							</Link>
+						</li>
+					))}
 				</ul>
 			</div>}
 
