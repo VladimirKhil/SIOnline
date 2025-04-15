@@ -5,7 +5,7 @@ import { Store } from 'redux';
 
 const ACCEPT_LICENSE_KEY = 'ACCEPT_LICENSE';
 
-const isSteam = true;
+const isSteam = false;
 
 declare global {
 	interface Window {
@@ -23,7 +23,7 @@ export default class TauriHost implements IHost {
 	private exitSupported = false;
 
 	constructor(private isLegacy: boolean) {
-		if (this.app) {
+		if (this.app && this.app.http) {
 			const originalFetch = globalThis.fetch.bind(globalThis);
 
 			globalThis.fetch = async (input: RequestInfo | URL, init?: RequestInit): Promise<Response> => {
@@ -97,7 +97,7 @@ export default class TauriHost implements IHost {
 	}
 
 	async setFullScreen(fullScreen: boolean): Promise<boolean> {
-		if (this.app) {
+		if (this.app && this.app.webviewWindow) {
 			try {
 				await this.app.webviewWindow.getCurrentWebviewWindow().setFullscreen(fullScreen);
 			} catch (e) {
@@ -111,7 +111,7 @@ export default class TauriHost implements IHost {
 	}
 
 	copyToClipboard(text: string): void {
-		if (this.app) {
+		if (this.app && this.app.clipboardManager) {
 			this.app.clipboardManager.writeText(text);
 		} else {
 			window.parent.postMessage({ type: 'copyToClipboard', payload: text }, '*');
@@ -132,7 +132,7 @@ export default class TauriHost implements IHost {
 	}
 
 	exitApp() : void {
-		if (this.app) {
+		if (this.app && this.app.process) {
 			this.app.process.exit(0);
 		} else {
 			window.parent.postMessage({ type: 'exit' }, '*');
