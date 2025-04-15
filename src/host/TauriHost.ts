@@ -1,4 +1,4 @@
-import { setClipboardSupported, setExitSupported, setHostManagedUrls, setIsDesktop, setSteamLinkSupported } from '../state/commonSlice';
+import { setClearUrls, setClipboardSupported, setExitSupported, setHostManagedUrls, setIsDesktop, setSteamLinkSupported } from '../state/commonSlice';
 import { getCookie, setCookie } from '../utils/CookieHelpers';
 import IHost, { FullScreenMode } from './IHost';
 import { Store } from 'redux';
@@ -39,7 +39,7 @@ export default class TauriHost implements IHost {
 		const urlParams = new URLSearchParams(window.location.hash.substring(1));
 		this.licenseAccepted = this.app || urlParams.get('licenseAccepted') === 'true';
 		this.clipboardSupported = this.app || urlParams.get('clipboardSupported') === 'true';
-		this.exitSupported = this.app || urlParams.get('exitSupported') === 'true';
+		this.exitSupported = (this.app && this.app.process) || urlParams.get('exitSupported') === 'true';
 	}
 
 	isDesktop(): boolean {
@@ -53,6 +53,8 @@ export default class TauriHost implements IHost {
 		if (isSteam) {
 			store.dispatch(setHostManagedUrls(true));
 			store.dispatch(setSteamLinkSupported(false)); // No need to navigate to Steam from here
+		} else {
+			store.dispatch(setClearUrls(true));
 		}
 
 		if (!this.clipboardSupported) {
@@ -97,7 +99,8 @@ export default class TauriHost implements IHost {
 	}
 
 	async setFullScreen(fullScreen: boolean): Promise<boolean> {
-		if (this.app && this.app.webviewWindow) {
+		if (this.app && this.app.webviewWindow &&
+			isSteam) { // Temporary condition for old Tauri-based clients
 			try {
 				await this.app.webviewWindow.getCurrentWebviewWindow().setFullscreen(fullScreen);
 			} catch (e) {
