@@ -1,15 +1,19 @@
+import SIStorageClient from 'sistorage-client';
 import { setClearUrls, setClipboardSupported, setExitSupported, setHostManagedUrls, setIsDesktop, setSteamLinkSupported } from '../state/commonSlice';
 import { getCookie, setCookie } from '../utils/CookieHelpers';
 import IHost, { FullScreenMode } from './IHost';
 import { Store } from 'redux';
+import SIStorageInfo from '../client/contracts/SIStorageInfo';
+import SteamWorkshopStorageClient from '../client/SteamWorkshopStorageClient';
+import localization from '../model/resources/localization';
 
 const ACCEPT_LICENSE_KEY = 'ACCEPT_LICENSE';
 
-const isSteam = false;
+const isSteam = true;
 
 declare global {
 	interface Window {
-		__TAURI__: any;
+		__TAURI__?: any;
 	}
 }
 
@@ -27,7 +31,8 @@ export default class TauriHost implements IHost {
 			const originalFetch = globalThis.fetch.bind(globalThis);
 
 			globalThis.fetch = async (input: RequestInfo | URL, init?: RequestInit): Promise<Response> => {
-				if (typeof input === 'string' && input.startsWith('http://ipc.localhost/')) { // Pass through requests to localhost
+				if (typeof input === 'string' &&
+					(input.startsWith('http://ipc.localhost/') || !input.startsWith('http'))) { // Pass through requests to localhost
 					return originalFetch(input, init);
 				}
 
@@ -132,6 +137,31 @@ export default class TauriHost implements IHost {
 		} catch (e) {
 			console.error('Failed to open link:', e);
 		}
+	}
+
+	getStorage(): { storageClient?: SIStorageClient; storageInfo?: SIStorageInfo; } {
+		if (!isSteam) {
+			return { };
+		}
+
+		const storageClient = new SteamWorkshopStorageClient({
+			serviceUri: 'steam://app',
+		});
+
+		const storageInfo: SIStorageInfo = {
+			name: localization.steamWorkshop,
+			uri: '',
+			id: 'SteamWorkshop',
+			serviceUri: '',
+			randomPackagesSupported: false,
+			identifiersSupported: true,
+			maximumPageSize: 20,
+			packageProperties: [],
+			facets: [],
+			limitedApi: true,
+		};
+
+		return { storageClient, storageInfo };
 	}
 
 	exitApp() : void {

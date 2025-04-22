@@ -1,4 +1,6 @@
 import { Store } from 'redux';
+import SIStorageInfo from '../client/contracts/SIStorageInfo';
+import SIStorageClient from 'sistorage-client';
 
 export enum FullScreenMode {
 	Undefined,
@@ -32,6 +34,8 @@ export default interface IHost {
 	copyUriToClipboard(): void;
 
 	openLink(url: string): void;
+
+	getStorage(): { storageClient?: SIStorageClient; storageInfo?: SIStorageInfo; };
 
 	/** Exits application. */
 	exitApp(): void;

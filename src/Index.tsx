@@ -48,7 +48,7 @@ declare const firebaseConfig: FirebaseOptions | undefined;
 declare global {
 	interface Window {
         __TAURI_INTERNALS__: any;
-		__TAURI__: any;
+		__TAURI__?: any;
     }
 }
 

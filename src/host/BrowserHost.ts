@@ -1,6 +1,8 @@
 import { Store } from 'redux';
 import { getCookie, setCookie } from '../utils/CookieHelpers';
 import IHost, { FullScreenMode } from './IHost';
+import SIStorageClient from 'sistorage-client';
+import SIStorageInfo from '../client/contracts/SIStorageInfo';
 
 const ACCEPT_LICENSE_KEY = 'ACCEPT_LICENSE';
 
@@ -75,6 +77,10 @@ export default class BrowserHost implements IHost {
 	}
 
 	openLink(url: string): void {}
+
+	getStorage(): { storageClient?: SIStorageClient; storageInfo?: SIStorageInfo; } {
+		return { };
+	}
 
 	exitApp() {}
 }

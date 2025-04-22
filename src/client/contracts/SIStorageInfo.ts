@@ -26,4 +26,7 @@ export default interface SIStorageInfo {
 
 	/** Facets supported by storage. */
 	facets: string[];
+
+	/** Does storage support limited API. */
+	limitedApi?: boolean;
 }

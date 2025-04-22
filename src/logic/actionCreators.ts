@@ -156,6 +156,13 @@ async function loadHostInfoAsync(appDispatch: AppDispatch, dataContext: DataCont
 	}
 
 	dataContext.storageClients = storageInfos.map(createStorageClientFromInfo);
+	const { storageClient, storageInfo } = dataContext.state.getStorage();
+
+	if (storageClient && storageInfo) {
+		dataContext.storageClients.push(storageClient);
+		storageInfos.push(storageInfo);
+	}
+
 	appDispatch(setStorages(storageInfos));
 
 	appDispatch(serverInfoChanged({

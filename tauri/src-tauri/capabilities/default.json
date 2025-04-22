@@ -19,11 +19,13 @@
         },
         {
           "url": "https://**"
+        },
+        {
+          "url": "https://content.vladimirkhil.com:8080/**"
         }
       ]
     },
-    "dialog:default",
     "log:default",
-    "log:default"
+    "dialog:default"
   ]
 }

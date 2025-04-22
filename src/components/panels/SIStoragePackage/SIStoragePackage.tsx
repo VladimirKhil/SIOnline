@@ -104,12 +104,12 @@ const SIStoragePackage: React.FC<SIStoragePackageProps> = (props: SIStoragePacka
 			<div>{createDate ? new Date(createDate).toLocaleDateString(props.culture) : ''}</div>
 			{size ? <div title={localization.size}>{Math.round(size / 1024 / 1024 * 100) / 100} MB</div> : null}
 			{difficulty ? <div title={localization.packageDifficulty}>🎓{difficulty}</div> : null}
-			<div title={localization.downloadCount}>⬇️{downloadCount}</div>
+			{props.storage.limitedApi ? null : <div title={localization.downloadCount}>⬇️{downloadCount}</div>}
 		</main>
 
 		<div className="selectButton">
-			{questionCount || contentTypeStatistic || rounds ?
-				<FlyoutButton className='info-button standard' flyout={
+			{!props.storage.limitedApi && (questionCount || contentTypeStatistic || rounds)
+				? <FlyoutButton className='info-button standard' flyout={
 					<div className='package-info'>
 						<div>
 							<span className='packageItemHeader'>{`${localization.questionCount}: `}</span>

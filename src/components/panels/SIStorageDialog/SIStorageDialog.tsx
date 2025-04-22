@@ -277,7 +277,7 @@ const SIStorageDialog: React.FC<SIStorageDialogProps> = (props) => {
 			<div className='disclaimer'>{localization.siStorageDisclaimer}</div>
 
 			<div className="container">
-				<div className='search'>
+				{storage.limitedApi ? null : <div className='search'>
 					<input
 						aria-label='text filter'
 						className="textFilter"
@@ -285,7 +285,7 @@ const SIStorageDialog: React.FC<SIStorageDialogProps> = (props) => {
 						value={filters.searchText}
 						placeholder={localization.search}
 						onChange={e => onTextChanged(e.target.value)} />
-				</div>
+				</div>}
 
 				<div className="filters">
 					{storage.facets.includes('tags')
@@ -414,7 +414,7 @@ const SIStorageDialog: React.FC<SIStorageDialogProps> = (props) => {
 						</select>
 					</div>}
 
-					<div className="filter">
+					{storage.limitedApi ? null : <div className="filter">
 						<div className="selectorName">{localization.sort}</div>
 
 						<div className="selectorsGroup">
@@ -438,7 +438,7 @@ const SIStorageDialog: React.FC<SIStorageDialogProps> = (props) => {
 								<option value={PackageSortDirection.Ascending}>{localization.ascending}</option>
 							</select>
 						</div>
-					</div>
+					</div>}
 				</div>
 
 				<div className='packagesHeader'>

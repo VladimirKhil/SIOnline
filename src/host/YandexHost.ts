@@ -2,6 +2,8 @@ import { Store } from 'redux';
 import IHost, { FullScreenMode } from './IHost';
 import { changeLogin } from '../state/userSlice';
 import { setClearUrls, setMinimalLogo, setRoomLinkEnabled } from '../state/commonSlice';
+import SIStorageClient from 'sistorage-client';
+import SIStorageInfo from '../client/contracts/SIStorageInfo';
 
 const SDK_PATH = 'https://sdk.games.s3.yandex.net/sdk.js';
 
@@ -101,6 +103,10 @@ export default class YandexHost implements IHost {
 	}
 
 	openLink(url: string): void {}
+
+	getStorage(): { storageClient?: SIStorageClient; storageInfo?: SIStorageInfo; } {
+		return { };
+	}
 
 	exitApp() {}
 }
