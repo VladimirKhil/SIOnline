@@ -4,7 +4,7 @@ import { getCookie, setCookie } from '../utils/CookieHelpers';
 import IHost, { FullScreenMode } from './IHost';
 import { Store } from 'redux';
 import SIStorageInfo from '../client/contracts/SIStorageInfo';
-import SteamWorkshopStorageClient from '../client/SteamWorkshopStorageClient';
+import SteamWorkshopStorageClient from './SteamWorkshopStorageClient';
 import localization from '../model/resources/localization';
 
 const ACCEPT_LICENSE_KEY = 'ACCEPT_LICENSE';
@@ -162,6 +162,13 @@ export default class TauriHost implements IHost {
 		};
 
 		return { storageClient, storageInfo };
+	}
+
+	async getPackageData(id: string): Promise<File | null> {
+		const itemId = parseInt(id, 10);
+		const binaryData = await this.app.core.invoke('download_workshop_item', { itemId });
+		const blob = new Blob([new Uint8Array(binaryData)], { type: 'application/x-zip-compressed' });
+		return new File([blob], 'package.siq', { type: 'application/x-zip-compressed' });
 	}
 
 	exitApp() : void {

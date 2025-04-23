@@ -13,7 +13,7 @@ import TabControl from '../../common/TabControl/TabControl';
 import RulesSettingsView from '../../settings/RulesSettingsView/RulesSettingsView';
 import TimeSettingsView from '../../settings/TimeSettingsView/TimeSettingsView';
 import RoomOptions from '../RoomOptions/RoomOptions';
-import { setPackageLibrary, setPackageType } from '../../../state/gameSlice';
+import { setPackageHostManaged, setPackageLibrary, setPackageType } from '../../../state/gameSlice';
 import { setStorageIndex } from '../../../state/siPackagesSlice';
 
 import './NewGameDialog.css';
@@ -41,8 +41,6 @@ export function NewGameDialog(props: NewGameDialogProps) {
 
 	React.useEffect(() => {
 		if (ui.navigation.packageUri) {
-			appDispatch(setPackageType(PackageType.SIStorage));
-
 			appDispatch(setPackageLibrary({
 				id: '',
 				name: ui.navigation.packageName ?? ui.navigation.packageUri,
@@ -56,11 +54,14 @@ export function NewGameDialog(props: NewGameDialogProps) {
 		setIsSIStorageOpen(isOpen);
 	};
 
-	const onSelectSIPackage = async (id: string, name: string, uri: string) => {
+	const onSelectSIPackage = async (id: string, name: string, uri: string, hostManaged: boolean) => {
 		setIsSIStorageOpen(false);
 
-		appDispatch(setPackageType(PackageType.SIStorage));
-		appDispatch(setPackageLibrary({ name, id, uri }));
+		if (hostManaged) {
+			appDispatch(setPackageHostManaged({ name, id, uri }));
+		} else {
+			appDispatch(setPackageLibrary({ name, id, uri }));
+		}
 	};
 
 	function getContent(): React.ReactNode {

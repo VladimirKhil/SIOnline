@@ -37,6 +37,8 @@ export default interface IHost {
 
 	getStorage(): { storageClient?: SIStorageClient; storageInfo?: SIStorageInfo; };
 
+	getPackageData(id: string): Promise<File | null>;
+
 	/** Exits application. */
 	exitApp(): void;
 }

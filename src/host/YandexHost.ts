@@ -108,5 +108,9 @@ export default class YandexHost implements IHost {
 		return { };
 	}
 
+	getPackageData(id: string): Promise<File | null> {
+		return new Promise(() => null);
+	}
+
 	exitApp() {}
 }

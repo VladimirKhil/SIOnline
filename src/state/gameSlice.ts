@@ -63,6 +63,13 @@ export const gameSlice = createSlice({
 			state.package.data = action.payload.data;
 		},
 		setPackageLibrary: (state: GameState, action: PayloadAction<{ name: string, id: string, uri: string }>) => {
+			state.package.type = PackageType.SIStorage;
+			state.package.name = action.payload.name;
+			state.package.id = action.payload.id;
+			state.package.uri = action.payload.uri;
+		},
+		setPackageHostManaged: (state: GameState, action: PayloadAction<{ name: string, id: string, uri: string }>) => {
+			state.package.type = PackageType.HostManaged;
 			state.package.name = action.payload.name;
 			state.package.id = action.payload.id;
 			state.package.uri = action.payload.uri;
@@ -96,6 +103,7 @@ export const {
 	setPackageType,
 	setPackageData,
 	setPackageLibrary,
+	setPackageHostManaged,
 	setType,
 	setRole,
 	setShowmanHuman,

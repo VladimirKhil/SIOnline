@@ -308,6 +308,20 @@ async function getPackageInfoAsync(state: State, game: GameState, dataContext: D
 				secret: null,
 			};
 
+		case PackageType.HostManaged:
+			if (!game.package.id) {
+				throw new Error('Package id not found');
+			}
+
+			const packageData = await dataContext.state.getPackageData(game.package.id);
+
+			if (!packageData) {
+				throw new Error('Package data not found');
+			}
+
+			const packageInfo2 = await uploadPackageAsync2(dataContext.contentClient, packageData, dispatch);
+			return packageInfo2;
+
 		default:
 			if (dataContext.storageClients.length === 0) {
 				throw new Error('Storage client not found');

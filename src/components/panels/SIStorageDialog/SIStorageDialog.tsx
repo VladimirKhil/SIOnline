@@ -35,7 +35,7 @@ interface StateProps {
 
 interface OwnProps {
 	onClose: () => void;
-	onSelect: (id: string, name: string, uri: string) => void;
+	onSelect: (id: string, name: string, uri: string, hostManaged: boolean) => void;
 }
 
 interface SIStorageDialogProps extends OwnProps, StateProps {}

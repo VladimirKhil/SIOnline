@@ -1,13 +1,6 @@
 use serde::{Deserialize, Serialize};
-use steamworks::{
-    Client,
-    PublishedFileId,
-    UserList,
-    UGCType,
-    AppIDs,
-    AppId,
-    UserListOrder,
-};
+use steamworks::{AppIDs, AppId, Client, PublishedFileId, UGCType, UserList, UserListOrder};
+use std::io::Read;
 
 #[derive(Serialize, Deserialize)]
 struct WorkshopItem {
@@ -32,7 +25,7 @@ struct WorkshopItemsResponse {
 #[tauri::command]
 fn get_workshop_subscribed_items(
     client_state: tauri::State<Client>,
-    page: u32
+    page: u32,
 ) -> Result<WorkshopItemsResponse, String> {
     let ugc = client_state.ugc();
     let user = client_state.user();
@@ -41,11 +34,11 @@ fn get_workshop_subscribed_items(
     // Create a user query for subscribed items
     let query = match ugc.query_user(
         steam_id.account_id(),
-        UserList::Subscribed, // Get subscribed items
-        UGCType::All,    // All types of UGC
-        UserListOrder::CreationOrderDesc, // Order by creation date (descending)
+        UserList::Subscribed,                  // Get subscribed items
+        UGCType::All,                          // All types of UGC
+        UserListOrder::CreationOrderDesc,      // Order by creation date (descending)
         AppIDs::ConsumerAppId(AppId(3553500)), // App ID for the game
-        page,           // Page number for pagination
+        page,                                  // Page number for pagination
     ) {
         Ok(q) => q,
         Err(e) => return Err(format!("Failed to create query: {:?}", e)),
@@ -96,25 +89,42 @@ fn get_workshop_subscribed_items(
         .map_err(|e| format!("Failed to receive query result: {:?}", e))?
 }
 
+fn read_package(path: String) -> Result<Vec<u8>, String> {
+    let mut package_path = path.clone();
+    package_path.push_str("/package.siq");
+
+    let mut file = std::fs::File::open(&package_path)
+        .map_err(|e| format!("Failed to open package file: {}", e))?;
+
+    // Read the package file
+    let mut buffer = Vec::new();
+
+    match file.read_to_end(&mut buffer) {
+        Ok(_) => Ok(buffer),
+        Err(e) => Err(format!("Failed to read package file: {}", e)),
+    }
+}
+
 #[tauri::command]
 fn download_workshop_item(
     client_state: tauri::State<Client>,
-    item_id: u64
-) -> Result<String, String> {
+    item_id: u64,
+) -> Result<Vec<u8>, String> {
     let ugc = client_state.ugc();
     let workshop_id = PublishedFileId(item_id);
 
     // Check if the item is already downloaded
     match ugc.item_install_info(workshop_id) {
-        Some(info) => return Ok(info.folder),
+        Some(info) => return read_package(info.folder),
         None => {
             // Not downloaded yet, try to download
             if ugc.download_item(workshop_id, true) {
                 // Wait for download to complete
                 let mut retries = 0;
-                while retries < 100 { // Wait up to 10 seconds
+                while retries < 3000 {
+                    // Wait up to 300 seconds
                     match ugc.item_install_info(workshop_id) {
-                        Some(info) => return Ok(info.folder),
+                        Some(info) => return read_package(info.folder),
                         None => {}
                     }
                     retries += 1;

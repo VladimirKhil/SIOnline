@@ -15,7 +15,7 @@ interface SIStoragePackageProps {
 	tags: { [id: string]: string };
 	culture: string;
 	storage: SIStorageInfo;
-	onSelect: (id: string, name: string, uri: string) => void;
+	onSelect: (id: string, name: string, uri: string, hostManaged: boolean) => void;
 }
 
 const getContentName = (contentKey: string) => {
@@ -139,7 +139,7 @@ const SIStoragePackage: React.FC<SIStoragePackageProps> = (props: SIStoragePacka
 			{content ? <button
 				type="button"
 				className='standard'
-				onClick={() => props.onSelect(id, name ?? '', content)}>
+				onClick={() => props.onSelect(id, name ?? '', content, props.storage.limitedApi === true)}>
 				{localization.librarySelect}
 			</button> : null}
 		</div>
