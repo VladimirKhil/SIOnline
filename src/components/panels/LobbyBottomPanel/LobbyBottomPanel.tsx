@@ -18,7 +18,7 @@ const LobbyBottomPanel: React.FC = () => {
 
 	return (<div className='lobbyBottomPanel'>
 		<RandomGameButton />
-		<NewGameButton />
+		<NewGameButton simple={true} />
 
 		{ui.onlineView === OnlineMode.Games ? (
 			<button type='button' className='standard' onClick={() => changeView(OnlineMode.Trends)}>{localization.trends}</button>

@@ -6,6 +6,17 @@
 	overflow-y: auto;
     overflow-x: hidden;
 	scrollbar-width: thin;
+
+	.tabControl {
+		font-size: 15px;
+
+		.tab {
+			padding: 10px 20px;
+			margin-top: 0;
+			margin-left: 0;
+			margin-right: 10px;
+		}
+	}
 }
 
 .trendCategory {

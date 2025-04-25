@@ -8,6 +8,7 @@
 
 .userOptions .userInfo {
 	height: 45px;
+	width: 45px;
 	display: flex;
 	align-items: center;
 	padding: 0;
@@ -37,9 +38,10 @@
 }
 
 .userOptions .userAvatar {
-	margin-top: 3px;
-	max-width: 36px;
-	height: 33px;
-    background-size: contain;
+	flex: 1;
+	height: 45px;
+	background-size: contain;
+	background-repeat: no-repeat;
+	background-position: center;
 	vertical-align: middle;
 }

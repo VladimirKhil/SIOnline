@@ -5,8 +5,9 @@ import Constants from '../../../model/enums/Constants';
 import clearUrls from '../../../utils/clearUrls';
 import { useAppSelector } from '../../../state/hooks';
 import { trimLength } from '../../../utils/StringHelpers';
+import TabControl from '../../common/TabControl/TabControl';
 
-import './Trends.css';
+import './Trends.scss';
 
 function print(value: Record<string, number>): JSX.Element[] {
 	return Object.entries(value).map((e, i) => <div key={i} className='property'><div>{e[0]}</div><div>{e[1]}</div></div>);
@@ -24,11 +25,13 @@ export default function Trends(): JSX.Element {
 	const common = useAppSelector(state => state.common);
 	const online = useAppSelector(state => state.online2);
 
-	return (
-		<div className="trends">
-			{online.packagesStatistics
+	const [trendsMode, setTrendsMode] = React.useState(0);
+
+	const getContent = () => {
+		switch (trendsMode) {
+			case 0:
+				return online.packagesStatistics
 				? <div>
-					<div className='trendCategory'>{localization.topPackages}</div>
 					{online.packagesStatistics.packages.filter(p => p.package.name !== Constants.RANDOM_PACKAGE).map(
 						(p, i) => {
 							const trimmedPackageName = trimLength(p.package.name, 75);
@@ -62,25 +65,35 @@ export default function Trends(): JSX.Element {
 							</div>;
 							})}
 					</div>
-				: null}
+				: null;
 
-			{online.gamesStatistics
+			case 1:
+				return online.latestGames
 				? <div>
-					<div className='trendCategory'>{localization.gamesStatistics}</div>
-					<div><span>{localization.gameCount}</span>: {online.gamesStatistics.gameCount}</div>
-				</div>
-				: null}
-
-			{online.latestGames
-				? <div>
-					<div className='trendCategory'>{localization.latestGames}</div>
 					{online.latestGames.results.map((g, i) => <div key={i} className='trendGame'>
 						<div className='gameName'>{g.name}</div>
 						<div>{print(g.results)}</div>
 						{Object.keys(g.reviews).length > 0 ? <div>{localization.reviews}: {print(g.reviews)}</div> : null}
 					</div>)}
 				</div>
-				: null}
+				: null;
+
+			default:
+				return null;
+		}
+	};
+
+	return (
+		<div className="trends">
+			<TabControl
+				tabs={[
+					{ id: 0, label: localization.topPackages },
+					{ id: 1, label: localization.latestGames },
+				]}
+				activeTab={trendsMode}
+				onTabClick={setTrendsMode} />
+
+			{getContent()}
 		</div>
 	);
 }

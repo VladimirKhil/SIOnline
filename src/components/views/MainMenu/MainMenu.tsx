@@ -102,14 +102,6 @@ export default function MainMenu(): JSX.Element {
 			<header>
 				<h1 className='mainHeader'>
 					<div className='left'>
-						<button
-							type='button'
-							className='standard imageButton welcomeExit'
-							onClick={onExit}
-							title={localization.exitFromGame}>
-							<img src={exitImg} alt='Exit' />
-						</button>
-
 						<span className="serverName" title={localization.server}>{common.serverName || localization.appUser}</span>
 
 						<button
@@ -119,6 +111,15 @@ export default function MainMenu(): JSX.Element {
 							onClick={() => setShowLicense(true)}
 						>
 							ⓘ
+						</button>
+
+						<button
+							type='button'
+							className='about'
+							title={localization.aboutTitle}
+							onClick={() => appDispatch(navigate({ navigation: { path: Path.About }, saveState: true }))}
+						>
+							❔
 						</button>
 					</div>
 

@@ -4,7 +4,27 @@
     z-index: 4;
     overflow-y: hidden;
 
+    .profile-view__body {
+        overflow-y: auto;
+        height: calc(100% - 49px);
+    }
+
+    header {
+        height: 49px;
+        display: flex;
+        align-items: center;
+    }
+
     h2 {
+        margin-left: 15px;
+    }
+
+    .userName {
+        margin: 0 15px !important;
+        width: calc(100% - 30px) !important;
+    }
+
+    .sexArea {
         margin-left: 15px;
     }
 
@@ -37,7 +57,12 @@
 	width: 100%;
 	margin: 10px 0;
 	font-size: 20px;
-	color: black !important;
+	color: black;
+    padding: 6px 5px;
+    background: #181B64;
+    color: white;
+    border: 1px solid #347DFF;
+    border-radius: 5px;
 }
 
 .profile-view .buttons {

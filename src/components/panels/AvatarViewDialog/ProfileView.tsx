@@ -9,8 +9,10 @@ import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 import { showProfile } from '../../../state/uiSlice';
 import AvatarView from '../AvatarView/AvatarView';
 import Path from '../../../model/enums/Path';
+import SexView from '../SexView/SexView';
+import { changeLogin } from '../../../state/userSlice';
 
-import './ProfileView.css';
+import './ProfileView.scss';
 
 interface AvatarViewDialogProps {
 	webCameraUrl: string;
@@ -40,6 +42,7 @@ export function ProfileView(props: AvatarViewDialogProps): JSX.Element {
 	const appDispatch = useAppDispatch();
 	const [webCameraUrl, setWebCameraUrl] = React.useState(props.webCameraUrl);
 	const ui = useAppSelector(state => state.ui);
+	const user = useAppSelector(state => state.user);
 
 	const inRoom = 	ui.navigation.path === Path.Room;
 
@@ -73,44 +76,56 @@ export function ProfileView(props: AvatarViewDialogProps): JSX.Element {
 		};
 	}, []);
 
+	const onLoginChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
+		appDispatch(changeLogin(e.target.value));
+	};
+
 	return (
 		<Dialog
 			ref={layout}
 			className='profile-view'
 			title={localization.profile}
 			onClose={close}>
-			<h2>{localization.avatar}</h2>
-			<AvatarView disabled={false} />
+			<div className='profile-view__body'>
+				<h2>{localization.name}</h2>
+				<input aria-label='Name' type='text' className='userName' value={user.login} onChange={onLoginChanged} />
 
-			<h2>{localization.videoAvatar}</h2>
+				<h2>{localization.avatar}</h2>
+				<AvatarView disabled={false} />
 
-			<div className='option'>
-				<label htmlFor='videoUrl'>
-					<span>{localization.webCameraUrl} </span>
+				<h2>{localization.sex}</h2>
+				<SexView disabled={false} />
 
-					{props.clearUrls
-						? null
-						: <a className='videoSiteUrl' href='https://vdo.ninja' target='_blank' rel='noopener noreferrer'>vdo.ninja</a>}
-				</label>
+				<h2>{localization.videoAvatar}</h2>
 
-				<input id='videoUrl' className='videoUrl' type='text' value={webCameraUrl} disabled={!inRoom} onChange={onCameraChanged} />
+				<div className='option'>
+					<label htmlFor='videoUrl'>
+						<span>{localization.webCameraUrl} </span>
 
-				<div className='buttons'>
-					<button
-						disabled={!inRoom || webCameraUrl === ''}
-						type='button'
-						className='standard set'
-						onClick={() => props.onSetWebCamera(webCameraUrl)}>
-						{localization.set}
-					</button>
+						{props.clearUrls
+							? null
+							: <a className='videoSiteUrl' href='https://vdo.ninja' target='_blank' rel='noopener noreferrer'>vdo.ninja</a>}
+					</label>
 
-					<button
-						disabled={!inRoom || webCameraUrl === ''}
-						type='button'
-						className='standard set'
-						onClick={() => { props.onunsetWebCamera(); setWebCameraUrl(''); }}>
-						{localization.drop}
-					</button>
+					<input id='videoUrl' className='videoUrl' type='text' value={webCameraUrl} disabled={!inRoom} onChange={onCameraChanged} />
+
+					<div className='buttons'>
+						<button
+							disabled={!inRoom || webCameraUrl === ''}
+							type='button'
+							className='standard set'
+							onClick={() => props.onSetWebCamera(webCameraUrl)}>
+							{localization.set}
+						</button>
+
+						<button
+							disabled={!inRoom || webCameraUrl === ''}
+							type='button'
+							className='standard set'
+							onClick={() => { props.onunsetWebCamera(); setWebCameraUrl(''); }}>
+							{localization.drop}
+						</button>
+					</div>
 				</div>
 			</div>
 		</Dialog>

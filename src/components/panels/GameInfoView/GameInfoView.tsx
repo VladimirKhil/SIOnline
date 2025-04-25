@@ -17,7 +17,7 @@ import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 import { passwordChanged } from '../../../state/online2Slice';
 import getLanguage from '../../../utils/getLanguage';
 
-import './GameInfoView.css';
+import './GameInfoView.scss';
 import personSvg from '../../../../assets/images/person.svg';
 import personsSvg from '../../../../assets/images/persons.svg';
 import folderSvg from '../../../../assets/images/folder.svg';
@@ -180,9 +180,9 @@ export function GameInfoView(props: GameInfoViewProps): JSX.Element {
 
 	return (
 		<section className="gameinfoHost">
-			<div id="gameinfo">
+			<div className="gameinfo">
 				{game ? (
-					<div id="innerinfo">
+					<div className="innerinfo">
 						{props.showGameName ? <h1 id="gameName" title={game.GameName}>{game.GameName}</h1> : null}
 
 						<div className="maininfo">
@@ -194,13 +194,14 @@ export function GameInfoView(props: GameInfoViewProps): JSX.Element {
 									<span>{game.PackageName == Constants.RANDOM_PACKAGE ? localization.randomThemes : game.PackageName}</span>
 								</dt>
 
-								<dt>{rules.map(name => <div className='rule' key={name}>{name}</div>)}</dt>
+								<div className='info__block rules'>{rules.map(name => <div className='rule' key={name}>{name}</div>)}</div>
 								<div className='language' title={localization.language}>{getLanguage(game.Language)}</div>
 
-								<dt>
+								<div className='info__block players'>
 									<img alt='players' title={localization.players} src={personsSvg} />
 									<span>{totalPlayers - freePlayers}/{totalPlayers}</span>
-								</dt>
+									{players.map((name, i) => <div className='player' key={i}>{name}</div>)}
+								</div>
 
 								<dt>
 									<img alt='stage' title={localization.status} src={timerSvg} />

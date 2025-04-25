@@ -9,11 +9,9 @@ import ProgressBar from '../../common/ProgressBar/ProgressBar';
 import AvatarView from '../../panels/AvatarView/AvatarView';
 import SexView from '../../panels/SexView/SexView';
 import LanguageView from '../../panels/LanguageView/LanguageView';
-import Path from '../../../model/enums/Path';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 import { AppDispatch, RootState } from '../../../state/store';
 import { changeLogin } from '../../../state/userSlice';
-import { navigate } from '../../../utils/Navigator';
 
 import './Login.scss';
 
@@ -51,8 +49,6 @@ export function Login(props: LoginProps) {
 		}
 	};
 
-	const navigateToAbout = () => appDispatch(navigate({ navigation: { path: Path.About }, saveState: true }));
-
 	const prevPropsRef = React.useRef<LoginProps>();
 
 	React.useEffect(() => {
@@ -74,15 +70,6 @@ export function Login(props: LoginProps) {
 					</div>
 
 					<div className='right'>
-						<button
-							className='howToPlay'
-							type="button"
-							title={localization.aboutTitle}
-							disabled={state.inProgress}
-							onClick={navigateToAbout}>
-							ⓘ
-						</button>
-
 						<LanguageView disabled={state.inProgress} />
 					</div>
 				</header>

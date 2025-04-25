@@ -10,4 +10,9 @@
     bottom: 0;
 	flex: 0 0 300px;
 	margin-left: 5px;
+
+    &.simple {
+        font-size: 35px;
+        font-weight: bold;
+    }
 }

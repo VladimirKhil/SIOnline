@@ -5,15 +5,20 @@ import { newGame } from '../../../state/online2Slice';
 
 import './NewGameButton.scss';
 
-const NewGameButton: React.FC = () => {
+interface NewGameButtonProps {
+	simple?: boolean;
+}
+
+const NewGameButton: React.FC<NewGameButtonProps> = ({ simple }) => {
 	const appDispatch = useAppDispatch();
 
 	return <button
-		className='newGame standard'
+		className={`newGame standard ${simple ? ' simple' : ''}`}
 		type="button"
+		title={simple ? localization.newGame : undefined}
 		onClick={() => appDispatch(newGame())}
 	>
-		{localization.newGame.toLocaleUpperCase()}
+		{simple ? '+' : localization.newGame.toLocaleUpperCase()}
 	</button>;
 };
 

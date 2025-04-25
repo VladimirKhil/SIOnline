@@ -1,9 +1,13 @@
 .helpDialog {
     background-color: #000451;
+	backdrop-filter: blur(10px);
+	-webkit-backdrop-filter: blur(10px);
     color: white;
     display: flex;
     flex-flow: column;
     overflow-y: hidden;
+	padding: 10px;
+	font-size: 20px;
 }
 
 .helpText {
@@ -35,5 +39,6 @@
 		left: 100px;
 		right: 100px;
 		border-radius: 12px;
+		border: rgba(160, 160, 160, 0.548) 1px solid;
 	}
 }

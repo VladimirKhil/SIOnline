@@ -12,7 +12,7 @@ export default function About(): JSX.Element {
 	const { clearUrls } = common;
 
 	return (
-		<Dialog className="helpDialog" title={localization.aboutTitle} onClose={() => window.history.back()}>
+		<Dialog className="helpDialog animated" title={localization.aboutTitle} onClose={() => window.history.back()}>
 			<div className="helpText">
 				<section>
 					{localization.about.map(text => (<p key={text}>{text}</p>))}
