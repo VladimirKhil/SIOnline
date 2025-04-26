@@ -52,7 +52,7 @@ const PackageView: React.FC = () => {
 		switch (type) {
 			case 'simple': return localization.questionTypeSimple;
 			case 'stake': return localization.questionTypeStake;
-			case 'noRisk': return localization.questionTypeNoRisk;
+			case 'noRisk': return localization.questionTypeForYourself;
 			case 'secret': return localization.questionTypeSecret;
 			case 'secretPublicPrice': return localization.questionTypeSecretPublicPrice;
 			case 'secretNoQuestion': return localization.questionTypeSecretNoQuestion;

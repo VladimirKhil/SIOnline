@@ -157,7 +157,7 @@ function processMessage(controller: ClientController, payload: any, appDispatch:
 			break;
 
 		case 'questionType':
-			controller.onQuestionType(payload.questionType, payload.isDefault);
+			controller.onQuestionType(payload.questionType, payload.isDefault, payload.isNoRisk);
 			break;
 
 		case 'setReadingSpeed': // non-SIHost compatible API

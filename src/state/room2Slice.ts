@@ -42,6 +42,10 @@ export interface Room2State {
 	dialogView: DialogView;
 	contextView: ContextView;
 
+	stage: {
+		isAppellation: boolean;
+	}
+
 	validation: {
 		header: string;
 		message: string;
@@ -76,6 +80,10 @@ const initialState: Room2State = {
 
 	dialogView: DialogView.None,
 	contextView: ContextView.None,
+
+	stage: {
+		isAppellation: false,
+	},
 
 	validation: {
 		header: '',
@@ -465,6 +473,9 @@ export const room2Slice = createSlice({
 		toggleEditTable(state: Room2State) {
 			state.isEditTableEnabled = !state.isEditTableEnabled;
 		},
+		setIsAppellation(state: Room2State, action: PayloadAction<boolean>) {
+			state.stage.isAppellation = action.payload;
+		},
 	},
 	extraReducers: (builder) => {
 		builder.addCase(sendAnswer.fulfilled, (state) => {
@@ -553,6 +564,7 @@ export const {
 	stopValidation,
 	nameChanged,
 	toggleEditTable,
+	setIsAppellation,
 } = room2Slice.actions;
 
 

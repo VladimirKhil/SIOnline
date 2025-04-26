@@ -8,6 +8,8 @@ const enum GameMessages {
 
 	Answers = 'ANSWERS',
 
+	Appellation = 'APPELLATION',
+
 	ApellationEnabled = 'APELLATION_ENABLES',
 
 	AskSelectPlayer = 'ASK_SELECT_PLAYER',

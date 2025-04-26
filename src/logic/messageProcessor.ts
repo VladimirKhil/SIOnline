@@ -163,6 +163,14 @@ const viewerHandler = (
 			controller.onAnswers(args.slice(1));
 			break;
 
+		case GameMessages.Appellation:
+			if (args.length < 2) {
+				break;
+			}
+
+			controller.onAppellation(args[1] === '+');
+			break;
+
 		case GameMessages.ApellationEnabled:
 			if (args.length === 1) {
 				break;
@@ -596,8 +604,8 @@ const viewerHandler = (
 			break;
 
 		case GameMessages.QType: // = Question start
-			if (args.length > 2) {
-				controller.onQuestionType(args[1], args[2] === 'True');
+			if (args.length > 3) {
+				controller.onQuestionType(args[1], args[2] === 'True', args[3] === 'True');
 			}
 			break;
 

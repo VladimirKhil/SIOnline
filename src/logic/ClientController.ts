@@ -89,6 +89,7 @@ import {
 	questionAnswersChanged,
 	selectPlayers,
 	setContext,
+	setIsAppellation,
 	setReport,
 	showmanChanged,
 	showmanReplicChanged,
@@ -307,6 +308,10 @@ export default class ClientController {
 
 	onAnswers(answers: string[]) {
 		this.appDispatch(playersAnswersChanged(answers));
+	}
+
+	onAppellation(appellation: boolean) {
+		this.appDispatch(setIsAppellation(appellation));
 	}
 
 	onApellationEnabled(enabled: boolean) {
@@ -1020,84 +1025,63 @@ export default class ClientController {
 		}
 	}
 
-	onQuestionType(qType: string, isDefault: boolean) {
-		this.dispatch(roomActionCreators.isQuestionChanged(true, qType));
+	onQuestionType(questionType: string, isDefault: boolean, isNoRisk: boolean) {
+		this.dispatch(roomActionCreators.isQuestionChanged(true, questionType));
 
 		if (isDefault) {
 			return;
 		}
 
-		switch (qType) {
-			case 'simple':
-				this.appDispatch(showQuestionType({
-					header: localization.question,
-					text: localization.questionTypeSimple.toUpperCase(),
-					hint: localization.questionTypeSimpleHint,
-				}));
+		let text, hint = '';
 
+		switch (questionType) {
+			case 'simple':
+				text = localization.questionTypeSimple;
+				hint = localization.questionTypeSimpleHint;
 				break;
 
 			case 'forAll':
 				this.playGameSound(GameSound.QUESTION_ALL);
-
-				this.appDispatch(showQuestionType({
-					header: localization.question,
-					text: localization.questionTypeForAll.toUpperCase(),
-					hint: localization.questionTypeForAllHint,
-				}));
-
+				text = localization.questionTypeForAll;
+				hint = localization.questionTypeForAllHint;
 				break;
 
 			case 'stake':
 				this.playGameSound(GameSound.QUESTION_STAKE);
-
-				this.appDispatch(showQuestionType({
-					header: localization.question,
-					text: localization.questionTypeStake.toUpperCase(),
-					hint: localization.questionTypeStakeHint,
-				}));
-
+				text = localization.questionTypeStake;
+				hint = localization.questionTypeStakeHint;
 				break;
 
 			case 'stakeAll':
 				this.playGameSound(GameSound.QUESTION_STAKE_ALL);
-
-				this.appDispatch(showQuestionType({
-					header: localization.question,
-					text: localization.questionTypeStakeAll.toUpperCase(),
-					hint: localization.questionTypeStakeAllHint,
-				}));
-
+				text = localization.questionTypeStakeAll;
+				hint = localization.questionTypeStakeAllHint;
 				break;
 
 			case 'secret':
 			case 'secretPublicPrice':
 			case 'secretNoQuestion':
 				this.playGameSound(GameSound.QUESTION_SECRET);
-
-				this.appDispatch(showQuestionType({
-					header: localization.question,
-					text: localization.questionTypeSecret.toUpperCase(),
-					hint: localization.questionTypeSecretHint,
-				}));
-
+				text = localization.questionTypeSecret;
+				hint = localization.questionTypeSecretHint;
 				this.appDispatch(questionReset());
 				break;
 
-			case 'noRisk':
+			case 'noRisk': // 'forYourself':
 				this.playGameSound(GameSound.QUESTION_NORISK);
-
-				this.appDispatch(showQuestionType({
-					header: localization.question,
-					text: localization.questionTypeNoRisk.toUpperCase(),
-					hint: localization.questionTypeNoRiskHint,
-				}));
-
+				text = localization.questionTypeForYourself;
+				hint = localization.questionTypeForYourselfHint;
 				break;
 
 			default:
-				break;
+				return;
 		}
+
+		this.appDispatch(showQuestionType({
+			header: localization.question,
+			text: text.toUpperCase() + (isNoRisk ? ` 🛡 (${localization.noRisk})` : ''),
+			hint: hint,
+		}));
 	}
 
 	onThemeDeleted(themeIndex: number) {

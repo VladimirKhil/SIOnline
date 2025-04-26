@@ -133,12 +133,12 @@ export function GameTable(props: GameTableProps): JSX.Element {
 				/>
 			) : null}
 
-			{(props.isPaused && !room.isEditTableEnabled) || !props.isConnected ? (
+			{(props.isPaused && !room.isEditTableEnabled) || room.stage.isAppellation || !props.isConnected ? (
 				<AutoSizedText
 					maxFontSize={144}
 					className={`pauseLogo tableText tableTextCenter ${props.isConnected ? '' : 'warning'}`}
 				>
-					{props.isPaused ? localization.pause : localization.connectionClosed}
+					{props.isPaused ? localization.pause : (room.stage.isAppellation ? localization.apellation : localization.connectionClosed)}
 				</AutoSizedText>
 			) : null}
 		</div>
