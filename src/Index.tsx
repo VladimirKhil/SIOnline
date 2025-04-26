@@ -31,7 +31,7 @@ import BrowserHost from './host/BrowserHost';
 import YandexHost from './host/YandexHost';
 import IHost, { FullScreenMode } from './host/IHost';
 import SIHostClient from './client/SIHostClient';
-import { setFullScreen, setGameButtonKey, setNextButtonKey, setNoButtonKey, setPassButtonKey, setYesButtonKey } from './state/settingsSlice';
+import { setFullScreen, setGameButtonKey, setNextButtonKey, setNoButtonKey, setPassButtonKey, setPauseButtonKey, setYesButtonKey } from './state/settingsSlice';
 import { commonErrorChanged, setFontsReady } from './state/commonSlice';
 import { saveStateToStorage } from './state/StateHelpers';
 import { INavigationState, setFullScreenSupported, settingKeyChanged, visibilityChanged, windowSizeChanged } from './state/uiSlice';
@@ -78,7 +78,7 @@ function setState(state: State, savedState: SavedState | null, c: Config, isDesk
 		};
 	}
 
-	const { appSettings } = savedState.settings;
+	const { appSettings, theme } = savedState.settings;
 
 	return {
 		...state,
@@ -127,6 +127,13 @@ function setState(state: State, savedState: SavedState | null, c: Config, isDesk
 				playAllQuestionsInFinalRound: appSettings.playAllQuestionsInFinalRound ?? false,
 				displayAnswerOptionsLabels: appSettings.displayAnswerOptionsLabels ?? true,
 				displayAnswerOptionsOneByOne: appSettings.displayAnswerOptionsOneByOne ?? true,
+			},
+			theme: {
+				...state.settings.theme,
+				...theme,
+				room: {
+					backgroundImageKey: theme.room?.backgroundImageKey || null,
+				},
 			},
 			gameButtonKey: savedState.settings.gameButtonKey || Constants.KEY_CTRL,
 		} : state.settings,
@@ -186,6 +193,10 @@ function subscribeToExternalEvents(store: Store<State, any>, stateManager: IHost
 					store.dispatch(setNoButtonKey(e.key));
 					break;
 
+				case 'pause':
+					store.dispatch(setPauseButtonKey(e.key));
+					break;
+
 				default:
 					break;
 			}
@@ -201,6 +212,8 @@ function subscribeToExternalEvents(store: Store<State, any>, stateManager: IHost
 			store.dispatch(approveAnswerDefault());
 		} else if (e.key === state.settings.noButtonKey) {
 			store.dispatch(rejectAnswerDefault());
+		} else if (e.key === state.settings.pauseButtonKey) {
+			store.dispatch(roomActionCreators.pause());
 		}
 
 		return true;

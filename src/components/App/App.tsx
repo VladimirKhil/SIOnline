@@ -17,7 +17,7 @@ import Loading from '../views/Loading/Loading';
 import ServerLicense from '../views/ServerLicense/ServerLicense';
 import UserError from '../panels/UserError/UserError';
 import { MessageLevel } from '../../state/commonSlice';
-import ProfileView from '../panels/AvatarViewDialog/ProfileView';
+import ProfileView from '../panels/ProfileView/ProfileView';
 import JoinByPin from '../views/JoinByPin/JoinByPin';
 import SIQuester from '../views/SIQuester/SIQuester';
 import PackageView from '../siquester/PackageView/PackageView';

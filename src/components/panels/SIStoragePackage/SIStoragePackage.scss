@@ -3,9 +3,9 @@
 	background-color: #181B64;
 	color: white;
 	margin: 3px;
-	width: 350px;
+	width: 300px;
 	position: relative;
-	border-radius: 5px;
+	border-radius: 10px;
 }
 
 .siStorageDialog ul {
@@ -14,7 +14,7 @@
 	margin: 0 0 10px 0;
 	display: flex;
 	flex-wrap: wrap;
-	font-size: 20px;
+	font-size: 18px;
 }
 
 .storagePackage {
@@ -42,7 +42,7 @@
 
 .siStorageDialog .storagePackageName {
 	font-weight: bold;
-	font-size: 25px;
+	font-size: 22px;
 	vertical-align: top;
 	margin-top: 5px;
 	overflow: hidden;
@@ -58,7 +58,7 @@
 	bottom: 10px;
 	right: 10px;
 	position: absolute;
-	font-size: 20px;
+	font-size: 18px;
 
 	button {
 		padding: 5px 20px;

@@ -81,7 +81,7 @@ async function uploadAvatarAsync(appDispatch: AppDispatch, dataContext: DataCont
 		const errorMessage = getErrorMessage(err);
 
 		const userError = (err as SIContentServiceError).errorCode === WellKnownSIContentServiceErrorCode.FileTooLarge
-			? localization.avatarIsTooBig
+			? localization.fileIsTooBig
 			: errorMessage;
 
 		appDispatch(userErrorChanged(localization.avatarLoadError + ': ' + userError) as any);

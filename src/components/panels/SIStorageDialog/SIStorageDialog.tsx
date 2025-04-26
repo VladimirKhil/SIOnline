@@ -265,16 +265,18 @@ const SIStorageDialog: React.FC<SIStorageDialogProps> = (props) => {
 
 	return (
 		<Dialog className="siStorageDialog" title={storage.name} onClose={props.onClose}>
-			{!clearUrls && storage.uri
-				? <button
-					type='button'
-					className='standard storage__open'
-					onClick={() => window.open(storage.uri, '_blank')}>
-						{localization.openLibrary}
-					</button>
-				: null}
+			<div className='storage__header'>
+				{!clearUrls && storage.uri
+					? <button
+						type='button'
+						className='standard storage__open'
+						onClick={() => window.open(storage.uri, '_blank')}>
+							{localization.openLibrary}
+						</button>
+					: null}
 
-			<div className='disclaimer'>{localization.siStorageDisclaimer}</div>
+				<div className='disclaimer'>{localization.siStorageDisclaimer}</div>
+			</div>
 
 			<div className="container">
 				{storage.limitedApi ? null : <div className='search'>
@@ -464,21 +466,23 @@ const SIStorageDialog: React.FC<SIStorageDialogProps> = (props) => {
 					</div>
 					: null}
 
-				<ul className='packages'>
-					{siPackages.packages.packages.map(
-						(p) => siPackages.filter.packages[parseInt(p.id, 10)] === 0
-						? <li key={p.id} className='blocked'>{localization.blocked}</li>
-						: <SIStoragePackage
-							key={p.id}
-							package={p}
-							authors={siPackages.authors}
-							restrictions={siPackages.restrictions}
-							culture={props.culture}
-							tags={siPackages.tags}
-							publishers={siPackages.publishers}
-							storage={storage}
-							onSelect={props.onSelect} />)}
-				</ul>
+				{siPackages.packages.packages.length === 0
+					? <div className='noResults'>{storage.emptyMessage ?? localization.noPackages}</div>
+					: <ul className='packages'>
+						{siPackages.packages.packages.map(
+							(p) => siPackages.filter.packages[parseInt(p.id, 10)] === 0
+							? <li key={p.id} className='blocked'>{localization.blocked}</li>
+							: <SIStoragePackage
+								key={p.id}
+								package={p}
+								authors={siPackages.authors}
+								restrictions={siPackages.restrictions}
+								culture={props.culture}
+								tags={siPackages.tags}
+								publishers={siPackages.publishers}
+								storage={storage}
+								onSelect={props.onSelect} />)}
+					</ul>}
 			</div>
 		</Dialog>
 	);

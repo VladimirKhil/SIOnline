@@ -11,6 +11,7 @@ const KeysSettingsView: React.FC = () => {
 	return (
 		<div className='keys-settings-view'>
 			<div className='header'>{localization.showman}</div>
+			<KeySetting buttonKey='pause' label={localization.pause} value={settings.pauseButtonKey} />
 			<KeySetting buttonKey='next' label={localization.next} value={settings.nextButtonKey} />
 			<KeySetting buttonKey='yes' label={localization.yes} value={settings.yesButtonKey} />
 			<KeySetting buttonKey='no' label={localization.no} value={settings.noButtonKey} />

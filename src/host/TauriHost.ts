@@ -150,7 +150,7 @@ export default class TauriHost implements IHost {
 
 		const storageInfo: SIStorageInfo = {
 			name: localization.steamWorkshop,
-			uri: '',
+			uri: 'https://steamcommunity.com/app/3553500/workshop',
 			id: 'SteamWorkshop',
 			serviceUri: '',
 			randomPackagesSupported: false,
@@ -159,6 +159,7 @@ export default class TauriHost implements IHost {
 			packageProperties: [],
 			facets: [],
 			limitedApi: true,
+			emptyMessage: localization.noPackagesSteam,
 		};
 
 		return { storageClient, storageInfo };

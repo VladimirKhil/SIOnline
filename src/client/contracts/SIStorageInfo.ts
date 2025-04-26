@@ -29,4 +29,7 @@ export default interface SIStorageInfo {
 
 	/** Does storage support limited API. */
 	limitedApi?: boolean;
+
+	/** Message to show when there are no filtered packages. */
+	emptyMessage?: string;
 }

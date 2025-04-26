@@ -14,7 +14,7 @@ import { changeLogin } from '../../../state/userSlice';
 
 import './ProfileView.scss';
 
-interface AvatarViewDialogProps {
+interface ProfileViewProps {
 	webCameraUrl: string;
 	clearUrls?: boolean;
 
@@ -38,7 +38,7 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 
 const layout: React.RefObject<HTMLDivElement> = React.createRef();
 
-export function ProfileView(props: AvatarViewDialogProps): JSX.Element {
+export function ProfileView(props: ProfileViewProps): JSX.Element {
 	const appDispatch = useAppDispatch();
 	const [webCameraUrl, setWebCameraUrl] = React.useState(props.webCameraUrl);
 	const ui = useAppSelector(state => state.ui);

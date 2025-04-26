@@ -5,6 +5,12 @@
 	flex-flow: column;
 	color: white;
 
+	.storage__header {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+	}
+
 	.storage__open {
 		width: 250px;
 		padding: 10px 5px;
@@ -152,14 +158,19 @@
 .pagination .header {
 	display: inline-block;
 	vertical-align: middle;
-	font-size: 20px;
+	font-size: 18px;
 	margin: 0px 5px 2px 5px;
+}
+
+.packagesHeader h2 {
+	font-size: 20px;
+	margin: 5px 0 10px 5px;
 }
 
 .page {
 	display: inline-block;
 	margin: 2px 5px;
-	font-size: 23px;
+	font-size: 20px;
 	vertical-align: middle;
 }
 

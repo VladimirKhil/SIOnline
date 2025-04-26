@@ -82,7 +82,7 @@ export function AvatarView(props: AvatarViewProps): JSX.Element {
 			const targetFile = e.target.files[0];
 
 			if (targetFile.size > MaxAvatarSizeMb * 1024 * 1024) {
-				appDispatch(userErrorChanged(`${localization.avatarIsTooBig} (${MaxAvatarSizeMb} MB)`));
+				appDispatch(userErrorChanged(`${localization.fileIsTooBig} (${MaxAvatarSizeMb} MB)`));
 				return;
 			}
 

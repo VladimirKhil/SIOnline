@@ -134,6 +134,8 @@ function getDialog(dialogView: DialogView) : JSX.Element | null {
 export function Room(props: RoomProps) : JSX.Element {
 	const appDispatch = useAppDispatch();
 	const state = useAppSelector((rootState: RootState) => rootState.room2);
+	const settings = useAppSelector((rootState: RootState) => rootState.settings);
+	const { backgroundImageKey } = settings.theme.room;
 
 	React.useEffect(() => {
 		if (props.kicked) {
@@ -166,8 +168,19 @@ export function Room(props: RoomProps) : JSX.Element {
 		props.clearDecisions();
 	};
 
+	let img: JSX.Element | null = null;
+
+	if (backgroundImageKey) {
+		const base64 = localStorage.getItem(Constants.STUDIA_BACKGROUND_KEY);
+
+		if (base64) {
+			img = <img className='studiaBackground' alt='studia background' src={`data:image/png;base64, ${base64}`} />;
+		}
+	}
+
 	return (
 		<section className="gameMain">
+			{img}
 			<div className="game__tableArea">
 				<div className={`gameMainView ${isScreenWide ? 'reversed' : ''}`}>
 					<PlayersView />

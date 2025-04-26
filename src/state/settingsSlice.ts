@@ -21,6 +21,7 @@ export interface SettingsState {
 	nextButtonKey: string | null;
 	yesButtonKey: string | null;
 	noButtonKey: string | null;
+	pauseButtonKey: string | null;
 	attachContentToTable: boolean;
 	showVideoAvatars: boolean;
 	theme: ThemeSettings;
@@ -41,12 +42,16 @@ const initialState: SettingsState = {
 	nextButtonKey: Constants.KEY_RIGHT,
 	yesButtonKey: '+',
 	noButtonKey: '-',
+	pauseButtonKey: 'F9',
 	attachContentToTable: true,
 	showVideoAvatars: true,
 	theme: {
 		table: {
 			textColor: '#FFFFFF',
 			backgroundColor: '#0A0E30',
+		},
+		room: {
+			backgroundImageKey: null,
 		},
 	},
 };
@@ -72,6 +77,9 @@ export const settingsSlice = createSlice({
 		},
 		setAvatarKey: (state: SettingsState, action: PayloadAction<string | null>) => {
 			state.avatarKey = action.payload;
+		},
+		setStudiaBackgroundImageKey: (state: SettingsState, action: PayloadAction<string | null>) => {
+			state.theme.room.backgroundImageKey = action.payload;
 		},
 		setOral: (state: SettingsState, action: PayloadAction<boolean>) => {
 			state.appSettings.oral = action.payload;
@@ -160,6 +168,9 @@ export const settingsSlice = createSlice({
 		setNoButtonKey: (state: SettingsState, action: PayloadAction<string | null>) => {
 			state.noButtonKey = action.payload;
 		},
+		setPauseButtonKey: (state: SettingsState, action: PayloadAction<string | null>) => {
+			state.pauseButtonKey = action.payload;
+		},
 		setTableTextColor: (state: SettingsState, action: PayloadAction<string>) => {
 			state.theme.table.textColor = action.payload;
 		},
@@ -180,6 +191,7 @@ export const {
 	setMainMenuSound,
 	setSex,
 	setAvatarKey,
+	setStudiaBackgroundImageKey,
 	setOral,
 	setFalseStarts,
 	setHintShowman,
@@ -209,6 +221,7 @@ export const {
 	setNextButtonKey,
 	setYesButtonKey,
 	setNoButtonKey,
+	setPauseButtonKey,
 	setTableTextColor,
 	setTableBackgroundColor,
 	resetSettings,
