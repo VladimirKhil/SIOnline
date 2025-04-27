@@ -63,9 +63,11 @@ export function RoundTable(props: RoundTableProps) {
 				const hasQuestions = themeInfo.questions.some(q => q > -1);
 
 				return (<div key={themeIndex} className={`roundTableRow ${className}`}>
-					<AutoSizedText className="roundTableCell themeHeader" maxFontSize={60}>
-						{hasQuestions ? themeInfo.name : ''}
-					</AutoSizedText>
+					<div className="roundTableCell themeHeader">
+						<AutoSizedText minFontSize={8} maxFontSize={60}>
+							{hasQuestions ? themeInfo.name : ''}
+						</AutoSizedText>
+					</div>
 
 					{themeInfo.questions.map((question, questionIndex) => {
 						const isActive = question > -1;
@@ -80,6 +82,7 @@ export function RoundTable(props: RoundTableProps) {
 						return (
 							<div key={questionIndex} className={questionClassName}>
 								<AutoSizedText
+									minFontSize={8}
 									maxFontSize={144}
 									onClick={() => onSelectQuestion(themeIndex, questionIndex)}>
 									{isActive ? question.toString() : ''}

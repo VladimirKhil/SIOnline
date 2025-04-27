@@ -60,11 +60,14 @@
 	align-items: center;
 }
 
+#table .roundTable .roundTableCell.themeHeader div {
+	padding: 3%;
+}
+
 #table .roundTable .themeHeader {
 	flex: 0 0 40%;
 	background: #0A0E30;
 	margin: 2px;
-	padding: 3px;
 	border: 2px solid #14183E;
 }
 
@@ -99,16 +102,4 @@
 
 #table .roundTable .questHeader.editable.active:hover {
 	background: v.$reject-button-background;
-}
-
-@media screen and (min-width: 1100px) {
-	#table .roundTable .themeHeader {
-		padding: 6px;
-	}
-}
-
-@media screen and (min-width: 1600px) {
-	#table .roundTable .themeHeader {
-		padding: 12px;
-	}
 }

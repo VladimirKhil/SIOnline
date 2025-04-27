@@ -41,7 +41,7 @@ export interface TableState {
 const initialState: TableState = {
 	mode: TableMode.Logo,
 	layoutMode: LayoutMode.Simple,
-	caption: '',
+	caption: ' ',
 	header: '',
 	largeHeader: false,
 	text: '',

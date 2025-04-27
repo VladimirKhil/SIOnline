@@ -106,6 +106,10 @@
     transition: background-color 1s, opacity 1s;
 }
 
+.playerCard {
+	position: relative;
+}
+
 .gamePlayers .playerCard.state_press {
     background: v.$table-cell-active-background-color;
 }

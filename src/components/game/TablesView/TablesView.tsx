@@ -18,7 +18,6 @@ interface TablesViewProps {
 	isConnected: boolean;
 	persons: Record<string, Account>;
 	selectedIndex: number;
-	isGameStarted: boolean;
 	computerAccounts: string[] | null;
 
 	selectTable: (tableIndex: number) => void;
@@ -32,7 +31,6 @@ const mapStateToProps = (state: State) => ({
 	isConnected: state.common.isSIHostConnected,
 	persons: state.room.persons.all,
 	selectedIndex: state.room.selectedTableIndex,
-	isGameStarted: state.room.stage.isGameStarted,
 	computerAccounts: state.common.computerAccounts
 });
 
@@ -86,7 +84,7 @@ export function TablesView(props: TablesViewProps): JSX.Element {
 	// You can delete occupied tables only before game start
 	const canDelete = players.length > Constants.MIN_PLAYER_COUNT &&
 		isPlayerSelected &&
-		(!props.isGameStarted || !selectedAccount || !selectedAccount.isHuman);
+		(!roomState.stage.isGameStarted || !selectedAccount || !selectedAccount.isHuman);
 
 	const canFree = selectedAccount && selectedAccount.isHuman;
 

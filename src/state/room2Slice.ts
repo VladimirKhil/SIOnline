@@ -31,6 +31,7 @@ export interface Room2State {
 	persons: {
 		showman: PersonInfo;
 		players: PlayerInfo[];
+		hostName: string | null;
 	};
 
 	name: string;
@@ -43,7 +44,9 @@ export interface Room2State {
 	contextView: ContextView;
 
 	stage: {
+		isGameStarted: boolean;
 		isAppellation: boolean;
+		isEditingTables: boolean;
 	}
 
 	validation: {
@@ -70,6 +73,7 @@ const initialState: Room2State = {
 			isHuman: true
 		},
 		players: [],
+		hostName: null,
 	},
 
 	name: '',
@@ -82,7 +86,9 @@ const initialState: Room2State = {
 	contextView: ContextView.None,
 
 	stage: {
+		isGameStarted: false,
 		isAppellation: false,
+		isEditingTables: false,
 	},
 
 	validation: {
@@ -432,6 +438,9 @@ export const room2Slice = createSlice({
 		playerMediaPreloaded(state: Room2State, action: PayloadAction<number>) {
 			state.persons.players[action.payload].mediaPreloaded = true;
 		},
+		setHostName(state: Room2State, action: PayloadAction<string | null>) {
+			state.persons.hostName = action.payload;
+		},
 		questionAnswersChanged(state: Room2State, action: PayloadAction<{ rightAnswers: string[], wrongAnswers: string[] }>) {
 			state.validation.rightAnswers = action.payload.rightAnswers;
 			state.validation.wrongAnswers = action.payload.wrongAnswers;
@@ -473,8 +482,14 @@ export const room2Slice = createSlice({
 		toggleEditTable(state: Room2State) {
 			state.isEditTableEnabled = !state.isEditTableEnabled;
 		},
+		setIsGameStarted(state: Room2State, action: PayloadAction<boolean>) {
+			state.stage.isGameStarted = action.payload;
+		},
 		setIsAppellation(state: Room2State, action: PayloadAction<boolean>) {
 			state.stage.isAppellation = action.payload;
+		},
+		setIsEditingTables(state: Room2State, action: PayloadAction<boolean>) {
+			state.stage.isEditingTables = action.payload;
 		},
 	},
 	extraReducers: (builder) => {
@@ -558,13 +573,16 @@ export const {
 	playerInGameChanged,
 	playerMediaLoaded,
 	playerMediaPreloaded,
+	setHostName,
 	questionAnswersChanged,
 	validate,
 	askValidation,
 	stopValidation,
 	nameChanged,
 	toggleEditTable,
+	setIsGameStarted,
 	setIsAppellation,
+	setIsEditingTables,
 } = room2Slice.actions;
 
 

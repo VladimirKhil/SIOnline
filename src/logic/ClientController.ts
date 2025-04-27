@@ -89,7 +89,9 @@ import {
 	questionAnswersChanged,
 	selectPlayers,
 	setContext,
+	setHostName,
 	setIsAppellation,
+	setIsGameStarted,
 	setReport,
 	showmanChanged,
 	showmanReplicChanged,
@@ -453,6 +455,18 @@ export default class ClientController {
 		this.dispatch(actionCreators.sendAvatar() as any);
 	}
 
+	onHostNameChanged(hostName: string, changeSource: string | null) {
+		this.appDispatch(setHostName(hostName));
+
+		if (changeSource) {
+			this.dispatch(roomActionCreators.chatMessageAdded({
+				sender: '',
+				text: stringFormat(localization.hostNameChanged, changeSource, hostName),
+				level: MessageLevel.System,
+			}) as any);
+		}
+	}
+
 	onMediaLoaded(playerName: string) {
 		const { players } = this.getState().room2.persons;
 
@@ -693,7 +707,7 @@ export default class ClientController {
 		this.dispatch(roomActionCreators.stageChanged(stage, stageIndex));
 
 		if (stage !== GameStage.Before) {
-			this.dispatch(roomActionCreators.gameStarted(true));
+			this.appDispatch(setIsGameStarted(true));
 		}
 
 		if (stage === GameStage.Round || stage === GameStage.Final) {
@@ -731,7 +745,7 @@ export default class ClientController {
 		this.dispatch(roomActionCreators.stageChanged(stage, stageIndex));
 
 		if (stage !== GameStage.Before) {
-			this.dispatch(roomActionCreators.gameStarted(true));
+			this.appDispatch(setIsGameStarted(true));
 		}
 
 		if (stage === GameStage.After) {

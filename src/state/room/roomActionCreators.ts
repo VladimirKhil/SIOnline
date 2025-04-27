@@ -273,8 +273,6 @@ const personAvatarVideoChanged: ActionCreator<RunActions.PersonAvatarVideoChange
 	type: RunActions.RoomActionTypes.PersonAvatarVideoChanged, personName, avatarUri
 });
 
-const gameStarted: ActionCreator<RunActions.GameStartedAction> = (started: boolean) => ({ type: RunActions.RoomActionTypes.GameStarted, started });
-
 const stageChanged: ActionCreator<RunActions.StageChangedAction> = (stageName: string, roundIndex: number) => ({
 	type: RunActions.RoomActionTypes.StageChanged, stageName, roundIndex
 });
@@ -575,10 +573,6 @@ const roundsNamesChanged: ActionCreator<RunActions.RoundsNamesChangedAction> = (
 	type: RunActions.RoomActionTypes.RoundsNamesChanged, roundsNames
 });
 
-const hostNameChanged: ActionCreator<RunActions.HostNameChangedAction> = (hostName: string | null) => ({
-	type: RunActions.RoomActionTypes.HostNameChanged, hostName
-});
-
 const themeNameChanged: ActionCreator<RunActions.ThemeNameChangedAction> = (themeName: string) => ({
 	type: RunActions.RoomActionTypes.ThemeNameChanged, themeName
 });
@@ -668,8 +662,8 @@ const setJoinMode: ActionCreator<ThunkAction<void, State, DataContext, Action>> 
 	}
 };
 
-const onKicked: ActionCreator<RunActions.KickedAction> = () => ({
-	type: RunActions.RoomActionTypes.Kicked
+const onKicked: ActionCreator<RunActions.KickedAction> = (kicked: boolean) => ({
+	type: RunActions.RoomActionTypes.Kicked, kicked,
 });
 
 const onReconnect: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
@@ -728,7 +722,6 @@ const roomActionCreators = {
 	changeType,
 	personAvatarChanged,
 	personAvatarVideoChanged,
-	gameStarted,
 	stageChanged,
 	gameStateCleared,
 	afterQuestionStateChanged,
@@ -766,7 +759,6 @@ const roomActionCreators = {
 	hintChanged,
 	startGame,
 	operationError,
-	hostNameChanged,
 	themeNameChanged,
 	moveNext,
 	navigateToRound,

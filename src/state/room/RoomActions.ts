@@ -30,7 +30,6 @@ export const enum RoomActionTypes {
 	TableSelected = 'TABLE_SELECTED',
 	PersonAvatarChanged = 'PERSON_AVATAR_CHANGED',
 	PersonAvatarVideoChanged = 'PERSON_AVATAR_VIDEO_CHANGED',
-	GameStarted = 'GAME_STARTED',
 	StageChanged = 'STAGE_CHANGED',
 	GameStateCleared = 'GAME_STATE_CLEARED',
 	AfterQuestionStateChanged = 'AFTER_QUESTION_STATE_CHANGED',
@@ -58,7 +57,6 @@ export const enum RoomActionTypes {
 	ClearDecisionsAndMainTimer = 'CLEAR_DECISIONS_AND_MAIN_TIMER',
 	HintChanged = 'HINT_CHANGED',
 	OperationError = 'OPERATION_ERROR',
-	HostNameChanged = 'HOST_NAME_CHANGED',
 	ThemeNameChanged = 'THEME_NAME_CHANGED',
 	RoundsNamesChanged = 'ROUNDS_NAMES_CHANGED',
 	ChooserChanged = 'CHOOSER_CHANGED',
@@ -100,7 +98,6 @@ export type InfoChangedAction = { type: RoomActionTypes.InfoChanged, all: Person
 export type TableSelectedAction = { type: RoomActionTypes.TableSelected, tableIndex: number };
 export type PersonAvatarChangedAction = { type: RoomActionTypes.PersonAvatarChanged, personName: string, avatarUri: string };
 export type PersonAvatarVideoChangedAction = { type: RoomActionTypes.PersonAvatarVideoChanged, personName: string, avatarUri: string };
-export type GameStartedAction = { type: RoomActionTypes.GameStarted, started: boolean };
 export type StageChangedAction = { type: RoomActionTypes.StageChanged, stageName: string, roundIndex: number };
 export type GameStateClearedAction = { type: RoomActionTypes.GameStateCleared };
 export type AfterQuestionStateChangedAction = { type: RoomActionTypes.AfterQuestionStateChanged, isAfterQuestion: boolean };
@@ -115,7 +112,7 @@ export type IsGameButtonEnabledChangedAction = { type: RoomActionTypes.IsGameBut
 export type IsAnsweringAction = { type: RoomActionTypes.IsAnswering };
 export type AnswerChangedAction = { type: RoomActionTypes.AnswerChanged, answer: string };
 export type ClearRoomChatAction = { type: RoomActionTypes.ClearRoomChat };
-export type KickedAction = { type: RoomActionTypes.Kicked };
+export type KickedAction = { type: RoomActionTypes.Kicked, kicked: boolean };
 
 export type SetStakesAction = {
 	type: RoomActionTypes.SetStakes,
@@ -139,7 +136,6 @@ export type ShowMainTimerAction = { type: RoomActionTypes.ShowMainTimer };
 export type ClearDecisionsAndMainTimerAction = { type: RoomActionTypes.ClearDecisionsAndMainTimer };
 export type HintChangedAction = { type: RoomActionTypes.HintChanged, hint: string | null };
 export type OperationErrorAction = { type: RoomActionTypes.OperationError, error: string };
-export type HostNameChangedAction = { type: RoomActionTypes.HostNameChanged, hostName: string | null };
 export type ThemeNameChangedAction = { type: RoomActionTypes.ThemeNameChanged, themeName: string };
 export type RoundsNamesChangedAction = { type: RoomActionTypes.RoundsNamesChanged, roundsNames: string[] };
 export type AreApellationsEnabledChangedAction = { type: RoomActionTypes.AreApellationsEnabledChanged, areApellationsEnabled: boolean };
@@ -184,7 +180,6 @@ export type KnownRoomAction =
 	| TableSelectedAction
 	| PersonAvatarChangedAction
 	| PersonAvatarVideoChangedAction
-	| GameStartedAction
 	| StageChangedAction
 	| GameStateClearedAction
 	| AfterQuestionStateChangedAction
@@ -212,7 +207,6 @@ export type KnownRoomAction =
 	| ClearDecisionsAndMainTimerAction
 	| HintChangedAction
 	| OperationErrorAction
-	| HostNameChangedAction
 	| ThemeNameChangedAction
 	| RoundsNamesChangedAction
 	| AreApellationsEnabledChangedAction

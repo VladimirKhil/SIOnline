@@ -182,16 +182,6 @@ const roomReducer: Reducer<RoomState> = (state: RoomState = initialState, anyAct
 				}
 			};
 
-		case RoomActionTypes.GameStarted:
-			return {
-				...state,
-				stage: {
-					...state.stage,
-					isGameStarted: action.started
-				},
-				kicked: false,
-			};
-
 		case RoomActionTypes.StageChanged:
 			return {
 				...state,
@@ -462,15 +452,6 @@ const roomReducer: Reducer<RoomState> = (state: RoomState = initialState, anyAct
 				}
 			};
 
-		case RoomActionTypes.HostNameChanged:
-			return {
-				...state,
-				persons: {
-					...state.persons,
-					hostName: action.hostName
-				}
-			};
-
 		case RoomActionTypes.ThemeNameChanged:
 			return {
 				...state,
@@ -557,7 +538,7 @@ const roomReducer: Reducer<RoomState> = (state: RoomState = initialState, anyAct
 		case RoomActionTypes.Kicked:
 			return {
 				...state,
-				kicked: true,
+				kicked: action.kicked,
 			};
 
 		case RoomActionTypes.WebCameraUrlChanged:

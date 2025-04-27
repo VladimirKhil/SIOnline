@@ -22,7 +22,6 @@ interface TableContextViewProps {
 	role: Role;
 	areStakesVisible: boolean;
 	isAfterQuestion: boolean;
-	hasGameStarted: boolean;
 	isAutomatic: boolean;
 	hint: string | null;
 	isPaused: boolean;
@@ -32,13 +31,17 @@ const mapStateToProps = (state: State) => ({
 	role: state.room.role,
 	areStakesVisible: state.room.stakes.areVisible,
 	isAfterQuestion: state.room.stage.isAfterQuestion,
-	hasGameStarted: state.room.stage.isGameStarted,
 	isAutomatic: state.game.isAutomatic,
 	hint: state.room.hint,
 	isPaused: state.room.stage.isGamePaused,
 });
 
-function renderBody(props: TableContextViewProps, contextView: ContextView, windowWidth: number, tableMode: TableMode) : JSX.Element | null {
+function renderBody(
+	props: TableContextViewProps,
+	contextView: ContextView,
+	windowWidth: number,
+	tableMode: TableMode,
+	isGameStarted: boolean) : JSX.Element | null {
 	// TODO: Switch to enum to select view to display
 	switch (contextView) {
 		case ContextView.Answer:
@@ -54,7 +57,7 @@ function renderBody(props: TableContextViewProps, contextView: ContextView, wind
 			break;
 	}
 
-	if (!props.hasGameStarted && !props.isAutomatic && props.role !== Role.Viewer) {
+	if (!isGameStarted && !props.isAutomatic && props.role !== Role.Viewer) {
 		return <ReadyButton />;
 	}
 
@@ -87,7 +90,8 @@ export function TableContextView(props: TableContextViewProps): JSX.Element | nu
 	const state = useAppSelector((rootState: RootState) => rootState.room2);
 	const ui = useAppSelector(rootState => rootState.ui);
 	const table = useAppSelector(rootState => rootState.table);
-	const body = renderBody(props, state.contextView, ui.windowWidth, table.mode);
+	const room = useAppSelector(rootState => rootState.room2);
+	const body = renderBody(props, state.contextView, ui.windowWidth, table.mode, room.stage.isGameStarted);
 	return body == null ? null : <div className='tableContextView'>{body}</div>;
 }
 

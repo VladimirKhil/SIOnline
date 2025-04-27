@@ -2,7 +2,7 @@ const TEXT_MARGIN = 0;
 
 const fitCache: { [key: string]: number } = {};
 
-export default function fitElement(element: HTMLElement, maxFont: number, useCache = true): void {
+export default function fitElement(element: HTMLElement, maxFont: number, minFontSize = 1, useCache = true): void {
 	const content = element.firstElementChild;
 
 	if (!content) {
@@ -39,7 +39,7 @@ export default function fitElement(element: HTMLElement, maxFont: number, useCac
 		innerHeight = content.clientHeight + extraHeight;
 		innerWidth = content.clientWidth + extraHeight;
 		font--;
-	} while ((innerHeight + TEXT_MARGIN > boxHeight || innerWidth > boxWidth + 1) && font > 0);
+	} while ((innerHeight + TEXT_MARGIN > boxHeight || innerWidth > boxWidth + 1) && font >= minFontSize);
 
 	if (content.innerHTML.length < 15 && useCache) {
 		fitCache[cacheKey] = font + 1;

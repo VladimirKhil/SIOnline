@@ -26,7 +26,7 @@ export function attachSIHostListeners(
 	connection.on('Receive', (message: Message) => messageProcessor(controller, dispatch, appDispatch, message));
 
 	connection.on('Disconnect', () => {
-		dispatch(roomActionCreators.onKicked());
+		dispatch(roomActionCreators.onKicked(true));
 	});
 
 	connection.on('GamePersonsChanged', (gameId: number, persons: PersonInfo[]) => {

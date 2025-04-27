@@ -12,7 +12,6 @@ import UsersMode from '../../model/enums/UsersMode';
 export default interface RoomState {
 	persons: {
 		all: Persons;
-		hostName: string | null;
 	};
 
 	role: Role;
@@ -23,7 +22,6 @@ export default interface RoomState {
 		name: string;
 		roundIndex: number;
 		isGamePaused: boolean;
-		isGameStarted: boolean;
 		isDecisionNeeded: boolean;
 		isAfterQuestion: boolean;
 		themeIndex: number;
@@ -96,7 +94,6 @@ export default interface RoomState {
 export const initialState: RoomState = {
 	persons: {
 		all: {},
-		hostName: null
 	},
 
 	role: Role.Player,
@@ -107,7 +104,6 @@ export const initialState: RoomState = {
 		name: '',
 		roundIndex: -1,
 		isGamePaused: false,
-		isGameStarted: false,
 		isDecisionNeeded: false,
 		isAfterQuestion: false,
 		themeIndex: -1,

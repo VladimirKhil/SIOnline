@@ -26,7 +26,6 @@ interface SideControlPanelProps {
 	isChatVisible: boolean;
 	isChatActive: boolean;
 	isHost: boolean;
-	hasGameStarted: boolean;
 	isPaused: boolean;
 	lastReplic: ChatMessage | null;
 	areStakesVisible: boolean;
@@ -55,7 +54,6 @@ const mapStateToProps = (state: State) => ({
 	isChatVisible: state.room.chat.isVisible,
 	isChatActive: state.room.chat.isActive,
 	isHost: isHost(state),
-	hasGameStarted: state.room.stage.isGameStarted,
 	isPaused: state.room.stage.isGamePaused,
 	lastReplic: state.room.lastReplic,
 	areStakesVisible: state.room.stakes.areVisible,
@@ -121,12 +119,12 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 	const enabledClass = props.isConnected ? '' : 'disabled';
 	const enabledManagementClass = props.isConnected && props.roundsNames && props.roundsNames.length >= 2 ? '' : 'disabled';
 
-	const canStart = !props.hasGameStarted && props.isHost;
-
 	const { voiceChatUri } = props;
 	const appDispatch = useAppDispatch();
 	const room = useAppSelector(state => state.room2);
 	const canAddTable = room.persons.players.length < Constants.MAX_PLAYER_COUNT;
+
+	const canStart = !room.stage.isGameStarted && props.isHost;
 
 	const onGiveTurn = () =>{
 		props.onGiveTurn();
@@ -208,7 +206,7 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 							type="button"
 							className={`pauseButton standard imageButton ${props.isPaused ? 'active' : ''}`}
 							title={pauseTitle}
-							disabled={!props.isConnected || !props.hasGameStarted}
+							disabled={!props.isConnected || !room.stage.isGameStarted}
 							onClick={() => props.onPause()}
 						>
 							<img alt='pause' src={pauseImg} />

@@ -13,11 +13,15 @@ import State from '../../../state/State';
 import roomActionCreators from '../../../state/room/roomActionCreators';
 import { Action } from 'redux';
 import { connect } from 'react-redux';
+import EditTableMenu from '../EditTableMenu/EditTableMenu';
+import Account from '../../../model/Account';
+import { useAppSelector } from '../../../state/hooks';
 
 import './PlayerView.scss';
 
 interface PlayerViewProps {
 	player: PlayerInfo;
+	account: Account;
 	isMe: boolean;
 	sex?: Sex;
 	avatar: string | null;
@@ -25,7 +29,6 @@ interface PlayerViewProps {
 	avatarVideo?: string;
 	index: number;
 	isSelectionEnabled: boolean;
-	hasGameStarted: boolean;
 	decisionTimer: TimerInfo;
 	showVideoAvatars: boolean;
 	isSumEditable: boolean;
@@ -42,7 +45,6 @@ interface PlayerViewProps {
 const mapStateToProps = (state: State) => ({
 	isSelectionEnabled: state.room.selection.isEnabled,
 	decisionTimer: state.room.timers.decision,
-	hasGameStarted: state.room.stage.isGameStarted,
 	isSumEditable: state.room.areSumsEditable,
 	showVideoAvatars: state.settings.showVideoAvatars,
 	windowWidth: state.ui.windowWidth,
@@ -58,6 +60,7 @@ const mapDispatchToProps = (dispatch: React.Dispatch<Action>) => ({
 export function PlayerView(props: PlayerViewProps): JSX.Element {
 	const replicRef = React.useRef<HTMLDivElement>(null);
 	const { player, isMe, sex, avatar, avatarClass, avatarVideo, index } = props;
+	const room = useAppSelector(state => state.room2);
 
 	const buildPlayerClasses = () => {
 		const stateClass = `state_${(PlayerStates[player.state] ?? '').toLowerCase()}`;
@@ -165,6 +168,8 @@ export function PlayerView(props: PlayerViewProps): JSX.Element {
 						) : <AutoSizedText className='staticSum' maxFontSize={48}>{player.sum}</AutoSizedText>}
 					</div>
 				</div>
+
+				<EditTableMenu isPlayerScope={true} account={props.account} tableIndex={index} />
 			</div>
 
 			{player.replic && player.replic.length > 0 ? (
@@ -186,7 +191,7 @@ export function PlayerView(props: PlayerViewProps): JSX.Element {
 			) : null}
 
 			<div className='marksArea'>
-				{player.isReady && !props.hasGameStarted ? (
+				{player.isReady && !room.stage.isGameStarted ? (
 					<span
 						className='readyMark'
 						role="img"

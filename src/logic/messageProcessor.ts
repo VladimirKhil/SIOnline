@@ -407,19 +407,11 @@ const viewerHandler = (
 			break;
 
 		case GameMessages.HostName:
-			if (args.length > 1) {
-				dispatch(roomActionCreators.hostNameChanged(args[1]));
-
-				if (args.length > 2) {
-					const changeSource = args[2].length > 0 ? args[2] : localization.byGame;
-
-					dispatch(roomActionCreators.chatMessageAdded({
-						sender: '',
-						text: stringFormat(localization.hostNameChanged, changeSource, args[1]),
-						level: MessageLevel.System,
-					}));
-				}
+			if (args.length < 2) {
+				return;
 			}
+
+			controller.onHostNameChanged(args[1], args.length > 2 ? args[2] : null);
 			break;
 
 		case GameMessages.Info:
@@ -816,7 +808,7 @@ const viewerHandler = (
 
 		case GameMessages.Timer:
 			// Special case for automatic game
-			if (!state.room.stage.isGameStarted
+			if (!state.room2.stage.isGameStarted
 				&& state.game.isAutomatic
 				&& args.length === 5
 				&& args[1] === '2'

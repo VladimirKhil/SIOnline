@@ -29,7 +29,7 @@ import WellKnownSIContentServiceErrorCode from 'sicontent-client/dist/models/Wel
 import RandomPackageParameters from 'sistorage-client/dist/models/RandomPackageParameters';
 import { AppDispatch } from '../store';
 import { showWelcome, tableReset } from '../tableSlice';
-import { ContextView, nameChanged, setContext } from '../room2Slice';
+import { ContextView, nameChanged, setContext, setIsGameStarted } from '../room2Slice';
 import { GameState, setGameSet } from '../gameSlice';
 import { saveStateToStorage } from '../StateHelpers';
 import { INavigationState } from '../uiSlice';
@@ -101,7 +101,8 @@ const initGameAsync = async (
 	dispatch(roomActionCreators.stopTimer(0));
 	dispatch(roomActionCreators.stopTimer(1));
 	dispatch(roomActionCreators.stopTimer(2));
-	dispatch(roomActionCreators.gameStarted(false));
+	dispatch(roomActionCreators.onKicked(false));
+	appDispatch(setIsGameStarted(false));
 	dispatch(roomActionCreators.afterQuestionStateChanged(false));
 	dispatch(roomActionCreators.isQuestionChanged(false, ''));
 	dispatch(roomActionCreators.areSumsEditableChanged(false));

@@ -88,7 +88,7 @@ function getCaption(props: GameTableProps): string | null {
 		case TableMode.Content:
 		case TableMode.Object:
 		case TableMode.QuestionType:
-			return props.caption;
+			return props.caption ? props.caption : ' ';
 
 		default:
 			return ' ';

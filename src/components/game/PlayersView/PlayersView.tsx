@@ -59,6 +59,7 @@ const PlayersView: React.FC<PlayersViewProps> = (props) => {
 			key={`${player.name}_${index}`}
 			listRef={listRef}
 			player={player}
+			account={account}
 			isMe={isMe}
 			avatar={avatar}
 			sex={account?.sex}

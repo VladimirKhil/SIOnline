@@ -8,6 +8,7 @@ interface AutoSizedTextProps {
 	children: React.ReactNode;
 	style?: React.CSSProperties;
 	className?: string;
+	minFontSize?: number;
 	maxFontSize: number;
 	title?: string;
 	fontsReady: boolean;
@@ -49,7 +50,7 @@ export class AutoSizedText extends React.Component<AutoSizedTextProps> {
 
 	resizeText = (): void => {
 		if (this.myRef.current !== null) {
-			fitElement(this.myRef.current, this.props.maxFontSize, this.props.fontsReady);
+			fitElement(this.myRef.current, this.props.maxFontSize, this.props.minFontSize ?? 1, this.props.fontsReady);
 		}
 	};
 

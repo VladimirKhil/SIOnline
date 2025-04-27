@@ -10,6 +10,7 @@ import Sex from '../../../model/enums/Sex';
 import localization from '../../../model/resources/localization';
 import { useAppSelector } from '../../../state/hooks';
 import Persons from '../../../model/Persons';
+import EditTableMenu from '../EditTableMenu/EditTableMenu';
 
 import './ShowmanReplicView.scss';
 
@@ -17,7 +18,6 @@ interface ShowmanReplicViewProps {
 	all: Persons;
 	decisionNeeded: boolean;
 	decisionTimer: TimerInfo;
-	hasGameStarted: boolean;
 	avatar: string | null;
 	showVideoAvatars: boolean;
 }
@@ -26,7 +26,6 @@ const mapStateToProps = (state: State) => ({
 	all: state.room.persons.all,
 	decisionNeeded: state.room.stage.isDecisionNeeded,
 	decisionTimer: state.room.timers.decision,
-	hasGameStarted: state.room.stage.isGameStarted,
 	avatar: state.user.avatar,
 	showVideoAvatars: state.settings.showVideoAvatars,
 });
@@ -45,7 +44,7 @@ export function ShowmanReplicView(props: ShowmanReplicViewProps): JSX.Element {
 
 	const avatarClass = getAvatarClass(account);
 
-	const showmanInfoStyle: React.CSSProperties = props.hasGameStarted ? {} : {
+	const showmanInfoStyle: React.CSSProperties = roomState.stage.isGameStarted ? {} : {
 		display: 'flex'
 	};
 
@@ -59,7 +58,7 @@ export function ShowmanReplicView(props: ShowmanReplicViewProps): JSX.Element {
 					: <div className={`showmanAvatar ${avatarClass}`} style={avatarStyle} />}
 
 				<div className="showmanName">
-					{isReady && !props.hasGameStarted ? (
+					{isReady && !roomState.stage.isGameStarted ? (
 						<span
 							role="img"
 							aria-label="checkmark"
@@ -71,6 +70,8 @@ export function ShowmanReplicView(props: ShowmanReplicViewProps): JSX.Element {
 
 					<span className={meClass}>{account?.name}</span>
 				</div>
+
+				<EditTableMenu isPlayerScope={false} account={account} tableIndex={0} />
 			</div>
 
 			<ShowmanReplic />

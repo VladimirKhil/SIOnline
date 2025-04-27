@@ -9,26 +9,25 @@ import { kick, setHost } from '../../../state/room2Slice';
 import getAvatarClass from '../../../utils/AccountHelpers';
 
 import './PersonView.css';
+import menuSvg from '../../../../assets/images/menu.svg';
 
 interface PersonViewProps {
 	account: Account;
 	avatar: string | null;
-	hostName: string | null;
 }
 
 const mapStateToProps = (state: State) => ({
 	avatar: state.user.avatar,
-	hostName: state.room.persons.hostName
 });
 
 export function PersonView(props: PersonViewProps): JSX.Element {
 	const appDispatch = useAppDispatch();
 	const room = useAppSelector(state => state.room2);
 	const isMe = props.account.name === room.name;
-	const isHost = props.account.name === props.hostName;
+	const isHost = room.name === room.persons.hostName;
 
 	const avatar = isMe ? props.avatar : props.account.avatar;
-	const canManage = props.hostName === room.name && !isMe && props.account.isHuman;
+	const canManage = room.persons.hostName === room.name && !isMe && props.account.isHuman;
 
 	return (
 		<li className={`personItem ${isMe ? 'me' : ''}`}>
@@ -56,11 +55,7 @@ export function PersonView(props: PersonViewProps): JSX.Element {
 							<li onClick={() => appDispatch(kick(props.account.name))}>{localization.kick}</li>
 						</ul>
 					}>
-						<svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-							<circle cx="14" cy="19.5" r="1.5" fill="#2649FF"/>
-							<circle cx="14" cy="14" r="1.5" fill="#2649FF"/>
-							<circle cx="14" cy="8.5" r="1.5" fill="#2649FF"/>
-						</svg>
+						<img src={menuSvg} alt={localization.menu} className="personItem_menuIcon" />
 					</FlyoutButton>
 				</div>)
 				: null}
