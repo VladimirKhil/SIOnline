@@ -4,7 +4,6 @@ import { Dispatch, Action } from 'redux';
 import localization from '../../../model/resources/localization';
 import Dialog from '../../common/Dialog/Dialog';
 import ProgressBar from '../../common/ProgressBar/ProgressBar';
-import PackageType from '../../../model/enums/PackageType';
 import SIStorageDialog from '../SIStorageDialog/SIStorageDialog';
 import onlineActionCreators from '../../../state/online/onlineActionCreators';
 import { AppDispatch } from '../../../state/store';
@@ -13,8 +12,9 @@ import TabControl from '../../common/TabControl/TabControl';
 import RulesSettingsView from '../../settings/RulesSettingsView/RulesSettingsView';
 import TimeSettingsView from '../../settings/TimeSettingsView/TimeSettingsView';
 import RoomOptions from '../RoomOptions/RoomOptions';
-import { setPackageHostManaged, setPackageLibrary, setPackageType } from '../../../state/gameSlice';
+import { setPackageHostManaged, setPackageLibrary } from '../../../state/gameSlice';
 import { setStorageIndex } from '../../../state/siPackagesSlice';
+import ProgressDialog from '../ProgressDialog/ProgressDialog';
 
 import './NewGameDialog.css';
 
@@ -107,16 +107,12 @@ export function NewGameDialog(props: NewGameDialogProps) {
 					</button>
 				</div>
 
-				{online.gameCreationProgress ? <ProgressBar isIndeterminate /> : null}
-
-				{online.uploadPackageProgress ? (
-					<div className="uploadPackagePanel">
-						<div className="uploadPackageMessage">
-							<span>{localization.sendingPackage}</span>
-							<ProgressBar isIndeterminate={false} value={online.uploadPackagePercentage} />
-						</div>
-					</div>
-				) : null}
+				{online.gameCreationProgress
+					? <ProgressDialog
+						title={online.uploadPackageProgress ? localization.sendingPackage : localization.creatingGame}
+						isIndeterminate={!online.uploadPackageProgress}
+						value={online.uploadPackageProgress ? online.uploadPackagePercentage : undefined} />
+					: null}
 			</Dialog>
 
 			{isSIStorageOpen && (

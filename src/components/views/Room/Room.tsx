@@ -35,6 +35,7 @@ import GameState from '../../game/GameState/GameState';
 import Role from '../../../model/Role';
 
 import './Room.css';
+import closeSvg from '../../../../assets/images/close.svg';
 
 interface RoomProps {
 	windowWidth: number;
@@ -53,6 +54,7 @@ interface RoomProps {
 	avatarViewVisible: boolean;
 	role: Role;
 
+	onChatVisibilityChanged: (isOpen: boolean) => void;
 	onPersonsDialogClose: () => void;
 	onTablesDialogClose: () => void;
 	onBannedDialogClose: () => void;
@@ -83,6 +85,9 @@ const mapStateToProps = (state: State) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
+	onChatVisibilityChanged: (isOpen: boolean) => {
+		dispatch(roomActionCreators.runChatVisibilityChanged(isOpen));
+	},
 	onPersonsDialogClose: () => {
 		dispatch(roomActionCreators.runHidePersons());
 	},
@@ -202,6 +207,14 @@ export function Room(props: RoomProps) : JSX.Element {
 							{props.isChatOpen && !isScreenWide ? (
 								<div className="compactChatView">
 									<div className='compactChatHeader'>{localization.chat}</div>
+
+									<button
+										type="button"
+										className="dialog_closeButton"
+										onClick={() => props.onChatVisibilityChanged(false)}
+										title={localization.close}>
+										<img src={closeSvg} alt={localization.close} />
+									</button>
 
 									<div className="sideArea">
 										<div className="game__chat">

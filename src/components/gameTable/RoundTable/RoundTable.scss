@@ -82,6 +82,7 @@
 
 #table .roundTable.selectable .questHeader.active {
 	cursor: pointer;
+	background: v.$table-cell-selectable-background-color;
 }
 
 #table .roundTable.selectable .questHeader.active:hover {

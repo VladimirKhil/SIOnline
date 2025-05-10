@@ -1,5 +1,5 @@
 ﻿import * as React from 'react';
-import * as ReactDOM from 'react-dom';
+import Popup from '../Popup/Popup';
 
 import './FlyoutButton.css';
 
@@ -42,11 +42,6 @@ interface FlyoutButtonState {
 
 export default class FlyoutButton extends React.Component<FlyoutButtonProps, FlyoutButtonState> {
 	private buttonRef: React.RefObject<HTMLButtonElement>;
-
-	private layout: HTMLDivElement;
-
-	private timerRef: number | null = null;
-
 	private isDisposed = false;
 
 	static defaultProps: Partial<FlyoutButtonProps> = {
@@ -55,46 +50,15 @@ export default class FlyoutButton extends React.Component<FlyoutButtonProps, Fly
 
 	constructor(props: FlyoutButtonProps) {
 		super(props);
-
 		this.buttonRef = React.createRef<HTMLButtonElement>();
-
-		this.layout = document.createElement('div');
-		this.layout.style.position = 'absolute';
-		this.layout.style.top = '0';
-		this.layout.style.left = '0';
-		this.layout.style.width = '100%';
-		this.layout.style.height = '100%';
-		this.layout.style.pointerEvents = 'none';
-
 		this.state = {
 			isOpen: false,
 			x: 0,
 			y: 0
 		};
-
-		this.hideFlyout = this.hideFlyout.bind(this); // 'resize' for some reason does not keep 'this'
-	}
-
-	componentDidMount(): void {
-		if (this.layout) {
-			document.body.appendChild(this.layout);
-		}
 	}
 
 	componentWillUnmount(): void {
-		if (this.layout) {
-			document.body.removeChild(this.layout);
-		}
-
-		window.removeEventListener('mousedown', this.hideFlyout);
-		window.removeEventListener('mouseup', this.hideFlyout);
-		window.removeEventListener('resize', this.hideFlyout);
-
-		if (this.timerRef) {
-			window.clearTimeout(this.timerRef);
-			this.timerRef = null;
-		}
-
 		this.isDisposed = true;
 	}
 
@@ -102,10 +66,6 @@ export default class FlyoutButton extends React.Component<FlyoutButtonProps, Fly
 		if (this.buttonRef.current == null) {
 			return;
 		}
-
-		window.addEventListener('mousedown', this.hideFlyout);
-		window.addEventListener('mouseup', this.hideFlyout);
-		window.addEventListener('resize', this.hideFlyout);
 
 		const rect = this.buttonRef.current.getBoundingClientRect();
 
@@ -117,32 +77,19 @@ export default class FlyoutButton extends React.Component<FlyoutButtonProps, Fly
 		});
 	};
 
-	private hideFlyout = (e: Event) => {
-		if (e.target instanceof Node && this.layout.contains(e.target as Node) && (e.type === 'mousedown' || !this.props.hideOnClick)) {
+	private hideFlyout = () => {
+		if (this.isDisposed) {
 			return;
 		}
 
-		window.removeEventListener('mousedown', this.hideFlyout);
-		window.removeEventListener('mouseup', this.hideFlyout);
-		window.removeEventListener('resize', this.hideFlyout);
-
-		this.timerRef = window.setTimeout(
-			() => {
-				if (this.isDisposed) {
-					return;
-				}
-
-				this.setState({
-					isOpen: false
-				});
-			},
-			1
-		);
+		this.setState({
+			isOpen: false
+		});
 	};
 
-	private onClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+	private onClick = () => {
 		if (this.state.isOpen) {
-			this.hideFlyout(e.nativeEvent);
+			this.hideFlyout();
 		} else {
 			this.showFlyout();
 		}
@@ -168,34 +115,33 @@ export default class FlyoutButton extends React.Component<FlyoutButtonProps, Fly
 		const flyoutStyle: React.CSSProperties = {
 			...horizontalPosition,
 			...verticalPosition,
-			...widthStyle,
-			pointerEvents: 'initial',
-			overflowY: 'auto'
+			...widthStyle
 		};
 
 		const colorClass = this.props.theme === FlyoutTheme.Light ? 'light' : 'dark';
 
 		return (
-			<button
-				type="button"
-				ref={this.buttonRef}
-				className={`flyoutButton ${this.props.className || ''}`}
-				title={this.props.title}
-				onClick={this.onClick}
-				disabled={this.props.disabled}
-			>
-				{this.props.children}
+			<>
+				<button
+					type="button"
+					ref={this.buttonRef}
+					className={`flyoutButton ${this.props.className || ''}`}
+					title={this.props.title}
+					onClick={this.onClick}
+					disabled={this.props.disabled}
+				>
+					{this.props.children}
+				</button>
 				{this.state.isOpen
-					? ReactDOM.createPortal(
-						<section
-							className={`flyoutButton_flyout ${colorClass} ${this.state.isOpen ? 'visible' : 'hidden'}`}
-							style={flyoutStyle}
-						>
-							{this.props.flyout}
-						</section>,
-						this.layout
-					) : null}
-			</button>
+					? <Popup
+						className={`flyoutButton_flyout ${colorClass} ${this.state.isOpen ? 'visible' : 'hidden'}`}
+						style={flyoutStyle}
+						onClose={this.hideFlyout}
+						hideOnClick={this.props.hideOnClick}
+					>
+						{this.props.flyout}
+					</Popup> : null}
+			</>
 		);
 	}
 }

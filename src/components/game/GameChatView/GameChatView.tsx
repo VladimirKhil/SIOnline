@@ -16,7 +16,7 @@ import GameMetadataView from '../GameMetadataView/GameMetadataView';
 import BannedView from '../BannedView/BannedView';
 import isWellFormedUri from '../../../utils/isWellFormedUri';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
-import { addTable, selectPlayers } from '../../../state/room2Slice';
+import { addTable, selectPlayers, setIsEditingTables } from '../../../state/room2Slice';
 import UserOptions from '../../panels/UserOptions/UserOptions';
 import TabControl from '../../common/TabControl/TabControl';
 import ValidationArea from '../ValidationArea/ValidationArea';
@@ -135,15 +135,27 @@ export function GameChatView(props: GameChatViewProps): JSX.Element {
 	};
 
 	const hostUI = props.isHost
-		? <button
-			type="button"
-			className='sumsButton standard imageButton wide commandButton bottomButton'
-			onClick={() => appDispatch(addTable())}
-			disabled={!props.isConnected || !canAddTable}
-			title={localization.addTable}
-		>
-			<span>➕🕹️</span>
-		</button>
+		? <div className="host-buttons">
+			<button
+				type="button"
+				className='sumsButton standard imageButton wide commandButton bottomButton'
+				onClick={() => appDispatch(addTable())}
+				disabled={!props.isConnected || !canAddTable}
+				title={localization.addTable}
+			>
+				<span>➕🕹️</span>
+			</button>
+
+			<button
+				type="button"
+				className={`sumsButton standard imageButton wide commandButton bottomButton ${room.stage.isEditingTables ? 'active' : ''}`}
+				onClick={() => appDispatch(setIsEditingTables(!room.stage.isEditingTables))}
+				disabled={!props.isConnected || !room.stage.isGameStarted}
+				title={localization.editTables}
+			>
+				<span>✏️🕹️</span>
+			</button>
+		</div>
 		: null;
 
 	return (
@@ -152,6 +164,7 @@ export function GameChatView(props: GameChatViewProps): JSX.Element {
 				<h1>
 					<div className='right'>
 						<button
+							type='button'
 							className={props.chatMode === ChatMode.Chat ? 'activeTab' : ''}
 							onClick={() => props.onChatModeChanged(ChatMode.Chat)}
 							title={localization.chat}>
@@ -161,6 +174,7 @@ export function GameChatView(props: GameChatViewProps): JSX.Element {
 						</button>
 
 						<button
+							type='button'
 							className={props.chatMode === ChatMode.Users ? 'activeTab' : ''}
 							onClick={() => props.onChatModeChanged(ChatMode.Users)}
 							title={localization.members}>
@@ -170,6 +184,7 @@ export function GameChatView(props: GameChatViewProps): JSX.Element {
 						</button>
 
 						<button
+							type='button'
 							className={props.chatMode === ChatMode.Info ? 'activeTab' : ''}
 							onClick={() => props.onChatModeChanged(ChatMode.Info)}
 							title={localization.gameInfo}>

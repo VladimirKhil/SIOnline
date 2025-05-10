@@ -1,5 +1,5 @@
 import React from 'react';
-import FlyoutButton from '../../common/FlyoutButton/FlyoutButton';
+import FlyoutButton, { FlyoutHorizontalOrientation } from '../../common/FlyoutButton/FlyoutButton';
 import localization from '../../../model/resources/localization';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 import Account from '../../../model/Account';
@@ -24,7 +24,7 @@ const EditTableMenu: React.FC<EditTableMenuProps> = (props) => {
 	const canFree = props.account && props.account.isHuman;
 	const canDelete = props.isPlayerScope && room.persons.players.length > Constants.MIN_PLAYER_COUNT;
 
-	if (!common.isSIHostConnected || !isHost || (!canFree && !canDelete) || (room.stage.isGameStarted && !room.isEditTableEnabled)) {
+	if (!common.isSIHostConnected || !isHost || (!canFree && !canDelete) || (room.stage.isGameStarted && !room.stage.isEditingTables)) {
 		return null;
 	}
 
@@ -39,6 +39,7 @@ const EditTableMenu: React.FC<EditTableMenuProps> = (props) => {
 	return (
 		<FlyoutButton
 			className="editTableMenu"
+			horizontalOrientation={FlyoutHorizontalOrientation.Left}
 			flyout={
 				<ul className="editTableMenuList">
 					{canFree ? <li onClick={onFreeTable}>{localization.freeTable}</li> : null}

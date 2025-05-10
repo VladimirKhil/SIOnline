@@ -25,6 +25,7 @@
 
 .answerOptions.selectable .answerOption.normal {
 	cursor: pointer;
+	background: v.$table-cell-selectable-background-color;
 }
 
 .answerOptions.selectable .answerOption.normal:hover {

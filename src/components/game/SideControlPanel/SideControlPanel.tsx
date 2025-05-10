@@ -11,7 +11,7 @@ import { isHost } from '../../../utils/StateHelpers';
 import isWellFormedUri from '../../../utils/isWellFormedUri';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 import { AppDispatch } from '../../../state/store';
-import { addTable, selectPlayers } from '../../../state/room2Slice';
+import { addTable, selectPlayers, setIsEditingTables } from '../../../state/room2Slice';
 import { showProfile, showSettings } from '../../../state/uiSlice';
 import Constants from '../../../model/enums/Constants';
 
@@ -165,6 +165,12 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 										? <>
 											<li onClick={() => props.onShowTables()}>{localization.tables}</li>
 											{canAddTable ? <li onClick={() => appDispatch(addTable())}>{localization.addTable}</li> : null}
+
+											{room.stage.isGameStarted
+												? <li onClick={() => appDispatch(setIsEditingTables(!room.stage.isEditingTables))}>
+													{localization.editTables}
+												</li>
+												: null}
 										</>
 										: null}
 

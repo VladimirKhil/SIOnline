@@ -366,6 +366,10 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 	(isSingleGame: boolean, appDispatch: AppDispatch) => async (dispatch: Dispatch<any>, getState: () => State, dataContext: DataContext) => {
 		const state = getState();
 
+		if (state.online2.gameCreationProgress || state.online2.joinGameProgress) {
+			return;
+		}
+
 		if (!isSingleGame && state.game.name.length === 0) {
 			appDispatch(userErrorChanged(localization.gameNameMustBeSpecified));
 			return;
@@ -378,46 +382,46 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 
 		appDispatch(gameCreationStart());
 
-		const game = isSingleGame
-			? {
-				...state.game,
-				name: getRandomValue().toString(),
-				password: getRandomValue().toString(), // protecting from anyone to join
-				isShowmanHuman: false,
-				humanPlayersCount: 0
-			} : state.game;
-
-		const { playersCount, role } = game;
-		const me: AccountSettings = { name: state.user.login, isHuman: true, isMale: state.settings.sex === Sex.Male };
-
-		const showman: AccountSettings = role === Role.Showman
-			? me
-			: game.isShowmanHuman
-				? { name: Constants.ANY_NAME, isHuman: true }
-				: { name: localization.defaultShowman };
-
-		const players: AccountSettings[] = [];
-		const viewers: AccountSettings[] = [];
-
-		if (role === Role.Viewer) {
-			viewers.push(me);
-		} else if (role === Role.Player) {
-			players.push(me);
-		}
-
-		const gameSettings = createGameSettings(
-			playersCount,
-			role,
-			state,
-			players,
-			game,
-			isSingleGame,
-			showman,
-			viewers,
-			state.common.computerAccounts,
-		);
-
 		try {
+			const game = isSingleGame
+				? {
+					...state.game,
+					name: getRandomValue().toString(),
+					password: getRandomValue().toString(), // protecting from anyone to join
+					isShowmanHuman: false,
+					humanPlayersCount: 0
+				} : state.game;
+
+			const { playersCount, role } = game;
+			const me: AccountSettings = { name: state.user.login, isHuman: true, isMale: state.settings.sex === Sex.Male };
+
+			const showman: AccountSettings = role === Role.Showman
+				? me
+				: game.isShowmanHuman
+					? { name: Constants.ANY_NAME, isHuman: true }
+					: { name: localization.defaultShowman };
+
+			const players: AccountSettings[] = [];
+			const viewers: AccountSettings[] = [];
+
+			if (role === Role.Viewer) {
+				viewers.push(me);
+			} else if (role === Role.Player) {
+				players.push(me);
+			}
+
+			const gameSettings = createGameSettings(
+				playersCount,
+				role,
+				state,
+				players,
+				game,
+				isSingleGame,
+				showman,
+				viewers,
+				state.common.computerAccounts,
+			);
+
 			const packageInfo = await getPackageInfoAsync(state, game, dataContext, dispatch);
 
 			const result = await dataContext.gameClient.runGameAsync({
@@ -445,6 +449,10 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 const createNewAutoGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 	(appDispatch: AppDispatch) => async (dispatch: Dispatch<any>, getState: () => State, dataContext: DataContext) => {
 		const state = getState();
+
+		if (state.online2.gameCreationProgress || state.online2.joinGameProgress) {
+			return;
+		}
 
 		appDispatch(gameCreationStart());
 

@@ -1,0 +1,31 @@
+.popup {
+  position: absolute;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  max-width: 90vw;
+  opacity: 1;
+  transition: opacity 0.2s ease-in-out;
+  background-color: #303030;
+  color: #ffffff;
+  border: 1px solid #444444;
+}
+
+/* Animation styles */
+.popup-enter {
+  opacity: 0;
+}
+
+.popup-enter-active {
+  opacity: 1;
+  transition: opacity 0.2s;
+}
+
+.popup-exit {
+  opacity: 1;
+}
+
+.popup-exit-active {
+  opacity: 0;
+  transition: opacity 0.2s;
+}

@@ -7,7 +7,6 @@ import localization from '../../../model/resources/localization';
 import roomActionCreators from '../../../state/room/roomActionCreators';
 import PersonInfo from '../../../model/PersonInfo';
 import TableView from '../TableView/TableView';
-import Constants from '../../../model/enums/Constants';
 import Account from '../../../model/Account';
 import FlyoutButton, { FlyoutHorizontalOrientation, FlyoutVerticalOrientation } from '../../common/FlyoutButton/FlyoutButton';
 import { useAppSelector } from '../../../state/hooks';
@@ -21,8 +20,6 @@ interface TablesViewProps {
 	computerAccounts: string[] | null;
 
 	selectTable: (tableIndex: number) => void;
-	deleteTable: () => void;
-	freeTable: () => void;
 	changeType: () => void;
 	setTable: (name: string) => void;
 }
@@ -37,12 +34,6 @@ const mapStateToProps = (state: State) => ({
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => ({
 	selectTable: (tableIndex: number) => {
 		dispatch(roomActionCreators.tableSelected(tableIndex));
-	},
-	deleteTable: () => {
-		dispatch(roomActionCreators.deleteTable() as unknown as AnyAction);
-	},
-	freeTable: () => {
-		dispatch(roomActionCreators.freeTable() as unknown as AnyAction);
 	},
 	changeType: () => {
 		dispatch(roomActionCreators.changeType() as unknown as AnyAction);
@@ -79,14 +70,6 @@ export function TablesView(props: TablesViewProps): JSX.Element {
 
 	const selectedPlayer = isPlayerSelected ? players[props.selectedIndex - 1] : null;
 	const selectedPerson = props.selectedIndex === 0 ? showman : selectedPlayer;
-	const selectedAccount = selectedPerson ? props.persons[selectedPerson.name] : null;
-
-	// You can delete occupied tables only before game start
-	const canDelete = players.length > Constants.MIN_PLAYER_COUNT &&
-		isPlayerSelected &&
-		(!roomState.stage.isGameStarted || !selectedAccount || !selectedAccount.isHuman);
-
-	const canFree = selectedAccount && selectedAccount.isHuman;
 
 	const replacementList: string[] = loadPersonReplacementList(selectedPerson, props, isPlayerSelected);
 
@@ -140,20 +123,6 @@ export function TablesView(props: TablesViewProps): JSX.Element {
 				>
 					{localization.replaceWith}
 				</FlyoutButton>
-			</div>
-
-			<div className="buttonsPanel sidePanel">
-				<button
-					type="button"
-					className='freeTableButton standard'
-					onClick={() => props.freeTable()}
-					disabled={!props.isConnected || !canFree}>
-					{localization.freeTable}
-				</button>
-
-				<button type="button" className='standard' onClick={() => props.deleteTable()} disabled={!props.isConnected || !canDelete}>
-					{localization.deleteTable}
-				</button>
 			</div>
 		</>
 	);

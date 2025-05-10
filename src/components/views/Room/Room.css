@@ -104,6 +104,11 @@
     background: #000451;
     padding: 5px;
     text-align: center;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 20px;
 }
 
 .settingsOpener {

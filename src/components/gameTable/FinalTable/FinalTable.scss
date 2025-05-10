@@ -33,7 +33,11 @@
 		border-color: v.$table-cell-border-color;
     }
 
+#table .finalTable.selectable .finalTableCell.active {
+    background: v.$table-cell-selectable-background-color;
+    cursor: pointer;
+}
+
 #table .finalTable.selectable .finalTableCell.active:hover {
     background: v.$table-cell-active-background-color;
-    cursor: pointer;
 }

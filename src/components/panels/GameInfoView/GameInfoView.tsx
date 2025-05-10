@@ -105,7 +105,7 @@ export function GameInfoView(props: GameInfoViewProps): JSX.Element {
 
 	const appDispatch = useAppDispatch();
 	const online = useAppSelector(state => state.online2);
-	const { password, joinGameProgress } = online;
+	const { password, joinGameProgress, gameCreationProgress } = online;
 
 	const [userName, setUserName] = React.useState(props.login);
 
@@ -259,6 +259,7 @@ export function GameInfoView(props: GameInfoViewProps): JSX.Element {
 									title={localization.joinAsShowmanHint}
 									disabled={!props.isConnected ||
 										joinGameProgress ||
+										gameCreationProgress ||
 										userName.length === 0 ||
 										(game.PasswordRequired && !password) ||
 										!canJoinAsShowman}
@@ -273,6 +274,7 @@ export function GameInfoView(props: GameInfoViewProps): JSX.Element {
 									title={localization.joinAsPlayerHint}
 									disabled={!props.isConnected ||
 										joinGameProgress ||
+										gameCreationProgress ||
 										userName.length === 0 ||
 										(game.PasswordRequired && !password) ||
 										!canJoinAsPlayer}
@@ -287,6 +289,7 @@ export function GameInfoView(props: GameInfoViewProps): JSX.Element {
 									title={localization.joinAsViewerHint}
 									disabled={!props.isConnected ||
 										joinGameProgress ||
+										gameCreationProgress ||
 										userName.length === 0 ||
 										(game.PasswordRequired && !password) ||
 										!props.canJoinAsViewer}

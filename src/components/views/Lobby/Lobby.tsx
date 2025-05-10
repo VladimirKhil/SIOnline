@@ -15,6 +15,7 @@ import LobbyBottomPanel from '../../panels/LobbyBottomPanel/LobbyBottomPanel';
 import { navigate } from '../../../utils/Navigator';
 import { useAppSelector } from '../../../state/hooks';
 import { newGameCancel, selectGameById } from '../../../state/online2Slice';
+import ProgressDialog from '../../panels/ProgressDialog/ProgressDialog';
 
 import './Lobby.css';
 import exitImg from '../../../../assets/images/exit.png';
@@ -82,6 +83,14 @@ export function Lobby() {
 
 				<UsersView />
 				{online.newGameShown ? newGame : null}
+
+				{!online.newGameShown && online.gameCreationProgress
+					? <ProgressDialog title={localization.creatingGame} isIndeterminate={true} />
+					: null}
+
+				{online.joinGameProgress
+					? <ProgressDialog title={localization.joiningGame} isIndeterminate={true} />
+					: null}
 			</div>
 
 			<LobbyBottomPanel />

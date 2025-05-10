@@ -1,11 +1,11 @@
 import React from 'react';
-import { useAppDispatch } from '../../../state/hooks';
+import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 import localization from '../../../model/resources/localization';
 import { connect } from 'react-redux';
 import onlineActionCreators from '../../../state/online/onlineActionCreators';
 import { AppDispatch } from '../../../state/store';
 
-import './RandomGameButton.scss'; 
+import './RandomGameButton.scss';
 
 interface RandomGameButtonProps {
 	anyonePlay: (appDispatch: AppDispatch) => void;
@@ -19,11 +19,13 @@ const mapDispatchToProps = (dispatch: any) => ({
 
 const RandomGameButton: React.FC<RandomGameButtonProps> = (props: RandomGameButtonProps) => {
 	const appDispatch = useAppDispatch();
+	const online = useAppSelector(state => state.online2);
 
 	return <button
 		className='standard randomGameButton'
 		type="button"
 		title={localization.anyonePlay}
+		disabled={online.gameCreationProgress || online.joinGameProgress}
 		onClick={() => props.anyonePlay(appDispatch)}
 	>
 		<svg width="26" height="28" viewBox="0 0 26 28" fill="none" xmlns="http://www.w3.org/2000/svg">
