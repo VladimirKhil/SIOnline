@@ -118,6 +118,7 @@ const localization = new LocalizedStrings({
 The project is non-commercial and exists for educational purposes.
 All game functionality is available for free—donations do not affect gameplay or grant access to additional features. Thank you for your support!`,
 		downloadCount: 'Download count',
+		downloadingPackage: 'Downloading package from storage…',
 		drop: 'Drop',
 		duplicateUserName: 'A user with this name is already logged on the server!',
 		duration: 'Duration',
@@ -596,6 +597,7 @@ The package will be automatically deleted from the server after the game ends`,
 	 Вся функциональность игры доступна бесплатно - донаты не влияют на игровой процесс
 	 и не используются для доступа к дополнительным функциям игры. Спасибо за поддержку!`,
 		downloadCount: 'Число скачиваний',
+		downloadingPackage: 'Загрузка пакета из хранилища…',
 		drop: 'Сбросить',
 		duplicateUserName: 'Пользователь с таким именем уже вошёл на сервер!',
 		duration: 'Продолжительность',

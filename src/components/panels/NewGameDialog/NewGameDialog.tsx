@@ -84,6 +84,12 @@ export function NewGameDialog(props: NewGameDialogProps) {
 		}
 	}
 
+	const progressMessage = online.downloadPackageProgress
+		? localization.downloadingPackage
+		: (online.uploadPackageProgress
+			? localization.sendingPackage
+			: localization.creatingGame);
+
 	return (
 		<>
 			<Dialog className="newGameDialog" title={localization.newGame} onClose={props.onClose}>
@@ -109,7 +115,7 @@ export function NewGameDialog(props: NewGameDialogProps) {
 
 				{online.gameCreationProgress
 					? <ProgressDialog
-						title={online.uploadPackageProgress ? localization.sendingPackage : localization.creatingGame}
+						title={progressMessage}
 						isIndeterminate={!online.uploadPackageProgress}
 						value={online.uploadPackageProgress ? online.uploadPackagePercentage : undefined} />
 					: null}

@@ -32,7 +32,9 @@ export default class TauriHost implements IHost {
 
 			globalThis.fetch = async (input: RequestInfo | URL, init?: RequestInit): Promise<Response> => {
 				if (typeof input === 'string' &&
-					(input.startsWith('http://ipc.localhost/') || !input.startsWith('http'))) { // Pass through requests to localhost
+					(input.startsWith('http://ipc.localhost/') ||
+					input.startsWith('http://sigame.localhost/') ||
+					!input.startsWith('http'))) { // Pass through requests to localhost
 					return originalFetch(input, init);
 				}
 
@@ -166,10 +168,39 @@ export default class TauriHost implements IHost {
 	}
 
 	async getPackageData(id: string): Promise<File | null> {
-		const itemId = parseInt(id, 10);
-		const binaryData = await this.app.core.invoke('download_workshop_item', { itemId });
-		const blob = new Blob([new Uint8Array(binaryData)], { type: 'application/x-zip-compressed' });
-		return new File([blob], 'package.siq', { type: 'application/x-zip-compressed' });
+		try {
+			const itemId = parseInt(id, 10);
+			
+			console.log(`Getting package data for workshop item: ${itemId}`);
+			
+			// Instead of directly downloading the file data, request a URL through our custom protocol
+			const startTime = performance.now();
+			
+			// This returns metadata with a custom protocol URL
+			const fileInfo = await this.app.core.invoke('get_workshop_file_url', { itemId });
+			
+			const endTime = performance.now();
+			console.log(`Retrieved file URL for workshop item ${itemId} in ${(endTime - startTime).toFixed(2)}ms`);
+			console.log(`File size: ${fileInfo.size} bytes, URL: ${fileInfo.file_url}`);
+			
+			// Now we use fetch to get the file through our custom protocol
+			// This approach is more memory efficient as the browser handles streaming
+			const response = await fetch(fileInfo.file_url);
+			
+			if (!response.ok) {
+				throw new Error(`Failed to fetch file: ${response.status} ${response.statusText}`);
+			}
+			
+			// Get the file as a blob
+			const blob = await response.blob();
+			console.log(`Retrieved blob of size: ${blob.size} bytes`);
+			
+			// Create a File object from the blob
+			return new File([blob], 'package.siq', { type: 'application/x-zip-compressed' });
+		} catch (error) {
+			console.error('Failed to get package data:', error);
+			return null;
+		}
 	}
 
 	exitApp() : void {

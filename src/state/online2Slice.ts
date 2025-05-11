@@ -16,7 +16,6 @@ import localization from '../model/resources/localization';
 import SIStatisticsClient from 'sistatistics-client';
 import Slice from '../client/contracts/Slice';
 import clearUrls from '../utils/clearUrls';
-import { saveStateToStorage } from './StateHelpers';
 import { filterGames } from '../utils/GamesHelpers';
 
 export interface Online2State {
@@ -27,6 +26,7 @@ export interface Online2State {
 	gamesSearch: string;
 	selectedGameId: number;
 	selectedGame: GameInfo | null;
+	downloadPackageProgress: boolean;
 	uploadPackageProgress: boolean;
 	uploadPackagePercentage: number;
 	latestGames?: GamesResponse;
@@ -46,6 +46,7 @@ const initialState: Online2State = {
 	gamesSearch: '',
 	selectedGameId: -1,
 	selectedGame: null,
+	downloadPackageProgress: false,
 	uploadPackageProgress: false,
 	uploadPackagePercentage: 0,
 	password: '',
@@ -157,6 +158,12 @@ export const online2Slice = createSlice({
 				state.selectedGame.Persons = action.payload.persons;
 			}
 		},
+		downloadPackageStarted: (state: Online2State) => {
+			state.downloadPackageProgress = true;
+		},
+		downloadPackageFinished: (state: Online2State) => {
+			state.downloadPackageProgress = false;
+		},
 		uploadPackageStarted: (state: Online2State) => {
 			state.uploadPackageProgress = true;
 		},
@@ -224,6 +231,8 @@ export const {
 	onGameFilterToggle,
 	onGamesSearchChanged,
 	onGamePersonsChanged,
+	downloadPackageStarted,
+	downloadPackageFinished,
 	uploadPackageStarted,
 	uploadPackageFinished,
 	uploadPackageProgress,

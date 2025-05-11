@@ -35,7 +35,15 @@ import { saveStateToStorage } from '../StateHelpers';
 import { INavigationState } from '../uiSlice';
 import { navigate } from '../../utils/Navigator';
 import { UnknownAction } from '@reduxjs/toolkit';
-import { gameCreationEnd, gameCreationStart, joinGameFinished, joinGameStarted, newGameCancel, passwordChanged, uploadPackageFinished,
+import { downloadPackageFinished,
+	downloadPackageStarted,
+	gameCreationEnd,
+	gameCreationStart,
+	joinGameFinished,
+	joinGameStarted,
+	newGameCancel,
+	passwordChanged,
+	uploadPackageFinished,
 	uploadPackageProgress,
 	uploadPackageStarted } from '../online2Slice';
 
@@ -314,7 +322,15 @@ async function getPackageInfoAsync(state: State, game: GameState, dataContext: D
 				throw new Error('Package id not found');
 			}
 
-			const packageData = await dataContext.state.getPackageData(game.package.id);
+			dispatch(downloadPackageStarted());
+
+			let packageData: File | null = null;
+
+			try {
+				packageData = await dataContext.state.getPackageData(game.package.id);
+			} finally {
+				dispatch(downloadPackageFinished());
+			}
 
 			if (!packageData) {
 				throw new Error('Package data not found');
