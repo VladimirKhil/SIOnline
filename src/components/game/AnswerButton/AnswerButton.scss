@@ -1,0 +1,12 @@
+button.mainAction.playerButton:not(:disabled):active {
+    background: #f2daa0;
+}
+
+button.mainAction.playerButton:disabled {
+    background: gray;
+    cursor: initial;
+}
+
+button.mainAction.playerButton.hidden {
+    background: transparent;
+}

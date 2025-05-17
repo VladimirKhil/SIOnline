@@ -1,4 +1,11 @@
-.gameLog {	
+.gameLog {
     padding: 13px 11px 12px 13px;
     height: 100%;
+}
+
+.game__log {
+    overflow-y: auto;
+    scrollbar-width: thin;
+    height: 100%;
+    flex: 1 0 0;
 }

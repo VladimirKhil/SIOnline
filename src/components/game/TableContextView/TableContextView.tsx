@@ -41,7 +41,8 @@ function renderBody(
 	contextView: ContextView,
 	windowWidth: number,
 	tableMode: TableMode,
-	isGameStarted: boolean) : JSX.Element | null {
+	isGameStarted: boolean
+) : JSX.Element | null {
 	// TODO: Switch to enum to select view to display
 	switch (contextView) {
 		case ContextView.Answer:

@@ -399,13 +399,6 @@ h1.activeTab {
     overflow-wrap: break-word;
 }
 
-.game__log {
-    overflow-y: auto;
-    scrollbar-width: thin;
-    height: 100%;
-    flex: 1 0 0;
-}
-
 showman, player, viewer {
     font-weight: bold;
     margin-right: 5px;

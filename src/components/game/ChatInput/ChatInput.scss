@@ -8,8 +8,14 @@ input.disconnected {
 	position: relative;
 	display: flex;
 	flex: 0 0 45px;
-    padding: 5px;
     background: #000451;
+
+    .roomChatInput {
+	    position: relative;
+        flex: 1;
+        padding: 5px;
+        display: flex;
+    }
 }
 
 .roomChatBodyHost .pickerWrapper {

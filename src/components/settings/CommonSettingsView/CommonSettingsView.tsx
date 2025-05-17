@@ -10,7 +10,8 @@ import { setAppSound,
 	setMainMenuSound,
 	setShowVideoAvatars,
 	setSound,
-	setSoundVolume } from '../../../state/settingsSlice';
+	setSoundVolume,
+	setWriteGameLog } from '../../../state/settingsSlice';
 
 export function CommonSettingsView(): JSX.Element {
 	const settings = useAppSelector(state => state.settings);
@@ -112,6 +113,17 @@ export function CommonSettingsView(): JSX.Element {
 				/>
 
 				<label htmlFor="showVideoAvatars">{localization.showVideoAvatars}</label>
+			</div>
+
+			<div className="settingItem">
+				<input
+					id="writeGameLog"
+					type="checkbox"
+					checked={settings.writeGameLog}
+					onChange={() => appDispatch(setWriteGameLog(!settings.writeGameLog))}
+				/>
+
+				<label htmlFor="writeGameLog">{localization.writeGameLog}</label>
 			</div>
 		</div>
 	);

@@ -1,6 +1,5 @@
 import { connect } from 'react-redux';
 import * as React from 'react';
-import { createRef } from 'react';
 import roomActionCreators from '../../../state/room/roomActionCreators';
 import State from '../../../state/State';
 import { Dispatch, Action } from 'redux';
@@ -8,6 +7,9 @@ import Constants from '../../../model/enums/Constants';
 import { EmojiClickData } from 'emoji-picker-react';
 import ChatInputEmojiPicker from '../../common/ChatInputEmojiPicker/ChatInputEmojiPicker';
 import localization from '../../../model/resources/localization';
+import DownloadLogButton from '../DownloadLogButton/DownloadLogButton';
+import { useAppDispatch, useAppSelector } from '../../../state/hooks';
+import { addGameLog } from '../../../state/room2Slice';
 
 import './ChatInput.scss';
 
@@ -32,54 +34,53 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	}
 });
 
-export class ChatInput extends React.Component<ChatInputProps> {
-	private readonly inputRef;
+export const ChatInput: React.FC<ChatInputProps> = (props) => {
+	const inputRef = React.useRef<HTMLInputElement>(null);
+	const appDispatch = useAppDispatch();
+	const myName = useAppSelector(state => state.room2.name);
 
-	constructor(props: ChatInputProps) {
-		super(props);
-
-		this.inputRef = createRef<HTMLInputElement>();
-	}
-
-	componentDidUpdate() {
-		if (this.inputRef.current) {
-			this.inputRef.current.focus();
+	React.useEffect(() => {
+		if (inputRef.current) {
+			inputRef.current.focus();
 		}
-	}
+	});
 
-	onMessageChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
-		this.props.onChatMessageChanged(e.target.value);
+	const onMessageChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
+		props.onChatMessageChanged(e.target.value);
 	};
 
-	onMessageKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+	const onMessageKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
 		if (e.key === Constants.KEY_ENTER_NEW) {
-			if (this.props.isConnected) {
-				this.props.onChatMessageSend();
+			if (props.isConnected) {
+				props.onChatMessageSend();
+				appDispatch(addGameLog(`${myName}: ${props.message}`));
 			}
 
 			e.preventDefault();
 		}
 	};
 
-	onEmojiClick = (emojiData: EmojiClickData) => {
-		this.props.onChatMessageChanged(this.props.message + emojiData.emoji);
+	const onEmojiClick = (emojiData: EmojiClickData) => {
+		props.onChatMessageChanged(props.message + emojiData.emoji);
 	};
 
-	render(): JSX.Element {
-		return (
-			<div className='roomChatBodyHost'>
+	return (
+		<div className='roomChatBodyHost'>
+			<div className='roomChatInput'>
 				<input
-					ref={this.inputRef}
+					ref={inputRef}
 					placeholder={localization.message}
-					className={`gameInputBox ${this.props.isConnected ? '' : 'disconnected'}`}
-					value={this.props.message}
-					onChange={this.onMessageChanged}
-					onKeyPress={this.onMessageKeyPress} />
+					className={`gameInputBox ${props.isConnected ? '' : 'disconnected'}`}
+					value={props.message}
+					onChange={onMessageChanged}
+					onKeyPress={onMessageKeyPress} />
 
-				<ChatInputEmojiPicker onEmojiClick={this.onEmojiClick} />
+				<ChatInputEmojiPicker onEmojiClick={onEmojiClick} />
 			</div>
-		);
-	}
-}
+
+			<DownloadLogButton />
+		</div>
+	);
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(ChatInput);

@@ -30,7 +30,8 @@ import { playAudio } from '../state/commonSlice';
 import clearUrls from '../utils/clearUrls';
 import ThemesPlayMode from '../model/enums/ThemesPlayMode';
 import { AppDispatch } from '../state/store';
-import { playerInGameChanged,
+import { addGameLog,
+	playerInGameChanged,
 	playerMediaLoaded,
 	playerStakeChanged,
 	playerStateChanged } from '../state/room2Slice';
@@ -1174,9 +1175,11 @@ const processSystemMessage: ActionCreator<ThunkAction<void, State, DataContext, 
 		}
 	};
 
-const userMessageReceived: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (message: Message) => (
+const userMessageReceived: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (message: Message, appDispatch: AppDispatch) => (
 	dispatch: Dispatch<any>,
 	getState: () => State) => {
+		appDispatch(addGameLog(`${message.Sender}: ${message.Text}`));
+
 		if (message.Sender === getState().room2.name) {
 			return;
 		}
@@ -1196,5 +1199,5 @@ export default function messageProcessor(controller: ClientController, dispatch:
 		return;
 	}
 
-	dispatch((userMessageReceived(message) as object) as AnyAction);
+	dispatch((userMessageReceived(message, appDispatch) as object) as AnyAction);
 }

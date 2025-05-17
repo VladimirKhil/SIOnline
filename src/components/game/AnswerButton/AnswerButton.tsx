@@ -4,17 +4,17 @@ import * as React from 'react';
 import roomActionCreators from '../../../state/room/roomActionCreators';
 import State from '../../../state/State';
 import { Dispatch, Action } from 'redux';
+import { useAppSelector } from '../../../state/hooks';
+import PlayerStates from '../../../model/enums/PlayerStates';
 
-import './GameButton.css';
+import './AnswerButton.scss';
 
-interface GameButtonProps {
-	isConnected: boolean;
+interface AnswerButtonProps {
 	isGameButtonEnabled: boolean;
 	pressGameButton: () => void;
 }
 
 const mapStateToProps = (state: State) => ({
-	isConnected: state.common.isSIHostConnected,
 	isGameButtonEnabled: state.room.isGameButtonEnabled,
 });
 
@@ -24,16 +24,21 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	},
 });
 
-export function GameButton(props: GameButtonProps) {
+export function AnswerButton(props: AnswerButtonProps) {
+	const common = useAppSelector((state) => state.common);
+	const room = useAppSelector((state) => state.room2);
+	const me = room.persons.players.find(p => p.name === room.name);
+	const canAnswer = me && (me.state === PlayerStates.None || me.state === PlayerStates.Lost);
+
 	return (
 		<button
 			type='button'
-			className="playerButton mainAction active"
-			disabled={!props.isConnected || !props.isGameButtonEnabled}
+			className={`playerButton mainAction active ${canAnswer ? '' : ' hidden'}`}
+			disabled={!common.isSIHostConnected || !props.isGameButtonEnabled || !canAnswer}
 			onClick={() => props.pressGameButton()}>
 			{localization.makeAnswer.toLocaleUpperCase()}
 		</button>
 	);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(GameButton);
+export default connect(mapStateToProps, mapDispatchToProps)(AnswerButton);

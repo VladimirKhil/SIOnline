@@ -25,6 +25,7 @@ export interface SettingsState {
 	attachContentToTable: boolean;
 	showVideoAvatars: boolean;
 	theme: ThemeSettings;
+	writeGameLog: boolean;
 }
 
 const initialState: SettingsState = {
@@ -54,6 +55,7 @@ const initialState: SettingsState = {
 			backgroundImageKey: null,
 		},
 	},
+	writeGameLog: false,
 };
 
 export const settingsSlice = createSlice({
@@ -177,6 +179,9 @@ export const settingsSlice = createSlice({
 		setTableBackgroundColor: (state: SettingsState, action: PayloadAction<string>) => {
 			state.theme.table.backgroundColor = action.payload;
 		},
+		setWriteGameLog: (state: SettingsState, action: PayloadAction<boolean>) => {
+			state.writeGameLog = action.payload;
+		},
 		resetSettings: (state: SettingsState) => {
 			const { culture } = state.appSettings;
 			Object.assign(state, initialState, { appSettings: { ...initialAppSettings, culture } });
@@ -224,6 +229,7 @@ export const {
 	setPauseButtonKey,
 	setTableTextColor,
 	setTableBackgroundColor,
+	setWriteGameLog,
 	resetSettings,
 } = settingsSlice.actions;
 

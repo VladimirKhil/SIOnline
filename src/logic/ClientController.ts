@@ -64,6 +64,7 @@ import {
 	ContextView,
 	activatePlayerDecision,
 	activateShowmanDecision,
+	addGameLog,
 	askValidation,
 	chooserChanged,
 	clearDecisions,
@@ -232,6 +233,11 @@ export default class ClientController {
 					});
 
 					groups.push(textGroup);
+
+					if (this.getState().settings.writeGameLog) {
+						this.appDispatch(addGameLog(value));
+					}
+
 					break;
 
 				case 'image':
@@ -447,6 +453,10 @@ export default class ClientController {
 	onGameThemes(gameThemes: string[]) {
 		this.appDispatch(showGameThemes(gameThemes));
 		this.playGameSound(GameSound.GAME_THEMES);
+
+		if (this.getState().settings.writeGameLog) {
+			this.appDispatch(addGameLog(`${localization.gameThemes}: ${gameThemes.join(', ')}`));
+		}
 	}
 
 	onInfo(all: Persons, showman: PersonInfo, players: PlayerInfo[]) {
@@ -707,6 +717,10 @@ export default class ClientController {
 		this.dispatch(roomActionCreators.stageChanged(stage, stageIndex));
 
 		if (stage !== GameStage.Before) {
+			if (state.settings.writeGameLog && !state.room2.stage.isGameStarted) {
+				this.appDispatch(addGameLog(`${localization.gameStarted}: ${new Date().toLocaleString()}`));
+			}
+
 			this.appDispatch(setIsGameStarted(true));
 		}
 
@@ -723,6 +737,11 @@ export default class ClientController {
 			}
 
 			this.appDispatch(captionChanged(''));
+
+			if (state.settings.writeGameLog) {
+				this.appDispatch(addGameLog(''));
+				this.appDispatch(addGameLog(`${localization.round}: ${stageName}`));
+			}
 		} else if (stage === GameStage.Begin || stage === GameStage.After) {
 			this.appDispatch(showLogo());
 			this.appDispatch(captionChanged(stage === GameStage.Begin ? localization.gameStarted : localization.gameFinished));
@@ -773,6 +792,22 @@ export default class ClientController {
 			text: stringFormat(localization.userUnbanned, name),
 			level: MessageLevel.System,
 		}) as unknown as Action);
+	}
+
+	onWinner() {
+		this.playGameSound(GameSound.APPLAUSE_FINAL);
+
+		if (this.getState().settings.writeGameLog) {
+			this.appDispatch(addGameLog(`${localization.gameFinished}: ${new Date().toLocaleString()}`));
+			this.appDispatch(addGameLog(localization.gameResults));
+
+			const { players } = this.getState().room2.persons;
+
+			for (let i = 0; i < players.length; i++) {
+				const player = players[i];
+				this.appDispatch(addGameLog(`${player.name}: ${player.sum}`));
+			}
+		}
 	}
 
 	onWrongTry(playerIndex: number) {
@@ -836,6 +871,10 @@ export default class ClientController {
 			contentType: contentType === 'text' ? ContentType.Text : ContentType.Image,
 			value: contentValue,
 		}));
+
+		if (this.getState().settings.writeGameLog) {
+			this.appDispatch(addGameLog(`${label}: ${contentValue}`));
+		}
 	}
 
 	onThemeComments(themeComments: string) {
@@ -844,6 +883,10 @@ export default class ClientController {
 
 	onContentAppend(placement: string, layoutId: string, contentType: string, contentValue: string) {
 		this.appDispatch(appendPartialText(contentValue));
+
+		if (this.getState().settings.writeGameLog) {
+			this.appDispatch(addGameLog(contentValue));
+		}
 	}
 
 	onContentShape(text: string) {
@@ -912,6 +955,20 @@ export default class ClientController {
 	}
 
 	onReplic(personCode: string, text: string) {
+		const state = this.getState();
+
+		if (state.settings.writeGameLog) {
+			if (personCode === 's' || (personCode.startsWith('p') && personCode.length > 1)) {
+				const name = personCode === 's'
+					? state.room2.persons.showman.name
+					: state.room2.persons.players[parseInt(personCode.substring(1), 10)]?.name;
+
+				this.dispatch(addGameLog(`${name}: ${text}`));
+			} else if (personCode === 'l') {
+				this.dispatch(addGameLog(text));
+			}
+		}
+
 		if (personCode === 's') {
 			this.appDispatch(showmanReplicChanged(text));
 			return;
@@ -951,7 +1008,9 @@ export default class ClientController {
 		this.appDispatch(questionReset());
 		this.playGameSound(GameSound.QUESTION_SELECTED);
 
-		const themeInfo = this.getState().table.roundInfo[themeIndex];
+		const state = this.getState();
+
+		const themeInfo = state.table.roundInfo[themeIndex];
 
 		if (themeInfo) {
 			if (questionIndex > -1 && questionIndex <= themeInfo.questions.length) {
@@ -964,12 +1023,16 @@ export default class ClientController {
 					() => {
 						this.appDispatch(updateQuestion({ themeIndex, questionIndex, price: -1 }));
 
-						if (this.getState().table.mode === TableMode.RoundTable) {
+						if (state.table.mode === TableMode.RoundTable) {
 							this.appDispatch(showObject({ header: themeInfo.name, text: price.toString(), hint: '', large: true, animate: false }));
 						}
 					},
 					500
 				);
+
+				if (state.settings.writeGameLog) {
+					this.appDispatch(addGameLog(`${themeInfo.name}, ${price}`));
+				}
 			}
 		}
 	}
@@ -988,6 +1051,10 @@ export default class ClientController {
 
 		this.appDispatch(showObject({ header: animate ? '' : localization.theme, text: themeName, hint: '', large: false, animate }));
 		this.dispatch(roomActionCreators.themeNameChanged(themeName));
+
+		if (this.getState().settings.writeGameLog) {
+			this.appDispatch(addGameLog(`${localization.theme}: ${themeName}`));
+		}
 	}
 
 	onQuestion(questionPrice: string) {
@@ -1137,6 +1204,10 @@ export default class ClientController {
 		}
 
 		this.dispatch(roomActionCreators.afterQuestionStateChanged(true));
+
+		if (this.getState().settings.writeGameLog) {
+			this.appDispatch(addGameLog(`${localization.rightAnswer}: ${answer}`));
+		}
 	}
 
 	onChoose() {
@@ -1170,6 +1241,13 @@ export default class ClientController {
 		this.dispatch(roomActionCreators.afterQuestionStateChanged(true));
 		this.dispatch(roomActionCreators.isQuestionChanged(false, ''));
 		this.appDispatch(endQuestion());
+
+		const state = this.getState();
+
+		if (state.settings.writeGameLog) {
+			const score = `${localization.score}: ${state.room2.persons.players.map(p => `${p.name}: ${p.sum}`).join(', ')}`;
+			this.appDispatch(addGameLog(score));
+		}
 	}
 
 	addPlayerTable() {

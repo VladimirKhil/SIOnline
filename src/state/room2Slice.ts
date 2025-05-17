@@ -61,6 +61,7 @@ export interface Room2State {
 	};
 
 	isEditTableEnabled: boolean;
+	gameLog: string[];
 }
 
 const initialState: Room2State = {
@@ -103,6 +104,7 @@ const initialState: Room2State = {
 	},
 
 	isEditTableEnabled: false,
+	gameLog: [],
 };
 
 export const complain = createAsyncThunk(
@@ -491,6 +493,12 @@ export const room2Slice = createSlice({
 		setIsEditingTables(state: Room2State, action: PayloadAction<boolean>) {
 			state.stage.isEditingTables = action.payload;
 		},
+		clearGameLog(state: Room2State) {
+			state.gameLog = [];
+		},
+		addGameLog(state: Room2State, action: PayloadAction<string>) {
+			state.gameLog.push(action.payload);
+		},
 	},
 	extraReducers: (builder) => {
 		builder.addCase(sendAnswer.fulfilled, (state) => {
@@ -583,6 +591,8 @@ export const {
 	setIsGameStarted,
 	setIsAppellation,
 	setIsEditingTables,
+	clearGameLog,
+	addGameLog,
 } = room2Slice.actions;
 
 

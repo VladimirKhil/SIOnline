@@ -1,8 +1,0 @@
-button.mainAction.playerButton:active {
-    background: #f2daa0;
-}
-
-.playerButton:disabled {
-    background: gray;
-    cursor: initial;
-}

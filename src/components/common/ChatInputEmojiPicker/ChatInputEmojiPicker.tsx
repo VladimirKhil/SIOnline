@@ -45,7 +45,7 @@ export function ChatInputEmojiPicker(props: ChatInputEmojiPickerProps): JSX.Elem
 						defaultSkinTone={SkinTones.NEUTRAL}
 						emojiStyle={EmojiStyle.NATIVE}
 						previewConfig={{ showPreview: false }}
-						onEmojiClick={props.onEmojiClick}
+						onEmojiClick={(d, e) => { props.onEmojiClick(d, e); setIsEmojiPickerOpened(false); }}
 						width={'100%'}
 						autoFocusSearch={false}
 						theme={Theme.DARK}

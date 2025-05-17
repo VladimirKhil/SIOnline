@@ -18,7 +18,7 @@ import actionCreators from '../../logic/actionCreators';
 import AppSettings from '../../model/AppSettings';
 import { AppDispatch } from '../store';
 import { isSelectableChanged } from '../tableSlice';
-import { showmanReplicChanged } from '../room2Slice';
+import { clearGameLog, showmanReplicChanged } from '../room2Slice';
 import StakeModes from '../../client/game/StakeModes';
 import UsersMode from '../../model/enums/UsersMode';
 import { navigate } from '../../utils/Navigator';
@@ -37,8 +37,8 @@ const runChatMessageChanged: ActionCreator<RunActions.RunChatMessageChangedActio
 	type: RunActions.RoomActionTypes.RoomChatMessageChanged, message
 });
 
-const runChatMessageSend: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () =>
-	(dispatch: Dispatch<RunActions.KnownRoomAction>, getState: () => State, dataContext: DataContext) => {
+const runChatMessageSend: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => (
+	dispatch: Dispatch<RunActions.KnownRoomAction>, getState: () => State, dataContext: DataContext) => {
 		const state = getState();
 
 		const text = state.room.chat.message;
@@ -155,6 +155,7 @@ const exitGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (
 	dispatch(clearDecisionsAndMainTimer());
 
 	appDispatch(stopAudio());
+	appDispatch(clearGameLog());
 
 	const state = getState();
 	dispatch(navigate({ navigation: { path: state.ui.navigation.returnToLobby ? Path.Lobby : Path.Menu }, saveState: true }) as unknown as Action);
@@ -379,6 +380,10 @@ const pressGameButton: ActionCreator<ThunkAction<void, State, DataContext, Actio
 	getState: () => State,
 	dataContext: DataContext
 	) => {
+	if (!getState().room.isGameButtonEnabled) {
+		return;
+	}
+
 	const deltaTime = Date.now() - getState().table.canPressUpdateTime;
 
 	if (!await dataContext.game.pressButton(deltaTime)) {

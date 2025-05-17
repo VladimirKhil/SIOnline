@@ -1,14 +1,14 @@
 import * as React from 'react';
 import PassButton from '../PassButton/PassButton';
-import GameButton from '../GameButton/GameButton';
+import AnswerButton from '../AnswerButton/AnswerButton';
 
-import './PlayerButtonsPanel.css';
+import './PlayerButtonsPanel.scss';
 
 export function PlayerButtonsPanel(): JSX.Element | null {
 	return (
 		<div className='playerButtonsPanel'>
 			<PassButton />
-			<GameButton />
+			<AnswerButton />
 		</div>
 	);
 }
