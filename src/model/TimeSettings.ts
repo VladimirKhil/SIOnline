@@ -10,7 +10,6 @@ export default interface TimeSettings {
 	timeForFinalThinking: number;
 	timeForShowmanDecisions: number;
 	timeForRightAnswer: number;
-	timeForMediaDelay: number;
 	timeForBlockingButton: number;
 	partialImageTime: number;
 	imageTime: number;

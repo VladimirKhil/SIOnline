@@ -52,7 +52,6 @@ interface RoomProps {
 	isConnected: boolean;
 	isConnectedReason: string;
 	avatarViewVisible: boolean;
-	role: Role;
 
 	onChatVisibilityChanged: (isOpen: boolean) => void;
 	onPersonsDialogClose: () => void;
@@ -81,7 +80,6 @@ const mapStateToProps = (state: State) => ({
 	isConnected: state.common.isSIHostConnected,
 	isConnectedReason: state.common.isSIHostConnectedReason,
 	avatarViewVisible: state.room.avatarViewVivible,
-	role: state.room.role,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
@@ -273,7 +271,7 @@ export function Room(props: RoomProps) : JSX.Element {
 				</Dialog>
 			) : null}
 
-			{state.validation.queue.length > 0 && (!isScreenWide || props.role === Role.Player) ? (
+			{state.validation.queue.length > 0 && (!isScreenWide || state.role === Role.Player) ? (
 				<Dialog className='answerValidationDialog' title={state.validation.header} onClose={() => onReject(1.0)}>
 					<AnswerValidation />
 				</Dialog>

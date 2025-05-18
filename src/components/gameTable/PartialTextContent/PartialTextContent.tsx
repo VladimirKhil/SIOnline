@@ -20,7 +20,7 @@ const mapStateToProps = (state: State) => ({
 	text: state.table.text + state.table.tail,
 	visibleLength: state.table.text.length,
 	readingSpeed: state.room.readingSpeed,
-	isGamePaused: state.room.stage.isGamePaused,
+	isGamePaused: state.room2.stage.isGamePaused,
 });
 
 export class PartialTextContent extends React.Component<PartialTextContentProps, PartialTextContentState> {

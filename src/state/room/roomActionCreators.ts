@@ -18,7 +18,7 @@ import actionCreators from '../../logic/actionCreators';
 import AppSettings from '../../model/AppSettings';
 import { AppDispatch } from '../store';
 import { isSelectableChanged } from '../tableSlice';
-import { clearGameLog, showmanReplicChanged } from '../room2Slice';
+import { clearGameLog, setIsPaused, showmanReplicChanged } from '../room2Slice';
 import StakeModes from '../../client/game/StakeModes';
 import UsersMode from '../../model/enums/UsersMode';
 import { navigate } from '../../utils/Navigator';
@@ -62,14 +62,6 @@ const onPass: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () 
 	dataContext: DataContext
 	) => {
 		await dataContext.game.pass();
-	};
-
-const pause: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
-	_dispatch: Dispatch<RunActions.KnownRoomAction>,
-	getState: () => State,
-	dataContext: DataContext
-	) => {
-		await dataContext.game.pause(!getState().room.stage.isGamePaused);
 	};
 
 const giveTurn: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (dispatch: Dispatch<RunActions.KnownRoomAction>) => {
@@ -151,7 +143,7 @@ const exitGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (
 	dispatch(stopTimer(1));
 	dispatch(stopTimer(2));
 
-	dispatch(isPausedChanged(false));
+	appDispatch(setIsPaused(false));
 	dispatch(clearDecisionsAndMainTimer());
 
 	appDispatch(stopAudio());
@@ -300,14 +292,6 @@ const personAdded: ActionCreator<RunActions.PersonAddedAction> = (person: Accoun
 
 const personRemoved: ActionCreator<RunActions.PersonRemovedAction> = (name: string) => ({
 	type: RunActions.RoomActionTypes.PersonRemoved, name
-});
-
-const roleChanged: ActionCreator<RunActions.RoleChangedAction> = (role: Role) => ({
-	type: RunActions.RoomActionTypes.RoleChanged, role
-});
-
-const isPausedChanged: ActionCreator<RunActions.IsPausedChangedAction> = (isPaused: boolean) => ({
-	type: RunActions.RoomActionTypes.IsPausedChanged, isPaused
 });
 
 const decisionNeededChanged: ActionCreator<RunActions.DecisionNeededChangedAction> = (decisionNeeded: boolean) => ({
@@ -702,7 +686,6 @@ const roomActionCreators = {
 	runChatMessageChanged,
 	runChatMessageSend,
 	onPass,
-	pause,
 	giveTurn,
 	runShowPersons,
 	runHidePersons,
@@ -734,8 +717,6 @@ const roomActionCreators = {
 	currentPriceChanged,
 	personAdded,
 	personRemoved,
-	roleChanged,
-	isPausedChanged,
 	decisionNeededChanged,
 	clearDecisions,
 	selectQuestion,

@@ -8,6 +8,7 @@ import localization from '../model/resources/localization';
 import roomActionCreators from './room/roomActionCreators';
 import State from './State';
 import Constants from '../model/enums/Constants';
+import Role from '../model/Role';
 
 export enum DialogView {
 	None,
@@ -35,6 +36,7 @@ export interface Room2State {
 	};
 
 	name: string;
+	role: Role;
 
 	playState: {
 		report: string;
@@ -47,6 +49,7 @@ export interface Room2State {
 		isGameStarted: boolean;
 		isAppellation: boolean;
 		isEditingTables: boolean;
+		isGamePaused: boolean;
 	}
 
 	validation: {
@@ -78,6 +81,7 @@ const initialState: Room2State = {
 	},
 
 	name: '',
+	role: Role.Player,
 
 	playState: {
 		report: '',
@@ -90,6 +94,7 @@ const initialState: Room2State = {
 		isGameStarted: false,
 		isAppellation: false,
 		isEditingTables: false,
+		isGamePaused: false,
 	},
 
 	validation: {
@@ -499,6 +504,14 @@ export const room2Slice = createSlice({
 		addGameLog(state: Room2State, action: PayloadAction<string>) {
 			state.gameLog.push(action.payload);
 		},
+		setIsPaused(state: Room2State, action: PayloadAction<boolean>) {
+			state.stage.isGamePaused = action.payload;
+			state.isEditTableEnabled = false;
+		},
+		setRoomRole(state: Room2State, action: PayloadAction<Role>) {
+			state.role = action.payload;
+			state.isEditTableEnabled = false;
+		},
 	},
 	extraReducers: (builder) => {
 		builder.addCase(sendAnswer.fulfilled, (state) => {
@@ -593,6 +606,8 @@ export const {
 	setIsEditingTables,
 	clearGameLog,
 	addGameLog,
+	setIsPaused,
+	setRoomRole,
 } = room2Slice.actions;
 
 

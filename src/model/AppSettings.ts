@@ -67,7 +67,6 @@ export const initialState: AppSettings = {
 		timeForFinalThinking: 45,
 		timeForShowmanDecisions: 30,
 		timeForRightAnswer: 2,
-		timeForMediaDelay: 0,
 		timeForBlockingButton: 3,
 		partialImageTime: 3,
 		imageTime: 5,

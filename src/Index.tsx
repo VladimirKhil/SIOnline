@@ -38,6 +38,7 @@ import { INavigationState, setFullScreenSupported, settingKeyChanged, visibility
 import { navigate } from './utils/Navigator';
 import TauriHost from './host/TauriHost';
 import { approveAnswerDefault, rejectAnswerDefault } from './state/room2Slice';
+import { pauseGame } from './state/serverActions';
 
 import './utils/polyfills';
 import './scss/style.scss';
@@ -213,7 +214,7 @@ function subscribeToExternalEvents(store: Store<State, any>, stateManager: IHost
 		} else if (e.key === state.settings.noButtonKey) {
 			store.dispatch(rejectAnswerDefault());
 		} else if (e.key === state.settings.pauseButtonKey) {
-			store.dispatch(roomActionCreators.pause());
+			store.dispatch(pauseGame());
 		}
 
 		return true;

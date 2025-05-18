@@ -32,10 +32,8 @@ interface GameChatViewProps {
 	chatMode: ChatMode;
 	usersMode: UsersMode;
 	personsCount: number;
-	role: Role;
 	areSumsEditable: boolean;
 	isHost: boolean;
-	isPaused: boolean;
 	voiceChatUri: string | null;
 
 	onChatModeChanged: (chatMode: ChatMode) => void;
@@ -49,10 +47,8 @@ const mapStateToProps = (state: State) => ({
 	chatMode: state.room.chat.mode,
 	usersMode: state.room.chat.usersMode,
 	personsCount: Object.values(state.room.persons.all).length,
-	role: state.room.role,
 	areSumsEditable: state.room.areSumsEditable,
 	isHost: isHost(state),
-	isPaused: state.room.stage.isGamePaused,
 	voiceChatUri: state.room.metadata.voiceChatUri,
 });
 
@@ -211,7 +207,7 @@ export function GameChatView(props: GameChatViewProps): JSX.Element {
 				{getSideArea(props)}
 			</div>
 
-			{props.role === Role.Showman ? (
+			{room.role === Role.Showman ? (
 				<>
 					<ValidationArea />
 
@@ -225,7 +221,7 @@ export function GameChatView(props: GameChatViewProps): JSX.Element {
 							onClick={onGiveTurn}
 							title={localization.giveTurn}
 						>
-							<img src={activePlayerImg} />
+							<img alt='Active player' src={activePlayerImg} />
 						</button>
 
 						<button

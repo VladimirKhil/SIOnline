@@ -907,7 +907,7 @@ const viewerHandler = (
 			break;
 
 		case GameMessages.Winner:
-			playGameSound(dispatch, state.settings.appSound, GameSound.APPLAUSE_FINAL);
+			controller.onWinner();
 			break;
 
 		case GameMessages.WrongTry:
@@ -1163,7 +1163,7 @@ const processSystemMessage: ActionCreator<ThunkAction<void, State, DataContext, 
 	appDispatch: AppDispatch
 ) => (dispatch: Dispatch<RoomActions.KnownRoomAction>, getState: () => State) => {
 		const state = getState();
-		const { role } = state.room;
+		const { role } = state.room2;
 		const args = message.Text.split('\n');
 
 		viewerHandler(controller, dispatch, appDispatch, state, args);

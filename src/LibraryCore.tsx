@@ -322,8 +322,8 @@ export default function runCore(game?: IGameClient): Store<State, AnyAction> {
 				...initialState.table,
 				mode: TableMode.Void,
 			},
-			room: {
-				...initialState.room,
+			room2: {
+				...initialState.room2,
 				role: Role.Showman,
 			},
 			user: {

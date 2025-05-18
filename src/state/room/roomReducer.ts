@@ -258,21 +258,6 @@ const roomReducer: Reducer<RoomState> = (state: RoomState = initialState, anyAct
 				}
 			};
 
-		case RoomActionTypes.RoleChanged:
-			return {
-				...state,
-				role: action.role
-			};
-
-		case RoomActionTypes.IsPausedChanged:
-			return {
-				...state,
-				stage: {
-					...state.stage,
-					isGamePaused: action.isPaused,
-				}
-			};
-
 		case RoomActionTypes.DecisionNeededChanged:
 			return {
 				...state,

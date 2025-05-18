@@ -29,7 +29,7 @@ import WellKnownSIContentServiceErrorCode from 'sicontent-client/dist/models/Wel
 import RandomPackageParameters from 'sistorage-client/dist/models/RandomPackageParameters';
 import { AppDispatch } from '../store';
 import { showWelcome, tableReset } from '../tableSlice';
-import { ContextView, nameChanged, setContext, setIsGameStarted } from '../room2Slice';
+import { ContextView, nameChanged, setContext, setIsGameStarted, setRoomRole } from '../room2Slice';
 import { GameState, setGameSet } from '../gameSlice';
 import { saveStateToStorage } from '../StateHelpers';
 import { INavigationState } from '../uiSlice';
@@ -105,7 +105,7 @@ const initGameAsync = async (
 	appDispatch(setContext(ContextView.None));
 	// TODO: provide single action to reset room state
 	appDispatch(nameChanged(name));
-	dispatch(roomActionCreators.roleChanged(role));
+	appDispatch(setRoomRole(role));
 	dispatch(roomActionCreators.stopTimer(0));
 	dispatch(roomActionCreators.stopTimer(1));
 	dispatch(roomActionCreators.stopTimer(2));
@@ -246,7 +246,7 @@ function createGameSettings(
 		timeForFinalThinking: ts.timeForFinalThinking,
 		timeForShowmanDecisions: ts.timeForShowmanDecisions,
 		timeForRightAnswer: ts.timeForRightAnswer,
-		timeForMediaDelay: ts.timeForMediaDelay,
+		timeForMediaDelay: 0,
 		timeForBlockingButton: ts.timeForBlockingButton,
 		partialImageTime: ts.partialImageTime,
 		imageTime: ts.imageTime,

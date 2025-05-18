@@ -22,7 +22,6 @@ import './GameTable.css';
 
 interface GameTableProps {
 	mode: TableMode;
-	isPaused: boolean;
 	isConnected: boolean;
 	showMainTimer: boolean;
 	decisionTimer: TimerInfo;
@@ -33,7 +32,6 @@ interface GameTableProps {
 const mapStateToProps = (state: State) => ({
 	isConnected: state.common.isSIHostConnected,
 	mode: state.table.mode,
-	isPaused: state.room.stage.isGamePaused,
 	showMainTimer: state.room.showMainTimer,
 	decisionTimer: state.room.timers.decision,
 	caption: state.table.caption,
@@ -111,6 +109,8 @@ export function GameTable(props: GameTableProps): JSX.Element {
 		themeProperties.backgroundColor = theme.table.backgroundColor;
 	}
 
+	const isPaused = room.stage.isGamePaused;
+
 	return (
 		<div id="table" style={themeProperties}>
 			{caption ? (
@@ -133,12 +133,12 @@ export function GameTable(props: GameTableProps): JSX.Element {
 				/>
 			) : null}
 
-			{(props.isPaused && !room.isEditTableEnabled) || room.stage.isAppellation || !props.isConnected ? (
+			{(isPaused && !room.isEditTableEnabled) || room.stage.isAppellation || !props.isConnected ? (
 				<AutoSizedText
 					maxFontSize={144}
 					className={`pauseLogo tableText tableTextCenter ${props.isConnected ? '' : 'warning'}`}
 				>
-					{props.isPaused ? localization.pause : (room.stage.isAppellation ? localization.apellation : localization.connectionClosed)}
+					{isPaused ? localization.pause : (room.stage.isAppellation ? localization.apellation : localization.connectionClosed)}
 				</AutoSizedText>
 			) : null}
 		</div>

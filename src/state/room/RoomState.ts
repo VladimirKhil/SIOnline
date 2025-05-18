@@ -14,14 +14,12 @@ export default interface RoomState {
 		all: Persons;
 	};
 
-	role: Role;
 	answer: string | null;
 	lastReplic: ChatMessage | null;
 
 	stage: {
 		name: string;
 		roundIndex: number;
-		isGamePaused: boolean;
 		isDecisionNeeded: boolean;
 		isAfterQuestion: boolean;
 		themeIndex: number;
@@ -96,14 +94,12 @@ export const initialState: RoomState = {
 		all: {},
 	},
 
-	role: Role.Player,
 	answer: null,
 	lastReplic: null,
 
 	stage: {
 		name: '',
 		roundIndex: -1,
-		isGamePaused: false,
 		isDecisionNeeded: false,
 		isAfterQuestion: false,
 		themeIndex: -1,

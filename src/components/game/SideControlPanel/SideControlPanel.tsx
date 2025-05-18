@@ -14,6 +14,7 @@ import { AppDispatch } from '../../../state/store';
 import { addTable, selectPlayers, setIsEditingTables } from '../../../state/room2Slice';
 import { showProfile, showSettings } from '../../../state/uiSlice';
 import Constants from '../../../model/enums/Constants';
+import { pauseGame } from '../../../state/serverActions';
 
 import './SideControlPanel.css';
 import nextImg from '../../../../assets/images/next.png';
@@ -22,11 +23,9 @@ import exitImg from '../../../../assets/images/exit.png';
 
 interface SideControlPanelProps {
 	isConnected: boolean;
-	role: Role;
 	isChatVisible: boolean;
 	isChatActive: boolean;
 	isHost: boolean;
-	isPaused: boolean;
 	lastReplic: ChatMessage | null;
 	areStakesVisible: boolean;
 	areSumsEditable: boolean;
@@ -38,7 +37,6 @@ interface SideControlPanelProps {
 	onShowTables: () => void;
 	onShowBanned: () => void;
 	onShowGameInfo: () => void;
-	onPause: () => void;
 	onGiveTurn: () => void;
 	onExit: (appDispatch: AppDispatch) => void;
 	onEditSums: (enable: boolean) => void;
@@ -50,11 +48,9 @@ interface SideControlPanelProps {
 
 const mapStateToProps = (state: State) => ({
 	isConnected: state.common.isSIHostConnected,
-	role: state.room.role,
 	isChatVisible: state.room.chat.isVisible,
 	isChatActive: state.room.chat.isActive,
 	isHost: isHost(state),
-	isPaused: state.room.stage.isGamePaused,
 	lastReplic: state.room.lastReplic,
 	areStakesVisible: state.room.stakes.areVisible,
 	areSumsEditable: state.room.areSumsEditable,
@@ -77,9 +73,6 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	},
 	onShowGameInfo: () => {
 		dispatch(roomActionCreators.runShowGameInfo());
-	},
-	onPause: () => {
-		dispatch(roomActionCreators.pause() as unknown as Action);
 	},
 	onGiveTurn: () => {
 		dispatch(roomActionCreators.giveTurn() as unknown as Action);
@@ -113,15 +106,16 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 		flex: '1 0 0'
 	};
 
-	const pauseTitle = props.isPaused ? localization.resume : localization.pause;
-	const canPause = props.isHost || props.role === Role.Showman;
+	const appDispatch = useAppDispatch();
+	const room = useAppSelector(state => state.room2);
+
+	const pauseTitle = room.stage.isGamePaused ? localization.resume : localization.pause;
+	const canPause = props.isHost || room.role === Role.Showman;
 
 	const enabledClass = props.isConnected ? '' : 'disabled';
 	const enabledManagementClass = props.isConnected && props.roundsNames && props.roundsNames.length >= 2 ? '' : 'disabled';
 
 	const { voiceChatUri } = props;
-	const appDispatch = useAppDispatch();
-	const room = useAppSelector(state => state.room2);
 	const canAddTable = room.persons.players.length < Constants.MAX_PLAYER_COUNT;
 
 	const canStart = !room.stage.isGameStarted && props.isHost;
@@ -141,7 +135,7 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 							title={localization.menu}
 							flyout={(
 								<ul className="gameMenu">
-									{props.role === Role.Showman
+									{room.role === Role.Showman
 										? (
 											<>
 												<li
@@ -177,7 +171,7 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 									<li onClick={() => props.onShowBanned()}>{localization.bannedList}</li>
 									<li onClick={() => props.onShowGameInfo()}>{localization.gameInfo}</li>
 
-									{props.role === Role.Showman ? (
+									{room.role === Role.Showman ? (
 										<li className={enabledClass} onClick={onGiveTurn}>{localization.giveTurn}</li>
 										) : null}
 
@@ -210,10 +204,10 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 					{canPause ? (
 						<button
 							type="button"
-							className={`pauseButton standard imageButton ${props.isPaused ? 'active' : ''}`}
+							className={`pauseButton standard imageButton ${room.stage.isGamePaused ? 'active' : ''}`}
 							title={pauseTitle}
 							disabled={!props.isConnected || !room.stage.isGameStarted}
-							onClick={() => props.onPause()}
+							onClick={() => appDispatch(pauseGame())}
 						>
 							<img alt='pause' src={pauseImg} />
 						</button>
@@ -225,7 +219,7 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 							className={`nextButton standard imageButton ${canStart ? 'startButton' : ''}`}
 							title={canStart ? localization.startGameHint : localization.next}
 							onClick={canStart ? props.onStart : props.onMoveNext}>
-							{canStart ? <span role="img" aria-label="arrow right">▶</span> : <img src={nextImg} />}
+							{canStart ? <span role="img" aria-label="arrow right">▶</span> : <img alt='Next' src={nextImg} />}
 						</button>
 					) : null}
 

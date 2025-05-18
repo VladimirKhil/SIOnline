@@ -78,12 +78,6 @@ export default function TimeSettingsView(): JSX.Element {
 				onValueChanged={value => onTimeSettingChanged('timeOfRound', value)} />
 
 			<TimeSettingItem
-				label={localization.timeForMediaDelay}
-				value={settings.timeForMediaDelay}
-				maximum={10}
-				onValueChanged={value => onTimeSettingChanged('timeForMediaDelay', value)} />
-
-			<TimeSettingItem
 				label={localization.timeForBlockingButton}
 				value={settings.timeForBlockingButton}
 				maximum={10}

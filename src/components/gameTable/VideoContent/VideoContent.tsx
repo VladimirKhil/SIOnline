@@ -23,7 +23,7 @@ interface VideoContentProps {
 
 const mapStateToProps = (state: State) => ({
 	soundVolume: state.settings.soundVolume,
-	isMediaStopped: state.room.stage.isGamePaused || state.table.isMediaStopped,
+	isMediaStopped: state.room2.stage.isGamePaused || state.table.isMediaStopped,
 	isVisible: state.ui.isVisible,
 });
 

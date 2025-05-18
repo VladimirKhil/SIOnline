@@ -1,5 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import DataContext from '../model/DataContext';
+import State from './State';
 
 export const mediaPreloaded = createAsyncThunk(
 	'server/mediaPreloaded',
@@ -27,5 +28,13 @@ export const freeTable = createAsyncThunk(
 
 		const dataContext = thunkAPI.extra as DataContext;
 		await dataContext.game.freeTable(arg.isShowman, arg.tableIndex);
+	}
+);
+
+export const pauseGame = createAsyncThunk(
+	'server/pauseGame',
+	async (arg: void, thunkAPI) => {
+		const dataContext = thunkAPI.extra as DataContext;
+		await dataContext.game.pause(!(thunkAPI.getState() as State).room2.stage.isGamePaused);
 	}
 );
