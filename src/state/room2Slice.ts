@@ -9,6 +9,7 @@ import roomActionCreators from './room/roomActionCreators';
 import State from './State';
 import Constants from '../model/enums/Constants';
 import Role from '../model/Role';
+import AppSettings, { initialState as initialAppSettings } from '../model/AppSettings';
 
 export enum DialogView {
 	None,
@@ -65,6 +66,8 @@ export interface Room2State {
 
 	isEditTableEnabled: boolean;
 	gameLog: string[];
+
+	settings: AppSettings;
 }
 
 const initialState: Room2State = {
@@ -110,6 +113,8 @@ const initialState: Room2State = {
 
 	isEditTableEnabled: false,
 	gameLog: [],
+
+	settings: initialAppSettings,
 };
 
 export const complain = createAsyncThunk(
@@ -512,6 +517,51 @@ export const room2Slice = createSlice({
 			state.role = action.payload;
 			state.isEditTableEnabled = false;
 		},
+		setSettingDisplayAnswerOptionsLabels: (state: Room2State, action: PayloadAction<boolean>) => {
+			state.settings.displayAnswerOptionsLabels = action.payload;
+		},
+		setSettingFalseStart: (state: Room2State, action: PayloadAction<boolean>) => {
+			state.settings.falseStart = action.payload;
+		},
+		setSettingOral: (state: Room2State, action: PayloadAction<boolean>) => {
+			state.settings.oral = action.payload;
+		},
+		setSettingPartialImages: (state: Room2State, action: PayloadAction<boolean>) => {
+			state.settings.partialImages = action.payload;
+		},
+		setSettingPartialImageTime: (state: Room2State, action: PayloadAction<number>) => {
+			state.settings.timeSettings.partialImageTime = action.payload;
+		},
+		setSettingTimeForBlockingButton: (state: Room2State, action: PayloadAction<number>) => {
+			state.settings.timeSettings.timeForBlockingButton = action.payload;
+		},
+		setSettingPartialText: (state: Room2State, action: PayloadAction<boolean>) => {
+			state.settings.partialText = action.payload;
+		},
+		setSettingReadingSpeed: (state: Room2State, action: PayloadAction<number>) => {
+			state.settings.readingSpeed = action.payload;
+		},
+		setSettingManaged: (state: Room2State, action: PayloadAction<boolean>) => {
+			state.settings.managed = action.payload;
+		},
+		setSettingUseApellations: (state: Room2State, action: PayloadAction<boolean>) => {
+			state.settings.useApellations = action.payload;
+		},
+		setSettingIgnoreWrong: (state: Room2State, action: PayloadAction<boolean>) => {
+			state.settings.ignoreWrong = action.payload;
+		},
+		setSettingDisplaySources: (state: Room2State, action: PayloadAction<boolean>) => {
+			state.settings.displaySources = action.payload;
+		},
+		setSettingPlayAllQuestionsInFinalRound: (state: Room2State, action: PayloadAction<boolean>) => {
+			state.settings.playAllQuestionsInFinalRound = action.payload;
+		},
+		setSettingAllowEveryoneToPlayHiddenStakes: (state: Room2State, action: PayloadAction<boolean>) => {
+			state.settings.allowEveryoneToPlayHiddenStakes = action.payload;
+		},
+		setSettingOralPlayersActions: (state: Room2State, action: PayloadAction<boolean>) => {
+			state.settings.oralPlayersActions = action.payload;
+		},
 	},
 	extraReducers: (builder) => {
 		builder.addCase(sendAnswer.fulfilled, (state) => {
@@ -608,6 +658,21 @@ export const {
 	addGameLog,
 	setIsPaused,
 	setRoomRole,
+	setSettingDisplayAnswerOptionsLabels,
+	setSettingFalseStart,
+	setSettingOral,
+	setSettingPartialImages,
+	setSettingPartialImageTime,
+	setSettingTimeForBlockingButton,
+	setSettingPartialText,
+	setSettingReadingSpeed,
+	setSettingManaged,
+	setSettingUseApellations,
+	setSettingIgnoreWrong,
+	setSettingDisplaySources,
+	setSettingPlayAllQuestionsInFinalRound,
+	setSettingAllowEveryoneToPlayHiddenStakes,
+	setSettingOralPlayersActions,
 } = room2Slice.actions;
 
 

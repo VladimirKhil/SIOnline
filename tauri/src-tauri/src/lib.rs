@@ -115,7 +115,7 @@ fn get_workshop_file_url(
     item_id: u64,
 ) -> Result<SteamWorkshopFileInfo, String> {
     log::info!("Getting workshop file URL for item: {}", item_id);
-    
+
     let ugc = client_state.ugc();
     let workshop_id = PublishedFileId(item_id);
 
@@ -124,19 +124,19 @@ fn get_workshop_file_url(
         Some(info) => {
             let mut package_path = info.folder.clone();
             package_path.push_str("/package.siq");
-            
+
             // Verify file exists and get metadata
             log::info!("Checking file at path: {}", package_path);
-            
+
             match std::fs::metadata(&package_path) {
                 Ok(metadata) => {
                     let size = metadata.len();
                     log::info!("File size: {}", size);
-                    
+
                     // Create a custom protocol URL
                     // The protocol will be registered as "sigame-workshop" and we'll include the item_id
                     let file_url = format!("http://sigame.localhost/file?id={}", item_id);
-                    
+
                     Ok(SteamWorkshopFileInfo {
                         file_url,
                         size,
@@ -162,16 +162,16 @@ fn get_workshop_file_url(
                         Some(info) => {
                             let mut package_path = info.folder.clone();
                             package_path.push_str("/package.siq");
-                            
+
                             // Verify the file exists
                             if std::path::Path::new(&package_path).exists() {
                                 match std::fs::metadata(&package_path) {
                                     Ok(metadata) => {
                                         let size = metadata.len();
-                                        
+
                                         // Create a custom protocol URL
                                         let file_url = format!("http://sigame.localhost/file?id={}", item_id);
-                                        
+
                                         return Ok(SteamWorkshopFileInfo {
                                             file_url,
                                             size,

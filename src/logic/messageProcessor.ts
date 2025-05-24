@@ -16,7 +16,7 @@ import PlayerInfo from '../model/PlayerInfo';
 import Constants from '../model/enums/Constants';
 import Role from '../model/Role';
 import localization from '../model/resources/localization';
-import stringFormat, { trimLength } from '../utils/StringHelpers';
+import { trimLength } from '../utils/StringHelpers';
 import MessageLevel from '../model/enums/MessageLevel';
 import GameMessages from '../client/game/GameMessages';
 import JoinMode from '../client/game/JoinMode';
@@ -32,7 +32,6 @@ import ThemesPlayMode from '../model/enums/ThemesPlayMode';
 import { AppDispatch } from '../state/store';
 import { addGameLog,
 	playerInGameChanged,
-	playerMediaLoaded,
 	playerStakeChanged,
 	playerStateChanged } from '../state/room2Slice';
 import StakeTypes from '../model/enums/StakeTypes';
@@ -618,14 +617,6 @@ const viewerHandler = (
 			controller.onQuestionEnd();
 			break;
 
-		case GameMessages.ReadingSpeed:
-			if (args.length < 2) {
-				break;
-			}
-
-			controller.onReadingSpeedChanged(parseInt(args[1], 10));
-			break;
-
 		case GameMessages.Ready:
 			if (args.length < 2) {
 				break;
@@ -930,12 +921,20 @@ function onAskStake(controller: ClientController, args: string[]) {
 	}
 
 	const stakeModes = parseStakeModesFromString(args[1]);
-	const minimum = parseInt(args[2], 10);
-	const maximum = parseInt(args[3], 10);
+	let minimum = parseInt(args[2], 10);
+	let maximum = parseInt(args[3], 10);
 	const step = parseInt(args[4], 10);
 	const reason = args[5];
 
 	const playerName = args.length > 6 ? args[6] : null;
+
+	if (minimum < 1) {
+		minimum = 1;
+	}
+
+	if (maximum < minimum) {
+		maximum = minimum;
+	}
 
 	controller.onAskStake(stakeModes, minimum, maximum, step, reason, playerName);
 }

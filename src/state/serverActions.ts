@@ -38,3 +38,11 @@ export const pauseGame = createAsyncThunk(
 		await dataContext.game.pause(!(thunkAPI.getState() as State).room2.stage.isGamePaused);
 	}
 );
+
+export const setOption = createAsyncThunk(
+	'server/setOption',
+	async (arg: { name: string, value: string }, thunkAPI) => {
+		const dataContext = thunkAPI.extra as DataContext;
+		await dataContext.game.setOption(arg.name, arg.value);
+	}
+);

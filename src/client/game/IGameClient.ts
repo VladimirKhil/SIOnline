@@ -78,6 +78,8 @@ export default interface IGameClient {
 
 	setPlayerScore(playerIndex: number, score: number): Promise<boolean>;
 
+	setOption(name: string, value: string): Promise<boolean>;
+
 	setTable(isShowman: boolean, tableIndex: number, name: string): Promise<boolean>;
 
 	start(): Promise<boolean>;

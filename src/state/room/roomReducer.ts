@@ -344,12 +344,6 @@ const roomReducer: Reducer<RoomState> = (state: RoomState = initialState, anyAct
 				areSumsEditable: action.areSumsEditable
 			};
 
-		case RoomActionTypes.ReadingSpeedChanged:
-			return {
-				...state,
-				readingSpeed: action.readingSpeed
-			};
-
 		case RoomActionTypes.RunTimer:
 			return {
 				...state,
@@ -530,12 +524,6 @@ const roomReducer: Reducer<RoomState> = (state: RoomState = initialState, anyAct
 			return {
 				...state,
 				webCameraUrl: action.webCameraUrl,
-			};
-
-		case RoomActionTypes.SettingsChanged:
-			return {
-				...state,
-				settings: action.settings
 			};
 
 		case RoomActionTypes.IsQuestionChanged:

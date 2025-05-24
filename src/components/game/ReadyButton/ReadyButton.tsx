@@ -9,7 +9,7 @@ import Role from '../../../model/Role';
 import { useAppSelector } from '../../../state/hooks';
 import { Room2State } from '../../../state/room2Slice';
 
-import './ReadyButton.css';
+import './ReadyButton.scss';
 
 interface ReadyButtonProps {
 	isConnected: boolean;
@@ -59,16 +59,23 @@ export function ReadyButton(props: ReadyButtonProps): JSX.Element | null {
 	const room = useAppSelector(state => state.room2);
 	const isReady = getIsReady(room);
 	const enabledClass = props.isConnected ? '' : 'disabled';
-	const label = isReady ? getNotReadyMessage(props) : getReadyMessage(props);
+	const label = isReady ? getReadyMessage(props) : getNotReadyMessage(props);
+	const buttonLabel = isReady ? '❌' : '✔️';
 
 	return (
-		<button
-			type="button"
-			className={`ready_button mainAction active ${enabledClass}}`}
-			onClick={() => props.onReady(!isReady)}
-		>
-			<span>{label?.toLocaleUpperCase()}</span>
-		</button>
+		<div className={`readyButtonHost ${isReady ? 'ready' : 'not-ready'}`}>
+			<div className='readyButtonHost__label'>
+				{label.toLocaleUpperCase()}
+			</div>
+
+			<button
+				type="button"
+				className={`ready_button ${enabledClass}`}
+				onClick={() => props.onReady(!isReady)}
+			>
+				{buttonLabel}
+			</button>
+		</div>
 	);
 }
 

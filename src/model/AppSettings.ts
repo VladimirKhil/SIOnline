@@ -27,7 +27,6 @@ export default interface AppSettings {
 	culture: string | null;
 	managed: boolean;
 	timeSettings: TimeSettings;
-	usePingPenalty: boolean;
 
 	/** Button press mode. */
 	buttonPressMode: ButtonPressMode;
@@ -71,7 +70,6 @@ export const initialState: AppSettings = {
 		partialImageTime: 3,
 		imageTime: 5,
 	},
-	usePingPenalty: false,
 	buttonPressMode: ButtonPressMode.RandomWithinInterval,
 	preloadRoundContent: true,
 	useApellations: true,

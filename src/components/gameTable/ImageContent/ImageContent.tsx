@@ -19,7 +19,7 @@ interface ImageContentProps {
 
 const mapStateToProps = (state: State) => ({
 	loadTimer: state.table.loadTimer,
-	partialImageTime: state.room.settings.timeSettings.partialImageTime,
+	partialImageTime: state.room2.settings.timeSettings.partialImageTime,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({

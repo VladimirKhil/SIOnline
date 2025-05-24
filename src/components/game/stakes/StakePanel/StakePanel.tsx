@@ -32,7 +32,7 @@ export function StakePanel(props: StakePanelProps): JSX.Element | null {
 
 	return (
 		<div className="wideStakeHost">
-			<SendPassButton className={`standard ${useStakeVariants ? 'wideStake' : ''}`} />
+			<SendPassButton className={`standard ${(useStakeVariants || !useStakes) ? 'wideStake' : ''}`} />
 
 			{useStakes ? (
 				useStakeVariants ? (
@@ -53,9 +53,9 @@ export function StakePanel(props: StakePanelProps): JSX.Element | null {
 					</>
 				)
 			)
-		: null}
+			: null}
 
-			<SendAllInButton className={`mainAction active ${useStakeVariants ? 'wideStake' : ''}`} />
+			<SendAllInButton className={`mainAction active ${(useStakeVariants || !useStakes) ? 'wideStake' : ''}`} />
 		</div>
 	);
 }

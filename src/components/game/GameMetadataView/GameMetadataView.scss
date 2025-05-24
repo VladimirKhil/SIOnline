@@ -1,0 +1,100 @@
+.gameMetadataView {
+	overflow-y: auto;
+    overflow-x: hidden;
+	scrollbar-width: thin;
+	flex: 1 0 0;
+	padding: 10px;
+	background-color: #000451;
+	color: white;
+	height: calc(100% - 60px);
+}
+
+.gameMetadataView dt {
+	margin-top: 10px;
+	font-size: 22px;
+}
+
+.room__options {
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid rgba(255, 255, 255, 0.3);
+
+    .room__options__header {
+        font-size: 22px;
+        font-weight: bold;
+        margin-bottom: 15px;
+    }
+
+    .room__options__list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .room__option {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        label {
+            font-size: 18px;
+            flex: 1;
+        }
+
+        input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            margin-left: 10px;
+        }
+
+        input[type="text"],
+        input[type="number"] {
+            width: 60px;
+            margin-left: 10px;
+            background-color: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 3px;
+        }
+    }
+}
+
+.room__options h3 {
+    margin-bottom: 15px;
+    font-size: 24px;
+}
+
+.room__options dl {
+    align-items: center;
+}
+
+.room__options dt {
+    margin-top: 0;
+    font-size: 18px;
+    display: block;
+}
+
+.room__options dd {
+    margin: 0;
+    display: block;
+}
+
+.room__options input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+}
+
+.room__options input[type="text"] {
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    padding: 5px 8px;
+    border-radius: 4px;
+    width: 80px;
+}
+
+@media screen and (min-width: 1100px) {
+    .gameMetadataView {
+        height: 100%;
+    }
+}

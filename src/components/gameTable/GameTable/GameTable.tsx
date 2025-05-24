@@ -98,7 +98,6 @@ export function GameTable(props: GameTableProps): JSX.Element {
 	const theme = useAppSelector((state) => state.settings.theme);
 	const room = useAppSelector((state) => state.room2);
 	const caption = getCaption(props);
-
 	const themeProperties: React.CSSProperties = {};
 
 	if (theme.table.textColor) {
@@ -107,6 +106,10 @@ export function GameTable(props: GameTableProps): JSX.Element {
 
 	if (theme.table.backgroundColor) {
 		themeProperties.backgroundColor = theme.table.backgroundColor;
+	}
+
+	if (theme.table.fontFamily) {
+		themeProperties.fontFamily = theme.table.fontFamily;
 	}
 
 	const isPaused = room.stage.isGamePaused;

@@ -65,6 +65,8 @@ const enum Messages {
 	/** Sets game join mode. */
 	SetJoinMode = 'SETJOINMODE',
 
+	SetOptions = 'SET_OPTIONS',
+
 	SetStake = 'SET_STAKE',
 
 	Start = 'START',

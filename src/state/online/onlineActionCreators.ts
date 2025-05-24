@@ -271,7 +271,6 @@ function createGameSettings(
 		randomRoundsCount: gameMode === GameType.Simple ? 1 : 3,
 		randomThemesCount: gameMode === GameType.Simple ? 5 : 6,
 		culture: getFullCulture(state),
-		usePingPenalty: state.settings.appSettings.usePingPenalty,
 		buttonPressMode: state.settings.appSettings.buttonPressMode,
 		preloadRoundContent: state.settings.appSettings.preloadRoundContent,
 		useApellations: state.settings.appSettings.useApellations,

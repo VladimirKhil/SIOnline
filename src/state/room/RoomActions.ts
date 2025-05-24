@@ -2,9 +2,7 @@ import ChatMode from '../../model/enums/ChatMode';
 import ChatMessage from '../../model/ChatMessage';
 import Account from '../../model/Account';
 import Persons from '../../model/Persons';
-import Role from '../../model/Role';
 import JoinMode from '../../client/game/JoinMode';
-import AppSettings from '../../model/AppSettings';
 import StakeModes from '../../client/game/StakeModes';
 import UsersMode from '../../model/enums/UsersMode';
 
@@ -45,7 +43,6 @@ export const enum RoomActionTypes {
 	StakeChanged = 'STAKE_CHANGED',
 	SelectionEnabled = 'SELECTION_ENABLED',
 	AreSumsEditableChanged = 'ARE_SUMS_EDITABLE_CHANGED',
-	ReadingSpeedChanged = 'READING_SPEED_CHANGED',
 	RunTimer = 'RUN_TIMER',
 	PauseTimer = 'PAUSE_TIMER',
 	ResumeTimer = 'RESUME_TIMER',
@@ -71,7 +68,6 @@ export const enum RoomActionTypes {
 	JoinModeChanged = 'JOIN_MODE_CHANGED',
 	Kicked = 'KICKED',
 	WebCameraUrlChanged = 'WEB_CAMERA_URL_CHANGED',
-	SettingsChanged = 'SettingsChanged',
 	IsQuestionChanged = 'IsQuestionChanged',
 }
 
@@ -122,7 +118,6 @@ export type SetStakesAction = {
 export type StakeChangedAction = { type: RoomActionTypes.StakeChanged, stake: number };
 export type SelectionEnabledAction = { type: RoomActionTypes.SelectionEnabled, message: string };
 export type AreSumsEditableChangedAction = { type: RoomActionTypes.AreSumsEditableChanged, areSumsEditable: boolean };
-export type ReadingSpeedChangedAction = { type: RoomActionTypes.ReadingSpeedChanged, readingSpeed: number };
 export type RunTimerAction = { type: RoomActionTypes.RunTimer, timerIndex: number, maximumTime: number, runByUser: boolean };
 export type PauseTimerAction = { type: RoomActionTypes.PauseTimer, timerIndex: number, currentTime: number, pausedByUser: boolean };
 export type ResumeTimerAction = { type: RoomActionTypes.ResumeTimer, timerIndex: number, runByUser: boolean };
@@ -151,7 +146,6 @@ export type UnbannedAction = { type: RoomActionTypes.Unbanned, ip: string };
 export type SelectBannedItemAction = { type: RoomActionTypes.SelectBannedItem, ip: string };
 export type JoinModeChangedAction = { type: RoomActionTypes.JoinModeChanged, joinMode: JoinMode };
 export type WebCameraUrlChangedAction = { type: RoomActionTypes.WebCameraUrlChanged, webCameraUrl: string };
-export type SettingsChangedAction = { type: RoomActionTypes.SettingsChanged, settings: AppSettings };
 export type IsQuestionChangedAction = { type: RoomActionTypes.IsQuestionChanged, isQuestion: boolean, questionType: string };
 
 export type KnownRoomAction =
@@ -191,7 +185,6 @@ export type KnownRoomAction =
 	| StakeChangedAction
 	| SelectionEnabledAction
 	| AreSumsEditableChangedAction
-	| ReadingSpeedChangedAction
 	| RunTimerAction
 	| PauseTimerAction
 	| ResumeTimerAction
@@ -214,5 +207,4 @@ export type KnownRoomAction =
 	| JoinModeChangedAction
 	| KickedAction
 	| WebCameraUrlChangedAction
-	| SettingsChangedAction
 	| IsQuestionChangedAction;

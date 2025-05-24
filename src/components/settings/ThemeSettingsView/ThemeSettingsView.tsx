@@ -1,7 +1,7 @@
 import * as React from 'react';
 import localization from '../../../model/resources/localization';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
-import { setStudiaBackgroundImageKey, setTableBackgroundColor, setTableTextColor } from '../../../state/settingsSlice';
+import { setStudiaBackgroundImageKey, setTableBackgroundColor, setTableTextColor, setTableFontFamily } from '../../../state/settingsSlice';
 import { userErrorChanged } from '../../../state/commonSlice';
 import { selectStudiaBackground } from '../../../state/globalActions';
 import Constants from '../../../model/enums/Constants';
@@ -9,6 +9,27 @@ import Constants from '../../../model/enums/Constants';
 import './ThemeSettingsView.scss';
 
 const MaxImageSizeMb = 1;
+
+// Common system fonts available across different operating systems
+const systemFonts = [
+	undefined, // Default option
+	'Arial',
+	'Arial Black',
+	'Verdana',
+	'Tahoma',
+	'Trebuchet MS',
+	'Times New Roman',
+	'Georgia',
+	'Garamond',
+	'Courier New',
+	'Segoe UI',
+	'Helvetica',
+	'Calibri',
+	'Futura',
+	'Gill Sans',
+	'Geneva',
+	'Palatino'
+];
 
 function renderStudiaBackground() {
 	const base64 = localStorage.getItem(Constants.STUDIA_BACKGROUND_KEY);
@@ -47,7 +68,7 @@ const ThemeSettingsView: React.FC = () => {
 	}
 
 	return (
-		<div>
+		<div className='themeSettingsView'>
 			<h2>{localization.table}</h2>
 
 			<div className='settingItem'>
@@ -62,12 +83,27 @@ const ThemeSettingsView: React.FC = () => {
 
 			<div className='settingItem'>
 				<input
-					id='tableTextColor'
+					id='tableBackgroundColor'
 					type='color'
 					value={theme.table.backgroundColor}
 					onChange={e => appDispatch(setTableBackgroundColor(e.target.value))} />
 
-				<label htmlFor='tableTextColor'>{localization.backgroundColor}</label>
+				<label htmlFor='tableBackgroundColor'>{localization.backgroundColor}</label>
+			</div>
+
+			<div className='settingItem'>
+				<label htmlFor='tableFontFamily' className='common-label'>{localization.font || 'Font'}</label>
+
+				<select
+					id='tableFontFamily'
+					value={theme.table.fontFamily || localization.defaultFont}
+					onChange={e => appDispatch(setTableFontFamily(e.target.value))}>
+					{systemFonts.map(font => (
+						<option key={font ?? localization.defaultFont} value={font ?? ''} style={{ fontFamily: font }}>
+							{font ?? localization.defaultFont}
+						</option>
+					))}
+				</select>
 			</div>
 
 			<h2>{localization.room}</h2>

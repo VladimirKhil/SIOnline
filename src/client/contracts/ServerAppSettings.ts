@@ -35,7 +35,6 @@ export default interface ServerAppSettings {
 	randomRoundsCount: number;
 	randomThemesCount: number;
 	culture: string;
-	usePingPenalty: boolean;
 
 	/** Button press mode. */
 	buttonPressMode: ButtonPressMode;

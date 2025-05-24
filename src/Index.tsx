@@ -112,7 +112,6 @@ function setState(state: State, savedState: SavedState | null, c: Config, isDesk
 				ignoreWrong: appSettings.ignoreWrong ?? false,
 				culture: appSettings.culture,
 				managed: appSettings.managed ?? false,
-				usePingPenalty: appSettings.usePingPenalty ?? false,
 				buttonPressMode: appSettings.buttonPressMode ?? ButtonPressMode.RandomWithinInterval,
 				timeSettings: appSettings.timeSettings ? {
 					...appSettings.timeSettings,

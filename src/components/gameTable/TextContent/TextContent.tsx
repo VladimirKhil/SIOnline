@@ -1,20 +1,13 @@
 import * as React from 'react';
-import State from '../../../state/State';
-import { connect } from 'react-redux';
 import AutoSizedText from '../../common/AutoSizedText/AutoSizedText';
+import { useAppSelector } from '../../../state/hooks';
 
 import '../TableText/TableText.scss';
 
 interface TextContentProps {
 	text: string;
 	animateReading: boolean;
-
-	readingSpeed: number;
 }
-
-const mapStateToProps = (state: State) => ({
-	readingSpeed: state.room.readingSpeed,
-});
 
 function getAnimatableContent(text: string, readingSpeed: number) {
 	// Each letter is wrapped into its own span with animation-delay.
@@ -36,14 +29,14 @@ function getAnimatableContent(text: string, readingSpeed: number) {
 	return <span>{animatedText}</span>;
 }
 
-export function TextContent(props: TextContentProps) {
+export default function TextContent(props: TextContentProps) {
+	const room = useAppSelector((state) => state.room2);
+
 	return (
 		<div className='textHost'>
 			<AutoSizedText className="tableText fadeIn tableTextCenter" maxFontSize={72}>
-				{props.animateReading && props.readingSpeed > 0 ? getAnimatableContent(props.text, props.readingSpeed) : props.text}
+				{props.animateReading && room.settings.readingSpeed > 0 ? getAnimatableContent(props.text, room.settings.readingSpeed) : props.text}
 			</AutoSizedText>
 		</div>
 	);
 }
-
-export default connect(mapStateToProps)(TextContent);

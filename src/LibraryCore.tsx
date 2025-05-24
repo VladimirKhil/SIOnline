@@ -161,7 +161,7 @@ function processMessage(controller: ClientController, payload: any, appDispatch:
 			break;
 
 		case 'setReadingSpeed': // non-SIHost compatible API
-			controller.onReadingSpeedChanged(payload.readingSpeed);
+			controller.onOptionChanged('ReadingSpeed', payload.readingSpeed, '');
 			break;
 
 		case 'replic':

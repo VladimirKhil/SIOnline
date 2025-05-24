@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import State from '../../../state/State';
 import ContentItem from '../../../model/ContentItem';
 import ContentType from '../../../model/enums/ContentType';
 import TextContent from '../TextContent/TextContent';
@@ -15,14 +14,8 @@ import { AppDispatch, RootState } from '../../../state/store';
 import './AnswerOptions.scss';
 
 interface AnswerOptionsProps {
-	displayAnswerOptionsLabels: boolean;
-
 	onSelectAnswerOption: (label: string, appDispatch: AppDispatch) => void;
 }
-
-const mapStateToProps = (state: State) => ({
-	displayAnswerOptionsLabels: state.room.settings.displayAnswerOptionsLabels,
-});
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	onSelectAnswerOption: (label: string, appDispatch: AppDispatch) => {
@@ -44,7 +37,8 @@ function getContent(content: ContentItem): JSX.Element | null {
 }
 
 export function AnswerOptions(props: AnswerOptionsProps) {
-	const state = useAppSelector((rootState: RootState) => rootState.table);
+	const table = useAppSelector((rootState: RootState) => rootState.table);
+	const room = useAppSelector((rootState: RootState) => rootState.room2);
 	const appDispatch = useAppDispatch();
 
 	function getOptionClass(itemState: ItemState) {
@@ -64,10 +58,10 @@ export function AnswerOptions(props: AnswerOptionsProps) {
 	}
 
 	return (
-		<div className={`answerOptions ${state.isSelectable ? 'selectable' : ''}`}>
-			{state.answerOptions.map((o, i) => (
+		<div className={`answerOptions ${table.isSelectable ? 'selectable' : ''}`}>
+			{table.answerOptions.map((o, i) => (
 				<div key={i} className={`answerOption ${getOptionClass(o.state)}`} onClick={() => props.onSelectAnswerOption(o.label, appDispatch)}>
-					{props.displayAnswerOptionsLabels ? <div className='optionLabel'>
+					{room.settings.displayAnswerOptionsLabels ? <div className='optionLabel'>
 						<AutoSizedText maxFontSize={50}>{o.label}</AutoSizedText>
 					</div> : null}
 
@@ -80,4 +74,4 @@ export function AnswerOptions(props: AnswerOptionsProps) {
 	);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(AnswerOptions);
+export default connect(null, mapDispatchToProps)(AnswerOptions);

@@ -8,14 +8,12 @@ import localization from '../../model/resources/localization';
 import ChatMessage from '../../model/ChatMessage';
 import Account from '../../model/Account';
 import Persons from '../../model/Persons';
-import Role from '../../model/Role';
 import MessageLevel from '../../model/enums/MessageLevel';
 import Messages from '../../client/game/Messages';
 import JoinMode from '../../client/game/JoinMode';
 import { stopAudio, userErrorChanged } from '../commonSlice';
 import Path from '../../model/enums/Path';
 import actionCreators from '../../logic/actionCreators';
-import AppSettings from '../../model/AppSettings';
 import { AppDispatch } from '../store';
 import { isSelectableChanged } from '../tableSlice';
 import { clearGameLog, setIsPaused, showmanReplicChanged } from '../room2Slice';
@@ -506,10 +504,6 @@ const changePlayerSum: ActionCreator<ThunkAction<void, State, DataContext, Actio
 	await dataContext.game.setPlayerScore(playerIndex, sum);
 };
 
-const readingSpeedChanged: ActionCreator<RunActions.ReadingSpeedChangedAction> = (readingSpeed: number) => ({
-	type: RunActions.RoomActionTypes.ReadingSpeedChanged, readingSpeed
-});
-
 const runTimer: ActionCreator<RunActions.RunTimerAction> = (timerIndex: number, maximumTime: number, runByUser: boolean) => ({
 	type: RunActions.RoomActionTypes.RunTimer, timerIndex, maximumTime, runByUser
 });
@@ -676,10 +670,6 @@ const setWebCamera: ActionCreator<ThunkAction<void, State, DataContext, Action>>
 	await dataContext.game.sendVideoAvatar(webCameraUrl);
 };
 
-const settingsChanged: ActionCreator<RunActions.SettingsChangedAction> = (settings: AppSettings) => ({
-	type: RunActions.RoomActionTypes.SettingsChanged, settings
-});
-
 const roomActionCreators = {
 	runChatModeChanged,
 	runUsersModeChanged,
@@ -734,7 +724,6 @@ const roomActionCreators = {
 	onMediaEnded,
 	areSumsEditableChanged,
 	changePlayerSum,
-	readingSpeedChanged,
 	runTimer,
 	pauseTimer,
 	resumeTimer,
@@ -766,7 +755,6 @@ const roomActionCreators = {
 	onKicked,
 	onReconnect,
 	setWebCamera,
-	settingsChanged,
 };
 
 export default roomActionCreators;

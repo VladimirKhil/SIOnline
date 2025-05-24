@@ -96,6 +96,16 @@ import {
 	setIsPaused,
 	setReport,
 	setRoomRole,
+	setSettingDisplayAnswerOptionsLabels,
+	setSettingFalseStart,
+	setSettingManaged,
+	setSettingOral,
+	setSettingPartialImageTime,
+	setSettingPartialImages,
+	setSettingPartialText,
+	setSettingReadingSpeed,
+	setSettingTimeForBlockingButton,
+	setSettingUseApellations,
 	showmanChanged,
 	showmanReplicChanged,
 	stopValidation,
@@ -109,7 +119,7 @@ import PlayerInfo from '../model/PlayerInfo';
 import actionCreators from './actionCreators';
 import Messages from '../client/game/Messages';
 import StakeModes from '../client/game/StakeModes';
-import { playAudio, stopAudio, userInfoChanged, userWarnChanged } from '../state/commonSlice';
+import { playAudio, stopAudio, userInfoChanged, userMessageChanged, userWarnChanged } from '../state/commonSlice';
 import getErrorMessage, { getUserError } from '../utils/ErrorHelpers';
 import { playersVisibilityChanged, setQrCode } from '../state/uiSlice';
 import ErrorCode from '../client/contracts/ErrorCode';
@@ -212,6 +222,7 @@ export default class ClientController {
 		let group: ContentGroup | null = null;
 
 		let runContentLoadTimer = false;
+		const state = this.getState();
 
 		for	(let i = 0; i < content.length; i++) {
 			const { type, value } = content[i];
@@ -230,13 +241,13 @@ export default class ClientController {
 					textGroup.content.push({
 						type: ContentType.Text,
 						value: value,
-						read: groups.length === 0,
+						read: groups.length === 0 && !state.table.isAnswer,
 						partial: false,
 					});
 
 					groups.push(textGroup);
 
-					if (this.getState().settings.writeGameLog) {
+					if (state.settings.writeGameLog) {
 						this.appDispatch(addGameLog(value));
 					}
 
@@ -254,15 +265,13 @@ export default class ClientController {
 						partial: false,
 					});
 
-					const state = this.getState();
-
 					// TODO: this logic should be moved to server
 					if (state.room.stage.isQuestion &&
 						state.room.stage.questionType === 'simple' &&
 						!state.table.isAnswer &&
-						!state.room.settings.falseStart &&
-						state.room.settings.partialImages &&
-						state.room.settings.timeSettings.partialImageTime > 0) {
+						!state.room2.settings.falseStart &&
+						state.room2.settings.partialImages &&
+						state.room2.settings.timeSettings.partialImageTime > 0) {
 						runContentLoadTimer = true;
 					}
 
@@ -502,43 +511,63 @@ export default class ClientController {
 	}
 
 	onOptionChanged(name: string, value: string, reason: string) {
-		const { settings } = this.getState().room;
-
 		switch (name) {
-			case 'DisplayAnswerOptionsLabels':
-				this.dispatch(roomActionCreators.settingsChanged({
-					...settings,
-					displayAnswerOptionsLabels: value.toLowerCase() === 'true'
-				}));
+			case 'Oral':
+				const oralEnabled = value.toLowerCase() === 'true';
+				this.appDispatch(setSettingOral(oralEnabled));
+
+				if (reason.length > 0) {
+					const message = stringFormat(
+						oralEnabled ? localization.oralGameEnabled : localization.oralGameDisabled,
+						reason
+					);
+
+					this.appDispatch(userInfoChanged(message));
+
+					this.dispatch(roomActionCreators.chatMessageAdded({
+						sender: '',
+						text: message,
+						level: MessageLevel.System,
+					}) as any);
+				}
 
 				break;
 
-			case 'FalseStart':
-				this.dispatch(roomActionCreators.settingsChanged({
-					...settings,
-					falseStart: value.toLowerCase() === 'true'
-				}));
+			case 'Managed':
+				this.appDispatch(setSettingManaged(value.toLowerCase() === 'true'));
+				break;
 
-			break;
+			case 'FalseStart':
+				this.appDispatch(setSettingFalseStart(value.toLowerCase() === 'true'));
+				break;
+
+			case 'ReadingSpeed':
+				this.appDispatch(setSettingReadingSpeed(parseInt(value, 10)));
+				break;
+
+			case 'PartialText':
+				this.appDispatch(setSettingPartialText(value.toLowerCase() === 'true'));
+				break;
 
 			case 'PartialImages':
-				this.dispatch(roomActionCreators.settingsChanged({
-					...settings,
-					partialImages: value.toLowerCase() === 'true'
-				}));
-
-			break;
+				this.appDispatch(setSettingPartialImages(value.toLowerCase() === 'true'));
+				break;
 
 			case 'PartialImageTime':
-				this.dispatch(roomActionCreators.settingsChanged({
-					...settings,
-					timeSettings: {
-						...settings.timeSettings,
-						partialImageTime: parseInt(value, 10)
-					}
-				}));
+				this.appDispatch(setSettingPartialImageTime(parseInt(value, 10)));
+				break;
 
-			break;
+			case 'UseApellations':
+				this.appDispatch(setSettingUseApellations(value.toLowerCase() === 'true'));
+				break;
+
+			case 'TimeForBlockingButton':
+				this.appDispatch(setSettingTimeForBlockingButton(parseInt(value, 10)));
+				break;
+
+			case 'DisplayAnswerOptionsLabels':
+				this.appDispatch(setSettingDisplayAnswerOptionsLabels(value.toLowerCase() === 'true'));
+				break;
 
 			default:
 				break;
@@ -594,10 +623,6 @@ export default class ClientController {
 
 	onQuestionAnswers(rightAnswers: string[], wrongAnswers: string[]) {
 		this.appDispatch(questionAnswersChanged({ rightAnswers, wrongAnswers }));
-	}
-
-	onReadingSpeedChanged(readingSpeed: number) {
-		this.dispatch(roomActionCreators.readingSpeedChanged(readingSpeed));
 	}
 
 	onReady(personName: string, isReady: boolean): void {
@@ -1295,7 +1320,7 @@ export default class ClientController {
 		const { loadTimer } = state.table;
 
 		if (this.loadStart && loadTimer.state === TimerStates.Running) {
-			const allTime = state.room.settings.timeSettings.partialImageTime * 1000;
+			const allTime = state.room2.settings.timeSettings.partialImageTime * 1000;
 			const passedTime = new Date().getTime() - this.loadStart.getTime();
 
 			if (passedTime < allTime) {
@@ -1310,7 +1335,7 @@ export default class ClientController {
 		const { loadTimer } = state.table;
 
 		if (loadTimer.state === TimerStates.Paused) {
-			const allTime = state.room.settings.timeSettings.partialImageTime * 1000;
+			const allTime = state.room2.settings.timeSettings.partialImageTime * 1000;
 			const passedTime = loadTimer.value * allTime / loadTimer.maximum;
 			this.loadStart = new Date(new Date().getTime() - passedTime);
 			this.appDispatch(resumeLoadTimer());

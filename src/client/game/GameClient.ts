@@ -138,6 +138,10 @@ export default class GameClient implements IGameClient {
 		return this.gameServerClient.msgAsync(Messages.SetJoinMode, JoinMode[joinMode]);
 	}
 
+	setOption(name: string, value: string): Promise<boolean> {
+		return this.gameServerClient.msgAsync(Messages.SetOptions, name, value);
+	}
+
 	setPlayerScore(playerIndex: number, score: number): Promise<boolean> {
 		return this.gameServerClient.msgAsync(Messages.Change, playerIndex + 1, score); // playerIndex here starts with 1
 	}

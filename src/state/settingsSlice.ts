@@ -50,6 +50,7 @@ const initialState: SettingsState = {
 		table: {
 			textColor: '#FFFFFF',
 			backgroundColor: '#0A0E30',
+			fontFamily: undefined, // Default font family will be used
 		},
 		room: {
 			backgroundImageKey: null,
@@ -109,9 +110,6 @@ export const settingsSlice = createSlice({
 		},
 		setIgnoreWrong: (state: SettingsState, action: PayloadAction<boolean>) => {
 			state.appSettings.ignoreWrong = action.payload;
-		},
-		setUsePingPenalty: (state: SettingsState, action: PayloadAction<boolean>) => {
-			state.appSettings.usePingPenalty = action.payload;
 		},
 		setButtonPressMode: (state: SettingsState, action: PayloadAction<ButtonPressMode>) => {
 			state.appSettings.buttonPressMode = action.payload;
@@ -179,6 +177,9 @@ export const settingsSlice = createSlice({
 		setTableBackgroundColor: (state: SettingsState, action: PayloadAction<string>) => {
 			state.theme.table.backgroundColor = action.payload;
 		},
+		setTableFontFamily: (state: SettingsState, action: PayloadAction<string>) => {
+			state.theme.table.fontFamily = action.payload.length > 0 ? action.payload : undefined;
+		},
 		setWriteGameLog: (state: SettingsState, action: PayloadAction<boolean>) => {
 			state.writeGameLog = action.payload;
 		},
@@ -206,7 +207,6 @@ export const {
 	setManaged,
 	setUseApellations,
 	setIgnoreWrong,
-	setUsePingPenalty,
 	setButtonPressMode,
 	setPreloadRoundContent,
 	setTimeSetting,
@@ -229,6 +229,7 @@ export const {
 	setPauseButtonKey,
 	setTableTextColor,
 	setTableBackgroundColor,
+	setTableFontFamily,
 	setWriteGameLog,
 	resetSettings,
 } = settingsSlice.actions;

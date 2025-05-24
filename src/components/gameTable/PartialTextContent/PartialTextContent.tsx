@@ -19,7 +19,7 @@ interface PartialTextContentState {
 const mapStateToProps = (state: State) => ({
 	text: state.table.text + state.table.tail,
 	visibleLength: state.table.text.length,
-	readingSpeed: state.room.readingSpeed,
+	readingSpeed: state.room2.settings.readingSpeed,
 	isGamePaused: state.room2.stage.isGamePaused,
 });
 

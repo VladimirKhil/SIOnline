@@ -1,11 +1,9 @@
 import ChatMode from '../../model/enums/ChatMode';
 import ChatMessage from '../../model/ChatMessage';
 import Persons from '../../model/Persons';
-import Role from '../../model/Role';
 import Timers from '../../model/Timers';
 import TimerStates from '../../model/enums/TimeStates';
 import JoinMode from '../../client/game/JoinMode';
-import AppSettings, { initialState as initialAppSettings } from '../../model/AppSettings';
 import StakeModes from '../../client/game/StakeModes';
 import UsersMode from '../../model/enums/UsersMode';
 
@@ -64,7 +62,6 @@ export default interface RoomState {
 	avatarViewVivible: boolean;
 	isGameButtonEnabled: boolean;
 	areSumsEditable: boolean;
-	readingSpeed: number;
 	areApellationsEnabled: boolean;
 	hint: string | null;
 	roundsNames: string[] | null;
@@ -85,8 +82,6 @@ export default interface RoomState {
 	joinMode: JoinMode;
 	kicked: boolean;
 	webCameraUrl: string;
-
-	settings: AppSettings;
 }
 
 export const initialState: RoomState = {
@@ -169,7 +164,6 @@ export const initialState: RoomState = {
 	avatarViewVivible: false,
 	isGameButtonEnabled: true,
 	areSumsEditable: false,
-	readingSpeed: 20,
 	areApellationsEnabled: true,
 	hint: null,
 	roundsNames: null,
@@ -190,6 +184,4 @@ export const initialState: RoomState = {
 	joinMode: JoinMode.AnyRole,
 	kicked: false,
 	webCameraUrl: '',
-
-	settings: initialAppSettings,
 };
