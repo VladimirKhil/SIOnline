@@ -67,7 +67,9 @@ async function uploadAvatarAsync(appDispatch: AppDispatch, dataContext: DataCont
 
 		const { buffer } = data;
 
-		const { contentClient } = dataContext;
+		const { contentClients } = dataContext;
+		const contentIndex = Math.floor(Math.random() * contentClients.length);
+		const contentClient = contentClients[contentIndex];
 
 		const avatarUri2 = await contentClient.uploadAvatarIfNotExistAsync(fileName, new Blob([buffer]));
 
@@ -145,12 +147,9 @@ async function loadHostInfoAsync(appDispatch: AppDispatch, dataContext: DataCont
 	const { contentInfos, storageInfos } = hostInfo;
 
 	if (contentInfos && contentInfos.length > 0) {
-		const contentIndex = Math.floor(Math.random() * contentInfos.length);
-		const { serviceUri } = contentInfos[contentIndex];
-
-		dataContext.contentClient = new SIContentClient({
-			serviceUri: serviceUri
-		});
+		dataContext.contentClients = contentInfos.map(info => new SIContentClient({
+			serviceUri: info.serviceUri,
+		}));
 	} else {
 		throw new Error('No SIContent service found');
 	}

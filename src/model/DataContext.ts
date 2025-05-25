@@ -22,8 +22,8 @@ export default interface DataContext {
 	/** Well-known content source Uris. */
 	contentUris: string[] | null;
 
-	/** SIContentService client. */
-	contentClient: SIContentClient;
+	/** SIContentService clients. */
+	contentClients: SIContentClient[];
 
 	/** SIStorageService clients. */
 	storageClients: SIStorageClient[];

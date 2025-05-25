@@ -4,17 +4,19 @@ import PackageType from '../model/enums/PackageType';
 import Role from '../model/Role';
 import localization from '../model/resources/localization';
 
+export interface PackageData {
+	type: PackageType;
+	name: string;
+	data: File | null;
+	id: string | null;
+	uri: string | null;
+}
+
 export interface GameState {
 	name: string;
 	password: string;
 	voiceChat: string;
-	package: {
-		type: PackageType;
-		name: string;
-		data: File | null;
-		id: string | null;
-		uri: string | null;
-	};
+	package: PackageData;
 	type: GameType;
 	role: Role;
 	isShowmanHuman: boolean;

@@ -15,7 +15,6 @@ import DataContext from '../model/DataContext';
 import Config from '../Config';
 import GameClient from '../client/game/GameClient';
 import GameServerClient from '../client/GameServerClient';
-import SIContentClient from 'sicontent-client';
 import BrowserHost from '../host/BrowserHost';
 import SIHostClient from '../client/SIHostClient';
 
@@ -38,7 +37,7 @@ const dataContext: DataContext = {
 	gameClient,
 	game: new GameClient(new SIHostClient(noOpHubConnection, () => { }), false),
 	contentUris: null,
-	contentClient: new SIContentClient({ serviceUri: 'http://fake' }),
+	contentClients: [],
 	storageClients: [],
 	state: new BrowserHost(),
 };

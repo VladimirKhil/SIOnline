@@ -27,6 +27,18 @@ export function GameMetadataView(props: GameMetadataViewProps): JSX.Element {
 	const appDispatch = useAppDispatch();
 	const isHost = room.name === room.persons.hostName;
 
+	// Local state for editing numeric values
+	const [readingSpeedValue, setReadingSpeedValue] = React.useState(room2Settings.readingSpeed.toString());
+	const [blockingButtonTimeValue, setBlockingButtonTimeValue] = React.useState(room2Settings.timeSettings.timeForBlockingButton.toString());
+	const [partialImageTimeValue, setPartialImageTimeValue] = React.useState(room2Settings.timeSettings.partialImageTime.toString());
+
+	// Update local state when Redux state changes
+	React.useEffect(() => {
+		setReadingSpeedValue(room2Settings.readingSpeed.toString());
+		setBlockingButtonTimeValue(room2Settings.timeSettings.timeForBlockingButton.toString());
+		setPartialImageTimeValue(room2Settings.timeSettings.partialImageTime.toString());
+	}, [room2Settings.readingSpeed, room2Settings.timeSettings.timeForBlockingButton, room2Settings.timeSettings.partialImageTime]);
+
 	return (
 		<div className='gameMetadataView'>
 			<dl>
@@ -59,7 +71,8 @@ export function GameMetadataView(props: GameMetadataViewProps): JSX.Element {
 							id="managed-input"
 							type="checkbox"
 							checked={room2Settings.managed}
-							disabled={true}
+							disabled={!isHost}
+							onChange={(e) => appDispatch(setOption({ name: 'Managed', value: e.target.checked.toString() }))}
 						/>
 					</div>
 
@@ -69,7 +82,8 @@ export function GameMetadataView(props: GameMetadataViewProps): JSX.Element {
 							id="falseStarts-input"
 							type="checkbox"
 							checked={room2Settings.falseStart}
-							disabled={true}
+							disabled={!isHost}
+							onChange={(e) => appDispatch(setOption({ name: 'FalseStart', value: e.target.checked.toString() }))}
 						/>
 					</div>
 
@@ -79,7 +93,8 @@ export function GameMetadataView(props: GameMetadataViewProps): JSX.Element {
 							id="partialText-input"
 							type="checkbox"
 							checked={room2Settings.partialText}
-							disabled={true}
+							disabled={!isHost || room2Settings.falseStart}
+							onChange={(e) => appDispatch(setOption({ name: 'PartialText', value: e.target.checked.toString() }))}
 						/>
 					</div>
 
@@ -89,7 +104,8 @@ export function GameMetadataView(props: GameMetadataViewProps): JSX.Element {
 							id="partialImages-input"
 							type="checkbox"
 							checked={room2Settings.partialImages}
-							disabled={true}
+							disabled={!isHost || room2Settings.falseStart}
+							onChange={(e) => appDispatch(setOption({ name: 'PartialImages', value: e.target.checked.toString() }))}
 						/>
 					</div>
 
@@ -97,9 +113,21 @@ export function GameMetadataView(props: GameMetadataViewProps): JSX.Element {
 						<label htmlFor="readingSpeed-input">{localization.questionReadingSpeed}</label>
 						<input
 							id="readingSpeed-input"
-							type="text"
-							value={room2Settings.readingSpeed}
-							readOnly={true}
+							type="number"
+							min="1"
+							max="100"
+							value={readingSpeedValue}
+							disabled={!isHost}
+							onChange={(e) => setReadingSpeedValue(e.target.value)}
+							onBlur={(e) => {
+								const value = parseInt(e.target.value, 10);
+								if (value > 0 && value <= 100) {
+									appDispatch(setOption({ name: 'ReadingSpeed', value: value.toString() }));
+								} else {
+									// Reset to valid value if input is invalid
+									setReadingSpeedValue(room2Settings.readingSpeed.toString());
+								}
+							}}
 						/>
 					</div>
 
@@ -109,7 +137,19 @@ export function GameMetadataView(props: GameMetadataViewProps): JSX.Element {
 							id="useApellations-input"
 							type="checkbox"
 							checked={room2Settings.useApellations}
-							disabled={true}
+							disabled={!isHost}
+							onChange={(e) => appDispatch(setOption({ name: 'UseApellations', value: e.target.checked.toString() }))}
+						/>
+					</div>
+
+					<div className='room__option'>
+						<label htmlFor="displayLabels-input">{localization.displayAnswerOptionsLabels}</label>
+						<input
+							id="displayLabels-input"
+							type="checkbox"
+							checked={room2Settings.displayAnswerOptionsLabels}
+							disabled={!isHost}
+							onChange={(e) => appDispatch(setOption({ name: 'DisplayAnswerOptionsLabels', value: e.target.checked.toString() }))}
 						/>
 					</div>
 				</div>
@@ -123,9 +163,22 @@ export function GameMetadataView(props: GameMetadataViewProps): JSX.Element {
 						<label htmlFor="buttonBlockingTime-input">{localization.timeForBlockingButton}</label>
 						<input
 							id="buttonBlockingTime-input"
-							type="text"
-							value={room2Settings.timeSettings.timeForBlockingButton}
-							readOnly={true}
+							type="number"
+							min="1"
+							max="10"
+							value={blockingButtonTimeValue}
+							disabled={true}
+							style={{ borderWidth: 0 }}
+							onChange={(e) => setBlockingButtonTimeValue(e.target.value)}
+							onBlur={(e) => {
+								const value = parseInt(e.target.value, 10);
+								if (value > 0 && value <= 10) {
+									appDispatch(setOption({ name: 'TimeForBlockingButton', value: value.toString() }));
+								} else {
+									// Reset to valid value if input is invalid
+									setBlockingButtonTimeValue(room2Settings.timeSettings.timeForBlockingButton.toString());
+								}
+							}}
 						/>
 					</div>
 
@@ -134,8 +187,20 @@ export function GameMetadataView(props: GameMetadataViewProps): JSX.Element {
 						<input
 							id="partialImageTime-input"
 							type="number"
-							value={room2Settings.timeSettings.partialImageTime}
-							disabled={true}
+							min="1"
+							max="20"
+							value={partialImageTimeValue}
+							disabled={!isHost || room2Settings.falseStart}
+							onChange={(e) => setPartialImageTimeValue(e.target.value)}
+							onBlur={(e) => {
+								const value = parseInt(e.target.value, 10);
+								if (value > 0 && value <= 20) {
+									appDispatch(setOption({ name: 'PartialImageTime', value: value.toString() }));
+								} else {
+									// Reset to valid value if input is invalid
+									setPartialImageTimeValue(room2Settings.timeSettings.partialImageTime.toString());
+								}
+							}}
 						/>
 					</div>
 				</div>

@@ -30,7 +30,7 @@ import RandomPackageParameters from 'sistorage-client/dist/models/RandomPackageP
 import { AppDispatch } from '../store';
 import { showWelcome, tableReset } from '../tableSlice';
 import { ContextView, nameChanged, setContext, setIsGameStarted, setRoomRole } from '../room2Slice';
-import { GameState, setGameSet } from '../gameSlice';
+import { GameState, PackageData, setGameSet } from '../gameSlice';
 import { saveStateToStorage } from '../StateHelpers';
 import { INavigationState } from '../uiSlice';
 import { navigate } from '../../utils/Navigator';
@@ -294,6 +294,33 @@ function createGameSettings(
 	return gameSettings;
 }
 
+function selectContentClientBySharding(contentClients: SIContentClient[], packageInfo: PackageData): SIContentClient {
+	if (contentClients.length === 0) {
+		throw new Error('No content clients available');
+	}
+
+	if (contentClients.length === 1) {
+		return contentClients[0]; // Only one client available, no need for sharding
+	}
+
+	// Create a deterministic identifier for the package
+	// using available package data to ensure consistent sharding
+	const packageIdentifier = packageInfo.data?.name ?? packageInfo.name;
+
+	// Create a simple hash from the packageIdentifier
+	let hash = 0;
+
+	for (let i = 0; i < packageIdentifier.length; i++) {
+		// Simple hash function: multiply by 31 and add character code
+		hash = ((hash << 5) - hash) + packageIdentifier.charCodeAt(i);
+		hash |= 0; // Convert to 32-bit integer
+	}
+
+	// Use the absolute value of the hash to select a client
+	const clientIndex = Math.abs(hash) % contentClients.length;
+	return contentClients[clientIndex];
+}
+
 async function getPackageInfoAsync(state: State, game: GameState, dataContext: DataContext, dispatch: AppDispatch): Promise<PackageInfo> {
 	switch (game.package.type) {
 		case PackageType.File:
@@ -301,7 +328,8 @@ async function getPackageInfoAsync(state: State, game: GameState, dataContext: D
 				throw new Error('Package data not found');
 			}
 
-			const packageInfo = await uploadPackageAsync2(dataContext.contentClient, game.package.data, dispatch);
+			const contentClient = selectContentClientBySharding(dataContext.contentClients, game.package);
+			const packageInfo = await uploadPackageAsync2(contentClient, game.package.data, dispatch);
 			return packageInfo;
 
 		case PackageType.SIStorage:
@@ -316,7 +344,7 @@ async function getPackageInfoAsync(state: State, game: GameState, dataContext: D
 				secret: null,
 			};
 
-		case PackageType.HostManaged:
+		case PackageType.HostManaged: {
 			if (!game.package.id) {
 				throw new Error('Package id not found');
 			}
@@ -335,8 +363,10 @@ async function getPackageInfoAsync(state: State, game: GameState, dataContext: D
 				throw new Error('Package data not found');
 			}
 
-			const packageInfo2 = await uploadPackageAsync2(dataContext.contentClient, packageData, dispatch);
+			const contentClient = selectContentClientBySharding(dataContext.contentClients, game.package);
+			const packageInfo2 = await uploadPackageAsync2(contentClient, packageData, dispatch);
 			return packageInfo2;
+		}
 
 		default:
 			if (dataContext.storageClients.length === 0) {

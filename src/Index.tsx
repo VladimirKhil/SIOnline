@@ -24,14 +24,19 @@ import enableNoSleep from './utils/NoSleepHelper';
 import getDeviceType from './utils/getDeviceType';
 import isSafari from './utils/isSafari';
 import GameServerClient from './client/GameServerClient';
-import SIContentClient from 'sicontent-client';
 import ButtonPressMode from './model/ButtonPressMode';
 import Path from './model/enums/Path';
 import BrowserHost from './host/BrowserHost';
 import YandexHost from './host/YandexHost';
 import IHost, { FullScreenMode } from './host/IHost';
 import SIHostClient from './client/SIHostClient';
-import { setFullScreen, setGameButtonKey, setNextButtonKey, setNoButtonKey, setPassButtonKey, setPauseButtonKey, setYesButtonKey } from './state/settingsSlice';
+import { setFullScreen,
+	setGameButtonKey,
+	setNextButtonKey,
+	setNoButtonKey,
+	setPassButtonKey,
+	setPauseButtonKey,
+	setYesButtonKey } from './state/settingsSlice';
 import { commonErrorChanged, setFontsReady } from './state/commonSlice';
 import { saveStateToStorage } from './state/StateHelpers';
 import { INavigationState, setFullScreenSupported, settingKeyChanged, visibilityChanged, windowSizeChanged } from './state/uiSlice';
@@ -354,7 +359,7 @@ async function run(stateManager: IHost) {
 			gameClient,
 			game: new GameClient(new SIHostClient(noOpHubConnection, () => { }), false),
 			contentUris: null,
-			contentClient: new SIContentClient({ serviceUri: 'http://fake' }),
+			contentClients: [],
 			storageClients: [],
 			state: stateManager,
 		};

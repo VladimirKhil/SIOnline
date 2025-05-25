@@ -16,7 +16,7 @@ import Path from '../../model/enums/Path';
 import actionCreators from '../../logic/actionCreators';
 import { AppDispatch } from '../store';
 import { isSelectableChanged } from '../tableSlice';
-import { clearGameLog, setIsPaused, showmanReplicChanged } from '../room2Slice';
+import { clearGameLog, setIsAppellation, setIsPaused, showmanReplicChanged } from '../room2Slice';
 import StakeModes from '../../client/game/StakeModes';
 import UsersMode from '../../model/enums/UsersMode';
 import { navigate } from '../../utils/Navigator';
@@ -142,6 +142,7 @@ const exitGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (
 	dispatch(stopTimer(2));
 
 	appDispatch(setIsPaused(false));
+	appDispatch(setIsAppellation(false));
 	dispatch(clearDecisionsAndMainTimer());
 
 	appDispatch(stopAudio());

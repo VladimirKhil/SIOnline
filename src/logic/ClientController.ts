@@ -512,7 +512,7 @@ export default class ClientController {
 
 	onOptionChanged(name: string, value: string, reason: string) {
 		switch (name) {
-			case 'Oral':
+			case 'Oral': {
 				const oralEnabled = value.toLowerCase() === 'true';
 				this.appDispatch(setSettingOral(oralEnabled));
 
@@ -530,44 +530,197 @@ export default class ClientController {
 						level: MessageLevel.System,
 					}) as any);
 				}
-
 				break;
+			}
 
-			case 'Managed':
-				this.appDispatch(setSettingManaged(value.toLowerCase() === 'true'));
+			case 'Managed': {
+				const managedEnabled = value.toLowerCase() === 'true';
+				this.appDispatch(setSettingManaged(managedEnabled));
+
+				if (reason.length > 0) {
+					const message = stringFormat(
+						managedEnabled ? localization.managedGameEnabled : localization.managedGameDisabled,
+						reason
+					);
+
+					this.appDispatch(userInfoChanged(message));
+
+					this.dispatch(roomActionCreators.chatMessageAdded({
+						sender: '',
+						text: message,
+						level: MessageLevel.System,
+					}) as any);
+				}
 				break;
+			}
 
-			case 'FalseStart':
-				this.appDispatch(setSettingFalseStart(value.toLowerCase() === 'true'));
+			case 'FalseStart': {
+				const falseStartEnabled = value.toLowerCase() === 'true';
+				this.appDispatch(setSettingFalseStart(falseStartEnabled));
+
+				if (reason.length > 0) {
+					const message = stringFormat(
+						falseStartEnabled ? localization.falseStartEnabled : localization.falseStartDisabled,
+						reason
+					);
+
+					this.appDispatch(userInfoChanged(message));
+
+					this.dispatch(roomActionCreators.chatMessageAdded({
+						sender: '',
+						text: message,
+						level: MessageLevel.System,
+					}) as any);
+				}
 				break;
+			}
 
-			case 'ReadingSpeed':
+			case 'ReadingSpeed': {
 				this.appDispatch(setSettingReadingSpeed(parseInt(value, 10)));
-				break;
 
-			case 'PartialText':
-				this.appDispatch(setSettingPartialText(value.toLowerCase() === 'true'));
-				break;
+				if (reason.length > 0) {
+					const message = stringFormat(
+						localization.readingSpeedChanged,
+						reason,
+						value
+					);
 
-			case 'PartialImages':
-				this.appDispatch(setSettingPartialImages(value.toLowerCase() === 'true'));
-				break;
+					this.appDispatch(userInfoChanged(message));
 
-			case 'PartialImageTime':
+					this.dispatch(roomActionCreators.chatMessageAdded({
+						sender: '',
+						text: message,
+						level: MessageLevel.System,
+					}) as any);
+				}
+				break;
+			}
+
+			case 'PartialText': {
+				const partialTextEnabled = value.toLowerCase() === 'true';
+				this.appDispatch(setSettingPartialText(partialTextEnabled));
+
+				if (reason.length > 0) {
+					const message = stringFormat(
+						partialTextEnabled ? localization.partialTextEnabled : localization.partialTextDisabled,
+						reason
+					);
+
+					this.appDispatch(userInfoChanged(message));
+
+					this.dispatch(roomActionCreators.chatMessageAdded({
+						sender: '',
+						text: message,
+						level: MessageLevel.System,
+					}) as any);
+				}
+				break;
+			}
+
+			case 'PartialImages': {
+				const partialImagesEnabled = value.toLowerCase() === 'true';
+				this.appDispatch(setSettingPartialImages(partialImagesEnabled));
+
+				if (reason.length > 0) {
+					const message = stringFormat(
+						partialImagesEnabled ? localization.partialImagesEnabled : localization.partialImagesDisabled,
+						reason
+					);
+
+					this.appDispatch(userInfoChanged(message));
+
+					this.dispatch(roomActionCreators.chatMessageAdded({
+						sender: '',
+						text: message,
+						level: MessageLevel.System,
+					}) as any);
+				}
+				break;
+			}
+
+			case 'PartialImageTime': {
 				this.appDispatch(setSettingPartialImageTime(parseInt(value, 10)));
-				break;
 
-			case 'UseApellations':
-				this.appDispatch(setSettingUseApellations(value.toLowerCase() === 'true'));
-				break;
+				if (reason.length > 0) {
+					const message = stringFormat(
+						localization.partialImageTimeChanged,
+						reason,
+						value
+					);
 
-			case 'TimeForBlockingButton':
+					this.appDispatch(userInfoChanged(message));
+
+					this.dispatch(roomActionCreators.chatMessageAdded({
+						sender: '',
+						text: message,
+						level: MessageLevel.System,
+					}) as any);
+				}
+				break;
+			}
+
+			case 'UseApellations': {
+				const useApellationsEnabled = value.toLowerCase() === 'true';
+				this.appDispatch(setSettingUseApellations(useApellationsEnabled));
+
+				if (reason.length > 0) {
+					const message = stringFormat(
+						useApellationsEnabled ? localization.useApellationsEnabled : localization.useApellationsDisabled,
+						reason
+					);
+
+					this.appDispatch(userInfoChanged(message));
+
+					this.dispatch(roomActionCreators.chatMessageAdded({
+						sender: '',
+						text: message,
+						level: MessageLevel.System,
+					}) as any);
+				}
+				break;
+			}
+
+			case 'TimeForBlockingButton': {
 				this.appDispatch(setSettingTimeForBlockingButton(parseInt(value, 10)));
-				break;
 
-			case 'DisplayAnswerOptionsLabels':
-				this.appDispatch(setSettingDisplayAnswerOptionsLabels(value.toLowerCase() === 'true'));
+				if (reason.length > 0) {
+					const message = stringFormat(
+						localization.blockingTimeChanged,
+						reason,
+						value
+					);
+
+					this.appDispatch(userInfoChanged(message));
+
+					this.dispatch(roomActionCreators.chatMessageAdded({
+						sender: '',
+						text: message,
+						level: MessageLevel.System,
+					}) as any);
+				}
 				break;
+			}
+
+			case 'DisplayAnswerOptionsLabels': {
+				const displayLabelsEnabled = value.toLowerCase() === 'true';
+				this.appDispatch(setSettingDisplayAnswerOptionsLabels(displayLabelsEnabled));
+
+				if (reason.length > 0) {
+					const message = stringFormat(
+						displayLabelsEnabled ? localization.displayLabelsEnabled : localization.displayLabelsDisabled,
+						reason
+					);
+
+					this.appDispatch(userInfoChanged(message));
+
+					this.dispatch(roomActionCreators.chatMessageAdded({
+						sender: '',
+						text: message,
+						level: MessageLevel.System,
+					}) as any);
+				}
+				break;
+			}
 
 			default:
 				break;

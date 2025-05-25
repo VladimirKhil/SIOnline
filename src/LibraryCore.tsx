@@ -6,7 +6,6 @@ import reducer from './state/reducer';
 import reduxThunk from 'redux-thunk';
 import { HubConnectionBuilder } from '@microsoft/signalr';
 import GameServerClient from './client/GameServerClient';
-import SIContentClient from 'sicontent-client';
 import GameClient from './client/game/GameClient';
 import DataContext from './model/DataContext';
 import ClientController from './logic/ClientController';
@@ -307,7 +306,7 @@ export default function runCore(game?: IGameClient): Store<State, AnyAction> {
 		gameClient,
 		game: game ?? new GameClient(new SIHostClient(noOpHubConnection, () => { }), false),
 		contentUris: null,
-		contentClient: new SIContentClient({ serviceUri: 'http://fake' }),
+		contentClients: [],
 		storageClients: [],
 		state: new BrowserHost(),
 	};
