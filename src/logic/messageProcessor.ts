@@ -30,11 +30,11 @@ import { playAudio } from '../state/commonSlice';
 import clearUrls from '../utils/clearUrls';
 import ThemesPlayMode from '../model/enums/ThemesPlayMode';
 import { AppDispatch } from '../state/store';
-import { addGameLog,
-	playerInGameChanged,
+import { playerInGameChanged,
 	playerStakeChanged,
 	playerStateChanged } from '../state/room2Slice';
 import StakeTypes from '../model/enums/StakeTypes';
+import { addGameLog } from '../state/globalActions';
 
 const MAX_APPEND_TEXT_LENGTH = 150;
 

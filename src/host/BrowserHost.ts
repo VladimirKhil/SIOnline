@@ -7,6 +7,8 @@ import SIStorageInfo from '../client/contracts/SIStorageInfo';
 const ACCEPT_LICENSE_KEY = 'ACCEPT_LICENSE';
 
 export default class BrowserHost implements IHost {
+	private gameLog = '';
+
 	isDesktop(): boolean {
 		return false;
 	}
@@ -87,4 +89,38 @@ export default class BrowserHost implements IHost {
 	}
 
 	exitApp() {}
+
+	async clearGameLog(): Promise<boolean> {
+		this.gameLog = '';
+		return true;
+	}
+
+	async addGameLog(content: string, newLine: boolean): Promise<boolean> {
+		if (newLine && this.gameLog.length > 0) {
+			this.gameLog += '\n';
+		}
+
+		this.gameLog += content;
+		return true;
+	}
+
+	async openGameLog(): Promise<boolean> {
+		// Create a blob with the game log
+		const blob = new Blob([this.gameLog], { type: 'text/plain' });
+
+		// Create a temporary URL for the blob
+		const url = URL.createObjectURL(blob);
+
+		// Create a download link and click it
+		const link = document.createElement('a');
+		link.href = url;
+		link.download = `game-log-${new Date().toISOString().slice(0, 19).replace(/:/g, '-')}.txt`;
+		document.body.appendChild(link);
+		link.click();
+
+		// Clean up
+		URL.revokeObjectURL(url);
+		document.body.removeChild(link);
+		return true;
+	}
 }

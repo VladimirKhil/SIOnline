@@ -26,13 +26,13 @@ function saveNavigationState(navigation: INavigationState, dataContext: DataCont
 				gameLink = `gameId=${navigation.gameId}&host=${encodeURIComponent(navigation.hostUri ?? '')}`;
 			}
 
-			dataContext.state.saveNavigationState(
+			dataContext.host.saveNavigationState(
 				navigation,
 				dataContext.config.rewriteUrl ? `${dataContext.config.rootUri}?${gameLink}` : null,
 				replaceState,
 			);
 		} else {
-			dataContext.state.saveNavigationState(
+			dataContext.host.saveNavigationState(
 				navigation,
 				dataContext.config.rewriteUrl ? dataContext.config.rootUri : null,
 				replaceState,

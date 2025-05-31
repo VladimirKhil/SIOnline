@@ -65,7 +65,6 @@ export interface Room2State {
 	};
 
 	isEditTableEnabled: boolean;
-	gameLog: string[];
 
 	settings: AppSettings;
 }
@@ -112,7 +111,6 @@ const initialState: Room2State = {
 	},
 
 	isEditTableEnabled: false,
-	gameLog: [],
 
 	settings: initialAppSettings,
 };
@@ -503,12 +501,6 @@ export const room2Slice = createSlice({
 		setIsEditingTables(state: Room2State, action: PayloadAction<boolean>) {
 			state.stage.isEditingTables = action.payload;
 		},
-		clearGameLog(state: Room2State) {
-			state.gameLog = [];
-		},
-		addGameLog(state: Room2State, action: PayloadAction<string>) {
-			state.gameLog.push(action.payload);
-		},
 		setIsPaused(state: Room2State, action: PayloadAction<boolean>) {
 			state.stage.isGamePaused = action.payload;
 			state.isEditTableEnabled = false;
@@ -654,8 +646,6 @@ export const {
 	setIsGameStarted,
 	setIsAppellation,
 	setIsEditingTables,
-	clearGameLog,
-	addGameLog,
 	setIsPaused,
 	setRoomRole,
 	setSettingDisplayAnswerOptionsLabels,

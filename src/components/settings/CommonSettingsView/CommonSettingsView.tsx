@@ -16,6 +16,7 @@ import { setAppSound,
 export function CommonSettingsView(): JSX.Element {
 	const settings = useAppSelector(state => state.settings);
 	const ui = useAppSelector(state => state.ui);
+	const common = useAppSelector(state => state.common);
 	const appDispatch = useAppDispatch();
 
 	return (
@@ -115,16 +116,18 @@ export function CommonSettingsView(): JSX.Element {
 				<label htmlFor="showVideoAvatars">{localization.showVideoAvatars}</label>
 			</div>
 
-			<div className="settingItem">
-				<input
-					id="writeGameLog"
-					type="checkbox"
-					checked={settings.writeGameLog}
-					onChange={() => appDispatch(setWriteGameLog(!settings.writeGameLog))}
-				/>
+			{common.logSupported
+				? <div className="settingItem">
+					<input
+						id="writeGameLog"
+						type="checkbox"
+						checked={settings.writeGameLog}
+						onChange={() => appDispatch(setWriteGameLog(!settings.writeGameLog))}
+					/>
 
-				<label htmlFor="writeGameLog">{localization.writeGameLog}</label>
-			</div>
+					<label htmlFor="writeGameLog">{localization.writeGameLog}</label>
+				</div>
+				: null}
 		</div>
 	);
 }

@@ -35,6 +35,7 @@ export interface CommonState {
 	fontsReady: boolean;
 	clipboardSupported: boolean;
 	exitSupported?: boolean;
+	logSupported?: boolean;
 	isDesktop?: boolean;
 	siHosts: Record<string, string>;
 }
@@ -62,6 +63,7 @@ const initialState: CommonState = {
 	fontsReady: false,
 	clipboardSupported: true,
 	exitSupported: false,
+	logSupported: true,
 	isDesktop: false,
 	siHosts: {},
 };
@@ -146,6 +148,9 @@ export const commonSlice = createSlice({
 		setHostManagedUrls: (state: CommonState, action: PayloadAction<boolean>) => {
 			state.hostManagedUrls = action.payload;
 		},
+		setLogSupported: (state: CommonState, action: PayloadAction<boolean>) => {
+			state.logSupported = action.payload;
+		},
 	}
 });
 
@@ -199,6 +204,7 @@ export const {
 	setMinimalLogo,
 	setRoomLinkEnabled,
 	setHostManagedUrls,
+	setLogSupported,
 } = commonSlice.actions;
 
 export default commonSlice.reducer;

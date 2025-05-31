@@ -9,11 +9,15 @@ export class SteamWorkshopStorageClient extends SIStorageClient {
 	constructor(options: SIStorageClientOptions) {
 		super(options);
 
+		if (!window.__TAURI__ || !window.__TAURI__.core) {
+			throw new Error('Tauri environment is not available. This client can only be used in a Tauri application.');
+		}
+
+		const { invoke } = window.__TAURI__.core;
+
 		this.packages.getPackagesAsync = async (packageFilters, selectionParameters) => {
 			try {
 				// Call the Tauri command to get workshop items
-				const { invoke } = window.__TAURI__.core;
-
 				const response = await invoke('get_workshop_subscribed_items', {
 					page: ((selectionParameters.from ?? 0) / 50) + 1
 				});

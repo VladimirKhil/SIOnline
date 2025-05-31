@@ -308,7 +308,7 @@ export default function runCore(game?: IGameClient): Store<State, AnyAction> {
 		contentUris: null,
 		contentClients: [],
 		storageClients: [],
-		state: new BrowserHost(),
+		host: new BrowserHost(),
 	};
 
 	const savedState = loadState();

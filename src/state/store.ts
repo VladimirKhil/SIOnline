@@ -39,7 +39,7 @@ const dataContext: DataContext = {
 	contentUris: null,
 	contentClients: [],
 	storageClients: [],
-	state: new BrowserHost(),
+	host: new BrowserHost(),
 };
 
 const store = configureStore({

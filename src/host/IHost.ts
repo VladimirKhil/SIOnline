@@ -41,4 +41,13 @@ export default interface IHost {
 
 	/** Exits application. */
 	exitApp(): void;
+
+	/** Creates game log. */
+	clearGameLog(): Promise<boolean>;
+
+	/** Writes game log.*/
+	addGameLog(content: string, newLine: boolean): Promise<boolean>;
+
+	/** Opens current game log. */
+	openGameLog(): Promise<boolean>;
 }

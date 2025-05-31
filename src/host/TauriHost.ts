@@ -1,5 +1,11 @@
 import SIStorageClient from 'sistorage-client';
-import { setClearUrls, setClipboardSupported, setExitSupported, setHostManagedUrls, setIsDesktop, setSteamLinkSupported } from '../state/commonSlice';
+import { setClearUrls,
+	setClipboardSupported,
+	setExitSupported,
+	setHostManagedUrls,
+	setIsDesktop,
+	setLogSupported,
+	setSteamLinkSupported } from '../state/commonSlice';
 import { getCookie, setCookie } from '../utils/CookieHelpers';
 import IHost, { FullScreenMode } from './IHost';
 import { Store } from 'redux';
@@ -13,8 +19,40 @@ const isSteam = true;
 
 declare global {
 	interface Window {
-		__TAURI__?: any;
+		__TAURI__?: TauriAPI;
 	}
+}
+
+interface TauriAPI {
+	fs?: {
+		writeTextFile: (path: string, contents: string, options: any) => Promise<void>;
+		exists: (path: string, options: any) => Promise<boolean>;
+		createDir: (path: string, options: any) => Promise<void>;
+		readDir: (path: string, options: any) => Promise<Array<{ name?: string; path: string; children?: unknown }>>;
+		BaseDirectory: { AppData: unknown };
+	};
+	shell?: {
+		open: (path: string) => Promise<void>;
+	};
+	path?: {
+		resolveResource: (path: string, options: any) => Promise<string>;
+		BaseDirectory: { AppLog: unknown };
+	};
+	http?: {
+		fetch: (url: RequestInfo | URL, init?: RequestInit) => Promise<Response>;
+	};
+	webviewWindow?: {
+		getCurrentWebviewWindow: () => { setFullscreen: (fullScreen: boolean) => Promise<void> };
+	};
+	clipboardManager?: {
+		writeText: (text: string) => void;
+	};
+	core?: {
+		invoke: (cmd: string, args: any) => Promise<any>;
+	};
+	process?: {
+		exit: (code: number) => void;
+	};
 }
 
 export default class TauriHost implements IHost {
@@ -26,9 +64,14 @@ export default class TauriHost implements IHost {
 
 	private exitSupported = false;
 
+	private logSupported = false;
+
+	private currentLogFilePath: string | null = null;
+
 	constructor(private isLegacy: boolean) {
 		if (this.app && this.app.http) {
 			const originalFetch = globalThis.fetch.bind(globalThis);
+			const { fetch } = this.app.http;
 
 			globalThis.fetch = async (input: RequestInfo | URL, init?: RequestInit): Promise<Response> => {
 				if (typeof input === 'string' &&
@@ -38,15 +81,16 @@ export default class TauriHost implements IHost {
 					return originalFetch(input, init);
 				}
 
-				const response = await this.app.http.fetch(input, init);
+				const response = await fetch(input, init);
 				return response;
 			};
 		}
 
 		const urlParams = new URLSearchParams(window.location.hash.substring(1));
-		this.licenseAccepted = this.app || urlParams.get('licenseAccepted') === 'true';
-		this.clipboardSupported = this.app || urlParams.get('clipboardSupported') === 'true';
-		this.exitSupported = (this.app && this.app.process) || urlParams.get('exitSupported') === 'true';
+		this.licenseAccepted = !!this.app || urlParams.get('licenseAccepted') === 'true';
+		this.clipboardSupported = !!this.app || urlParams.get('clipboardSupported') === 'true';
+		this.exitSupported = (!!this.app && !!this.app.process) || urlParams.get('exitSupported') === 'true';
+		this.logSupported = !!this.app && urlParams.get('logSupported') === 'true';
 	}
 
 	isDesktop(): boolean {
@@ -70,6 +114,10 @@ export default class TauriHost implements IHost {
 
 		if (this.exitSupported) {
 			store.dispatch(setExitSupported(true));
+		}
+
+		if (!this.logSupported) {
+			store.dispatch(setLogSupported(false));
 		}
 	}
 
@@ -98,7 +146,7 @@ export default class TauriHost implements IHost {
 	}
 
 	isFullScreenSupported(): boolean {
-		return !this.isLegacy || this.app;
+		return !this.isLegacy || !!this.app;
 	}
 
 	detectFullScreen(): FullScreenMode {
@@ -135,6 +183,11 @@ export default class TauriHost implements IHost {
 
 	openLink(url: string) {
 		try {
+			if (!this.app || !this.app.core) {
+				console.warn('Tauri app core is not available, cannot open link:', url);
+				return;
+			}
+
 			this.app.core.invoke('open_url_in_steam_overlay', { url });
 		} catch (e) {
 			console.error('Failed to open link:', e);
@@ -168,33 +221,38 @@ export default class TauriHost implements IHost {
 	}
 
 	async getPackageData(id: string): Promise<File | null> {
+		if (!this.app || !this.app.core) {
+			console.warn('Tauri app core or http module is not available, cannot get package data');
+			return null;
+		}
+
 		try {
 			const itemId = parseInt(id, 10);
-			
+
 			console.log(`Getting package data for workshop item: ${itemId}`);
-			
+
 			// Instead of directly downloading the file data, request a URL through our custom protocol
 			const startTime = performance.now();
-			
+
 			// This returns metadata with a custom protocol URL
 			const fileInfo = await this.app.core.invoke('get_workshop_file_url', { itemId });
-			
+
 			const endTime = performance.now();
 			console.log(`Retrieved file URL for workshop item ${itemId} in ${(endTime - startTime).toFixed(2)}ms`);
 			console.log(`File size: ${fileInfo.size} bytes, URL: ${fileInfo.file_url}`);
-			
+
 			// Now we use fetch to get the file through our custom protocol
 			// This approach is more memory efficient as the browser handles streaming
 			const response = await fetch(fileInfo.file_url);
-			
+
 			if (!response.ok) {
 				throw new Error(`Failed to fetch file: ${response.status} ${response.statusText}`);
 			}
-			
+
 			// Get the file as a blob
 			const blob = await response.blob();
 			console.log(`Retrieved blob of size: ${blob.size} bytes`);
-			
+
 			// Create a File object from the blob
 			return new File([blob], 'package.siq', { type: 'application/x-zip-compressed' });
 		} catch (error) {
@@ -208,6 +266,53 @@ export default class TauriHost implements IHost {
 			this.app.process.exit(0);
 		} else {
 			window.parent.postMessage({ type: 'exit' }, '*');
+		}
+	}
+
+	async clearGameLog(): Promise<boolean> {
+		return true;
+	}
+
+	async addGameLog(content: string, newLine: boolean): Promise<boolean> {
+		if (!this.app || !this.app.fs || !this.app.path) {
+			return false;
+		}
+
+		try {
+			if (!this.currentLogFilePath) {
+				const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
+				this.currentLogFilePath = `game-log-${timestamp}.txt`;
+			}
+
+			// Write log file
+			await this.app.fs.writeTextFile(this.currentLogFilePath, content, {
+				baseDir: this.app.path.BaseDirectory.AppLog,
+			});
+
+			return true;
+		} catch (error) {
+			console.error('Failed to write game log to file:', error);
+			return false;
+		}
+	}
+
+	async openGameLog(): Promise<boolean> {
+		if (!this.app || !this.app.shell || !this.app.path || !this.currentLogFilePath) {
+			return false;
+		}
+
+		try {
+			const fullPath = await this.app.path.resolveResource(
+				this.currentLogFilePath,
+				{ baseDir: this.app.path.BaseDirectory.AppLog }
+			);
+
+			console.log(`Opening game log file: ${fullPath}`);
+			await this.app.shell.open(fullPath);
+			return true;
+		} catch (error) {
+			console.error('Failed to open game log file:', error);
+			return false;
 		}
 	}
 }

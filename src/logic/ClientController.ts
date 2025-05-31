@@ -64,7 +64,6 @@ import {
 	ContextView,
 	activatePlayerDecision,
 	activateShowmanDecision,
-	addGameLog,
 	askValidation,
 	chooserChanged,
 	clearDecisions,
@@ -124,7 +123,7 @@ import getErrorMessage, { getUserError } from '../utils/ErrorHelpers';
 import { playersVisibilityChanged, setQrCode } from '../state/uiSlice';
 import ErrorCode from '../client/contracts/ErrorCode';
 import { setAttachContentToTable } from '../state/settingsSlice';
-import { copyToClipboard } from '../state/globalActions';
+import { addGameLog, appendGameLog, copyToClipboard } from '../state/globalActions';
 import { mediaPreloaded } from '../state/serverActions';
 import stringFormat from '../utils/StringHelpers';
 
@@ -1065,7 +1064,7 @@ export default class ClientController {
 		this.appDispatch(appendPartialText(contentValue));
 
 		if (this.getState().settings.writeGameLog) {
-			this.appDispatch(addGameLog(contentValue));
+			this.appDispatch(appendGameLog(contentValue));
 		}
 	}
 
@@ -1086,6 +1085,10 @@ export default class ClientController {
 		}];
 
 		this.appDispatch(showContent(groups));
+
+		if (this.getState().settings.writeGameLog) {
+			this.appDispatch(addGameLog(''));
+		}
 	}
 
 	onContentState(placement: string, layoutId: number, itemState: ItemState) {
@@ -1143,9 +1146,9 @@ export default class ClientController {
 					? state.room2.persons.showman.name
 					: state.room2.persons.players[parseInt(personCode.substring(1), 10)]?.name;
 
-				this.dispatch(addGameLog(`${name}: ${text}`));
+				this.appDispatch(addGameLog(`${name}: ${text}`));
 			} else if (personCode === 'l') {
-				this.dispatch(addGameLog(text));
+				this.appDispatch(addGameLog(text));
 			}
 		}
 
@@ -1203,11 +1206,12 @@ export default class ClientController {
 					() => {
 						this.appDispatch(updateQuestion({ themeIndex, questionIndex, price: -1 }));
 
-						if (state.table.mode === TableMode.RoundTable) {
+						// Call getState() to use actual state
+						if (this.getState().table.mode === TableMode.RoundTable) {
 							this.appDispatch(showObject({ header: themeInfo.name, text: price.toString(), hint: '', large: true, animate: false }));
 						}
 					},
-					500
+					500,
 				);
 
 				if (state.settings.writeGameLog) {

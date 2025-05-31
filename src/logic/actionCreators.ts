@@ -155,7 +155,7 @@ async function loadHostInfoAsync(appDispatch: AppDispatch, dataContext: DataCont
 	}
 
 	dataContext.storageClients = storageInfos.map(createStorageClientFromInfo);
-	const { storageClient, storageInfo } = dataContext.state.getStorage();
+	const { storageClient, storageInfo } = dataContext.host.getStorage();
 
 	if (storageClient && storageInfo) {
 		dataContext.storageClients.push(storageClient);
@@ -314,7 +314,7 @@ const connectToServerAsync = async (
 	await loadHostInfoAsync(appDispatch, dataContext, requestCulture);
 	await uploadAvatarAsync(appDispatch, dataContext);
 
-	dataContext.state.onReady();
+	dataContext.host.onReady();
 };
 
 const initStage2CompleteInitializaionAsync = async (
@@ -362,7 +362,7 @@ const initStage1CheckLicenseAsync = async (
 	dataContext: DataContext
 ) => {
 	await connectToServerAsync(appDispatch, getState, dataContext);
-	const licenseAccepted = dataContext.state.isLicenseAccepted();
+	const licenseAccepted = dataContext.host.isLicenseAccepted();
 
 	if (!licenseAccepted) {
 		appDispatch(navigate({ navigation: { path: Path.AcceptLicense, callbackState: view }, saveState: true }));
@@ -423,7 +423,7 @@ const login: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 
 const acceptLicense: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 	(appDispatch: AppDispatch) => async (dispatch: Dispatch<any>, getState: () => State, dataContext: DataContext) => {
-		dataContext.state.acceptLicense();
+		dataContext.host.acceptLicense();
 
 		await initStage2CompleteInitializaionAsync(
 			getState().ui.navigation.callbackState ?? { path: Path.Root },

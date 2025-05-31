@@ -354,7 +354,7 @@ async function getPackageInfoAsync(state: State, game: GameState, dataContext: D
 			let packageData: File | null = null;
 
 			try {
-				packageData = await dataContext.state.getPackageData(game.package.id);
+				packageData = await dataContext.host.getPackageData(game.package.id);
 			} finally {
 				dispatch(downloadPackageFinished());
 			}

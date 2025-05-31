@@ -29,7 +29,7 @@ export default interface DataContext {
 	storageClients: SIStorageClient[];
 
 	/** Host. */
-	state: IHost;
+	host: IHost;
 
 	/** Package file. */
 	file?: File;

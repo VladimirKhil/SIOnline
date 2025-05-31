@@ -54,7 +54,6 @@ declare const firebaseConfig: FirebaseOptions | undefined;
 declare global {
 	interface Window {
         __TAURI_INTERNALS__: any;
-		__TAURI__?: any;
     }
 }
 
@@ -317,7 +316,7 @@ function getInitialView(historyState: INavigationState): INavigationState {
 	return { path: Path.Root };
 }
 
-async function run(stateManager: IHost) {
+async function run(host: IHost) {
 	try {
 		if (!config) {
 			throw new Error('Config is undefined!');
@@ -361,7 +360,7 @@ async function run(stateManager: IHost) {
 			contentUris: null,
 			contentClients: [],
 			storageClients: [],
-			state: stateManager,
+			host,
 		};
 
 		const store = createStore<State, AnyAction, {}, {}>(
@@ -382,7 +381,7 @@ async function run(stateManager: IHost) {
 					document.title = localization.appName;
 					store.dispatch(actionCreators.reloadComputerAccounts(store.dispatch) as any);
 				} else if (newSettings.fullScreen !== currentSettings.fullScreen) {
-					stateManager.setFullScreen(newSettings.fullScreen);
+					host.setFullScreen(newSettings.fullScreen);
 				}
 
 				currentSettings = newSettings;
@@ -390,17 +389,17 @@ async function run(stateManager: IHost) {
 			}
 		});
 
-		subscribeToExternalEvents(store, stateManager);
+		subscribeToExternalEvents(store, host);
 
 		store.dispatch(windowSizeChanged({ width: window.innerWidth, height: window.innerHeight }));
-		store.dispatch(setFullScreenSupported(stateManager.isFullScreenSupported()));
+		store.dispatch(setFullScreenSupported(host.isFullScreenSupported()));
 
 		if (state.settings.appSettings.culture) {
 			localization.setLanguage(state.settings.appSettings.culture);
 		}
 
 		if (state.settings.fullScreen) {
-			const result = await stateManager.setFullScreen(true);
+			const result = await host.setFullScreen(true);
 
 			if (!result) {
 				store.dispatch(setFullScreen(false));
@@ -418,9 +417,9 @@ async function run(stateManager: IHost) {
 			document.getElementById('reactHost')
 		);
 
-		await dataContext.state.initAsync(store);
+		await dataContext.host.initAsync(store);
 
-		const initialView = getInitialView(dataContext.state.loadNavigationState() as INavigationState);
+		const initialView = getInitialView(dataContext.host.loadNavigationState() as INavigationState);
 		store.dispatch(actionCreators.initStage0(initialView, store.dispatch) as unknown as Action);
 	} catch (e: any) {
 		ReactDOM.render(

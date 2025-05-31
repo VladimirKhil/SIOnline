@@ -64,6 +64,7 @@ export function AnswerInput(props: AnswerInputProps): JSX.Element | null {
 			onKeyPress={onAnswerKeyPress}
 			maxLength={250}
 			placeholder={localization.inputAnswer}
+			autoComplete='off'
 		/>
 
 		<button

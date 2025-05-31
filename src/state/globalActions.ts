@@ -10,7 +10,7 @@ export const copyToClipboard = createAsyncThunk(
 	'global/copyToClipboard',
 	async (arg: string, thunkAPI) => {
 		const dataContext = thunkAPI.extra as DataContext;
-		dataContext.state.copyToClipboard(arg);
+		dataContext.host.copyToClipboard(arg);
 	},
 );
 
@@ -18,7 +18,7 @@ export const copyUriToClipboard = createAsyncThunk(
 	'global/copyUriToClipboard',
 	async (arg: void, thunkAPI) => {
 		const dataContext = thunkAPI.extra as DataContext;
-		dataContext.state.copyUriToClipboard();
+		dataContext.host.copyUriToClipboard();
 	},
 );
 
@@ -26,7 +26,7 @@ export const openLink = createAsyncThunk(
 	'global/openLink',
 	async (arg: string, thunkAPI) => {
 		const dataContext = thunkAPI.extra as DataContext;
-		dataContext.state.openLink(arg);
+		dataContext.host.openLink(arg);
 	},
 );
 
@@ -34,7 +34,7 @@ export const exitApp = createAsyncThunk(
 	'global/exitApp',
 	async (_, thunkAPI) => {
 		const dataContext = thunkAPI.extra as DataContext;
-		dataContext.state.exitApp();
+		dataContext.host.exitApp();
 	},
 );
 
@@ -56,5 +56,37 @@ export const selectStudiaBackground = createAsyncThunk(
 		} catch (error) {
 			appDispatch(userErrorChanged(getErrorMessage(error)) as any);
 		}
+	},
+);
+
+export const clearGameLog = createAsyncThunk(
+	'global/clearGameLog',
+	async (_, thunkAPI) => {
+		const dataContext = thunkAPI.extra as DataContext;
+		await dataContext.host.clearGameLog();
+	}
+);
+
+export const addGameLog = createAsyncThunk(
+	'global/addGameLog',
+	async (message: string, thunkAPI) => {
+		const dataContext = thunkAPI.extra as DataContext;
+		dataContext.host.addGameLog(message, true);
+	},
+);
+
+export const appendGameLog = createAsyncThunk(
+	'global/addGameLog',
+	async (message: string, thunkAPI) => {
+		const dataContext = thunkAPI.extra as DataContext;
+		dataContext.host.addGameLog(message, false);
+	},
+);
+
+export const openGameLog = createAsyncThunk(
+	'global/openGameLog',
+	async (_, thunkAPI) => {
+		const dataContext = thunkAPI.extra as DataContext;
+		dataContext.host.openGameLog();
 	},
 );

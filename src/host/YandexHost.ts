@@ -10,6 +10,7 @@ const SDK_PATH = 'https://sdk.games.s3.yandex.net/sdk.js';
 declare const YaGames: any;
 
 export default class YandexHost implements IHost {
+	private gameLog = '';
 	private ysdk: any;
 	private player: any;
 
@@ -113,4 +114,23 @@ export default class YandexHost implements IHost {
 	}
 
 	exitApp() {}
+
+	async clearGameLog(): Promise<boolean> {
+		this.gameLog = '';
+		return true;
+	}
+
+	async addGameLog(content: string, newLine: boolean): Promise<boolean> {
+		if (newLine && this.gameLog.length > 0) {
+			this.gameLog += '\n';
+		}
+
+		this.gameLog += content;
+		return true;
+	}
+
+	async openGameLog(): Promise<boolean> {
+		console.warn('openGameLogFile is not implemented in browser environment');
+		return false;
+	}
 }

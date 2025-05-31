@@ -65,7 +65,7 @@ export function ReadyButton(props: ReadyButtonProps): JSX.Element | null {
 	return (
 		<div className={`readyButtonHost ${isReady ? 'ready' : 'not-ready'}`}>
 			<div className='readyButtonHost__label'>
-				{label.toLocaleUpperCase()}
+				{label}
 			</div>
 
 			<button

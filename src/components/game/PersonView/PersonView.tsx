@@ -24,7 +24,7 @@ export function PersonView(props: PersonViewProps): JSX.Element {
 	const appDispatch = useAppDispatch();
 	const room = useAppSelector(state => state.room2);
 	const isMe = props.account.name === room.name;
-	const isHost = room.name === room.persons.hostName;
+	const isHost = props.account.name === room.persons.hostName;
 
 	const avatar = isMe ? props.avatar : props.account.avatar;
 	const canManage = room.persons.hostName === room.name && !isMe && props.account.isHuman;

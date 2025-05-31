@@ -9,7 +9,7 @@ import ChatInputEmojiPicker from '../../common/ChatInputEmojiPicker/ChatInputEmo
 import localization from '../../../model/resources/localization';
 import DownloadLogButton from '../DownloadLogButton/DownloadLogButton';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
-import { addGameLog } from '../../../state/room2Slice';
+import { addGameLog } from '../../../state/globalActions';
 
 import './ChatInput.scss';
 
