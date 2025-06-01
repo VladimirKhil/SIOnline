@@ -1,8 +1,10 @@
 use serde::{Deserialize, Serialize};
-use steamworks::{AppIDs, AppId, Client, PublishedFileId, UGCType, UserList, UserListOrder};
-use std::io::Read;
-use std::path::Path;
 use std::fs::File;
+use std::fs::OpenOptions;
+use std::io::Read;
+use std::io::prelude::*;
+use std::path::Path;
+use steamworks::{AppIDs, AppId, Client, PublishedFileId, UGCType, UserList, UserListOrder};
 use tauri::Manager;
 use tauri_plugin_dialog::{DialogExt, MessageDialogButtons};
 
@@ -105,7 +107,7 @@ struct FileInfo {
 struct SteamWorkshopFileInfo {
     file_url: String,
     size: u64,
-    file_id: u64
+    file_id: u64,
 }
 
 // Generate a custom protocol URL for a workshop file
@@ -140,15 +142,15 @@ fn get_workshop_file_url(
                     Ok(SteamWorkshopFileInfo {
                         file_url,
                         size,
-                        file_id: item_id
+                        file_id: item_id,
                     })
-                },
+                }
                 Err(e) => {
                     log::error!("Failed to get file metadata: {}", e);
                     Err(format!("Failed to get file metadata: {}", e))
                 }
             }
-        },
+        }
         None => {
             log::info!("Downloading Workshop item: {}", item_id);
 
@@ -170,15 +172,18 @@ fn get_workshop_file_url(
                                         let size = metadata.len();
 
                                         // Create a custom protocol URL
-                                        let file_url = format!("http://sigame.localhost/file?id={}", item_id);
+                                        let file_url =
+                                            format!("http://sigame.localhost/file?id={}", item_id);
 
                                         return Ok(SteamWorkshopFileInfo {
                                             file_url,
                                             size,
-                                            file_id: item_id
+                                            file_id: item_id,
                                         });
-                                    },
-                                    Err(e) => return Err(format!("Failed to get file metadata: {}", e))
+                                    }
+                                    Err(e) => {
+                                        return Err(format!("Failed to get file metadata: {}", e))
+                                    }
                                 }
                             }
                         }
@@ -197,7 +202,10 @@ fn get_workshop_file_url(
 }
 
 // Handle custom protocol for workshop files
-fn handle_workshop_protocol(app: tauri::AppHandle, request: tauri::http::Request<Vec<u8>>) -> tauri::http::Response<Vec<u8>> {
+fn handle_workshop_protocol(
+    app: tauri::AppHandle,
+    request: tauri::http::Request<Vec<u8>>,
+) -> tauri::http::Response<Vec<u8>> {
     // Parse the URI to extract the file ID
     let uri = request.uri().to_string();
 
@@ -216,7 +224,7 @@ fn handle_workshop_protocol(app: tauri::AppHandle, request: tauri::http::Request
     let id_param = uri.split("?id=").nth(1).unwrap_or("");
     let item_id = match id_param.parse::<u64>() {
         Ok(id) => id,
-        Err(_) => return error_response
+        Err(_) => return error_response,
     };
 
     log::info!("Custom protocol request for file ID: {}", item_id);
@@ -232,8 +240,8 @@ fn handle_workshop_protocol(app: tauri::AppHandle, request: tauri::http::Request
             let mut package_path = info.folder.clone();
             package_path.push_str("/package.siq");
             package_path
-        },
-        None => return error_response
+        }
+        None => return error_response,
     };
 
     // Check if file exists
@@ -262,7 +270,10 @@ fn handle_workshop_protocol(app: tauri::AppHandle, request: tauri::http::Request
     tauri::http::Response::builder()
         .header("Access-Control-Allow-Origin", "*")
         .header("Content-Type", "application/x-zip-compressed")
-        .header("Content-Disposition", format!("attachment; filename=\"package.siq\""))
+        .header(
+            "Content-Disposition",
+            format!("attachment; filename=\"package.siq\""),
+        )
         .status(200)
         .body(data)
         .unwrap()
@@ -278,6 +289,21 @@ fn open_url_in_steam_overlay(client_state: tauri::State<Client>, url: String) {
     client_state
         .friends()
         .activate_game_overlay_to_web_page(&url);
+}
+
+#[tauri::command]
+fn append_text_file(app_handle: tauri::AppHandle, file_name: String, content: String) {
+  let app_log_dir = app_handle.path().app_log_dir().expect("Failed to get app log directory");
+  let log_path = app_log_dir.join(file_name);
+
+  let mut file = OpenOptions::new()
+      .write(true)
+      .append(true)
+      .create(true)
+      .open(&log_path)
+      .expect("Failed to open file");
+
+  file.write(content.as_bytes()).expect("Failed to write file");
 }
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
@@ -341,7 +367,8 @@ pub fn run() {
             greet,
             open_url_in_steam_overlay,
             get_workshop_subscribed_items,
-            get_workshop_file_url
+            get_workshop_file_url,
+            append_text_file
         ])
         .run(tauri::generate_context!())
         .unwrap_or_else(|e| {

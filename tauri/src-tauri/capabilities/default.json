@@ -8,6 +8,14 @@
   "permissions": [
     "core:default",
     "opener:default",
+    {
+      "identifier": "opener:allow-open-path",
+      "allow": [
+        {
+          "path": "$APPLOG/*"
+        }
+      ]
+    },
     "core:window:allow-set-fullscreen",
     "clipboard-manager:allow-write-text",
     "process:default",

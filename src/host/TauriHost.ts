@@ -24,19 +24,12 @@ declare global {
 }
 
 interface TauriAPI {
-	fs?: {
-		writeTextFile: (path: string, contents: string, options: any) => Promise<void>;
-		exists: (path: string, options: any) => Promise<boolean>;
-		createDir: (path: string, options: any) => Promise<void>;
-		readDir: (path: string, options: any) => Promise<Array<{ name?: string; path: string; children?: unknown }>>;
-		BaseDirectory: { AppData: unknown };
-	};
-	shell?: {
-		open: (path: string) => Promise<void>;
+	opener?: {
+		openPath: (path: string) => Promise<void>;
 	};
 	path?: {
-		resolveResource: (path: string, options: any) => Promise<string>;
-		BaseDirectory: { AppLog: unknown };
+		appLogDir(): Promise<string>;
+		resolve(...paths: string[]): Promise<string>;
 	};
 	http?: {
 		fetch: (url: RequestInfo | URL, init?: RequestInit) => Promise<Response>;
@@ -90,7 +83,7 @@ export default class TauriHost implements IHost {
 		this.licenseAccepted = !!this.app || urlParams.get('licenseAccepted') === 'true';
 		this.clipboardSupported = !!this.app || urlParams.get('clipboardSupported') === 'true';
 		this.exitSupported = (!!this.app && !!this.app.process) || urlParams.get('exitSupported') === 'true';
-		this.logSupported = !!this.app && urlParams.get('logSupported') === 'true';
+		this.logSupported = isSteam || urlParams.get('logSupported') === 'true';
 	}
 
 	isDesktop(): boolean {
@@ -270,11 +263,12 @@ export default class TauriHost implements IHost {
 	}
 
 	async clearGameLog(): Promise<boolean> {
+		this.currentLogFilePath = null;
 		return true;
 	}
 
 	async addGameLog(content: string, newLine: boolean): Promise<boolean> {
-		if (!this.app || !this.app.fs || !this.app.path) {
+		if (!this.app || !this.app.core || !this.app.path) {
 			return false;
 		}
 
@@ -282,12 +276,11 @@ export default class TauriHost implements IHost {
 			if (!this.currentLogFilePath) {
 				const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
 				this.currentLogFilePath = `game-log-${timestamp}.txt`;
+			} else if (newLine) {
+				content = '\n' + content;
 			}
 
-			// Write log file
-			await this.app.fs.writeTextFile(this.currentLogFilePath, content, {
-				baseDir: this.app.path.BaseDirectory.AppLog,
-			});
+			this.app.core.invoke('append_text_file', { fileName: this.currentLogFilePath, content });
 
 			return true;
 		} catch (error) {
@@ -297,18 +290,20 @@ export default class TauriHost implements IHost {
 	}
 
 	async openGameLog(): Promise<boolean> {
-		if (!this.app || !this.app.shell || !this.app.path || !this.currentLogFilePath) {
+		if (!this.app || !this.app.opener || !this.app.path || !this.currentLogFilePath) {
 			return false;
 		}
 
 		try {
-			const fullPath = await this.app.path.resolveResource(
+			const appLogDir = await this.app.path.appLogDir();
+
+			const fullPath = await this.app.path.resolve(
+				appLogDir,
 				this.currentLogFilePath,
-				{ baseDir: this.app.path.BaseDirectory.AppLog }
 			);
 
 			console.log(`Opening game log file: ${fullPath}`);
-			await this.app.shell.open(fullPath);
+			await this.app.opener.openPath(fullPath);
 			return true;
 		} catch (error) {
 			console.error('Failed to open game log file:', error);
