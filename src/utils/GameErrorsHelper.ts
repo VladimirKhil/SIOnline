@@ -54,7 +54,7 @@ export function getJoinErrorMessage(error: JoinGameErrorType): string {
 			return localization.errorInternalServerError;
 
 		case JoinGameErrorType.Forbidden:
-			return localization.youAreKicked;
+			return '';
 
 		default:
 			return '';

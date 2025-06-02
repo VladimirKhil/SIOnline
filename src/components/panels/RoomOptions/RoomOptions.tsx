@@ -134,8 +134,9 @@ export function RoomOptions(props: RoomOptionsProps) {
 					<div className='blockName'>{localization.password}</div>
 
 					<input
-						aria-label='Password'
+						aria-label='Secret code'
 						type="password"
+						autoComplete='new-password'
 						className='blockValue'
 						value={game.password}
 						onChange={onGamePasswordChanged}

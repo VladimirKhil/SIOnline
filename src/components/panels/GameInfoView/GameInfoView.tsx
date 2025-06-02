@@ -238,9 +238,9 @@ export function GameInfoView(props: GameInfoViewProps): JSX.Element {
 									<span>{localization.password}</span>
 
 									<input
-										id="password"
 										type="password"
-										aria-label='Password'
+										autoComplete='new-password'
+										aria-label='Secret code'
 										disabled={joinGameProgress}
 										value={password}
 										onChange={e => appDispatch(passwordChanged(e.target.value))}
