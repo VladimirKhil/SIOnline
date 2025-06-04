@@ -1,5 +1,27 @@
-button.mainAction.playerButton:not(:disabled):active {
-    background: #f2daa0;
+@use '../../../scss/variables' as v;
+
+button.mainAction.playerButton.active {
+    background: transparent;
+
+    &.can-press {
+        background: v.$active-button-background;
+    }
+
+    &:not(:disabled):hover {
+        background: lightgray;
+    }
+
+    &.can-press:not(:disabled):hover {
+        background: linear-gradient(360deg, #ff4b23 0%, #FF7C1E 100%);
+    }
+
+    &:not(:disabled):active {
+        background: white;
+    }
+
+    &.can-press:not(:disabled):active {
+        background: #f2daa0;
+    }
 }
 
 button.mainAction.playerButton:disabled {

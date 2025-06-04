@@ -1,13 +1,20 @@
+#[cfg(feature = "steam_client")]
 use serde::{Deserialize, Serialize};
+#[cfg(feature = "steam_client")]
 use std::fs::File;
 use std::fs::OpenOptions;
+#[cfg(feature = "steam_client")]
 use std::io::Read;
 use std::io::prelude::*;
+#[cfg(feature = "steam_client")]
 use std::path::Path;
+#[cfg(feature = "steam_client")]
 use steamworks::{AppIDs, AppId, Client, PublishedFileId, UGCType, UserList, UserListOrder};
 use tauri::Manager;
+#[cfg(feature = "steam_client")]
 use tauri_plugin_dialog::{DialogExt, MessageDialogButtons};
 
+#[cfg(feature = "steam_client")]
 #[derive(Serialize, Deserialize)]
 struct WorkshopItem {
     id: u64,
@@ -22,12 +29,14 @@ struct WorkshopItem {
     preview_url: Option<String>,
 }
 
+#[cfg(feature = "steam_client")]
 #[derive(Serialize)]
 struct WorkshopItemsResponse {
     items: Vec<WorkshopItem>,
     total: u32,
 }
 
+#[cfg(feature = "steam_client")]
 #[tauri::command]
 fn get_workshop_subscribed_items(
     client_state: tauri::State<Client>,
@@ -95,6 +104,7 @@ fn get_workshop_subscribed_items(
         .map_err(|e| format!("Failed to receive query result: {:?}", e))?
 }
 
+#[cfg(feature = "steam_client")]
 #[derive(serde::Serialize, serde::Deserialize)]
 struct FileInfo {
     path: String,
@@ -102,6 +112,7 @@ struct FileInfo {
     chunk_count: u64,
 }
 
+#[cfg(feature = "steam_client")]
 // File info structure for metadata
 #[derive(serde::Serialize, serde::Deserialize)]
 struct SteamWorkshopFileInfo {
@@ -110,6 +121,7 @@ struct SteamWorkshopFileInfo {
     file_id: u64,
 }
 
+#[cfg(feature = "steam_client")]
 // Generate a custom protocol URL for a workshop file
 #[tauri::command]
 fn get_workshop_file_url(
@@ -201,6 +213,7 @@ fn get_workshop_file_url(
     }
 }
 
+#[cfg(feature = "steam_client")]
 // Handle custom protocol for workshop files
 fn handle_workshop_protocol(
     app: tauri::AppHandle,
@@ -284,6 +297,7 @@ fn greet(name: &str) -> String {
     format!("Hello, {}! You've been greeted from Rust!", name)
 }
 
+#[cfg(feature = "steam_client")]
 #[tauri::command]
 fn open_url_in_steam_overlay(client_state: tauri::State<Client>, url: String) {
     client_state
@@ -293,8 +307,26 @@ fn open_url_in_steam_overlay(client_state: tauri::State<Client>, url: String) {
 
 #[tauri::command]
 fn append_text_file(app_handle: tauri::AppHandle, file_name: String, content: String) {
+  // Sanitize the file_name: only allow alphanumeric, dash, underscore and dot
+  if !file_name.chars().all(|c| c.is_alphanumeric() || c == '-' || c == '_' || c == '.') {
+    log::error!("Invalid filename. Only alphanumeric characters, dash, underscore, and dot are allowed: {}", file_name);
+    return;
+  }
+
+  // Prevent hidden files
+  if file_name.starts_with('.') {
+    log::error!("Hidden files are not allowed: {}", file_name);
+    return;
+  }
+
   let app_log_dir = app_handle.path().app_log_dir().expect("Failed to get app log directory");
   let log_path = app_log_dir.join(file_name);
+
+  // Validate the resulting path is within the log directory (prevents path traversal)
+  if !log_path.starts_with(&app_log_dir) {
+    log::error!("Invalid path: {}. Path traversal is not allowed.", log_path.display());
+    return;
+  }
 
   let mut file = OpenOptions::new()
       .write(true)
@@ -310,66 +342,86 @@ fn append_text_file(app_handle: tauri::AppHandle, file_name: String, content: St
 pub fn run() {
     // Initialize Tauri application with plugins
     // and set up the application state with Steam client
-    tauri::Builder::default()
+    let mut builder = tauri::Builder::default()
         .plugin(tauri_plugin_log::Builder::new().build())
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_http::init())
         .plugin(tauri_plugin_process::init())
         .plugin(tauri_plugin_clipboard_manager::init())
-        .plugin(tauri_plugin_opener::init())
-        .setup(|app| {
-            // Initialize Steam (must have steam_appid.txt or app ID passed)
-            let steam_result = Client::init_app(3553500);
+        .plugin(tauri_plugin_opener::init());
 
-            match steam_result {
-                Ok((client, single)) => {
-                    // Store the client in app state for later use
-                    app.manage(client);
+    #[cfg(feature = "steam_client")]
+    {
+        builder = builder
+            .setup(|app| {
+                // Initialize Steam (must have steam_appid.txt or app ID passed)
+                let steam_result = Client::init_app(3553500);
 
-                    // Keep the client alive
-                    std::thread::spawn(move || {
-                        loop {
-                            single.run_callbacks();
-                            std::thread::sleep(std::time::Duration::from_millis(100));
-                        }
-                    });
+                match steam_result {
+                    Ok((client, single)) => {
+                        // Store the client in app state for later use
+                        app.manage(client);
 
-                    log::info!("Steam client initialized successfully");
-                },
-                Err(e) => {
-                    // Steam failed to initialize - show error to user
-                    log::error!("Steam initialization failed: {}", e);
+                        // Keep the client alive
+                        std::thread::spawn(move || {
+                            loop {
+                                single.run_callbacks();
+                                std::thread::sleep(std::time::Duration::from_millis(100));
+                            }
+                        });
 
-                    // Show error dialog to user
-                    app.dialog()
-                        .message("Steam must be running to play this game. Please start Steam and try again")
-                        .title("Steam Error")
-                        .buttons(MessageDialogButtons::Ok)
-                        .blocking_show();
+                        log::info!("Steam client initialized successfully");
+                    },
+                    Err(e) => {
+                        // Steam failed to initialize - show error to user
+                        log::error!("Steam initialization failed: {}", e);
 
-                    std::process::exit(1);
+                        // Show error dialog to user
+                        app.dialog()
+                            .message("Steam must be running to play this game. Please start Steam and try again")
+                            .title("Steam Error")
+                            .buttons(MessageDialogButtons::Ok)
+                            .blocking_show();
+
+                        std::process::exit(1);
+                    }
                 }
-            }
 
-            // Set up the main window
-            Ok(())
-        })
-        // Register custom protocol handler for workshop files
-        .register_asynchronous_uri_scheme_protocol("sigame", move |app_handle, request, responder| {
-            // Convert the UriSchemeContext to AppHandle
-            let handle = app_handle.app_handle().clone();
+                // Set up the main window
+                Ok(())
+            })
+            // Register custom protocol handler for workshop files
+            .register_asynchronous_uri_scheme_protocol("sigame", move |app_handle, request, responder| {
+                // Convert the UriSchemeContext to AppHandle
+                let handle = app_handle.app_handle().clone();
 
-            std::thread::spawn(move || {
-                responder.respond(handle_workshop_protocol(handle, request));
+                std::thread::spawn(move || {
+                    responder.respond(handle_workshop_protocol(handle, request));
+                });
             });
-        })
-        .invoke_handler(tauri::generate_handler![
+    }
+
+    // Set up invoke handlers
+    #[cfg(feature = "steam_client")]
+    {
+        builder = builder.invoke_handler(tauri::generate_handler![
             greet,
             open_url_in_steam_overlay,
             get_workshop_subscribed_items,
             get_workshop_file_url,
             append_text_file
-        ])
+        ]);
+    }
+
+    #[cfg(not(feature = "steam_client"))]
+    {
+        builder = builder.invoke_handler(tauri::generate_handler![
+            greet,
+            append_text_file
+        ]);
+    }
+
+    builder
         .run(tauri::generate_context!())
         .unwrap_or_else(|e| {
             log::error!("Error while running SIGame: {}", e);

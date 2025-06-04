@@ -17,6 +17,9 @@ crate-type = ["staticlib", "cdylib", "rlib"]
 [build-dependencies]
 tauri-build = { version = "2.0.1", features = [] }
 
+[features]
+steam_client = ["dep:steamworks"]
+
 [dependencies]
 serde_json = "1"
 serde = { version = "1", features = ["derive"] }
@@ -25,7 +28,7 @@ tauri-plugin-opener = "2"
 tauri-plugin-clipboard-manager = "2.2.1"
 tauri-plugin-process = "2"
 tauri-plugin-http = "2"
-steamworks = "0.11.0"
+steamworks = { version = "0.11.0", optional = true }
 tauri-plugin-dialog = "2"
 tauri-plugin-log = "2"
 log = "0.4"

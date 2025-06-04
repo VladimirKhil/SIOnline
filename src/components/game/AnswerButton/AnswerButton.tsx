@@ -27,13 +27,14 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 export function AnswerButton(props: AnswerButtonProps) {
 	const common = useAppSelector((state) => state.common);
 	const room = useAppSelector((state) => state.room2);
+	const table = useAppSelector((state) => state.table);
 	const me = room.persons.players.find(p => p.name === room.name);
 	const canAnswer = me && (me.state === PlayerStates.None || me.state === PlayerStates.Lost);
 
 	return (
 		<button
 			type='button'
-			className={`playerButton mainAction active ${canAnswer ? '' : ' hidden'}`}
+			className={`playerButton mainAction active ${canAnswer ? '' : ' hidden'} ${table.canPress ? ' can-press' : ''}`}
 			disabled={!common.isSIHostConnected || !props.isGameButtonEnabled || !canAnswer}
 			onClick={() => props.pressGameButton()}>
 			{localization.makeAnswer.toLocaleUpperCase()}

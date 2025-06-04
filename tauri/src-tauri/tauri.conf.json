@@ -1,13 +1,13 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
   "productName": "SIGame",
-  "version": "8.4.0",
+  "version": "8.6.2",
   "identifier": "com.vladimirkhil.sigame",
   "build": {
     "devUrl": "http://localhost:1420",
     "beforeDevCommand": "npm run dev",
-    "beforeBuildCommand": "",
-    "frontendDist": "../../dist"
+    "beforeBuildCommand": "npm run build",
+    "frontendDist": "../dist"
   },
   "app": {
     "withGlobalTauri": true,
