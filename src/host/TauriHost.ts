@@ -83,7 +83,7 @@ export default class TauriHost implements IHost {
 		this.licenseAccepted = !!this.app || urlParams.get('licenseAccepted') === 'true';
 		this.clipboardSupported = !!this.app || urlParams.get('clipboardSupported') === 'true';
 		this.exitSupported = (!!this.app && !!this.app.process) || urlParams.get('exitSupported') === 'true';
-		this.logSupported = isSteam || urlParams.get('logSupported') === 'true';
+		this.logSupported = !!this.app || urlParams.get('logSupported') === 'true';
 	}
 
 	isDesktop(): boolean {
@@ -263,13 +263,19 @@ export default class TauriHost implements IHost {
 	}
 
 	async clearGameLog(): Promise<boolean> {
+		if (!this.app) {
+			window.parent.postMessage({ type: 'clearGameLog' }, '*');
+			return true;
+		}
+
 		this.currentLogFilePath = null;
 		return true;
 	}
 
 	async addGameLog(content: string, newLine: boolean): Promise<boolean> {
 		if (!this.app || !this.app.core || !this.app.path) {
-			return false;
+			window.parent.postMessage({ type: 'addGameLog', payload: { content, newLine } }, '*');
+			return true;
 		}
 
 		try {
@@ -291,6 +297,7 @@ export default class TauriHost implements IHost {
 
 	async openGameLog(): Promise<boolean> {
 		if (!this.app || !this.app.opener || !this.app.path || !this.currentLogFilePath) {
+			window.parent.postMessage({ type: 'openGameLog' }, '*');
 			return false;
 		}
 
