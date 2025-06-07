@@ -11,7 +11,6 @@ import { exitApp } from '../../../state/globalActions';
 import Link from '../../common/Link/Link';
 
 import './MainMenu.scss';
-import exitImg from '../../../../assets/images/exit.png';
 import twitchImg from '../../../../assets/images/twitch_logo.png';
 import boostyImg from '../../../../assets/images/boosty_logo.png';
 import patreonImg from '../../../../assets/images/patreon_logo.png';
@@ -33,10 +32,6 @@ export default function MainMenu(): JSX.Element {
 		}
 	}, []);
 
-	const onExit = () => {
-		appDispatch(navigate({ navigation: { path: Path.Login }, saveState: true }));
-	};
-
 	// setTimeout() is to forcibly load window.history before navigating
 	const onJoinByPin = () => setTimeout(() => appDispatch(navigate({ navigation: { path: Path.JoinByPin }, saveState: true })), 0);
 
@@ -53,6 +48,10 @@ export default function MainMenu(): JSX.Element {
 			label: localization.joinByPin,
 			onClick: onJoinByPin,
 		},
+		// {
+		// 	label: localization.howToPlay,
+		// 	onClick: () => appDispatch(navigate({ navigation: { path: Path.Demo }, saveState: true })),
+		// },
 		{
 			label: localization.questionEditor,
 			onClick: () => appDispatch(navigate({ navigation: { path: Path.SIQuester }, saveState: true })),

@@ -1,7 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import GameSound from '../model/enums/GameSound';
-import { gameSoundPlayer } from '../utils/GameSoundPlayer';
-import { setHost } from './room2Slice';
 
 export enum MessageLevel {
 	Information,
@@ -30,7 +28,7 @@ export interface CommonState {
 	roomLinkEnabled: boolean;
 	avatarLoadProgress: boolean;
 	avatarLoadError: string | null;
-	audio: string | null;
+	audio: GameSound | null;
 	audioLoop: boolean;
 	fontsReady: boolean;
 	clipboardSupported: boolean;
@@ -110,7 +108,7 @@ export const commonSlice = createSlice({
 			state.avatarLoadProgress = false;
 		},
 		playAudio: (state: CommonState, action: PayloadAction<{ audio: GameSound, loop: boolean }>) => {
-			state.audio = gameSoundPlayer.getSound(action.payload.audio) ?? null;
+			state.audio = action.payload.audio;
 			state.audioLoop = action.payload.loop;
 		},
 		stopAudio: (state: CommonState) => {

@@ -27,6 +27,8 @@ export default interface IGameClient {
 
 	kick(personName: string): Promise<boolean>;
 
+	leaveGame(): Promise<void>;
+
 	markQuestion(questionId: number, comment: string): Promise<boolean>;
 
 	/** Notifies that the client has loaded the media. */
@@ -51,6 +53,8 @@ export default interface IGameClient {
 	ready(isReady: boolean): Promise<boolean>;
 
 	rejectAnswer(factor: number): Promise<boolean>;
+
+	say(text: string): Promise<boolean>;
 
 	selectQuestion(themeIndex: number, questionIndex: number): Promise<boolean>;
 

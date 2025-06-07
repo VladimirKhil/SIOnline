@@ -5,6 +5,7 @@ import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 import onlineActionCreators from '../../../state/online/onlineActionCreators';
 import Role from '../../../model/Role';
 import Constants from '../../../model/enums/Constants';
+import ProgressDialog from '../../panels/ProgressDialog/ProgressDialog';
 
 import './JoinByPin.scss';
 
@@ -12,6 +13,7 @@ export default function JoinByPin(): JSX.Element {
 	const [pin, setPin] = React.useState(0);
 	const appDispatch = useAppDispatch();
 	const user = useAppSelector(state => state.user);
+	const online = useAppSelector(state => state.online2);
 
 	const [userName, setUserName] = React.useState(user.login);
 
@@ -60,5 +62,9 @@ export default function JoinByPin(): JSX.Element {
 				{localization.joinAsPlayerHint}
 			</button>
 		</div>
+
+		{online.joinGameProgress
+			? <ProgressDialog title={localization.joiningGame} isIndeterminate={true} />
+			: null}
 	</Dialog>;
 }

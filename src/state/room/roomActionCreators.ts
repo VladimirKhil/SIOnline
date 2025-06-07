@@ -41,8 +41,9 @@ const runChatMessageSend: ActionCreator<ThunkAction<void, State, DataContext, Ac
 		const state = getState();
 
 		const text = state.room.chat.message;
+
 		if (text.length > 0) {
-			dataContext.game.gameServerClient.sayAsync(text);
+			dataContext.game.say(text);
 		}
 
 		dispatch(runChatMessageChanged(''));
@@ -125,7 +126,7 @@ const exitGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (
 		if (dataContext.game.shouldClose) {
 			await actionCreators.closeSIHostClientAsync(appDispatch, dataContext);
 		} else {
-			await dataContext.game.gameServerClient.leaveGameAsync();
+			await dataContext.game.leaveGame();
 		}
 	} catch (e) {
 		appDispatch(userErrorChanged(localization.exitError) as any);

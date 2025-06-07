@@ -3,6 +3,7 @@ import State from '../../../state/State';
 import { connect } from 'react-redux';
 import getErrorMessage from '../../../utils/ErrorHelpers';
 import localization from '../../../model/resources/localization';
+import { gameSoundPlayer } from '../../../utils/GameSoundPlayer';
 
 interface AudioControllerProps {
 	soundVolume: number;
@@ -13,7 +14,7 @@ interface AudioControllerProps {
 
 const mapStateToProps = (state: State) => ({
 	soundVolume: state.settings.soundVolume,
-	audio: state.common.audio,
+	audio: state.common.audio ? gameSoundPlayer.getSound(state.common.audio) ?? null : null,
 	loop: state.common.audioLoop,
 	isVisible: state.ui.isVisible,
 });

@@ -53,6 +53,10 @@ import { setStorages } from '../state/siPackagesSlice';
 import SIStorageInfo from '../client/contracts/SIStorageInfo';
 
 async function uploadAvatarAsync(appDispatch: AppDispatch, dataContext: DataContext) {
+	if (typeof localStorage === 'undefined') {
+		return;
+	}
+
 	const base64 = localStorage.getItem(Constants.AVATAR_KEY);
 	const fileName = localStorage.getItem(Constants.AVATAR_NAME_KEY);
 
@@ -218,7 +222,7 @@ const closeSIHostClientAsync = async (appDispatch: AppDispatch, dataContext: Dat
 	}
 
 	try {
-		await dataContext.game.gameServerClient.leaveGameAsync();
+		await dataContext.game.leaveGame();
 
 		if (connection.connectionId) {
 			activeSIHostConnections.splice(activeSIHostConnections.indexOf(connection.connectionId), 1);

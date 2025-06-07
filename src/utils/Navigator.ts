@@ -9,8 +9,18 @@ import { activeConnections, attachListeners, detachListeners, removeConnection }
 import { userErrorChanged } from '../state/commonSlice';
 import localization from '../model/resources/localization';
 import getErrorMessage from './ErrorHelpers';
+import onlineActionCreators from '../state/online/onlineActionCreators';
+import Role from '../model/Role';
+import DemoGameClient from './DemoGameClient';
+import ClientController from '../logic/ClientController';
+import State from '../state/State';
+import { showText } from '../state/tableSlice';
 
 function saveNavigationState(navigation: INavigationState, dataContext: DataContext, siHosts: Record<string, string>, replaceState: boolean) {
+	if (typeof window === 'undefined') {
+		return;
+	}
+
 	if (window.history.length === 0 || !window.history.state || (window.history.state as INavigationState).path !== navigation.path) {
 		if (navigation.path === Path.Room && navigation.gameId) {
 			let gameLink = null;
@@ -122,6 +132,31 @@ export const navigate = createAsyncThunk(
 				}
 
 				thunkAPI.dispatch(loadLobby());
+				break;
+
+			case Path.Demo:
+				const controller = new ClientController(
+					thunkAPI.dispatch,
+					thunkAPI.dispatch as AppDispatch,
+					() => thunkAPI.getState() as State,
+					thunkAPI.extra as DataContext,
+				);
+
+				const gameClient = new DemoGameClient(controller, () => thunkAPI.getState() as State);
+				(thunkAPI.extra as DataContext).game = gameClient;
+
+				await onlineActionCreators.initGameAsync(
+					thunkAPI.dispatch,
+					thunkAPI.dispatch as AppDispatch,
+					gameClient,
+					-1,
+					state.user.login,
+					Role.Player,
+					false,
+					false,
+				);
+
+				thunkAPI.dispatch(showText(localization.demoWelcome));
 				break;
 
 			default:

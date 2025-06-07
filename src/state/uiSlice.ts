@@ -36,8 +36,8 @@ export interface UIState {
 
 const initialState: UIState = {
 	onlineView: OnlineMode.Games,
-	windowWidth: window.innerWidth,
-	windowHeight: window.innerHeight,
+	windowWidth: typeof window !== 'undefined' ? window.innerWidth : 1920,
+	windowHeight: typeof window !== 'undefined' ? window.innerHeight : 1080,
 	areSettingsVisible: false,
 	isProfileVisible: false,
 	settingKey: null,

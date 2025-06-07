@@ -98,6 +98,7 @@ const initGameAsync = async (
 	name: string,
 	role: Role,
 	isAutomatic: boolean,
+	autoReady = true,
 ) => {
 	appDispatch(setGameSet({ id: gameId, isAutomatic }));
 	appDispatch(tableReset());
@@ -118,7 +119,7 @@ const initGameAsync = async (
 	await gameClient.info();
 	await gameClient.moveable();
 
-	if (role === Role.Player || role === Role.Showman) {
+	if (autoReady && (role === Role.Player || role === Role.Showman)) {
 		await gameClient.ready(true);
 	}
 };
@@ -185,10 +186,11 @@ const joinGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 
 const joinByPin: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 (pin: number, userName: string, role: Role, appDispatch: AppDispatch) => async (
-	dispatch: Dispatch<any>,
-	getState: () => State,
+	_dispatch: Dispatch<any>,
+	_getState: () => State,
 	dataContext: DataContext,
 ) => {
+	// TODO: Display get game PIN progress
 	const gameInfo = await dataContext.gameClient.getGameByPinAsync(pin);
 
 	if (!gameInfo) {

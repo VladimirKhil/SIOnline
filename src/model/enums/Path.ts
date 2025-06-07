@@ -10,6 +10,7 @@ const enum Path {
 	Room = '/room',
 	JoinRoom = '/join',
 	JoinByPin = '/joinByPin',
+	Demo = '/demo',
 	SIQuester = '/siquester',
 	SIQuesterPackage = '/siquester/package',
 }

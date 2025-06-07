@@ -84,6 +84,9 @@ export class App extends React.Component<AppProps> {
 			case Path.JoinByPin:
 				return <JoinByPin />;
 
+			case Path.Demo:
+				return <Room />;
+
 			case Path.SIQuester:
 				return <SIQuester />;
 

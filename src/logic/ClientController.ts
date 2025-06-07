@@ -475,10 +475,10 @@ export default class ClientController {
 		this.dispatch(actionCreators.sendAvatar() as any);
 	}
 
-	onHostNameChanged(hostName: string, changeSource: string | null) {
+	onHostNameChanged(hostName: string | null, changeSource: string | null) {
 		this.appDispatch(setHostName(hostName));
 
-		if (changeSource) {
+		if (hostName && changeSource) {
 			this.dispatch(roomActionCreators.chatMessageAdded({
 				sender: '',
 				text: stringFormat(localization.hostNameChanged, changeSource, hostName),

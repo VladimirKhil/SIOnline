@@ -63,8 +63,8 @@ function loadPersonReplacementList(selectedPerson: PersonInfo | null, props: Tab
 }
 
 export function TablesView(props: TablesViewProps): JSX.Element {
-	const roomState = useAppSelector(state => state.room2);
-	const { showman, players } = roomState.persons;
+	const room = useAppSelector(state => state.room2);
+	const { showman, players } = room.persons;
 
 	const isPlayerSelected = props.selectedIndex > 0 && props.selectedIndex <= players.length;
 
@@ -74,6 +74,7 @@ export function TablesView(props: TablesViewProps): JSX.Element {
 	const replacementList: string[] = loadPersonReplacementList(selectedPerson, props, isPlayerSelected);
 
 	const canSet = replacementList.length > 0;
+	const isHost = room.name === room.persons.hostName;
 
 	return (
 		<>
@@ -105,13 +106,13 @@ export function TablesView(props: TablesViewProps): JSX.Element {
 					className='replacePersonButton standard'
 					type="button"
 					onClick={() => props.changeType()}
-					disabled={!props.isConnected || !selectedPerson}>
+					disabled={!props.isConnected || !selectedPerson || !isHost}>
 					{selectedPerson && selectedPerson.isHuman ? localization.changeToBot : localization.changeToHuman}
 				</button>
 
 				<FlyoutButton
 					className='standard'
-					disabled={!props.isConnected || !canSet}
+					disabled={!props.isConnected || !canSet || !isHost}
 					alignWidth
 					flyout={(
 						<ul className='replacers'>

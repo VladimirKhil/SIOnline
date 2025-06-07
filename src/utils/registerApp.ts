@@ -4,7 +4,7 @@ import Architecture from 'appregistry-client/dist/requests/Architecture';
 let isRegistered = false;
 
 export default async function registerApp(appRegistryServiceUri: string) {
-	if (isRegistered) {
+	if (isRegistered || !appRegistryServiceUri) {
 		return;
 	}
 

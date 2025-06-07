@@ -1,6 +1,6 @@
 [package]
 name = "SIGame"
-version = "8.4.0"
+version = "8.6.3"
 description = "SIGame"
 authors = ["Vladimir Khil"]
 license = "GPLv3"

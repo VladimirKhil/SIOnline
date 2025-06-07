@@ -50,6 +50,10 @@ export default class GameClient implements IGameClient {
 		return this.gameServerClient.msgAsync(Messages.Ban, personName);
 	}
 
+	leaveGame(): Promise<void> {
+		return this.gameServerClient.leaveGameAsync();
+	}
+
 	markQuestion(questionId: number, comment: string): Promise<boolean> {
 		return this.gameServerClient.msgAsync(Messages.Mark, questionId, comment);
 	}
@@ -96,6 +100,10 @@ export default class GameClient implements IGameClient {
 
 	rejectAnswer(factor: number): Promise<boolean> {
 		return this.gameServerClient.msgAsync(Messages.IsRight, '-', factor);
+	}
+
+	say(text: string): Promise<boolean> {
+		return this.gameServerClient.sayAsync(text);
 	}
 
 	selectQuestion(themeIndex: number, questionIndex: number): Promise<boolean> {

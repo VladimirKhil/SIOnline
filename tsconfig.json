@@ -17,5 +17,14 @@
   "include": [
     "src"
   ],
-  "compileOnSave": false
+  "compileOnSave": false,
+  "ts-node": {
+      "compilerOptions": {
+          "module": "commonjs",
+          "moduleResolution": "node",
+          "esModuleInterop": true,
+          "allowSyntheticDefaultImports": true,
+          "skipLibCheck": true
+      }
+  }
 }

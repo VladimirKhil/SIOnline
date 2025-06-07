@@ -37,7 +37,7 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 export const ChatInput: React.FC<ChatInputProps> = (props) => {
 	const inputRef = React.useRef<HTMLInputElement>(null);
 	const appDispatch = useAppDispatch();
-	const myName = useAppSelector(state => state.room2.name);
+	const room = useAppSelector(state => state.room2);
 
 	React.useEffect(() => {
 		if (inputRef.current) {
@@ -53,7 +53,7 @@ export const ChatInput: React.FC<ChatInputProps> = (props) => {
 		if (e.key === Constants.KEY_ENTER_NEW) {
 			if (props.isConnected) {
 				props.onChatMessageSend();
-				appDispatch(addGameLog(`${myName}: ${props.message}`));
+				appDispatch(addGameLog(`${room.name}: ${props.message}`));
 			}
 
 			e.preventDefault();
