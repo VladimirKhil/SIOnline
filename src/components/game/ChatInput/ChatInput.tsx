@@ -39,12 +39,6 @@ export const ChatInput: React.FC<ChatInputProps> = (props) => {
 	const appDispatch = useAppDispatch();
 	const room = useAppSelector(state => state.room2);
 
-	React.useEffect(() => {
-		if (inputRef.current) {
-			inputRef.current.focus();
-		}
-	});
-
 	const onMessageChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
 		props.onChatMessageChanged(e.target.value);
 	};

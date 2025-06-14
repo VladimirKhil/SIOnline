@@ -10,6 +10,15 @@ import State from '../state/State';
 
 export enum DemoStage {
 	Init,
+	About,
+	Question,
+	GiveAnswer,
+	Answer,
+	AnswerValidation,
+	GameRules,
+	OtherContent,
+	OtherQuestions,
+	Opponents,
 	Finished,
 }
 
@@ -19,6 +28,7 @@ export default class DemoGameClient implements IGameClient {
 	shouldClose!: boolean;
 
 	stage: DemoStage = DemoStage.Init;
+	isAnswerCorrect: boolean = true;
 
 	constructor(
 		private controller: ClientController,
@@ -150,6 +160,7 @@ export default class DemoGameClient implements IGameClient {
 	}
 
 	async leaveGame(): Promise<void> {
+		this.stage = DemoStage.Finished;
 	}
 
 	markQuestion(questionId: number, comment: string): Promise<boolean> {
@@ -188,25 +199,17 @@ export default class DemoGameClient implements IGameClient {
 		throw new Error('Method not implemented.');
 	}
 
-	pressButton(deltaTime: number): Promise<boolean> {
-		throw new Error('Method not implemented.');
+	async pressButton(deltaTime: number): Promise<boolean> {
+		if (this.stage !== DemoStage.GiveAnswer) {
+			return true;
+		}
+
+		this.nextStage();
+		return true;
 	}
 
 	async ready(isReady: boolean): Promise<boolean> {
-		this.stage = DemoStage.Finished;
-
-		this.controller.onStage(GameStage.Started, '', 0, '');
-
-		this.controller.onContent(
-			'screen',
-			[
-				{
-					type: 'text',
-					value: localization.demoFinished,
-				},
-			]
-		);
-
+		this.nextStage();
 		return true;
 	}
 
@@ -222,8 +225,14 @@ export default class DemoGameClient implements IGameClient {
 		throw new Error('Method not implemented.');
 	}
 
-	sendAnswer(answer: string): Promise<boolean> {
-		throw new Error('Method not implemented.');
+	async sendAnswer(answer: string): Promise<boolean> {
+		if (this.stage !== DemoStage.Answer) {
+			return false;
+		}
+
+		this.isAnswerCorrect = answer.trim().toLocaleLowerCase() === localization.answer.trim().toLocaleLowerCase();
+		this.nextStage();
+		return true;
 	}
 
 	sendAnswerVersion(answerVersion: string): Promise<boolean> {
@@ -284,5 +293,153 @@ export default class DemoGameClient implements IGameClient {
 
 	validateAnswer(answer: string, isRight: boolean): Promise<boolean> {
 		throw new Error('Method not implemented.');
+	}
+
+	nextStage() {
+		this.stage = this.stage + 1;
+
+		switch (this.stage) {
+			case DemoStage.Init:
+				break;
+
+			case DemoStage.About:
+				this.controller.onStage(GameStage.Started, '', 0, '');
+
+				this.controller.onContent(
+					'screen',
+					[
+						{
+							type: 'text',
+							value: localization.demoAbout,
+						},
+					]
+				);
+
+				window.setTimeout(this.nextStage.bind(this), 15000);
+				break;
+
+			case DemoStage.Question:
+				this.controller.onContent('screen', []);
+
+				this.controller.onContent(
+					'screen',
+					[
+						{
+							type: 'text',
+							value: localization.demoQuestion,
+						},
+					]
+				);
+
+				window.setTimeout(this.nextStage.bind(this), 13000);
+				break;
+
+			case DemoStage.GiveAnswer:
+				this.controller.onBeginPressButton();
+				break;
+
+			case DemoStage.Answer:
+				this.controller.onReplic('s', localization.demoGiveAnswer);
+				this.controller.onAskAnswer();
+				this.controller.onEndPressButtonByPlayer(2);
+				break;
+
+			case DemoStage.AnswerValidation:
+				this.controller.onContent(
+					'screen',
+					[
+						{
+							type: 'text',
+							value: this.isAnswerCorrect ? localization.demoCorrectAnswer : localization.demoWrongAnswer,
+						},
+					]
+				);
+
+				this.controller.onPlayerState(this.isAnswerCorrect ? PlayerStates.Right : PlayerStates.Wrong, [2]);
+				this.controller.onSums([0, 0, this.isAnswerCorrect ? 100 : -100]);
+				this.controller.onReplic('s', '');
+				window.setTimeout(this.nextStage.bind(this), 6000);
+				break;
+
+			case DemoStage.GameRules:
+				this.controller.onContent('screen', []);
+
+				this.controller.onContent(
+					'screen',
+					[
+						{
+							type: 'text',
+							value: localization.demoGameRules,
+						},
+					]
+				);
+
+				window.setTimeout(this.nextStage.bind(this), 8000);
+				break;
+
+			case DemoStage.OtherContent:
+				this.controller.onContent('screen', []);
+
+				this.controller.onContent(
+					'screen',
+					[
+						{
+							type: 'text',
+							value: localization.demoOtherContent,
+						},
+					]
+				);
+
+				window.setTimeout(this.nextStage.bind(this), 10000);
+				break;
+
+			case DemoStage.OtherQuestions:
+				this.controller.onContent('screen', []);
+
+				this.controller.onContent(
+					'screen',
+					[
+						{
+							type: 'text',
+							value: localization.demoOtherQuestions,
+						},
+					]
+				);
+
+				window.setTimeout(this.nextStage.bind(this), 8000);
+				break;
+
+			case DemoStage.Opponents:
+				this.controller.onContent('screen', []);
+
+				this.controller.onContent(
+					'screen',
+					[
+						{
+							type: 'text',
+							value: localization.demoOpponents,
+						},
+					]
+				);
+
+				window.setTimeout(this.nextStage.bind(this), 10000);
+				break;
+
+			case DemoStage.Finished:
+				this.controller.onContent(
+					'screen',
+					[
+						{
+							type: 'text',
+							value: localization.demoFinished,
+						},
+					]
+				);
+
+				break;
+
+			default:
+				break;
+		}
 	}
 }

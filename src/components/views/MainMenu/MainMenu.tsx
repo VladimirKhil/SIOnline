@@ -48,10 +48,10 @@ export default function MainMenu(): JSX.Element {
 			label: localization.joinByPin,
 			onClick: onJoinByPin,
 		},
-		// {
-		// 	label: localization.howToPlay,
-		// 	onClick: () => appDispatch(navigate({ navigation: { path: Path.Demo }, saveState: true })),
-		// },
+		{
+			label: localization.howToPlay,
+			onClick: () => appDispatch(navigate({ navigation: { path: Path.Demo }, saveState: true })),
+		},
 		{
 			label: localization.questionEditor,
 			onClick: () => appDispatch(navigate({ navigation: { path: Path.SIQuester }, saveState: true })),

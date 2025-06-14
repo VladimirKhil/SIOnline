@@ -106,10 +106,27 @@ const localization = new LocalizedStrings({
 		delete: 'Delete',
 		deleteAvatar: 'Delete avatar',
 		deleteTable: 'Delete table',
+		demoAbout: `SIGame is an intellectual quiz game where you can test your knowledge and reaction speed against opponents.
+	The speed and the knoledge are the keys to victory.
+	A question is presented, after which a frame appears on the screen indicating that you can press the button and answer.
+	Let's check how it works: there will be a question on the screen, and you need to press the button as quickly as possible`,
+		demoCorrectAnswer: 'You have given correct answer! Your score is increased by the question price',
 		demoFinished: 'Demo finished. Thank you!',
+		demoGameRules: 'By answering the question, you can earn points. The player with the most points at the end of the game wins',
+		demoGiveAnswer: 'Now print the answer to the question. Print: ANSWER and press Send button',
+		demoOpponents: `You can play with bots or with your friends.
+		You can use built-in questions, take question made by other authors or create your own`,
+		demoOtherContent: `There could be images, audio and video in the question.
+	There could also be multiple choice questions where you can select right answer from the list`,
+		demoOtherQuestions: `There could be other types of questions in the game: for example, Question with stake or Question with Secret.
+	There would be explanations of these questions rules duraing the game`,
+		demoQuestion: `This is a demo question. Press the button to answer.
+		If you press te button before the frame appears, it will be a false start and you will have a cooldown.
+		The player who pressed the button first will answer the question`,
 		demoWelcome: `Welcome to SIGame!
 	You can always exit demo mode by clicking the "Exit" button in the corner of the screen.
 	To start the demonstration, click the "Ready" button (the green checkmark).`,
+		demoWrongAnswer: 'You have given wrong answer! Your score is decreased by the question price',
 		descending: 'descending',
 		difficulty: 'Difficulty',
 		disableSound: 'Disable sound',
@@ -612,10 +629,26 @@ The package will be automatically deleted from the server after the game ends`,
 		delete: 'Удалить',
 		deleteAvatar: 'Удалить аватар',
 		deleteTable: 'Удалить стол',
-		demoFinished: 'Демо-режим завершён. Спасибо!',
+		demoAbout: `SIGame — интеллектуальная викторина, в которой вы можете проверить свои знания и скорость реакции против соперников.
+	Скорость и знание — ключ к победе.
+	Вопрос озвучивается, после чего на экране появляется рамка, показывающая, что можно нажимать кнопку и отвечать`,
+		demoCorrectAnswer: 'Вы дали правильный ответ! Ваш счёт увеличен на стоимость вопроса',
+		demoFinished: 'Демо-режим завершён. Спасибо! Удачной вам игры!',
+		demoGameRules: 'Отвечая на вопросы, вы зарабатываете очки. В игре побеждает тот, кто наберёт больше очков',
+		demoGiveAnswer: 'Теперь напечатайте ответ на вопрос. Напишите: ОТВЕТ и нажмите кнопку Отправить',
+		demoOpponents: `Вы можете сыграть с ботами или пригласить друзей.
+		Можно играть на готовых вопросах в игре, использовать вопросы сторонних авторов или написать свои`,
+		demoOtherContent: `В вопросах могут быть изображения, аудио или видео.
+		Могут повстречатьcя вопросы с вариантами ответа, и нужно будет выбрать правильный вариант из них`,
+		demoOtherQuestions: `В игре могут быть и другие вопросы, например, с секретом или со ставкой.
+		Для каждого из спецвопросов будут объяснения в процессе игры`,
+		demoQuestion: `Это демо-вопрос. Нажмите кнопку, чтобы ответить.
+	Если вы нажмёте кнопку раньше, чем появится рамка, это будет фальстарт, и ваша кнопка некоторое время не будет работать.
+	Первый игрок, который нажмёт кнопку, будет отвечать на вопрос`,
 		demoWelcome: `Добро пожаловать в SIGame!
 	Вы всегда можете выйти из демо-режима по кнопке "Выход" в углу экрана.
 	Для начала демонстрации нажмите кнопку "Готов" (зелёную галочку)`,
+		demoWrongAnswer: 'Вы дали неправильный ответ! Ваш счёт уменьшен на стоимость вопроса',
 		descending: 'по убыванию',
 		difficulty: 'Сложность',
 		disableSound: 'Отключить звук',
