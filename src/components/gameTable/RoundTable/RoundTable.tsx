@@ -1,23 +1,19 @@
 import * as React from 'react';
 import State from '../../../state/State';
-import { Dispatch, Action } from 'redux';
 import { connect } from 'react-redux';
 import AutoSizedText from '../../common/AutoSizedText/AutoSizedText';
 import ThemeInfo from '../../../model/ThemeInfo';
-import roomActionCreators from '../../../state/room/roomActionCreators';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
-import { AppDispatch } from '../../../state/store';
+import { toggleQuestion } from '../../../state/room2Slice';
+import { selectQuestion } from '../../../state/serverActions';
 
 import './RoundTable.scss';
-import { toggleQuestion } from '../../../state/room2Slice';
 
 interface RoundTableProps {
 	roundInfo: ThemeInfo[];
 	isSelectable: boolean;
 	activeThemeIndex: number;
 	actionQuestionIndex: number;
-
-	onSelectQuestion: (themeIndex: number, questionIndex: number, appDispatch: AppDispatch) => void;
 }
 
 const mapStateToProps = (state: State) => ({
@@ -25,12 +21,6 @@ const mapStateToProps = (state: State) => ({
 	isSelectable: state.table.isSelectable,
 	activeThemeIndex: state.table.activeThemeIndex,
 	actionQuestionIndex: state.table.actionQuestionIndex,
-});
-
-const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
-	onSelectQuestion: (themeIndex: number, questionIndex: number, appDispatch: AppDispatch) => {
-		dispatch((roomActionCreators.selectQuestion(themeIndex, questionIndex, appDispatch) as object) as Action);
-	},
 });
 
 export function RoundTable(props: RoundTableProps) {
@@ -53,7 +43,7 @@ export function RoundTable(props: RoundTableProps) {
 			return;
 		}
 
-		props.onSelectQuestion(themeIndex, questionIndex, appDispatch);
+		appDispatch(selectQuestion({ themeIndex, questionIndex }));
 	};
 
 	return (
@@ -96,4 +86,4 @@ export function RoundTable(props: RoundTableProps) {
 	);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(RoundTable);
+export default connect(mapStateToProps)(RoundTable);

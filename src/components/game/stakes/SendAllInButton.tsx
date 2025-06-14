@@ -4,7 +4,7 @@ import roomActionCreators from '../../../state/room/roomActionCreators';
 import State from '../../../state/State';
 import { Dispatch, Action } from 'redux';
 import localization from '../../../model/resources/localization';
-import { sendAllIn } from '../../../state/room2Slice';
+import { sendAllIn, setIsDecisionNeeded } from '../../../state/room2Slice';
 import { useAppDispatch } from '../../../state/hooks';
 import StakeModes from '../../../client/game/StakeModes';
 
@@ -31,6 +31,7 @@ export function SendAllInButton(props: SendAllInButtonProps) {
 
 	const sendAllIn2 = () => {
 		appDispatch(sendAllIn());
+		appDispatch(setIsDecisionNeeded(false));
 		props.clearDecisions();
 	};
 

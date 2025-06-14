@@ -6,7 +6,7 @@ import State from '../../../state/State';
 import Constants from '../../../model/enums/Constants';
 import localization from '../../../model/resources/localization';
 import { useAppDispatch } from '../../../state/hooks';
-import { sendAnswer } from '../../../state/room2Slice';
+import { sendAnswer, setIsDecisionNeeded } from '../../../state/room2Slice';
 
 import './AnswerInput.scss';
 
@@ -41,6 +41,7 @@ export function AnswerInput(props: AnswerInputProps): JSX.Element | null {
 
 	const sendAnswer2 = () => {
 		appDispatch(sendAnswer(props.answer));
+		appDispatch(setIsDecisionNeeded(false));
 		props.sendAnswer();
 	};
 

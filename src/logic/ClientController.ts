@@ -91,6 +91,7 @@ import {
 	setContext,
 	setHostName,
 	setIsAppellation,
+	setIsDecisionNeeded,
 	setIsGameStarted,
 	setIsPaused,
 	setReport,
@@ -337,7 +338,7 @@ export default class ClientController {
 	}
 
 	onAskAnswer() {
-		this.dispatch(roomActionCreators.decisionNeededChanged(true));
+		this.appDispatch(setIsDecisionNeeded(true));
 
 		if (this.getState().table.layoutMode === LayoutMode.Simple) {
 			this.dispatch(roomActionCreators.isAnswering());
@@ -350,12 +351,13 @@ export default class ClientController {
 	onAskSelectPlayer(reason: string, indices: number[]) {
 		this.appDispatch(selectPlayers(indices));
 		this.dispatch(roomActionCreators.selectionEnabled(Messages.SelectPlayer));
+		this.appDispatch(setIsDecisionNeeded(true));
 		this.appDispatch(showmanReplicChanged(getAskSelectHint(reason)));
 	}
 
 	onAskStake(stakeModes: StakeModes, minimum: number, maximum: number, step: number, reason: string, playerName: string | null) {
 		this.dispatch(roomActionCreators.setStakes(stakeModes, minimum, maximum, step, playerName));
-		this.dispatch(roomActionCreators.decisionNeededChanged(true));
+		this.appDispatch(setIsDecisionNeeded(true));
 	}
 
 	onAskValidate(playerIndex: number, answer: string) {
@@ -391,6 +393,7 @@ export default class ClientController {
 
 	onCancel() {
 		this.dispatch(roomActionCreators.clearDecisions());
+		this.appDispatch(setIsDecisionNeeded(false));
 		this.appDispatch(stopValidation());
 		this.appDispatch(deselectPlayers());
 
@@ -728,7 +731,7 @@ export default class ClientController {
 
 	onOralAnswer() {
 		this.appDispatch(setContext(ContextView.OralAnswer));
-		this.dispatch(roomActionCreators.decisionNeededChanged(true));
+		this.appDispatch(setIsDecisionNeeded(true));
 	}
 
 	onPackage(packageName: string, packageLogo: string | null) {
@@ -931,12 +934,15 @@ export default class ClientController {
 		this.dispatch(roomActionCreators.gameStateCleared());
 		this.dispatch(roomActionCreators.clearDecisionsAndMainTimer());
 		this.appDispatch(clearDecisions());
+		this.appDispatch(setIsDecisionNeeded(false));
 		this.appDispatch(stopValidation());
 		this.appDispatch(isSelectableChanged(false));
 		this.appDispatch(clearActiveState());
 		this.appDispatch(canPressChanged(false));
 		this.appDispatch(setContext(ContextView.None));
 		this.appDispatch(clearAudio());
+
+		this.dispatch(roomActionCreators.hintChanged(null));
 	}
 
 	onStageInfo(stage: string, _stageName: string, stageIndex: number) {
@@ -1395,7 +1401,7 @@ export default class ClientController {
 	}
 
 	onChoose() {
-		this.dispatch(roomActionCreators.decisionNeededChanged(true));
+		this.appDispatch(setIsDecisionNeeded(true));
 		this.appDispatch(isSelectableChanged(true));
 	}
 

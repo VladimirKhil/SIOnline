@@ -29,5 +29,9 @@ export function loadState(): SavedState | null {
 }
 
 export function saveState(state: SavedState) {
+	if (typeof localStorage === 'undefined') {
+		return;
+	}
+
 	localStorage.setItem(STATE_KEY, JSON.stringify(state));
 }

@@ -34,7 +34,6 @@ export const enum RoomActionTypes {
 	CurrentPriceChanged = 'CURRENT_PRICE_CHANGED',
 	PersonAdded = 'PERSON_ADDED',
 	PersonRemoved = 'PERSON_REMOVED',
-	DecisionNeededChanged = 'DECISION_NEEDED_CHANGED',
 	ClearDecisions = 'CLEAR_DECISIONS',
 	IsGameButtonEnabledChanged = 'IS_GAME_BUTTON_ENABLED',
 	IsAnswering = 'IS_ANSWERING',
@@ -98,7 +97,6 @@ export type AfterQuestionStateChangedAction = { type: RoomActionTypes.AfterQuest
 export type CurrentPriceChangedAction = { type: RoomActionTypes.CurrentPriceChanged, currentPrice: number };
 export type PersonAddedAction = { type: RoomActionTypes.PersonAdded, person: Account };
 export type PersonRemovedAction = { type: RoomActionTypes.PersonRemoved, name: string };
-export type DecisionNeededChangedAction = { type: RoomActionTypes.DecisionNeededChanged, decisionNeeded: boolean };
 export type ClearDecisionsAction = { type: RoomActionTypes.ClearDecisions };
 export type IsGameButtonEnabledChangedAction = { type: RoomActionTypes.IsGameButtonEnabledChanged, isGameButtonEnabled: boolean };
 export type IsAnsweringAction = { type: RoomActionTypes.IsAnswering };
@@ -176,7 +174,6 @@ export type KnownRoomAction =
 	| CurrentPriceChangedAction
 	| PersonAddedAction
 	| PersonRemovedAction
-	| DecisionNeededChangedAction
 	| ClearDecisionsAction
 	| IsGameButtonEnabledChangedAction
 	| IsAnsweringAction

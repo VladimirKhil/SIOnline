@@ -1,6 +1,8 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import DataContext from '../model/DataContext';
 import State from './State';
+import { isSelectableChanged } from './tableSlice';
+import { setIsDecisionNeeded } from './room2Slice';
 
 export const mediaPreloaded = createAsyncThunk(
 	'server/mediaPreloaded',
@@ -44,5 +46,31 @@ export const setOption = createAsyncThunk(
 	async (arg: { name: string, value: string }, thunkAPI) => {
 		const dataContext = thunkAPI.extra as DataContext;
 		await dataContext.game.setOption(arg.name, arg.value);
+	}
+);
+
+export const selectQuestion = createAsyncThunk(
+	'server/selectQuestion',
+	async (arg: { themeIndex: number, questionIndex: number }, thunkAPI) => {
+		const { themeIndex, questionIndex } = arg;
+		const state = thunkAPI.getState() as State;
+		const dataContext = thunkAPI.extra as DataContext;
+
+		if (!state.table.isSelectable) {
+			return;
+		}
+
+		const theme = state.table.roundInfo[themeIndex];
+
+		if (theme) {
+			const question = theme.questions[questionIndex];
+
+			if (question > -1) {
+				if (await dataContext.game.selectQuestion(themeIndex, questionIndex)) {
+					thunkAPI.dispatch(isSelectableChanged(false));
+					thunkAPI.dispatch(setIsDecisionNeeded(false));
+				}
+			}
+		}
 	}
 );

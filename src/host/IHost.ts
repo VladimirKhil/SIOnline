@@ -50,4 +50,8 @@ export default interface IHost {
 
 	/** Opens current game log. */
 	openGameLog(): Promise<boolean>;
+
+	getRandomValue?: () => number;
+
+	messageHandler?: (message: string) => void;
 }

@@ -1025,11 +1025,6 @@ const showmanHandler = (controller: ClientController, dispatch: Dispatch<any>, a
 			dispatch(roomActionCreators.hintChanged(null));
 			break;
 
-		case GameMessages.Stage:
-			dispatch(roomActionCreators.decisionNeededChanged(false));
-			dispatch(roomActionCreators.hintChanged(null));
-			break;
-
 		case GameMessages.Validation2:
 			onValidation(controller, localization.answerChecking, args);
 			break;
@@ -1160,10 +1155,14 @@ const processSystemMessage: ActionCreator<ThunkAction<void, State, DataContext, 
 	controller: ClientController,
 	message: Message,
 	appDispatch: AppDispatch
-) => (dispatch: Dispatch<RoomActions.KnownRoomAction>, getState: () => State) => {
+) => (dispatch: Dispatch<RoomActions.KnownRoomAction>, getState: () => State, dataContext: DataContext) => {
 		const state = getState();
 		const { role } = state.room2;
 		const args = message.Text.split('\n');
+
+		if (dataContext.host.messageHandler) {
+			dataContext.host.messageHandler(message.Text);
+		}
 
 		viewerHandler(controller, dispatch, appDispatch, state, args);
 

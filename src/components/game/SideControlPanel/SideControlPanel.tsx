@@ -11,7 +11,7 @@ import { isHost } from '../../../utils/StateHelpers';
 import isWellFormedUri from '../../../utils/isWellFormedUri';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 import { AppDispatch } from '../../../state/store';
-import { addTable, selectPlayers, setIsEditingTables } from '../../../state/room2Slice';
+import { addTable, selectPlayers, setIsDecisionNeeded, setIsEditingTables } from '../../../state/room2Slice';
 import { showProfile, showSettings } from '../../../state/uiSlice';
 import Constants from '../../../model/enums/Constants';
 import { pauseGame } from '../../../state/serverActions';
@@ -123,6 +123,7 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 	const onGiveTurn = () =>{
 		props.onGiveTurn();
 		appDispatch(selectPlayers([]));
+		appDispatch(setIsDecisionNeeded(true));
 	};
 
 	return (

@@ -198,7 +198,6 @@ const roomReducer: Reducer<RoomState> = (state: RoomState = initialState, anyAct
 				stage: {
 					...state.stage,
 					isAfterQuestion: false,
-					isDecisionNeeded: false
 				},
 				stakes: {
 					...state.stakes,
@@ -258,22 +257,9 @@ const roomReducer: Reducer<RoomState> = (state: RoomState = initialState, anyAct
 				}
 			};
 
-		case RoomActionTypes.DecisionNeededChanged:
-			return {
-				...state,
-				stage: {
-					...state.stage,
-					isDecisionNeeded: action.decisionNeeded
-				}
-			};
-
 		case RoomActionTypes.ClearDecisions:
 			return {
 				...state,
-				stage: {
-					...state.stage,
-					isDecisionNeeded: false
-				},
 				selection: {
 					...state.selection,
 					isEnabled: false
@@ -334,7 +320,6 @@ const roomReducer: Reducer<RoomState> = (state: RoomState = initialState, anyAct
 				},
 				stage: {
 					...state.stage,
-					isDecisionNeeded: true
 				}
 			};
 

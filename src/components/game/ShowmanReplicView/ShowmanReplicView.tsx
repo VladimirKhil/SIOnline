@@ -16,7 +16,6 @@ import './ShowmanReplicView.scss';
 
 interface ShowmanReplicViewProps {
 	all: Persons;
-	decisionNeeded: boolean;
 	decisionTimer: TimerInfo;
 	avatar: string | null;
 	showVideoAvatars: boolean;
@@ -24,17 +23,16 @@ interface ShowmanReplicViewProps {
 
 const mapStateToProps = (state: State) => ({
 	all: state.room.persons.all,
-	decisionNeeded: state.room.stage.isDecisionNeeded,
 	decisionTimer: state.room.timers.decision,
 	avatar: state.user.avatar,
 	showVideoAvatars: state.settings.showVideoAvatars,
 });
 
 export function ShowmanReplicView(props: ShowmanReplicViewProps): JSX.Element {
-	const roomState = useAppSelector(state => state.room2);
-	const account = props.all[roomState.persons.showman.name];
-	const { isReady, isDeciding } = roomState.persons.showman;
-	const isMe = account?.name === roomState.name;
+	const room = useAppSelector(state => state.room2);
+	const account = props.all[room.persons.showman.name];
+	const { isReady, isDeciding } = room.persons.showman;
+	const isMe = account?.name === room.name;
 
 	const avatar = isMe && props.avatar ? props.avatar : account?.avatar;
 
@@ -44,21 +42,21 @@ export function ShowmanReplicView(props: ShowmanReplicViewProps): JSX.Element {
 
 	const avatarClass = getAvatarClass(account);
 
-	const showmanInfoStyle: React.CSSProperties = roomState.stage.isGameStarted ? {} : {
+	const showmanInfoStyle: React.CSSProperties = room.stage.isGameStarted ? {} : {
 		display: 'flex'
 	};
 
 	const meClass = isMe ? 'me' : '';
 
 	return (
-		<div className={`showmanArea ${props.decisionNeeded ? 'highlighted' : ''}`}>
+		<div className={`showmanArea ${room.stage.isDecisionNeeded ? 'highlighted' : ''}`}>
 			<div className="showmanInfo" style={showmanInfoStyle}>
 				{props.showVideoAvatars && account?.avatarVideo
 					? <div className='showmanAvatar'><iframe title='Video avatar' src={account?.avatarVideo} /></div>
 					: <div className={`showmanAvatar ${avatarClass}`} style={avatarStyle} />}
 
 				<div className="showmanName">
-					{isReady && !roomState.stage.isGameStarted ? (
+					{isReady && !room.stage.isGameStarted ? (
 						<span
 							role="img"
 							aria-label="checkmark"

@@ -429,12 +429,14 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 
 		appDispatch(gameCreationStart());
 
+		const randomValue = dataContext.host.getRandomValue ?? getRandomValue;
+
 		try {
 			const game = isSingleGame
 				? {
 					...state.game,
-					name: getRandomValue().toString(),
-					password: getRandomValue().toString(), // protecting from anyone to join
+					name: randomValue().toString(),
+					password: randomValue().toString(), // protecting from anyone to join
 					isShowmanHuman: false,
 					humanPlayersCount: 0
 				} : state.game;

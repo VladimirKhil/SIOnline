@@ -16,7 +16,7 @@ import Path from '../../model/enums/Path';
 import actionCreators from '../../logic/actionCreators';
 import { AppDispatch } from '../store';
 import { isSelectableChanged } from '../tableSlice';
-import { setIsAppellation, setIsPaused, showmanReplicChanged } from '../room2Slice';
+import { setIsAppellation, setIsDecisionNeeded, setIsPaused, showmanReplicChanged } from '../room2Slice';
 import StakeModes from '../../client/game/StakeModes';
 import UsersMode from '../../model/enums/UsersMode';
 import { navigate } from '../../utils/Navigator';
@@ -295,35 +295,6 @@ const personRemoved: ActionCreator<RunActions.PersonRemovedAction> = (name: stri
 	type: RunActions.RoomActionTypes.PersonRemoved, name
 });
 
-const decisionNeededChanged: ActionCreator<RunActions.DecisionNeededChangedAction> = (decisionNeeded: boolean) => ({
-	type: RunActions.RoomActionTypes.DecisionNeededChanged, decisionNeeded
-});
-
-const selectQuestion: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (
-	themeIndex: number,
-	questionIndex: number,
-	appDispatch: AppDispatch) => async (
-	dispatch: Dispatch<Action>,
-	getState: () => State, dataContext: DataContext
-) => {
-	if (!getState().table.isSelectable) {
-		return;
-	}
-
-	const theme = getState().table.roundInfo[themeIndex];
-
-	if (theme) {
-		const question = theme.questions[questionIndex];
-
-		if (question > -1) {
-			if (await dataContext.game.selectQuestion(themeIndex, questionIndex)) {
-				appDispatch(isSelectableChanged(false));
-				dispatch(decisionNeededChanged(false));
-			}
-		}
-	}
-};
-
 const selectTheme: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (themeIndex: number, appDispatch: AppDispatch) => async (
 	dispatch: Dispatch<Action>,
 	getState: () => State, dataContext: DataContext
@@ -337,7 +308,7 @@ const selectTheme: ActionCreator<ThunkAction<void, State, DataContext, Action>> 
 	if (theme) {
 		if (await dataContext.game.deleteTheme(themeIndex)) {
 			appDispatch(isSelectableChanged(false));
-			dispatch(decisionNeededChanged(false));
+			appDispatch(setIsDecisionNeeded(false));
 		}
 	}
 };
@@ -352,7 +323,7 @@ const selectAnswerOption: ActionCreator<ThunkAction<void, State, DataContext, Ac
 
 	if (await dataContext.game.sendAnswer(label)) {
 		appDispatch(isSelectableChanged(false));
-		dispatch(decisionNeededChanged(false));
+		appDispatch(setIsDecisionNeeded(false));
 	}
 };
 
@@ -710,9 +681,7 @@ const roomActionCreators = {
 	currentPriceChanged,
 	personAdded,
 	personRemoved,
-	decisionNeededChanged,
 	clearDecisions,
-	selectQuestion,
 	selectTheme,
 	pressGameButton,
 	apellate,

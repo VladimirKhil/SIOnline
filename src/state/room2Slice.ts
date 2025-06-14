@@ -51,6 +51,7 @@ export interface Room2State {
 		isAppellation: boolean;
 		isEditingTables: boolean;
 		isGamePaused: boolean;
+		isDecisionNeeded: boolean; // TODO: switch to enum (decision type)
 	}
 
 	validation: {
@@ -97,6 +98,7 @@ const initialState: Room2State = {
 		isAppellation: false,
 		isEditingTables: false,
 		isGamePaused: false,
+		isDecisionNeeded: false,
 	},
 
 	validation: {
@@ -137,8 +139,8 @@ export const playerSelected = createAsyncThunk(
 		const dataContext = thunkAPI.extra as DataContext;
 		const { message } = (thunkAPI.getState() as State).room.selection;
 		await dataContext.game.gameServerClient.msgAsync(message, arg);
-		// TODO: move to fulfilled section after migrating the property to Redux Toolkit
-		thunkAPI.dispatch(roomActionCreators.decisionNeededChanged(false));
+
+		thunkAPI.dispatch(setIsDecisionNeeded(false));
 	},
 );
 
@@ -554,6 +556,9 @@ export const room2Slice = createSlice({
 		setSettingOralPlayersActions: (state: Room2State, action: PayloadAction<boolean>) => {
 			state.settings.oralPlayersActions = action.payload;
 		},
+		setIsDecisionNeeded: (state: Room2State, action: PayloadAction<boolean>) => {
+			state.stage.isDecisionNeeded = action.payload;
+		},
 	},
 	extraReducers: (builder) => {
 		builder.addCase(sendAnswer.fulfilled, (state) => {
@@ -663,6 +668,7 @@ export const {
 	setSettingPlayAllQuestionsInFinalRound,
 	setSettingAllowEveryoneToPlayHiddenStakes,
 	setSettingOralPlayersActions,
+	setIsDecisionNeeded,
 } = room2Slice.actions;
 
 

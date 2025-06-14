@@ -18,7 +18,6 @@ export default interface RoomState {
 	stage: {
 		name: string;
 		roundIndex: number;
-		isDecisionNeeded: boolean;
 		isAfterQuestion: boolean;
 		themeIndex: number;
 		currentPrice: number;
@@ -95,7 +94,6 @@ export const initialState: RoomState = {
 	stage: {
 		name: '',
 		roundIndex: -1,
-		isDecisionNeeded: false,
 		isAfterQuestion: false,
 		themeIndex: -1,
 		currentPrice: 0,
