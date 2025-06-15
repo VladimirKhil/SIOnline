@@ -222,7 +222,7 @@ export const sendPass = createAsyncThunk(
 	'room2/sendPass',
 	async (_arg: void, thunkAPI) => {
 		const dataContext = thunkAPI.extra as DataContext;
-		await dataContext.game.gameServerClient.msgAsync(Messages.SetStake, 'Pass');
+		await dataContext.game.stakePass();
 	},
 );
 
@@ -230,15 +230,15 @@ export const sendAllIn = createAsyncThunk(
 	'room2/sendAllIn',
 	async (arg: void, thunkAPI) => {
 		const dataContext = thunkAPI.extra as DataContext;
-		await dataContext.game.gameServerClient.msgAsync(Messages.SetStake, 'AllIn');
+		await dataContext.game.stakeAllIn();
 	},
 );
 
 export const sendStake = createAsyncThunk(
 	'room2/sendStake',
-	async (arg: any, thunkAPI) => {
+	async (arg: number, thunkAPI) => {
 		const dataContext = thunkAPI.extra as DataContext;
-		await dataContext.game.gameServerClient.msgAsync(Messages.SetStake, 'Stake', arg);
+		await dataContext.game.stakeValue(arg);
 	},
 );
 

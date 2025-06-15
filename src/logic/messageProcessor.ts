@@ -795,7 +795,7 @@ const viewerHandler = (
 			break;
 
 		case GameMessages.Timeout:
-			playGameSound(dispatch, state.settings.appSound, GameSound.ROUND_TIMEOUT);
+			controller.onTimeout();
 			break;
 
 		case GameMessages.Timer:
@@ -988,7 +988,7 @@ const playerHandler = (controller: ClientController, args: string[]) => {
 	}
 };
 
-const showmanHandler = (controller: ClientController, dispatch: Dispatch<any>, args: string[]) => {
+const showmanHandler = (controller: ClientController, args: string[]) => {
 	switch (args[0]) {
 		case GameMessages.AskSelectPlayer:
 			if (args.length < 3) {
@@ -1013,16 +1013,12 @@ const showmanHandler = (controller: ClientController, dispatch: Dispatch<any>, a
 
 		case GameMessages.Hint:
 			if (args.length > 1) {
-				dispatch(roomActionCreators.hintChanged(args[1]));
+				controller.onHint(args[1]);
 			}
 			break;
 
 		case GameMessages.QuestionAnswers:
 			onQuestionAnswers(controller, args);
-			break;
-
-		case GameMessages.RightAnswer:
-			dispatch(roomActionCreators.hintChanged(null));
 			break;
 
 		case GameMessages.Validation2:
@@ -1143,14 +1139,6 @@ function info(controller: ClientController, ...args: string[]) {
 	controller.onInfo(all, showman, players);
 }
 
-function playGameSound(appDispatch: Dispatch<any>, isSoundEnabled: boolean, sound: GameSound, loop = false): void {
-	if (!isSoundEnabled) {
-		return;
-	}
-
-	appDispatch(playAudio({ audio: sound, loop }));
-}
-
 const processSystemMessage: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (
 	controller: ClientController,
 	message: Message,
@@ -1169,7 +1157,7 @@ const processSystemMessage: ActionCreator<ThunkAction<void, State, DataContext, 
 		if (role === Role.Player) {
 			playerHandler(controller, args);
 		} else if (role === Role.Showman) {
-			showmanHandler(controller, dispatch, args);
+			showmanHandler(controller, args);
 		}
 	};
 

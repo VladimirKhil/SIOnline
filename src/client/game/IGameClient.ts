@@ -86,6 +86,12 @@ export default interface IGameClient {
 
 	setTable(isShowman: boolean, tableIndex: number, name: string): Promise<boolean>;
 
+	stakeAllIn(): Promise<boolean>;
+
+	stakePass(): Promise<boolean>;
+
+	stakeValue(value: number): Promise<boolean>;
+
 	start(): Promise<boolean>;
 
 	/** Toggles (removes or restores) a question on game table. */

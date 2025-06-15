@@ -478,6 +478,10 @@ export default class ClientController {
 		this.dispatch(actionCreators.sendAvatar() as any);
 	}
 
+	onHint(hint: string) {
+		this.dispatch(roomActionCreators.hintChanged(hint));
+	}
+
 	onHostNameChanged(hostName: string | null, changeSource: string | null) {
 		this.appDispatch(setHostName(hostName));
 
@@ -805,67 +809,67 @@ export default class ClientController {
 		this.appDispatch(setReport(report));
 	}
 
-	onRoundContent(content: string[], retryCount = 0) {
-		// Clearing old preloads
-		// for (let i = 0; i < document.head.children.length; i++) {
-		// 	const child = document.head.children[i];
-		// 	if (child.tagName.toLowerCase() === 'link') {
-		// 		if (child.attributes.getNamedItem('rel')?.value === 'preload') {
-		// 			document.head.removeChild(child);
-		// 			i = i - 1;
-		// 		}
-		// 	}
-		// }
+	onRoundContent(content: string[]) {
+		const baseDelay = 500; // Base delay between requests
+		const maxRetries = 3;
 
-		// Straight but working method
-		const timeoutValue = 1000;
-		const failedLoadsToRetry: string[] = [];
+		// Helper function to preload a single file with retry logic
+		const preloadFile = (contentUri: string, retryCount = 0): Promise<void> => fetch(contentUri, { cache: 'force-cache' })
+			.then((response) => {
+				if (!response.ok) {
+					throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+				}
+			})
+			.catch((error) => {
+				if (retryCount < maxRetries) {
+					const retryDelay = Math.min(baseDelay * Math.pow(2, retryCount), 5000);
+					console.log(`Retrying preload of ${contentUri} (attempt ${retryCount + 1}/${maxRetries}) after ${retryDelay}ms`);
 
-		content.forEach((url, index) => {
-			const contentUri = this.preprocessServerUri(url);
+					return new Promise<void>((resolve, reject) => {
+						setTimeout(() => {
+							preloadFile(contentUri, retryCount + 1).then(resolve).catch(reject);
+						}, retryDelay);
+					});
+				} else {
+					console.warn(`Failed to preload ${contentUri} after ${maxRetries} attempts: ${getErrorMessage(error)}`);
 
-			// Timeout to avoid rate limiting
-			window.setTimeout(
-				async () => {
-					try {
-						const response = await fetch(contentUri);
+					this.dispatch(roomActionCreators.chatMessageAdded({
+						sender: '',
+						text: getErrorMessage(error),
+						level: MessageLevel.System,
+					}) as any);
+					// Don't reject - just log the failure and continue
+				}
+			});
 
-						if (!response.ok) {
-							if (response.status >= 500){
-								// retry because sometimes server returns 503 in case of large number players/medias
-								failedLoadsToRetry.push(url);
-							}
+		// Process files one by one using a for loop
+		const processFiles = async () => {
+			const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
-							this.dispatch(roomActionCreators.chatMessageAdded({
-								sender: '',
-								text: response.statusText,
-								level: MessageLevel.System,
-							}) as any);
-						}
-					} catch (e) {
-						console.error(url + ' ' + getErrorMessage(e));
-					}
-				},
-				index * timeoutValue
-			);
-		});
+			for (let i = 0; i < content.length; i++) {
+				const url = content[i];
+				const contentUri = this.preprocessServerUri(url);
 
-		window.setTimeout(() => {
-			if (failedLoadsToRetry.length > 0 && retryCount < 3){
-				this.onRoundContent(failedLoadsToRetry, ++retryCount);
+				// Add delay between requests (except for first request)
+				if (i > 0) {
+					// eslint-disable-next-line no-await-in-loop
+					await delay(baseDelay);
+				}
+
+				try {
+					// eslint-disable-next-line no-await-in-loop
+					await preloadFile(contentUri);
+				} catch (error) {
+					// Continue processing even if this file failed
+					console.error(`Failed to preload ${url}: ${getErrorMessage(error)}`);
+				}
 			}
-		}, (content.length + 1) * timeoutValue);
 
-		// Chrome does not support audio and video preload
-		// We can return to this method later
-		// const link = document.createElement('link');
-		// link.setAttribute('rel', 'preload');
-		// link.setAttribute('as', 'image');
-		// link.setAttribute('href', uri);
+			this.appDispatch(mediaPreloaded());
+		};
 
-		// document.head.appendChild(link);
-
-		this.appDispatch(mediaPreloaded());
+		// Start processing files
+		processFiles();
 	}
 
 	onRoundThemes(roundThemesNames: string[], playMode: ThemesPlayMode) {
@@ -955,6 +959,10 @@ export default class ClientController {
 		if (stage === GameStage.After) {
 			this.appDispatch(showLogo());
 		}
+	}
+
+	onTimeout() {
+		this.playGameSound(GameSound.ROUND_TIMEOUT);
 	}
 
 	onValidation(
@@ -1394,6 +1402,7 @@ export default class ClientController {
 		}
 
 		this.dispatch(roomActionCreators.afterQuestionStateChanged(true));
+		this.dispatch(roomActionCreators.hintChanged(null));
 
 		if (this.getState().settings.writeGameLog) {
 			this.appDispatch(addGameLog(`${localization.rightAnswer}: ${answer}`));

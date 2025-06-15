@@ -158,6 +158,18 @@ export default class GameClient implements IGameClient {
 		return this.gameServerClient.msgAsync(Messages.Config, 'SET', isShowman ? 'showman' : 'player', isShowman ? '' : tableIndex, name);
 	}
 
+	stakeAllIn(): Promise<boolean> {
+		return this.gameServerClient.msgAsync(Messages.SetStake, 'AllIn');
+	}
+
+	stakePass(): Promise<boolean> {
+		return this.gameServerClient.msgAsync(Messages.SetStake, 'Pass');
+	}
+
+	stakeValue(value: number): Promise<boolean> {
+		return this.gameServerClient.msgAsync(Messages.SetStake, 'Stake', value);
+	}
+
 	start(): Promise<boolean> {
 		return this.gameServerClient.msgAsync(Messages.Start);
 	}
