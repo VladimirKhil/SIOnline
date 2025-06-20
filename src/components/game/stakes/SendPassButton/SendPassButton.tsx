@@ -5,7 +5,7 @@ import State from '../../../../state/State';
 import { Dispatch, Action } from 'redux';
 import localization from '../../../../model/resources/localization';
 import { useAppDispatch } from '../../../../state/hooks';
-import { sendPass, setIsDecisionNeeded } from '../../../../state/room2Slice';
+import { DecisionType, sendPass, setDecisionType } from '../../../../state/room2Slice';
 import StakeModes from '../../../../client/game/StakeModes';
 
 import './SendPassButton.scss';
@@ -33,7 +33,7 @@ export function SendPassButton(props: SendPassButtonProps) {
 
 	const sendPass2 = () => {
 		appDispatch(sendPass());
-		appDispatch(setIsDecisionNeeded(false));
+		appDispatch(setDecisionType(DecisionType.None));
 		props.clearDecisions();
 	};
 

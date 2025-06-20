@@ -62,6 +62,7 @@ import { answerOptions,
 
 import {
 	ContextView,
+	DecisionType,
 	activatePlayerDecision,
 	activateShowmanDecision,
 	askValidation,
@@ -91,7 +92,7 @@ import {
 	setContext,
 	setHostName,
 	setIsAppellation,
-	setIsDecisionNeeded,
+	setDecisionType,
 	setIsGameStarted,
 	setIsPaused,
 	setReport,
@@ -119,13 +120,13 @@ import PlayerInfo from '../model/PlayerInfo';
 import actionCreators from './actionCreators';
 import Messages from '../client/game/Messages';
 import StakeModes from '../client/game/StakeModes';
-import { playAudio, stopAudio, userInfoChanged, userMessageChanged, userWarnChanged } from '../state/commonSlice';
+import { playAudio, stopAudio, userInfoChanged, userWarnChanged } from '../state/commonSlice';
 import getErrorMessage, { getUserError } from '../utils/ErrorHelpers';
 import { playersVisibilityChanged, setQrCode } from '../state/uiSlice';
 import ErrorCode from '../client/contracts/ErrorCode';
 import { setAttachContentToTable } from '../state/settingsSlice';
 import { addGameLog, appendGameLog, copyToClipboard } from '../state/globalActions';
-import { mediaPreloaded } from '../state/serverActions';
+import { mediaPreloaded, mediaPreloadProgress } from '../state/serverActions';
 import stringFormat from '../utils/StringHelpers';
 
 function initGroup(group: ContentGroup) {
@@ -338,7 +339,7 @@ export default class ClientController {
 	}
 
 	onAskAnswer() {
-		this.appDispatch(setIsDecisionNeeded(true));
+		this.appDispatch(setDecisionType(DecisionType.Answer));
 
 		if (this.getState().table.layoutMode === LayoutMode.Simple) {
 			this.dispatch(roomActionCreators.isAnswering());
@@ -350,14 +351,14 @@ export default class ClientController {
 
 	onAskSelectPlayer(reason: string, indices: number[]) {
 		this.appDispatch(selectPlayers(indices));
-		this.dispatch(roomActionCreators.selectionEnabled(Messages.SelectPlayer));
-		this.appDispatch(setIsDecisionNeeded(true));
+		this.dispatch(roomActionCreators.selectionEnabled());
+		this.appDispatch(setDecisionType(DecisionType.SelectPlayer));
 		this.appDispatch(showmanReplicChanged(getAskSelectHint(reason)));
 	}
 
 	onAskStake(stakeModes: StakeModes, minimum: number, maximum: number, step: number, reason: string, playerName: string | null) {
 		this.dispatch(roomActionCreators.setStakes(stakeModes, minimum, maximum, step, playerName));
-		this.appDispatch(setIsDecisionNeeded(true));
+		this.appDispatch(setDecisionType(DecisionType.Stake));
 	}
 
 	onAskValidate(playerIndex: number, answer: string) {
@@ -390,10 +391,9 @@ export default class ClientController {
 	onButtonBlockingTimeChanged(blockingTime: number) {
 		this.dispatch(roomActionCreators.buttonBlockingTimeChanged(blockingTime));
 	}
-
 	onCancel() {
 		this.dispatch(roomActionCreators.clearDecisions());
-		this.appDispatch(setIsDecisionNeeded(false));
+		this.appDispatch(setDecisionType(DecisionType.None));
 		this.appDispatch(stopValidation());
 		this.appDispatch(deselectPlayers());
 
@@ -732,10 +732,9 @@ export default class ClientController {
 				break;
 		}
 	}
-
 	onOralAnswer() {
 		this.appDispatch(setContext(ContextView.OralAnswer));
-		this.appDispatch(setIsDecisionNeeded(true));
+		this.appDispatch(setDecisionType(DecisionType.OralAnswer));
 	}
 
 	onPackage(packageName: string, packageLogo: string | null) {
@@ -812,6 +811,18 @@ export default class ClientController {
 	onRoundContent(content: string[]) {
 		const baseDelay = 500; // Base delay between requests
 		const maxRetries = 3;
+		let lastNotifiedProgressTens = 0;
+
+		// Helper function to notify progress at 10% intervals
+		const notifyProgress = (progress: number) => {
+			const progressPercent = Math.floor(progress * 100);
+			const progressTens = Math.floor(progressPercent / 10) * 10;
+
+			if (progressTens > lastNotifiedProgressTens && progressTens >= 10) {
+				lastNotifiedProgressTens = progressTens;
+				this.appDispatch(mediaPreloadProgress(progressPercent));
+			}
+		};
 
 		// Helper function to preload a single file with retry logic
 		const preloadFile = (contentUri: string, retryCount = 0): Promise<void> => fetch(contentUri, { cache: 'force-cache' })
@@ -845,8 +856,9 @@ export default class ClientController {
 		// Process files one by one using a for loop
 		const processFiles = async () => {
 			const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+			const totalFiles = content.length;
 
-			for (let i = 0; i < content.length; i++) {
+			for (let i = 0; i < content.length; i += 1) {
 				const url = content[i];
 				const contentUri = this.preprocessServerUri(url);
 
@@ -863,6 +875,15 @@ export default class ClientController {
 					// Continue processing even if this file failed
 					console.error(`Failed to preload ${url}: ${getErrorMessage(error)}`);
 				}
+
+				// Calculate and notify progress after each file
+				const progress = (i + 1) / totalFiles;
+				notifyProgress(progress);
+			}
+
+			// Ensure 100% is always notified at the end
+			if (lastNotifiedProgressTens < 100) {
+				this.appDispatch(mediaPreloadProgress(100));
 			}
 
 			this.appDispatch(mediaPreloaded());
@@ -938,7 +959,7 @@ export default class ClientController {
 		this.dispatch(roomActionCreators.gameStateCleared());
 		this.dispatch(roomActionCreators.clearDecisionsAndMainTimer());
 		this.appDispatch(clearDecisions());
-		this.appDispatch(setIsDecisionNeeded(false));
+		this.appDispatch(setDecisionType(DecisionType.None));
 		this.appDispatch(stopValidation());
 		this.appDispatch(isSelectableChanged(false));
 		this.appDispatch(clearActiveState());
@@ -1358,7 +1379,7 @@ export default class ClientController {
 
 		this.appDispatch(showQuestionType({
 			header: localization.question,
-			text: text.toUpperCase() + (isNoRisk ? ` 🛡 (${localization.noRisk})` : ''),
+			text: text.toUpperCase() + (isNoRisk ? ' 🛡' : ''),
 			hint: hint,
 		}));
 	}
@@ -1408,9 +1429,8 @@ export default class ClientController {
 			this.appDispatch(addGameLog(`${localization.rightAnswer}: ${answer}`));
 		}
 	}
-
 	onChoose() {
-		this.appDispatch(setIsDecisionNeeded(true));
+		this.appDispatch(setDecisionType(DecisionType.Choose));
 		this.appDispatch(isSelectableChanged(true));
 	}
 

@@ -6,7 +6,8 @@ import ChatLog from '../../common/ChatLog/ChatLog';
 import hasUserMentioned from '../../../utils/MentionHelpers';
 import roomActionCreators from '../../../state/room/roomActionCreators';
 import { Action, Dispatch } from 'redux';
-import { useAppSelector } from '../../../state/hooks';
+import { useAppDispatch, useAppSelector } from '../../../state/hooks';
+import { setChatScrollPosition } from '../../../state/room2Slice';
 
 import './GameLogView.css';
 
@@ -29,13 +30,18 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 
 export function GameLogView(props: GameLogViewProps) {
 	const room = useAppSelector(state => state.room2);
+	const appDispatch = useAppDispatch();
 
 	const appendMentionedUser = (nickname: string) => {
 		if (hasUserMentioned(props.message, nickname)) {
 			return;
 		}
 
-		props.onMention(`${props.message} @${nickname} `)
+		props.onMention(`${props.message} @${nickname} `);
+	};
+
+	const handleScrollPositionChanged = (position: number) => {
+		appDispatch(setChatScrollPosition(position));
 	};
 
 	return (
@@ -46,6 +52,8 @@ export function GameLogView(props: GameLogViewProps) {
 				user={room.name}
 				message={props.message}
 				onNicknameClick={appendMentionedUser}
+				scrollPosition={room.chatScrollPosition}
+				onScrollPositionChanged={handleScrollPositionChanged}
 			/>
 		</div>
 	);

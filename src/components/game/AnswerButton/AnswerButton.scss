@@ -3,7 +3,7 @@
 button.mainAction.playerButton.active {
     background: transparent;
 
-    &.can-press {
+    &.can-press:not(:disabled) {
         background: v.$active-button-background;
     }
 

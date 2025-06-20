@@ -38,6 +38,9 @@ const enum Messages {
 
 	MediaPreloaded = 'MEDIA_PRELOADED',
 
+	/** Notifies about media preload progress. */
+	MediaPreloadProgress = 'MEDIA_PRELOAD_PROGRESS',
+
 	Move = 'MOVE',
 
 	Moveable = 'MOVEABLE',

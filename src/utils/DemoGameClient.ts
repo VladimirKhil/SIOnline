@@ -171,6 +171,10 @@ export default class DemoGameClient implements IGameClient {
 		throw new Error('Method not implemented.');
 	}
 
+	mediaPreloadProgress(progress: number): Promise<boolean> {
+		throw new Error('Method not implemented.');
+	}
+
 	mediaPreloaded(): Promise<boolean> {
 		throw new Error('Method not implemented.');
 	}
@@ -219,6 +223,14 @@ export default class DemoGameClient implements IGameClient {
 
 	async say(text: string): Promise<boolean> {
 		return true; // Simulate sending a message
+	}
+
+	selectChooser(playerIndex: number): Promise<boolean> {
+		throw new Error('Method not implemented.');
+	}
+
+	selectPlayer(playerIndex: number): Promise<boolean> {
+		throw new Error('Method not implemented.');
 	}
 
 	selectQuestion(themeIndex: number, questionIndex: number): Promise<boolean> {

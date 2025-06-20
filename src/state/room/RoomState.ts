@@ -31,7 +31,6 @@ export default interface RoomState {
 
 	selection: {
 		isEnabled: boolean;
-		message: string;
 	};
 
 	stakes: {
@@ -132,7 +131,6 @@ export const initialState: RoomState = {
 
 	selection: {
 		isEnabled: false,
-		message: ''
 	},
 
 	stakes: {

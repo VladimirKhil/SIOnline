@@ -316,11 +316,7 @@ const roomReducer: Reducer<RoomState> = (state: RoomState = initialState, anyAct
 				...state,
 				selection: {
 					isEnabled: true,
-					message: action.message
 				},
-				stage: {
-					...state.stage,
-				}
 			};
 
 		case RoomActionTypes.AreSumsEditableChanged:

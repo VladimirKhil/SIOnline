@@ -2,11 +2,16 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import DataContext from '../model/DataContext';
 import State from './State';
 import { isSelectableChanged } from './tableSlice';
-import { setIsDecisionNeeded } from './room2Slice';
+import { DecisionType, setDecisionType } from './room2Slice';
 
 export const mediaPreloaded = createAsyncThunk(
 	'server/mediaPreloaded',
 	async (_, thunkAPI) => (thunkAPI.extra as DataContext).game.mediaPreloaded(),
+);
+
+export const mediaPreloadProgress = createAsyncThunk(
+	'server/mediaPreloadProgress',
+	async (progress: number, thunkAPI) => (thunkAPI.extra as DataContext).game.mediaPreloadProgress(progress),
 );
 
 export const deleteTable = createAsyncThunk(
@@ -68,7 +73,7 @@ export const selectQuestion = createAsyncThunk(
 			if (question > -1) {
 				if (await dataContext.game.selectQuestion(themeIndex, questionIndex)) {
 					thunkAPI.dispatch(isSelectableChanged(false));
-					thunkAPI.dispatch(setIsDecisionNeeded(false));
+					thunkAPI.dispatch(setDecisionType(DecisionType.None));
 				}
 			}
 		}

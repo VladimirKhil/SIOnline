@@ -12,19 +12,17 @@ const localization = new LocalizedStrings({
 			 A question is presented, after which a frame appears on the screen indicating that you can press the button and answer.
 			 If the player knows the answer, he/she can press the red button. The player who presses the button earlier than others
 			 (and will not have a false start), gives an answer. If the answer is correct, the question price is added to the player's score;
-			 otherwise - the price is substracted from the score. 
+			 otherwise - the price is substracted from the score.
 			 In the latter case, other players can try their luck and press the button to answer.`,
-			`There are also special questions in the game. 
-			In the "Stake Question" the participants bid for a question, and the player with the highest bet answers. 
+			`There are also special questions in the game.
+			In the "Stake Question" the participants bid for a question, and the player with the highest bet answers.
 			In this case, the "All-in" bet (the bet which is equal to the whole player score) can only be outbid by another "All-in".`,
-			`"Secret Question" must be given to another player. 
-			The player who received it must (if it is included in the question) choose the price of the question and answer it. 
+			`"Secret Question" must be given to another player.
+			The player who received it must (if it is included in the question) choose the price of the question and answer it.
 			The theme of the question may differ from the main theme in which the question was opened.`,
-			`"Question for yourself without risk" is answered by the player who opened it. 
-			In case of a correct answer to the question, he receives doubled question price. 
-			In case of an incorrect answer to the question, the player loses nothing.`,
-			`The game can also have a final round in which each of the players makes a bet. 
-			A question is asked, time is given for thinking, and each of the players submits their answer to the host. 
+			'"Question for yourself" is answered by the player who opened it.',
+			`The game can also have a final round in which each of the players makes a stake.
+			A question is asked, time is given for thinking, and each of the players submits their answer to the host.
 			After that, the correct answer is announced, and each of the players receives or loses money according to their bet.`,
 			'The game winner is the player with the highest score after the last question.',
 			'The game button can also be activated using the Ctrl key or the right mouse button.'
@@ -544,9 +542,7 @@ The package will be automatically deleted from the server after the game ends`,
 	кто поставит наибольшую сумму. При этом "Ва-банк" (т.е. ставка всей суммы на кон) может быть перебит только другим "Ва-банком".`,
 			`"Вопрос с секретом" открывший его участник должен передать другому участнику. Получивший его игрок должен (если это заложено в вопросе)
 	выбрать стоимость вопроса и ответить на него. Тема вопроса может отличаться от основной темы, в которой находился вопрос.`,
-			`На "Вопрос для себя без риска" отвечает открывший его игрок.
-	В случае правильного ответа на вопрос он получает удвоенную стоимость вопроса.
-	В случае неверного ответа на вопрос игрок ничего не теряет.`,
+			'На "Вопрос для себя" отвечает открывший его игрок.',
 			`В игре также может быть финальный раунд, в котором каждый из игроков делает ставку. Звучит вопрос, даётся время на размышление,
 	и каждый из игроков письменно сдаёт свой ответ. После этого оглашается правильный ответ, и каждый из игроков получает или теряет деньги.`,
 			'Победителем игры становится игрок, набравший после последнего вопроса наибольшую сумму.',

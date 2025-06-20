@@ -114,7 +114,7 @@ export type SetStakesAction = {
 };
 
 export type StakeChangedAction = { type: RoomActionTypes.StakeChanged, stake: number };
-export type SelectionEnabledAction = { type: RoomActionTypes.SelectionEnabled, message: string };
+export type SelectionEnabledAction = { type: RoomActionTypes.SelectionEnabled };
 export type AreSumsEditableChangedAction = { type: RoomActionTypes.AreSumsEditableChanged, areSumsEditable: boolean };
 export type RunTimerAction = { type: RoomActionTypes.RunTimer, timerIndex: number, maximumTime: number, runByUser: boolean };
 export type PauseTimerAction = { type: RoomActionTypes.PauseTimer, timerIndex: number, currentTime: number, pausedByUser: boolean };

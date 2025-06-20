@@ -42,4 +42,8 @@
 
 .chatBody, .system {
 	white-space: pre-wrap;
+
+    span {
+        display: inline-block;
+    }
 }

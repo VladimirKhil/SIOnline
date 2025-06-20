@@ -66,6 +66,10 @@ export default class GameClient implements IGameClient {
 		return this.gameServerClient.msgAsync(Messages.MediaPreloaded);
 	}
 
+	mediaPreloadProgress(progress: number): Promise<boolean> {
+		return this.gameServerClient.msgAsync(Messages.MediaPreloadProgress, progress);
+	}
+
 	moveable(): Promise<boolean> {
 		return this.gameServerClient.msgAsync(Messages.Moveable);
 	}
@@ -104,6 +108,14 @@ export default class GameClient implements IGameClient {
 
 	say(text: string): Promise<boolean> {
 		return this.gameServerClient.sayAsync(text);
+	}
+
+	selectChooser(playerIndex: number): Promise<boolean> {
+		return this.gameServerClient.msgAsync(Messages.SetChooser, playerIndex);
+	}
+
+	selectPlayer(playerIndex: number): Promise<boolean> {
+		return this.gameServerClient.msgAsync(Messages.SelectPlayer, playerIndex);
 	}
 
 	selectQuestion(themeIndex: number, questionIndex: number): Promise<boolean> {

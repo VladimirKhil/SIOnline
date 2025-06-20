@@ -3,9 +3,7 @@ import DataContext from '../model/DataContext';
 import PlayerInfo from '../model/PlayerInfo';
 import PersonInfo from '../model/PersonInfo';
 import PlayerStates from '../model/enums/PlayerStates';
-import Messages from '../client/game/Messages';
 import localization from '../model/resources/localization';
-import roomActionCreators from './room/roomActionCreators';
 import State from './State';
 import Constants from '../model/enums/Constants';
 import Role from '../model/Role';
@@ -23,6 +21,19 @@ export enum ContextView {
 	OralAnswer,
 	Report,
 }
+
+export enum DecisionType {
+	None,
+	Answer,
+	SelectChooser,
+	SelectPlayer,
+	Stake,
+	OralAnswer,
+	Choose,
+}
+
+// Helper function to check if a decision is needed
+export const isDecisionNeeded = (decisionType: DecisionType): boolean => decisionType !== DecisionType.None;
 
 interface ValidationInfo {
 	name: string;
@@ -45,13 +56,12 @@ export interface Room2State {
 
 	dialogView: DialogView;
 	contextView: ContextView;
-
 	stage: {
 		isGameStarted: boolean;
 		isAppellation: boolean;
 		isEditingTables: boolean;
 		isGamePaused: boolean;
-		isDecisionNeeded: boolean; // TODO: switch to enum (decision type)
+		decisionType: DecisionType;
 	}
 
 	validation: {
@@ -64,8 +74,8 @@ export interface Room2State {
 		showExtraRightButtons: boolean;
 		newVersion: boolean;
 	};
-
 	isEditTableEnabled: boolean;
+	chatScrollPosition: number;
 
 	settings: AppSettings;
 }
@@ -92,13 +102,12 @@ const initialState: Room2State = {
 
 	dialogView: DialogView.None,
 	contextView: ContextView.None,
-
 	stage: {
 		isGameStarted: false,
 		isAppellation: false,
 		isEditingTables: false,
 		isGamePaused: false,
-		isDecisionNeeded: false,
+		decisionType: DecisionType.None,
 	},
 
 	validation: {
@@ -111,8 +120,8 @@ const initialState: Room2State = {
 		showExtraRightButtons: false,
 		newVersion: false,
 	},
-
 	isEditTableEnabled: false,
+	chatScrollPosition: 0,
 
 	settings: initialAppSettings,
 };
@@ -137,10 +146,13 @@ export const playerSelected = createAsyncThunk(
 	'room2/playerSelected',
 	async (arg: number, thunkAPI) => {
 		const dataContext = thunkAPI.extra as DataContext;
-		const { message } = (thunkAPI.getState() as State).room.selection;
-		await dataContext.game.gameServerClient.msgAsync(message, arg);
+		const { decisionType } = (thunkAPI.getState() as State).room2.stage;
 
-		thunkAPI.dispatch(setIsDecisionNeeded(false));
+		if (decisionType === DecisionType.SelectChooser) {
+			await dataContext.game.selectChooser(arg);
+		} else {
+			await dataContext.game.selectPlayer(arg);
+		}
 	},
 );
 
@@ -556,8 +568,11 @@ export const room2Slice = createSlice({
 		setSettingOralPlayersActions: (state: Room2State, action: PayloadAction<boolean>) => {
 			state.settings.oralPlayersActions = action.payload;
 		},
-		setIsDecisionNeeded: (state: Room2State, action: PayloadAction<boolean>) => {
-			state.stage.isDecisionNeeded = action.payload;
+		setChatScrollPosition: (state: Room2State, action: PayloadAction<number>) => {
+			state.chatScrollPosition = action.payload;
+		},
+		setDecisionType: (state: Room2State, action: PayloadAction<DecisionType>) => {
+			state.stage.decisionType = action.payload;
 		},
 	},
 	extraReducers: (builder) => {
@@ -589,6 +604,7 @@ export const room2Slice = createSlice({
 		builder.addCase(playerSelected.fulfilled, (state) => {
 			state.persons.players.forEach(p => p.canBeSelected = false);
 			state.persons.showman.replic = null;
+			state.stage.decisionType = DecisionType.None;
 		});
 
 		builder.addCase(approveAnswerDefault.fulfilled, (state) => {
@@ -668,8 +684,8 @@ export const {
 	setSettingPlayAllQuestionsInFinalRound,
 	setSettingAllowEveryoneToPlayHiddenStakes,
 	setSettingOralPlayersActions,
-	setIsDecisionNeeded,
+	setChatScrollPosition,
+	setDecisionType,
 } = room2Slice.actions;
-
 
 export default room2Slice.reducer;

@@ -5,7 +5,7 @@ import State from '../../../state/State';
 import { Dispatch, Action } from 'redux';
 import localization from '../../../model/resources/localization';
 import { useAppDispatch } from '../../../state/hooks';
-import { sendStake, setIsDecisionNeeded } from '../../../state/room2Slice';
+import { DecisionType, sendStake, setDecisionType } from '../../../state/room2Slice';
 import StakeModes from '../../../client/game/StakeModes';
 
 interface SendStakeButtonProps {
@@ -32,11 +32,10 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 export function SendStakeButton(props: SendStakeButtonProps) {
 	const appDispatch = useAppDispatch();
 	const canSendStake = props.stakeModes & StakeModes.Stake;
-
 	const sendStake2 = () => {
 		const stake = props.stake ?? props.defaultStake;
 		appDispatch(sendStake(stake));
-		appDispatch(setIsDecisionNeeded(false));
+		appDispatch(setDecisionType(DecisionType.None));
 		props.clearDecisions();
 	};
 

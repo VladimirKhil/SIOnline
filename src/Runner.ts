@@ -25,6 +25,7 @@ import { randomBytes } from 'crypto';
 import { selectQuestion } from './state/serverActions';
 import ContentType from './model/enums/ContentType';
 import ServerInfo from './model/server/ServerInfo';
+import { DecisionType } from './state/room2Slice';
 
 class ManagedHost implements IHost {
 	private readonly isSimulation = true;
@@ -184,7 +185,8 @@ async function initializeApp() {
 		//console.log('State updated:', store.getState());
 		const state = store.getState();
 
-		if (state.table.isSelectable && !oldState.table.isSelectable) {
+		if (state.room2.stage.decisionType !== oldState.room2.stage.decisionType &&
+			state.room2.stage.decisionType === DecisionType.Choose) {
 			// Selecting question
 			// Select a random available question
 			const { table } = state;
@@ -217,8 +219,8 @@ async function initializeApp() {
 			console.log(`Question: ${questionText}`);
 
 			const prompt = `Answer trivia question. Return only answer, nothing else.
-		Think no more than 5 seconds. If you are not 90 percent sure, return "-".
-		${questionText}`;
+				Think no more than 5 seconds. If you are not 90 percent sure, return "-".
+				${questionText}`;
 
 			// TODO: Replace with actual AI call
 		}

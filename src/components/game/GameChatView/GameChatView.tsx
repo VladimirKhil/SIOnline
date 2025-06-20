@@ -16,7 +16,7 @@ import GameMetadataView from '../GameMetadataView/GameMetadataView';
 import BannedView from '../BannedView/BannedView';
 import isWellFormedUri from '../../../utils/isWellFormedUri';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
-import { addTable, selectPlayers, setIsDecisionNeeded, setIsEditingTables } from '../../../state/room2Slice';
+import { addTable, DecisionType, selectPlayers, setDecisionType, setIsEditingTables } from '../../../state/room2Slice';
 import UserOptions from '../../panels/UserOptions/UserOptions';
 import TabControl from '../../common/TabControl/TabControl';
 import ValidationArea from '../ValidationArea/ValidationArea';
@@ -128,7 +128,7 @@ export function GameChatView(props: GameChatViewProps): JSX.Element {
 	const onGiveTurn = () =>{
 		props.onGiveTurn();
 		appDispatch(selectPlayers([]));
-		appDispatch(setIsDecisionNeeded(true));
+		appDispatch(setDecisionType(DecisionType.SelectChooser));
 	};
 
 	const hostUI = props.isHost

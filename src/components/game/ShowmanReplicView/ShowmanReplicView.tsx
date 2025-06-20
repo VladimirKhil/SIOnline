@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import State from '../../../state/State';
+import { DecisionType } from '../../../state/room2Slice';
 import ShowmanReplic from '../ShowmanReplic/ShowmanReplic';
 import ProgressBar from '../../common/ProgressBar/ProgressBar';
 import TimerInfo from '../../../model/TimerInfo';
@@ -49,7 +50,7 @@ export function ShowmanReplicView(props: ShowmanReplicViewProps): JSX.Element {
 	const meClass = isMe ? 'me' : '';
 
 	return (
-		<div className={`showmanArea ${room.stage.isDecisionNeeded ? 'highlighted' : ''}`}>
+		<div className={`showmanArea ${room.stage.decisionType !== DecisionType.None ? 'highlighted' : ''}`}>
 			<div className="showmanInfo" style={showmanInfoStyle}>
 				{props.showVideoAvatars && account?.avatarVideo
 					? <div className='showmanAvatar'><iframe title='Video avatar' src={account?.avatarVideo} /></div>

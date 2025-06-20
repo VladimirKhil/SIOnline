@@ -36,6 +36,9 @@ export default interface IGameClient {
 
 	mediaPreloaded(): Promise<boolean>;
 
+	/** Notifies about media preload progress. */
+	mediaPreloadProgress(progress: number): Promise<boolean>;
+
 	moveable(): Promise<boolean>;
 
 	moveNext(): Promise<boolean>;
@@ -55,6 +58,10 @@ export default interface IGameClient {
 	rejectAnswer(factor: number): Promise<boolean>;
 
 	say(text: string): Promise<boolean>;
+
+	selectChooser(playerIndex: number): Promise<boolean>;
+
+	selectPlayer(playerIndex: number): Promise<boolean>;
 
 	selectQuestion(themeIndex: number, questionIndex: number): Promise<boolean>;
 

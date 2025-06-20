@@ -28,7 +28,7 @@ import MessageLevel from '../../../model/enums/MessageLevel';
 import { userErrorChanged } from '../../../state/commonSlice';
 import { AppDispatch, RootState } from '../../../state/store';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
-import { DialogView, rejectAnswer, setIsDecisionNeeded } from '../../../state/room2Slice';
+import { DecisionType, DialogView, rejectAnswer, setDecisionType } from '../../../state/room2Slice';
 import ComplainDialog from '../../panels/ComplainDialog/ComplainDialog';
 import ReportDialog from '../../panels/ReportDialog/ReportDialog';
 import GameState from '../../game/GameState/GameState';
@@ -168,7 +168,7 @@ export function Room(props: RoomProps) : JSX.Element {
 
 	const onReject = (factor: number) => {
 		appDispatch(rejectAnswer(factor));
-		appDispatch(setIsDecisionNeeded(false));
+		appDispatch(setDecisionType(DecisionType.None));
 		props.clearDecisions();
 	};
 

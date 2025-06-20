@@ -16,7 +16,7 @@ import Path from '../../model/enums/Path';
 import actionCreators from '../../logic/actionCreators';
 import { AppDispatch } from '../store';
 import { isSelectableChanged } from '../tableSlice';
-import { setIsAppellation, setIsDecisionNeeded, setIsPaused, showmanReplicChanged } from '../room2Slice';
+import { DecisionType, setIsAppellation, setDecisionType, setIsPaused, showmanReplicChanged } from '../room2Slice';
 import StakeModes from '../../client/game/StakeModes';
 import UsersMode from '../../model/enums/UsersMode';
 import { navigate } from '../../utils/Navigator';
@@ -65,7 +65,7 @@ const onPass: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () 
 	};
 
 const giveTurn: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (dispatch: Dispatch<RunActions.KnownRoomAction>) => {
-	dispatch(selectionEnabled(Messages.SetChooser));
+	dispatch(selectionEnabled());
 };
 
 const runShowPersons: ActionCreator<RunActions.RunShowPersonsAction> = () => ({
@@ -308,7 +308,7 @@ const selectTheme: ActionCreator<ThunkAction<void, State, DataContext, Action>> 
 	if (theme) {
 		if (await dataContext.game.deleteTheme(themeIndex)) {
 			appDispatch(isSelectableChanged(false));
-			appDispatch(setIsDecisionNeeded(false));
+			appDispatch(setDecisionType(DecisionType.None));
 		}
 	}
 };
@@ -320,10 +320,9 @@ const selectAnswerOption: ActionCreator<ThunkAction<void, State, DataContext, Ac
 	if (!getState().table.isSelectable) {
 		return;
 	}
-
 	if (await dataContext.game.sendAnswer(label)) {
 		appDispatch(isSelectableChanged(false));
-		appDispatch(setIsDecisionNeeded(false));
+		appDispatch(setDecisionType(DecisionType.None));
 	}
 };
 
@@ -432,8 +431,8 @@ const stakeChanged: ActionCreator<RunActions.StakeChangedAction> = (stake: numbe
 	type: RunActions.RoomActionTypes.StakeChanged, stake
 });
 
-const selectionEnabled: ActionCreator<RunActions.SelectionEnabledAction> = (message: string) => ({
-	type: RunActions.RoomActionTypes.SelectionEnabled, message
+const selectionEnabled: ActionCreator<RunActions.SelectionEnabledAction> = () => ({
+	type: RunActions.RoomActionTypes.SelectionEnabled
 });
 
 const showLeftSeconds = (leftSeconds: number, appDispatch: AppDispatch): void => {
