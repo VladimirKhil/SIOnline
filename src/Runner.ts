@@ -22,17 +22,20 @@ import Role from './model/Role';
 import GameType from './model/GameType';
 import { newGame } from './state/online2Slice';
 import { randomBytes } from 'crypto';
-import { selectQuestion } from './state/serverActions';
+import { selectAnswerOption, selectQuestion, selectTheme } from './state/serverActions';
 import ContentType from './model/enums/ContentType';
 import ServerInfo from './model/server/ServerInfo';
-import { DecisionType } from './state/room2Slice';
+import { DecisionType, playerSelected, sendAllIn, sendAnswer, sendPass, sendStake } from './state/room2Slice';
+import TableMode from './model/enums/TableMode';
+import StakeModes from './client/game/StakeModes';
+import GameStage from './model/enums/GameStage';
+import ItemState from './model/enums/ItemState';
+import LayoutMode from './model/enums/LayoutMode';
 
 class ManagedHost implements IHost {
 	private readonly isSimulation = true;
 
 	getRandomValue: () => number;
-
-	messageHandler?: (message: string) => void;
 
 	constructor() {
 		// Simulated environment, no real initialization needed
@@ -42,10 +45,6 @@ class ManagedHost implements IHost {
 			const buffer = randomBytes(4);
 			const array = new Uint32Array(buffer.buffer, buffer.byteOffset, buffer.length / 4);
 			return array[0];
-		};
-
-		this.messageHandler = (message: string) => {
-			console.log(`> ${message}`);
 		};
 	}
 
@@ -181,42 +180,189 @@ async function initializeApp() {
 
 	let oldState = store.getState();
 
-	store.subscribe(() => {
-		//console.log('State updated:', store.getState());
-		const state = store.getState();
+	function onSelectQuestion(state: State) {
+		// Select a random available question
+		const { table } = state;
+		const availableQuestions: { themeIndex: number; questionIndex: number; }[] = [];
 
-		if (state.room2.stage.decisionType !== oldState.room2.stage.decisionType &&
-			state.room2.stage.decisionType === DecisionType.Choose) {
-			// Selecting question
-			// Select a random available question
-			const { table } = state;
-			const availableQuestions: { themeIndex: number; questionIndex: number }[] = [];
+		// Find all available questions
+		table.roundInfo.forEach((theme, themeIndex) => {
+			theme.questions.forEach((question, questionIndex) => {
+				if (question > -1) { // Question is available
+					availableQuestions.push({ themeIndex, questionIndex });
+				}
+			});
+		});
 
-			// Find all available questions
-			table.roundInfo.forEach((theme, themeIndex) => {
-				theme.questions.forEach((question, questionIndex) => {
-					if (question > -1) { // Question is available
-						availableQuestions.push({ themeIndex, questionIndex });
-					}
-				});
+		if (availableQuestions.length > 0) {
+			// Select a random question
+			const randomIndex = Math.floor(Math.random() * availableQuestions.length);
+			const selectedQuestion = availableQuestions[randomIndex];
+
+			console.log(`Selecting question: Theme ${selectedQuestion.themeIndex}, Question ${selectedQuestion.questionIndex}`);
+
+			// Dispatch the selection action
+			store.dispatch(selectQuestion(selectedQuestion) as unknown as Action);
+		}
+	}
+
+	function onSelectTheme(state: State) {
+		// Select a random available theme
+		const { table } = state;
+		const availableThemes: number[] = [];
+
+		// Find all available themes
+		table.roundInfo.forEach((theme, themeIndex) => {
+			if (theme.name.length > 0) { // Theme is available if it has a name
+				availableThemes.push(themeIndex);
+			}
+		});
+
+		if (availableThemes.length > 0) {
+			// Select a random theme
+			const randomIndex = Math.floor(Math.random() * availableThemes.length);
+			const selectedThemeIndex = availableThemes[randomIndex];
+
+			console.log(`Selecting theme: ${selectedThemeIndex}`);
+
+			// Dispatch the selection action
+			store.dispatch(selectTheme(selectedThemeIndex) as unknown as Action);
+		}
+	}
+
+	function onAnswer(state: State) {
+		store.dispatch(sendAnswer('-') as unknown as Action);
+	}
+
+	function onSelectAnswerOption(state: State) {
+		// Select a random answer option
+		const availableOptions = state.table.answerOptions.filter(option => option.state === ItemState.Normal);
+
+		if (availableOptions.length === 0) {
+			console.log('No answer options available');
+			return;
+		}
+
+		const randomIndex = Math.floor(Math.random() * availableOptions.length);
+		const { label } = availableOptions[randomIndex];
+		store.dispatch(selectAnswerOption(label) as unknown as Action);
+	}
+
+	function onSelectPlayer(state: State) {
+		// Select a random player
+		const { players } = state.room2.persons;
+
+		if (players.length > 0) {
+			const availablePlayers: number[] = [];
+
+			players.forEach((player, index) => {
+				if (player.canBeSelected) {
+					availablePlayers.push(index);
+				}
 			});
 
-			if (availableQuestions.length > 0) {
-				// Select a random question
-				const randomIndex = Math.floor(Math.random() * availableQuestions.length);
-				const selectedQuestion = availableQuestions[randomIndex];
+			if (availablePlayers.length > 0) {
+				// Select a random player
+				const randomIndex = Math.floor(Math.random() * availablePlayers.length);
+				const selectedPlayerIndex = availablePlayers[randomIndex];
+				const selectedPlayer = players[selectedPlayerIndex];
 
-				console.log(`Selecting question: Theme ${selectedQuestion.themeIndex}, Question ${selectedQuestion.questionIndex}`);
+				console.log(`Selecting player: ${selectedPlayer.name}`);
 
 				// Dispatch the selection action
-				store.dispatch(selectQuestion(selectedQuestion) as unknown as Action);
+				store.dispatch(playerSelected(selectedPlayerIndex) as unknown as Action);
 			}
-		} else if (state.table.content.length > 0 &&
-			oldState.table.content.length === 0 &&
+		}
+	}
+
+	function onStake(state: State) {
+		const { stakes } = state.room;
+
+		if ((stakes.stakeModes & StakeModes.Pass) > 0) {
+			// If Pass stake is available, select it
+			console.log('Selecting Pass stake');
+			store.dispatch(sendPass() as unknown as Action);
+			return;
+		}
+
+		if ((stakes.stakeModes & StakeModes.Stake) > 0) {
+			const stakeRange = (stakes.maximum - stakes.minimum) / stakes.step;
+			const randomStake = (Math.floor(Math.random() * stakeRange) * stakes.step) + stakes.minimum;
+			store.dispatch(sendStake(randomStake) as unknown as Action);
+			return;
+		}
+
+		store.dispatch(sendAllIn() as unknown as Action);
+	}
+
+	store.subscribe(() => {
+		const state = store.getState();
+		const tempOldState = oldState;
+		oldState = state;
+
+		if (state.room2.persons.showman.replic !== tempOldState.room2.persons.showman.replic) {
+			const showmanReplic = state.room2.persons.showman.replic;
+
+			if (showmanReplic && showmanReplic.length > 0) {
+				console.log(`${state.room2.persons.showman.name}: ${showmanReplic}`);
+			}
+		}
+
+		if (state.room2.persons.players.some((player, index) => player.replic !== tempOldState.room2.persons.players[index]?.replic)) {
+			state.room2.persons.players.forEach((player, index) => {
+				const oldPlayer = tempOldState.room2.persons.players[index];
+
+				if (player.replic !== oldPlayer?.replic) {
+					if (player.replic && player.replic.length > 0) {
+						console.log(`${player.name}: ${player.replic}`);
+					}
+				}
+			});
+		}
+
+		if (state.room2.stage.decisionType !== tempOldState.room2.stage.decisionType) {
+			switch (state.room2.stage.decisionType) {
+				case DecisionType.Choose:
+					if (state.table.mode === TableMode.RoundTable) {
+						onSelectQuestion(state);
+					} else if (state.table.mode === TableMode.Final) {
+						onSelectTheme(state);
+					}
+					break;
+
+				case DecisionType.Answer:
+					if (state.table.layoutMode === LayoutMode.AnswerOptions) {
+						onSelectAnswerOption(state);
+					} else {
+						onAnswer(state);
+					}
+					break;
+
+				case DecisionType.SelectPlayer:
+					onSelectPlayer(state);
+					break;
+
+				case DecisionType.Stake:
+					onStake(state);
+					break;
+
+				case DecisionType.SelectChooser:
+				case DecisionType.OralAnswer:
+				case DecisionType.None:
+					// No decision to make, do nothing
+					break;
+
+				default:
+					console.log(`Unhandled decision type: ${state.room2.stage.decisionType}`);
+					break;
+			}
+		}
+
+		if (state.table.content.length > 0 &&
+			tempOldState.table.content.length === 0 &&
 			state.table.content[0].content.length > 0 &&
 			state.table.content[0].content[0].type === ContentType.Text) {
 			const questionText = state.table.content[0].content[0].value;
-			console.log(`Question: ${questionText}`);
 
 			const prompt = `Answer trivia question. Return only answer, nothing else.
 				Think no more than 5 seconds. If you are not 90 percent sure, return "-".
@@ -225,12 +371,59 @@ async function initializeApp() {
 			// TODO: Replace with actual AI call
 		}
 
-		oldState = state;
-	});
+		if (state.table.mode !== tempOldState.table.mode) {
+			switch (state.table.mode) {
+				case TableMode.Logo:
+					console.log('Displaying logo');
+					break;
 
-	async function playGame() {
-		await new Promise(resolve => setTimeout(resolve, 200000));
-	}
+				case TableMode.GameThemes:
+					console.log(`Game themes: ${state.table.gameThemes.join(', ')}`);
+					break;
+
+				case TableMode.Content:
+					console.log(`Content displayed: ${state.table.content.map(c => c.content.map(item => item.value).join(', ')).join(' | ')}`);
+					break;
+
+				case TableMode.Object:
+					console.log(`${state.table.header}: ${state.table.text}`);
+					break;
+
+				case TableMode.QuestionType:
+					console.log(`Question type: ${state.table.text}`);
+					break;
+
+				case TableMode.RoundThemes:
+					console.log(`Round themes: ${state.table.roundInfo.map(theme => theme.name).join(', ')}`);
+					break;
+
+				case TableMode.Final:
+					console.log('Final table displayed');
+					break;
+
+				case TableMode.Text:
+					console.log(`Text displayed: ${state.table.text}`);
+					break;
+
+				case TableMode.Welcome:
+					console.log('Welcome screen displayed');
+					break;
+
+				case TableMode.RoundTable:
+					console.log('Round table displayed');
+					break;
+
+				default:
+					console.log(`Unknown table mode: ${state.table.mode}`);
+			}
+		}
+
+		if (state.room.stage.name !== tempOldState.room.stage.name) {
+			if (state.room.stage.name === GameStage.After) {
+				console.log('=== Game finished ===');
+			}
+		}
+	});
 
 	// Simulate game process without UI
 	async function simulateGameProcess() {
@@ -268,21 +461,15 @@ async function initializeApp() {
 		// Start playing the game
 		const currentState = store.getState();
 
-		if (currentState.ui.navigation.path === Path.Room) {
-			await playGame();
-		} else {
-			console.log('Game creation failed or still in progress. Current path:', currentState.ui.navigation.path);
+		if (currentState.ui.navigation.path !== Path.Room) {
+			throw new Error(`Expected path to be ${Path.Room}, but got ${currentState.ui.navigation.path}`);
 		}
-
-		console.log('=== Game Finished ===');
 	}
 
 	// Start the simulation
 	simulateGameProcess().catch(error => {
 		console.error('Simulation error:', error);
 	});
-
-	console.log('Store initialized with initial state:', store.getState());
 }
 
 // Initialize the application

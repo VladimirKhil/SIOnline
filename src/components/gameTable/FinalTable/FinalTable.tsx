@@ -1,24 +1,12 @@
 import * as React from 'react';
-import { Dispatch, Action } from 'redux';
-import { connect } from 'react-redux';
 import AutoSizedText from '../../common/AutoSizedText/AutoSizedText';
-import roomActionCreators from '../../../state/room/roomActionCreators';
-import { AppDispatch, RootState } from '../../../state/store';
+import { RootState } from '../../../state/store';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
+import { selectTheme } from '../../../state/serverActions';
 
 import './FinalTable.scss';
 
-interface FinalTableProps {
-	onSelectTheme: (themeIndex: number, appDispatch: AppDispatch) => void;
-}
-
-const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
-	onSelectTheme: (themeIndex: number, appDispatch: AppDispatch) => {
-		dispatch(roomActionCreators.selectTheme(themeIndex, appDispatch) as object as Action);
-	},
-});
-
-export function FinalTable(props: FinalTableProps) {
+export default function FinalTable() {
 	const state = useAppSelector((rootState: RootState) => rootState.table);
 	const appDispatch = useAppDispatch();
 
@@ -28,11 +16,12 @@ export function FinalTable(props: FinalTableProps) {
 		}
 
 		const theme = state.roundInfo[themeIndex];
+
 		if (theme.name.length === 0) {
 			return;
 		}
 
-		props.onSelectTheme(themeIndex, appDispatch);
+		appDispatch(selectTheme(themeIndex));
 	};
 
 	return (
@@ -52,5 +41,3 @@ export function FinalTable(props: FinalTableProps) {
 		</div>
 	);
 }
-
-export default connect(null, mapDispatchToProps)(FinalTable);

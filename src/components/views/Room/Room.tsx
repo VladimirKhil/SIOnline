@@ -168,7 +168,6 @@ export function Room(props: RoomProps) : JSX.Element {
 
 	const onReject = (factor: number) => {
 		appDispatch(rejectAnswer(factor));
-		appDispatch(setDecisionType(DecisionType.None));
 		props.clearDecisions();
 	};
 

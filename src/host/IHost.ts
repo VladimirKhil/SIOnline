@@ -52,6 +52,4 @@ export default interface IHost {
 	openGameLog(): Promise<boolean>;
 
 	getRandomValue?: () => number;
-
-	messageHandler?: (message: string) => void;
 }

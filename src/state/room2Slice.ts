@@ -578,18 +578,22 @@ export const room2Slice = createSlice({
 	extraReducers: (builder) => {
 		builder.addCase(sendAnswer.fulfilled, (state) => {
 			state.contextView = ContextView.None;
+			state.stage.decisionType = DecisionType.None;
 		});
 
 		builder.addCase(sendPass.fulfilled, (state) => {
 			state.contextView = ContextView.None;
+			state.stage.decisionType = DecisionType.None;
 		});
 
 		builder.addCase(sendStake.fulfilled, (state) => {
 			state.contextView = ContextView.None;
+			state.stage.decisionType = DecisionType.None;
 		});
 
 		builder.addCase(sendAllIn.fulfilled, (state) => {
 			state.contextView = ContextView.None;
+			state.stage.decisionType = DecisionType.None;
 		});
 
 		builder.addCase(complain.fulfilled, (state) => {
@@ -621,6 +625,7 @@ export const room2Slice = createSlice({
 
 		builder.addCase(rejectAnswer.fulfilled, (state) => {
 			state.validation.queue.shift();
+			state.stage.decisionType = DecisionType.None;
 		});
 	},
 });

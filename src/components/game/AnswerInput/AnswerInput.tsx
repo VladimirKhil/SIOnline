@@ -41,7 +41,6 @@ export function AnswerInput(props: AnswerInputProps): JSX.Element | null {
 
 	const sendAnswer2 = () => {
 		appDispatch(sendAnswer(props.answer));
-		appDispatch(setDecisionType(DecisionType.None));
 		props.sendAnswer();
 	};
 

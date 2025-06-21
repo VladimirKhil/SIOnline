@@ -35,7 +35,6 @@ export function SendStakeButton(props: SendStakeButtonProps) {
 	const sendStake2 = () => {
 		const stake = props.stake ?? props.defaultStake;
 		appDispatch(sendStake(stake));
-		appDispatch(setDecisionType(DecisionType.None));
 		props.clearDecisions();
 	};
 

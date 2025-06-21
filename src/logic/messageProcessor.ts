@@ -1143,14 +1143,10 @@ const processSystemMessage: ActionCreator<ThunkAction<void, State, DataContext, 
 	controller: ClientController,
 	message: Message,
 	appDispatch: AppDispatch
-) => (dispatch: Dispatch<RoomActions.KnownRoomAction>, getState: () => State, dataContext: DataContext) => {
+) => (dispatch: Dispatch<RoomActions.KnownRoomAction>, getState: () => State) => {
 		const state = getState();
 		const { role } = state.room2;
 		const args = message.Text.split('\n');
-
-		if (dataContext.host.messageHandler) {
-			dataContext.host.messageHandler(message.Text);
-		}
 
 		viewerHandler(controller, dispatch, appDispatch, state, args);
 

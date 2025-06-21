@@ -201,7 +201,7 @@ export default class ClientController {
 				: this.dataContext.serverUri
 		);
 
-		if (location.protocol === 'https:') {
+		if (typeof location !== 'undefined' && location.protocol === 'https:') {
 			return result.replace('http://', 'https://');
 		}
 
@@ -339,14 +339,14 @@ export default class ClientController {
 	}
 
 	onAskAnswer() {
-		this.appDispatch(setDecisionType(DecisionType.Answer));
-
 		if (this.getState().table.layoutMode === LayoutMode.Simple) {
 			this.dispatch(roomActionCreators.isAnswering());
 			this.appDispatch(setContext(ContextView.Answer));
 		} else {
 			this.appDispatch(isSelectableChanged(true));
 		}
+
+		this.appDispatch(setDecisionType(DecisionType.Answer));
 	}
 
 	onAskSelectPlayer(reason: string, indices: number[]) {
@@ -391,6 +391,7 @@ export default class ClientController {
 	onButtonBlockingTimeChanged(blockingTime: number) {
 		this.dispatch(roomActionCreators.buttonBlockingTimeChanged(blockingTime));
 	}
+
 	onCancel() {
 		this.dispatch(roomActionCreators.clearDecisions());
 		this.appDispatch(setDecisionType(DecisionType.None));
@@ -1429,9 +1430,10 @@ export default class ClientController {
 			this.appDispatch(addGameLog(`${localization.rightAnswer}: ${answer}`));
 		}
 	}
+
 	onChoose() {
-		this.appDispatch(setDecisionType(DecisionType.Choose));
 		this.appDispatch(isSelectableChanged(true));
+		this.appDispatch(setDecisionType(DecisionType.Choose));
 	}
 
 	onStop() {

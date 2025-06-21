@@ -83,8 +83,8 @@ export const tableSlice = createSlice({
 			state.audio = '';
 		},
 		showGameThemes: (state: TableState, action: PayloadAction<string[]>) => {
-			state.mode = TableMode.GameThemes;
 			state.gameThemes = action.payload;
+			state.mode = TableMode.GameThemes;
 		},
 		showObject: (state: TableState, action: PayloadAction<{ header: string, text: string, hint: string, large: boolean, animate: boolean }>) => {
 			state.mode = TableMode.Object;
@@ -109,8 +109,8 @@ export const tableSlice = createSlice({
 			state.prependText = '';
 		},
 		showRoundThemes: (state: TableState, action: PayloadAction<{ roundThemes: ThemeInfo[], isFinal: boolean, display: boolean }>) => {
-			state.mode = action.payload.display ? (action.payload.isFinal ? TableMode.Final : TableMode.RoundThemes) : state.mode;
 			state.roundInfo = action.payload.roundThemes;
+			state.mode = action.payload.display ? (action.payload.isFinal ? TableMode.Final : TableMode.RoundThemes) : state.mode;
 		},
 		setThemesComments: (state: TableState, action: PayloadAction<string[]>) => {
 			state.roundInfo.forEach((t, i) => {
@@ -118,17 +118,17 @@ export const tableSlice = createSlice({
 			});
 		},
 		showText: (state: TableState, action: PayloadAction<string>) => {
-			state.mode = TableMode.Text;
 			state.text = action.payload;
 			state.audio = '';
+			state.mode = TableMode.Text;
 		},
 		showWelcome: (state: TableState) => {
 			state.mode = TableMode.Welcome;
 		},
 		showRoundTable: (state: TableState) => {
-			state.mode = TableMode.RoundTable;
 			state.activeThemeIndex = -1;
 			state.actionQuestionIndex = -1;
+			state.mode = TableMode.RoundTable;
 		},
 		blinkQuestion: (state: TableState, action: PayloadAction<{ themeIndex: number, questionIndex: number }>) => {
 			state.activeThemeIndex = action.payload.themeIndex;
@@ -163,17 +163,17 @@ export const tableSlice = createSlice({
 			state.tail = state.tail.substring(action.payload.length);
 		},
 		showBackgroundAudio: (state: TableState, action: PayloadAction<string>) => {
-			state.mode = TableMode.Content;
 			state.audio = action.payload;
 			state.isMediaStopped = false;
+			state.mode = TableMode.Content;
 		},
 		clearAudio: (state: TableState) => {
 			state.audio = '';
 		},
 		showContent: (state: TableState, action: PayloadAction<ContentGroup[]>) => {
-			state.mode = TableMode.Content;
 			state.content = action.payload;
 			state.isMediaStopped = false;
+			state.mode = TableMode.Content;
 		},
 		switchToContent: (state: TableState) => {
 			state.mode = TableMode.Content;
@@ -212,9 +212,9 @@ export const tableSlice = createSlice({
 			state.isAnswer = false;
 		},
 		answerOptions: (state, action: PayloadAction<{ questionHasScreenContent: boolean, options: AnswerOption[] }>) => {
-			state.mode = TableMode.Content;
 			state.layoutMode = LayoutMode.AnswerOptions;
 			state.answerOptions = action.payload.options;
+			state.mode = TableMode.Content;
 		},
 		updateOption: (state, action: PayloadAction<{ index: number, label: string, contentType: ContentType, value: string }>) => {
 			const option = state.answerOptions[action.payload.index];

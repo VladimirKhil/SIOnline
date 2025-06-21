@@ -33,7 +33,6 @@ export function SendPassButton(props: SendPassButtonProps) {
 
 	const sendPass2 = () => {
 		appDispatch(sendPass());
-		appDispatch(setDecisionType(DecisionType.None));
 		props.clearDecisions();
 	};
 

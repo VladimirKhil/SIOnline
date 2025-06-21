@@ -79,3 +79,41 @@ export const selectQuestion = createAsyncThunk(
 		}
 	}
 );
+
+export const selectTheme = createAsyncThunk(
+	'server/selectTheme',
+	async (themeIndex: number, thunkAPI) => {
+		const state = thunkAPI.getState() as State;
+		const dataContext = thunkAPI.extra as DataContext;
+
+		if (!state.table.isSelectable) {
+			return;
+		}
+
+		const theme = state.table.roundInfo[themeIndex];
+
+		if (theme) {
+			if (await dataContext.game.deleteTheme(themeIndex)) {
+				thunkAPI.dispatch(isSelectableChanged(false));
+				thunkAPI.dispatch(setDecisionType(DecisionType.None));
+			}
+		}
+	}
+);
+
+export const selectAnswerOption = createAsyncThunk(
+	'room2/selectAnswerOption',
+	async (label: string, thunkAPI) => {
+		const state = thunkAPI.getState() as State;
+		const dataContext = thunkAPI.extra as DataContext;
+
+		if (!state.table.isSelectable) {
+			return;
+		}
+
+		if (await dataContext.game.sendAnswer(label)) {
+			thunkAPI.dispatch(isSelectableChanged(false));
+			thunkAPI.dispatch(setDecisionType(DecisionType.None));
+		}
+	},
+);

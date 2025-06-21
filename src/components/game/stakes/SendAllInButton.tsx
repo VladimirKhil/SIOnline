@@ -31,7 +31,6 @@ export function SendAllInButton(props: SendAllInButtonProps) {
 
 	const sendAllIn2 = () => {
 		appDispatch(sendAllIn());
-		appDispatch(setDecisionType(DecisionType.None));
 		props.clearDecisions();
 	};
 

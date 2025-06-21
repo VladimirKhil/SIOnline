@@ -9,14 +9,12 @@ import ChatMessage from '../../model/ChatMessage';
 import Account from '../../model/Account';
 import Persons from '../../model/Persons';
 import MessageLevel from '../../model/enums/MessageLevel';
-import Messages from '../../client/game/Messages';
 import JoinMode from '../../client/game/JoinMode';
 import { stopAudio, userErrorChanged } from '../commonSlice';
 import Path from '../../model/enums/Path';
 import actionCreators from '../../logic/actionCreators';
 import { AppDispatch } from '../store';
-import { isSelectableChanged } from '../tableSlice';
-import { DecisionType, setIsAppellation, setDecisionType, setIsPaused, showmanReplicChanged } from '../room2Slice';
+import { setIsAppellation, setIsPaused, showmanReplicChanged } from '../room2Slice';
 import StakeModes from '../../client/game/StakeModes';
 import UsersMode from '../../model/enums/UsersMode';
 import { navigate } from '../../utils/Navigator';
@@ -294,37 +292,6 @@ const personAdded: ActionCreator<RunActions.PersonAddedAction> = (person: Accoun
 const personRemoved: ActionCreator<RunActions.PersonRemovedAction> = (name: string) => ({
 	type: RunActions.RoomActionTypes.PersonRemoved, name
 });
-
-const selectTheme: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (themeIndex: number, appDispatch: AppDispatch) => async (
-	dispatch: Dispatch<Action>,
-	getState: () => State, dataContext: DataContext
-) => {
-	if (!getState().table.isSelectable) {
-		return;
-	}
-
-	const theme = getState().table.roundInfo[themeIndex];
-
-	if (theme) {
-		if (await dataContext.game.deleteTheme(themeIndex)) {
-			appDispatch(isSelectableChanged(false));
-			appDispatch(setDecisionType(DecisionType.None));
-		}
-	}
-};
-
-const selectAnswerOption: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (label: string, appDispatch: AppDispatch) => async (
-	dispatch: Dispatch<Action>,
-	getState: () => State, dataContext: DataContext
-) => {
-	if (!getState().table.isSelectable) {
-		return;
-	}
-	if (await dataContext.game.sendAnswer(label)) {
-		appDispatch(isSelectableChanged(false));
-		appDispatch(setDecisionType(DecisionType.None));
-	}
-};
 
 const isGameButtonEnabledChanged: ActionCreator<RunActions.IsGameButtonEnabledChangedAction> = (isGameButtonEnabled: boolean) => ({
 	type: RunActions.RoomActionTypes.IsGameButtonEnabledChanged, isGameButtonEnabled
@@ -681,7 +648,6 @@ const roomActionCreators = {
 	personAdded,
 	personRemoved,
 	clearDecisions,
-	selectTheme,
 	pressGameButton,
 	apellate,
 	disagree,
@@ -722,7 +688,6 @@ const roomActionCreators = {
 	clearRoomChat,
 	joinModeChanged,
 	setJoinMode,
-	selectAnswerOption,
 	onKicked,
 	onReconnect,
 	setWebCamera,
