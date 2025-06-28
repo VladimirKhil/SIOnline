@@ -39,13 +39,18 @@ export class PartialTextContent extends React.Component<PartialTextContentProps,
 			fitElement(this.divRef.current, 144);
 		}
 
-		this.interval = window.setInterval(() => {
-			if (this.props.isGamePaused || this.state.visibleLength >= this.props.visibleLength) {
-				return;
-			}
+		this.interval = window.setInterval(
+			() => {
+				if (this.props.isGamePaused || this.state.visibleLength >= this.props.visibleLength) {
+					return;
+				}
 
-			this.setState(s => ({ visibleLength: s.visibleLength + (this.props.readingSpeed / 10) }));
-		}, 100);
+				this.setState(s => ({
+					visibleLength: Math.min(s.visibleLength + (this.props.readingSpeed / 10), this.props.visibleLength)
+				}));
+			},
+			100
+		);
 	}
 
 	componentWillUnmount() {

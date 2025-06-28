@@ -199,7 +199,7 @@ async function initializeApp() {
 			const randomIndex = Math.floor(Math.random() * availableQuestions.length);
 			const selectedQuestion = availableQuestions[randomIndex];
 
-			console.log(`Selecting question: Theme ${selectedQuestion.themeIndex}, Question ${selectedQuestion.questionIndex}`);
+			console.log(`\x1b[33m> Selecting question: Theme ${selectedQuestion.themeIndex}, Question ${selectedQuestion.questionIndex}\x1b[0m`);
 
 			// Dispatch the selection action
 			store.dispatch(selectQuestion(selectedQuestion) as unknown as Action);
@@ -223,7 +223,7 @@ async function initializeApp() {
 			const randomIndex = Math.floor(Math.random() * availableThemes.length);
 			const selectedThemeIndex = availableThemes[randomIndex];
 
-			console.log(`Selecting theme: ${selectedThemeIndex}`);
+			console.log(`\x1b[33m> Selecting theme: ${selectedThemeIndex}\x1b[0m`);
 
 			// Dispatch the selection action
 			store.dispatch(selectTheme(selectedThemeIndex) as unknown as Action);
@@ -231,7 +231,9 @@ async function initializeApp() {
 	}
 
 	function onAnswer(state: State) {
-		store.dispatch(sendAnswer('-') as unknown as Action);
+		const answer = '-'; // Default answer if no other logic is applied
+		console.log(`\x1b[33m> Sending answer: ${answer}\x1b[0m`);
+		store.dispatch(sendAnswer(answer) as unknown as Action);
 	}
 
 	function onSelectAnswerOption(state: State) {
@@ -243,6 +245,7 @@ async function initializeApp() {
 			return;
 		}
 
+		console.log(`\x1b[33m> Selecting answer option: ${availableOptions.map(o => o.label).join(', ')}\x1b[0m`);
 		const randomIndex = Math.floor(Math.random() * availableOptions.length);
 		const { label } = availableOptions[randomIndex];
 		store.dispatch(selectAnswerOption(label) as unknown as Action);
@@ -267,7 +270,7 @@ async function initializeApp() {
 				const selectedPlayerIndex = availablePlayers[randomIndex];
 				const selectedPlayer = players[selectedPlayerIndex];
 
-				console.log(`Selecting player: ${selectedPlayer.name}`);
+				console.log(`\x1b[33m> Selecting player: ${selectedPlayer.name}\x1b[0m`);
 
 				// Dispatch the selection action
 				store.dispatch(playerSelected(selectedPlayerIndex) as unknown as Action);
@@ -280,7 +283,7 @@ async function initializeApp() {
 
 		if ((stakes.stakeModes & StakeModes.Pass) > 0) {
 			// If Pass stake is available, select it
-			console.log('Selecting Pass stake');
+			console.log('\x1b[33m> Selecting Pass stake\x1b[0m');
 			store.dispatch(sendPass() as unknown as Action);
 			return;
 		}
@@ -288,10 +291,12 @@ async function initializeApp() {
 		if ((stakes.stakeModes & StakeModes.Stake) > 0) {
 			const stakeRange = (stakes.maximum - stakes.minimum) / stakes.step;
 			const randomStake = (Math.floor(Math.random() * stakeRange) * stakes.step) + stakes.minimum;
+			console.log(`\x1b[33m> Sending random stake: ${randomStake}\x1b[0m`);
 			store.dispatch(sendStake(randomStake) as unknown as Action);
 			return;
 		}
 
+		console.log('\x1b[33m> Selecting All In stake\x1b[0m');
 		store.dispatch(sendAllIn() as unknown as Action);
 	}
 
@@ -304,7 +309,7 @@ async function initializeApp() {
 			const showmanReplic = state.room2.persons.showman.replic;
 
 			if (showmanReplic && showmanReplic.length > 0) {
-				console.log(`${state.room2.persons.showman.name}: ${showmanReplic}`);
+				console.log(`\x1b[31m${state.room2.persons.showman.name}\x1b[0m: ${showmanReplic}`);
 			}
 		}
 
@@ -314,7 +319,7 @@ async function initializeApp() {
 
 				if (player.replic !== oldPlayer?.replic) {
 					if (player.replic && player.replic.length > 0) {
-						console.log(`${player.name}: ${player.replic}`);
+						console.log(`\x1b[32m${player.name}\x1b[0m: ${player.replic}`);
 					}
 				}
 			});
@@ -371,56 +376,91 @@ async function initializeApp() {
 			// TODO: Replace with actual AI call
 		}
 
+		const { header, text, hint, caption } = state.table;
+
 		if (state.table.mode !== tempOldState.table.mode) {
 			switch (state.table.mode) {
 				case TableMode.Logo:
-					console.log('Displaying logo');
+					console.log('\x1b[36m============== Logo ==============\x1b[0m');
 					break;
 
 				case TableMode.GameThemes:
-					console.log(`Game themes: ${state.table.gameThemes.join(', ')}`);
+					console.log(`\x1b[36mGame themes\x1b[0m: ${state.table.gameThemes.join(', ')}`);
 					break;
 
 				case TableMode.Content:
-					console.log(`Content displayed: ${state.table.content.map(c => c.content.map(item => item.value).join(', ')).join(' | ')}`);
+					const contentText = state.table.content.map(c => c.content.map(item => item.value).join(', ')).join(' | ');
+					console.log(`${caption ? `\x1b[36m${caption}\x1b[0m: ` : ''}${contentText}`);
 					break;
 
 				case TableMode.Object:
-					console.log(`${state.table.header}: ${state.table.text}`);
+					console.log(`${header ? `\x1b[36m${header}\x1b[0m: ` : ''}${text} ${hint ? `(${hint})` : ''}`);
 					break;
 
 				case TableMode.QuestionType:
-					console.log(`Question type: ${state.table.text}`);
+					console.log(`\x1b[36mQuestion type\x1b[0m: ${state.table.text}`);
 					break;
 
 				case TableMode.RoundThemes:
-					console.log(`Round themes: ${state.table.roundInfo.map(theme => theme.name).join(', ')}`);
+					console.log(`\x1b[36mRound themes\x1b[0m: ${state.table.roundInfo.map(theme => theme.name).join(', ')}`);
 					break;
 
 				case TableMode.Final:
-					console.log('Final table displayed');
+					console.log(`\x1b[36mFinal table\x1b[0m: ${state.table.roundInfo.map(theme => theme.name).join(', ')}`);
 					break;
 
 				case TableMode.Text:
-					console.log(`Text displayed: ${state.table.text}`);
+					console.log(`${caption ? `\x1b[36m${caption}\x1b[0m: ` : ''}${state.table.text}`);
 					break;
 
 				case TableMode.Welcome:
-					console.log('Welcome screen displayed');
+					console.log('\x1b[36m============== Welcome screen ==============\x1b[0m');
 					break;
 
 				case TableMode.RoundTable:
-					console.log('Round table displayed');
+					console.log('\x1b[36m============== Round Table ==============\x1b[0m');
+
+					for (const theme of state.table.roundInfo) {
+						console.log(`\x1b[36m${theme.name}\x1b[0m: ${theme.questions.map(q => q > -1 ? q : '    ').join(' ')}`);
+					}
+
+					console.log('\x1b[36m=========================================\x1b[0m');
+
 					break;
 
 				default:
 					console.log(`Unknown table mode: ${state.table.mode}`);
+					break;
 			}
+		} else if (state.table.text !== tempOldState.table.text) {
+			switch (state.table.mode) {
+				case TableMode.Object:
+					console.log(`${header ? `\x1b[36m${header}\x1b[0m: ` : ''}${text} ${hint ? `(${hint})` : ''}`);
+					break;
+
+				default:
+					break; // No other modes display text directly
+			}
+		} else if (state.table.content !== tempOldState.table.content) {
+			switch (state.table.mode) {
+				case TableMode.Content:
+						const contentText = state.table.content.map(c => c.content.map(item => item.value).join(', ')).join(' | ');
+						console.log(`${caption ? `\x1b[36m${caption}\x1b[0m: ` : ''}${contentText}`);
+					break;
+
+					default:
+						// No other modes display content directly
+						break;
+			}
+		}
+
+		if (state.table.canPress !== tempOldState.table.canPress) {
+			console.log(state.table.canPress ? '\x1b[90mCan press button\x1b[0m' : '\x1b[90mCannot press button\x1b[0m');
 		}
 
 		if (state.room.stage.name !== tempOldState.room.stage.name) {
 			if (state.room.stage.name === GameStage.After) {
-				console.log('=== Game finished ===');
+				console.log('\x1b[36m=== Game finished ===\x1b[0m');
 			}
 		}
 	});

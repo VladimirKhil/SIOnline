@@ -1417,8 +1417,8 @@ export default class ClientController {
 		this.onRightAnswerCore(answer);
 
 		if (this.getState().table.layoutMode === LayoutMode.Simple) {
-			this.appDispatch(showText(answer));
 			this.appDispatch(captionChanged(localization.rightAnswer));
+			this.appDispatch(showText(answer));
 		} else {
 			this.appDispatch(rightOption(answer));
 		}
