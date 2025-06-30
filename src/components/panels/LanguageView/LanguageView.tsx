@@ -26,6 +26,10 @@ export default function LanguageView(props: LanguageViewProps): JSX.Element {
 				name: 'РУ',
 				tooltip: localization.languageRu
 			}, {
+				value: 'ua',
+				name: 'УК',
+				tooltip: localization.languageUa
+			}, {
 				value: 'en',
 				name: 'EN',
 				tooltip: localization.languageEn
