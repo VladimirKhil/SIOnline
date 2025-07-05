@@ -25,6 +25,7 @@ import getDeviceType from './utils/getDeviceType';
 import isSafari from './utils/isSafari';
 import GameServerClient from './client/GameServerClient';
 import ButtonPressMode from './model/ButtonPressMode';
+import PenaltyType from './model/enums/PenaltyType';
 import Path from './model/enums/Path';
 import BrowserHost from './host/BrowserHost';
 import YandexHost from './host/YandexHost';
@@ -113,7 +114,10 @@ function setState(state: State, savedState: SavedState | null, c: Config, isDesk
 				partialText: appSettings.partialText ?? false,
 				partialImages: appSettings.partialImages ?? false,
 				oral: appSettings.oral ?? false,
-				ignoreWrong: appSettings.ignoreWrong ?? false,
+				questionWithButtonPenalty: appSettings.questionWithButtonPenalty ?? PenaltyType.SubtractPoints,
+				questionForYourselfPenalty: appSettings.questionForYourselfPenalty ?? PenaltyType.None,
+				questionForYourselfFactor: appSettings.questionForYourselfFactor ?? 2,
+				questionForAllPenalty: appSettings.questionForAllPenalty ?? PenaltyType.SubtractPoints,
 				culture: appSettings.culture,
 				managed: appSettings.managed ?? false,
 				buttonPressMode: appSettings.buttonPressMode ?? ButtonPressMode.RandomWithinInterval,

@@ -111,14 +111,14 @@ import {
 	showmanReplicChanged,
 	stopValidation,
 	sumsChanged,
-	validate
+	validate,
+	setNoRiskMode
 } from '../state/room2Slice';
 
 import PersonInfo from '../model/PersonInfo';
 import Persons from '../model/Persons';
 import PlayerInfo from '../model/PlayerInfo';
 import actionCreators from './actionCreators';
-import Messages from '../client/game/Messages';
 import StakeModes from '../client/game/StakeModes';
 import { playAudio, stopAudio, userInfoChanged, userWarnChanged } from '../state/commonSlice';
 import getErrorMessage, { getUserError } from '../utils/ErrorHelpers';
@@ -1328,6 +1328,7 @@ export default class ClientController {
 
 	onQuestionType(questionType: string, isDefault: boolean, isNoRisk: boolean) {
 		this.dispatch(roomActionCreators.isQuestionChanged(true, questionType));
+		this.appDispatch(setNoRiskMode(isNoRisk));
 
 		if (isDefault) {
 			return;
@@ -1336,7 +1337,7 @@ export default class ClientController {
 		let text, hint = '';
 
 		switch (questionType) {
-			case 'simple':
+			case 'simple': // 'withButton':
 				text = localization.questionTypeSimple;
 				hint = localization.questionTypeSimpleHint;
 				break;
@@ -1353,10 +1354,10 @@ export default class ClientController {
 				hint = localization.questionTypeStakeHint;
 				break;
 
-			case 'stakeAll':
+			case 'stakeAll': // 'forAllWithStake':
 				this.playGameSound(GameSound.QUESTION_STAKE_ALL);
-				text = localization.questionTypeStakeAll;
-				hint = localization.questionTypeStakeAllHint;
+				text = localization.questionTypeForAllWithStake;
+				hint = localization.questionTypeForAllWithStakeHint;
 				break;
 
 			case 'secret':
@@ -1462,6 +1463,7 @@ export default class ClientController {
 		this.dispatch(roomActionCreators.afterQuestionStateChanged(true));
 		this.dispatch(roomActionCreators.isQuestionChanged(false, ''));
 		this.appDispatch(endQuestion());
+		this.appDispatch(setNoRiskMode(false));
 
 		const state = this.getState();
 

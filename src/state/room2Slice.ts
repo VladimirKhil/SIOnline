@@ -56,6 +56,7 @@ export interface Room2State {
 
 	dialogView: DialogView;
 	contextView: ContextView;
+
 	stage: {
 		isGameStarted: boolean;
 		isAppellation: boolean;
@@ -74,8 +75,10 @@ export interface Room2State {
 		showExtraRightButtons: boolean;
 		newVersion: boolean;
 	};
+
 	isEditTableEnabled: boolean;
 	chatScrollPosition: number;
+	noRiskMode: boolean;
 
 	settings: AppSettings;
 }
@@ -102,6 +105,7 @@ const initialState: Room2State = {
 
 	dialogView: DialogView.None,
 	contextView: ContextView.None,
+
 	stage: {
 		isGameStarted: false,
 		isAppellation: false,
@@ -120,8 +124,10 @@ const initialState: Room2State = {
 		showExtraRightButtons: false,
 		newVersion: false,
 	},
+
 	isEditTableEnabled: false,
 	chatScrollPosition: 0,
+	noRiskMode: false,
 
 	settings: initialAppSettings,
 };
@@ -553,9 +559,6 @@ export const room2Slice = createSlice({
 		setSettingUseApellations: (state: Room2State, action: PayloadAction<boolean>) => {
 			state.settings.useApellations = action.payload;
 		},
-		setSettingIgnoreWrong: (state: Room2State, action: PayloadAction<boolean>) => {
-			state.settings.ignoreWrong = action.payload;
-		},
 		setSettingDisplaySources: (state: Room2State, action: PayloadAction<boolean>) => {
 			state.settings.displaySources = action.payload;
 		},
@@ -573,6 +576,9 @@ export const room2Slice = createSlice({
 		},
 		setDecisionType: (state: Room2State, action: PayloadAction<DecisionType>) => {
 			state.stage.decisionType = action.payload;
+		},
+		setNoRiskMode: (state: Room2State, action: PayloadAction<boolean>) => {
+			state.noRiskMode = action.payload;
 		},
 	},
 	extraReducers: (builder) => {
@@ -684,13 +690,13 @@ export const {
 	setSettingReadingSpeed,
 	setSettingManaged,
 	setSettingUseApellations,
-	setSettingIgnoreWrong,
 	setSettingDisplaySources,
 	setSettingPlayAllQuestionsInFinalRound,
 	setSettingAllowEveryoneToPlayHiddenStakes,
 	setSettingOralPlayersActions,
 	setChatScrollPosition,
 	setDecisionType,
+	setNoRiskMode,
 } = room2Slice.actions;
 
 export default room2Slice.reducer;

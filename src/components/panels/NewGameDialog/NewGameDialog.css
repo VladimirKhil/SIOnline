@@ -166,6 +166,7 @@ input.blockValue[type="text"], input.blockValue[type="number"], input.blockValue
 
 @media screen and (min-width: 800px) {
     .newGameDialog input, .newGameDialog select {
+        max-width: initial;
         width: 400px;
     }
 

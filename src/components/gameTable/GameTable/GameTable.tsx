@@ -113,11 +113,13 @@ export function GameTable(props: GameTableProps): JSX.Element {
 	}
 
 	const isPaused = room.stage.isGamePaused;
+	const { noRiskMode } = room;
 
 	return (
 		<div id="table" style={themeProperties}>
 			{caption ? (
 				<div className="tableCaption">
+					<div className='caption__left'>{noRiskMode ? <div title={localization.noRiskQuestion}>🛡</div> : ''}</div>
 					<div className='tableCaptionContent'>{caption}</div>
 				</div>
 			) : null}

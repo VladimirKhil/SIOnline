@@ -23,7 +23,12 @@
     overflow: hidden;
 }
 
+.caption__left {
+    padding: 0 5px 5px 5px;
+}
+
 .tableCaptionContent {
+    flex: 1;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;

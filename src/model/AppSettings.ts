@@ -1,4 +1,5 @@
 import ButtonPressMode from './ButtonPressMode';
+import PenaltyType from './enums/PenaltyType';
 import TimeSettings from './TimeSettings';
 
 export default interface AppSettings {
@@ -19,7 +20,17 @@ export default interface AppSettings {
 	/** Oral players actions game flag. */
 	oralPlayersActions: boolean;
 
-	ignoreWrong: boolean;
+	/** Question with button penalty. */
+	questionWithButtonPenalty: PenaltyType;
+
+	/** Question for yourself penalty. */
+	questionForYourselfPenalty: PenaltyType;
+
+	/** Question for yourself factor. */
+	questionForYourselfFactor: number;
+
+	/** Question for all penalty. */
+	questionForAllPenalty: PenaltyType;
 
 	/** Display package items sources. */
 	displaySources: boolean;
@@ -53,7 +64,10 @@ export const initialState: AppSettings = {
 	displaySources: false,
 	readingSpeed: 20,
 	managed: false,
-	ignoreWrong: false,
+	questionWithButtonPenalty: PenaltyType.SubtractPoints,
+	questionForYourselfPenalty: PenaltyType.None,
+	questionForYourselfFactor: 2,
+	questionForAllPenalty: PenaltyType.SubtractPoints,
 	timeSettings: {
 		timeForChoosingQuestion: 30,
 		timeForThinkingOnQuestion: 5,

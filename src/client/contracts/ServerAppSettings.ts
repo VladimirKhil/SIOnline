@@ -1,4 +1,5 @@
 import ButtonPressMode from '../../model/ButtonPressMode';
+import PenaltyType from '../../model/enums/PenaltyType';
 import GameType from '../../model/GameType';
 import ServerTimeSettings from './ServerTimeSettings';
 
@@ -25,7 +26,18 @@ export default interface ServerAppSettings {
 	oralPlayersActions: boolean;
 
 	managed: boolean;
-	ignoreWrong: boolean;
+
+	/** Question with button penalty. */
+	questionWithButtonPenalty: PenaltyType;
+
+	/** Question for yourself penalty. */
+	questionForYourselfPenalty: PenaltyType;
+
+	/** Question for yourself factor. */
+	questionForYourselfFactor: number;
+
+	/** Question for all penalty. */
+	questionForAllPenalty: PenaltyType;
 
 	/** Display package items sources. */
 	displaySources: boolean;

@@ -5,6 +5,7 @@ import Sex from '../model/enums/Sex';
 import ButtonPressMode from '../model/ButtonPressMode';
 import TimeSettings from '../model/TimeSettings';
 import ThemeSettings from '../model/ThemeSettings';
+import PenaltyType from '../model/enums/PenaltyType';
 
 export interface SettingsState {
 	soundVolume: number;
@@ -108,8 +109,17 @@ export const settingsSlice = createSlice({
 		setUseApellations: (state: SettingsState, action: PayloadAction<boolean>) => {
 			state.appSettings.useApellations = action.payload;
 		},
-		setIgnoreWrong: (state: SettingsState, action: PayloadAction<boolean>) => {
-			state.appSettings.ignoreWrong = action.payload;
+		setQuestionWithButtonPenalty: (state: SettingsState, action: PayloadAction<PenaltyType>) => {
+			state.appSettings.questionWithButtonPenalty = action.payload;
+		},
+		setQuestionForYourselfPenalty: (state: SettingsState, action: PayloadAction<PenaltyType>) => {
+			state.appSettings.questionForYourselfPenalty = action.payload;
+		},
+		setQuestionForYourselfFactor: (state: SettingsState, action: PayloadAction<number>) => {
+			state.appSettings.questionForYourselfFactor = action.payload;
+		},
+		setQuestionForAllPenalty: (state: SettingsState, action: PayloadAction<PenaltyType>) => {
+			state.appSettings.questionForAllPenalty = action.payload;
 		},
 		setButtonPressMode: (state: SettingsState, action: PayloadAction<ButtonPressMode>) => {
 			state.appSettings.buttonPressMode = action.payload;
@@ -206,7 +216,10 @@ export const {
 	setReadingSpeed,
 	setManaged,
 	setUseApellations,
-	setIgnoreWrong,
+	setQuestionWithButtonPenalty,
+	setQuestionForYourselfPenalty,
+	setQuestionForYourselfFactor,
+	setQuestionForAllPenalty,
 	setButtonPressMode,
 	setPreloadRoundContent,
 	setTimeSetting,

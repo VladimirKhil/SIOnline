@@ -57,7 +57,7 @@ const PackageView: React.FC = () => {
 			case 'secretPublicPrice': return localization.questionTypeSecretPublicPrice;
 			case 'secretNoQuestion': return localization.questionTypeSecretNoQuestion;
 			case 'forAll': return localization.questionTypeForAll;
-			case 'stakeAll': return localization.questionTypeStakeAll;
+			case 'stakeAll': return localization.questionTypeForAllWithStake;
 			default: return type;
 		}
 	}

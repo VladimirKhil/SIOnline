@@ -12,7 +12,6 @@ import { resetSettings,
 	setDisplaySources,
 	setFalseStarts,
 	setHintShowman,
-	setIgnoreWrong,
 	setManaged,
 	setOral,
 	setOralPlayersActions,
@@ -20,10 +19,15 @@ import { resetSettings,
 	setPartialText,
 	setPlayAllQuestionsInFinalRound,
 	setPreloadRoundContent,
+	setQuestionForAllPenalty,
+	setQuestionForYourselfFactor,
+	setQuestionForYourselfPenalty,
+	setQuestionWithButtonPenalty,
 	setReadingSpeed,
 	setUseApellations } from '../../../state/settingsSlice';
 
 import { setType } from '../../../state/gameSlice';
+import PenaltyType from '../../../model/enums/PenaltyType';
 
 import './RulesSettingsView.css';
 
@@ -178,15 +182,18 @@ export default function RulesSettingsView(): JSX.Element {
 			</div>
 
 			<div className="block">
-				<label className='blockName' htmlFor="ignoreWrong">{localization.ignoreWrong}</label>
+				<label className='blockName' htmlFor="questionWithButtonPenalty">{localization.questionPenalty}</label>
 
 				<div className='blockValue'>
-					<input
-						id="ignoreWrong"
-						type="checkbox"
-						checked={!settings.appSettings.ignoreWrong}
-						onChange={() => appDispatch(setIgnoreWrong(!settings.appSettings.ignoreWrong))}
-					/>
+					<select
+						id="questionWithButtonPenalty"
+						aria-label='Question with button penalty'
+						className='blockValue'
+						value={settings.appSettings.questionWithButtonPenalty}
+						onChange={e => appDispatch(setQuestionWithButtonPenalty(parseInt(e.target.value, 10)))}>
+						<option value={PenaltyType.None}>{localization.penaltyNone}</option>
+						<option value={PenaltyType.SubtractPoints}>{localization.penaltySubtractPoints}</option>
+					</select>
 				</div>
 			</div>
 
@@ -204,7 +211,59 @@ export default function RulesSettingsView(): JSX.Element {
 				</select>
 			</div>
 
-			<div className='headerBlock'>{localization.question}: {localization.withStakeForAll}</div>
+			<div className='headerBlock'>{localization.question}: {localization.questionTypeForYourself}</div>
+
+			<div className="block">
+				<label className='blockName' htmlFor="questionForYourselfPenalty">{localization.questionPenalty}</label>
+
+				<div className='blockValue'>
+					<select
+						id="questionForYourselfPenalty"
+						aria-label='Question for yourself penalty'
+						className='blockValue'
+						value={settings.appSettings.questionForYourselfPenalty}
+						onChange={e => appDispatch(setQuestionForYourselfPenalty(parseInt(e.target.value, 10)))}>
+						<option value={PenaltyType.None}>{localization.penaltyNone}</option>
+						<option value={PenaltyType.SubtractPoints}>{localization.penaltySubtractPoints}</option>
+					</select>
+				</div>
+			</div>
+
+			<div className="block">
+				<label className='blockName' htmlFor="questionForYourselfFactor">{localization.scoreFactor}</label>
+
+				<div className='blockValue'>
+					<input
+						id="questionForYourselfFactor"
+						type="number"
+						className='blockValue'
+						value={settings.appSettings.questionForYourselfFactor}
+						min={1}
+						max={10}
+						onChange={e => appDispatch(setQuestionForYourselfFactor(parseInt(e.target.value, 10)))}
+					/>
+				</div>
+			</div>
+
+			<div className='headerBlock'>{localization.question}: {localization.questionTypeForAll}</div>
+
+			<div className="block">
+				<label className='blockName' htmlFor="questionForAllPenalty">{localization.questionPenalty}</label>
+
+				<div className='blockValue'>
+					<select
+						id="questionForAllPenalty"
+						aria-label='Question for all penalty'
+						className='blockValue'
+						value={settings.appSettings.questionForAllPenalty}
+						onChange={e => appDispatch(setQuestionForAllPenalty(parseInt(e.target.value, 10)))}>
+						<option value={PenaltyType.None}>{localization.penaltyNone}</option>
+						<option value={PenaltyType.SubtractPoints}>{localization.penaltySubtractPoints}</option>
+					</select>
+				</div>
+			</div>
+
+			<div className='headerBlock'>{localization.question}: {localization.questionTypeForAllWithStake}</div>
 
 			<div className="block">
 				<label className='blockName' htmlFor="allowEveryoneToPlayHiddenStakes">{localization.allowEveryoneToPlayHiddenStakes}</label>
