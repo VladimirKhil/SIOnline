@@ -51,6 +51,7 @@ import { navigate } from '../utils/Navigator';
 import registerApp from '../utils/registerApp';
 import { setStorages } from '../state/siPackagesSlice';
 import SIStorageInfo from '../client/contracts/SIStorageInfo';
+import { addOperationErrorMessage } from '../state/room2Slice';
 
 async function uploadAvatarAsync(appDispatch: AppDispatch, dataContext: DataContext) {
 	if (typeof localStorage === 'undefined') {
@@ -196,7 +197,7 @@ const connectToSIHostAsync = async (
 
 	const siHostClient = new SIHostClient(
 		connection,
-		e => dispatch(roomActionCreators.operationError(getErrorMessage(e)) as object as AnyAction)
+		e => appDispatch(addOperationErrorMessage(getErrorMessage(e)) as object as AnyAction)
 	);
 
 	await connection.start();

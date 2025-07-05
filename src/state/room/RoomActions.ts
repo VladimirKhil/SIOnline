@@ -1,16 +1,9 @@
-import ChatMode from '../../model/enums/ChatMode';
-import ChatMessage from '../../model/ChatMessage';
 import Account from '../../model/Account';
 import Persons from '../../model/Persons';
 import JoinMode from '../../client/game/JoinMode';
 import StakeModes from '../../client/game/StakeModes';
-import UsersMode from '../../model/enums/UsersMode';
 
 export const enum RoomActionTypes {
-	RoomChatModeChanged = 'ROOM_CHAT_MODE_CHANGED',
-	RoomUsersModeChanged = 'ROOM_USERS_MODE_CHANGED',
-	RoomChatMessageChanged = 'ROOM_CHAT_MESSAGE_CHANGED',
-	RoomChatVisibilityChanged = 'ROOM_CHAT_VISIBILITY_CHANGED',
 	RoomShowPersons = 'ROOM_SHOW_PERSONS',
 	RoomHidePersons = 'ROOM_HIDE_PERSONS',
 	RoomShowTables = 'ROOM_SHOW_TABLES',
@@ -21,9 +14,6 @@ export const enum RoomActionTypes {
 	RoomHideGameInfo = 'ROOM_HIDE_GAMEINFO',
 	RoomShowManageGame = 'ROOM_SHOW_MANAGE_GAME',
 	RoomHideManageGame = 'ROOM_HIDE_MANAGE_GAME',
-	ChatMessageAdded = 'CHAT_MESSAGE_ADDED',
-	LastReplicChanged = 'LAST_REPLIC_CHANGED',
-	ActivateChat = 'ACTIVATE_CHAT',
 	InfoChanged = 'INFO_CHANGED',
 	TableSelected = 'TABLE_SELECTED',
 	PersonAvatarChanged = 'PERSON_AVATAR_CHANGED',
@@ -49,7 +39,6 @@ export const enum RoomActionTypes {
 	ShowMainTimer = 'SHOW_MAIN_TIMER',
 	ClearDecisionsAndMainTimer = 'CLEAR_DECISIONS_AND_MAIN_TIMER',
 	HintChanged = 'HINT_CHANGED',
-	OperationError = 'OPERATION_ERROR',
 	ThemeNameChanged = 'THEME_NAME_CHANGED',
 	RoundsNamesChanged = 'ROUNDS_NAMES_CHANGED',
 	ChooserChanged = 'CHOOSER_CHANGED',
@@ -62,17 +51,12 @@ export const enum RoomActionTypes {
 	Unbanned = 'UNBANNED',
 	SelectBannedItem = 'SELECT_BANNED_ITEM',
 	PlayerMediaLoaded = 'PLAYER_MEDIA_LOADED',
-	ClearRoomChat = 'ROOM_CHAT_CLEAR',
 	JoinModeChanged = 'JOIN_MODE_CHANGED',
 	Kicked = 'KICKED',
 	WebCameraUrlChanged = 'WEB_CAMERA_URL_CHANGED',
 	IsQuestionChanged = 'IsQuestionChanged',
 }
 
-export type RunChatModeChangedAction = { type: RoomActionTypes.RoomChatModeChanged, chatMode: ChatMode };
-export type RunUsersModeChangedAction = { type: RoomActionTypes.RoomUsersModeChanged, usersMode: UsersMode };
-export type RunChatMessageChangedAction = { type: RoomActionTypes.RoomChatMessageChanged, message: string };
-export type RunChatVisibilityChangedAction = { type: RoomActionTypes.RoomChatVisibilityChanged, isOpen: boolean };
 export type RunShowPersonsAction = { type: RoomActionTypes.RoomShowPersons };
 export type RunHidePersonsAction = { type: RoomActionTypes.RoomHidePersons };
 export type RunShowTablesAction = { type: RoomActionTypes.RoomShowTables };
@@ -83,9 +67,6 @@ export type RunShowGameInfoAction = { type: RoomActionTypes.RoomShowGameInfo };
 export type RunHideGameInfoAction = { type: RoomActionTypes.RoomHideGameInfo };
 export type RunShowManageGameAction = { type: RoomActionTypes.RoomShowManageGame };
 export type RunHideManageGameAction = { type: RoomActionTypes.RoomHideManageGame };
-export type ChatMessageAddedAction = { type: RoomActionTypes.ChatMessageAdded, chatMessage: ChatMessage };
-export type LastReplicChangedAction = { type: RoomActionTypes.LastReplicChanged, chatMessage: ChatMessage | null };
-export type ActivateChatAction = { type: RoomActionTypes.ActivateChat };
 export type InfoChangedAction = { type: RoomActionTypes.InfoChanged, all: Persons };
 export type TableSelectedAction = { type: RoomActionTypes.TableSelected, tableIndex: number };
 export type PersonAvatarChangedAction = { type: RoomActionTypes.PersonAvatarChanged, personName: string, avatarUri: string };
@@ -99,7 +80,6 @@ export type PersonRemovedAction = { type: RoomActionTypes.PersonRemoved, name: s
 export type ClearDecisionsAction = { type: RoomActionTypes.ClearDecisions };
 export type IsAnsweringAction = { type: RoomActionTypes.IsAnswering };
 export type AnswerChangedAction = { type: RoomActionTypes.AnswerChanged, answer: string };
-export type ClearRoomChatAction = { type: RoomActionTypes.ClearRoomChat };
 export type KickedAction = { type: RoomActionTypes.Kicked, kicked: boolean };
 
 export type SetStakesAction = {
@@ -122,7 +102,6 @@ export type TimerMaximumChangedAction = { type: RoomActionTypes.TimerMaximumChan
 export type ShowMainTimerAction = { type: RoomActionTypes.ShowMainTimer };
 export type ClearDecisionsAndMainTimerAction = { type: RoomActionTypes.ClearDecisionsAndMainTimer };
 export type HintChangedAction = { type: RoomActionTypes.HintChanged, hint: string | null };
-export type OperationErrorAction = { type: RoomActionTypes.OperationError, error: string };
 export type ThemeNameChangedAction = { type: RoomActionTypes.ThemeNameChanged, themeName: string };
 export type RoundsNamesChangedAction = { type: RoomActionTypes.RoundsNamesChanged, roundsNames: string[] };
 export type AreApellationsEnabledChangedAction = { type: RoomActionTypes.AreApellationsEnabledChanged, areApellationsEnabled: boolean };
@@ -145,11 +124,7 @@ export type WebCameraUrlChangedAction = { type: RoomActionTypes.WebCameraUrlChan
 export type IsQuestionChangedAction = { type: RoomActionTypes.IsQuestionChanged, isQuestion: boolean, questionType: string };
 
 export type KnownRoomAction =
-	RunChatModeChangedAction
-	| RunUsersModeChangedAction
-	| RunChatMessageChangedAction
-	| RunChatVisibilityChangedAction
-	| RunShowPersonsAction
+	RunShowPersonsAction
 	| RunHidePersonsAction
 	| RunShowTablesAction
 	| RunHideTablesAction
@@ -159,9 +134,6 @@ export type KnownRoomAction =
 	| RunHideGameInfoAction
 	| RunShowManageGameAction
 	| RunHideManageGameAction
-	| ChatMessageAddedAction
-	| LastReplicChangedAction
-	| ActivateChatAction
 	| InfoChangedAction
 	| TableSelectedAction
 	| PersonAvatarChangedAction
@@ -187,7 +159,6 @@ export type KnownRoomAction =
 	| ShowMainTimerAction
 	| ClearDecisionsAndMainTimerAction
 	| HintChangedAction
-	| OperationErrorAction
 	| ThemeNameChangedAction
 	| RoundsNamesChangedAction
 	| AreApellationsEnabledChangedAction
@@ -197,7 +168,6 @@ export type KnownRoomAction =
 	| BannedAction
 	| UnbannedAction
 	| SelectBannedItemAction
-	| ClearRoomChatAction
 	| JoinModeChangedAction
 	| KickedAction
 	| WebCameraUrlChangedAction

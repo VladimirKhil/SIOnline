@@ -112,7 +112,8 @@ import {
 	stopValidation,
 	sumsChanged,
 	validate,
-	setNoRiskMode
+	setNoRiskMode,
+	addToChat
 } from '../state/room2Slice';
 
 import PersonInfo from '../model/PersonInfo';
@@ -457,11 +458,11 @@ export default class ClientController {
 		this.appDispatch(showText(localization.gameClosed));
 		this.appDispatch(userWarnChanged(localization.gameClosed));
 
-		this.dispatch(roomActionCreators.chatMessageAdded({
+		this.appDispatch(addToChat({
 			sender: '',
 			text: localization.gameClosed,
 			level: MessageLevel.System,
-		}) as unknown as Action);
+		}));
 	}
 
 	onGameThemes(gameThemes: string[]) {
@@ -487,11 +488,11 @@ export default class ClientController {
 		this.appDispatch(setHostName(hostName));
 
 		if (hostName && changeSource) {
-			this.dispatch(roomActionCreators.chatMessageAdded({
+			this.appDispatch(addToChat({
 				sender: '',
 				text: stringFormat(localization.hostNameChanged, changeSource, hostName),
 				level: MessageLevel.System,
-			}) as any);
+			}));
 		}
 	}
 
@@ -531,11 +532,11 @@ export default class ClientController {
 
 					this.appDispatch(userInfoChanged(message));
 
-					this.dispatch(roomActionCreators.chatMessageAdded({
+					this.appDispatch(addToChat({
 						sender: '',
 						text: message,
 						level: MessageLevel.System,
-					}) as any);
+					}));
 				}
 				break;
 			}
@@ -552,11 +553,11 @@ export default class ClientController {
 
 					this.appDispatch(userInfoChanged(message));
 
-					this.dispatch(roomActionCreators.chatMessageAdded({
+					this.appDispatch(addToChat({
 						sender: '',
 						text: message,
 						level: MessageLevel.System,
-					}) as any);
+					}));
 				}
 				break;
 			}
@@ -573,11 +574,11 @@ export default class ClientController {
 
 					this.appDispatch(userInfoChanged(message));
 
-					this.dispatch(roomActionCreators.chatMessageAdded({
+					this.appDispatch(addToChat({
 						sender: '',
 						text: message,
 						level: MessageLevel.System,
-					}) as any);
+					}));
 				}
 				break;
 			}
@@ -594,11 +595,11 @@ export default class ClientController {
 
 					this.appDispatch(userInfoChanged(message));
 
-					this.dispatch(roomActionCreators.chatMessageAdded({
+					this.appDispatch(addToChat({
 						sender: '',
 						text: message,
 						level: MessageLevel.System,
-					}) as any);
+					}));
 				}
 				break;
 			}
@@ -615,11 +616,11 @@ export default class ClientController {
 
 					this.appDispatch(userInfoChanged(message));
 
-					this.dispatch(roomActionCreators.chatMessageAdded({
+					this.appDispatch(addToChat({
 						sender: '',
 						text: message,
 						level: MessageLevel.System,
-					}) as any);
+					}));
 				}
 				break;
 			}
@@ -636,11 +637,11 @@ export default class ClientController {
 
 					this.appDispatch(userInfoChanged(message));
 
-					this.dispatch(roomActionCreators.chatMessageAdded({
+					this.appDispatch(addToChat({
 						sender: '',
 						text: message,
 						level: MessageLevel.System,
-					}) as any);
+					}));
 				}
 				break;
 			}
@@ -657,11 +658,11 @@ export default class ClientController {
 
 					this.appDispatch(userInfoChanged(message));
 
-					this.dispatch(roomActionCreators.chatMessageAdded({
+					this.appDispatch(addToChat({
 						sender: '',
 						text: message,
 						level: MessageLevel.System,
-					}) as any);
+					}));
 				}
 				break;
 			}
@@ -678,11 +679,11 @@ export default class ClientController {
 
 					this.appDispatch(userInfoChanged(message));
 
-					this.dispatch(roomActionCreators.chatMessageAdded({
+					this.appDispatch(addToChat({
 						sender: '',
 						text: message,
 						level: MessageLevel.System,
-					}) as any);
+					}));
 				}
 				break;
 			}
@@ -699,11 +700,11 @@ export default class ClientController {
 
 					this.appDispatch(userInfoChanged(message));
 
-					this.dispatch(roomActionCreators.chatMessageAdded({
+					this.appDispatch(addToChat({
 						sender: '',
 						text: message,
 						level: MessageLevel.System,
-					}) as any);
+					}));
 				}
 				break;
 			}
@@ -720,11 +721,11 @@ export default class ClientController {
 
 					this.appDispatch(userInfoChanged(message));
 
-					this.dispatch(roomActionCreators.chatMessageAdded({
+					this.appDispatch(addToChat({
 						sender: '',
 						text: message,
 						level: MessageLevel.System,
-					}) as any);
+					}));
 				}
 				break;
 			}
@@ -786,11 +787,11 @@ export default class ClientController {
 	}
 
 	onQuestionAuthors(authors: string[]) {
-		this.dispatch(roomActionCreators.chatMessageAdded({
+		this.appDispatch(addToChat({
 			sender: localization.questionAuthors,
 			text: authors.join(', '),
 			level: MessageLevel.System,
-		}) as any);
+		}));
 	}
 
 	onQuestionComments(comments: string) {
@@ -799,11 +800,11 @@ export default class ClientController {
 	}
 
 	onQuestionSources(sources: string[]) {
-		this.dispatch(roomActionCreators.chatMessageAdded({
+		this.appDispatch(addToChat({
 			sender: localization.questionSources,
 			text: sources.join(', '),
 			level: MessageLevel.System,
-		}) as any);
+		}));
 	}
 
 	onReady(personName: string, isReady: boolean): void {
@@ -867,11 +868,11 @@ export default class ClientController {
 				} else {
 					console.warn(`Failed to preload ${contentUri} after ${maxRetries} attempts: ${getErrorMessage(error)}`);
 
-					this.dispatch(roomActionCreators.chatMessageAdded({
+					this.appDispatch(addToChat({
 						sender: '',
 						text: getErrorMessage(error),
 						level: MessageLevel.System,
-					}) as any);
+					}));
 					// Don't reject - just log the failure and continue
 				}
 			});
@@ -1024,11 +1025,11 @@ export default class ClientController {
 	onUnbanned(name: string) {
 		this.dispatch(roomActionCreators.unbanned(name));
 
-		this.dispatch(roomActionCreators.chatMessageAdded({
+		this.appDispatch(addToChat({
 			sender: '',
 			text: stringFormat(localization.userUnbanned, name),
 			level: MessageLevel.System,
-		}) as unknown as Action);
+		}));
 	}
 
 	onWinner() {
@@ -1225,7 +1226,7 @@ export default class ClientController {
 			return;
 		}
 
-		this.dispatch(roomActionCreators.chatMessageAdded({ sender: null, text, level: MessageLevel.System }) as unknown as Action);
+		this.appDispatch(addToChat({ sender: '', text, level: MessageLevel.System }));
 	}
 
 	onTable(table: ThemeInfo[], isFinal: boolean) {

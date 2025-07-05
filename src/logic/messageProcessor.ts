@@ -30,7 +30,8 @@ import { playAudio } from '../state/commonSlice';
 import clearUrls from '../utils/clearUrls';
 import ThemesPlayMode from '../model/enums/ThemesPlayMode';
 import { AppDispatch } from '../state/store';
-import { playerInGameChanged,
+import { addToChat,
+	playerInGameChanged,
 	playerStakeChanged,
 	playerStateChanged } from '../state/room2Slice';
 import StakeTypes from '../model/enums/StakeTypes';
@@ -1182,7 +1183,7 @@ const processSystemMessage: ActionCreator<ThunkAction<void, State, DataContext, 
 	};
 
 const userMessageReceived: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (message: Message, appDispatch: AppDispatch) => (
-	dispatch: Dispatch<any>,
+	_dispatch: Dispatch<any>,
 	getState: () => State) => {
 		appDispatch(addGameLog(`${message.Sender}: ${message.Text}`));
 
@@ -1196,7 +1197,7 @@ const userMessageReceived: ActionCreator<ThunkAction<void, State, DataContext, A
 			level: MessageLevel.Information,
 		};
 
-		dispatch(roomActionCreators.chatMessageAdded(replic));
+		appDispatch(addToChat(replic));
 	};
 
 export default function messageProcessor(controller: ClientController, dispatch: Dispatch<AnyAction>, appDispatch: AppDispatch, message: Message) {

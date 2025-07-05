@@ -8,6 +8,10 @@ import State from './State';
 import Constants from '../model/enums/Constants';
 import Role from '../model/Role';
 import AppSettings, { initialState as initialAppSettings } from '../model/AppSettings';
+import ChatMode from '../model/enums/ChatMode';
+import ChatMessage from '../model/ChatMessage';
+import UsersMode from '../model/enums/UsersMode';
+import MessageLevel from '../model/enums/MessageLevel';
 
 export enum DialogView {
 	None,
@@ -76,6 +80,17 @@ export interface Room2State {
 		newVersion: boolean;
 	};
 
+	chat: {
+		isVisible: boolean;
+		isActive: boolean;
+		mode: ChatMode;
+		message: string;
+		messages: ChatMessage[];
+		usersMode: UsersMode;
+	};
+
+	lastReplic: ChatMessage | null;
+
 	isEditTableEnabled: boolean;
 	isGameButtonEnabled: boolean;
 	chatScrollPosition: number;
@@ -125,6 +140,17 @@ const initialState: Room2State = {
 		showExtraRightButtons: false,
 		newVersion: false,
 	},
+
+	chat: {
+		isVisible: false,
+		isActive: false,
+		mode: ChatMode.Chat,
+		message: '',
+		messages: [],
+		usersMode: UsersMode.Users,
+	},
+
+	lastReplic: null,
 
 	isEditTableEnabled: false,
 	isGameButtonEnabled: true,
@@ -582,6 +608,47 @@ export const room2Slice = createSlice({
 		setIsGameButtonEnabled: (state: Room2State, action: PayloadAction<boolean>) => {
 			state.isGameButtonEnabled = action.payload;
 		},
+		setChatMode: (state: Room2State, action: PayloadAction<ChatMode>) => {
+			state.chat.mode = action.payload;
+		},
+		setUsersMode: (state: Room2State, action: PayloadAction<UsersMode>) => {
+			state.chat.usersMode = action.payload;
+		},
+		setChatMessage: (state: Room2State, action: PayloadAction<string>) => {
+			state.chat.message = action.payload;
+		},
+		setChatVisibility: (state: Room2State, action: PayloadAction<boolean>) => {
+			state.chat.isVisible = action.payload;
+
+			if (!action.payload) {
+				state.chat.isActive = false;
+			}
+		},
+		addChatMessage: (state: Room2State, action: PayloadAction<ChatMessage>) => {
+			state.chat.messages.push(action.payload);
+		},
+		setLastReplic: (state: Room2State, action: PayloadAction<ChatMessage | null>) => {
+			state.lastReplic = action.payload;
+
+			if (action.payload) {
+				state.chat.isActive = true;
+			}
+		},
+		setChatActive: (state: Room2State, action: PayloadAction<boolean>) => {
+			state.chat.isActive = action.payload;
+		},
+		clearChat: (state: Room2State) => {
+			state.chat.messages = [];
+			state.chat.message = '';
+			state.chat.isActive = false;
+		},
+		addOperationErrorMessage: (state: Room2State, action: PayloadAction<string>) => {
+			state.chat.messages.push({
+				sender: '',
+				text: action.payload,
+				level: MessageLevel.Warning,
+			});
+		}
 	},
 	extraReducers: (builder) => {
 		builder.addCase(sendAnswer.fulfilled, (state) => {
@@ -663,6 +730,59 @@ export const pressGameButton = createAsyncThunk(
 	},
 );
 
+
+
+let lastReplicLock: number;
+
+export const addToChat = createAsyncThunk(
+	'room2/addToChat',
+	async (chatMessage: ChatMessage, thunkAPI) => {
+		thunkAPI.dispatch(room2Slice.actions.addChatMessage(chatMessage));
+
+		const state = thunkAPI.getState() as State;
+		if (!state.room2.chat.isVisible && state.ui.windowWidth < 800) {
+			thunkAPI.dispatch(room2Slice.actions.setLastReplic(chatMessage));
+
+			if (lastReplicLock) {
+				window.clearTimeout(lastReplicLock);
+			}
+
+			lastReplicLock = window.setTimeout(
+				() => {
+					thunkAPI.dispatch(room2Slice.actions.setLastReplic(null));
+				},
+				3000,
+			);
+		}
+	},
+);
+
+export const sendChatMessage = createAsyncThunk(
+	'room2/sendChatMessage',
+	async (_arg: void, thunkAPI) => {
+		const state = thunkAPI.getState() as State;
+		const dataContext = thunkAPI.extra as DataContext;
+		const text = state.room2.chat.message;
+
+		if (text.length > 0) {
+			dataContext.game.say(text);
+		}
+
+		thunkAPI.dispatch(room2Slice.actions.setChatMessage(''));
+
+		// Temporarily
+		thunkAPI.dispatch(addToChat({
+			sender: state.room2.name,
+			text,
+			level: MessageLevel.Information,
+		}));
+
+		if (!state.room2.chat.isVisible) {
+			thunkAPI.dispatch(room2Slice.actions.setChatActive(true));
+		}
+	},
+);
+
 export const {
 	showDialog,
 	setContext,
@@ -723,6 +843,16 @@ export const {
 	setChatScrollPosition,
 	setDecisionType,
 	setNoRiskMode,
+	setIsGameButtonEnabled,
+	setChatMode,
+	setUsersMode,
+	setChatMessage,
+	setChatVisibility,
+	addChatMessage,
+	setLastReplic,
+	setChatActive,
+	clearChat,
+	addOperationErrorMessage,
 } = room2Slice.actions;
 
 export default room2Slice.reducer;

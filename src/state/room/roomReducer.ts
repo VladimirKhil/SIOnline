@@ -4,49 +4,11 @@ import { KnownRoomAction, RoomActionTypes } from './RoomActions';
 import { removeS, set } from '../../utils/RecordExtensions';
 import { updateTimers } from '../../utils/TimerInfoHelpers';
 import TimerStates from '../../model/enums/TimeStates';
-import MessageLevel from '../../model/enums/MessageLevel';
 
 const roomReducer: Reducer<RoomState> = (state: RoomState = initialState, anyAction: AnyAction): RoomState => {
 	const action = anyAction as KnownRoomAction;
 
 	switch (action.type) {
-		case RoomActionTypes.RoomChatModeChanged:
-			return {
-				...state,
-				chat: {
-					...state.chat,
-					mode: action.chatMode
-				}
-			};
-
-		case RoomActionTypes.RoomUsersModeChanged:
-			return {
-				...state,
-				chat: {
-					...state.chat,
-					usersMode: action.usersMode
-				}
-			};
-
-		case RoomActionTypes.RoomChatMessageChanged:
-			return {
-				...state,
-				chat: {
-					...state.chat,
-					message: action.message
-				}
-			};
-
-		case RoomActionTypes.RoomChatVisibilityChanged:
-			return {
-				...state,
-				chat: {
-					...state.chat,
-					isVisible: action.isOpen,
-					isActive: action.isOpen ? false : state.chat.isActive
-				}
-			};
-
 		case RoomActionTypes.RoomShowPersons:
 			return {
 				...state,
@@ -105,34 +67,6 @@ const roomReducer: Reducer<RoomState> = (state: RoomState = initialState, anyAct
 			return {
 				...state,
 				manageGameVisible: false
-			};
-
-		case RoomActionTypes.ChatMessageAdded:
-			return {
-				...state,
-				chat: {
-					...state.chat,
-					messages: [...state.chat.messages, action.chatMessage]
-				}
-			};
-
-		case RoomActionTypes.LastReplicChanged:
-			return {
-				...state,
-				lastReplic: action.chatMessage,
-				chat: {
-					...state.chat,
-					isActive: action.chatMessage ? true : state.chat.isActive
-				}
-			};
-
-		case RoomActionTypes.ActivateChat:
-			return {
-				...state,
-				chat: {
-					...state.chat,
-					isActive: true
-				}
 			};
 
 		case RoomActionTypes.InfoChanged:
@@ -203,17 +137,6 @@ const roomReducer: Reducer<RoomState> = (state: RoomState = initialState, anyAct
 					...state.stakes,
 					areVisible: false,
 				}
-			};
-
-		case RoomActionTypes.ClearRoomChat:
-			return {
-				...state,
-				chat: {
-					...state.chat,
-					messages: [],
-					message: ''
-				},
-				kicked: false,
 			};
 
 		case RoomActionTypes.AfterQuestionStateChanged:
@@ -391,19 +314,6 @@ const roomReducer: Reducer<RoomState> = (state: RoomState = initialState, anyAct
 			return {
 				...state,
 				hint: action.hint
-			};
-
-		case RoomActionTypes.OperationError:
-			return {
-				...state,
-				chat: {
-					...state.chat,
-					messages: [...state.chat.messages, {
-						sender: '',
-						text: action.error,
-						level: MessageLevel.Warning,
-					}]
-				}
 			};
 
 		case RoomActionTypes.ThemeNameChanged:

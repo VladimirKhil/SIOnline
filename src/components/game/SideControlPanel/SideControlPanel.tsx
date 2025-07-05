@@ -6,12 +6,11 @@ import roomActionCreators from '../../../state/room/roomActionCreators';
 import localization from '../../../model/resources/localization';
 import FlyoutButton, { FlyoutVerticalOrientation, FlyoutTheme, FlyoutHorizontalOrientation } from '../../common/FlyoutButton/FlyoutButton';
 import Role from '../../../model/Role';
-import ChatMessage from '../../../model/ChatMessage';
 import { isHost } from '../../../utils/StateHelpers';
 import isWellFormedUri from '../../../utils/isWellFormedUri';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 import { AppDispatch } from '../../../state/store';
-import { addTable, DecisionType, selectPlayers, setDecisionType, setIsEditingTables } from '../../../state/room2Slice';
+import { addTable, DecisionType, selectPlayers, setChatVisibility, setDecisionType, setIsEditingTables } from '../../../state/room2Slice';
 import { showProfile, showSettings } from '../../../state/uiSlice';
 import Constants from '../../../model/enums/Constants';
 import { pauseGame } from '../../../state/serverActions';
@@ -23,16 +22,12 @@ import exitImg from '../../../../assets/images/exit.png';
 
 interface SideControlPanelProps {
 	isConnected: boolean;
-	isChatVisible: boolean;
-	isChatActive: boolean;
 	isHost: boolean;
-	lastReplic: ChatMessage | null;
 	areStakesVisible: boolean;
 	areSumsEditable: boolean;
 	roundsNames: string[] | null;
 	voiceChatUri: string | null;
 
-	onChatVisibilityChanged: (isOpen: boolean) => void;
 	onShowPersons: () => void;
 	onShowTables: () => void;
 	onShowBanned: () => void;
@@ -48,10 +43,7 @@ interface SideControlPanelProps {
 
 const mapStateToProps = (state: State) => ({
 	isConnected: state.common.isSIHostConnected,
-	isChatVisible: state.room.chat.isVisible,
-	isChatActive: state.room.chat.isActive,
 	isHost: isHost(state),
-	lastReplic: state.room.lastReplic,
 	areStakesVisible: state.room.stakes.areVisible,
 	areSumsEditable: state.room.areSumsEditable,
 	roundsNames: state.room.roundsNames,
@@ -59,9 +51,6 @@ const mapStateToProps = (state: State) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
-	onChatVisibilityChanged: (isOpen: boolean) => {
-		dispatch(roomActionCreators.runChatVisibilityChanged(isOpen));
-	},
 	onShowPersons: () => {
 		dispatch(roomActionCreators.runShowPersons());
 	},
@@ -98,16 +87,16 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 });
 
 export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
-	const chatButtonStyle: React.CSSProperties = props.isChatActive ? {
+	const appDispatch = useAppDispatch();
+	const room = useAppSelector(state => state.room2);
+
+	const chatButtonStyle: React.CSSProperties = room.chat.isActive ? {
 		backgroundColor: 'lightyellow'
 	} : {};
 
 	const gameMenuHostStyle: React.CSSProperties = {
 		flex: '1 0 0'
 	};
-
-	const appDispatch = useAppDispatch();
-	const room = useAppSelector(state => state.room2);
 
 	const pauseTitle = room.stage.isGamePaused ? localization.resume : localization.pause;
 	const canPause = props.isHost || room.role === Role.Showman;
@@ -119,6 +108,7 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 	const canAddTable = room.persons.players.length < Constants.MAX_PLAYER_COUNT;
 
 	const canStart = !room.stage.isGameStarted && props.isHost;
+	const { lastReplic } = room;
 
 	const onGiveTurn = () =>{
 		props.onGiveTurn();
@@ -194,8 +184,8 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 
 					<button
 						type="button"
-						className={`standard imageButton showChat ${props.isChatVisible ? 'active' : ''}`}
-						onClick={() => props.onChatVisibilityChanged(!props.isChatVisible)}
+						className={`standard imageButton showChat ${room.chat.isVisible ? 'active' : ''}`}
+						onClick={() => appDispatch(setChatVisibility(!room.chat.isVisible))}
 						style={chatButtonStyle}
 						title={localization.showChat}
 					>
@@ -251,16 +241,16 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 				</div>
 			</div>
 
-			{props.lastReplic && props.lastReplic.text.length > 0 ? (
+			{lastReplic && lastReplic.text.length > 0 ? (
 				<div id="lastReplic">
 					<span>
-						{props.lastReplic.sender ? (
+						{lastReplic.sender ? (
 							<span>
-								<b>{props.lastReplic.sender}</b>
+								<b>{lastReplic.sender}</b>
 								<span>: </span>
 							</span>
 						) : null}
-						{props.lastReplic.text}
+						{lastReplic.text}
 					</span>
 				</div>
 			) : null}

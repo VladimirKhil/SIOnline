@@ -1,11 +1,8 @@
-import ChatMode from '../../model/enums/ChatMode';
-import ChatMessage from '../../model/ChatMessage';
 import Persons from '../../model/Persons';
 import Timers from '../../model/Timers';
 import TimerStates from '../../model/enums/TimeStates';
 import JoinMode from '../../client/game/JoinMode';
 import StakeModes from '../../client/game/StakeModes';
-import UsersMode from '../../model/enums/UsersMode';
 
 export default interface RoomState {
 	persons: {
@@ -13,7 +10,6 @@ export default interface RoomState {
 	};
 
 	answer: string | null;
-	lastReplic: ChatMessage | null;
 
 	stage: {
 		name: string;
@@ -40,15 +36,6 @@ export default interface RoomState {
 		maximum: number;
 		step: number;
 		stake: number;
-	};
-
-	chat: {
-		isVisible: boolean;
-		isActive: boolean;
-		mode: ChatMode;
-		message: string;
-		messages: ChatMessage[];
-		usersMode: UsersMode;
 	};
 
 	selectedTableIndex: number; // 0 for showman; {N} for player {N - 1}
@@ -87,7 +74,6 @@ export const initialState: RoomState = {
 	},
 
 	answer: null,
-	lastReplic: null,
 
 	stage: {
 		name: '',
@@ -139,15 +125,6 @@ export const initialState: RoomState = {
 		maximum: 0,
 		step: 0,
 		stake: 0,
-	},
-
-	chat: {
-		isVisible: false,
-		isActive: false,
-		mode: ChatMode.Chat,
-		message: '',
-		messages: [],
-		usersMode: UsersMode.Users,
 	},
 
 	selectedTableIndex: -1,

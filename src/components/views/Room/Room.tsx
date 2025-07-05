@@ -28,7 +28,7 @@ import MessageLevel from '../../../model/enums/MessageLevel';
 import { userErrorChanged } from '../../../state/commonSlice';
 import { AppDispatch, RootState } from '../../../state/store';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
-import { DecisionType, DialogView, rejectAnswer, setDecisionType } from '../../../state/room2Slice';
+import { addToChat, DialogView, rejectAnswer, setChatVisibility } from '../../../state/room2Slice';
 import ComplainDialog from '../../panels/ComplainDialog/ComplainDialog';
 import ReportDialog from '../../panels/ReportDialog/ReportDialog';
 import GameState from '../../game/GameState/GameState';
@@ -39,8 +39,6 @@ import closeSvg from '../../../../assets/images/close.svg';
 
 interface RoomProps {
 	windowWidth: number;
-	// eslint-disable-next-line react/no-unused-prop-types
-	isChatOpen: boolean;
 	isPersonsDialogVisible: boolean;
 	isTablesDialogVisible: boolean;
 	isBannedDialogVisible: boolean;
@@ -53,7 +51,6 @@ interface RoomProps {
 	isConnectedReason: string;
 	avatarViewVisible: boolean;
 
-	onChatVisibilityChanged: (isOpen: boolean) => void;
 	onPersonsDialogClose: () => void;
 	onTablesDialogClose: () => void;
 	onBannedDialogClose: () => void;
@@ -61,14 +58,12 @@ interface RoomProps {
 	onManageGameDialogClose: () => void;
 	onCancelSumChange: () => void;
 	onExit: (appDispatch: AppDispatch) => void;
-	chatMessageAdded: (chatMessage: ChatMessage) => void;
 	onReconnect: () => void;
 	clearDecisions: () => void;
 }
 
 const mapStateToProps = (state: State) => ({
 	windowWidth: state.ui.windowWidth,
-	isChatOpen: state.room.chat.isVisible,
 	isPersonsDialogVisible: state.room.personsVisible,
 	isTablesDialogVisible: state.room.tablesVisible,
 	isBannedDialogVisible: state.room.bannedVisible,
@@ -83,9 +78,6 @@ const mapStateToProps = (state: State) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
-	onChatVisibilityChanged: (isOpen: boolean) => {
-		dispatch(roomActionCreators.runChatVisibilityChanged(isOpen));
-	},
 	onPersonsDialogClose: () => {
 		dispatch(roomActionCreators.runHidePersons());
 	},
@@ -106,9 +98,6 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	},
 	onExit: (appDispatch: AppDispatch) => {
 		dispatch(roomActionCreators.exitGame(appDispatch) as unknown as Action);
-	},
-	chatMessageAdded: (chatMessage: ChatMessage) => {
-		dispatch(roomActionCreators.chatMessageAdded(chatMessage) as unknown as Action);
 	},
 	onReconnect: () => {
 		dispatch(roomActionCreators.onReconnect() as unknown as Action);
@@ -136,7 +125,7 @@ function getDialog(dialogView: DialogView) : JSX.Element | null {
 
 export function Room(props: RoomProps) : JSX.Element {
 	const appDispatch = useAppDispatch();
-	const state = useAppSelector((rootState: RootState) => rootState.room2);
+	const room = useAppSelector((rootState: RootState) => rootState.room2);
 	const settings = useAppSelector((rootState: RootState) => rootState.settings);
 	const { backgroundImageKey } = settings.theme.room;
 
@@ -156,7 +145,7 @@ export function Room(props: RoomProps) : JSX.Element {
 	React.useEffect(() => {
 		if (prevPropsRef.current && prevPropsRef.current.isConnected !== props.isConnected) {
 			prevPropsRef.current = props;
-			props.chatMessageAdded({ sender: '', text: props.isConnectedReason, level: MessageLevel.System });
+			appDispatch(addToChat({ sender: '', text: props.isConnectedReason, level: MessageLevel.System }));
 
 			if (props.isConnected) {
 				props.onReconnect();
@@ -202,14 +191,14 @@ export function Room(props: RoomProps) : JSX.Element {
 							<GameTable />
 							<TableContextView />
 
-							{props.isChatOpen && !isScreenWide ? (
+							{room.chat.isVisible && !isScreenWide ? (
 								<div className="compactChatView">
 									<div className='compactChatHeader'>{localization.chat}</div>
 
 									<button
 										type="button"
 										className="dialog_closeButton"
-										onClick={() => props.onChatVisibilityChanged(false)}
+										onClick={() => appDispatch(setChatVisibility(false))}
 										title={localization.close}>
 										<img src={closeSvg} alt={localization.close} />
 									</button>
@@ -271,12 +260,12 @@ export function Room(props: RoomProps) : JSX.Element {
 				</Dialog>
 			) : null}
 
-			{state.validation.queue.length > 0 && (!isScreenWide || state.role === Role.Player) ? (
-				<Dialog className='answerValidationDialog' title={state.validation.header} onClose={() => onReject(1.0)}>
+			{room.validation.queue.length > 0 && (!isScreenWide || room.role === Role.Player) ? (
+				<Dialog className='answerValidationDialog' title={room.validation.header} onClose={() => onReject(1.0)}>
 					<AnswerValidation />
 				</Dialog>
 			) : null}
-			{getDialog(state.dialogView)}
+			{getDialog(room.dialogView)}
 		</section>
 	);
 }

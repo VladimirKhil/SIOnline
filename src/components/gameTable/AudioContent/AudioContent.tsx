@@ -16,7 +16,6 @@ interface AudioContentProps {
 
 	mediaLoaded: () => void;
 	onMediaEnded: () => void;
-	operationError: (error: string) => void;
 }
 
 const mapStateToProps = (state: State) => ({
@@ -29,9 +28,6 @@ const mapStateToProps = (state: State) => ({
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	onMediaEnded: () => {
 		dispatch(roomActionCreators.onMediaEnded() as object as Action);
-	},
-	operationError: (error: string) => {
-		dispatch(roomActionCreators.operationError(error) as object as Action);
 	},
 	mediaLoaded: () => {
 		dispatch(roomActionCreators.mediaLoaded() as unknown as Action);
@@ -61,6 +57,10 @@ export class AudioContent extends React.Component<AudioContentProps> {
 		this.gainNode.gain.value = props.soundVolume;
 	}
 
+	operationError = (message: string) => {
+		console.error(message); // TODO: switch to function from room2Slice
+	};
+
 	async load() {
 		const { audioContext } = this.props;
 
@@ -68,7 +68,7 @@ export class AudioContent extends React.Component<AudioContentProps> {
 			const response = await fetch(this.props.audio);
 
 			if (!response.ok) {
-				this.props.operationError(`${localization.audioLoadError} ${this.props.audio}: ${response.statusText}`);
+				this.operationError(`${localization.audioLoadError} ${this.props.audio}: ${response.statusText}`);
 				return;
 			}
 
@@ -81,7 +81,7 @@ export class AudioContent extends React.Component<AudioContentProps> {
 			this.play();
 			this.completed = false;
 		} catch (e) {
-			this.props.operationError(getErrorMessage(e));
+			this.operationError(getErrorMessage(e));
 		}
 	}
 

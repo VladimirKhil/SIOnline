@@ -1,58 +1,22 @@
 import { ActionCreator, Action, Dispatch } from 'redux';
 import { ThunkAction } from 'redux-thunk';
 import * as RunActions from './RoomActions';
-import ChatMode from '../../model/enums/ChatMode';
 import State from '../State';
 import DataContext from '../../model/DataContext';
 import localization from '../../model/resources/localization';
-import ChatMessage from '../../model/ChatMessage';
 import Account from '../../model/Account';
 import Persons from '../../model/Persons';
-import MessageLevel from '../../model/enums/MessageLevel';
 import JoinMode from '../../client/game/JoinMode';
 import { stopAudio, userErrorChanged } from '../commonSlice';
 import Path from '../../model/enums/Path';
 import actionCreators from '../../logic/actionCreators';
 import { AppDispatch } from '../store';
-import { setIsAppellation, setIsPaused, showmanReplicChanged } from '../room2Slice';
+import { clearChat, setIsAppellation, setIsPaused, showmanReplicChanged } from '../room2Slice';
 import StakeModes from '../../client/game/StakeModes';
-import UsersMode from '../../model/enums/UsersMode';
 import { navigate } from '../../utils/Navigator';
 import { clearGameLog } from '../globalActions';
 
 let timerRef: number | null = null;
-
-const runChatModeChanged: ActionCreator<RunActions.RunChatModeChangedAction> = (chatMode: ChatMode) => ({
-	type: RunActions.RoomActionTypes.RoomChatModeChanged, chatMode
-});
-
-const runUsersModeChanged: ActionCreator<RunActions.RunUsersModeChangedAction> = (usersMode: UsersMode) => ({
-	type: RunActions.RoomActionTypes.RoomUsersModeChanged, usersMode
-});
-
-const runChatMessageChanged: ActionCreator<RunActions.RunChatMessageChangedAction> = (message: string) => ({
-	type: RunActions.RoomActionTypes.RoomChatMessageChanged, message
-});
-
-const runChatMessageSend: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => (
-	dispatch: Dispatch<RunActions.KnownRoomAction>, getState: () => State, dataContext: DataContext) => {
-		const state = getState();
-
-		const text = state.room.chat.message;
-
-		if (text.length > 0) {
-			dataContext.game.say(text);
-		}
-
-		dispatch(runChatMessageChanged(''));
-
-		// Temporary
-		dispatch(chatMessageAdded({ sender: state.room2.name, text, level: MessageLevel.Information }) as unknown as Action);
-
-		if (!state.room.chat.isVisible) {
-			dispatch(activateChat());
-		}
-	};
 
 const onPass: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
 	_dispatch: Dispatch<RunActions.KnownRoomAction>,
@@ -106,10 +70,6 @@ const runHideManageGame: ActionCreator<RunActions.RunHideManageGameAction> = () 
 	type: RunActions.RoomActionTypes.RoomHideManageGame
 });
 
-const runChatVisibilityChanged: ActionCreator<RunActions.RunChatVisibilityChangedAction> = (isOpen: boolean) => ({
-	type: RunActions.RoomActionTypes.RoomChatVisibilityChanged, isOpen
-});
-
 const clearDecisions: ActionCreator<RunActions.ClearDecisionsAction> = () => ({
 	type: RunActions.RoomActionTypes.ClearDecisions
 });
@@ -135,7 +95,8 @@ const exitGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (
 		timerRef = null;
 	}
 
-	dispatch(clearRoomChat());
+	appDispatch(clearChat());
+	dispatch(onKicked(false));
 
 	dispatch(stopTimer(0));
 	dispatch(stopTimer(1));
@@ -152,53 +113,12 @@ const exitGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (
 	dispatch(navigate({ navigation: { path: state.ui.navigation.returnToLobby ? Path.Lobby : Path.Menu }, saveState: true }) as unknown as Action);
 };
 
-let lastReplicLock: number;
-
-const chatMessageAddedCore: ActionCreator<RunActions.ChatMessageAddedAction> = (chatMessage: ChatMessage) => ({
-	type: RunActions.RoomActionTypes.ChatMessageAdded, chatMessage
-});
-
-const chatMessageAdded: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (chatMessage: ChatMessage) => (
-	dispatch: Dispatch<Action>,
-	getState: () => State
-) => {
-	dispatch(chatMessageAddedCore(chatMessage));
-	const state = getState();
-
-	if (!state.room.chat.isVisible && state.ui.windowWidth < 800) {
-		dispatch(lastReplicChanged(chatMessage));
-
-		if (lastReplicLock) {
-			window.clearTimeout(lastReplicLock);
-		}
-
-		lastReplicLock = window.setTimeout(
-			() => {
-				dispatch(roomActionCreators.lastReplicChanged(null));
-			},
-			3000
-		);
-	}
-};
-
-const lastReplicChanged: ActionCreator<RunActions.LastReplicChangedAction> = (chatMessage: ChatMessage | null) => ({
-	type: RunActions.RoomActionTypes.LastReplicChanged, chatMessage
-});
-
-const activateChat: ActionCreator<RunActions.ActivateChatAction> = () => ({
-	type: RunActions.RoomActionTypes.ActivateChat
-});
-
 const infoChanged: ActionCreator<RunActions.InfoChangedAction> = (all: Persons) => ({
 	type: RunActions.RoomActionTypes.InfoChanged, all,
 });
 
 const tableSelected: ActionCreator<RunActions.TableSelectedAction> = (tableIndex: number) => ({
 	type: RunActions.RoomActionTypes.TableSelected, tableIndex
-});
-
-const operationError: ActionCreator<RunActions.OperationErrorAction> = (error: string) => ({
-	type: RunActions.RoomActionTypes.OperationError, error
 });
 
 const deleteTable: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
@@ -536,10 +456,6 @@ const mediaLoaded: ActionCreator<ThunkAction<void, State, DataContext, Action>> 
 	await dataContext.game.mediaLoaded();
 };
 
-const clearRoomChat: ActionCreator<RunActions.ClearRoomChatAction> = () => ({
-	type: RunActions.RoomActionTypes.ClearRoomChat
-});
-
 const joinModeChanged: ActionCreator<RunActions.JoinModeChangedAction> = (joinMode: JoinMode) => ({
 	type: RunActions.RoomActionTypes.JoinModeChanged, joinMode
 });
@@ -582,10 +498,6 @@ const setWebCamera: ActionCreator<ThunkAction<void, State, DataContext, Action>>
 };
 
 const roomActionCreators = {
-	runChatModeChanged,
-	runUsersModeChanged,
-	runChatMessageChanged,
-	runChatMessageSend,
 	onPass,
 	giveTurn,
 	runShowPersons,
@@ -598,11 +510,7 @@ const roomActionCreators = {
 	runHideGameInfo,
 	runShowManageGame,
 	runHideManageGame,
-	runChatVisibilityChanged,
 	exitGame,
-	chatMessageAdded,
-	lastReplicChanged,
-	activateChat,
 	infoChanged,
 	tableSelected,
 	deleteTable,
@@ -640,7 +548,6 @@ const roomActionCreators = {
 	clearDecisionsAndMainTimer,
 	hintChanged,
 	startGame,
-	operationError,
 	themeNameChanged,
 	moveNext,
 	navigateToRound,
@@ -655,7 +562,6 @@ const roomActionCreators = {
 	selectBannedItem,
 	unban,
 	mediaLoaded,
-	clearRoomChat,
 	joinModeChanged,
 	setJoinMode,
 	onKicked,

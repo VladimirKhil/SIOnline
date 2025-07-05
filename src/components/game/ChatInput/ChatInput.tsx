@@ -1,8 +1,4 @@
-import { connect } from 'react-redux';
 import * as React from 'react';
-import roomActionCreators from '../../../state/room/roomActionCreators';
-import State from '../../../state/State';
-import { Dispatch, Action } from 'redux';
 import Constants from '../../../model/enums/Constants';
 import { EmojiClickData } from 'emoji-picker-react';
 import ChatInputEmojiPicker from '../../common/ChatInputEmojiPicker/ChatInputEmojiPicker';
@@ -10,44 +6,25 @@ import localization from '../../../model/resources/localization';
 import DownloadLogButton from '../DownloadLogButton/DownloadLogButton';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 import { addGameLog } from '../../../state/globalActions';
+import { sendChatMessage, setChatMessage } from '../../../state/room2Slice';
 
 import './ChatInput.scss';
 
-interface ChatInputProps {
-	isConnected: boolean;
-	message: string;
-	onChatMessageChanged: (message : string) => void;
-	onChatMessageSend: () => void;
-}
-
-const mapStateToProps = (state: State) => ({
-	isConnected: state.common.isSIHostConnected,
-	message: state.room.chat.message,
-});
-
-const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
-	onChatMessageSend: () => {
-		dispatch((roomActionCreators.runChatMessageSend() as object) as Action);
-	},
-	onChatMessageChanged: (message: string) => {
-		dispatch(roomActionCreators.runChatMessageChanged(message));
-	}
-});
-
-export const ChatInput: React.FC<ChatInputProps> = (props) => {
+export default function ChatInput() {
 	const inputRef = React.useRef<HTMLInputElement>(null);
 	const appDispatch = useAppDispatch();
 	const room = useAppSelector(state => state.room2);
+	const common = useAppSelector(state => state.common);
 
 	const onMessageChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
-		props.onChatMessageChanged(e.target.value);
+		appDispatch(setChatMessage(e.target.value));
 	};
 
 	const onMessageKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
 		if (e.key === Constants.KEY_ENTER_NEW) {
-			if (props.isConnected) {
-				props.onChatMessageSend();
-				appDispatch(addGameLog(`${room.name}: ${props.message}`));
+			if (common.isSIHostConnected) {
+				appDispatch(sendChatMessage());
+				appDispatch(addGameLog(`${room.name}: ${room.chat.message}`));
 			}
 
 			e.preventDefault();
@@ -55,7 +32,7 @@ export const ChatInput: React.FC<ChatInputProps> = (props) => {
 	};
 
 	const onEmojiClick = (emojiData: EmojiClickData) => {
-		props.onChatMessageChanged(props.message + emojiData.emoji);
+		appDispatch(setChatMessage(room.chat.message + emojiData.emoji));
 	};
 
 	return (
@@ -64,8 +41,8 @@ export const ChatInput: React.FC<ChatInputProps> = (props) => {
 				<input
 					ref={inputRef}
 					placeholder={localization.message}
-					className={`gameInputBox ${props.isConnected ? '' : 'disconnected'}`}
-					value={props.message}
+					className={`gameInputBox ${common.isSIHostConnected ? '' : 'disconnected'}`}
+					value={room.chat.message}
 					onChange={onMessageChanged}
 					onKeyPress={onMessageKeyPress} />
 
@@ -75,6 +52,4 @@ export const ChatInput: React.FC<ChatInputProps> = (props) => {
 			<DownloadLogButton />
 		</div>
 	);
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(ChatInput);
+}

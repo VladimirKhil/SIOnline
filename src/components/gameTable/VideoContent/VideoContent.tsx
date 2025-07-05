@@ -18,7 +18,6 @@ interface VideoContentProps {
 
 	mediaLoaded: () => void;
 	onMediaEnded: () => void;
-	operationError: (error: string) => void;
 }
 
 const mapStateToProps = (state: State) => ({
@@ -30,9 +29,6 @@ const mapStateToProps = (state: State) => ({
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	onMediaEnded: () => {
 		dispatch(roomActionCreators.onMediaEnded() as object as Action);
-	},
-	operationError: (error: string) => {
-		dispatch(roomActionCreators.operationError(error) as object as Action);
 	},
 	mediaLoaded: () => {
 		dispatch(roomActionCreators.mediaLoaded() as unknown as Action);
@@ -52,6 +48,10 @@ export class VideoContent extends React.Component<VideoContentProps> {
 		this.videoRef = React.createRef();
 	}
 
+	operationError = (message: string) => {
+		console.error(message); // TODO: switch to function from room2Slice
+	};
+
 	componentDidMount() {
 		if (!this.videoRef.current || this.props.uri.length === 0) {
 			return;
@@ -63,7 +63,7 @@ export class VideoContent extends React.Component<VideoContentProps> {
 		const canPlay = ext && this.videoRef.current.canPlayType('video/' + ext);
 
 		if (canPlay === '') {
-			this.props.operationError(`${localization.unsupportedMediaType}: ${ext}`);
+			this.operationError(`${localization.unsupportedMediaType}: ${ext}`);
 		}
 	}
 
@@ -86,7 +86,7 @@ export class VideoContent extends React.Component<VideoContentProps> {
 					video.pause();
 				}
 			} else if (!this.completed) {
-				this.playPromise = video.play().catch((e) => this.props.operationError(getErrorMessage(e)));
+				this.playPromise = video.play().catch((e) => this.operationError(getErrorMessage(e)));
 			}
 		}
 
@@ -101,7 +101,7 @@ export class VideoContent extends React.Component<VideoContentProps> {
 		const video = this.videoRef.current;
 
 		if (video) {
-			this.playPromise = video.play().catch((e) => this.props.operationError(getErrorMessage(e)));
+			this.playPromise = video.play().catch((e) => this.operationError(getErrorMessage(e)));
 			video.muted = false;
 		}
 	};
