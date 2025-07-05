@@ -148,9 +148,6 @@ export const settingsSlice = createSlice({
 		setAllowEveryoneToPlayHiddenStakes: (state: SettingsState, action: PayloadAction<boolean>) => {
 			state.appSettings.allowEveryoneToPlayHiddenStakes = action.payload;
 		},
-		setDisplaySources: (state: SettingsState, action: PayloadAction<boolean>) => {
-			state.appSettings.displaySources = action.payload;
-		},
 		setFloatingControls: (state: SettingsState, action: PayloadAction<boolean>) => {
 			state.floatingControls = action.payload;
 		},
@@ -229,7 +226,6 @@ export const {
 	setPlayAllQuestionsInFinalRound,
 	setOralPlayersActions,
 	setAllowEveryoneToPlayHiddenStakes,
-	setDisplaySources,
 	setFloatingControls,
 	setFullScreen,
 	setAttachContentToTable,

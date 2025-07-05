@@ -32,9 +32,6 @@ export default interface AppSettings {
 	/** Question for all penalty. */
 	questionForAllPenalty: PenaltyType;
 
-	/** Display package items sources. */
-	displaySources: boolean;
-
 	culture: string | null;
 	managed: boolean;
 	timeSettings: TimeSettings;
@@ -61,7 +58,6 @@ export const initialState: AppSettings = {
 	partialImages: false,
 	allowEveryoneToPlayHiddenStakes: true,
 	playAllQuestionsInFinalRound: false,
-	displaySources: false,
 	readingSpeed: 20,
 	managed: false,
 	questionWithButtonPenalty: PenaltyType.SubtractPoints,

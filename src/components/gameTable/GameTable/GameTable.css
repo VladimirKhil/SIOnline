@@ -25,6 +25,7 @@
 
 .caption__left {
     padding: 0 5px 5px 5px;
+    width: 30px;
 }
 
 .tableCaptionContent {
@@ -32,6 +33,7 @@
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+    padding-right: 30px;
 }
 
 .tableContent {

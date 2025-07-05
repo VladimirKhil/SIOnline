@@ -113,10 +113,19 @@ const enum GameMessages {
 
 	QuestionAnswers = 'QUESTION_ANSWERS',
 
+	/** Authors of the question (if any). */
+	QuestionAuthors = 'QUESTION_AUTHORS',
+
 	QuestionCaption = 'QUESTIONCAPTION',
+
+	/** Comments for the question (if any). */
+	QuestionComments = 'QUESTION_COMMENTS',
 
 	/** Question has ended. */
 	QuestionEnd = 'QUESTION_END',
+
+	/** Sources of the question (if any). */
+	QuestionSources = 'QUESTION_SOURCES',
 
 	ReadingSpeed = 'READINGSPEED',
 

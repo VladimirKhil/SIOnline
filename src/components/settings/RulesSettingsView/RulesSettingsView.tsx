@@ -9,7 +9,6 @@ import { resetSettings,
 	setButtonPressMode,
 	setDisplayAnswerOptionsLabels,
 	setDisplayAnswerOptionsOneByOne,
-	setDisplaySources,
 	setFalseStarts,
 	setHintShowman,
 	setManaged,
@@ -363,7 +362,7 @@ export default function RulesSettingsView(): JSX.Element {
 						onChange={() => appDispatch(setDisplayAnswerOptionsLabels(!settings.appSettings.displayAnswerOptionsLabels))}
 					/>
 				</div>
-			</div>			
+			</div>
 
 			<div className='block'>
 				<label className='blockName' htmlFor="preloadRoundContent">{localization.preloadRoundContent}</label>
@@ -374,19 +373,6 @@ export default function RulesSettingsView(): JSX.Element {
 						type="checkbox"
 						checked={settings.appSettings.preloadRoundContent}
 						onChange={() => appDispatch(setPreloadRoundContent(!settings.appSettings.preloadRoundContent))}
-					/>
-				</div>
-			</div>
-
-			<div className="block">
-				<label className='blockName' htmlFor="displaySources">{localization.displaySources}</label>
-
-				<div className='blockValue'>
-					<input
-						id="displaySources"
-						type="checkbox"
-						checked={settings.appSettings.displaySources}
-						onChange={() => appDispatch(setDisplaySources(!settings.appSettings.displaySources))}
 					/>
 				</div>
 			</div>

@@ -271,7 +271,7 @@ function createGameSettings(
 		partialImages: state.settings.appSettings.partialImages,
 		playAllQuestionsInFinalRound: state.settings.appSettings.playAllQuestionsInFinalRound,
 		allowEveryoneToPlayHiddenStakes: state.settings.appSettings.allowEveryoneToPlayHiddenStakes,
-		displaySources: state.settings.appSettings.displaySources,
+		displaySources: true,
 		randomQuestionsBasePrice: gameMode === GameType.Simple ? 10 : 100,
 		randomRoundsCount: gameMode === GameType.Simple ? 1 : 3,
 		randomThemesCount: gameMode === GameType.Simple ? 5 : 6,

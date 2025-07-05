@@ -733,6 +733,7 @@ export default class ClientController {
 				break;
 		}
 	}
+
 	onOralAnswer() {
 		this.appDispatch(setContext(ContextView.OralAnswer));
 		this.appDispatch(setDecisionType(DecisionType.OralAnswer));
@@ -782,6 +783,27 @@ export default class ClientController {
 
 	onQuestionAnswers(rightAnswers: string[], wrongAnswers: string[]) {
 		this.appDispatch(questionAnswersChanged({ rightAnswers, wrongAnswers }));
+	}
+
+	onQuestionAuthors(authors: string[]) {
+		this.dispatch(roomActionCreators.chatMessageAdded({
+			sender: localization.questionAuthors,
+			text: authors.join(', '),
+			level: MessageLevel.System,
+		}) as any);
+	}
+
+	onQuestionComments(comments: string) {
+		this.appDispatch(captionChanged(localization.questionComments));
+		this.appDispatch(showText(comments));
+	}
+
+	onQuestionSources(sources: string[]) {
+		this.dispatch(roomActionCreators.chatMessageAdded({
+			sender: localization.questionSources,
+			text: sources.join(', '),
+			level: MessageLevel.System,
+		}) as any);
 	}
 
 	onReady(personName: string, isReady: boolean): void {

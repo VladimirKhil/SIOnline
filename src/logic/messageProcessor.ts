@@ -607,14 +607,38 @@ const viewerHandler = (
 			}
 			break;
 
+		case GameMessages.QuestionAuthors:
+			if (args.length < 2) {
+				break;
+			}
+
+			controller.onQuestionAuthors(args.slice(1));
+			break;
+
 		case GameMessages.QuestionCaption:
 			if (args.length > 1) {
 				controller.onTableCaption(args[1]);
 			}
 			break;
 
+		case GameMessages.QuestionComments:
+			if (args.length < 2) {
+				break;
+			}
+
+			controller.onQuestionComments(unescapeNewLines(args[1]));
+			break;
+
 		case GameMessages.QuestionEnd:
 			controller.onQuestionEnd();
+			break;
+
+		case GameMessages.QuestionSources:
+			if (args.length < 2) {
+				break;
+			}
+
+			controller.onQuestionSources(args.slice(1));
 			break;
 
 		case GameMessages.Ready:

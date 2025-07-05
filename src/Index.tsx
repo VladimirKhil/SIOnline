@@ -131,7 +131,6 @@ function setState(state: State, savedState: SavedState | null, c: Config, isDesk
 				useApellations: appSettings.useApellations ?? true,
 				allowEveryoneToPlayHiddenStakes: appSettings.allowEveryoneToPlayHiddenStakes ?? true,
 				oralPlayersActions: appSettings.oralPlayersActions ?? true,
-				displaySources: appSettings.displaySources ?? false,
 				playAllQuestionsInFinalRound: appSettings.playAllQuestionsInFinalRound ?? false,
 				displayAnswerOptionsLabels: appSettings.displayAnswerOptionsLabels ?? true,
 				displayAnswerOptionsOneByOne: appSettings.displayAnswerOptionsOneByOne ?? true,
