@@ -35,7 +35,6 @@ export const enum RoomActionTypes {
 	PersonAdded = 'PERSON_ADDED',
 	PersonRemoved = 'PERSON_REMOVED',
 	ClearDecisions = 'CLEAR_DECISIONS',
-	IsGameButtonEnabledChanged = 'IS_GAME_BUTTON_ENABLED',
 	IsAnswering = 'IS_ANSWERING',
 	AnswerChanged = 'ANSWER_CHANGED',
 	SetStakes = 'SET_STAKES',
@@ -98,7 +97,6 @@ export type CurrentPriceChangedAction = { type: RoomActionTypes.CurrentPriceChan
 export type PersonAddedAction = { type: RoomActionTypes.PersonAdded, person: Account };
 export type PersonRemovedAction = { type: RoomActionTypes.PersonRemoved, name: string };
 export type ClearDecisionsAction = { type: RoomActionTypes.ClearDecisions };
-export type IsGameButtonEnabledChangedAction = { type: RoomActionTypes.IsGameButtonEnabledChanged, isGameButtonEnabled: boolean };
 export type IsAnsweringAction = { type: RoomActionTypes.IsAnswering };
 export type AnswerChangedAction = { type: RoomActionTypes.AnswerChanged, answer: string };
 export type ClearRoomChatAction = { type: RoomActionTypes.ClearRoomChat };
@@ -175,7 +173,6 @@ export type KnownRoomAction =
 	| PersonAddedAction
 	| PersonRemovedAction
 	| ClearDecisionsAction
-	| IsGameButtonEnabledChangedAction
 	| IsAnsweringAction
 	| AnswerChangedAction
 	| SetStakesAction

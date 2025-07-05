@@ -25,12 +25,13 @@ import { randomBytes } from 'crypto';
 import { selectAnswerOption, selectQuestion, selectTheme } from './state/serverActions';
 import ContentType from './model/enums/ContentType';
 import ServerInfo from './model/server/ServerInfo';
-import { DecisionType, playerSelected, sendAllIn, sendAnswer, sendPass, sendStake } from './state/room2Slice';
+import { DecisionType, playerSelected, pressGameButton, sendAllIn, sendAnswer, sendPass, sendStake } from './state/room2Slice';
 import TableMode from './model/enums/TableMode';
 import StakeModes from './client/game/StakeModes';
 import GameStage from './model/enums/GameStage';
 import ItemState from './model/enums/ItemState';
 import LayoutMode from './model/enums/LayoutMode';
+import OpenAI from 'openai';
 
 class ManagedHost implements IHost {
 	private readonly isSimulation = true;
@@ -150,6 +151,49 @@ async function getServerUri(serverDiscoveryUri: string) {
 	return serverUris[0].uri;
 }
 
+// Global variables to track question processing
+let questionTimeout: NodeJS.Timeout | null = null;
+let isProcessingQuestion = false;
+let preparedAnswer: string | null = null;
+let canPressButton = false;
+
+async function callOpenAI(question: string): Promise<string> {
+	const apiKey = process.env.OPENAI_API_KEY;
+
+	if (!apiKey) {
+		console.log('\x1b[31mOPENAI_API_KEY environment variable not set\x1b[0m');
+		return '-';
+	}
+
+	try {
+		const openai = new OpenAI({ apiKey });
+
+		const prompt = 'You are an expert trivia player. Answer this trivia question with just the answer - ' +
+			'no explanations, no reasoning, just the answer. If you are not at least 90% confident in your answer, ' +
+			'respond with exactly "-".\n\nQuestion: ' + question + '\n\nAnswer:';
+
+		console.log('\x1b[33mAsking OpenAI...\x1b[0m');
+
+		const response = await openai.chat.completions.create({
+			model: 'gpt-3.5-turbo',
+			messages: [
+				{
+					role: 'user',
+					content: prompt
+				}
+			],
+			max_tokens: 100,
+			temperature: 0.1 // Low temperature for more deterministic answers
+		});
+
+		const answer = response.choices[0]?.message?.content?.trim() || '-';
+		return answer;
+	} catch (error) {
+		console.error('\x1b[31mOpenAI API error:\x1b[0m', error);
+		return '-';
+	}
+}
+
 async function initializeApp() {
 	const serverUri = await getServerUri('https://vladimirkhil.com/api/si/servers');
 
@@ -230,10 +274,68 @@ async function initializeApp() {
 		}
 	}
 
-	function onAnswer(state: State) {
-		const answer = '-'; // Default answer if no other logic is applied
-		console.log(`\x1b[33m> Sending answer: ${answer}\x1b[0m`);
+	async function startThinkingOnQuestion(questionText: string): Promise<void> {
+		// Clear any existing timeout
+		if (questionTimeout) {
+			clearTimeout(questionTimeout);
+			questionTimeout = null;
+		}
+
+		if (isProcessingQuestion) {
+			console.log('\x1b[33m> Already processing a question, ignoring...\x1b[0m');
+			return;
+		}
+
+		isProcessingQuestion = true;
+		preparedAnswer = null;
+
+		console.log('\x1b[33m> Starting to think on question...\x1b[0m');
+
+		// Set up 5-second timeout
+		const timeoutPromise = new Promise<string>((resolve) => {
+			questionTimeout = setTimeout(() => {
+				console.log('\x1b[33m> 5 seconds elapsed, stopping AI thinking...\x1b[0m');
+				resolve('-');
+			}, 5000);
+		});
+
+		try {
+			// Race between OpenAI response and timeout
+			const answer = await Promise.race([
+				callOpenAI(questionText),
+				timeoutPromise
+			]);
+
+			// Clear timeout if AI responded faster
+			if (questionTimeout) {
+				clearTimeout(questionTimeout);
+				questionTimeout = null;
+			}
+
+			preparedAnswer = answer;
+			console.log(`\x1b[33m> Answer ready: ${answer}\x1b[0m`);
+
+			// Press the button if we can and have an answer
+			if (canPressButton && answer !== '-') {
+				console.log('\x1b[33m> Pressing button to answer...\x1b[0m');
+				store.dispatch(pressGameButton() as unknown as Action);
+			}
+		} catch (error) {
+			console.error('\x1b[31mError getting AI answer:\x1b[0m', error);
+			preparedAnswer = '-';
+		}
+
+		isProcessingQuestion = false;
+	}
+
+	function onAnswer() {
+		// Use the prepared answer if available, otherwise default to '-'
+		const answer = preparedAnswer || '-';
+		console.log(`\x1b[33m> Sending prepared answer: ${answer}\x1b[0m`);
 		store.dispatch(sendAnswer(answer) as unknown as Action);
+
+		// Clear the prepared answer after use
+		preparedAnswer = null;
 	}
 
 	function onSelectAnswerOption(state: State) {
@@ -245,9 +347,21 @@ async function initializeApp() {
 			return;
 		}
 
-		console.log(`\x1b[33m> Selecting answer option: ${availableOptions.map(o => o.label).join(', ')}\x1b[0m`);
-		const randomIndex = Math.floor(Math.random() * availableOptions.length);
-		const { label } = availableOptions[randomIndex];
+		let optionIndex = Math.floor(Math.random() * availableOptions.length);
+
+		if (preparedAnswer && preparedAnswer !== '-') {
+			// If we have a prepared answer, try to find it in the options
+			for (let i = 0; i < availableOptions.length; i++) {
+				if (availableOptions[i].content.value.toLowerCase() === preparedAnswer.toLowerCase()) {
+					optionIndex = i;
+					break;
+				}
+			}
+		}
+
+		console.log(`\x1b[33m> Selecting answer option: ${availableOptions[optionIndex].label}\x1b[0m`);
+
+		const { label } = availableOptions[optionIndex];
 		store.dispatch(selectAnswerOption(label) as unknown as Action);
 	}
 
@@ -339,7 +453,7 @@ async function initializeApp() {
 					if (state.table.layoutMode === LayoutMode.AnswerOptions) {
 						onSelectAnswerOption(state);
 					} else {
-						onAnswer(state);
+						onAnswer();
 					}
 					break;
 
@@ -369,11 +483,8 @@ async function initializeApp() {
 			state.table.content[0].content[0].type === ContentType.Text) {
 			const questionText = state.table.content[0].content[0].value;
 
-			const prompt = `Answer trivia question. Return only answer, nothing else.
-				Think no more than 5 seconds. If you are not 90 percent sure, return "-".
-				${questionText}`;
-
-			// TODO: Replace with actual AI call
+			// Start thinking on the question immediately
+			startThinkingOnQuestion(questionText);
 		}
 
 		const { header, text, hint, caption } = state.table;
@@ -389,9 +500,11 @@ async function initializeApp() {
 					break;
 
 				case TableMode.Content:
-					const contentText = state.table.content.map(c => c.content.map(item => item.value).join(', ')).join(' | ');
-					console.log(`${caption ? `\x1b[36m${caption}\x1b[0m: ` : ''}${contentText}`);
-					break;
+					{
+						const contentText = state.table.content.map(c => c.content.map(item => item.value).join(', ')).join(' | ');
+						console.log(`${caption ? `\x1b[36m${caption}\x1b[0m: ` : ''}${contentText}`);
+						break;
+					}
 
 				case TableMode.Object:
 					console.log(`${header ? `\x1b[36m${header}\x1b[0m: ` : ''}${text} ${hint ? `(${hint})` : ''}`);
@@ -444,18 +557,52 @@ async function initializeApp() {
 		} else if (state.table.content !== tempOldState.table.content) {
 			switch (state.table.mode) {
 				case TableMode.Content:
+					{
 						const contentText = state.table.content.map(c => c.content.map(item => item.value).join(', ')).join(' | ');
 						console.log(`${caption ? `\x1b[36m${caption}\x1b[0m: ` : ''}${contentText}`);
-					break;
-
-					default:
-						// No other modes display content directly
 						break;
+					}
+
+				default:
+					// No other modes display content directly
+					break;
+			}
+		} else if (state.table.answerOptions !== tempOldState.table.answerOptions) {
+			if (state.table.answerOptions.length > 0) {
+				if (tempOldState.table.answerOptions.length === 0) {
+					console.log('\x1b[36mAnswer options:\x1b[0m');
+				}
+
+				for (let i = 0; i < state.table.answerOptions.length; i++) {
+					const option = state.table.answerOptions[i];
+
+					if (option.state === ItemState.Normal && (tempOldState.table.answerOptions[i]?.state !== ItemState.Normal ||
+						option.content.value !== tempOldState.table.answerOptions[i]?.content.value)) {
+						console.log(`\x1b[36m${option.label}\x1b[0m: ${option.content.value}`);
+					} else if (option.state === ItemState.Active && tempOldState.table.answerOptions[i]?.state !== ItemState.Active) {
+						console.log(`\x1b[32m${option.label}\x1b[0m: (selected)`);
+					} else if (option.state === ItemState.Right && tempOldState.table.answerOptions[i]?.state !== ItemState.Right) {
+						console.log(`\x1b[32m${option.label}\x1b[0m: (correct)`);
+					}
+				}
 			}
 		}
 
 		if (state.table.canPress !== tempOldState.table.canPress) {
+			canPressButton = state.table.canPress;
 			console.log(state.table.canPress ? '\x1b[90mCan press button\x1b[0m' : '\x1b[90mCannot press button\x1b[0m');
+
+			// If we can press the button and have a prepared answer ready
+			if (canPressButton && preparedAnswer && preparedAnswer !== '-') {
+				console.log('\x1b[33m> Button available and answer ready, pressing...\x1b[0m');
+				store.dispatch(pressGameButton() as unknown as Action);
+			}
+		}
+
+		if (state.room.stage.isAfterQuestion !== tempOldState.room.stage.isAfterQuestion) {
+			if (state.room.stage.isAfterQuestion) {
+				console.log(`\x1b[36mScore\x1b[0m: ${state.room2.persons.players.map(p => `${p.name}: ${p.sum}`).join(', ')}`);
+			}
 		}
 
 		if (state.room.stage.name !== tempOldState.room.stage.name) {

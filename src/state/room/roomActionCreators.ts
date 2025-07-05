@@ -293,35 +293,6 @@ const personRemoved: ActionCreator<RunActions.PersonRemovedAction> = (name: stri
 	type: RunActions.RoomActionTypes.PersonRemoved, name
 });
 
-const isGameButtonEnabledChanged: ActionCreator<RunActions.IsGameButtonEnabledChangedAction> = (isGameButtonEnabled: boolean) => ({
-	type: RunActions.RoomActionTypes.IsGameButtonEnabledChanged, isGameButtonEnabled
-});
-
-const pressGameButton: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
-	dispatch: Dispatch<any>,
-	getState: () => State,
-	dataContext: DataContext
-	) => {
-	if (!getState().room.isGameButtonEnabled) {
-		return;
-	}
-
-	const deltaTime = Date.now() - getState().table.canPressUpdateTime;
-
-	if (!await dataContext.game.pressButton(deltaTime)) {
-		return;
-	}
-
-	dispatch(isGameButtonEnabledChanged(false));
-
-	setTimeout(
-		() => {
-			dispatch(isGameButtonEnabledChanged(true));
-		},
-		getState().room.buttonBlockingTimeSeconds * 1000
-	);
-};
-
 const apellate: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
 	_dispatch: Dispatch<any>,
 	_getState: () => State,
@@ -648,7 +619,6 @@ const roomActionCreators = {
 	personAdded,
 	personRemoved,
 	clearDecisions,
-	pressGameButton,
 	apellate,
 	disagree,
 	isAnswering,

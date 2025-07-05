@@ -77,6 +77,7 @@ export interface Room2State {
 	};
 
 	isEditTableEnabled: boolean;
+	isGameButtonEnabled: boolean;
 	chatScrollPosition: number;
 	noRiskMode: boolean;
 
@@ -126,6 +127,7 @@ const initialState: Room2State = {
 	},
 
 	isEditTableEnabled: false,
+	isGameButtonEnabled: true,
 	chatScrollPosition: 0,
 	noRiskMode: false,
 
@@ -577,6 +579,9 @@ export const room2Slice = createSlice({
 		setNoRiskMode: (state: Room2State, action: PayloadAction<boolean>) => {
 			state.noRiskMode = action.payload;
 		},
+		setIsGameButtonEnabled: (state: Room2State, action: PayloadAction<boolean>) => {
+			state.isGameButtonEnabled = action.payload;
+		},
 	},
 	extraReducers: (builder) => {
 		builder.addCase(sendAnswer.fulfilled, (state) => {
@@ -632,6 +637,31 @@ export const room2Slice = createSlice({
 		});
 	},
 });
+
+export const pressGameButton = createAsyncThunk(
+	'room2/pressGameButton',
+	async (_arg: void, thunkAPI) => {
+		if (!(thunkAPI.getState() as State).room2.isGameButtonEnabled) {
+			return;
+		}
+
+		const dataContext = thunkAPI.extra as DataContext;
+		const deltaTime = Date.now() - (thunkAPI.getState() as State).table.canPressUpdateTime;
+
+		if (!await dataContext.game.pressButton(deltaTime)) {
+			return;
+		}
+
+		thunkAPI.dispatch(room2Slice.actions.setIsGameButtonEnabled(false));
+
+		setTimeout(
+			() => {
+				thunkAPI.dispatch(room2Slice.actions.setIsGameButtonEnabled(true));
+			},
+			(thunkAPI.getState() as State).room2.settings.timeSettings.timeForBlockingButton * 1000
+		);
+	},
+);
 
 export const {
 	showDialog,

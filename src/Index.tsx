@@ -43,7 +43,7 @@ import { saveStateToStorage } from './state/StateHelpers';
 import { INavigationState, setFullScreenSupported, settingKeyChanged, visibilityChanged, windowSizeChanged } from './state/uiSlice';
 import { navigate } from './utils/Navigator';
 import TauriHost from './host/TauriHost';
-import { approveAnswerDefault, rejectAnswerDefault } from './state/room2Slice';
+import { approveAnswerDefault, pressGameButton, rejectAnswerDefault } from './state/room2Slice';
 import { pauseGame } from './state/serverActions';
 
 import './utils/polyfills';
@@ -210,7 +210,7 @@ function subscribeToExternalEvents(store: Store<State, any>, stateManager: IHost
 
 			store.dispatch(settingKeyChanged(null));
 		} else if (e.key === state.settings.gameButtonKey) {
-			store.dispatch(roomActionCreators.pressGameButton());
+			store.dispatch(pressGameButton());
 		} else if (e.key === state.settings.passButtonKey) {
 			store.dispatch(roomActionCreators.onPass());
 		} else if (e.key === state.settings.nextButtonKey) {
@@ -227,7 +227,7 @@ function subscribeToExternalEvents(store: Store<State, any>, stateManager: IHost
 	};
 
 	window.oncontextmenu = (e: MouseEvent) => {
-		store.dispatch(roomActionCreators.pressGameButton());
+		store.dispatch(pressGameButton());
 		e.preventDefault();
 		return true;
 	};

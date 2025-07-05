@@ -58,7 +58,6 @@ export default interface RoomState {
 	gameInfoVisible: boolean;
 	manageGameVisible: boolean;
 	avatarViewVivible: boolean;
-	isGameButtonEnabled: boolean;
 	areSumsEditable: boolean;
 	areApellationsEnabled: boolean;
 	hint: string | null;
@@ -158,7 +157,6 @@ export const initialState: RoomState = {
 	gameInfoVisible: false,
 	manageGameVisible: false,
 	avatarViewVivible: false,
-	isGameButtonEnabled: true,
 	areSumsEditable: false,
 	areApellationsEnabled: true,
 	hint: null,

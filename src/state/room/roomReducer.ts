@@ -271,12 +271,6 @@ const roomReducer: Reducer<RoomState> = (state: RoomState = initialState, anyAct
 				answer: null,
 			};
 
-		case RoomActionTypes.IsGameButtonEnabledChanged:
-			return {
-				...state,
-				isGameButtonEnabled: action.isGameButtonEnabled
-			};
-
 		case RoomActionTypes.IsAnswering:
 			return {
 				...state,
