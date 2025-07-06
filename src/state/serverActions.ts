@@ -3,6 +3,7 @@ import DataContext from '../model/DataContext';
 import State from './State';
 import { isSelectableChanged } from './tableSlice';
 import { DecisionType, setDecisionType } from './room2Slice';
+import JoinMode from '../client/game/JoinMode';
 
 export const mediaPreloaded = createAsyncThunk(
 	'server/mediaPreloaded',
@@ -116,4 +117,16 @@ export const selectAnswerOption = createAsyncThunk(
 			thunkAPI.dispatch(setDecisionType(DecisionType.None));
 		}
 	},
+);
+
+export const sendJoinMode = createAsyncThunk(
+	'server/sendJoinMode',
+	async (joinMode: JoinMode, thunkAPI) => {
+		const state = thunkAPI.getState() as State;
+		const dataContext = thunkAPI.extra as DataContext;
+
+		if (state.room2.joinMode !== joinMode) {
+			await dataContext.game.setJoinMode(joinMode);
+		}
+	}
 );

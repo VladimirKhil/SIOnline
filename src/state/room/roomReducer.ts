@@ -393,12 +393,6 @@ const roomReducer: Reducer<RoomState> = (state: RoomState = initialState, anyAct
 				},
 			};
 
-		case RoomActionTypes.JoinModeChanged:
-			return {
-				...state,
-				joinMode: action.joinMode,
-			};
-
 		case RoomActionTypes.Kicked:
 			return {
 				...state,

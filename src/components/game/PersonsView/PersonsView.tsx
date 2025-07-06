@@ -1,9 +1,8 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { Dispatch, AnyAction } from 'redux';
 import State from '../../../state/State';
 import localization from '../../../model/resources/localization';
-import roomActionCreators from '../../../state/room/roomActionCreators';
+import { sendJoinMode } from '../../../state/serverActions';
 import PersonView from '../PersonView/PersonView';
 import { isHost } from '../../../utils/StateHelpers';
 import JoinMode from '../../../client/game/JoinMode';
@@ -17,21 +16,11 @@ import './PersonsView.css';
 interface PersonsViewProps {
 	isHost: boolean;
 	all: Persons;
-	joinMode: JoinMode;
-
-	onJoinModeChanged(joinMode: JoinMode): void;
 }
 
 const mapStateToProps = (state: State) => ({
 	isHost: isHost(state),
 	all: state.room.persons.all,
-	joinMode: state.room.joinMode,
-});
-
-const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => ({
-	onJoinModeChanged(joinMode: JoinMode) {
-		dispatch((roomActionCreators.setJoinMode(joinMode) as object) as AnyAction);
-	}
 });
 
 export function PersonsView(props: PersonsViewProps): JSX.Element {
@@ -53,7 +42,7 @@ export function PersonsView(props: PersonsViewProps): JSX.Element {
 		.sort((p1, p2) => p1.name.localeCompare(p2.name));
 
 	const onJoinModeChanged = (e: React.ChangeEvent<HTMLSelectElement>) => {
-		props.onJoinModeChanged(parseInt(e.target.value, 10) as JoinMode);
+		appDispatch(sendJoinMode(parseInt(e.target.value, 10) as JoinMode));
 	};
 
 	const getPinCore = () => {
@@ -98,7 +87,7 @@ export function PersonsView(props: PersonsViewProps): JSX.Element {
 
 				<select
 					title={localization.joinMode}
-					value = {props.joinMode}
+					value = {room.joinMode}
 					onChange={onJoinModeChanged}
 					disabled={!common.isSIHostConnected || !props.isHost}>
 					<option value={JoinMode.AnyRole}>{localization.joinModeAnyRole}</option>
@@ -110,4 +99,4 @@ export function PersonsView(props: PersonsViewProps): JSX.Element {
 	);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(PersonsView);
+export default connect(mapStateToProps)(PersonsView);

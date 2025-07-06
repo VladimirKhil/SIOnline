@@ -1,7 +1,6 @@
 import Persons from '../../model/Persons';
 import Timers from '../../model/Timers';
 import TimerStates from '../../model/enums/TimeStates';
-import JoinMode from '../../client/game/JoinMode';
 import StakeModes from '../../client/game/StakeModes';
 
 export default interface RoomState {
@@ -63,7 +62,6 @@ export default interface RoomState {
 		selectedIp: string | null;
 	};
 
-	joinMode: JoinMode;
 	kicked: boolean;
 	webCameraUrl: string;
 }
@@ -152,7 +150,6 @@ export const initialState: RoomState = {
 		selectedIp: null,
 	},
 
-	joinMode: JoinMode.AnyRole,
 	kicked: false,
 	webCameraUrl: '',
 };

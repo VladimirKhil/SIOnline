@@ -104,6 +104,9 @@ const enum GameMessages {
 
 	Pin = 'PIN',
 
+	/** Displays player's answer to the question. */
+	PlayerAnswer = 'PLAYER_ANSWER',
+
 	PlayerState = 'PLAYER_STATE',
 
 	QType = 'QTYPE',
@@ -156,6 +159,9 @@ const enum GameMessages {
 
 	/** Sets game join mode. */
 	SetJoinMode = 'SETJOINMODE',
+
+	/** Defines localizable showman replic. */
+	ShowmanReplic = 'SHOWMAN_REPLIC',
 
 	ShowTable = 'SHOWTABLO',
 

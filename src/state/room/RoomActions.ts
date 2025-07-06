@@ -1,6 +1,5 @@
 import Account from '../../model/Account';
 import Persons from '../../model/Persons';
-import JoinMode from '../../client/game/JoinMode';
 import StakeModes from '../../client/game/StakeModes';
 
 export const enum RoomActionTypes {
@@ -51,7 +50,6 @@ export const enum RoomActionTypes {
 	Unbanned = 'UNBANNED',
 	SelectBannedItem = 'SELECT_BANNED_ITEM',
 	PlayerMediaLoaded = 'PLAYER_MEDIA_LOADED',
-	JoinModeChanged = 'JOIN_MODE_CHANGED',
 	Kicked = 'KICKED',
 	WebCameraUrlChanged = 'WEB_CAMERA_URL_CHANGED',
 	IsQuestionChanged = 'IsQuestionChanged',
@@ -119,7 +117,6 @@ export type BannedListChangedAction = { type: RoomActionTypes.BannedListChanged,
 export type BannedAction = { type: RoomActionTypes.Banned, ip: string, name: string };
 export type UnbannedAction = { type: RoomActionTypes.Unbanned, ip: string };
 export type SelectBannedItemAction = { type: RoomActionTypes.SelectBannedItem, ip: string };
-export type JoinModeChangedAction = { type: RoomActionTypes.JoinModeChanged, joinMode: JoinMode };
 export type WebCameraUrlChangedAction = { type: RoomActionTypes.WebCameraUrlChanged, webCameraUrl: string };
 export type IsQuestionChangedAction = { type: RoomActionTypes.IsQuestionChanged, isQuestion: boolean, questionType: string };
 
@@ -168,7 +165,6 @@ export type KnownRoomAction =
 	| BannedAction
 	| UnbannedAction
 	| SelectBannedItemAction
-	| JoinModeChangedAction
 	| KickedAction
 	| WebCameraUrlChangedAction
 	| IsQuestionChangedAction;

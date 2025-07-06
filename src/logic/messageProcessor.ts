@@ -590,6 +590,19 @@ const viewerHandler = (
 			}
 			break;
 
+		case GameMessages.PlayerAnswer:
+			{
+				if (args.length < 3) {
+					break;
+				}
+
+				const playerIndex = parseInt(args[1], 10);
+				const answer = args[2];
+
+				controller.onPlayerAnswer(playerIndex, answer);
+				break;
+			}
+
 		case GameMessages.PlayerState:
 			if (args.length > 1) {
 				controller.onPlayerState(parsePlayerStatesFromString(args[1]), args.slice(2).map(i => parseInt(i, 10)));
@@ -737,7 +750,16 @@ const viewerHandler = (
 				break;
 			}
 
-			dispatch(roomActionCreators.joinModeChanged(joinMode));
+			controller.onJoinModeChanged(joinMode);
+			break;
+
+		case GameMessages.ShowmanReplic:
+			if (args.length < 3) {
+				break;
+			}
+
+			const messageIndex = parseInt(args[1], 10);
+			controller.onShowmanReplic(messageIndex, args[2]);
 			break;
 
 		case GameMessages.ShowTable:

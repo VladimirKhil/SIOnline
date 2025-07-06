@@ -113,7 +113,9 @@ import {
 	sumsChanged,
 	validate,
 	setNoRiskMode,
-	addToChat
+	addToChat,
+	setPlayerAnswer,
+	setJoinMode
 } from '../state/room2Slice';
 
 import PersonInfo from '../model/PersonInfo';
@@ -129,6 +131,7 @@ import { setAttachContentToTable } from '../state/settingsSlice';
 import { addGameLog, appendGameLog, copyToClipboard } from '../state/globalActions';
 import { mediaPreloaded, mediaPreloadProgress } from '../state/serverActions';
 import stringFormat from '../utils/StringHelpers';
+import JoinMode from '../client/game/JoinMode';
 
 function initGroup(group: ContentGroup) {
 	let bestRowCount = 1;
@@ -383,6 +386,11 @@ export default class ClientController {
 
 	onBanned(ip: string, name: string) {
 		this.dispatch(roomActionCreators.banned(ip, name));
+		const { hostName } = this.getState().room2.persons;
+
+		if (hostName) {
+			this.appDispatch(userInfoChanged(stringFormat(localization.bannedNotification, hostName, name)));
+		}
 	}
 
 	onBannedList(bannedList: Record<string, string>) {
@@ -440,6 +448,14 @@ export default class ClientController {
 
 	onDisconnected(name: string) {
 		this.dispatch(roomActionCreators.personRemoved(name));
+
+		// TODO: uncomment after stopping Special replics support
+		// this.appDispatch(addToChat({
+		// 	sender: '',
+		// 	text: name + localization.disconnected,
+		// 	level: MessageLevel.System,
+		// }));
+
 		const state = this.getState();
 
 		if (state.room2.persons.showman.name === name) {
@@ -478,6 +494,16 @@ export default class ClientController {
 		this.dispatch(roomActionCreators.infoChanged(all));
 		this.appDispatch(infoChanged({ showman, players }));
 		this.dispatch(actionCreators.sendAvatar() as any);
+	}
+
+	onJoinModeChanged(joinMode: JoinMode) {
+		this.appDispatch(setJoinMode(joinMode));
+		const message = this.getJoinModeMessage(joinMode);
+		const { hostName } = this.getState().room2.persons;
+
+		if (hostName) {
+			this.appDispatch(userInfoChanged(`${hostName} ${localization.setJoinMode}: ${message}`));
+		}
 	}
 
 	onHint(hint: string) {
@@ -765,6 +791,11 @@ export default class ClientController {
 		this.appDispatch(userInfoChanged(localization.pinCopied));
 	}
 
+	onPlayerAnswer(playerIndex: number, answer: string) {
+		// this.appDispatch(setPlayerAnswer({ index: playerIndex, answer })); // TODO: think about providing unified answering experience
+		this.appDispatch(playerReplicChanged({ playerIndex, replic: answer }));
+	}
+
 	onPlayerState(state: PlayerStates, playerIndicies: number[]) {
 		this.appDispatch(playerStatesChanged({ indices: playerIndicies, state }));
 
@@ -939,6 +970,14 @@ export default class ClientController {
 
 	onSetAttachContentToTable(attach: boolean) {
 		this.appDispatch(setAttachContentToTable(attach));
+	}
+
+	onShowmanReplic(messageIndex: number, messageCode: string) {
+		const text = localization.getString('replic_' + messageCode.toString());
+
+		if (text) {
+			this.appDispatch(showmanReplicChanged(text));
+		}
 	}
 
 	onStage(stage: string, stageName: string, stageIndex: number, rules: string) {
@@ -1216,12 +1255,6 @@ export default class ClientController {
 			return;
 		}
 
-		if (personCode.startsWith('p') && personCode.length > 1) {
-			const index = parseInt(personCode.substring(1), 10);
-			this.appDispatch(playerReplicChanged({ playerIndex: index, replic: text }));
-			return;
-		}
-
 		if (personCode !== 'l') {
 			return;
 		}
@@ -1468,6 +1501,8 @@ export default class ClientController {
 		this.appDispatch(showLogo());
 		this.dispatch(roomActionCreators.clearDecisionsAndMainTimer());
 		this.appDispatch(clearDecisions());
+
+		this.onQuestionEnd(); // TODO: That should be sent by server, but we can call it here to ensure the game state is reset
 	}
 
 	onToggle(themeIndex: number, questionIndex: number, price: number) {
@@ -1693,6 +1728,8 @@ export default class ClientController {
 
 			this.appDispatch(playerStatesChanged({ indices, state: PlayerStates.Pass }));
 		}
+
+		// TODO: show notification about chooser change
 	}
 
 	onSum(playerIndex: number, value: number) {
@@ -1726,6 +1763,22 @@ export default class ClientController {
 
 		if (error.length > 0) {
 			this.appDispatch(userWarnChanged(error));
+		}
+	}
+
+	getJoinModeMessage(joinMode: JoinMode) {
+		switch (joinMode) {
+			case JoinMode.AnyRole:
+				return localization.joinModeAnyRole;
+
+			case JoinMode.OnlyViewer:
+				return localization.joinModeViewer;
+
+			case JoinMode.Forbidden:
+				return localization.joinModeForbidden;
+
+			default:
+				return '';
 		}
 	}
 }

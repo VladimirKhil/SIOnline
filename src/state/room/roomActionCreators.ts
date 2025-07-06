@@ -456,22 +456,6 @@ const mediaLoaded: ActionCreator<ThunkAction<void, State, DataContext, Action>> 
 	await dataContext.game.mediaLoaded();
 };
 
-const joinModeChanged: ActionCreator<RunActions.JoinModeChangedAction> = (joinMode: JoinMode) => ({
-	type: RunActions.RoomActionTypes.JoinModeChanged, joinMode
-});
-
-const setJoinMode: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (joinMode: JoinMode) => async (
-	_dispatch: Dispatch<any>,
-	getState: () => State,
-	dataContext: DataContext
-) => {
-	const currentJoinMode = getState().room.joinMode;
-
-	if (currentJoinMode !== joinMode) {
-		await dataContext.game.setJoinMode(joinMode);
-	}
-};
-
 const onKicked: ActionCreator<RunActions.KickedAction> = (kicked: boolean) => ({
 	type: RunActions.RoomActionTypes.Kicked, kicked,
 });
@@ -562,8 +546,6 @@ const roomActionCreators = {
 	selectBannedItem,
 	unban,
 	mediaLoaded,
-	joinModeChanged,
-	setJoinMode,
 	onKicked,
 	onReconnect,
 	setWebCamera,

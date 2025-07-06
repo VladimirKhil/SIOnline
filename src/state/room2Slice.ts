@@ -12,6 +12,7 @@ import ChatMode from '../model/enums/ChatMode';
 import ChatMessage from '../model/ChatMessage';
 import UsersMode from '../model/enums/UsersMode';
 import MessageLevel from '../model/enums/MessageLevel';
+import JoinMode from '../client/game/JoinMode';
 
 export enum DialogView {
 	None,
@@ -97,6 +98,7 @@ export interface Room2State {
 	noRiskMode: boolean;
 
 	settings: AppSettings;
+	joinMode: JoinMode;
 }
 
 const initialState: Room2State = {
@@ -158,6 +160,7 @@ const initialState: Room2State = {
 	noRiskMode: false,
 
 	settings: initialAppSettings,
+	joinMode: JoinMode.AnyRole,
 };
 
 export const complain = createAsyncThunk(
@@ -420,6 +423,11 @@ export const room2Slice = createSlice({
 				p.answer = i < action.payload.length ? action.payload[i] : '';
 			});
 		},
+		setPlayerAnswer: (state: Room2State, action: PayloadAction<{ index: number, answer: string }>) => {
+			if (action.payload.index >= 0 && action.payload.index < state.persons.players.length) {
+				state.persons.players[action.payload.index].answer = action.payload.answer;
+			}
+		},
 		playerDeleted: (state: Room2State, action: PayloadAction<number>) => {
 			state.persons.players.splice(action.payload, 1);
 		},
@@ -648,7 +656,10 @@ export const room2Slice = createSlice({
 				text: action.payload,
 				level: MessageLevel.Warning,
 			});
-		}
+		},
+		setJoinMode	: (state: Room2State, action: PayloadAction<JoinMode>) => {
+			state.joinMode = action.payload;
+		},
 	},
 	extraReducers: (builder) => {
 		builder.addCase(sendAnswer.fulfilled, (state) => {
@@ -798,6 +809,7 @@ export const {
 	playerChanged,
 	playerSumChanged,
 	playersAnswersChanged,
+	setPlayerAnswer,
 	playerDeleted,
 	playersSwap,
 	playerStateChanged,
@@ -853,6 +865,7 @@ export const {
 	setChatActive,
 	clearChat,
 	addOperationErrorMessage,
+	setJoinMode,
 } = room2Slice.actions;
 
 export default room2Slice.reducer;

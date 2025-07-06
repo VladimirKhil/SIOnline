@@ -1,5 +1,6 @@
 .chatLog {
     overflow-y: auto;
+    overflow-x: hidden;
     -webkit-user-select: text;
     user-select: text;
     scrollbar-width: thin;
@@ -42,6 +43,7 @@
 
 .chatBody, .system {
 	white-space: pre-wrap;
+    overflow-wrap: anywhere;
 
     span {
         display: inline-block;
