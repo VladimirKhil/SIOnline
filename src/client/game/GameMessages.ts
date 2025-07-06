@@ -84,6 +84,9 @@ const enum GameMessages {
 
 	MediaPreloaded = 'MEDIA_PRELOADED',
 
+	/** Notifies about media preload progress. */
+	MediaPreloadProgress = 'MEDIA_PRELOAD_PROGRESS',
+
 	Options2 = 'OPTIONS2',
 
 	OralAnswer = 'ORAL_ANSWER',

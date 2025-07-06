@@ -209,6 +209,12 @@ export function PlayerView(props: PlayerViewProps): JSX.Element {
 					<div className='mediaLoadedMark' title={localization.mediaLoadedMark} />
 				) : null}
 			</div>
+
+			<div className='preload__progress'>
+				{player.mediaPreloadProgress > 0 && player.mediaPreloadProgress <= 100
+					? <div title={localization.mediaPreloadProgress}>{player.mediaPreloadProgress}%</div>
+					: null}
+			</div>
 		</li>
 	);
 }

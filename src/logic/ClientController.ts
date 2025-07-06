@@ -1,4 +1,4 @@
-import { Action, AnyAction, Dispatch } from 'redux';
+import { AnyAction, Dispatch } from 'redux';
 import State from '../state/State';
 import DataContext from '../model/DataContext';
 import ContentGroup from '../model/ContentGroup';
@@ -114,8 +114,8 @@ import {
 	validate,
 	setNoRiskMode,
 	addToChat,
-	setPlayerAnswer,
-	setJoinMode
+	setJoinMode,
+	showMediaPreloadProgress
 } from '../state/room2Slice';
 
 import PersonInfo from '../model/PersonInfo';
@@ -542,6 +542,10 @@ export default class ClientController {
 				break;
 			}
 		}
+	}
+
+	onMediaPreloadProgress(playerName: string, progress: number) {
+		this.appDispatch(showMediaPreloadProgress({ playerName, progress }));
 	}
 
 	onOptionChanged(name: string, value: string, reason: string) {

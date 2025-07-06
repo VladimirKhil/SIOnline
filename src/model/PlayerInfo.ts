@@ -10,5 +10,6 @@ export default interface PlayerInfo extends PersonInfo {
 	inGame: boolean;
 	mediaLoaded: boolean;
 	mediaPreloaded: boolean;
+	mediaPreloadProgress: number;
 	answer: string;
 }

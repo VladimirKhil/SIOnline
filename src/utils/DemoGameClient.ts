@@ -116,6 +116,7 @@ export default class DemoGameClient implements IGameClient {
 				inGame: true,
 				mediaLoaded: false,
 				mediaPreloaded: false,
+				mediaPreloadProgress: 0,
 				answer: '',
 			}, {
 				name: localization.player + ' 2',
@@ -131,6 +132,7 @@ export default class DemoGameClient implements IGameClient {
 				inGame: true,
 				mediaLoaded: false,
 				mediaPreloaded: false,
+				mediaPreloadProgress: 0,
 				answer: '',
 			}, {
 				name: this.getState().room2.name,
@@ -146,6 +148,7 @@ export default class DemoGameClient implements IGameClient {
 				inGame: true,
 				mediaLoaded: false,
 				mediaPreloaded: false,
+				mediaPreloadProgress: 0,
 				answer: '',
 			}]
 		);

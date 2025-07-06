@@ -448,6 +448,20 @@ const viewerHandler = (
 			controller.onMediaPreloaded(args[1]);
 			break;
 
+		case GameMessages.MediaPreloadProgress:
+			if (args.length < 3) {
+				break;
+			}
+
+			const playerName = args[1];
+			const progress = parseInt(args[2], 10);
+
+			if (!isNaN(progress) && progress >= 0 && progress <= 100) {
+				controller.onMediaPreloadProgress(playerName, progress);
+			}
+
+			break;
+
 		case GameMessages.Options2:
 			if (args.length < 2) {
 				break;
@@ -1155,6 +1169,7 @@ function info(controller: ClientController, ...args: string[]) {
 			inGame: true,
 			mediaLoaded: false,
 			mediaPreloaded: false,
+			mediaPreloadProgress: 0,
 			answer: '',
 		});
 

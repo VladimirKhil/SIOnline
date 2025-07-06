@@ -406,6 +406,7 @@ export const room2Slice = createSlice({
 				inGame: true,
 				mediaLoaded: false,
 				mediaPreloaded: false,
+				mediaPreloadProgress: 0,
 				answer: '',
 			});
 		},
@@ -503,6 +504,14 @@ export const room2Slice = createSlice({
 		},
 		playerMediaPreloaded(state: Room2State, action: PayloadAction<number>) {
 			state.persons.players[action.payload].mediaPreloaded = true;
+		},
+		setPlayerMediaPreloadProgress(state: Room2State, action: PayloadAction<{ playerName: string, progress: number }>) {
+			for (let i = 0; i < state.persons.players.length; i++) {
+				if (state.persons.players[i].name === action.payload.playerName) {
+					state.persons.players[i].mediaPreloadProgress = action.payload.progress;
+					return;
+				}
+			}
 		},
 		setHostName(state: Room2State, action: PayloadAction<string | null>) {
 			state.persons.hostName = action.payload;
@@ -741,7 +750,26 @@ export const pressGameButton = createAsyncThunk(
 	},
 );
 
+const timeoutIds: Record<string, NodeJS.Timeout> = {};
 
+export const showMediaPreloadProgress = createAsyncThunk(
+	'room2/showMediaPreloadProgress',
+	async (arg: { playerName: string, progress: number }, thunkAPI) => {
+		if (timeoutIds[arg.playerName]) {
+			clearTimeout(timeoutIds[arg.playerName]);
+			delete timeoutIds[arg.playerName];
+		}
+
+		thunkAPI.dispatch(room2Slice.actions.setPlayerMediaPreloadProgress(arg));
+
+		timeoutIds[arg.playerName] = setTimeout(() => {
+			thunkAPI.dispatch(room2Slice.actions.setPlayerMediaPreloadProgress({
+				playerName: arg.playerName,
+				progress: 0,
+			}));
+		}, 10000);
+	},
+);
 
 let lastReplicLock: number;
 
@@ -827,6 +855,7 @@ export const {
 	playerInGameChanged,
 	playerMediaLoaded,
 	playerMediaPreloaded,
+	setPlayerMediaPreloadProgress,
 	setHostName,
 	questionAnswersChanged,
 	validate,
