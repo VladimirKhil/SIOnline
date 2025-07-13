@@ -23,6 +23,7 @@ import Sex from '../model/enums/Sex';
 import RoundRules from '../model/enums/RoundRules';
 import { AppDispatch } from '../state/store';
 import TimerStates from '../model/enums/TimeStates';
+import PlayerStatistics from '../model/PlayerStatistics';
 
 import { answerOptions,
 	appendPartialText,
@@ -53,6 +54,7 @@ import { answerOptions,
 	showQuestionType,
 	showRoundTable,
 	showRoundThemes,
+	showStatistics,
 	showText,
 	startLoadTimer,
 	switchToContent,
@@ -490,14 +492,33 @@ export default class ClientController {
 		}
 	}
 
+	onGameStatistics(statistics: PlayerStatistics[]) {
+		this.appDispatch(showStatistics(statistics));
+
+		if (this.getState().settings.writeGameLog) {
+			this.appDispatch(addGameLog(`${localization.gameStatistics}:`));
+
+			statistics.forEach(stat => {
+				const logMessage = `${stat.name}: Right: ${stat.rightAnswerCount}/${stat.rightTotal}, ` +
+					`Wrong: ${stat.wrongAnswerCount}/${stat.wrongTotal}`;
+				this.appDispatch(addGameLog(logMessage));
+			});
+		}
+	}
+
 	onInfo(all: Persons, showman: PersonInfo, players: PlayerInfo[]) {
 		this.dispatch(roomActionCreators.infoChanged(all));
 		this.appDispatch(infoChanged({ showman, players }));
 		this.dispatch(actionCreators.sendAvatar() as any);
 	}
 
-	onJoinModeChanged(joinMode: JoinMode) {
+	onJoinModeChanged(joinMode: JoinMode, inform: boolean) {
 		this.appDispatch(setJoinMode(joinMode));
+
+		if (!inform) {
+			return;
+		}
+
 		const message = this.getJoinModeMessage(joinMode);
 		const { hostName } = this.getState().room2.persons;
 

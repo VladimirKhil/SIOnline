@@ -68,6 +68,8 @@ const enum GameMessages {
 	/** Game metadata: game name, package name, contact uri. */
 	GameMetadata = 'GAMEMETADATA',
 
+	GameStatistics = 'GAME_STATISTICS',
+
 	GameThemes = 'GAMETHEMES',
 
 	Hint = 'HINT',

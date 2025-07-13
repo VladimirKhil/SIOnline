@@ -1,0 +1,130 @@
+.tableStatistics {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	width: 100%;
+	padding: 2%;
+	box-sizing: border-box;
+}
+
+.statisticsHeader {
+	text-align: center;
+	margin-bottom: 3%;
+	color: #FFD700;
+	text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.statisticsTable {
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+	border: 2px solid #FFD700;
+	border-radius: 10px;
+	overflow: hidden;
+	background: rgba(0, 0, 0, 0.3);
+	backdrop-filter: blur(5px);
+}
+
+.statisticsTableHeader {
+	display: grid;
+	grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+	background: linear-gradient(135deg, #FFD700, #FFA500);
+	color: #000;
+	font-weight: bold;
+	border-bottom: 2px solid #B8860B;
+}
+
+.statisticsTableRow {
+	flex: 1;
+	overflow: hidden;
+	display: grid;
+	grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+	border-bottom: 1px solid rgba(255, 215, 0, 0.3);
+	transition: background-color 0.3s ease;
+}
+
+.statisticsTableRow:hover {
+	background: rgba(255, 215, 0, 0.1);
+}
+
+.statisticsTableRow.even {
+	background: rgba(255, 255, 255, 0.05);
+}
+
+.statisticsTableRow.odd {
+	background: rgba(0, 0, 0, 0.05);
+}
+
+.statCell {
+	padding: 1.5%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+	border-right: 1px solid rgba(255, 215, 0, 0.3);
+}
+
+.statCell:last-child {
+	border-right: none;
+}
+
+.statCell.playerName {
+	justify-content: flex-start;
+	padding-left: 3%;
+	font-weight: bold;
+}
+
+.statisticsTableHeader .statCell {
+	color: #000;
+	text-shadow: none;
+}
+
+.rightCount {
+	color: #4CAF50 !important;
+	font-weight: bold;
+}
+
+.wrongCount {
+	color: #F44336 !important;
+	font-weight: bold;
+}
+
+.positivePoints {
+	color: #4CAF50 !important;
+	font-weight: bold;
+}
+
+.negativePoints {
+	color: #F44336 !important;
+	font-weight: bold;
+}
+
+.neutralPoints {
+	color: #9E9E9E !important;
+}
+
+.statisticsFooter {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin-top: 20px;
+	font-size: 24px;
+	font-weight: bold;
+	text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+	.statisticsTable {
+		font-size: 0.8em;
+	}
+
+	.statCell {
+		padding: 1%;
+	}
+
+	.statisticsTableHeader,
+	.statisticsTableRow {
+		grid-template-columns: 2fr 0.8fr 0.8fr 0.8fr 1fr;
+	}
+}

@@ -8,6 +8,7 @@ import ContentType from '../model/enums/ContentType';
 import ItemState from '../model/enums/ItemState';
 import TimerInfo from '../model/TimerInfo';
 import TimerStates from '../model/enums/TimeStates';
+import PlayerStatistics from '../model/PlayerStatistics';
 
 export interface TableState {
 	mode: TableMode;
@@ -36,6 +37,7 @@ export interface TableState {
 	appendText: string;
 	loadTimer: TimerInfo;
 	isAnswer: boolean;
+	statistics: PlayerStatistics[];
 }
 
 const initialState: TableState = {
@@ -71,6 +73,7 @@ const initialState: TableState = {
 		isPausedByUser: false,
 	},
 	isAnswer: false,
+	statistics: [],
 };
 
 export const tableSlice = createSlice({
@@ -281,6 +284,10 @@ export const tableSlice = createSlice({
 		showContentHint: (state, action: PayloadAction<string>) => {
 			state.contentHint = action.payload;
 		},
+		showStatistics: (state, action: PayloadAction<PlayerStatistics[]>) => {
+			state.statistics = action.payload;
+			state.mode = TableMode.Statistics;
+		},
 	}
 });
 
@@ -322,6 +329,7 @@ export const {
 	pauseLoadTimer,
 	resumeLoadTimer,
 	showContentHint,
+	showStatistics,
 } = tableSlice.actions;
 
 export default tableSlice.reducer;

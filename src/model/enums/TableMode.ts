@@ -10,6 +10,7 @@
 	Content,
 	Object,
 	QuestionType,
+	Statistics,
 }
 
 export default TableMode;

@@ -17,6 +17,7 @@ import TableContent from '../TableContent/TableContent';
 import ObjectView from '../ObjectView/ObjectView';
 import { useAppSelector } from '../../../state/hooks';
 import TableWelcome from '../TableWelcome/TableWelcome';
+import TableStatistics from '../TableStatistics/TableStatistics';
 
 import './GameTable.css';
 
@@ -64,6 +65,9 @@ function getContent(mode: TableMode) {
 		case TableMode.Final:
 			return <FinalTable />;
 
+		case TableMode.Statistics:
+			return <TableStatistics />;
+
 		case TableMode.Object:
 		case TableMode.QuestionType:
 			return <ObjectView />;
@@ -86,6 +90,7 @@ function getCaption(props: GameTableProps): string | null {
 		case TableMode.Content:
 		case TableMode.Object:
 		case TableMode.QuestionType:
+		case TableMode.Statistics:
 			return props.caption ? props.caption : ' ';
 
 		default:

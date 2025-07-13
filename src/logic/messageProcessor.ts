@@ -403,6 +403,30 @@ const viewerHandler = (
 			dispatch(roomActionCreators.gameMetadataChanged(args[1], args[2], args[3], args.length > 4 ? args[4] : null));
 			break;
 
+		case GameMessages.GameStatistics: {
+			if (args.length < 2) {
+				break;
+			}
+
+			const statistics: { name: string; rightAnswerCount: number; wrongAnswerCount: number; rightTotal: number; wrongTotal: number; }[] = [];
+
+			// Each player has 5 parameters: Name, RightAnswerCount, WrongAnswerCount, RightTotal, WrongTotal
+			for (let i = 1; i < args.length; i += 5) {
+				if (i + 4 < args.length) {
+					statistics.push({
+						name: args[i],
+						rightAnswerCount: parseInt(args[i + 1], 10),
+						wrongAnswerCount: parseInt(args[i + 2], 10),
+						rightTotal: parseInt(args[i + 3], 10),
+						wrongTotal: parseInt(args[i + 4], 10)
+					});
+				}
+			}
+
+			controller.onGameStatistics(statistics);
+			break;
+		}
+
 		case GameMessages.GameThemes:
 			controller.onGameThemes(args.slice(1));
 			break;
@@ -764,7 +788,7 @@ const viewerHandler = (
 				break;
 			}
 
-			controller.onJoinModeChanged(joinMode);
+			controller.onJoinModeChanged(joinMode, args.length > 2 && args[2] === '+');
 			break;
 
 		case GameMessages.ShowmanReplic:
