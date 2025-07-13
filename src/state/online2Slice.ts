@@ -30,7 +30,6 @@ export interface Online2State {
 	uploadPackageProgress: boolean;
 	uploadPackagePercentage: number;
 	latestGames?: GamesResponse;
-	gamesStatistics?: GamesStatistic;
 	packagesStatistics?: PackagesStatistic;
 	password: string;
 	newGameShown: boolean;
@@ -75,23 +74,30 @@ async function loadStatisticsAsync(dispatch: AppDispatch, dataContext: DataConte
 	const siStatisticsClient = new SIStatisticsClient({ serviceUri: dataContext.config.siStatisticsServiceUri });
 
 	const now = new Date();
+	const FIVE_MINUTES = 5 * 60 * 1000;
 	const ONE_DAY = 24 * 60 * 60 * 1000;
+	const ONE_WEEK = 7 * ONE_DAY;
 
-	const filter: StatisticFilter = {
+	const packagesFilter: StatisticFilter = {
 		platform: GamePlatforms.GameServer,
-		from: new Date(now.getTime() - ONE_DAY),
+		from: new Date(now.getTime() - ONE_WEEK),
 		to: now,
-		count: 5,
+		count: 11,
 		languageCode: localization.getLanguage()
 	};
 
-	const packagesStatistics = await siStatisticsClient.getLatestTopPackagesAsync({ ...filter, count: 6 });
+	const gamesFilter: StatisticFilter = {
+		platform: GamePlatforms.GameServer,
+		from: new Date(now.getTime() - FIVE_MINUTES),
+		to: now,
+		count: 25,
+		languageCode: localization.getLanguage()
+	};
+
+	const packagesStatistics = await siStatisticsClient.getLatestTopPackagesAsync({ statisticFilter: packagesFilter });
 	dispatch(packagesStatisticsLoaded(packagesStatistics));
 
-	const gamesStatistics = await siStatisticsClient.getLatestGamesStatisticAsync(filter);
-	dispatch(gamesStatisticLoaded(gamesStatistics));
-
-	const latestGames = await siStatisticsClient.getLatestGamesInfoAsync({ ...filter, count: 25 });
+	const latestGames = await siStatisticsClient.getLatestGamesInfoAsync(gamesFilter);
 	dispatch(latestGamesLoaded(latestGames));
 }
 
@@ -176,9 +182,6 @@ export const online2Slice = createSlice({
 		latestGamesLoaded: (state: Online2State, action: PayloadAction<GamesResponse>) => {
 			state.latestGames = action.payload;
 		},
-		gamesStatisticLoaded: (state: Online2State, action: PayloadAction<GamesStatistic>) => {
-			state.gamesStatistics = action.payload;
-		},
 		packagesStatisticsLoaded: (state: Online2State, action: PayloadAction<PackagesStatistic>) => {
 			state.packagesStatistics = action.payload;
 		},
@@ -237,7 +240,6 @@ export const {
 	uploadPackageFinished,
 	uploadPackageProgress,
 	latestGamesLoaded,
-	gamesStatisticLoaded,
 	packagesStatisticsLoaded,
 	passwordChanged,
 	gameCreationStart,

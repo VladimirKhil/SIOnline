@@ -27,7 +27,6 @@ const sampleStatistics: PlayerStatistics[] = [
 	}
 ];
 
-// Example of how the action would be dispatched
-// dispatch(showStatistics(sampleStatistics));
-
-export { sampleStatistics };
+test('PlayerStatistics sample data', () => {
+	expect(sampleStatistics).toHaveLength(3);
+});

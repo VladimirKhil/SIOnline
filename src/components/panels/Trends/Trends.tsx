@@ -21,6 +21,35 @@ function isValidLink(link: string) {
 		link.startsWith('https://www.twitch.tv/');
 }
 
+function isValidSourceForDownload(source?: string): boolean {
+	return !!source &&
+		source.length > 0 &&
+		(source.startsWith('http://') || source.startsWith('https://'));
+}
+
+function downloadPackage(source: string, packageName: string): void {
+	try {
+		// Create a temporary anchor element to trigger download
+		const link = document.createElement('a');
+		link.href = source;
+
+		// Sanitize the package name for use as filename
+		const sanitizedName = packageName.replace(/[<>:"/\\|?*]/g, '_');
+		link.download = `${sanitizedName}.siq`;
+		link.target = '_blank';
+		link.rel = 'noopener noreferrer';
+
+		// Append to document, click, and remove
+		document.body.appendChild(link);
+		link.click();
+		document.body.removeChild(link);
+	} catch (error) {
+		console.error('Failed to download package:', error);
+		// Fallback: open in new tab
+		window.open(source, '_blank', 'noopener,noreferrer');
+	}
+}
+
 export default function Trends(): JSX.Element {
 	const common = useAppSelector(state => state.common);
 	const online = useAppSelector(state => state.online2);
@@ -32,14 +61,28 @@ export default function Trends(): JSX.Element {
 			case 0:
 				return online.packagesStatistics
 				? <div>
-					{online.packagesStatistics.packages.filter(p => p.package.name !== Constants.RANDOM_PACKAGE).map(
-						(p, i) => {
+					{online.packagesStatistics.packages
+						.filter(p => p.package.name !== Constants.RANDOM_PACKAGE)
+						.map((p, i) => {
 							const trimmedPackageName = trimLength(p.package.name, 75);
 							const trimmedAuthors = trimLength(p.package.authors.join(', '), 75);
 
 							return <div key={i} className='trendPackage'>
-								<div><span className='packageName'>
-									{common.clearUrls ? clearUrls(trimmedPackageName) : trimmedPackageName}</span>
+								<div className='packageHeader'>
+									<div><span className='packageName'>
+										{common.clearUrls ? clearUrls(trimmedPackageName) : trimmedPackageName}</span>
+									</div>
+
+									{isValidSourceForDownload(p.package.source) && (
+										<button
+											type="button"
+											className='downloadButton'
+											onClick={() => downloadPackage(p.package.source || '', p.package.name)}
+											title={localization.download}
+											aria-label={localization.download}>
+											⬇️
+										</button>
+									)}
 								</div>
 
 								<div className='property'>
@@ -63,7 +106,7 @@ export default function Trends(): JSX.Element {
 									</div>
 								</div>
 							</div>;
-							})}
+						})}
 					</div>
 				: null;
 

@@ -11,7 +11,7 @@
 		font-size: 15px;
 
 		.tab {
-			padding: 10px 20px;
+			padding: 10px 18px;
 			margin-top: 0;
 			margin-left: 0;
 			margin-right: 10px;
@@ -30,6 +30,31 @@
 	padding: 20px;
 	background: #0A0E30;
 	border-radius: 12px;
+}
+
+.packageHeader {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 5px;
+}
+
+.downloadButton {
+	border-radius: 6px;
+	color: white;
+	padding: 8px 12px;
+	font-size: 16px;
+	cursor: pointer;
+	transition: all 0.3s ease;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 40px;
+	height: 40px;
+
+	&:hover {
+		background: rgba(255, 255, 255, 0.2);
+	}
 }
 
 .trends .packageName, .trends .packageAuthors, .trends .gameName {
