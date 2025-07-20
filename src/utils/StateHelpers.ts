@@ -11,7 +11,16 @@ export function getCulture(state: State): string {
 }
 
 export function getFullCulture(state: State): string {
-	return getCulture(state) === 'ru' ? 'ru-RU' : 'en-US';
+	const culture = getCulture(state);
+
+	switch (culture) {
+		case 'ru':
+			return 'ru-RU';
+		case 'sr':
+			return 'sr-RS';
+		default:
+			return 'en-US';
+	}
 }
 
 export function getMeAsPlayer(state: State): PlayerInfo | null {

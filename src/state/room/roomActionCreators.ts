@@ -163,20 +163,6 @@ const setTable: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (
 	await dataContext.game.setTable(tableIndex === 0, tableIndex - 1, name);
 };
 
-const changeType: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
-	_dispatch: Dispatch<RunActions.KnownRoomAction>,
-	getState: () => State,
-	dataContext: DataContext
-	) => {
-	const tableIndex = getState().room.selectedTableIndex;
-
-	if (tableIndex < 0 || tableIndex >= getState().room2.persons.players.length + 1) {
-		return;
-	}
-
-	await dataContext.game.changeTableType(tableIndex === 0, tableIndex - 1);
-};
-
 const personAvatarChanged: ActionCreator<RunActions.PersonAvatarChangedAction> = (personName: string, avatarUri: string) => ({
 	type: RunActions.RoomActionTypes.PersonAvatarChanged, personName, avatarUri
 });
@@ -500,7 +486,6 @@ const roomActionCreators = {
 	deleteTable,
 	freeTable,
 	setTable,
-	changeType,
 	personAvatarChanged,
 	personAvatarVideoChanged,
 	stageChanged,

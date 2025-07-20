@@ -39,6 +39,18 @@ export const freeTable = createAsyncThunk(
 	}
 );
 
+export const changeTableType = createAsyncThunk(
+	'server/changeTableType',
+	async (arg: { isShowman: boolean, tableIndex: number }, thunkAPI) => {
+		if (arg.tableIndex < 0 || (!arg.isShowman && arg.tableIndex >= (thunkAPI.getState() as any).room2.persons.players.length)) {
+			return;
+		}
+
+		const dataContext = thunkAPI.extra as DataContext;
+		await dataContext.game.changeTableType(arg.isShowman, arg.tableIndex);
+	}
+);
+
 export const pauseGame = createAsyncThunk(
 	'server/pauseGame',
 	async (arg: void, thunkAPI) => {
