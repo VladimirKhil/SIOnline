@@ -49,7 +49,7 @@ interface GameChatViewProps {
 
 const mapStateToProps = (state: State) => ({
 	isConnected: state.common.isSIHostConnected,
-	personsCount: Object.values(state.room.persons.all).length,
+	personsCount: Object.values(state.room2.persons.all).length,
 	areSumsEditable: state.room.areSumsEditable,
 	isHost: isHost(state),
 	voiceChatUri: state.room.metadata.voiceChatUri,

@@ -1,13 +1,8 @@
-import Persons from '../../model/Persons';
 import Timers from '../../model/Timers';
 import TimerStates from '../../model/enums/TimeStates';
 import StakeModes from '../../client/game/StakeModes';
 
 export default interface RoomState {
-	persons: {
-		all: Persons;
-	};
-
 	answer: string | null;
 
 	stage: {
@@ -67,10 +62,6 @@ export default interface RoomState {
 }
 
 export const initialState: RoomState = {
-	persons: {
-		all: {},
-	},
-
 	answer: null,
 
 	stage: {

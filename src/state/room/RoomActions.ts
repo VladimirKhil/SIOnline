@@ -1,5 +1,3 @@
-import Account from '../../model/Account';
-import Persons from '../../model/Persons';
 import StakeModes from '../../client/game/StakeModes';
 
 export const enum RoomActionTypes {
@@ -13,16 +11,11 @@ export const enum RoomActionTypes {
 	RoomHideGameInfo = 'ROOM_HIDE_GAMEINFO',
 	RoomShowManageGame = 'ROOM_SHOW_MANAGE_GAME',
 	RoomHideManageGame = 'ROOM_HIDE_MANAGE_GAME',
-	InfoChanged = 'INFO_CHANGED',
 	TableSelected = 'TABLE_SELECTED',
-	PersonAvatarChanged = 'PERSON_AVATAR_CHANGED',
-	PersonAvatarVideoChanged = 'PERSON_AVATAR_VIDEO_CHANGED',
 	StageChanged = 'STAGE_CHANGED',
 	GameStateCleared = 'GAME_STATE_CLEARED',
 	AfterQuestionStateChanged = 'AFTER_QUESTION_STATE_CHANGED',
 	CurrentPriceChanged = 'CURRENT_PRICE_CHANGED',
-	PersonAdded = 'PERSON_ADDED',
-	PersonRemoved = 'PERSON_REMOVED',
 	ClearDecisions = 'CLEAR_DECISIONS',
 	IsAnswering = 'IS_ANSWERING',
 	AnswerChanged = 'ANSWER_CHANGED',
@@ -65,16 +58,11 @@ export type RunShowGameInfoAction = { type: RoomActionTypes.RoomShowGameInfo };
 export type RunHideGameInfoAction = { type: RoomActionTypes.RoomHideGameInfo };
 export type RunShowManageGameAction = { type: RoomActionTypes.RoomShowManageGame };
 export type RunHideManageGameAction = { type: RoomActionTypes.RoomHideManageGame };
-export type InfoChangedAction = { type: RoomActionTypes.InfoChanged, all: Persons };
 export type TableSelectedAction = { type: RoomActionTypes.TableSelected, tableIndex: number };
-export type PersonAvatarChangedAction = { type: RoomActionTypes.PersonAvatarChanged, personName: string, avatarUri: string };
-export type PersonAvatarVideoChangedAction = { type: RoomActionTypes.PersonAvatarVideoChanged, personName: string, avatarUri: string };
 export type StageChangedAction = { type: RoomActionTypes.StageChanged, stageName: string, roundIndex: number };
 export type GameStateClearedAction = { type: RoomActionTypes.GameStateCleared };
 export type AfterQuestionStateChangedAction = { type: RoomActionTypes.AfterQuestionStateChanged, isAfterQuestion: boolean };
 export type CurrentPriceChangedAction = { type: RoomActionTypes.CurrentPriceChanged, currentPrice: number };
-export type PersonAddedAction = { type: RoomActionTypes.PersonAdded, person: Account };
-export type PersonRemovedAction = { type: RoomActionTypes.PersonRemoved, name: string };
 export type ClearDecisionsAction = { type: RoomActionTypes.ClearDecisions };
 export type IsAnsweringAction = { type: RoomActionTypes.IsAnswering };
 export type AnswerChangedAction = { type: RoomActionTypes.AnswerChanged, answer: string };
@@ -131,16 +119,11 @@ export type KnownRoomAction =
 	| RunHideGameInfoAction
 	| RunShowManageGameAction
 	| RunHideManageGameAction
-	| InfoChangedAction
 	| TableSelectedAction
-	| PersonAvatarChangedAction
-	| PersonAvatarVideoChangedAction
 	| StageChangedAction
 	| GameStateClearedAction
 	| AfterQuestionStateChangedAction
 	| CurrentPriceChangedAction
-	| PersonAddedAction
-	| PersonRemovedAction
 	| ClearDecisionsAction
 	| IsAnsweringAction
 	| AnswerChangedAction

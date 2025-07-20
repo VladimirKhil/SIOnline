@@ -20,7 +20,7 @@ interface PersonsViewProps {
 
 const mapStateToProps = (state: State) => ({
 	isHost: isHost(state),
-	all: state.room.persons.all,
+	all: state.room2.persons.all,
 });
 
 export function PersonsView(props: PersonsViewProps): JSX.Element {

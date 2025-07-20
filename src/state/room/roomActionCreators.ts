@@ -4,9 +4,6 @@ import * as RunActions from './RoomActions';
 import State from '../State';
 import DataContext from '../../model/DataContext';
 import localization from '../../model/resources/localization';
-import Account from '../../model/Account';
-import Persons from '../../model/Persons';
-import JoinMode from '../../client/game/JoinMode';
 import { stopAudio, userErrorChanged } from '../commonSlice';
 import Path from '../../model/enums/Path';
 import actionCreators from '../../logic/actionCreators';
@@ -113,10 +110,6 @@ const exitGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (
 	dispatch(navigate({ navigation: { path: state.ui.navigation.returnToLobby ? Path.Lobby : Path.Menu }, saveState: true }) as unknown as Action);
 };
 
-const infoChanged: ActionCreator<RunActions.InfoChangedAction> = (all: Persons) => ({
-	type: RunActions.RoomActionTypes.InfoChanged, all,
-});
-
 const tableSelected: ActionCreator<RunActions.TableSelectedAction> = (tableIndex: number) => ({
 	type: RunActions.RoomActionTypes.TableSelected, tableIndex
 });
@@ -163,14 +156,6 @@ const setTable: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (
 	await dataContext.game.setTable(tableIndex === 0, tableIndex - 1, name);
 };
 
-const personAvatarChanged: ActionCreator<RunActions.PersonAvatarChangedAction> = (personName: string, avatarUri: string) => ({
-	type: RunActions.RoomActionTypes.PersonAvatarChanged, personName, avatarUri
-});
-
-const personAvatarVideoChanged: ActionCreator<RunActions.PersonAvatarVideoChangedAction> = (personName: string, avatarUri: string) => ({
-	type: RunActions.RoomActionTypes.PersonAvatarVideoChanged, personName, avatarUri
-});
-
 const stageChanged: ActionCreator<RunActions.StageChangedAction> = (stageName: string, roundIndex: number) => ({
 	type: RunActions.RoomActionTypes.StageChanged, stageName, roundIndex
 });
@@ -189,14 +174,6 @@ const isQuestionChanged: ActionCreator<RunActions.IsQuestionChangedAction> = (is
 
 const currentPriceChanged: ActionCreator<RunActions.CurrentPriceChangedAction> = (currentPrice: number) => ({
 	type: RunActions.RoomActionTypes.CurrentPriceChanged, currentPrice
-});
-
-const personAdded: ActionCreator<RunActions.PersonAddedAction> = (person: Account) => ({
-	type: RunActions.RoomActionTypes.PersonAdded, person
-});
-
-const personRemoved: ActionCreator<RunActions.PersonRemovedAction> = (name: string) => ({
-	type: RunActions.RoomActionTypes.PersonRemoved, name
 });
 
 const apellate: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
@@ -481,20 +458,15 @@ const roomActionCreators = {
 	runShowManageGame,
 	runHideManageGame,
 	exitGame,
-	infoChanged,
 	tableSelected,
 	deleteTable,
 	freeTable,
 	setTable,
-	personAvatarChanged,
-	personAvatarVideoChanged,
 	stageChanged,
 	gameStateCleared,
 	afterQuestionStateChanged,
 	isQuestionChanged,
 	currentPriceChanged,
-	personAdded,
-	personRemoved,
 	clearDecisions,
 	apellate,
 	disagree,

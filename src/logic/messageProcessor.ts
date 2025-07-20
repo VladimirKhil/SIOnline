@@ -25,12 +25,11 @@ import LayoutMode from '../model/enums/LayoutMode';
 import ClientController from './ClientController';
 import ContentInfo from '../model/ContentInfo';
 import ItemState from '../model/enums/ItemState';
-import GameSound from '../model/enums/GameSound';
-import { playAudio } from '../state/commonSlice';
 import clearUrls from '../utils/clearUrls';
 import ThemesPlayMode from '../model/enums/ThemesPlayMode';
 import { AppDispatch } from '../state/store';
 import { addToChat,
+	personAvatarChanged,
 	playerInGameChanged,
 	playerStakeChanged,
 	playerStateChanged } from '../state/room2Slice';
@@ -617,7 +616,7 @@ const viewerHandler = (
 			const personName = args[1];
 			const uri = controller.preprocessServerUri(args[2]);
 
-			dispatch(roomActionCreators.personAvatarChanged(personName, uri));
+			dispatch(personAvatarChanged({ personName, avatarUri: uri }));
 			break;
 		}
 

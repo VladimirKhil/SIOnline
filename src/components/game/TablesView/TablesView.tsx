@@ -20,13 +20,12 @@ interface TablesViewProps {
 	computerAccounts: string[] | null;
 
 	selectTable: (tableIndex: number) => void;
-	changeType: () => void;
 	setTable: (name: string) => void;
 }
 
 const mapStateToProps = (state: State) => ({
 	isConnected: state.common.isSIHostConnected,
-	persons: state.room.persons.all,
+	persons: state.room2.persons.all,
 	selectedIndex: state.room.selectedTableIndex,
 	computerAccounts: state.common.computerAccounts
 });
@@ -34,9 +33,6 @@ const mapStateToProps = (state: State) => ({
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => ({
 	selectTable: (tableIndex: number) => {
 		dispatch(roomActionCreators.tableSelected(tableIndex));
-	},
-	changeType: () => {
-		dispatch(roomActionCreators.changeType() as unknown as AnyAction);
 	},
 	setTable: (name: string) => {
 		dispatch(roomActionCreators.setTable(name) as unknown as AnyAction);
@@ -102,14 +98,6 @@ export function TablesView(props: TablesViewProps): JSX.Element {
 			</div>
 
 			<div className="buttonsPanel sidePanel">
-				<button
-					className='replacePersonButton standard'
-					type="button"
-					onClick={() => props.changeType()}
-					disabled={!props.isConnected || !selectedPerson || !isHost}>
-					{selectedPerson && selectedPerson.isHuman ? localization.changeToBot : localization.changeToHuman}
-				</button>
-
 				<FlyoutButton
 					className='standard'
 					disabled={!props.isConnected || !canSet || !isHost}

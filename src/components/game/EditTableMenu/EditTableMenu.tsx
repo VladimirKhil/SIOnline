@@ -4,7 +4,7 @@ import localization from '../../../model/resources/localization';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 import Account from '../../../model/Account';
 import Constants from '../../../model/enums/Constants';
-import { deleteTable, freeTable } from '../../../state/serverActions';
+import { changeTableType, deleteTable, freeTable } from '../../../state/serverActions';
 
 import './EditTableMenu.scss';
 import menuSvg from '../../../../assets/images/menu.svg';
@@ -23,8 +23,9 @@ const EditTableMenu: React.FC<EditTableMenuProps> = (props) => {
 
 	const canFree = props.account && props.account.isHuman;
 	const canDelete = props.isPlayerScope && room.persons.players.length > Constants.MIN_PLAYER_COUNT;
+	const isBot = props.account && !props.account.isHuman;
 
-	if (!common.isSIHostConnected || !isHost || (!canFree && !canDelete) || (room.stage.isGameStarted && !room.stage.isEditingTables)) {
+	if (!common.isSIHostConnected || !isHost || (room.stage.isGameStarted && !room.stage.isEditingTables)) {
 		return null;
 	}
 
@@ -36,6 +37,10 @@ const EditTableMenu: React.FC<EditTableMenuProps> = (props) => {
 		appDispatch(deleteTable(props.tableIndex));
 	};
 
+	const onChangeTableType = () => {
+		appDispatch(changeTableType({ isShowman: !props.isPlayerScope, tableIndex: props.tableIndex }));
+	};
+
 	return (
 		<FlyoutButton
 			className="editTableMenu"
@@ -44,6 +49,7 @@ const EditTableMenu: React.FC<EditTableMenuProps> = (props) => {
 				<ul className="editTableMenuList">
 					{canFree ? <li onClick={onFreeTable}>{localization.freeTable}</li> : null}
 					{canDelete ? <li onClick={onDeleteTable}>{localization.deleteTable}</li> : null}
+					<li onClick={onChangeTableType}>{isBot ? localization.changeToHuman : localization.changeToBot}</li>
 				</ul>
 			}>
 			<img src={menuSvg} alt={localization.menu} className="editTableMenu_menuIcon" />

@@ -1,7 +1,7 @@
 import { AnyAction, Reducer } from 'redux';
 import RoomState, { initialState } from './RoomState';
 import { KnownRoomAction, RoomActionTypes } from './RoomActions';
-import { removeS, set } from '../../utils/RecordExtensions';
+import { removeS } from '../../utils/RecordExtensions';
 import { updateTimers } from '../../utils/TimerInfoHelpers';
 import TimerStates from '../../model/enums/TimeStates';
 
@@ -69,51 +69,10 @@ const roomReducer: Reducer<RoomState> = (state: RoomState = initialState, anyAct
 				manageGameVisible: false
 			};
 
-		case RoomActionTypes.InfoChanged:
-			return {
-				...state,
-				persons: {
-					...state.persons,
-					all: action.all,
-				}
-			};
-
 		case RoomActionTypes.TableSelected:
 			return {
 				...state,
 				selectedTableIndex: action.tableIndex
-			};
-
-		case RoomActionTypes.PersonAvatarChanged:
-			if (Object.keys(state.persons.all).indexOf(action.personName) === -1) {
-				return state;
-			}
-
-			return {
-				...state,
-				persons: {
-					...state.persons,
-					all: {
-						...state.persons.all,
-						[action.personName]: { ...state.persons.all[action.personName], avatar: action.avatarUri }
-					}
-				}
-			};
-
-		case RoomActionTypes.PersonAvatarVideoChanged:
-			if (Object.keys(state.persons.all).indexOf(action.personName) === -1) {
-				return state;
-			}
-
-			return {
-				...state,
-				persons: {
-					...state.persons,
-					all: {
-						...state.persons.all,
-						[action.personName]: { ...state.persons.all[action.personName], avatarVideo: action.avatarUri }
-					}
-				}
 			};
 
 		case RoomActionTypes.StageChanged:
@@ -155,28 +114,6 @@ const roomReducer: Reducer<RoomState> = (state: RoomState = initialState, anyAct
 				stage: {
 					...state.stage,
 					currentPrice: action.currentPrice
-				}
-			};
-
-		case RoomActionTypes.PersonAdded:
-			if (state.persons.all[action.person.name]) {
-				console.log(`Person ${action.person.name} already exists!`);
-			}
-
-			return {
-				...state,
-				persons: {
-					...state.persons,
-					all: set(state.persons.all, action.person.name, action.person)
-				}
-			};
-
-		case RoomActionTypes.PersonRemoved:
-			return {
-				...state,
-				persons: {
-					...state.persons,
-					all: removeS(state.persons.all, action.name)
 				}
 			};
 

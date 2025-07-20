@@ -13,6 +13,8 @@ import ChatMessage from '../model/ChatMessage';
 import UsersMode from '../model/enums/UsersMode';
 import MessageLevel from '../model/enums/MessageLevel';
 import JoinMode from '../client/game/JoinMode';
+import Account from '../model/Account';
+import Persons from '../model/Persons';
 
 export enum DialogView {
 	None,
@@ -50,6 +52,7 @@ export interface Room2State {
 		showman: PersonInfo;
 		players: PlayerInfo[];
 		hostName: string | null;
+		all: Persons;
 	};
 
 	name: string;
@@ -112,6 +115,7 @@ const initialState: Room2State = {
 		},
 		players: [],
 		hostName: null,
+		all: {},
 	},
 
 	name: '',
@@ -363,7 +367,8 @@ export const room2Slice = createSlice({
 				p.replic = i === action.payload.playerIndex ? action.payload.replic : null;
 			});
 		},
-		infoChanged: (state: Room2State, action: PayloadAction<{ showman: PersonInfo, players: PlayerInfo[] }>) => {
+		infoChanged: (state: Room2State, action: PayloadAction<{ all: Persons, showman: PersonInfo, players: PlayerInfo[] }>) => {
+			state.persons.all = action.payload.all;
 			state.persons.showman = action.payload.showman;
 			state.persons.players = action.payload.players;
 		},
@@ -515,6 +520,22 @@ export const room2Slice = createSlice({
 		},
 		setHostName(state: Room2State, action: PayloadAction<string | null>) {
 			state.persons.hostName = action.payload;
+		},
+		personAdded: (state: Room2State, action: PayloadAction<Account>) => {
+			state.persons.all[action.payload.name] = action.payload;
+		},
+		personRemoved: (state: Room2State, action: PayloadAction<string>) => {
+			delete state.persons.all[action.payload];
+		},
+		personAvatarChanged: (state: Room2State, action: PayloadAction<{ personName: string, avatarUri: string }>) => {
+			if (state.persons.all[action.payload.personName]) {
+				state.persons.all[action.payload.personName].avatar = action.payload.avatarUri;
+			}
+		},
+		personAvatarVideoChanged: (state: Room2State, action: PayloadAction<{ personName: string, avatarUri: string }>) => {
+			if (state.persons.all[action.payload.personName]) {
+				state.persons.all[action.payload.personName].avatarVideo = action.payload.avatarUri;
+			}
 		},
 		questionAnswersChanged(state: Room2State, action: PayloadAction<{ rightAnswers: string[], wrongAnswers: string[] }>) {
 			state.validation.rightAnswers = action.payload.rightAnswers;
@@ -857,6 +878,10 @@ export const {
 	playerMediaPreloaded,
 	setPlayerMediaPreloadProgress,
 	setHostName,
+	personAdded,
+	personRemoved,
+	personAvatarChanged,
+	personAvatarVideoChanged,
 	questionAnswersChanged,
 	validate,
 	askValidation,

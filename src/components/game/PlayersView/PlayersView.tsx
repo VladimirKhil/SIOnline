@@ -24,7 +24,7 @@ interface PlayersViewProps {
 
 const mapStateToProps = (state: State) => ({
 	players: state.room2.persons.players,
-	all: state.room.persons.all,
+	all: state.room2.persons.all,
 	avatar: state.user.avatar,
 	isVisible: state.ui.showPlayers,
 });

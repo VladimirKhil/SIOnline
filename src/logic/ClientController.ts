@@ -73,6 +73,10 @@ import {
 	deselectPlayers,
 	infoChanged,
 	isReadyChanged,
+	personAdded,
+	personRemoved,
+	personAvatarChanged,
+	personAvatarVideoChanged,
 	playerAdded,
 	playerChanged,
 	playerDeleted,
@@ -117,7 +121,7 @@ import {
 	setNoRiskMode,
 	addToChat,
 	setJoinMode,
-	showMediaPreloadProgress
+	showMediaPreloadProgress,
 } from '../state/room2Slice';
 
 import PersonInfo from '../model/PersonInfo';
@@ -374,11 +378,11 @@ export default class ClientController {
 	onAvatarChanged(personName: string, contentType: string, uri: string) {
 		switch (contentType) {
 			case 'image':
-				this.dispatch(roomActionCreators.personAvatarChanged(personName, uri));
+				this.appDispatch(personAvatarChanged({ personName, avatarUri: uri }));
 				break;
 
 			case 'video':
-				this.dispatch(roomActionCreators.personAvatarVideoChanged(personName, uri));
+				this.appDispatch(personAvatarVideoChanged({ personName, avatarUri: uri }));
 				break;
 
 			default:
@@ -421,7 +425,7 @@ export default class ClientController {
 			return;
 		}
 
-		this.dispatch(roomActionCreators.personAdded(account));
+		this.appDispatch(personAdded(account));
 
 		switch (role) {
 			case 'showman':
@@ -449,7 +453,7 @@ export default class ClientController {
 	}
 
 	onDisconnected(name: string) {
-		this.dispatch(roomActionCreators.personRemoved(name));
+		this.appDispatch(personRemoved(name));
 
 		// TODO: uncomment after stopping Special replics support
 		// this.appDispatch(addToChat({
@@ -507,8 +511,7 @@ export default class ClientController {
 	}
 
 	onInfo(all: Persons, showman: PersonInfo, players: PlayerInfo[]) {
-		this.dispatch(roomActionCreators.infoChanged(all));
-		this.appDispatch(infoChanged({ showman, players }));
+		this.appDispatch(infoChanged({ all, showman, players }));
 		this.dispatch(actionCreators.sendAvatar() as any);
 	}
 
@@ -1563,12 +1566,12 @@ export default class ClientController {
 	deletePlayerTable(index: number) {
 		const state = this.getState();
 		const player = state.room2.persons.players[index];
-		const person = state.room.persons.all[player.name];
+		const person = state.room2.persons.all[player.name];
 
 		this.appDispatch(playerDeleted(index));
 
 		if (person && !person.isHuman) {
-			this.dispatch(roomActionCreators.personRemoved(person.name));
+			this.appDispatch(personRemoved(person.name));
 		} else if (player.name === state.room2.name) {
 			this.appDispatch(setRoomRole(Role.Viewer));
 		}
@@ -1625,7 +1628,7 @@ export default class ClientController {
 		const state = this.getState();
 		const isPlayer = personType === 'player';
 		const account = isPlayer ? state.room2.persons.players[index] : state.room2.persons.showman;
-		const person = state.room.persons.all[account.name];
+		const person = state.room2.persons.all[account.name];
 
 		if (person && person.isHuman === isHuman) {
 			return;
@@ -1639,7 +1642,7 @@ export default class ClientController {
 				avatar: null
 			};
 
-			this.dispatch(roomActionCreators.personAdded(newAccount));
+			this.appDispatch(personAdded(newAccount));
 		}
 
 		this.appDispatch(isPlayer
@@ -1647,7 +1650,7 @@ export default class ClientController {
 			: showmanChanged({ name, isHuman, isReady: false }));
 
 		if (isHuman) {
-			this.dispatch(roomActionCreators.personRemoved(person.name));
+			this.appDispatch(personRemoved(person.name));
 		}
 
 		if (person && person.name === state.room2.name) {
@@ -1659,14 +1662,14 @@ export default class ClientController {
 		const state = this.getState();
 		const isPlayer = role === 'player';
 		const account = isPlayer ? state.room2.persons.players[index] : state.room2.persons.showman;
-		const person = state.room.persons.all[account.name];
+		const person = state.room2.persons.all[account.name];
 
 		if (person && !person.isHuman) {
 			this.appDispatch(isPlayer
 				? playerChanged({ index, name: replacer, isReady: false })
 				: showmanChanged({ name: replacer, isReady: false }));
 
-				this.dispatch(roomActionCreators.personRemoved(person.name));
+				this.appDispatch(personRemoved(person.name));
 
 			const newAccount: Account = {
 				name: replacer,
@@ -1675,7 +1678,7 @@ export default class ClientController {
 				avatar: null
 			};
 
-			this.dispatch(roomActionCreators.personAdded(newAccount));
+			this.appDispatch(personAdded(newAccount));
 			return;
 		}
 
