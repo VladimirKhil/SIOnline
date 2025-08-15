@@ -37,6 +37,8 @@ export class PartialTextContent extends React.Component<PartialTextContentProps,
 	componentDidMount() {
 		if (this.divRef.current) {
 			fitElement(this.divRef.current, 144);
+			const { fontSize } = window.getComputedStyle(this.divRef.current);
+			this.divRef.current.style.fontSize = (parseFloat(fontSize) * 0.95) + 'px'; // Adjust font size slightly for better fit
 		}
 
 		this.interval = window.setInterval(
@@ -60,14 +62,15 @@ export class PartialTextContent extends React.Component<PartialTextContentProps,
 	}
 
 	render() {
+		const visibleText = this.props.text.slice(0, this.state.visibleLength);
+		const hiddenText = this.props.text.slice(this.state.visibleLength);
+
 		return (
 			<div className='textHost'>
 				<div ref={this.divRef} className="tableText nonAligned">
 					<span>
-						{this.props.text.split('').map((c, i) => <span
-							key={i}
-							className={i < this.state.visibleLength ? 'animatablePartialCharacter' : 'invisible'}
-							>{c}</span>)}
+						<span className="animatablePartialCharacter">{visibleText}</span>
+						<span className="invisible">{hiddenText}</span>
 					</span>
 				</div>
 			</div>
