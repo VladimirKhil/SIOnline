@@ -80,7 +80,15 @@ export default function Trends(): JSX.Element {
 											onClick={() => downloadPackage(p.package.source || '', p.package.name)}
 											title={localization.download}
 											aria-label={localization.download}>
-											⬇️
+											<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+												<path
+													d="M12 2V16M12 16L16 12M12 16L8 12M3 20H21"
+													stroke="currentColor"
+													strokeWidth="2"
+													strokeLinecap="round"
+													strokeLinejoin="round"
+												/>
+											</svg>
 										</button>
 									)}
 								</div>

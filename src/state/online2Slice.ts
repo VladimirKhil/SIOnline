@@ -94,7 +94,11 @@ async function loadStatisticsAsync(dispatch: AppDispatch, dataContext: DataConte
 		languageCode: localization.getLanguage()
 	};
 
-	const packagesStatistics = await siStatisticsClient.getLatestTopPackagesAsync({ statisticFilter: packagesFilter });
+	const packagesStatistics = await siStatisticsClient.getLatestTopPackagesAsync({
+		statisticFilter: packagesFilter,
+		packageSource: 'https://www.sibrowser.ru'
+	});
+
 	dispatch(packagesStatisticsLoaded(packagesStatistics));
 
 	const latestGames = await siStatisticsClient.getLatestGamesInfoAsync(gamesFilter);

@@ -40,20 +40,35 @@
 }
 
 .downloadButton {
+	border: none;
+	background: rgba(255, 255, 255, 0.1);
 	border-radius: 6px;
 	color: white;
-	padding: 8px 12px;
+	padding: 4px 6px;
 	font-size: 16px;
 	cursor: pointer;
 	transition: all 0.3s ease;
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	min-width: 40px;
-	height: 40px;
+	min-width: 30px;
+	height: 30px;
+
+	svg {
+		color: white;
+		transition: transform 0.2s ease;
+	}
 
 	&:hover {
 		background: rgba(255, 255, 255, 0.2);
+
+		svg {
+			transform: translateY(1px);
+		}
+	}
+
+	&:active {
+		transform: scale(0.95);
 	}
 }
 
