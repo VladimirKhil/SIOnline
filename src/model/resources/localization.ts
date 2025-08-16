@@ -106,25 +106,25 @@ const localization = new LocalizedStrings({
 		deleteAvatar: 'Delete avatar',
 		deleteTable: 'Delete table',
 		demoAbout: `SIGame is an intellectual quiz game where you can test your knowledge and reaction speed against opponents.
-	The speed and the knoledge are the keys to victory.
-	A question is presented, after which a frame appears on the screen indicating that you can press the button and answer.
+	Speed and knowledge are keys to victory.
+	Question is presented, after which a frame appears on the screen indicating that you can press the button and answer.
 	Let's check how it works: there will be a question on the screen, and you need to press the button as quickly as possible`,
-		demoCorrectAnswer: 'You have given correct answer! Your score is increased by the question price',
+		demoCorrectAnswer: 'You have given the correct answer! Your score is increased by question price',
 		demoFinished: 'Demo finished. Thank you!',
-		demoGameRules: 'By answering the question, you can earn points. The player with the most points at the end of the game wins',
-		demoGiveAnswer: 'Now print the answer to the question. Print: ANSWER and press Send button',
+		demoGameRules: 'By answering questions, you can earn points. A player having the most points at the end of the game wins',
+		demoGiveAnswer: 'Now print answer to the question. Print: ANSWER and press Send button or Enter',
 		demoOpponents: `You can play with bots or with your friends.
-		You can use built-in questions, take question made by other authors or create your own`,
-		demoOtherContent: `There could be images, audio and video in the question.
+		You can use built-in questions, take questions made by other authors or create your own`,
+		demoOtherContent: `There could be images, audio and video in a question.
 	There could also be multiple choice questions where you can select right answer from the list`,
-		demoOtherQuestions: `There could be other types of questions in the game: for example, Question with stake or Question with Secret.
-	There would be explanations of these questions rules duraing the game`,
+		demoOtherQuestions: `There could be other types of questions in the game: for example, Question with stake or Question with secret.
+	There would be explanations of these questions rules during the game`,
 		demoQuestion: `This is a demo question. Press the button to answer.
-		If you press te button before the frame appears, it will be a false start and you will have a cooldown.
+		If you press the button before the frame appears, it will be a false start and you will have a cooldown.
 		The player who pressed the button first will answer the question`,
 		demoWelcome: `Welcome to SIGame!
-	You can always exit demo mode by clicking the "Exit" button in the corner of the screen.
-	To start the demonstration, click the "Ready" button (the green checkmark).`,
+	You can always exit demo mode by clicking "Exit" button in the corner of the screen.
+	To start demonstration click "Ready" button (green checkmark)`,
 		demoWrongAnswer: 'You have given wrong answer! Your score is decreased by the question price',
 		descending: 'descending',
 		disconnected: 'disconnected',

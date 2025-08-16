@@ -412,6 +412,7 @@ export default class ClientController {
 		this.appDispatch(setDecisionType(DecisionType.None));
 		this.appDispatch(stopValidation());
 		this.appDispatch(deselectPlayers());
+		this.dispatch(isSelectableChanged(false));
 
 		// TODO: remove setTimeout after server adjustement
 		setTimeout(

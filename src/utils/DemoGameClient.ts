@@ -250,8 +250,8 @@ export default class DemoGameClient implements IGameClient {
 		return true;
 	}
 
-	sendAnswerVersion(answerVersion: string): Promise<boolean> {
-		throw new Error('Method not implemented.');
+	async sendAnswerVersion(answerVersion: string): Promise<boolean> {
+		return true;
 	}
 
 	async sendAvatar(avatarUri: string): Promise<boolean> {
@@ -342,7 +342,7 @@ export default class DemoGameClient implements IGameClient {
 					]
 				);
 
-				window.setTimeout(this.nextStage.bind(this), 15000);
+				window.setTimeout(this.nextStage.bind(this), 23000);
 				break;
 
 			case DemoStage.Question:
