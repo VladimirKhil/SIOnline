@@ -1368,6 +1368,7 @@ export default class ClientController {
 		this.appDispatch(showObject({ header: themeName, text: questionPrice, hint: '', large: true, animate: false }));
 		this.appDispatch(captionChanged(`${themeName}, ${questionPrice}`));
 		this.appDispatch(questionReset());
+		this.dispatch(roomActionCreators.currentPriceChanged(questionPrice));
 	}
 
 	onTimerMaximumChanged(timerIndex: number, maximum: number) {

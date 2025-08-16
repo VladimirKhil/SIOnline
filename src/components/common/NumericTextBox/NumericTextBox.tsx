@@ -5,9 +5,13 @@ import './NumericTextBox.css';
 
 interface NumericTextBoxProps {
 	value: number;
+	minValue?: number;
+	maxValue?: number;
 
 	onValueChanged: (value: number) => void;
 	onCancel: () => void;
+	onFocus?: () => void;
+	onBlur?: () => void;
 }
 
 interface NumericTextBoxState {
@@ -40,12 +44,20 @@ export default class NumericTextBox extends React.Component<NumericTextBoxProps,
 
 	onFocus = (e: React.FocusEvent<HTMLInputElement>): void => {
 		e.target.select();
+
+		if (this.props.onFocus) {
+			this.props.onFocus();
+		}
 	};
 
 	onBlur = (): void => {
 		const newValue = parseInt(this.state.value, 10);
 		if (this.props.value !== newValue) {
 			this.props.onValueChanged(newValue);
+		}
+
+		if (this.props.onBlur) {
+			this.props.onBlur();
 		}
 	};
 
@@ -66,12 +78,15 @@ export default class NumericTextBox extends React.Component<NumericTextBoxProps,
 		return (
 			<input
 				className="numericTextBox"
-				type="text"
+				type="number"
+				min={this.props.minValue}
+				max={this.props.maxValue}
 				value={this.state.value}
 				onChange={this.onValueChanged}
 				onFocus={this.onFocus}
 				onBlur={this.onBlur}
 				onKeyDown={this.onKeyDown}
+				aria-label="Numeric value"
 			/>
 		);
 	}

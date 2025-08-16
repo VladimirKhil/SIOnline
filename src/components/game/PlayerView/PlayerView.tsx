@@ -16,6 +16,7 @@ import { connect } from 'react-redux';
 import EditTableMenu from '../EditTableMenu/EditTableMenu';
 import Account from '../../../model/Account';
 import { useAppSelector } from '../../../state/hooks';
+import ScoreEditor from './ScoreEditor/ScoreEditor';
 
 import './PlayerView.scss';
 
@@ -34,6 +35,7 @@ interface PlayerViewProps {
 	isSumEditable: boolean;
 	windowWidth: number;
 	windowHeight: number;
+	currentPrice: number;
 
 	listRef: React.RefObject<HTMLUListElement>;
 
@@ -49,6 +51,7 @@ const mapStateToProps = (state: State) => ({
 	showVideoAvatars: state.settings.showVideoAvatars,
 	windowWidth: state.ui.windowWidth,
 	windowHeight: state.ui.windowHeight,
+	currentPrice: state.room.stage.currentPrice,
 });
 
 const mapDispatchToProps = (dispatch: React.Dispatch<Action>) => ({
@@ -59,8 +62,21 @@ const mapDispatchToProps = (dispatch: React.Dispatch<Action>) => ({
 
 export function PlayerView(props: PlayerViewProps): JSX.Element {
 	const replicRef = React.useRef<HTMLDivElement>(null);
+	const scoreEditorRef = React.useRef<HTMLDivElement>(null);
+	const sumFieldRef = React.useRef<HTMLDivElement>(null);
+	const [isScoreEditorVisible, setIsScoreEditorVisible] = React.useState(false);
 	const { player, isMe, sex, avatar, avatarClass, avatarVideo, index } = props;
 	const room = useAppSelector(state => state.room2);
+
+	// Get the default change value from recent question price (fallback to 100)
+	const getDefaultChangeValue = () => props.currentPrice || 100;
+
+	// Hide ScoreEditor when sum editing is disabled
+	React.useEffect(() => {
+		if (!props.isSumEditable) {
+			setIsScoreEditorVisible(false);
+		}
+	}, [props.isSumEditable]);
 
 	const buildPlayerClasses = () => {
 		const stateClass = `state_${(PlayerStates[player.state] ?? '').toLowerCase()}`;
@@ -72,7 +88,44 @@ export function PlayerView(props: PlayerViewProps): JSX.Element {
 
 	const onSumChanged = (value: number) => {
 		props.onSumChanged(value);
+		if (!isScoreEditorVisible) {
+			props.onCancelSumChange();
+		}
+	};
+
+	const handleScoreEditorSumChanged = (newSum: number) => {
+		props.onSumChanged(player.sum + newSum);
+	};
+
+	const handleScoreEditorCancel = () => {
+		setIsScoreEditorVisible(false);
 		props.onCancelSumChange();
+	};
+
+	const handleScoreEditorBlur = () => {
+		// Use setTimeout to allow any click events within the ScoreEditor or sum field to fire first
+		setTimeout(() => {
+			const { activeElement } = document;
+			const scoreEditorElement = scoreEditorRef.current;
+			const sumFieldElement = sumFieldRef.current;
+
+			// Check if focus is within ScoreEditor
+			if (scoreEditorElement && activeElement && scoreEditorElement.contains(activeElement)) {
+				return;
+			}
+
+			// Check if focus is on the sum field
+			if (sumFieldElement && activeElement && sumFieldElement.contains(activeElement)) {
+				return;
+			}
+
+			// Focus is outside both ScoreEditor and sum field, hide ScoreEditor
+			setIsScoreEditorVisible(false);
+		}, 0);
+	};
+
+	const handleNumericTextBoxBlur = () => {
+		handleScoreEditorBlur();
 	};
 
 	const onPlayerClicked = (e: React.MouseEvent<HTMLLIElement, MouseEvent>) => {
@@ -156,14 +209,28 @@ export function PlayerView(props: PlayerViewProps): JSX.Element {
 						<AutoSizedText className='nameValue' maxFontSize={48}>
 							{player.name}
 						</AutoSizedText>
+
+						{props.isSumEditable ? (
+							<ScoreEditor
+								ref={scoreEditorRef}
+								currentSum={player.sum}
+								defaultChangeValue={getDefaultChangeValue()}
+								isVisible={isScoreEditorVisible}
+								onSumChanged={handleScoreEditorSumChanged}
+								onCancel={handleScoreEditorCancel}
+								onBlur={handleScoreEditorBlur}
+							/>
+						) : null}
 					</div>
 
-					<div className="sum" title={player.sum.toString()}>
+					<div ref={sumFieldRef} className="sum" title={player.sum.toString()}>
 						{props.isSumEditable ? (
 							<NumericTextBox
 								value={player.sum}
 								onValueChanged={value => onSumChanged(value)}
 								onCancel={props.onCancelSumChange}
+								onFocus={() => setIsScoreEditorVisible(true)}
+								onBlur={handleNumericTextBoxBlur}
 							/>
 						) : <AutoSizedText className='staticSum' maxFontSize={48}>{player.sum}</AutoSizedText>}
 					</div>
