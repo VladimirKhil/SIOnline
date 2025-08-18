@@ -182,6 +182,13 @@ export function Room(props: RoomProps) : JSX.Element {
 							<div className='progressArea'>
 								<GameState />
 								<RoundProgress />
+								<button
+									type="button"
+									className="donateLink"
+									onClick={() => window.open('https://vladimirkhil.com/donate', '_blank', 'noopener,noreferrer')}
+									title='https://vladimirkhil.com/donate'>
+									{localization.donateServersHosting}
+								</button>
 							</div>
 
 							<ShowmanReplicView />

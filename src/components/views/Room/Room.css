@@ -152,6 +152,30 @@
         align-items: stretch;
     }
 
+    .donateLink {
+        border: none;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 6px;
+        color: white;
+        padding: 4px 6px;
+        font-size: 11px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: 1px;
+        font-family: inherit;
+    }
+
+    .donateLink:hover {
+        background: rgba(255, 255, 255, 0.2);
+    }
+
+    .donateLink:active {
+        transform: scale(0.95);
+    }
+
     .showmanProgressArea .round_progress {
         display: initial;
         margin: 10px;

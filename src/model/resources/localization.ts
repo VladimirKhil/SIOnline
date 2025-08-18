@@ -139,6 +139,7 @@ const localization = new LocalizedStrings({
 		donateComment: `Donations are optional and are used exclusively to cover hosting and domain expenses.
 The project is non-commercial and exists for educational purposes.
 All game functionality is available for free—donations do not affect gameplay or grant access to additional features. Thank you for your support!`,
+		donateServersHosting: 'DONATE: development, hosting',
 		download: 'Download',
 		downloadCount: 'Download count',
 		downloadGameLog: 'Download game log',
@@ -677,6 +678,7 @@ The package will be automatically deleted from the server after the game ends`,
 	 Проект некоммерческий и существует в образовательных целях.
 	 Вся функциональность игры доступна бесплатно - донаты не влияют на игровой процесс
 	 и не используются для доступа к дополнительным функциям игры. Спасибо за поддержку!`,
+		donateServersHosting: 'ДОНАТ: развитие, хостинг',
 		download: 'Скачать',
 		downloadCount: 'Число скачиваний',
 		downloadGameLog: 'Скачать журнал игры',
@@ -1218,6 +1220,7 @@ The package will be automatically deleted from the server after the game ends`,
 		Projekat je nekomercijalan i postoji u obrazovne svrhe.
 		Sva funkcionalnost igre dostupna je besplatno - donacije ne utiču na tok igre
 		i ne koriste se za pristup dodatnim funkcijama igre. Hvala na podršci!`,
+		donateServersHosting: 'DONACIJE: razvoj, hosting',
 		download: 'Preuzeti',
 		downloadCount: 'Broj preuzimanja',
 		downloadGameLog: 'Preuzeti dnevnik igre',
