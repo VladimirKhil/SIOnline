@@ -11,6 +11,8 @@ import AvatarView from '../AvatarView/AvatarView';
 import Path from '../../../model/enums/Path';
 import SexView from '../SexView/SexView';
 import { changeLogin } from '../../../state/userSlice';
+import { userErrorChanged } from '../../../state/commonSlice';
+import { validateLoginName } from '../../../utils/loginValidation';
 
 import './ProfileView.scss';
 
@@ -41,10 +43,16 @@ const layout: React.RefObject<HTMLDivElement> = React.createRef();
 export function ProfileView(props: ProfileViewProps): JSX.Element {
 	const appDispatch = useAppDispatch();
 	const [webCameraUrl, setWebCameraUrl] = React.useState(props.webCameraUrl);
+	const [tempLogin, setTempLogin] = React.useState('');
 	const ui = useAppSelector(state => state.ui);
 	const user = useAppSelector(state => state.user);
 
 	const inRoom = 	ui.navigation.path === Path.Room;
+
+	// Initialize temp login from Redux state
+	React.useEffect(() => {
+		setTempLogin(user.login);
+	}, [user.login]);
 
 	const onCameraChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setWebCameraUrl(e.target.value);
@@ -77,7 +85,28 @@ export function ProfileView(props: ProfileViewProps): JSX.Element {
 	}, []);
 
 	const onLoginChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
-		appDispatch(changeLogin(e.target.value));
+		const newValue = e.target.value;
+		setTempLogin(newValue);
+	};
+
+	const onLoginBlur = () => {
+		const validationError = validateLoginName(tempLogin);
+
+		if (validationError) {
+			appDispatch(userErrorChanged(validationError));
+			// Reset to the last valid value from Redux
+			setTempLogin(user.login);
+			return;
+		}
+
+		// Only update Redux if valid
+		const trimmedLogin = tempLogin.trim();
+
+		// Update Redux with the trimmed valid value
+		appDispatch(changeLogin(trimmedLogin));
+
+		// Update local state to match the trimmed value
+		setTempLogin(trimmedLogin);
 	};
 
 	return (
@@ -88,7 +117,15 @@ export function ProfileView(props: ProfileViewProps): JSX.Element {
 			onClose={close}>
 			<div className='profile-view__body'>
 				<h2>{localization.name}</h2>
-				<input aria-label='Name' type='text' className='userName' value={user.login} onChange={onLoginChanged} />
+				<input
+					aria-label='Name'
+					type='text'
+					className='userName'
+					value={tempLogin}
+					maxLength={30}
+					onChange={onLoginChanged}
+					onBlur={onLoginBlur}
+				/>
 
 				<h2>{localization.avatar}</h2>
 				<AvatarView disabled={false} />

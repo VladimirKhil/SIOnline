@@ -69,9 +69,17 @@
 }
 
 .statCell.playerName {
-	justify-content: flex-start;
 	padding-left: 3%;
 	font-weight: bold;
+}
+
+.statCell div {
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
 
 .statisticsTableHeader .statCell {
@@ -107,6 +115,7 @@
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	text-align: center;
 	margin-top: 20px;
 	font-size: 24px;
 	font-weight: bold;
@@ -116,11 +125,12 @@
 /* Responsive design */
 @media (max-width: 768px) {
 	.statisticsTable {
-		font-size: 0.8em;
+		font-size: 0.4em;
 	}
 
 	.statCell {
 		padding: 1%;
+		overflow: hidden;
 	}
 
 	.statisticsTableHeader,

@@ -12,6 +12,8 @@ import LanguageView from '../../panels/LanguageView/LanguageView';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 import { AppDispatch, RootState } from '../../../state/store';
 import { changeLogin } from '../../../state/userSlice';
+import { userErrorChanged } from '../../../state/commonSlice';
+import { validateLoginName } from '../../../utils/loginValidation';
 
 import './Login.scss';
 
@@ -34,20 +36,46 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 });
 
 export function Login(props: LoginProps) {
-	const state = useAppSelector((rootState: RootState) => rootState.login);
+	const loginState = useAppSelector((state: RootState) => state.login);
 	const appDispatch = useAppDispatch();
+	const [tempLogin, setTempLogin] = React.useState('');
+
+	// Initialize temp login from props
+	React.useEffect(() => {
+		setTempLogin(props.login);
+	}, [props.login]);
 
 	const onLoginChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
-		appDispatch(changeLogin(e.target.value));
+		const newValue = e.target.value;
+		setTempLogin(newValue);
 	};
 
-	const login = () => props.onLogin(appDispatch);
+	const signIn = () => {
+		const validationError = validateLoginName(tempLogin);
+
+		if (validationError) {
+			appDispatch(userErrorChanged(validationError));
+			return;
+		}
+
+		// Update Redux with trimmed value before proceeding
+		const trimmedLogin = tempLogin.trim();
+		appDispatch(changeLogin(trimmedLogin));
+
+		// Update local state to match
+		setTempLogin(trimmedLogin);
+
+		props.onLogin(appDispatch);
+	};
 
 	const onLoginKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
 		if (e.key === Constants.KEY_ENTER_NEW) {
-			login();
+			signIn();
 		}
 	};
+
+	// Check if login button should be disabled
+	const isLoginDisabled = () => loginState.inProgress || validateLoginName(tempLogin) !== null;
 
 	const prevPropsRef = React.useRef<LoginProps>();
 
@@ -70,14 +98,14 @@ export function Login(props: LoginProps) {
 					</div>
 
 					<div className='right'>
-						<LanguageView disabled={state.inProgress} />
+						<LanguageView disabled={loginState.inProgress} />
 					</div>
 				</header>
 
 				<div className='loginBody'>
-					{state.inProgress ? <ProgressBar isIndeterminate /> : null}
-					<AvatarView disabled={state.inProgress} />
-					<SexView disabled={state.inProgress} />
+					{loginState.inProgress ? <ProgressBar isIndeterminate /> : null}
+					<AvatarView disabled={loginState.inProgress} />
+					<SexView disabled={loginState.inProgress} />
 
 					<input
 						className='login_name'
@@ -86,19 +114,19 @@ export function Login(props: LoginProps) {
 						placeholder={localization.yourName}
 						title={localization.yourName}
 						autoFocus
-						value={props.login}
+						value={tempLogin}
 						autoComplete='on'
 						maxLength={30}
-						disabled={state.inProgress}
+						disabled={loginState.inProgress}
 						onChange={onLoginChanged}
-						onKeyPress={onLoginKeyPress}
+						onKeyDown={onLoginKeyPress}
 					/>
 
 					<button
 						className='standard enter'
 						type="button"
-						disabled={state.inProgress || props.login.length === 0}
-						onClick={login}>
+						disabled={isLoginDisabled()}
+						onClick={signIn}>
 						{localization.enter}
 					</button>
 				</div>

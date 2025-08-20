@@ -261,12 +261,6 @@ export function Room(props: RoomProps) : JSX.Element {
 				</Dialog>
 			) : null}
 
-			{props.areSumsEditable && !isScreenWide ? (
-				<Dialog className='sumEditDialog' title={localization.changeSums} onClose={props.onCancelSumChange}>
-					<PlayersListView />
-				</Dialog>
-			) : null}
-
 			{room.validation.queue.length > 0 && (!isScreenWide || room.role === Role.Player) ? (
 				<Dialog className='answerValidationDialog' title={room.validation.header} onClose={() => onReject(1.0)}>
 					<AnswerValidation />
