@@ -198,8 +198,8 @@ export default class DemoGameClient implements IGameClient {
 		throw new Error('Method not implemented.');
 	}
 
-	pass(): Promise<boolean> {
-		throw new Error('Method not implemented.');
+	async pass(): Promise<boolean> {
+		return true;
 	}
 
 	pause(enable: boolean): Promise<boolean> {

@@ -27,7 +27,7 @@
 
 .statisticsTableHeader {
 	display: grid;
-	grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+	grid-template-columns: 0.25fr 2fr 1fr 1fr 1fr 1fr 1fr;
 	background: linear-gradient(135deg, #FFD700, #FFA500);
 	color: #000;
 	font-weight: bold;
@@ -38,7 +38,7 @@
 	flex: 1;
 	overflow: hidden;
 	display: grid;
-	grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+	grid-template-columns: 0.25fr 2fr 1fr 1fr 1fr 1fr 1fr;
 	border-bottom: 1px solid rgba(255, 215, 0, 0.3);
 	transition: background-color 0.3s ease;
 }
@@ -56,7 +56,7 @@
 }
 
 .statCell {
-	padding: 1.5%;
+	padding: 5px;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -70,6 +70,15 @@
 
 .statCell.playerName {
 	padding-left: 3%;
+	font-weight: bold;
+}
+
+.statCell.position {
+	font-weight: bold;
+	font-size: 1.2em;
+}
+
+.statCell.currentScore {
 	font-weight: bold;
 }
 
@@ -135,6 +144,6 @@
 
 	.statisticsTableHeader,
 	.statisticsTableRow {
-		grid-template-columns: 2fr 0.8fr 0.8fr 0.8fr 1fr;
+		grid-template-columns: 0.3fr 1.5fr 0.8fr 0.8fr 0.8fr 0.8fr 1fr;
 	}
 }

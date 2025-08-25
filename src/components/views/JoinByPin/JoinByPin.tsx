@@ -6,6 +6,8 @@ import onlineActionCreators from '../../../state/online/onlineActionCreators';
 import Role from '../../../model/Role';
 import Constants from '../../../model/enums/Constants';
 import ProgressDialog from '../../panels/ProgressDialog/ProgressDialog';
+import { validateLoginName } from '../../../utils/loginValidation';
+import { userErrorChanged } from '../../../state/commonSlice';
 
 import './JoinByPin.scss';
 
@@ -18,7 +20,15 @@ export default function JoinByPin(): JSX.Element {
 	const [userName, setUserName] = React.useState(user.login);
 
 	const onJoinByPin = () => {
-		appDispatch(onlineActionCreators.joinByPin(pin, userName, Role.Player, appDispatch) as any);
+		const validationError = validateLoginName(userName);
+
+		if (validationError) {
+			appDispatch(userErrorChanged(validationError));
+			return;
+		}
+
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		appDispatch(onlineActionCreators.joinByPin(pin, userName.trim(), Role.Player, appDispatch) as any);
 	};
 
 	const onKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -26,6 +36,24 @@ export default function JoinByPin(): JSX.Element {
 			onJoinByPin();
 		}
 	};
+
+	const onNameBlur = () => {
+		const validationError = validateLoginName(userName);
+
+		if (validationError) {
+			appDispatch(userErrorChanged(validationError));
+			return;
+		}
+
+		// Trim the username and update if changed
+		const trimmedName = userName.trim();
+		if (trimmedName !== userName) {
+			setUserName(trimmedName);
+		}
+	};
+
+	// Check if join button should be disabled
+	const isJoinDisabled = () => online.joinGameProgress || validateLoginName(userName) !== null;
 
 	return <Dialog className='enterPin' title={localization.joinByPin} onClose={() => window.history.back()}>
 		<div className='enterPinBody'>
@@ -39,6 +67,8 @@ export default function JoinByPin(): JSX.Element {
 					value={userName}
 					onChange={e => setUserName(e.target.value)}
 					onKeyPress={onKeyPress}
+					onBlur={onNameBlur}
+					maxLength={30}
 				/>
 			</div>
 
@@ -58,7 +88,8 @@ export default function JoinByPin(): JSX.Element {
 			<button
 				className='pinJoin standard'
 				type='button'
-				onClick={onJoinByPin}>
+				onClick={onJoinByPin}
+				disabled={isJoinDisabled()}>
 				{localization.joinAsPlayerHint}
 			</button>
 		</div>

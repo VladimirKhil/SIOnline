@@ -446,7 +446,7 @@ const SIStorageDialog: React.FC<SIStorageDialogProps> = (props) => {
 				<div className='packagesHeader'>
 					<h2>{`${localization.packages} (${siPackages.packages.total})`}</h2>
 					{siPackages.error != null ? <div className='sistorage_error'>{siPackages.error}</div> : null}
-					{siPackages.isLoading && <span className='loading'>{localization.loading}</span>}
+					{siPackages.isLoading && <span className='loading'>{localization.loading}…</span>}
 				</div>
 
 				{pages.length > 0

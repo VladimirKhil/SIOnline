@@ -16,6 +16,8 @@ import { AppDispatch } from '../../../state/store';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 import { passwordChanged } from '../../../state/online2Slice';
 import getLanguage from '../../../utils/getLanguage';
+import { validateLoginName } from '../../../utils/loginValidation';
+import { userErrorChanged } from '../../../state/commonSlice';
 
 import './GameInfoView.scss';
 import personSvg from '../../../../assets/images/person.svg';
@@ -157,23 +159,52 @@ export function GameInfoView(props: GameInfoViewProps): JSX.Element {
 
 	const { game } = props;
 
+	const onNameBlur = () => {
+		const validationError = validateLoginName(userName);
+
+		if (validationError) {
+			appDispatch(userErrorChanged(validationError));
+			return;
+		}
+
+		// Trim the username and update if changed
+		const trimmedName = userName.trim();
+		if (trimmedName !== userName) {
+			setUserName(trimmedName);
+		}
+	};
+
+	const validateAndJoin = (role: Role) => {
+		const validationError = validateLoginName(userName);
+
+		if (validationError) {
+			appDispatch(userErrorChanged(validationError));
+			return;
+		}
+
+		props.onJoin(game.HostUri, game.GameID, userName.trim(), role, appDispatch);
+	};
+
+	// Check if join buttons should be disabled due to validation
+	const isNameInvalid = () => validateLoginName(userName) !== null;
+
 	const rules = buildRules(game.Rules, game.Mode === ServerGameType.Simple);
 
 	const onKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
 		if (e.key === Constants.KEY_ENTER_NEW) {
 			if (!props.isConnected ||
 				joinGameProgress ||
-				userName.length === 0 ||
+				isNameInvalid() ||
 				(game.PasswordRequired && !password)) {
 				return;
 			}
 
 			if (canJoinAsPlayer) {
-				props.onJoin(game.HostUri, game.GameID, userName, Role.Player, appDispatch);
+				validateAndJoin(Role.Player);
 			} else if (canJoinAsShowman) {
-				props.onJoin(game.HostUri, game.GameID, userName, Role.Showman, appDispatch);
+				validateAndJoin(Role.Showman);
 			} else if (props.canJoinAsViewer) {
-				props.onJoin(game.HostUri, game.GameID, userName, Role.Viewer, appDispatch);
+				validateAndJoin(Role.Viewer);
 			}
 		}
 	};
@@ -230,6 +261,8 @@ export function GameInfoView(props: GameInfoViewProps): JSX.Element {
 									value={userName}
 									onChange={e => setUserName(e.target.value)}
 									onKeyPress={onKeyPress}
+									onBlur={onNameBlur}
+									maxLength={30}
 								/>
 							</div>
 
@@ -255,12 +288,12 @@ export function GameInfoView(props: GameInfoViewProps): JSX.Element {
 								<button
 									type="button"
 									className="join standard"
-									onClick={() => props.onJoin(game.HostUri, game.GameID, userName, Role.Showman, appDispatch)}
+									onClick={() => validateAndJoin(Role.Showman)}
 									title={localization.joinAsShowmanHint}
 									disabled={!props.isConnected ||
 										joinGameProgress ||
 										gameCreationProgress ||
-										userName.length === 0 ||
+										isNameInvalid() ||
 										(game.PasswordRequired && !password) ||
 										!canJoinAsShowman}
 								>
@@ -270,12 +303,12 @@ export function GameInfoView(props: GameInfoViewProps): JSX.Element {
 								<button
 									type="button"
 									className="join standard"
-									onClick={() => props.onJoin(game.HostUri, game.GameID, userName, Role.Player, appDispatch)}
+									onClick={() => validateAndJoin(Role.Player)}
 									title={localization.joinAsPlayerHint}
 									disabled={!props.isConnected ||
 										joinGameProgress ||
 										gameCreationProgress ||
-										userName.length === 0 ||
+										isNameInvalid() ||
 										(game.PasswordRequired && !password) ||
 										!canJoinAsPlayer}
 								>
@@ -285,12 +318,12 @@ export function GameInfoView(props: GameInfoViewProps): JSX.Element {
 								<button
 									type="button"
 									className="join standard"
-									onClick={() => props.onJoin(game.HostUri, game.GameID, userName, Role.Viewer, appDispatch)}
+									onClick={() => validateAndJoin(Role.Viewer)}
 									title={localization.joinAsViewerHint}
 									disabled={!props.isConnected ||
 										joinGameProgress ||
 										gameCreationProgress ||
-										userName.length === 0 ||
+										isNameInvalid() ||
 										(game.PasswordRequired && !password) ||
 										!props.canJoinAsViewer}
 								>
