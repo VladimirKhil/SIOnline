@@ -3,6 +3,7 @@ import { useAppSelector } from '../../../state/hooks';
 import PlayerStatistics from '../../../model/PlayerStatistics';
 import localization from '../../../model/resources/localization';
 import AutoSizedText from '../../common/AutoSizedText/AutoSizedText';
+import Constants from '../../../model/enums/Constants';
 
 import './TableStatistics.css';
 
@@ -15,7 +16,7 @@ export default function TableStatistics(): JSX.Element | null {
 	}
 
 	// Calculate final scores for sorting and add current scores to statistics
-	const enhancedStatistics: PlayerStatistics[] = statistics.map(stat => {
+	const enhancedStatistics: PlayerStatistics[] = statistics.filter(stat => stat.name && stat.name !== Constants.ANY_NAME).map(stat => {
 		const currentPlayer = currentPlayers.find(p => p.name === stat.name);
 		const currentScore = currentPlayer?.sum ?? undefined;
 
@@ -55,7 +56,7 @@ export default function TableStatistics(): JSX.Element | null {
 						</div>
 						<div className="statCell currentScore">
 							<AutoSizedText maxFontSize={36}>
-								{stat.currentScore !== undefined ? stat.currentScore : '—'}
+								{stat.currentScore !== undefined ? stat.currentScore : ' '}
 							</AutoSizedText>
 						</div>
 						<div className="statCell">
