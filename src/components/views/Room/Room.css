@@ -168,6 +168,11 @@
         font-family: inherit;
     }
 
+    .donateLink a {
+        color: white;
+        text-decoration: none;
+    }
+
     .donateLink:hover {
         background: rgba(255, 255, 255, 0.2);
     }

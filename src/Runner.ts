@@ -112,7 +112,7 @@ class ManagedHost implements IHost {
 		return this.isSimulation ? {} : { storageClient: undefined };
 	}
 
-	async getPackageData(): Promise<File | null> {
+	async getPackageData(): Promise<[File, string] | null> {
 		return Promise.resolve(this.isSimulation ? null : null);
 	}
 
@@ -131,6 +131,10 @@ class ManagedHost implements IHost {
 
 	async openGameLog(): Promise<boolean> {
 		return Promise.resolve(this.isSimulation);
+	}
+
+	getPackageSource(): string | undefined {
+		return undefined;
 	}
 }
 

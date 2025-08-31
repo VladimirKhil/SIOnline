@@ -4,7 +4,7 @@ version = 3
 
 [[package]]
 name = "SIGame"
-version = "8.6.3"
+version = "8.7.0"
 dependencies = [
  "log",
  "serde",

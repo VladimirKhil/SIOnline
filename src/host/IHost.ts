@@ -37,7 +37,7 @@ export default interface IHost {
 
 	getStorage(): { storageClient?: SIStorageClient; storageInfo?: SIStorageInfo; };
 
-	getPackageData(id: string): Promise<File | null>;
+	getPackageData(id: string): Promise<[File, string] | null>;
 
 	/** Exits application. */
 	exitApp(): void;
@@ -52,4 +52,6 @@ export default interface IHost {
 	openGameLog(): Promise<boolean>;
 
 	getRandomValue?: () => number;
+
+	getPackageSource(): string | undefined;
 }

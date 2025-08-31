@@ -50,6 +50,7 @@ import { downloadPackageFinished,
 async function uploadPackageAsync2(
 	contentClient: SIContentClient,
 	packageData: File,
+	packageSource: string | null,
 	dispatch: AppDispatch,
 ): Promise<PackageInfo> {
 	try {
@@ -68,6 +69,7 @@ async function uploadPackageAsync2(
 			uri: packageUri,
 			contentServiceUri: contentClient.options.serviceUri,
 			secret: null,
+			source: packageSource,
 		};
 	} catch (error) {
 		switch ((error as SIContentServiceError)?.errorCode) {
@@ -334,7 +336,7 @@ async function getPackageInfoAsync(state: State, game: GameState, dataContext: D
 			}
 
 			const contentClient = selectContentClientBySharding(dataContext.contentClients, game.package);
-			const packageInfo = await uploadPackageAsync2(contentClient, game.package.data, dispatch);
+			const packageInfo = await uploadPackageAsync2(contentClient, game.package.data, null, dispatch);
 			return packageInfo;
 
 		case PackageType.SIStorage:
@@ -347,6 +349,7 @@ async function getPackageInfoAsync(state: State, game: GameState, dataContext: D
 				uri: game.package.uri,
 				contentServiceUri: null,
 				secret: null,
+				source: null,
 			};
 
 		case PackageType.HostManaged: {
@@ -356,7 +359,7 @@ async function getPackageInfoAsync(state: State, game: GameState, dataContext: D
 
 			dispatch(downloadPackageStarted());
 
-			let packageData: File | null = null;
+			let packageData: [File, string] | null = null;
 
 			try {
 				packageData = await dataContext.host.getPackageData(game.package.id);
@@ -369,7 +372,7 @@ async function getPackageInfoAsync(state: State, game: GameState, dataContext: D
 			}
 
 			const contentClient = selectContentClientBySharding(dataContext.contentClients, game.package);
-			const packageInfo2 = await uploadPackageAsync2(contentClient, packageData, dispatch);
+			const packageInfo2 = await uploadPackageAsync2(contentClient, packageData[0], packageData[1], dispatch);
 			return packageInfo2;
 		}
 
@@ -408,6 +411,7 @@ async function getPackageInfoAsync(state: State, game: GameState, dataContext: D
 				uri: randomPackage.directContentUri,
 				contentServiceUri: null,
 				secret: null,
+				source: null,
 			};
 	}
 }

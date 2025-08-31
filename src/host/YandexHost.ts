@@ -109,7 +109,7 @@ export default class YandexHost implements IHost {
 		return { };
 	}
 
-	getPackageData(id: string): Promise<File | null> {
+	getPackageData(id: string): Promise<[File, string] | null> {
 		return new Promise(() => null);
 	}
 
@@ -132,5 +132,9 @@ export default class YandexHost implements IHost {
 	async openGameLog(): Promise<boolean> {
 		console.warn('openGameLogFile is not implemented in browser environment');
 		return false;
+	}
+
+	getPackageSource(): string | undefined {
+		return 'http://non-existent-package-source'; // External links are prohibited
 	}
 }

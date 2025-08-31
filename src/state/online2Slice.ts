@@ -96,7 +96,7 @@ async function loadStatisticsAsync(dispatch: AppDispatch, dataContext: DataConte
 
 	const packagesStatistics = await siStatisticsClient.getLatestTopPackagesAsync({
 		statisticFilter: packagesFilter,
-		packageSource: 'https://www.sibrowser.ru' // Using this source for statistics for now
+		packageSource: dataContext.host.getPackageSource()
 	});
 
 	dispatch(packagesStatisticsLoaded(packagesStatistics));

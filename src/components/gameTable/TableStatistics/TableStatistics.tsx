@@ -1,33 +1,16 @@
 import * as React from 'react';
 import { useAppSelector } from '../../../state/hooks';
-import PlayerStatistics from '../../../model/PlayerStatistics';
 import localization from '../../../model/resources/localization';
 import AutoSizedText from '../../common/AutoSizedText/AutoSizedText';
-import Constants from '../../../model/enums/Constants';
 
 import './TableStatistics.css';
 
 export default function TableStatistics(): JSX.Element | null {
 	const statistics = useAppSelector((state) => state.table.statistics);
-	const currentPlayers = useAppSelector((state) => state.room2.persons.players);
 
 	if (!statistics || statistics.length === 0) {
 		return null;
 	}
-
-	// Calculate final scores for sorting and add current scores to statistics
-	const enhancedStatistics: PlayerStatistics[] = statistics.filter(stat => stat.name && stat.name !== Constants.ANY_NAME).map(stat => {
-		const currentPlayer = currentPlayers.find(p => p.name === stat.name);
-		const currentScore = currentPlayer?.sum ?? undefined;
-
-		return {
-			...stat,
-			currentScore,
-		};
-	});
-
-	// Sort players by final score in descending order
-	const sortedStatistics = enhancedStatistics.sort((a, b) => (b.currentScore ?? 0) - (a.currentScore ?? 0));
 
 	return (
 		<div className="tableStatistics">
@@ -42,7 +25,7 @@ export default function TableStatistics(): JSX.Element | null {
 					<div className="statCell wrongAnswers">{localization.wrongAnswers}</div>
 				</div>
 
-				{sortedStatistics.map((stat, index) => (
+				{statistics.map((stat, index) => (
 					<div key={stat.name} className={`statisticsTableRow ${index % 2 === 0 ? 'even' : 'odd'}`}>
 						<div className="statCell position">
 							<AutoSizedText maxFontSize={56}>

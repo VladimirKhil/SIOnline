@@ -498,7 +498,23 @@ export default class ClientController {
 	}
 
 	onGameStatistics(statistics: PlayerStatistics[]) {
-		this.appDispatch(showStatistics(statistics));
+		const { players } = this.getState().room2.persons;
+
+		// Calculate final scores for sorting and add current scores to statistics
+		const enhancedStatistics: PlayerStatistics[] = statistics.filter(stat => stat.name && stat.name !== Constants.ANY_NAME).map(stat => {
+			const currentPlayer = players.find(p => p.name === stat.name);
+			const currentScore = currentPlayer?.sum ?? undefined;
+
+			return {
+				...stat,
+				currentScore,
+			};
+		});
+
+		// Sort players by final score in descending order
+		const sortedStatistics = enhancedStatistics.sort((a, b) => (b.currentScore ?? 0) - (a.currentScore ?? 0));
+
+		this.appDispatch(showStatistics(sortedStatistics));
 
 		if (this.getState().settings.writeGameLog) {
 			this.appDispatch(addGameLog(`${localization.gameStatistics}:`));

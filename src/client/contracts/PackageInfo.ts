@@ -13,4 +13,7 @@ export default interface PackageInfo {
 
 	/** Secret used for accessing package root content file when a custom Content service is used. */
 	secret: string | null;
+
+	/** Optional source uri of the package. */
+	source: string | null;
 }

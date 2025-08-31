@@ -15,7 +15,7 @@ import localization from '../model/resources/localization';
 
 const ACCEPT_LICENSE_KEY = 'ACCEPT_LICENSE';
 
-const isSteam = false; // TODO: STEAM_CLIENT: true
+const isSteam = true; // TODO: STEAM_CLIENT: true
 
 declare global {
 	interface Window {
@@ -213,7 +213,7 @@ export default class TauriHost implements IHost {
 		return { storageClient, storageInfo };
 	}
 
-	async getPackageData(id: string): Promise<File | null> {
+	async getPackageData(id: string): Promise<[File, string] | null> {
 		if (!this.app || !this.app.core) {
 			console.warn('Tauri app core or http module is not available, cannot get package data');
 			return null;
@@ -246,8 +246,11 @@ export default class TauriHost implements IHost {
 			const blob = await response.blob();
 			console.log(`Retrieved blob of size: ${blob.size} bytes`);
 
+			const file = new File([blob], 'package.siq', { type: 'application/x-zip-compressed' });
+			const packageSource = `https://steamcommunity.com/sharedfiles/filedetails/?id=${itemId}`;
+
 			// Create a File object from the blob
-			return new File([blob], 'package.siq', { type: 'application/x-zip-compressed' });
+			return [file, packageSource];
 		} catch (error) {
 			console.error('Failed to get package data:', error);
 			return null;
@@ -316,5 +319,9 @@ export default class TauriHost implements IHost {
 			console.error('Failed to open game log file:', error);
 			return false;
 		}
+	}
+
+	getPackageSource(): string | undefined {
+		return isSteam ? 'https://steamcommunity.com' : 'https://www.sibrowser.ru'; // Using this source for statistics for now
 	}
 }

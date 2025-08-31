@@ -33,6 +33,7 @@ import ComplainDialog from '../../panels/ComplainDialog/ComplainDialog';
 import ReportDialog from '../../panels/ReportDialog/ReportDialog';
 import GameState from '../../game/GameState/GameState';
 import Role from '../../../model/Role';
+import Link from '../../common/Link/Link';
 
 import './Room.css';
 import closeSvg from '../../../../assets/images/close.svg';
@@ -182,13 +183,17 @@ export function Room(props: RoomProps) : JSX.Element {
 							<div className='progressArea'>
 								<GameState />
 								<RoundProgress />
-								<button
-									type="button"
-									className="donateLink"
-									onClick={() => window.open('https://vladimirkhil.com/donate', '_blank', 'noopener,noreferrer')}
-									title='https://vladimirkhil.com/donate'>
-									{localization.donateServersHosting}
-								</button>
+
+								<div className="donateLink">
+									<Link
+										href='https://vladimirkhil.com/donate'
+										target='_blank'
+										rel='noreferrer noopener'
+										title='https://vladimirkhil.com/donate'
+									>
+										{localization.donateServersHosting}
+									</Link>
+								</div>
 							</div>
 
 							<ShowmanReplicView />

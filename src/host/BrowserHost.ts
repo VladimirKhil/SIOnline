@@ -84,7 +84,7 @@ export default class BrowserHost implements IHost {
 		return { };
 	}
 
-	getPackageData(id: string): Promise<File | null> {
+	getPackageData(id: string): Promise<[File, string] | null> {
 		return new Promise(() => null);
 	}
 
@@ -122,5 +122,9 @@ export default class BrowserHost implements IHost {
 		URL.revokeObjectURL(url);
 		document.body.removeChild(link);
 		return true;
+	}
+
+	getPackageSource(): string | undefined {
+		return 'https://www.sibrowser.ru'; // Using this source for statistics for now
 	}
 }
