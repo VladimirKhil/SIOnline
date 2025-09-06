@@ -15,6 +15,7 @@ export enum DemoStage {
 	GiveAnswer,
 	Answer,
 	AnswerValidation,
+	FalseStarts,
 	GameRules,
 	OtherContent,
 	OtherQuestions,
@@ -322,6 +323,24 @@ export default class DemoGameClient implements IGameClient {
 		throw new Error('Method not implemented.');
 	}
 
+	private displayText(text: string) {
+		const { readingSpeed } = this.getState().settings.appSettings;
+
+		this.controller.onContent('screen', []);
+
+		this.controller.onContent(
+			'screen',
+			[
+				{
+					type: 'text',
+					value: text,
+				},
+			]
+		);
+
+		window.setTimeout(this.nextStage.bind(this), 1000 * ((text.length / readingSpeed) + 2));
+	}
+
 	nextStage() {
 		this.stage = this.stage + 1;
 
@@ -332,33 +351,11 @@ export default class DemoGameClient implements IGameClient {
 			case DemoStage.About:
 				this.controller.onStage(GameStage.Started, '', 0, '');
 
-				this.controller.onContent(
-					'screen',
-					[
-						{
-							type: 'text',
-							value: localization.demoAbout,
-						},
-					]
-				);
-
-				window.setTimeout(this.nextStage.bind(this), 23000);
+				this.displayText(localization.demoAbout);
 				break;
 
 			case DemoStage.Question:
-				this.controller.onContent('screen', []);
-
-				this.controller.onContent(
-					'screen',
-					[
-						{
-							type: 'text',
-							value: localization.demoQuestion,
-						},
-					]
-				);
-
-				window.setTimeout(this.nextStage.bind(this), 13000);
+				this.displayText(localization.demoQuestion);
 				break;
 
 			case DemoStage.GiveAnswer:
@@ -372,84 +369,31 @@ export default class DemoGameClient implements IGameClient {
 				break;
 
 			case DemoStage.AnswerValidation:
-				this.controller.onContent(
-					'screen',
-					[
-						{
-							type: 'text',
-							value: this.isAnswerCorrect ? localization.demoCorrectAnswer : localization.demoWrongAnswer,
-						},
-					]
-				);
-
 				this.controller.onPlayerState(this.isAnswerCorrect ? PlayerStates.Right : PlayerStates.Wrong, [2]);
 				this.controller.onSums([0, 0, this.isAnswerCorrect ? 100 : -100]);
 				this.controller.onReplic('s', '');
-				window.setTimeout(this.nextStage.bind(this), 6000);
+
+				this.displayText(this.isAnswerCorrect ? localization.demoCorrectAnswer : localization.demoWrongAnswer);
+				break;
+
+			case DemoStage.FalseStarts:
+				this.displayText(localization.demoFalseStarts);
 				break;
 
 			case DemoStage.GameRules:
-				this.controller.onContent('screen', []);
-
-				this.controller.onContent(
-					'screen',
-					[
-						{
-							type: 'text',
-							value: localization.demoGameRules,
-						},
-					]
-				);
-
-				window.setTimeout(this.nextStage.bind(this), 8000);
+				this.displayText(localization.demoGameRules);
 				break;
 
 			case DemoStage.OtherContent:
-				this.controller.onContent('screen', []);
-
-				this.controller.onContent(
-					'screen',
-					[
-						{
-							type: 'text',
-							value: localization.demoOtherContent,
-						},
-					]
-				);
-
-				window.setTimeout(this.nextStage.bind(this), 10000);
+				this.displayText(localization.demoOtherContent);
 				break;
 
 			case DemoStage.OtherQuestions:
-				this.controller.onContent('screen', []);
-
-				this.controller.onContent(
-					'screen',
-					[
-						{
-							type: 'text',
-							value: localization.demoOtherQuestions,
-						},
-					]
-				);
-
-				window.setTimeout(this.nextStage.bind(this), 8000);
+				this.displayText(localization.demoOtherQuestions);
 				break;
 
 			case DemoStage.Opponents:
-				this.controller.onContent('screen', []);
-
-				this.controller.onContent(
-					'screen',
-					[
-						{
-							type: 'text',
-							value: localization.demoOpponents,
-						},
-					]
-				);
-
-				window.setTimeout(this.nextStage.bind(this), 10000);
+				this.displayText(localization.demoOpponents);
 				break;
 
 			case DemoStage.Finished:

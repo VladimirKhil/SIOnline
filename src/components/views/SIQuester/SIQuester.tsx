@@ -3,7 +3,7 @@ import { useAppDispatch } from '../../../state/hooks';
 import { navigate } from '../../../utils/Navigator';
 import Path from '../../../model/enums/Path';
 import localization from '../../../model/resources/localization';
-import { openFile } from '../../../state/siquesterSlice';
+import { openFile, createNewPackage } from '../../../state/siquesterSlice';
 
 import './SIQuester.scss';
 
@@ -23,6 +23,10 @@ const SIQuester: React.FC = () => {
 		fileInputRef.current?.click();
 	};
 
+	const handleNewPackageClick = () => {
+		appDispatch(createNewPackage());
+	};
+
 	return (
 		<div className='siquester'>
 			<input
@@ -38,7 +42,13 @@ const SIQuester: React.FC = () => {
 				<div className='siquester__title'>SIQuester</div>
 
 				<div className='siquester__actions'>
-					<button type='button' className='standard' onClick={handleButtonClick}>{localization.openFile.toLocaleUpperCase()}</button>
+					<button type='button' className='standard' onClick={handleNewPackageClick}>
+						{localization.createPackage.toLocaleUpperCase()}
+					</button>
+
+					<button type='button' className='standard' onClick={handleButtonClick}>
+						{localization.openFile.toLocaleUpperCase()}
+					</button>
 
 					<button
 						type='button'

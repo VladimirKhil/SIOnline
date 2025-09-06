@@ -98,6 +98,7 @@ const localization = new LocalizedStrings({
 		corruptedPackage: 'Question package is corrupted!',
 		created: 'Created',
 		createOwnPackage: 'Create your own package',
+		createPackage: 'Create package',
 		creatingGame: 'Creating game…',
 		date: 'Date',
 		defaultFont: '(default)',
@@ -110,6 +111,8 @@ const localization = new LocalizedStrings({
 	Question is presented, after which a frame appears on the screen indicating that you can press the button and answer.
 	Let's check how it works: there will be a question on the screen, and you need to press the button as quickly as possible`,
 		demoCorrectAnswer: 'You have given the correct answer! Your score is increased by question price',
+		demoFalseStarts: `If the game is played without false starts, the frame (and the ability to press the button)
+	will appear immediately with the question`,
 		demoFinished: 'Demo finished. Thank you!',
 		demoGameRules: 'By answering questions, you can earn points. A player having the most points at the end of the game wins',
 		demoGiveAnswer: 'Now print answer to the question. Print: ANSWER and press Send button or Enter',
@@ -120,8 +123,9 @@ const localization = new LocalizedStrings({
 		demoOtherQuestions: `There could be other types of questions in the game: for example, Question with stake or Question with secret.
 	There would be explanations of these questions rules during the game`,
 		demoQuestion: `This is a demo question. Press the button to answer.
-		If you press the button before the frame appears, it will be a false start and you will have a cooldown.
-		The player who pressed the button first will answer the question`,
+		If you press the button before the frame appears, it will be a false start and your button will not work for some time.
+		If you press the button but another player beats you, your button will also be blocked.
+		The first player who presses the button will answer the question`,
 		demoWelcome: `Welcome to SIGame!
 	You can always exit demo mode by clicking "Exit" button in the corner of the screen.
 	To start demonstration click "Ready" button (green checkmark)`,
@@ -438,6 +442,7 @@ The package will be automatically deleted from the server after the game ends`,
 		selectThemeDeleter: 'Select a person to delete a theme',
 		send: 'Send',
 		sendingPackage: 'Sending package to server…',
+		savePackage: 'Save package',
 		server: 'Server',
 		serverLicense: 'Server license',
 		setAnswererSelectAny: 'To anyone',
@@ -641,6 +646,7 @@ The package will be automatically deleted from the server after the game ends`,
 		corruptedPackage: 'Пакет вопросов повреждён!',
 		created: 'Создана',
 		createOwnPackage: 'Создать свой пакет',
+		createPackage: 'Создать пакет',
 		creatingGame: 'Создание игры…',
 		date: 'Дата',
 		defaultFont: '(по умолчанию)',
@@ -652,6 +658,7 @@ The package will be automatically deleted from the server after the game ends`,
 	Скорость и знание — ключ к победе.
 	Вопрос озвучивается, после чего на экране появляется рамка, показывающая, что можно нажимать кнопку и отвечать`,
 		demoCorrectAnswer: 'Вы дали правильный ответ! Ваш счёт увеличен на стоимость вопроса',
+		demoFalseStarts: 'Если игра ведётся без фальстартов, то рамка (и возможность нажать кнопку) появятся сразу вместе с вопросом',
 		demoFinished: 'Демо-режим завершён. Спасибо! Удачной вам игры!',
 		demoGameRules: 'Отвечая на вопросы, вы зарабатываете очки. В игре побеждает тот, кто наберёт больше очков',
 		demoGiveAnswer: 'Теперь напечатайте ответ на вопрос. Напишите: ОТВЕТ и нажмите кнопку Отправить',
@@ -663,6 +670,7 @@ The package will be automatically deleted from the server after the game ends`,
 		Для каждого из спецвопросов будут объяснения в процессе игры`,
 		demoQuestion: `Это демо-вопрос. Нажмите кнопку, чтобы ответить.
 	Если вы нажмёте кнопку раньше, чем появится рамка, это будет фальстарт, и ваша кнопка некоторое время не будет работать.
+	Если вы нажмёте кнопку, но другой игрок опередит вас, то ваша кнопка также будет заблокирована.
 	Первый игрок, который нажмёт кнопку, будет отвечать на вопрос`,
 		demoWelcome: `Добро пожаловать в SIGame!
 	Вы всегда можете выйти из демо-режима по кнопке "Выход" в углу экрана.
@@ -980,6 +988,7 @@ The package will be automatically deleted from the server after the game ends`,
 		selectThemeDeleter: 'Выберите убирающего тему',
 		send: 'Отправить',
 		sendingPackage: 'Отправка пакета на сервер…',
+		savePackage: 'Сохранить пакет',
 		server: 'Сервер',
 		serverLicense: 'Лицензия сервера',
 		setAnswererSelectAny: 'Кому угодно',
@@ -1187,6 +1196,7 @@ The package will be automatically deleted from the server after the game ends`,
 		corruptedPackage: 'Paket pitanja je oštećen!',
 		created: 'Kreirano',
 		createOwnPackage: 'Kreirati svoj paket',
+		createPackage: 'Kreirati paket',
 		creatingGame: 'Kreiranje igre…',
 		date: 'Datum',
 		defaultFont: '(podrazumevano)',
@@ -1198,6 +1208,7 @@ The package will be automatically deleted from the server after the game ends`,
 		Brzina i znanje su ključ pobede.
 		Pitanje se postavlja, nakon čega se na ekranu pojavljuje okvir koji pokazuje da možete pritisnuti dugme i odgovoriti`,
 		demoCorrectAnswer: 'Dali ste tačan odgovor! Vaš rezultat je uvećan za cenu pitanja',
+		demoFalseStarts: 'Ako igra teče bez lažnih startova, okvir (i mogućnost pritiska dugmeta) će se pojaviti odmah sa pitanjem',
 		demoFinished: 'Demo režim je završen. Hvala! Želimo vam uspešnu igru!',
 		demoGameRules: 'Odgovarajući na pitanja, zarađujete poene. U igri pobeduje onaj ko naskuplja više poena',
 		demoGiveAnswer: 'Sada ukucajte odgovor na pitanje. Napišite: ODGOVOR i pritisnite dugme Pošalji',
@@ -1209,6 +1220,7 @@ The package will be automatically deleted from the server after the game ends`,
 		Za svaku vrstu specijalnih pitanja biće objašnjenja tokom igre`,
 		demoQuestion: `Ovo je demo pitanje. Pritisnite dugme da odgovorite.
 		Ako pritisnete dugme pre nego što se pojavi okvir, to će biti lažni početak i vaše dugme neće raditi neko vreme.
+		Ako pritisnete dugme, ali drugi igrač vas pretekne, vaše dugme će takođe biti blokirano.
 		Prvi igrač koji pritisne dugme će odgovarati na pitanje`,
 		demoWelcome: `Dobrodošli u SIGame!
 		Uvek možete izaći iz demo režima pritiskom na dugme "Izaći" u uglu ekrana.
@@ -1526,6 +1538,7 @@ The package will be automatically deleted from the server after the game ends`,
 		selectThemeDeleter: 'Izaberite ko uklanja temu',
 		send: 'Poslati',
 		sendingPackage: 'Slanje paketa na server…',
+		savePackage: 'Sačuvati paket',
 		server: 'Server',
 		serverLicense: 'Licenca servera',
 		setAnswererSelectAny: 'Bilo kome',

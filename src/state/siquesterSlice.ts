@@ -5,6 +5,8 @@ import { Package, parseXMLtoPackage } from '../model/siquester/package';
 import { navigate } from '../utils/Navigator';
 import Path from '../model/enums/Path';
 import DataContext from '../model/DataContext';
+import { createDefaultPackage, createDefaultZip } from '../model/siquester/packageGenerator';
+import { downloadPackageAsSIQ } from '../model/siquester/packageExporter';
 
 export interface SIQuesterState {
 	zip?: JSZip;
@@ -36,12 +38,41 @@ export const openFile = createAsyncThunk(
 	},
 );
 
+export const createNewPackage = createAsyncThunk(
+	'siquester/createNewPackage',
+	async (_, thunkAPI) => {
+		const pack = createDefaultPackage();
+		const zip = await createDefaultZip();
+
+		thunkAPI.dispatch(navigate({ navigation: { path: Path.SIQuesterPackage }, saveState: true }));
+		return { zip, pack };
+	},
+);
+
+export const savePackage = createAsyncThunk(
+	'siquester/savePackage',
+	async (_, thunkAPI) => {
+		const state = thunkAPI.getState() as { siquester: SIQuesterState };
+		const { pack, zip } = state.siquester;
+
+		if (!pack) {
+			throw new Error('No package to save');
+		}
+
+		await downloadPackageAsSIQ(pack, zip);
+	},
+);
+
 export const siquesterSlice = createSlice({
 	name: 'siquester',
 	initialState,
 	reducers: {},
 	extraReducers: builder => {
 		builder.addCase(openFile.fulfilled, (state, action) => {
+			state.zip = action.payload.zip;
+			state.pack = action.payload.pack;
+		});
+		builder.addCase(createNewPackage.fulfilled, (state, action) => {
 			state.zip = action.payload.zip;
 			state.pack = action.payload.pack;
 		});

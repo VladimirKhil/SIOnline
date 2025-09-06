@@ -73,7 +73,7 @@ export interface ContentItem {
 	type: ContentType;
 	value: string;
 	isRef: boolean;
-	placement: 'replic' | 'background' | 'screen';
+	placement: string;
 	duration?: string;
 	waitForFinish?: boolean;
 }
@@ -103,6 +103,11 @@ export interface Right {
 export interface Wrong {
 	answer: string[];
 }
+
+export const RoundTypes = {
+	Standard: 'standart',
+	Final: 'final',
+};
 
 export const QuestionTypes = {
 	Default: '',
@@ -177,6 +182,14 @@ export const QuestionTypeParams = {
 	BagCat_Self_Value_False: 'false'
 };
 
+function getDirectChildByTagName(element: Element, tagName: string): Element | null {
+	return Array.from(element.children).find(child => child.tagName === tagName) || null;
+}
+
+function getDirectChildrenByTagName(element: Element, tagName: string): Element[] {
+	return Array.from(element.children).filter(child => child.tagName === tagName);
+}
+
 export function parseXMLtoPackage(xmlDoc: Document): Package {
 	const packageElement = xmlDoc.documentElement;
 	const version = packageElement.getAttribute('version') || '';
@@ -201,39 +214,39 @@ export function parseXMLtoPackage(xmlDoc: Document): Package {
 }
 
 function parseTags(packageElement: Element): Tag[] {
-	const tagsElement = packageElement.getElementsByTagName('tags')[0];
+	const [tagsElement] = Array.from(packageElement.children).filter(child => child.tagName === 'tags');
 	if (!tagsElement) return [];
 
-	return Array.from(tagsElement.getElementsByTagName('tag')).map(tag => ({
+	return getDirectChildrenByTagName(tagsElement, 'tag').map(tag => ({
 		value: tag.textContent || '',
 	}));
 }
 
 function parseInfo(packageElement: Element): Info {
-	const infoElement = packageElement.getElementsByTagName('info')[0];
+	const infoElement = Array.from(packageElement.children).find(child => child.tagName === 'info');
 	if (!infoElement) return { authors: [], sources: [] };
 
 	return {
 		authors: parseAuthors(infoElement),
 		sources: parseSources(infoElement),
-		comments: infoElement.getElementsByTagName('comments')[0]?.textContent || undefined,
+		comments: getDirectChildByTagName(infoElement, 'comments')?.textContent || undefined,
 	};
 }
 
 function parseAuthors(element: Element): Author[] {
-	const authorsElement = element.getElementsByTagName('authors')[0];
+	const authorsElement = getDirectChildByTagName(element, 'authors');
 	if (!authorsElement) return [];
 
-	return Array.from(authorsElement.getElementsByTagName('author')).map(author => ({
+	return getDirectChildrenByTagName(authorsElement, 'author').map(author => ({
 		name: author.textContent || '',
 	}));
 }
 
 function parseRounds(packageElement: Element, version: string): Round[] {
-	const roundsElement = packageElement.getElementsByTagName('rounds')[0];
+	const roundsElement = getDirectChildByTagName(packageElement, 'rounds');
 	if (!roundsElement) return [];
 
-	return Array.from(roundsElement.getElementsByTagName('round')).map(round => ({
+	return getDirectChildrenByTagName(roundsElement, 'round').map(round => ({
 		name: round.getAttribute('name') || '',
 		type: round.getAttribute('type') || '',
 		info: parseInfo(round),
@@ -242,19 +255,19 @@ function parseRounds(packageElement: Element, version: string): Round[] {
 }
 
 function parseSources(element: Element): Source[] {
-	const sourcesElement = element.getElementsByTagName('sources')[0];
+	const sourcesElement = getDirectChildByTagName(element, 'sources');
 	if (!sourcesElement) return [];
 
-	return Array.from(sourcesElement.getElementsByTagName('source')).map(source => ({
+	return getDirectChildrenByTagName(sourcesElement, 'source').map(source => ({
 		value: source.textContent || '',
 	}));
 }
 
 function parseThemes(roundElement: Element, version: string): Theme[] {
-	const themesElement = roundElement.getElementsByTagName('themes')[0];
+	const themesElement = getDirectChildByTagName(roundElement, 'themes');
 	if (!themesElement) return [];
 
-	return Array.from(themesElement.getElementsByTagName('theme')).map(theme => ({
+	return getDirectChildrenByTagName(themesElement, 'theme').map(theme => ({
 		name: theme.getAttribute('name') || '',
 		info: parseInfo(theme),
 		questions: parseQuestions(theme, version),
@@ -262,10 +275,10 @@ function parseThemes(roundElement: Element, version: string): Theme[] {
 }
 
 function parseQuestions(themeElement: Element, version: string): Question[] {
-	const questionsElement = themeElement.getElementsByTagName('questions')[0];
+	const questionsElement = getDirectChildByTagName(themeElement, 'questions');
 	if (!questionsElement) return [];
 
-	return Array.from(questionsElement.getElementsByTagName('question')).map(question => {
+	return getDirectChildrenByTagName(questionsElement, 'question').map(question => {
 		// Parse common properties
 		const price = Number(question.getAttribute('price')) || 0;
 		const info = parseInfo(question);
@@ -298,7 +311,7 @@ function parseAndUpgradeV4Question(question: Element, price: number, info: Info)
 	};
 
 	// Parse v4 specific elements: type and scenario
-	const typeElement = question.getElementsByTagName('type')[0];
+	const typeElement = getDirectChildByTagName(question, 'type');
 	let typeName = QuestionTypes.Default;
 	const typeParams: Map<string, string> = new Map();
 
@@ -306,7 +319,7 @@ function parseAndUpgradeV4Question(question: Element, price: number, info: Info)
 		typeName = typeElement.getAttribute('name') || QuestionTypes.Default;
 
 		// Parse type parameters
-		Array.from(typeElement.getElementsByTagName('param')).forEach(param => {
+		getDirectChildrenByTagName(typeElement, 'param').forEach(param => {
 		const name = param.getAttribute('name') || '';
 		const value = param.textContent || '';
 		if (name) {
@@ -316,7 +329,7 @@ function parseAndUpgradeV4Question(question: Element, price: number, info: Info)
 	}
 
 	// Parse atoms from scenario
-	const scenarioElement = question.getElementsByTagName('scenario')[0];
+	const scenarioElement = getDirectChildByTagName(question, 'scenario');
 
 	const atoms: Array<{
 		type?: string,
@@ -325,7 +338,7 @@ function parseAndUpgradeV4Question(question: Element, price: number, info: Info)
 	}> = [];
 
 	if (scenarioElement) {
-		Array.from(scenarioElement.getElementsByTagName('atom')).forEach(atom => {
+		getDirectChildrenByTagName(scenarioElement, 'atom').forEach(atom => {
 			const type = atom.getAttribute('type') || '';
 			const timeStr = atom.getAttribute('time');
 			let time: number = 0;
@@ -523,7 +536,7 @@ function getPlacement(type?: string): 'replic' | 'background' | 'screen' {
 }
 
 function parseQuestionParams(questionElement: Element): QuestionParams {
-	const paramsElement = questionElement.getElementsByTagName('params')[0];
+	const paramsElement = getDirectChildByTagName(questionElement, 'params');
 	if (!paramsElement) return {};
 
 	const params: QuestionParams = {};
@@ -546,7 +559,7 @@ function parseQuestionParams(questionElement: Element): QuestionParams {
 	const priceParam = paramsElement.querySelector('param[name="price"]');
 
 	if (priceParam) {
-		const numberSetElement = priceParam.getElementsByTagName('numberSet')[0];
+		const numberSetElement = getDirectChildByTagName(priceParam, 'numberSet');
 
 		if (numberSetElement) {
 			params.price = {
@@ -584,7 +597,7 @@ function parseQuestionParams(questionElement: Element): QuestionParams {
 	if (answerOptionsParam) {
 		params.answerOptions = {};
 
-		Array.from(answerOptionsParam.getElementsByTagName('param')).forEach(option => {
+		getDirectChildrenByTagName(answerOptionsParam, 'param').forEach(option => {
 			const key = option.getAttribute('name') || '';
 			params.answerOptions![key] = parseContentParam(option);
 		});
@@ -595,7 +608,7 @@ function parseQuestionParams(questionElement: Element): QuestionParams {
 
 function parseContentParam(paramElement: Element): ContentParam {
 	return {
-		items: Array.from(paramElement.getElementsByTagName('item')).map(item => ({
+		items: getDirectChildrenByTagName(paramElement, 'item').map(item => ({
 			type: item.getAttribute('type') as ContentType ?? 'text',
 			value: item.textContent || '',
 			isRef: item.getAttribute('isRef') === 'True',
@@ -607,20 +620,20 @@ function parseContentParam(paramElement: Element): ContentParam {
 }
 
 function parseRight(questionElement: Element): Right {
-	const rightElement = questionElement.getElementsByTagName('right')[0];
+	const rightElement = getDirectChildByTagName(questionElement, 'right');
 	if (!rightElement) return { answer: [] };
 
 	return {
-		answer: Array.from(rightElement.getElementsByTagName('answer')).map(answer => answer.textContent || ''),
+		answer: getDirectChildrenByTagName(rightElement, 'answer').map(answer => answer.textContent || ''),
 	};
 }
 
 function parseWrong(questionElement: Element): Wrong | undefined {
-	const wrongElement = questionElement.getElementsByTagName('wrong')[0];
+	const wrongElement = getDirectChildByTagName(questionElement, 'wrong');
 	if (!wrongElement) return undefined;
 
 	return {
-		answer: Array.from(wrongElement.getElementsByTagName('answer')).map(answer => answer.textContent || ''),
+		answer: getDirectChildrenByTagName(wrongElement, 'answer').map(answer => answer.textContent || ''),
 	};
 }
 

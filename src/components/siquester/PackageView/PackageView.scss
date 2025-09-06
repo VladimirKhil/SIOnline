@@ -32,6 +32,21 @@
 					background: rgb(56, 56, 56);
 				}
 
+				&.imageButton {
+					width: 45px;
+
+					svg {
+						color: white;
+						width: 24px;
+						height: 24px;
+					}
+
+					img {
+						width: 24px;
+						height: 24px;
+					}
+				}
+
 				&:hover, &.modes:hover {
 					background: linear-gradient(180deg, #2860ef 14.29%, rgb(39, 108, 237) 100%);
 				}

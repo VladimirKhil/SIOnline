@@ -27,6 +27,7 @@ import ServerRole from '../../client/contracts/ServerRole';
 import { userErrorChanged } from '../commonSlice';
 import WellKnownSIContentServiceErrorCode from 'sicontent-client/dist/models/WellKnownSIContentServiceErrorCode';
 import RandomPackageParameters from 'sistorage-client/dist/models/RandomPackageParameters';
+import SIStorageServiceError from 'sistorage-client/dist/models/SIStorageServiceError';
 import { AppDispatch } from '../store';
 import { showWelcome, tableReset } from '../tableSlice';
 import { ContextView, nameChanged, setContext, setIsGameStarted, setRoomRole } from '../room2Slice';
@@ -46,6 +47,7 @@ import { downloadPackageFinished,
 	uploadPackageFinished,
 	uploadPackageProgress,
 	uploadPackageStarted } from '../online2Slice';
+import WellKnownSIStorageServiceErrorCode from 'sistorage-client/dist/models/WellKnownSIStorageServiceErrorCode';
 
 async function uploadPackageAsync2(
 	contentClient: SIContentClient,
@@ -400,19 +402,29 @@ async function getPackageInfoAsync(state: State, game: GameState, dataContext: D
 				randomPackageParameters.languageId = language.id;
 			}
 
-			const randomPackage = await storageClient.packages.getRandomPackageAsync(randomPackageParameters);
+			try {
+				const randomPackage = await storageClient.packages.getRandomPackageAsync(randomPackageParameters);
 
-			if (!randomPackage || !randomPackage.directContentUri) {
-				throw new Error('Random package creation error');
+				if (!randomPackage || !randomPackage.directContentUri) {
+					throw new Error('Random package creation error');
+				}
+
+				return {
+					type: PackageType2.LibraryItem,
+					uri: randomPackage.directContentUri,
+					contentServiceUri: null,
+					secret: null,
+					source: null,
+				};
+			} catch (error) {
+				switch ((error as SIStorageServiceError)?.errorCode) {
+					case WellKnownSIStorageServiceErrorCode.PackageNotFound:
+						throw new Error(localization.errorPackageNotFound);
+
+					default:
+						throw error;
+				}
 			}
-
-			return {
-				type: PackageType2.LibraryItem,
-				uri: randomPackage.directContentUri,
-				contentServiceUri: null,
-				secret: null,
-				source: null,
-			};
 	}
 }
 

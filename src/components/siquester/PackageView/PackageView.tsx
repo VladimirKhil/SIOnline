@@ -1,7 +1,7 @@
 import React from 'react';
 import { useAppSelector } from '../../../state/hooks';
 import { useDispatch } from 'react-redux';
-import { ContentParam, InfoOwner, Package, Question, Round, Theme, SelectionMode, NumberSet } from '../../../model/siquester/package';
+import { ContentParam, InfoOwner, Package, Question, Round, Theme, SelectionMode, NumberSet, RoundTypes } from '../../../model/siquester/package';
 import localization from '../../../model/resources/localization';
 import { navigate } from '../../../utils/Navigator';
 import Path from '../../../model/enums/Path';
@@ -9,6 +9,7 @@ import MediaItem from '../MediaItem/MediaItem';
 import ScreensView from '../ScreensView/ScreensView';
 import AutoSizedText from '../../common/AutoSizedText/AutoSizedText';
 import getLanguage from '../../../utils/getLanguage';
+import { savePackage } from '../../../state/siquesterSlice';
 
 import './PackageView.scss';
 import exitImg from '../../../../assets/images/exit.png';
@@ -29,13 +30,17 @@ const PackageView: React.FC = () => {
 
 	const onExit = () => appDispatch(navigate({ navigation: { path: Path.SIQuester }, saveState: true }));
 
+	const onSave = () => {
+		appDispatch(savePackage());
+	};
+
 	const round = pack.rounds[roundIndex];
-	const isThemeList = round?.type === 'final';
+	const isThemeList = round?.type === RoundTypes.Final;
 
 	function getRoundType(type: string): string {
 		switch (type) {
-			case 'standart': case '': return localization.roundTypeTable;
-			case 'final': return localization.themeList;
+			case RoundTypes.Standard: case '': return localization.roundTypeTable;
+			case RoundTypes.Final: return localization.themeList;
 			default: return type;
 		}
 	}
@@ -425,6 +430,22 @@ const PackageView: React.FC = () => {
 						onClick={onExit}
 						title={localization.exit}>
 						<img src={exitImg} alt='Exit' />
+					</button>
+
+					<button
+						type='button'
+						className='standard imageButton'
+						onClick={onSave}
+						title={localization.savePackage}>
+						<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+							<path
+								d="M19 21H5C3.89 21 3 20.11 3 19V5C3 3.89 3.89 3 5 3H16L21 8V19C21 20.11 20.11 21 19 21Z"
+								stroke="currentColor"
+								strokeWidth="2"
+								fill="none"/>
+							<path d="M17 21V13H7V21" stroke="currentColor" strokeWidth="2" fill="none"/>
+							<path d="M7 3V8H15" stroke="currentColor" strokeWidth="2" fill="none"/>
+						</svg>
 					</button>
 
 					<button

@@ -20,6 +20,21 @@ npm install
 npm run build-prod
 ```
 
+# Desktop build
+
+src/host/TauriHost.ts:
+
+const isSteam = false;
+
+tauri/src-tauri/tauri.conf.json:
+
+"beforeBuildCommand": "npm run build",
+"frontendDist": "../dist"
+
+tauri/vite.config.ts:
+
+comment out: root: '../dist'
+
 # Steam build
 
 src/host/TauriHost.ts:
