@@ -22,8 +22,6 @@ import GameMetadataView from '../../game/GameMetadataView/GameMetadataView';
 import BannedView from '../../game/BannedView/BannedView';
 import TableContextView from '../../game/TableContextView/TableContextView';
 import ChatInput from '../../game/ChatInput/ChatInput';
-import PlayersListView from '../../game/PlayersListView/PlayersListView';
-import ChatMessage from '../../../model/ChatMessage';
 import MessageLevel from '../../../model/enums/MessageLevel';
 import { userErrorChanged } from '../../../state/commonSlice';
 import { AppDispatch, RootState } from '../../../state/store';
@@ -45,7 +43,6 @@ interface RoomProps {
 	isBannedDialogVisible: boolean;
 	isGameInfoDialogVisible: boolean;
 	isManageGameDialogVisible: boolean;
-	areSumsEditable: boolean;
 	floatingControls: boolean;
 	kicked: boolean;
 	isConnected: boolean;
@@ -57,7 +54,6 @@ interface RoomProps {
 	onBannedDialogClose: () => void;
 	onGameInfoDialogClose: () => void;
 	onManageGameDialogClose: () => void;
-	onCancelSumChange: () => void;
 	onExit: (appDispatch: AppDispatch) => void;
 	onReconnect: () => void;
 	clearDecisions: () => void;
@@ -70,7 +66,6 @@ const mapStateToProps = (state: State) => ({
 	isBannedDialogVisible: state.room.bannedVisible,
 	isGameInfoDialogVisible: state.room.gameInfoVisible,
 	isManageGameDialogVisible: state.room.manageGameVisible,
-	areSumsEditable: state.room.areSumsEditable,
 	floatingControls: state.settings.floatingControls,
 	kicked: state.room.kicked,
 	isConnected: state.common.isSIHostConnected,
@@ -93,9 +88,6 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	},
 	onManageGameDialogClose: () => {
 		dispatch(roomActionCreators.runHideManageGame());
-	},
-	onCancelSumChange: () => {
-		dispatch(roomActionCreators.areSumsEditableChanged(false) as object as Action);
 	},
 	onExit: (appDispatch: AppDispatch) => {
 		dispatch(roomActionCreators.exitGame(appDispatch) as unknown as Action);

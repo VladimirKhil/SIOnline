@@ -2,7 +2,7 @@
 import * as React from 'react';
 import localization from '../../../model/resources/localization';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
-import { approveAnswer, rejectAnswer } from '../../../state/room2Slice';
+import { approveAnswer, rejectAnswer, setAreSumsEditable } from '../../../state/room2Slice';
 
 import './AnswerValidation.scss';
 
@@ -22,11 +22,13 @@ export default function AnswerValidation(): JSX.Element {
 
 	const onApprove = (factor: number) => {
 		appDispatch(approveAnswer({ answer: firstValidationItem.answer, factor }));
+		appDispatch(setAreSumsEditable(false));
 		blockButtons();
 	};
 
 	const onReject = (factor: number) => {
 		appDispatch(rejectAnswer({ answer: firstValidationItem.answer, factor }));
+		appDispatch(setAreSumsEditable(false));
 		blockButtons();
 	};
 

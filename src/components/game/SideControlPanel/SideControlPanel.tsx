@@ -10,7 +10,15 @@ import { isHost } from '../../../utils/StateHelpers';
 import isWellFormedUri from '../../../utils/isWellFormedUri';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 import { AppDispatch } from '../../../state/store';
-import { addTable, DecisionType, selectPlayers, setChatVisibility, setDecisionType, setIsEditingTables } from '../../../state/room2Slice';
+
+import { addTable,
+	DecisionType,
+	selectPlayers,
+	setAreSumsEditable,
+	setChatVisibility,
+	setDecisionType,
+	setIsEditingTables } from '../../../state/room2Slice';
+
 import { showProfile, showSettings } from '../../../state/uiSlice';
 import Constants from '../../../model/enums/Constants';
 import { pauseGame } from '../../../state/serverActions';
@@ -24,7 +32,6 @@ interface SideControlPanelProps {
 	isConnected: boolean;
 	isHost: boolean;
 	areStakesVisible: boolean;
-	areSumsEditable: boolean;
 	roundsNames: string[] | null;
 	voiceChatUri: string | null;
 
@@ -34,7 +41,6 @@ interface SideControlPanelProps {
 	onShowGameInfo: () => void;
 	onGiveTurn: () => void;
 	onExit: (appDispatch: AppDispatch) => void;
-	onEditSums: (enable: boolean) => void;
 	onMoveNext: () => void;
 	showGameManageDialog: () => void;
 	onStart: () => void;
@@ -45,7 +51,6 @@ const mapStateToProps = (state: State) => ({
 	isConnected: state.common.isSIHostConnected,
 	isHost: isHost(state),
 	areStakesVisible: state.room.stakes.areVisible,
-	areSumsEditable: state.room.areSumsEditable,
 	roundsNames: state.room.roundsNames,
 	voiceChatUri: state.room.metadata.voiceChatUri,
 });
@@ -68,9 +73,6 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	},
 	onExit: (appDispatch: AppDispatch) => {
 		dispatch(roomActionCreators.exitGame(appDispatch) as unknown as Action);
-	},
-	onEditSums: (enable: boolean) => {
-		dispatch(roomActionCreators.areSumsEditableChanged(enable) as unknown as Action);
 	},
 	onMoveNext: () => {
 		dispatch(roomActionCreators.moveNext() as unknown as Action);
@@ -116,6 +118,11 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 		appDispatch(setDecisionType(DecisionType.SelectChooser));
 	};
 
+	const moveNext = () => {
+		props.onMoveNext();
+		appDispatch(setAreSumsEditable(false));
+	};
+
 	return (
 		<div className="game__utilsArea">
 			<div className="gameMessageHost">
@@ -130,11 +137,12 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 										? (
 											<>
 												<li
-													className={`${enabledClass} ${props.areSumsEditable ? 'active' : ''}`}
-													onClick={() => props.onEditSums(!props.areSumsEditable)}
+													className={`${enabledClass} ${room.areSumsEditable ? 'active' : ''}`}
+													onClick={() => appDispatch(setAreSumsEditable(!room.areSumsEditable))}
 												>
 													{localization.changeSums}
 												</li>
+
 												<li
 													className={enabledManagementClass}
 													title={localization.gameManageHint}
@@ -209,7 +217,7 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 							type="button"
 							className={`nextButton standard imageButton ${canStart ? 'startButton' : ''}`}
 							title={canStart ? localization.startGameHint : localization.next}
-							onClick={canStart ? props.onStart : props.onMoveNext}>
+							onClick={canStart ? props.onStart : moveNext}>
 							{canStart ? <span role="img" aria-label="arrow right">▶</span> : <img alt='Next' src={nextImg} />}
 						</button>
 					) : null}

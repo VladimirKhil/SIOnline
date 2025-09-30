@@ -30,7 +30,7 @@ import RandomPackageParameters from 'sistorage-client/dist/models/RandomPackageP
 import SIStorageServiceError from 'sistorage-client/dist/models/SIStorageServiceError';
 import { AppDispatch } from '../store';
 import { showWelcome, tableReset } from '../tableSlice';
-import { ContextView, nameChanged, setContext, setIsGameStarted, setRoomRole } from '../room2Slice';
+import { ContextView, nameChanged, setAreSumsEditable, setContext, setIsGameStarted, setRoomRole } from '../room2Slice';
 import { GameState, PackageData, setGameSet } from '../gameSlice';
 import { saveStateToStorage } from '../StateHelpers';
 import { INavigationState } from '../uiSlice';
@@ -118,7 +118,7 @@ const initGameAsync = async (
 	appDispatch(setIsGameStarted(false));
 	dispatch(roomActionCreators.afterQuestionStateChanged(false));
 	dispatch(roomActionCreators.isQuestionChanged(false, ''));
-	dispatch(roomActionCreators.areSumsEditableChanged(false));
+	dispatch(setAreSumsEditable(false));
 
 	await gameClient.info();
 	await gameClient.moveable();

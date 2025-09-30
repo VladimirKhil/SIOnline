@@ -97,6 +97,7 @@ export interface Room2State {
 
 	isEditTableEnabled: boolean;
 	isGameButtonEnabled: boolean;
+	areSumsEditable: boolean;
 	chatScrollPosition: number;
 	noRiskMode: boolean;
 
@@ -160,6 +161,7 @@ const initialState: Room2State = {
 
 	isEditTableEnabled: false,
 	isGameButtonEnabled: true,
+	areSumsEditable: false,
 	chatScrollPosition: 0,
 	noRiskMode: false,
 
@@ -594,6 +596,7 @@ export const room2Slice = createSlice({
 		setRoomRole(state: Room2State, action: PayloadAction<Role>) {
 			state.role = action.payload;
 			state.isEditTableEnabled = false;
+			state.areSumsEditable = false;
 		},
 		setSettingDisplayAnswerOptionsLabels: (state: Room2State, action: PayloadAction<boolean>) => {
 			state.settings.displayAnswerOptionsLabels = action.payload;
@@ -689,6 +692,9 @@ export const room2Slice = createSlice({
 		},
 		setJoinMode	: (state: Room2State, action: PayloadAction<JoinMode>) => {
 			state.joinMode = action.payload;
+		},
+		setAreSumsEditable: (state: Room2State, action: PayloadAction<boolean>) => {
+			state.areSumsEditable = action.payload;
 		},
 	},
 	extraReducers: (builder) => {
@@ -920,6 +926,7 @@ export const {
 	clearChat,
 	addOperationErrorMessage,
 	setJoinMode,
+	setAreSumsEditable,
 } = room2Slice.actions;
 
 export default room2Slice.reducer;

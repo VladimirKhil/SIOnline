@@ -22,7 +22,6 @@ export const enum RoomActionTypes {
 	SetStakes = 'SET_STAKES',
 	StakeChanged = 'STAKE_CHANGED',
 	SelectionEnabled = 'SELECTION_ENABLED',
-	AreSumsEditableChanged = 'ARE_SUMS_EDITABLE_CHANGED',
 	RunTimer = 'RUN_TIMER',
 	PauseTimer = 'PAUSE_TIMER',
 	ResumeTimer = 'RESUME_TIMER',
@@ -79,7 +78,6 @@ export type SetStakesAction = {
 
 export type StakeChangedAction = { type: RoomActionTypes.StakeChanged, stake: number };
 export type SelectionEnabledAction = { type: RoomActionTypes.SelectionEnabled };
-export type AreSumsEditableChangedAction = { type: RoomActionTypes.AreSumsEditableChanged, areSumsEditable: boolean };
 export type RunTimerAction = { type: RoomActionTypes.RunTimer, timerIndex: number, maximumTime: number, runByUser: boolean };
 export type PauseTimerAction = { type: RoomActionTypes.PauseTimer, timerIndex: number, currentTime: number, pausedByUser: boolean };
 export type ResumeTimerAction = { type: RoomActionTypes.ResumeTimer, timerIndex: number, runByUser: boolean };
@@ -130,7 +128,6 @@ export type KnownRoomAction =
 	| SetStakesAction
 	| StakeChangedAction
 	| SelectionEnabledAction
-	| AreSumsEditableChangedAction
 	| RunTimerAction
 	| PauseTimerAction
 	| ResumeTimerAction

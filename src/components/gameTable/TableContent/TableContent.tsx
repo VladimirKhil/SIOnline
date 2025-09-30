@@ -106,12 +106,12 @@ export class TableContent extends React.Component<TableContentProps, TableConten
 		let { content } = this.props;
 
 		if (this.props.attachContentToTable &&
-				((this.props.audio.length > 0 &&
-					content.length === 0) ||
-				(this.props.audio.length === 0 &&
-					content.length === 1 &&
-					content[0].content.length === 1 &&
-					content[0].content[0].type !== ContentType.Text))) {
+			((this.props.audio.length > 0 &&
+				content.length === 0) ||
+			(this.props.audio.length === 0 &&
+				content.length === 1 &&
+				content[0].content.length === 1 &&
+				content[0].content[0].type !== ContentType.Text))) {
 			if (this.props.appendText.length > 0) {
 				const textWeight = Math.min(Constants.LARGE_CONTENT_WEIGHT, Math.max(1, this.props.appendText.length / 80));
 

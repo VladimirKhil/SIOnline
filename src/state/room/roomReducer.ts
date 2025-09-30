@@ -173,12 +173,6 @@ const roomReducer: Reducer<RoomState> = (state: RoomState = initialState, anyAct
 				},
 			};
 
-		case RoomActionTypes.AreSumsEditableChanged:
-			return {
-				...state,
-				areSumsEditable: action.areSumsEditable
-			};
-
 		case RoomActionTypes.RunTimer:
 			return {
 				...state,

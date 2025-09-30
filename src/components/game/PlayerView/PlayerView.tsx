@@ -10,13 +10,12 @@ import Constants from '../../../model/enums/Constants';
 import { isRunning } from '../../../utils/TimerInfoHelpers';
 import TimerInfo from '../../../model/TimerInfo';
 import State from '../../../state/State';
-import roomActionCreators from '../../../state/room/roomActionCreators';
-import { Action } from 'redux';
 import { connect } from 'react-redux';
 import EditTableMenu from '../EditTableMenu/EditTableMenu';
 import Account from '../../../model/Account';
-import { useAppSelector } from '../../../state/hooks';
+import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 import ScoreEditor from './ScoreEditor/ScoreEditor';
+import { setAreSumsEditable } from '../../../state/room2Slice';
 
 import './PlayerView.scss';
 
@@ -32,7 +31,6 @@ interface PlayerViewProps {
 	isSelectionEnabled: boolean;
 	decisionTimer: TimerInfo;
 	showVideoAvatars: boolean;
-	isSumEditable: boolean;
 	windowWidth: number;
 	windowHeight: number;
 	currentPrice: number;
@@ -40,24 +38,16 @@ interface PlayerViewProps {
 	listRef: React.RefObject<HTMLUListElement>;
 
 	onSumChanged: (sum: number) => void;
-	onCancelSumChange: () => void;
 	onPlayerSelected: () => void;
 }
 
 const mapStateToProps = (state: State) => ({
 	isSelectionEnabled: state.room.selection.isEnabled,
 	decisionTimer: state.room.timers.decision,
-	isSumEditable: state.room.areSumsEditable,
 	showVideoAvatars: state.settings.showVideoAvatars,
 	windowWidth: state.ui.windowWidth,
 	windowHeight: state.ui.windowHeight,
 	currentPrice: state.room.stage.currentPrice,
-});
-
-const mapDispatchToProps = (dispatch: React.Dispatch<Action>) => ({
-	onCancelSumChange: () => {
-		dispatch(roomActionCreators.areSumsEditableChanged(false) as object as Action);
-	},
 });
 
 export function PlayerView(props: PlayerViewProps): JSX.Element {
@@ -67,16 +57,17 @@ export function PlayerView(props: PlayerViewProps): JSX.Element {
 	const [isScoreEditorVisible, setIsScoreEditorVisible] = React.useState(false);
 	const { player, isMe, sex, avatar, avatarClass, avatarVideo, index } = props;
 	const room = useAppSelector(state => state.room2);
+	const appDispatch = useAppDispatch();
 
 	// Get the default change value from recent question price (fallback to 100)
 	const getDefaultChangeValue = () => props.currentPrice || 100;
 
 	// Hide ScoreEditor when sum editing is disabled
 	React.useEffect(() => {
-		if (!props.isSumEditable) {
+		if (!room.areSumsEditable && isScoreEditorVisible) {
 			setIsScoreEditorVisible(false);
 		}
-	}, [props.isSumEditable]);
+	}, [room.areSumsEditable]);
 
 	const buildPlayerClasses = () => {
 		const stateClass = `state_${(PlayerStates[player.state] ?? '').toLowerCase()}`;
@@ -86,10 +77,15 @@ export function PlayerView(props: PlayerViewProps): JSX.Element {
 		return `playerCard ${stateClass} ${meClass} ${inGameClass} ${selectableClass}`;
 	};
 
+	const onCancelSumChange = () => {
+		appDispatch(setAreSumsEditable(false));
+	};
+
 	const onSumChanged = (value: number) => {
 		props.onSumChanged(value);
+
 		if (!isScoreEditorVisible) {
-			props.onCancelSumChange();
+			onCancelSumChange();
 		}
 	};
 
@@ -99,7 +95,7 @@ export function PlayerView(props: PlayerViewProps): JSX.Element {
 
 	const handleScoreEditorCancel = () => {
 		setIsScoreEditorVisible(false);
-		props.onCancelSumChange();
+		onCancelSumChange();
 	};
 
 	const handleScoreEditorBlur = () => {
@@ -210,7 +206,7 @@ export function PlayerView(props: PlayerViewProps): JSX.Element {
 							{player.name}
 						</AutoSizedText>
 
-						{props.isSumEditable ? (
+						{room.areSumsEditable ? (
 							<ScoreEditor
 								ref={scoreEditorRef}
 								currentSum={player.sum}
@@ -224,11 +220,11 @@ export function PlayerView(props: PlayerViewProps): JSX.Element {
 					</div>
 
 					<div ref={sumFieldRef} className="sum" title={player.sum.toString()}>
-						{props.isSumEditable ? (
+						{room.areSumsEditable ? (
 							<NumericTextBox
 								value={player.sum}
 								onValueChanged={value => onSumChanged(value)}
-								onCancel={props.onCancelSumChange}
+								onCancel={onCancelSumChange}
 								onFocus={() => setIsScoreEditorVisible(true)}
 								onBlur={handleNumericTextBoxBlur}
 							/>
@@ -286,4 +282,4 @@ export function PlayerView(props: PlayerViewProps): JSX.Element {
 	);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(PlayerView);
+export default connect(mapStateToProps)(PlayerView);

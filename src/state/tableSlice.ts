@@ -260,6 +260,10 @@ export const tableSlice = createSlice({
 		},
 		setAnswerView: (state, action: PayloadAction<string>) => {
 			// Do not reset content so that it will be preserved in answer options mode
+			if (action.payload.length > 0) {
+				state.content = [];
+			}
+
 			state.prependText = '';
 			state.appendText = action.payload;
 			state.audio = '';

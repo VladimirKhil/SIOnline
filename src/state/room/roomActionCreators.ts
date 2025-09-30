@@ -283,10 +283,6 @@ const onMediaEnded: ActionCreator<ThunkAction<void, State, DataContext, Action>>
 	await dataContext.game.onMediaCompleted();
 };
 
-const areSumsEditableChanged: ActionCreator<RunActions.AreSumsEditableChangedAction> = (areSumsEditable: boolean) => ({
-	type: RunActions.RoomActionTypes.AreSumsEditableChanged, areSumsEditable
-});
-
 const changePlayerSum: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (
 	playerIndex: number,
 	sum: number
@@ -478,7 +474,6 @@ const roomActionCreators = {
 	selectionEnabled,
 	showLeftSeconds,
 	onMediaEnded,
-	areSumsEditableChanged,
 	changePlayerSum,
 	runTimer,
 	pauseTimer,

@@ -21,6 +21,7 @@ import { addTable,
 	DecisionType,
 	Room2State,
 	selectPlayers,
+	setAreSumsEditable,
 	setChatMode,
 	setDecisionType,
 	setIsEditingTables,
@@ -39,26 +40,20 @@ import activePlayerImg from '../../../../assets/images/active_player.png';
 interface GameChatViewProps {
 	isConnected: boolean;
 	personsCount: number;
-	areSumsEditable: boolean;
 	isHost: boolean;
 	voiceChatUri: string | null;
 
-	onEditSums: (enable: boolean) => void;
 	onGiveTurn: () => void;
 }
 
 const mapStateToProps = (state: State) => ({
 	isConnected: state.common.isSIHostConnected,
 	personsCount: Object.values(state.room2.persons.all).length,
-	areSumsEditable: state.room.areSumsEditable,
 	isHost: isHost(state),
 	voiceChatUri: state.room.metadata.voiceChatUri,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
-	onEditSums: (enable: boolean) => {
-		dispatch(roomActionCreators.areSumsEditableChanged(enable) as unknown as Action);
-	},
 	onGiveTurn: () => {
 		dispatch(roomActionCreators.giveTurn() as unknown as Action);
 	},
@@ -224,9 +219,9 @@ export function GameChatView(props: GameChatViewProps): JSX.Element {
 
 						<button
 							type="button"
-							className={`sumsButton standard imageButton wide commandButton bottomButton ${props.areSumsEditable ? 'active' : ''}`}
+							className={`sumsButton standard imageButton wide commandButton bottomButton ${room.areSumsEditable ? 'active' : ''}`}
 							disabled={!props.isConnected}
-							onClick={() => props.onEditSums(!props.areSumsEditable)}
+							onClick={() => appDispatch(setAreSumsEditable(!room.areSumsEditable))}
 							title={localization.changeSums}
 						>
 							<img src={sumsImg} />

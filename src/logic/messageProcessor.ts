@@ -773,7 +773,8 @@ const viewerHandler = (
 
 		case GameMessages.SetChooser:
 			const chooserIndex = parseInt(args[1], 10);
-			controller.onSetChooser(chooserIndex, args.length > 2);
+			const setActive = args.length > 2 && args[2] === '+';
+			controller.onSetChooser(chooserIndex, setActive);
 			break;
 
 		case GameMessages.SetJoinMode:
