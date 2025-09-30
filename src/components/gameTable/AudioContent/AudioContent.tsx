@@ -1,10 +1,14 @@
 import * as React from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 import State from '../../../state/State';
 import { Dispatch, Action } from 'redux';
 import { connect } from 'react-redux';
 import roomActionCreators from '../../../state/room/roomActionCreators';
 import getErrorMessage from '../../../utils/ErrorHelpers';
 import localization from '../../../model/resources/localization';
+import { useAppDispatch } from '../../../state/hooks';
+import { onMediaEnded } from '../../../state/serverActions';
+import { addOperationErrorMessage } from '../../../state/room2Slice';
 
 interface AudioContentProps {
 	audioContext: AudioContext;
@@ -15,7 +19,6 @@ interface AudioContentProps {
 	isVisible: boolean;
 
 	mediaLoaded: () => void;
-	onMediaEnded: () => void;
 }
 
 const mapStateToProps = (state: State) => ({
@@ -26,138 +29,175 @@ const mapStateToProps = (state: State) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
-	onMediaEnded: () => {
-		dispatch(roomActionCreators.onMediaEnded() as object as Action);
-	},
 	mediaLoaded: () => {
 		dispatch(roomActionCreators.mediaLoaded() as unknown as Action);
 	},
 });
 
-export class AudioContent extends React.Component<AudioContentProps> {
-	private startTime = 0;
+export const AudioContent: React.FC<AudioContentProps> = ({
+	audioContext,
+	autoPlayEnabled,
+	soundVolume,
+	audio,
+	isMediaStopped,
+	isVisible,
+	mediaLoaded
+}) => {
+	const startTimeRef = useRef(0);
+	const pauseTimeRef = useRef(0);
+	const completedRef = useRef(false);
+	const audioBufferRef = useRef<AudioBuffer | null>(null);
+	const audioSourceRef = useRef<AudioBufferSourceNode | null>(null);
+	const gainNodeRef = useRef<GainNode | null>(null);
 
-	private pauseTime = 0;
+	// Track previous values to match componentDidUpdate behavior
+	const prevPropsRef = useRef({
+		audio: '',
+		soundVolume: 0,
+		isMediaStopped: false,
+		isVisible: true,
+		autoPlayEnabled: false
+	});
 
-	private completed = false;
+	const appDispatch = useAppDispatch();
 
-	private audioBuffer: AudioBuffer | null = null;
+	// Initialize gain node
+	useEffect(() => {
+		gainNodeRef.current = audioContext.createGain();
+		gainNodeRef.current.connect(audioContext.destination);
+		gainNodeRef.current.gain.value = soundVolume;
 
-	private audioSource: AudioBufferSourceNode | null = null;
+		return () => {
+			if (gainNodeRef.current) {
+				gainNodeRef.current.disconnect();
+			}
+		};
+	}, [audioContext]);
 
-	private gainNode: GainNode;
+	const operationError = useCallback((message: string) => {
+		appDispatch(addOperationErrorMessage(message));
+	}, [appDispatch]);
 
-	constructor(props: AudioContentProps) {
-		super(props);
+	const onMediaCompleted = useCallback(() => {
+		appDispatch(onMediaEnded({ contentType: 'audio', contentValue: audio }));
+	}, [audio, appDispatch]);
 
-		const { audioContext } = props;
+	const stop = useCallback(() => {
+		if (audioSourceRef.current && audioSourceRef.current.context.state === 'running') {
+			pauseTimeRef.current += audioContext.currentTime - startTimeRef.current;
+			audioSourceRef.current.onended = null;
+			audioSourceRef.current.stop();
+			audioSourceRef.current = null;
+		}
+	}, [audioContext]);
 
-		this.gainNode = audioContext.createGain();
-		this.gainNode.connect(audioContext.destination);
-		this.gainNode.gain.value = props.soundVolume;
-	}
+	const play = useCallback(() => {
+		if (!autoPlayEnabled || isMediaStopped || !isVisible) {
+			return;
+		}
 
-	operationError = (message: string) => {
-		console.error(message); // TODO: switch to function from room2Slice
-	};
+		audioSourceRef.current = audioContext.createBufferSource();
+		audioSourceRef.current.buffer = audioBufferRef.current;
+		audioSourceRef.current.loop = false;
 
-	async load() {
-		const { audioContext } = this.props;
+		audioSourceRef.current.onended = () => {
+			if (!isMediaStopped && isVisible) {
+				completedRef.current = true;
+				onMediaCompleted();
+			}
+		};
 
+		if (gainNodeRef.current) {
+			audioSourceRef.current.connect(gainNodeRef.current);
+		}
+		startTimeRef.current = audioContext.currentTime;
+		audioSourceRef.current.start(0, pauseTimeRef.current);
+	}, [audioContext, autoPlayEnabled, isMediaStopped, isVisible, onMediaCompleted]);
+
+	const load = useCallback(async () => {
 		try {
-			const response = await fetch(this.props.audio);
+			const response = await fetch(audio);
 
 			if (!response.ok) {
-				this.operationError(`${localization.audioLoadError} ${this.props.audio}: ${response.statusText}`);
+				operationError(`${localization.audioLoadError} ${audio}: ${response.statusText}`);
 				return;
 			}
 
 			const arrayBuffer = await response.arrayBuffer();
-			this.audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+			audioBufferRef.current = await audioContext.decodeAudioData(arrayBuffer);
 
-			this.props.mediaLoaded();
+			mediaLoaded();
 
-			this.pauseTime = 0;
-			this.play();
-			this.completed = false;
+			pauseTimeRef.current = 0;
+			play();
+			completedRef.current = false;
 		} catch (e) {
-			this.operationError(getErrorMessage(e));
+			operationError(getErrorMessage(e));
 		}
-	}
+	}, [audio, audioContext, mediaLoaded, operationError, play]);
 
-	play() {
-		if (!this.props.autoPlayEnabled || this.props.isMediaStopped || !this.props.isVisible) {
+	// ComponentDidMount equivalent
+	useEffect(() => {
+		if (audio.length === 0) {
 			return;
 		}
 
-		this.audioSource = this.props.audioContext.createBufferSource();
-		this.audioSource.buffer = this.audioBuffer;
-		this.audioSource.loop = false;
+		load();
 
-		this.audioSource.onended = () => {
-			if (!this.props.isMediaStopped && this.props.isVisible) {
-				this.completed = true;
-				this.props.onMediaEnded();
-			}
+		// Initialize previous props
+		prevPropsRef.current = {
+			audio,
+			soundVolume,
+			isMediaStopped,
+			isVisible,
+			autoPlayEnabled
 		};
+	}, []);
 
-		this.audioSource.connect(this.gainNode);
-		this.startTime = this.props.audioContext.currentTime;
-		this.audioSource.start(0, this.pauseTime);
-	}
+	// Single ComponentDidUpdate equivalent
+	useEffect(() => {
+		const prevProps = prevPropsRef.current;
 
-	stop() {
-		if (this.audioSource && this.audioSource.context.state === 'running') {
-			this.pauseTime += this.props.audioContext.currentTime - this.startTime;
-			this.audioSource.onended = null;
-			this.audioSource.stop();
-			this.audioSource = null;
-		}
-	}
-
-	componentDidMount() {
-		if (this.props.audio.length === 0) {
-			return;
+		// Update gain volume if changed
+		if (soundVolume !== prevProps.soundVolume && gainNodeRef.current) {
+			gainNodeRef.current.gain.value = soundVolume;
 		}
 
-		this.load();
-	}
-
-	componentDidUpdate(prevProps: AudioContentProps) {
-		if (this.props.audio == '') {
-			if (prevProps.audio != '') {
-				this.stop();
+		// Handle audio change
+		if (audio !== prevProps.audio) {
+			if (audio === '') {
+				stop();
+			} else {
+				stop();
+				load();
 			}
-
-			return;
-		}
-
-		if (this.props.soundVolume !== prevProps.soundVolume) {
-			this.gainNode.gain.value = this.props.soundVolume;
-		}
-
-		if (this.props.audio !== prevProps.audio) {
-			this.stop();
-			this.load();
-		} else if (this.props.autoPlayEnabled !== prevProps.autoPlayEnabled && this.props.autoPlayEnabled) {
-			this.play();
-		} else if (this.props.isMediaStopped !== prevProps.isMediaStopped || this.props.isVisible !== prevProps.isVisible) {
-			if (this.props.isMediaStopped || !this.props.isVisible) {
-				this.stop();
-			} else if (!this.completed) {
-				this.play();
+		} else {
+			// Handle other prop changes only if audio hasn't changed
+			if (autoPlayEnabled !== prevProps.autoPlayEnabled && autoPlayEnabled) {
+				play();
+			} else if (isMediaStopped !== prevProps.isMediaStopped || isVisible !== prevProps.isVisible) {
+				if (isMediaStopped || !isVisible) {
+					stop();
+				} else if (!completedRef.current) {
+					play();
+				}
 			}
 		}
-	}
 
-	componentWillUnmount(): void {
-		this.stop();
-	}
+		// Update previous props for next render
+		prevPropsRef.current = {
+			audio,
+			soundVolume,
+			isMediaStopped,
+			isVisible,
+			autoPlayEnabled
+		};
+	}, [audio, soundVolume, isMediaStopped, isVisible, autoPlayEnabled, stop, load, play]);
 
-	// eslint-disable-next-line class-methods-use-this
-	render(): null {
-		return null;
-	}
-}
+	// ComponentWillUnmount equivalent
+	useEffect(() => () => stop(), [stop]);
+
+	return null;
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(AudioContent);

@@ -142,3 +142,11 @@ export const sendJoinMode = createAsyncThunk(
 		}
 	}
 );
+
+export const onMediaEnded = createAsyncThunk(
+	'server/onMediaEnded',
+	async (arg: { contentType: string, contentValue: string }, thunkAPI) =>{
+		const dataContext = thunkAPI.extra as DataContext;
+		await dataContext.game.onMediaCompleted(arg.contentType, arg.contentValue);
+	}
+);

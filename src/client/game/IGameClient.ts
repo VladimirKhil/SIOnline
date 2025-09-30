@@ -45,7 +45,7 @@ export default interface IGameClient {
 
 	moveToRound(roundIndex: number): Promise<boolean>;
 
-	onMediaCompleted(): Promise<boolean>;
+	onMediaCompleted(contentType: string, contentValue: string): Promise<boolean>;
 
 	pass(): Promise<boolean>;
 

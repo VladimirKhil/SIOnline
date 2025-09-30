@@ -195,7 +195,7 @@ export default class DemoGameClient implements IGameClient {
 		throw new Error('Method not implemented.');
 	}
 
-	onMediaCompleted(): Promise<boolean> {
+	onMediaCompleted(contentType: string, contentValue: string): Promise<boolean> {
 		throw new Error('Method not implemented.');
 	}
 

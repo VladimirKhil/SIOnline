@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useRef, useEffect, useCallback } from 'react';
 import State from '../../../state/State';
 import { Dispatch, Action } from 'redux';
 import { connect } from 'react-redux';
@@ -6,6 +7,9 @@ import roomActionCreators from '../../../state/room/roomActionCreators';
 import getErrorMessage from '../../../utils/ErrorHelpers';
 import localization from '../../../model/resources/localization';
 import getExtension from '../../../utils/FileHelper';
+import { useAppDispatch } from '../../../state/hooks';
+import { onMediaEnded } from '../../../state/serverActions';
+import { addOperationErrorMessage } from '../../../state/room2Slice';
 
 import './VideoContent.css';
 
@@ -17,7 +21,6 @@ interface VideoContentProps {
 	isVisible: boolean;
 
 	mediaLoaded: () => void;
-	onMediaEnded: () => void;
 }
 
 const mapStateToProps = (state: State) => ({
@@ -27,107 +30,143 @@ const mapStateToProps = (state: State) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
-	onMediaEnded: () => {
-		dispatch(roomActionCreators.onMediaEnded() as object as Action);
-	},
 	mediaLoaded: () => {
 		dispatch(roomActionCreators.mediaLoaded() as unknown as Action);
 	}
 });
 
-export class VideoContent extends React.Component<VideoContentProps> {
-	private videoRef: React.RefObject<HTMLVideoElement>;
+export const VideoContent: React.FC<VideoContentProps> = ({
+	soundVolume,
+	uri,
+	isMediaStopped,
+	autoPlayEnabled,
+	isVisible,
+	mediaLoaded
+}) => {
+	const videoRef = useRef<HTMLVideoElement>(null);
+	const playPromiseRef = useRef<Promise<void> | null>(null);
+	const completedRef = useRef(false);
 
-	private playPromise: Promise<void> | null = null;
+	// Track previous values to match componentDidUpdate behavior
+	const prevPropsRef = useRef({
+		uri: '',
+		soundVolume: 0,
+		isMediaStopped: false,
+		isVisible: true,
+		autoPlayEnabled: false
+	});
 
-	private completed = false;
+	const appDispatch = useAppDispatch();
 
-	constructor(props: VideoContentProps) {
-		super(props);
+	const operationError = useCallback((message: string) => {
+		appDispatch(addOperationErrorMessage(message));
+	}, [appDispatch]);
 
-		this.videoRef = React.createRef();
-	}
+	const onMediaCompleted = useCallback(() => {
+		appDispatch(onMediaEnded({ contentType: 'video', contentValue: uri }));
+	}, [appDispatch, uri]);
 
-	operationError = (message: string) => {
-		console.error(message); // TODO: switch to function from room2Slice
-	};
+	const play = useCallback(() => {
+		const video = videoRef.current;
 
-	componentDidMount() {
-		if (!this.videoRef.current || this.props.uri.length === 0) {
+		if (video) {
+			playPromiseRef.current = video.play().catch((e) => operationError(getErrorMessage(e)));
+			video.muted = false;
+		}
+	}, [operationError]);
+
+	// ComponentDidMount equivalent
+	useEffect(() => {
+		if (!videoRef.current || uri.length === 0) {
 			return;
 		}
 
-		this.videoRef.current.volume = this.props.soundVolume;
+		videoRef.current.volume = soundVolume;
 
-		const ext = getExtension(this.props.uri);
-		const canPlay = ext && this.videoRef.current.canPlayType('video/' + ext);
+		const ext = getExtension(uri);
+		const canPlay = ext && videoRef.current.canPlayType('video/' + ext);
 
 		if (canPlay === '') {
-			this.operationError(`${localization.unsupportedMediaType}: ${ext}`);
+			operationError(`${localization.unsupportedMediaType}: ${ext}`);
 		}
-	}
 
-	componentDidUpdate(prevProps: VideoContentProps) {
-		const video = this.videoRef.current;
+		// Initialize previous props
+		prevPropsRef.current = {
+			uri,
+			soundVolume,
+			isMediaStopped,
+			isVisible,
+			autoPlayEnabled
+		};
+	}, []);
+
+	// Single ComponentDidUpdate equivalent
+	useEffect(() => {
+		const video = videoRef.current;
+		const prevProps = prevPropsRef.current;
 
 		if (!video) {
 			return;
 		}
 
-		if (this.props.uri !== video.currentSrc) {
-			video.load();
+		// Handle URI changes
+		if (uri !== prevProps.uri) {
+			if (uri !== video.currentSrc) {
+				video.load();
+			}
 		}
 
-		if (this.props.isMediaStopped !== prevProps.isMediaStopped || this.props.isVisible !== prevProps.isVisible) {
-			if (this.props.isMediaStopped || !this.props.isVisible) {
-				if (this.playPromise) {
-					this.playPromise.then(() => video.pause());
+		// Handle media stopped and visibility changes
+		if (isMediaStopped !== prevProps.isMediaStopped || isVisible !== prevProps.isVisible) {
+			if (isMediaStopped || !isVisible) {
+				if (playPromiseRef.current) {
+					playPromiseRef.current.then(() => video.pause());
 				} else {
 					video.pause();
 				}
-			} else if (!this.completed) {
-				this.playPromise = video.play().catch((e) => this.operationError(getErrorMessage(e)));
+			} else if (!completedRef.current) {
+				playPromiseRef.current = video.play().catch((e) => operationError(getErrorMessage(e)));
 			}
 		}
 
-		if (this.props.autoPlayEnabled !== prevProps.autoPlayEnabled) {
-			this.play();
+		// Handle autoplay changes
+		if (autoPlayEnabled !== prevProps.autoPlayEnabled) {
+			play();
 		}
 
-		video.volume = this.props.soundVolume;
-	}
-
-	play = () => {
-		const video = this.videoRef.current;
-
-		if (video) {
-			this.playPromise = video.play().catch((e) => this.operationError(getErrorMessage(e)));
-			video.muted = false;
+		// Handle volume changes
+		if (soundVolume !== prevProps.soundVolume) {
+			video.volume = soundVolume;
 		}
-	};
 
-	render() {
-		const { onMediaEnded, uri, isMediaStopped, isVisible } = this.props;
-
-		const onVideoEnded = () => {
-			if (!isMediaStopped && isVisible) {
-				this.completed = true;
-				onMediaEnded();
-			}
+		// Update previous props for next render
+		prevPropsRef.current = {
+			uri,
+			soundVolume,
+			isMediaStopped,
+			isVisible,
+			autoPlayEnabled
 		};
+	}, [uri, soundVolume, isMediaStopped, isVisible, autoPlayEnabled, operationError, play]);
 
-		return (
-			<div className='video-host'>
-				<video
-					ref={this.videoRef}
-					autoPlay={!isMediaStopped && isVisible}
-					onEnded={onVideoEnded}
-					onLoadedData={() => this.props.mediaLoaded()}>
-					<source src={uri} />
-				</video>
-			</div>
-		);
-	}
-}
+	const onVideoEnded = useCallback(() => {
+		if (!isMediaStopped && isVisible) {
+			completedRef.current = true;
+			onMediaCompleted();
+		}
+	}, [isMediaStopped, isVisible, onMediaCompleted]);
+
+	return (
+		<div className='video-host'>
+			<video
+				ref={videoRef}
+				autoPlay={!isMediaStopped && isVisible}
+				onEnded={onVideoEnded}
+				onLoadedData={() => mediaLoaded()}>
+				<source src={uri} />
+			</video>
+		</div>
+	);
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(VideoContent);

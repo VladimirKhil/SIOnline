@@ -82,8 +82,8 @@ export default class GameClient implements IGameClient {
 		return this.gameServerClient.msgAsync(Messages.Move, '3', roundIndex);
 	}
 
-	onMediaCompleted(): Promise<boolean> {
-		return this.gameServerClient.msgAsync(Messages.Atom);
+	onMediaCompleted(contentType: string, contentValue: string): Promise<boolean> {
+		return this.gameServerClient.msgAsync(Messages.Atom, contentType, contentValue);
 	}
 
 	pass(): Promise<boolean> {

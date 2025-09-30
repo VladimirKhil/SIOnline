@@ -39,7 +39,6 @@ export default interface RoomState {
 	gameInfoVisible: boolean;
 	manageGameVisible: boolean;
 	avatarViewVivible: boolean;
-	areSumsEditable: boolean;
 	areApellationsEnabled: boolean;
 	hint: string | null;
 	roundsNames: string[] | null;
@@ -123,7 +122,6 @@ export const initialState: RoomState = {
 	gameInfoVisible: false,
 	manageGameVisible: false,
 	avatarViewVivible: false,
-	areSumsEditable: false,
 	areApellationsEnabled: true,
 	hint: null,
 	roundsNames: null,

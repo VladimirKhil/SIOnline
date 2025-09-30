@@ -275,14 +275,6 @@ const showLeftSeconds = (leftSeconds: number, appDispatch: AppDispatch): void =>
 	}
 };
 
-const onMediaEnded: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
-	_dispatch: Dispatch<Action>,
-	_getState: () => State,
-	dataContext: DataContext
-) => {
-	await dataContext.game.onMediaCompleted();
-};
-
 const changePlayerSum: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (
 	playerIndex: number,
 	sum: number
@@ -473,7 +465,6 @@ const roomActionCreators = {
 	stakeChanged,
 	selectionEnabled,
 	showLeftSeconds,
-	onMediaEnded,
 	changePlayerSum,
 	runTimer,
 	pauseTimer,
