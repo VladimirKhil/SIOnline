@@ -232,7 +232,7 @@ function processMessage(controller: ClientController, payload: any, appDispatch:
 			break;
 
 		case 'table':
-			controller.onTable(payload.table, payload.isFinal);
+			controller.onTable(payload.table);
 			break;
 
 		case 'tableCaption':

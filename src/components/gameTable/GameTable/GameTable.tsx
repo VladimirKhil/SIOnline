@@ -7,7 +7,7 @@ import TableText from '../TableText/TableText';
 import TableGameThemes from '../TableGameThemes/TableGameThemes';
 import TableRoundThemes from '../TableRoundThemes/TableRoundThemes';
 import RoundTable from '../RoundTable/RoundTable';
-import FinalTable from '../FinalTable/FinalTable';
+import ThemeStack from '../ThemeStack/ThemeStack';
 import AutoSizedText from '../../common/AutoSizedText/AutoSizedText';
 import localization from '../../../model/resources/localization';
 import TimerInfo from '../../../model/TimerInfo';
@@ -62,8 +62,8 @@ function getContent(mode: TableMode) {
 		case TableMode.RoundTable:
 			return <RoundTable />;
 
-		case TableMode.Final:
-			return <FinalTable />;
+		case TableMode.ThemeStack:
+			return <ThemeStack />;
 
 		case TableMode.Statistics:
 			return <TableStatistics />;

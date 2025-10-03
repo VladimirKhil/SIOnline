@@ -53,7 +53,8 @@ import { answerOptions,
 	showPartialText,
 	showQuestionType,
 	showRoundTable,
-	showRoundThemes,
+	setRoundThemes,
+	showThemeStack,
 	showStatistics,
 	showText,
 	startLoadTimer,
@@ -138,25 +139,14 @@ import { addGameLog, appendGameLog, copyToClipboard } from '../state/globalActio
 import { mediaPreloaded, mediaPreloadProgress } from '../state/serverActions';
 import stringFormat from '../utils/StringHelpers';
 import JoinMode from '../client/game/JoinMode';
+import getBestRowColumnCount from '../utils/stackedContentHelper';
 
+// Non-idempotent initialization of group properties
 function initGroup(group: ContentGroup) {
-	let bestRowCount = 1;
-	let bestColumnCount = group.content.length / bestRowCount;
-	let bestItemSize = Math.min(9.0 / bestRowCount, 16.0 / bestColumnCount);
+	const { rowCount, columnCount } = getBestRowColumnCount(group.content.length);
 
-	for	(let rowCount = 2; rowCount < group.content.length; rowCount++) {
-		const columnCount = Math.ceil(group.content.length / rowCount);
-		const itemSize = Math.min(9.0 / rowCount, 16.0 / columnCount);
-
-		if (itemSize > bestItemSize) {
-			bestItemSize = itemSize;
-			bestRowCount = rowCount;
-			bestColumnCount = columnCount;
-		}
-	}
-
-	group.columnCount = bestColumnCount;
-	group.weight *= bestRowCount;
+	group.columnCount = columnCount;
+	group.weight *= rowCount;
 }
 
 function getRuleString(rules: string) {
@@ -1000,11 +990,11 @@ export default class ClientController {
 
 		const roundThemes: ThemeInfo[] = roundThemesNames.map(t => ({ name: t, comment: '', questions: [] }));
 
-		this.appDispatch(showRoundThemes({
-			roundThemes,
-			isFinal: playMode === ThemesPlayMode.AllTogether,
-			display: playMode === ThemesPlayMode.AllTogether,
-		}));
+		this.appDispatch(setRoundThemes(roundThemes));
+
+		if (playMode === ThemesPlayMode.AllTogether) {
+			this.appDispatch(showThemeStack());
+		}
 
 		this.appDispatch(questionReset());
 	}
@@ -1307,8 +1297,8 @@ export default class ClientController {
 		this.appDispatch(addToChat({ sender: '', text, level: MessageLevel.System }));
 	}
 
-	onTable(table: ThemeInfo[], isFinal: boolean) {
-		this.appDispatch(showRoundThemes({ roundThemes: table, isFinal, display: false }));
+	onTable(table: ThemeInfo[]) {
+		this.appDispatch(setRoundThemes(table));
 	}
 
 	onShowTable() {

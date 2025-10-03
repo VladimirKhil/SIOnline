@@ -876,7 +876,7 @@ const viewerHandler = (
 				}
 			});
 
-			controller.onTable(newRoundInfo, state.room.stage.name === 'Final');
+			controller.onTable(newRoundInfo);
 			break;
 
 		case GameMessages.Timeout:

@@ -99,6 +99,8 @@ const exitGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (
 	dispatch(stopTimer(1));
 	dispatch(stopTimer(2));
 
+	dispatch(roundsNamesChanged([]));
+
 	appDispatch(setIsPaused(false));
 	appDispatch(setIsAppellation(false));
 	dispatch(clearDecisionsAndMainTimer());

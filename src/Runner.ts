@@ -448,7 +448,7 @@ async function initializeApp() {
 				case DecisionType.Choose:
 					if (state.table.mode === TableMode.RoundTable) {
 						onSelectQuestion(state);
-					} else if (state.table.mode === TableMode.Final) {
+					} else if (state.table.mode === TableMode.ThemeStack) {
 						onSelectTheme(state);
 					}
 					break;
@@ -522,8 +522,8 @@ async function initializeApp() {
 					console.log(`\x1b[36mRound themes\x1b[0m: ${state.table.roundInfo.map(theme => theme.name).join(', ')}`);
 					break;
 
-				case TableMode.Final:
-					console.log(`\x1b[36mFinal table\x1b[0m: ${state.table.roundInfo.map(theme => theme.name).join(', ')}`);
+				case TableMode.ThemeStack:
+					console.log(`\x1b[36mThemes\x1b[0m: ${state.table.roundInfo.map(theme => theme.name).join(', ')}`);
 					break;
 
 				case TableMode.Text:
