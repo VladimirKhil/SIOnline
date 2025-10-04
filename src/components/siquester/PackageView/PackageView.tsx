@@ -9,17 +9,20 @@ import MediaItem from '../MediaItem/MediaItem';
 import ScreensView from '../ScreensView/ScreensView';
 import AutoSizedText from '../../common/AutoSizedText/AutoSizedText';
 import getLanguage from '../../../utils/getLanguage';
-import { 
-	savePackage, 
-	updatePackageProperty, 
-	updateRoundProperty, 
-	updateThemeProperty, 
+import {
+	savePackage,
+	updatePackageProperty,
+	updateRoundProperty,
+	updateThemeProperty,
 	updateQuestionProperty,
 	updateQuestionRightAnswer,
 	updateQuestionWrongAnswer,
 	updateInfoProperty,
 	updateTag,
-	updateQuestionParam
+	updateQuestionParam,
+	setCurrentItem,
+	selectCurrentItem,
+	findItemIndices
 } from '../../../state/siquesterSlice';
 
 import './PackageView.scss';
@@ -32,8 +35,8 @@ const PackageView: React.FC = () => {
 	const appDispatch = useDispatch();
 	const siquester = useAppSelector(state => state.siquester);
 	const { zip, pack } = siquester;
+	const currentItem = useAppSelector(selectCurrentItem);
 	const [roundIndex, setRoundIndex] = React.useState(0);
-	const [item, setItem] = React.useState<Package | Round | Theme | Question | null>(null);
 	const [mode, setMode] = React.useState(Mode.Questions);
 	const [isEditMode, setIsEditMode] = React.useState(false);
 
@@ -68,46 +71,6 @@ const PackageView: React.FC = () => {
 			case 'exceptCurrent': return localization.setAnswererSelectExceptCurrent;
 			default: return setAnswererSelect;
 		}
-	}
-
-	// Helper function to find indices of the current item
-	function findItemIndices(targetItem: Package | Round | Theme | Question | null): { 
-		roundIndex?: number; 
-		themeIndex?: number; 
-		questionIndex?: number; 
-	} {
-		if (!targetItem || !pack) {
-			return {};
-		}
-
-		if ('rounds' in targetItem) {
-			// Package
-			return {};
-		}
-
-		// Find the item in the package structure
-		for (const [rIndex, currentRound] of pack.rounds.entries()) {
-			if (currentRound === targetItem) {
-				// Round
-				return { roundIndex: rIndex };
-			}
-
-			for (const [tIndex, currentTheme] of currentRound.themes.entries()) {
-				if (currentTheme === targetItem) {
-					// Theme
-					return { roundIndex: rIndex, themeIndex: tIndex };
-				}
-
-				for (const [qIndex, currentQuestion] of currentTheme.questions.entries()) {
-					if (currentQuestion === targetItem) {
-						// Question
-						return { roundIndex: rIndex, themeIndex: tIndex, questionIndex: qIndex };
-					}
-				}
-			}
-		}
-
-		return {};
 	}
 
 	function getQuestionTypeName(type: string): string {
@@ -224,26 +187,32 @@ const PackageView: React.FC = () => {
 		</>;
 	}
 
-	function getItemView(currentItem: Package | Round | Theme | Question): React.ReactNode {
-		const indices = findItemIndices(currentItem);
+	function getItemView(item: Package | Round | Theme | Question): React.ReactNode {
+		const indices = findItemIndices(pack || null, item);
 
-		if ('rounds' in currentItem) { // Package
-			const currentPack = currentItem as Package;
+		if ('rounds' in item) { // Package
+			const currentPack = item as Package;
 
 			return (
 				<div className='info packageView__package__info'>
 					<header>
 						<div className='main__header'>{localization.package}</div>
-						<button type='button' className='standard' onClick={() => setItem(null)}>{localization.close}</button>
+						<button
+							type='button'
+							className='standard'
+							onClick={() => appDispatch(setCurrentItem({ isPackageSelected: false }))}
+						>
+							{localization.close}
+						</button>
 					</header>
 
 					<section className='info__content'>
 						<label htmlFor='name' className='header'>{localization.name}</label>
-						<input 
-							id='name' 
-							type='text' 
-							className='packageView__package__info__name' 
-							value={currentPack.name} 
+						<input
+							id='name'
+							type='text'
+							className='packageView__package__info__name'
+							value={currentPack.name}
 							readOnly={!isEditMode}
 							onChange={(e) => isEditMode && appDispatch(updatePackageProperty({ property: 'name', value: e.target.value }))}
 						/>
@@ -335,8 +304,8 @@ const PackageView: React.FC = () => {
 									value={currentPack.contactUri}
 									readOnly={!isEditMode}
 									onChange={(e) => isEditMode && appDispatch(updatePackageProperty({ 
-										property: 'contactUri', 
-										value: e.target.value 
+										property: 'contactUri',
+										value: e.target.value
 									}))}
 								/>
 							</> : null}
@@ -347,14 +316,20 @@ const PackageView: React.FC = () => {
 			);
 		}
 
-		if ('themes' in currentItem) { // Round
-			const currentRound = currentItem as Round;
+		if ('themes' in item) { // Round
+			const currentRound = item as Round;
 
 			return (
 				<div className='info packageView__round__info'>
 					<header>
 						<div className='main__header'>{localization.round}</div>
-						<button type='button' className='standard' onClick={() => setItem(null)}>{localization.close}</button>
+						<button
+							type='button'
+							className='standard'
+							onClick={() => appDispatch(setCurrentItem({ isPackageSelected: false }))}
+						>
+							{localization.close}
+						</button>
 					</header>
 
 					<section className='info__content'>
@@ -392,14 +367,20 @@ const PackageView: React.FC = () => {
 			);
 		}
 
-		if ('questions' in currentItem) { // Theme
-			const theme = currentItem as Theme;
+		if ('questions' in item) { // Theme
+			const theme = item as Theme;
 
 			return (
 				<div className='info'>
 					<header>
 						<div className='main__header'>{localization.theme}</div>
-						<button type='button' className='standard' onClick={() => setItem(null)}>{localization.close}</button>
+						<button 
+							type='button' 
+							className='standard' 
+							onClick={() => appDispatch(setCurrentItem({ isPackageSelected: false }))}
+						>
+							{localization.close}
+						</button>
 					</header>
 
 					<label htmlFor='name' className='header'>{localization.name}</label>
@@ -426,7 +407,7 @@ const PackageView: React.FC = () => {
 			);
 		}
 
-		const question = currentItem as Question;
+		const question = item as Question;
 		const { answerOptions } = question.params;
 
 		function getNumberSet(numberSet: NumberSet) {
@@ -517,18 +498,24 @@ const PackageView: React.FC = () => {
 			<div className='info packageView__question__info'>
 				<header>
 					<div className='main__header'>{localization.question}</div>
-					<button type='button' className='standard' onClick={() => setItem(null)}>{localization.close}</button>
+					<button
+						type='button'
+						className='standard'
+						onClick={() => appDispatch(setCurrentItem({ isPackageSelected: false }))}
+					>
+						{localization.close}
+					</button>
 				</header>
 
 				<section className='info__content'>
 					{question.price > -1
 						? <>
 						<label htmlFor='price' className='header'>{localization.price}</label>
-						<input 
-							id='price' 
-							type='number' 
-							className='packageView__question__info__price' 
-							value={question.price} 
+						<input
+							id='price'
+							type='number'
+							className='packageView__question__info__price'
+							value={question.price}
 							readOnly={!isEditMode}
 							onChange={(e) => handleQuestionChange('price', parseInt(e.target.value, 10) || 0)}
 						/>
@@ -551,10 +538,10 @@ const PackageView: React.FC = () => {
 						{question.params.theme
 							? <>
 								<label htmlFor='theme' className='header'>{localization.theme}</label>
-								<input 
-									id='theme' 
-									type='text' 
-									value={question.params.theme} 
+								<input
+									id='theme'
+									type='text'
+									value={question.params.theme}
 									readOnly={!isEditMode}
 									onChange={(e) => handleQuestionParamChange('theme', e.target.value)}
 								/>
@@ -729,7 +716,7 @@ const PackageView: React.FC = () => {
 					<div
 						key={ri}
 						className={`packageView__round ${ri === roundIndex ? 'selected' : ''}`}
-						onClick={() => { setRoundIndex(ri); setItem(null); }}>
+						onClick={() => { setRoundIndex(ri); appDispatch(setCurrentItem({ isPackageSelected: false })); }}>
 						{roundData.name}
 					</div>
 				))}
@@ -738,7 +725,9 @@ const PackageView: React.FC = () => {
 			{round ? <div className='packageView__table'>
 				{round.themes.map((theme, ti) => (
 					<div key={ti} className='packageView__theme'>
-						<div className={`packageView__theme__name ${item === theme ? 'selected' : ''}`} onClick={() => setItem(theme)}>
+						<div className={`packageView__theme__name ${currentItem === theme ? 'selected' : ''}`} onClick={() => {
+							appDispatch(setCurrentItem({ roundIndex, themeIndex: ti }));
+						}}>
 							<AutoSizedText maxFontSize={18}>{theme.name}</AutoSizedText>
 						</div>
 
@@ -746,9 +735,11 @@ const PackageView: React.FC = () => {
 							<div
 								key={qi}
 								className={`packageView__question
-									${item === question ? 'selected' : ''}
+									${currentItem === question ? 'selected' : ''}
 									${isThemeList ? 'wide' : ''}`}
-								onClick={() => { setItem(question); }}>
+								onClick={() => {
+									appDispatch(setCurrentItem({ roundIndex, themeIndex: ti, questionIndex: qi }));
+								}}>
 								{isThemeList ? localization.question : getQuestionDisplay(question.price)}
 							</div>
 						))}
@@ -763,8 +754,10 @@ const PackageView: React.FC = () => {
 			{packageData.rounds.map((roundData, ri) => (
 				<div
 					key={ri}
-					className={`packageView__roundInfo__round ${item === roundData ? 'selected' : ''}`}
-					onClick={() => setItem(roundData)}>
+					className={`packageView__roundInfo__round ${currentItem === roundData ? 'selected' : ''}`}
+					onClick={() => {
+						appDispatch(setCurrentItem({ roundIndex: ri }));
+					}}>
 					{roundData.name}
 				</div>
 			))}
@@ -816,8 +809,10 @@ const PackageView: React.FC = () => {
 					</button>
 
 					<div
-						className={`packageView__package ${item === pack ? 'selected' : ''}`}
-						onClick={() => { setItem(pack); }}>
+						className={`packageView__package ${currentItem === pack ? 'selected' : ''}`}
+						onClick={() => {
+							appDispatch(setCurrentItem({ isPackageSelected: true }));
+						}}>
 						{pack.name}
 					</div>
 				</header>
@@ -825,8 +820,8 @@ const PackageView: React.FC = () => {
 				{mode === Mode.Questions ? getQuestionsView(pack) : getRoundsView(pack)}
 			</div>
 
-			{item ? <div className='packageView__object'>
-				{getItemView(item)}
+			{currentItem ? <div className='packageView__object'>
+				{getItemView(currentItem)}
 			</div> : null}
 		</div>
 	);

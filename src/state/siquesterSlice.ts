@@ -11,6 +11,10 @@ import { downloadPackageAsSIQ } from '../model/siquester/packageExporter';
 export interface SIQuesterState {
 	zip?: JSZip;
 	pack?: Package;
+	roundIndex?: number;
+	themeIndex?: number;
+	questionIndex?: number;
+	isPackageSelected?: boolean;
 }
 
 const initialState: SIQuesterState = {};
@@ -301,15 +305,36 @@ export const siquesterSlice = createSlice({
 				}
 			}
 		},
+		setCurrentItem: (state, action: {
+			payload: {
+				roundIndex?: number;
+				themeIndex?: number;
+				questionIndex?: number;
+				isPackageSelected?: boolean;
+			}
+		}) => {
+			state.roundIndex = action.payload.roundIndex;
+			state.themeIndex = action.payload.themeIndex;
+			state.questionIndex = action.payload.questionIndex;
+			state.isPackageSelected = action.payload.isPackageSelected;
+		},
 	},
 	extraReducers: builder => {
 		builder.addCase(openFile.fulfilled, (state, action) => {
 			state.zip = action.payload.zip;
 			state.pack = action.payload.pack;
+			state.roundIndex = undefined;
+			state.themeIndex = undefined;
+			state.questionIndex = undefined;
+			state.isPackageSelected = false;
 		});
 		builder.addCase(createNewPackage.fulfilled, (state, action) => {
 			state.zip = action.payload.zip;
 			state.pack = action.payload.pack;
+			state.roundIndex = undefined;
+			state.themeIndex = undefined;
+			state.questionIndex = undefined;
+			state.isPackageSelected = false;
 		});
 	},
 });
@@ -325,6 +350,84 @@ export const {
 	updateInfoProperty,
 	updateTag,
 	updateContentItem,
+	setCurrentItem,
 } = siquesterSlice.actions;
+
+// Selector to get the current item based on the indices
+export const selectCurrentItem = (state: { siquester: SIQuesterState }): Package | Round | Theme | Question | null => {
+	const { pack, roundIndex, themeIndex, questionIndex, isPackageSelected } = state.siquester;
+
+	if (!pack) {
+		return null;
+	}
+
+	// If no indices are set, check if package is explicitly selected
+	if (roundIndex === undefined) {
+		return isPackageSelected ? pack : null;
+	}
+
+	const round = pack.rounds[roundIndex];
+	if (!round) {
+		return null;
+	}
+
+	// If only roundIndex is set, return the round
+	if (themeIndex === undefined) {
+		return round;
+	}
+
+	const theme = round.themes[themeIndex];
+	if (!theme) {
+		return null;
+	}
+
+	// If roundIndex and themeIndex are set, return the theme
+	if (questionIndex === undefined) {
+		return theme;
+	}
+
+	const question = theme.questions[questionIndex];
+	return question || null;
+};
+
+// Helper function to find indices of an item in the package structure
+export const findItemIndices = (pack: Package | null, targetItem: Package | Round | Theme | Question | null): { 
+	roundIndex?: number;
+	themeIndex?: number;
+	questionIndex?: number;
+} => {
+	if (!targetItem || !pack) {
+		return {};
+	}
+
+	if ('rounds' in targetItem) {
+		// Package
+		return {};
+	}
+
+	// Find the item in the package structure
+	for (const [rIndex, currentRound] of pack.rounds.entries()) {
+		if (currentRound === targetItem) {
+			// Round
+			return { roundIndex: rIndex };
+		}
+
+		for (const [tIndex, currentTheme] of currentRound.themes.entries()) {
+			if (currentTheme === targetItem) {
+				// Theme
+				return { roundIndex: rIndex, themeIndex: tIndex };
+			}
+
+			for (const [qIndex, currentQuestion] of currentTheme.questions.entries()) {
+				if (currentQuestion === targetItem) {
+					// Question
+					return { roundIndex: rIndex, themeIndex: tIndex, questionIndex: qIndex };
+				}
+			}
+		}
+	}
+
+	return {};
+};
 
 export default siquesterSlice.reducer;
