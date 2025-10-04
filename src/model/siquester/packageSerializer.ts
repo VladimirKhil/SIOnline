@@ -53,7 +53,7 @@ function serializeContentParam(xmlDoc: Document, paramElement: Element, contentP
 		}
 
 		if (item.isRef) {
-			itemElement.setAttribute('isRef', 'true');
+			itemElement.setAttribute('isRef', 'True');
 		}
 
 		if (item.placement && item.placement !== ContentPlacements.Screen) {
@@ -65,7 +65,7 @@ function serializeContentParam(xmlDoc: Document, paramElement: Element, contentP
 		}
 
 		if (!item.waitForFinish) {
-			itemElement.setAttribute('waitForFinish', 'false');
+			itemElement.setAttribute('waitForFinish', 'False');
 		}
 
 		itemElement.textContent = item.value;

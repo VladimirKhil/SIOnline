@@ -611,10 +611,10 @@ function parseContentParam(paramElement: Element): ContentParam {
 		items: getDirectChildrenByTagName(paramElement, 'item').map(item => ({
 			type: item.getAttribute('type') as ContentType ?? 'text',
 			value: item.textContent || '',
-			isRef: item.getAttribute('isRef') === 'True',
+			isRef: item.getAttribute('isRef')?.toLowerCase() === 'true', // Default to false
 			placement: item.getAttribute('placement') as 'replic' | 'background' | 'screen' ?? 'screen',
 			duration: item.getAttribute('duration') || undefined,
-			waitForFinish: item.getAttribute('waitForFinish') !== 'False',
+			waitForFinish: item.getAttribute('waitForFinish')?.toLowerCase() !== 'false', // Default to true
 		})),
 	};
 }

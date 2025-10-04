@@ -4,11 +4,18 @@ import MediaItem from '../MediaItem/MediaItem';
 import AutoSizedText from '../../common/AutoSizedText/AutoSizedText';
 import localization from '../../../model/resources/localization';
 import Constants from '../../../model/enums/Constants';
+import { useDispatch } from 'react-redux';
+import { updateContentItem } from '../../../state/siquesterSlice';
 
 import './ScreensView.scss';
 
 interface ScreensViewProps {
-	content: ContentParam,
+	content: ContentParam;
+	isEditMode?: boolean;
+	roundIndex?: number;
+	themeIndex?: number;
+	questionIndex?: number;
+	paramName?: string;
 }
 
 interface ContentGroup {
@@ -49,7 +56,15 @@ function initGroup(group: ContentGroup) {
 	group.weight *= bestRowCount;
 }
 
-const ScreensView: React.FC<ScreensViewProps> = ({ content }) => {
+const ScreensView: React.FC<ScreensViewProps> = ({ 
+	content, 
+	isEditMode = false, 
+	roundIndex, 
+	themeIndex, 
+	questionIndex, 
+	paramName 
+}) => {
+	const dispatch = useDispatch();
 	const [screenIndex, setScreenIndex] = React.useState(0);
 
 	React.useEffect(() => {
@@ -162,9 +177,41 @@ const ScreensView: React.FC<ScreensViewProps> = ({ content }) => {
 
 	const screen = screens[screenIndex];
 
-	function getContentItem(contentItem: ContentItem): React.ReactNode {
+	const findContentItemIndex = (targetItem: ContentItem): number => content.items.findIndex(item => item === targetItem);
+
+	function getContentItem(contentItem: ContentItem, itemIndex: number): React.ReactNode {
+		const handleContentChange = (property: 'value', value: string) => {
+			if (isEditMode && 
+				typeof roundIndex === 'number' && 
+				typeof themeIndex === 'number' && 
+				typeof questionIndex === 'number' && 
+				paramName) {
+				dispatch(updateContentItem({
+					roundIndex,
+					themeIndex,
+					questionIndex,
+					paramName,
+					itemIndex,
+					property,
+					value
+				}));
+			}
+		};
+
 		switch (contentItem.type) {
-			case 'text': return <AutoSizedText maxFontSize={20}>{contentItem.value}</AutoSizedText>;
+			case 'text':
+				return isEditMode ? (
+					<textarea
+						className='screensView__editable__text'
+						value={contentItem.value}
+						rows={Math.max(2, Math.ceil(contentItem.value.length / 50))}
+						placeholder="Enter text content..."
+						aria-label="Edit text content"
+						onChange={(e) => handleContentChange('value', e.target.value)}
+					/>
+				) : (
+					<AutoSizedText maxFontSize={20}>{contentItem.value}</AutoSizedText>
+				);
 			case 'image': return <MediaItem src={contentItem.value} type='image' isRef={contentItem.isRef} />;
 			case 'audio': return <MediaItem src={contentItem.value} type='audio' isRef={contentItem.isRef} />;
 			case 'video': return <MediaItem src={contentItem.value} type='video' isRef={contentItem.isRef} />;
@@ -196,24 +243,27 @@ const ScreensView: React.FC<ScreensViewProps> = ({ content }) => {
 					</div> : null}
 
 					{screen.groups.length > 0 ? <div className='packageView__question__current__screen'>
-						{screen.groups.map((group, gi) => <div
+						{screen.groups.map((screenGroup, gi) => <div
 							className='packageView__question__content__item__group'
 							key={gi}
-							style={{ flex: `${group.weight}`, gridTemplateColumns: `repeat(${group.columnCount}, 1fr)` }}>
-								{group.content.map((contentItem, ci) => <div
+							style={{
+								flex: screenGroup.weight,
+								gridTemplateColumns: `repeat(${screenGroup.columnCount}, 1fr)`
+							}}>
+								{screenGroup.content.map((contentItem, ci) => <div
 									className='packageView__question__content__item'
 									key={contentItem.value}>
-										{getContentItem(contentItem)}
+										{getContentItem(contentItem, ci)}
 									</div>)}
 							</div>)}
 					</div> : null}
 
 					{screen.background ? <div className='packageView__question__background'>
-						{getContentItem(screen.background)}
+						{getContentItem(screen.background, findContentItemIndex(screen.background))}
 					</div> : null}
 
 					{screen.replic ? <div className='packageView__question__replic'>
-						{getContentItem(screen.replic)}
+						{getContentItem(screen.replic, findContentItemIndex(screen.replic))}
 					</div> : null}
 				</>
 				: null}
