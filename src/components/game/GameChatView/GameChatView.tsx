@@ -10,7 +10,6 @@ import roomActionCreators from '../../../state/room/roomActionCreators';
 import localization from '../../../model/resources/localization';
 import ChatInput from '../ChatInput/ChatInput';
 import Role from '../../../model/Role';
-import TablesView from '../TablesView/TablesView';
 import { isHost } from '../../../utils/StateHelpers';
 import GameMetadataView from '../GameMetadataView/GameMetadataView';
 import BannedView from '../BannedView/BannedView';
@@ -82,13 +81,6 @@ function getSideArea(props: GameChatViewProps, room: Room2State): React.ReactNod
 						return (
 							<div className="game__persons">
 								<PersonsView />
-							</div>
-						);
-
-					case UsersMode.Tables:
-						return (
-							<div className="game__persons">
-								<TablesView />
 							</div>
 						);
 
@@ -185,12 +177,11 @@ export function GameChatView(props: GameChatViewProps): JSX.Element {
 				</h1>
 			</header>
 
-			{room.chat.mode === ChatMode.Users ?
-				<div className="wide tabHeader usersHeader">
+			{room.chat.mode === ChatMode.Users
+				? <div className="wide tabHeader usersHeader">
 					<TabControl
 						tabs={[
 							{ id: UsersMode.Users, label: localization.members },
-							{ id: UsersMode.Tables, label: localization.tables },
 							{ id: UsersMode.Banned, label: '🚫', title: localization.bannedList } ]}
 						activeTab={room.chat.usersMode}
 						onTabClick={n => appDispatch(setUsersMode(n))} />

@@ -14,7 +14,6 @@ import RoundProgress from '../../game/RoundProgress/RoundProgress';
 import localization from '../../../model/resources/localization';
 import roomActionCreators from '../../../state/room/roomActionCreators';
 import PersonsView from '../../game/PersonsView/PersonsView';
-import TablesView from '../../game/TablesView/TablesView';
 import Dialog from '../../common/Dialog/Dialog';
 import ManageGameView from '../../game/ManageGameView/ManageGameView';
 import Constants from '../../../model/enums/Constants';
@@ -39,7 +38,6 @@ import closeSvg from '../../../../assets/images/close.svg';
 interface RoomProps {
 	windowWidth: number;
 	isPersonsDialogVisible: boolean;
-	isTablesDialogVisible: boolean;
 	isBannedDialogVisible: boolean;
 	isGameInfoDialogVisible: boolean;
 	isManageGameDialogVisible: boolean;
@@ -50,7 +48,6 @@ interface RoomProps {
 	avatarViewVisible: boolean;
 
 	onPersonsDialogClose: () => void;
-	onTablesDialogClose: () => void;
 	onBannedDialogClose: () => void;
 	onGameInfoDialogClose: () => void;
 	onManageGameDialogClose: () => void;
@@ -62,7 +59,6 @@ interface RoomProps {
 const mapStateToProps = (state: State) => ({
 	windowWidth: state.ui.windowWidth,
 	isPersonsDialogVisible: state.room.personsVisible,
-	isTablesDialogVisible: state.room.tablesVisible,
 	isBannedDialogVisible: state.room.bannedVisible,
 	isGameInfoDialogVisible: state.room.gameInfoVisible,
 	isManageGameDialogVisible: state.room.manageGameVisible,
@@ -76,9 +72,6 @@ const mapStateToProps = (state: State) => ({
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	onPersonsDialogClose: () => {
 		dispatch(roomActionCreators.runHidePersons());
-	},
-	onTablesDialogClose: () => {
-		dispatch(roomActionCreators.runHideTables());
 	},
 	onBannedDialogClose: () => {
 		dispatch(roomActionCreators.runHideBanned());
@@ -231,12 +224,6 @@ export function Room(props: RoomProps) : JSX.Element {
 			{props.isPersonsDialogVisible && !isScreenWide ? (
 				<PersonsDialog title={localization.members} onClose={props.onPersonsDialogClose}>
 					<PersonsView />
-				</PersonsDialog>
-			) : null}
-
-			{props.isTablesDialogVisible && !isScreenWide ? (
-				<PersonsDialog title={localization.tables} onClose={props.onTablesDialogClose}>
-					<TablesView />
 				</PersonsDialog>
 			) : null}
 

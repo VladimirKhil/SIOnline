@@ -35,14 +35,6 @@ const runHidePersons: ActionCreator<RunActions.RunHidePersonsAction> = () => ({
 	type: RunActions.RoomActionTypes.RoomHidePersons
 });
 
-const runShowTables: ActionCreator<RunActions.RunShowTablesAction> = () => ({
-	type: RunActions.RoomActionTypes.RoomShowTables
-});
-
-const runHideTables: ActionCreator<RunActions.RunHideTablesAction> = () => ({
-	type: RunActions.RoomActionTypes.RoomHideTables
-});
-
 const runShowBanned: ActionCreator<RunActions.RunShowBannedAction> = () => ({
 	type: RunActions.RoomActionTypes.RoomShowBanned
 });
@@ -115,48 +107,6 @@ const exitGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (
 const tableSelected: ActionCreator<RunActions.TableSelectedAction> = (tableIndex: number) => ({
 	type: RunActions.RoomActionTypes.TableSelected, tableIndex
 });
-
-const deleteTable: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
-	_dispatch: Dispatch<RunActions.KnownRoomAction>,
-	getState: () => State,
-	dataContext: DataContext
-	) => {
-	const tableIndex = getState().room.selectedTableIndex - 1;
-
-	if (tableIndex < 0 || tableIndex >= getState().room2.persons.players.length) {
-		return;
-	}
-
-	await dataContext.game.deleteTable(tableIndex);
-};
-
-const freeTable: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
-	_dispatch: Dispatch<RunActions.KnownRoomAction>,
-	getState: () => State,
-	dataContext: DataContext
-	) => {
-	const tableIndex = getState().room.selectedTableIndex;
-
-	if (tableIndex < 0 || tableIndex >= getState().room2.persons.players.length + 1) {
-		return;
-	}
-
-	await dataContext.game.freeTable(tableIndex === 0, tableIndex - 1);
-};
-
-const setTable: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (name: string) => async (
-	_dispatch: Dispatch<RunActions.KnownRoomAction>,
-	getState: () => State,
-	dataContext: DataContext
-	) => {
-	const tableIndex = getState().room.selectedTableIndex;
-
-	if (tableIndex < 0 || tableIndex >= getState().room2.persons.players.length + 1) {
-		return;
-	}
-
-	await dataContext.game.setTable(tableIndex === 0, tableIndex - 1, name);
-};
 
 const stageChanged: ActionCreator<RunActions.StageChangedAction> = (stageName: string, roundIndex: number) => ({
 	type: RunActions.RoomActionTypes.StageChanged, stageName, roundIndex
@@ -439,8 +389,6 @@ const roomActionCreators = {
 	giveTurn,
 	runShowPersons,
 	runHidePersons,
-	runShowTables,
-	runHideTables,
 	runShowBanned,
 	runHideBanned,
 	runShowGameInfo,
@@ -449,9 +397,6 @@ const roomActionCreators = {
 	runHideManageGame,
 	exitGame,
 	tableSelected,
-	deleteTable,
-	freeTable,
-	setTable,
 	stageChanged,
 	gameStateCleared,
 	afterQuestionStateChanged,

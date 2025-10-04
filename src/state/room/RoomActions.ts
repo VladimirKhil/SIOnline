@@ -3,8 +3,6 @@ import StakeModes from '../../client/game/StakeModes';
 export const enum RoomActionTypes {
 	RoomShowPersons = 'ROOM_SHOW_PERSONS',
 	RoomHidePersons = 'ROOM_HIDE_PERSONS',
-	RoomShowTables = 'ROOM_SHOW_TABLES',
-	RoomHideTables = 'ROOM_HIDE_TABLES',
 	RoomShowBanned = 'ROOM_SHOW_BANNED',
 	RoomHideBanned = 'ROOM_HIDE_BANNED',
 	RoomShowGameInfo = 'ROOM_SHOW_GAMEINFO',
@@ -49,8 +47,6 @@ export const enum RoomActionTypes {
 
 export type RunShowPersonsAction = { type: RoomActionTypes.RoomShowPersons };
 export type RunHidePersonsAction = { type: RoomActionTypes.RoomHidePersons };
-export type RunShowTablesAction = { type: RoomActionTypes.RoomShowTables };
-export type RunHideTablesAction = { type: RoomActionTypes.RoomHideTables };
 export type RunShowBannedAction = { type: RoomActionTypes.RoomShowBanned };
 export type RunHideBannedAction = { type: RoomActionTypes.RoomHideBanned };
 export type RunShowGameInfoAction = { type: RoomActionTypes.RoomShowGameInfo };
@@ -109,8 +105,6 @@ export type IsQuestionChangedAction = { type: RoomActionTypes.IsQuestionChanged,
 export type KnownRoomAction =
 	RunShowPersonsAction
 	| RunHidePersonsAction
-	| RunShowTablesAction
-	| RunHideTablesAction
 	| RunShowBannedAction
 	| RunHideBannedAction
 	| RunShowGameInfoAction

@@ -9,9 +9,59 @@
 	padding: 10px 20px;
 }
 
+.replacementListContainer {
+	border-top: 1px solid #ccc;
+	margin-top: 5px;
+	padding-top: 10px;
+}
+
+.replacementListHeader {
+	font-size: 10px;
+	font-weight: bold;
+	padding: 5px;
+	text-align: center;
+}
+
+.replacementList {
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	gap: 5px;
+	padding: 10px;
+}
+
+.replacementItem {
+	font-size: 10px;
+	padding: 5px;
+	cursor: pointer;
+	text-align: center;
+	background-color: #aaaaaa59;
+	border-radius: 3px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.replacementItem:hover {
+	background-color: #f5f5f559;
+}
+
 @media screen and (min-width: 1100px) {
 	.flyoutButton_flyout .editTableMenuList li {
 		font-size: 26px;
 		padding: 13px 40px;
+	}
+
+	.replacementListHeader {
+		font-size: 15px;
+	}
+
+	.replacementList {
+		padding: 20px;
+		gap: 3px;
+	}
+
+	.replacementItem {
+		font-size: 14px;
+		padding: 8px;
 	}
 }

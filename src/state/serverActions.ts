@@ -51,6 +51,18 @@ export const changeTableType = createAsyncThunk(
 	}
 );
 
+export const setTablePerson = createAsyncThunk(
+	'server/setTablePerson',
+	async (arg: { isShowman: boolean, tableIndex: number, name: string }, thunkAPI) => {
+		if (arg.tableIndex < 0 || (!arg.isShowman && arg.tableIndex >= (thunkAPI.getState() as any).room2.persons.players.length)) {
+			return;
+		}
+
+		const dataContext = thunkAPI.extra as DataContext;
+		await dataContext.game.setTable(arg.isShowman, arg.tableIndex, arg.name);
+	}
+);
+
 export const pauseGame = createAsyncThunk(
 	'server/pauseGame',
 	async (arg: void, thunkAPI) => {

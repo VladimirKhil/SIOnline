@@ -1,6 +1,5 @@
 const enum UsersMode {
 	Users,
-	Tables,
 	Banned,
 }
 

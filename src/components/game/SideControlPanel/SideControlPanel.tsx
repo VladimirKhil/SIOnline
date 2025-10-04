@@ -36,7 +36,6 @@ interface SideControlPanelProps {
 	voiceChatUri: string | null;
 
 	onShowPersons: () => void;
-	onShowTables: () => void;
 	onShowBanned: () => void;
 	onShowGameInfo: () => void;
 	onGiveTurn: () => void;
@@ -58,9 +57,6 @@ const mapStateToProps = (state: State) => ({
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	onShowPersons: () => {
 		dispatch(roomActionCreators.runShowPersons());
-	},
-	onShowTables: () => {
-		dispatch(roomActionCreators.runShowTables());
 	},
 	onShowBanned: () => {
 		dispatch(roomActionCreators.runShowBanned());
@@ -156,7 +152,6 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 
 									{props.isHost
 										? <>
-											<li onClick={() => props.onShowTables()}>{localization.tables}</li>
 											{canAddTable ? <li onClick={() => appDispatch(addTable())}>{localization.addTable}</li> : null}
 
 											{room.stage.isGameStarted

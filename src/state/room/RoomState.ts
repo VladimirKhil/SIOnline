@@ -34,7 +34,6 @@ export default interface RoomState {
 
 	selectedTableIndex: number; // 0 for showman; {N} for player {N - 1}
 	personsVisible: boolean;
-	tablesVisible: boolean;
 	bannedVisible: boolean;
 	gameInfoVisible: boolean;
 	manageGameVisible: boolean;
@@ -117,7 +116,6 @@ export const initialState: RoomState = {
 
 	selectedTableIndex: -1,
 	personsVisible: false,
-	tablesVisible: false,
 	bannedVisible: false,
 	gameInfoVisible: false,
 	manageGameVisible: false,

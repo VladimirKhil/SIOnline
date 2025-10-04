@@ -19,7 +19,6 @@ interface PlayersViewProps {
 	isVisible: boolean;
 
 	onSumChanged: (playerIndex: number, sum: number) => void;
-	onShowTables: () => void;
 }
 
 const mapStateToProps = (state: State) => ({
@@ -32,9 +31,6 @@ const mapStateToProps = (state: State) => ({
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	onSumChanged: (playerIndex: number, sum: number) => {
 		dispatch(roomActionCreators.changePlayerSum(playerIndex, sum) as object as Action);
-	},
-	onShowTables: () => {
-		dispatch(roomActionCreators.runShowTables());
 	},
 });
 

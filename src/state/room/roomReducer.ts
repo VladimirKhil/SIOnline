@@ -21,18 +21,6 @@ const roomReducer: Reducer<RoomState> = (state: RoomState = initialState, anyAct
 				personsVisible: false
 			};
 
-		case RoomActionTypes.RoomShowTables:
-			return {
-				...state,
-				tablesVisible: true
-			};
-
-		case RoomActionTypes.RoomHideTables:
-			return {
-				...state,
-				tablesVisible: false
-			};
-
 		case RoomActionTypes.RoomShowBanned:
 			return {
 				...state,
