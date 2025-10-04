@@ -25,7 +25,7 @@ import MessageLevel from '../../../model/enums/MessageLevel';
 import { userErrorChanged } from '../../../state/commonSlice';
 import { AppDispatch, RootState } from '../../../state/store';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
-import { addToChat, DialogView, rejectAnswer, setChatVisibility } from '../../../state/room2Slice';
+import { addToChat, DecisionType, DialogView, rejectAnswer, setChatVisibility } from '../../../state/room2Slice';
 import ComplainDialog from '../../panels/ComplainDialog/ComplainDialog';
 import ReportDialog from '../../panels/ReportDialog/ReportDialog';
 import GameState from '../../game/GameState/GameState';
@@ -245,7 +245,10 @@ export function Room(props: RoomProps) : JSX.Element {
 				</Dialog>
 			) : null}
 
-			{room.validation.queue.length > 0 && (!isScreenWide || room.role === Role.Player) ? (
+			{room.stage.decisionType === DecisionType.Validation &&
+				room.validation.queue.length > 0 &&
+				!isScreenWide &&
+				room.role === Role.Showman ? (
 				<Dialog className='answerValidationDialog' title={room.validation.header} onClose={() => onReject(1.0)}>
 					<AnswerValidation />
 				</Dialog>

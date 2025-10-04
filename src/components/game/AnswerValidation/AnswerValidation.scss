@@ -10,9 +10,15 @@
     width: 100%;
     height: 100%;
     font-size: 14px;
+    display: flex;
+    flex-direction: column;
 }
 
-.answerValidation .validationHeader {
+.answerValidationBody {
+    flex: 1;
+}
+
+.answerValidationBody .validationHeader {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -21,27 +27,27 @@
     min-width: 0;
 }
 
-.validationHeader p {
+.answerValidationBody .validationHeader p {
     overflow: hidden;
     display: inline-block !important;
     max-height: 120px;
 }
 
-.answerValidation p {
+.answerValidationBody p {
     margin: 0;
     display: flex;
     align-items: center;
     text-align: center;
 }
 
-.answerValidation .answersPanel {
+.answerValidationBody .answersPanel {
     margin: 13px;
     display: flex;
     flex: 1;
     overflow: hidden;
 }
 
-.answerValidation .answers {
+.answerValidationBody .answers {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -49,14 +55,14 @@
     flex: 1;
 }
 
-.answerValidation .answers p {
+.answerValidationBody .answers p {
     font-weight: bold;
     text-align: center;
     vertical-align: top;
     height: 40px;
 }
 
-.answerValidation .answers ul {
+.answerValidationBody .answers ul {
     overflow-y: auto;
     overflow-x: hidden;
     scrollbar-width: thin;
@@ -64,86 +70,27 @@
     flex: 1;
 }
 
-.answerValidation .answers li {
+.answerValidationBody .answers li {
     vertical-align: middle;
     font-size: larger;
     text-align: center;
 }
 
-.answerValidation .answers li span {
+.answerValidationBody .answers li span {
     vertical-align: middle;
 }
 
-.answerValidation .buttonsPanel {
-    flex: 0 0 45px;
-}
-
-.answerValidation .buttonsPanel .buttonsArea {
-    position: relative;
-    margin: 0 2px;
-}
-
-.answerValidation .validationButton {
-    width: calc(100% - 4px);
-    height: 100%;
-}
-
-.answerValidation .acceptButton {
-    background: v.$accept-button-background;
-}
-
-.answerValidation .acceptButton:hover {
-    background: linear-gradient(180deg, #97c7a6 14.29%, #54996a 100%);
-}
-
-.answerValidation .rejectButton {
-    background: v.$reject-button-background;
-}
-
-.answerValidation .rejectButton:hover {
-    background: linear-gradient(180deg, #d0726c 14.29%, #a8372f 100%);
-}
-
-.answerValidation .extraButton {
-    position: absolute;
-    font-family: 'Arial';
-    font-size: 14px;
-    background-color: transparent;
-    width: 45px;
-    height: 100%;
-}
-
-.answerValidation .extraButton:hover {
-    background-color: #98B9FF;
-}
-
-.answerValidation .extraButton.halfPrice {
-    left: 0;
-}
-
-.answerValidation .extraButton.doublePrice {
-    right: 0;
-}
-
-.answerValidation .cancelAnswer {
-    color: white;
-    background: v.$cancel-button-background;
-    margin: 1px 2px;
-}
-
-.answerValidation .cancelAnswer:hover {
-    background: v.$cancel-hover-button-background;
-}
-
-.answerValidation .mainMessage {
+.answerValidationBody .mainMessage {
     flex: 1;
+    display: flex;
+    flex-direction: column;
 }
 
-.answerValidation .playerTitle {
+.answerValidationBody .playerTitle {
     display: block !important;
 }
 
-.answerValidation .playerAnswer {
+.answerValidationBody .playerAnswer {
     font-weight: bold;
     text-align: center;
     display: block !important;
@@ -151,11 +98,11 @@
     margin-top: 5px;
 }
 
-.answerValidation .answersPanel.answersHidden {
+.answerValidationBody .answersPanel.answersHidden {
     opacity: 0;
 }
 
-.answerValidation {
+.answerValidationBody {
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -189,21 +136,17 @@
         color: white;
     }
 
-    .answerValidation .validationHeader {
+    .answerValidationBody .validationHeader {
         color: orange;
     }
 
-    .answerValidation h1 {
+    .answerValidationBody h1 {
         font-size: 25px;
     }
 
-    .answerValidation .answersPanel {
+    .answerValidationBody .answersPanel {
         flex-direction: column;
         overflow-y: auto;
         height: initial;
-    }
-
-    .answerValidation .buttonsPanel {
-        position: static;
     }
 }

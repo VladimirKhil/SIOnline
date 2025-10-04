@@ -37,6 +37,7 @@ export enum DecisionType {
 	Stake,
 	OralAnswer,
 	Choose,
+	Validation,
 }
 
 // Helper function to check if a decision is needed
@@ -558,6 +559,7 @@ export const room2Slice = createSlice({
 			state.validation.queue = [{ name: action.payload.name, answer: action.payload.answer }];
 			state.validation.showExtraRightButtons = action.payload.showExtraRightButtons;
 			state.validation.newVersion = false;
+			state.stage.decisionType = DecisionType.Validation;
 		},
 		askValidation(state: Room2State, action: PayloadAction<{ playerIndex: number, answer: string }>) {
 			if (action.payload.playerIndex === -1 || action.payload.playerIndex >= state.persons.players.length) {
@@ -570,9 +572,11 @@ export const room2Slice = createSlice({
 			state.validation.message = '';
 			state.validation.showExtraRightButtons = false;
 			state.validation.newVersion = true;
+			state.stage.decisionType = DecisionType.Validation;
 		},
 		stopValidation(state: Room2State) {
 			state.validation.queue = [];
+			state.stage.decisionType = DecisionType.None;
 		},
 		nameChanged(state: Room2State, action: PayloadAction<string>) {
 			state.name = action.payload;
@@ -735,14 +739,17 @@ export const room2Slice = createSlice({
 
 		builder.addCase(approveAnswerDefault.fulfilled, (state) => {
 			state.validation.queue.shift();
+			state.stage.decisionType = DecisionType.None;
 		});
 
 		builder.addCase(rejectAnswerDefault.fulfilled, (state) => {
 			state.validation.queue.shift();
+			state.stage.decisionType = DecisionType.None;
 		});
 
 		builder.addCase(approveAnswer.fulfilled, (state) => {
 			state.validation.queue.shift();
+			state.stage.decisionType = DecisionType.None;
 		});
 
 		builder.addCase(rejectAnswer.fulfilled, (state) => {

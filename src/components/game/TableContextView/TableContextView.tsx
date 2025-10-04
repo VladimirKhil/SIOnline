@@ -15,6 +15,8 @@ import ReportButton from '../ReportButton/ReportButton';
 import EditTableButton from '../EditTableButton/EditTableButton';
 import TableMode from '../../../model/enums/TableMode';
 import OralAnswer from '../OralAnswer/OralAnswer';
+import AnswerValidationButtons from '../AnswerValidationButtons/AnswerValidationButtons';
+import { DecisionType } from '../../../state/room2Slice';
 
 import './TableContextView.css';
 
@@ -40,7 +42,13 @@ function renderBody(
 	isGameStarted: boolean,
 	isGamePaused: boolean,
 	role: Role,
+	decisionType: DecisionType,
 ) : JSX.Element | null {
+	// Check for DecisionType.Validation first for players
+	if (decisionType === DecisionType.Validation && role === Role.Player) {
+		return <AnswerValidationButtons />;
+	}
+
 	// TODO: Switch to enum to select view to display
 	switch (contextView) {
 		case ContextView.Answer:
@@ -90,7 +98,18 @@ export function TableContextView(props: TableContextViewProps): JSX.Element | nu
 	const ui = useAppSelector(rootState => rootState.ui);
 	const table = useAppSelector(rootState => rootState.table);
 	const room = useAppSelector(rootState => rootState.room2);
-	const body = renderBody(props, state.contextView, ui.windowWidth, table.mode, room.stage.isGameStarted, room.stage.isGamePaused, room.role);
+
+	const body = renderBody(
+		props,
+		state.contextView,
+		ui.windowWidth,
+		table.mode,
+		room.stage.isGameStarted,
+		room.stage.isGamePaused,
+		room.role,
+		room.stage.decisionType,
+	);
+
 	return body == null ? null : <div className='tableContextView'>{body}</div>;
 }
 

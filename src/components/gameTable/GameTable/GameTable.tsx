@@ -18,6 +18,9 @@ import ObjectView from '../ObjectView/ObjectView';
 import { useAppSelector } from '../../../state/hooks';
 import TableWelcome from '../TableWelcome/TableWelcome';
 import TableStatistics from '../TableStatistics/TableStatistics';
+import AnswerValidationBody from '../../game/AnswerValidationBody/AnswerValidationBody';
+import Role from '../../../model/Role';
+import { DecisionType } from '../../../state/room2Slice';
 
 import './GameTable.css';
 
@@ -120,6 +123,12 @@ export function GameTable(props: GameTableProps): JSX.Element {
 	const isPaused = room.stage.isGamePaused;
 	const { noRiskMode } = room;
 
+	const shouldShowAnswerValidationInTable = room.stage.decisionType === DecisionType.Validation &&
+		room.validation.queue.length > 0 &&
+		room.role === Role.Player;
+
+	const showAppelation = room.stage.isAppellation && !shouldShowAnswerValidationInTable;
+
 	return (
 		<div id="table" style={themeProperties}>
 			{caption ? (
@@ -133,6 +142,12 @@ export function GameTable(props: GameTableProps): JSX.Element {
 				{getContent(props.mode)}
 			</div>
 
+			{shouldShowAnswerValidationInTable ? (
+				<div className="answerValidationInTable">
+					<AnswerValidationBody />
+				</div>
+			) : null}
+
 			{tableState.contentHint.length > 0 ? <div className='contentHint'>{tableState.contentHint}</div> : null}
 
 			{props.showMainTimer ? (
@@ -143,12 +158,12 @@ export function GameTable(props: GameTableProps): JSX.Element {
 				/>
 			) : null}
 
-			{(isPaused && !room.isEditTableEnabled) || room.stage.isAppellation || !props.isConnected ? (
+			{(isPaused && !room.isEditTableEnabled) || showAppelation || !props.isConnected ? (
 				<AutoSizedText
 					maxFontSize={144}
 					className={`pauseLogo tableText tableTextCenter ${props.isConnected ? '' : 'warning'}`}
 				>
-					{isPaused ? localization.pause : (room.stage.isAppellation ? localization.apellation : localization.connectionClosed)}
+					{isPaused ? localization.pause : (showAppelation ? localization.apellation : localization.connectionClosed)}
 				</AutoSizedText>
 			) : null}
 		</div>
