@@ -184,7 +184,7 @@ function processMessage(controller: ClientController, payload: any, appDispatch:
 			break;
 
 		case 'setChooser':
-			controller.onSetChooser(payload.chooserIndex, payload.setAnswerer);
+			controller.onSetChooser(payload.chooserIndex, payload.setAnswerer, true);
 			break;
 
 		case 'setAttachContentToTable':

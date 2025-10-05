@@ -1007,11 +1007,14 @@ export default class ClientController {
 		this.appDispatch(setAttachContentToTable(attach));
 	}
 
-	onShowmanReplic(messageIndex: number, messageCode: string) {
+	onShowmanReplic(messageIndex: number, messageCode: string, args: string[]) {
 		const text = localization.getString('replic_' + messageCode.toString());
 
 		if (text) {
-			this.appDispatch(showmanReplicChanged(text));
+			const textVariants = text.split(';');
+			const variantIndex = messageIndex % textVariants.length;
+			const selectedVariant = stringFormat(textVariants[variantIndex], ...args);
+			this.appDispatch(showmanReplicChanged(selectedVariant));
 		}
 	}
 
@@ -1290,11 +1293,11 @@ export default class ClientController {
 			return;
 		}
 
-		if (personCode !== 'l') {
-			return;
-		}
+		// if (personCode !== 'l') {
+		// 	return;
+		// }
 
-		this.appDispatch(addToChat({ sender: '', text, level: MessageLevel.System }));
+		// this.appDispatch(addToChat({ sender: '', text, level: MessageLevel.System }));
 	}
 
 	onTable(table: ThemeInfo[]) {
@@ -1542,13 +1545,24 @@ export default class ClientController {
 	}
 
 	onToggle(themeIndex: number, questionIndex: number, price: number) {
-		const themeInfo = this.getState().table.roundInfo[themeIndex];
+		const state = this.getState();
+		const themeInfo = state.table.roundInfo[themeIndex];
 
 		if (themeInfo) {
 			const existingPrice = themeInfo.questions[questionIndex];
 
 			if (existingPrice) {
 				this.appDispatch(updateQuestion({ themeIndex, questionIndex, price }));
+
+				const message = price >= 0
+					? stringFormat(localization.questionRestored, state.room2.persons.showman.name, themeInfo.name, price.toString())
+					: stringFormat(localization.questionRemoved, state.room2.persons.showman.name, themeInfo.name, existingPrice.toString());
+
+				this.appDispatch(addToChat({
+					sender: '',
+					text: message,
+					level: MessageLevel.System
+				}));
 			}
 		}
 	}
@@ -1750,13 +1764,18 @@ export default class ClientController {
 		}
 	}
 
-	onSetChooser(chooserIndex: number, setActive: boolean) {
+	onSetChooser(chooserIndex: number, setActive: boolean, manually: boolean) {
 		this.appDispatch(chooserChanged(chooserIndex));
+
+		const state = this.getState();
+		const player = state.room2.persons.players[chooserIndex];
+
+		if (!player) {
+			return;
+		}
 
 		if (setActive) {
 			this.appDispatch(playerStateChanged({ index: chooserIndex, state: PlayerStates.Press }));
-
-			const state = this.getState();
 
 			const indices = state.room2.persons.players
 				.map((_, i) => i)
@@ -1765,7 +1784,13 @@ export default class ClientController {
 			this.appDispatch(playerStatesChanged({ indices, state: PlayerStates.Pass }));
 		}
 
-		// TODO: show notification about chooser change
+		if (manually) {
+			this.appDispatch(addToChat({
+				sender: '',
+				text: stringFormat(localization.setChooser, state.room2.persons.showman.name, player.name),
+				level: MessageLevel.System,
+			}));
+		}
 	}
 
 	onSum(playerIndex: number, value: number) {

@@ -774,7 +774,8 @@ const viewerHandler = (
 		case GameMessages.SetChooser:
 			const chooserIndex = parseInt(args[1], 10);
 			const setActive = args.length > 2 && args[2] === '+';
-			controller.onSetChooser(chooserIndex, setActive);
+			const manually = args.length > 3 && args[3] === '+';
+			controller.onSetChooser(chooserIndex, setActive, manually);
 			break;
 
 		case GameMessages.SetJoinMode:
@@ -797,7 +798,7 @@ const viewerHandler = (
 			}
 
 			const messageIndex = parseInt(args[1], 10);
-			controller.onShowmanReplic(messageIndex, args[2]);
+			controller.onShowmanReplic(messageIndex, args[2], args.slice(3));
 			break;
 
 		case GameMessages.ShowTable:
