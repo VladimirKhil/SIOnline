@@ -116,7 +116,7 @@ export function GameChatView(props: GameChatViewProps): JSX.Element {
 	};
 
 	const hostUI = props.isHost
-		? <div className="host-buttons">
+		? <>
 			<button
 				type="button"
 				className='sumsButton standard imageButton wide commandButton bottomButton'
@@ -124,7 +124,21 @@ export function GameChatView(props: GameChatViewProps): JSX.Element {
 				disabled={!props.isConnected || !canAddTable}
 				title={localization.addTable}
 			>
-				<span>➕🕹️</span>
+				<svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+					<path
+						d="M9 2C6.79 2 5 3.79 5 6C5 8.21 6.79 10 9 10C11.21 10 13 8.21 13 6C13 3.79 11.21 2 9 2Z"
+						stroke="white"
+						strokeWidth="2"
+						fill="none"
+					/>
+					<path
+						d="M2 22V20C2 16.69 4.69 14 8 14H10C13.31 14 16 16.69 16 20V22"
+						stroke="white"
+						strokeWidth="2"
+						fill="none"
+					/>
+					<path d="M20 3L20 9M17 6L23 6" stroke="white" strokeWidth="2.5" strokeLinecap="round"/>
+				</svg>
 			</button>
 
 			<button
@@ -134,9 +148,23 @@ export function GameChatView(props: GameChatViewProps): JSX.Element {
 				disabled={!props.isConnected || !room.stage.isGameStarted}
 				title={localization.editTables}
 			>
-				<span>✏️🕹️</span>
+				<svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+					<path
+						d="M8 2C5.79 2 4 3.79 4 6C4 8.21 5.79 10 8 10C10.21 10 12 8.21 12 6C12 3.79 10.21 2 8 2Z"
+						stroke="white"
+						strokeWidth="2"
+						fill="none"
+					/>
+					<path
+						d="M1 22V20C1 16.69 3.69 14 7 14H9C12.31 14 15 16.69 15 20V22"
+						stroke="white"
+						strokeWidth="2"
+						fill="none"
+					/>
+					<path d="M21 0L23 2L17 8L15 8L15 6Z" stroke="white" strokeWidth="1" fill="white"/>
+				</svg>
 			</button>
-		</div>
+		</>
 		: null;
 
 	return (
@@ -218,7 +246,7 @@ export function GameChatView(props: GameChatViewProps): JSX.Element {
 							<img src={sumsImg} />
 						</button>
 					</div>
-				</>) : hostUI}
+				</>) : <div className="sideButtonHost">{hostUI}</div>}
 		</div>
 	);
 }
