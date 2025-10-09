@@ -29,7 +29,6 @@ import clearUrls from '../utils/clearUrls';
 import ThemesPlayMode from '../model/enums/ThemesPlayMode';
 import { AppDispatch } from '../state/store';
 import { addToChat,
-	personAvatarChanged,
 	playerInGameChanged,
 	playerStakeChanged,
 	playerStateChanged } from '../state/room2Slice';
@@ -169,14 +168,6 @@ const viewerHandler = (
 			}
 
 			controller.onAppellation(args[1] === '+');
-			break;
-
-		case GameMessages.ApellationEnabled:
-			if (args.length === 1) {
-				break;
-			}
-
-			controller.onApellationEnabled(args[1] === '+');
 			break;
 
 		case GameMessages.AtomHint:
@@ -394,6 +385,10 @@ const viewerHandler = (
 			controller.onGameClosed();
 			break;
 
+		case GameMessages.GameError:
+			controller.onGameError();
+			break;
+
 		case GameMessages.GameMetadata:
 			if (args.length < 4) {
 				break;
@@ -562,7 +557,7 @@ const viewerHandler = (
 			}
 			break;
 
-		case 'PERSONFINALSTAKE':
+		case GameMessages.PersonFinalStake:
 			{
 				const playerIndex = parseInt(args[1], 10);
 				const player = state.room2.persons.players[playerIndex];
@@ -575,7 +570,7 @@ const viewerHandler = (
 			}
 			break;
 
-		case 'PERSONSTAKE':
+		case GameMessages.PersonStake:
 			{
 				const playerIndex = parseInt(args[1], 10);
 				const player = state.room2.persons.players[playerIndex];
@@ -612,14 +607,6 @@ const viewerHandler = (
 			}
 			break;
 
-		case 'PICTURE': {
-			const personName = args[1];
-			const uri = controller.preprocessServerUri(args[2]);
-
-			dispatch(personAvatarChanged({ personName, avatarUri: uri }));
-			break;
-		}
-
 		case GameMessages.Pin:
 			if (args.length > 1) {
 				const pin = args[1];
@@ -639,6 +626,21 @@ const viewerHandler = (
 				controller.onPlayerAnswer(playerIndex, answer);
 				break;
 			}
+
+		case GameMessages.PlayerAppellating:
+			if (args.length > 1) {
+				const playerName = args[1];
+				controller.onPlayerAppellating(playerName);
+			}
+			break;
+
+		case GameMessages.PlayerScoreChanged:
+			if (args.length > 2) {
+				const playerIndex = parseInt(args[1], 10);
+				const newScore = parseInt(args[2], 10);
+				controller.onPlayerScoreChanged(playerIndex, newScore);
+			}
+			break;
 
 		case GameMessages.PlayerState:
 			if (args.length > 1) {
@@ -743,6 +745,12 @@ const viewerHandler = (
 
 		case GameMessages.RoundContent:
 			controller.onRoundContent(args.slice(1));
+			break;
+
+		case GameMessages.RoundEnd:
+			if (args.length > 1) {
+				controller.onRoundEnd(args[1]);
+			}
 			break;
 
 		case GameMessages.RoundsNames:

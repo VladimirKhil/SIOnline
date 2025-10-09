@@ -13,7 +13,6 @@ import './ReactionPanel.css';
 interface ReactionPanelProps {
 	isConnected: boolean;
 	sex: Sex;
-	areApellationsEnabled: boolean;
 
 	apellate: () => void;
 	disagree: () => void;
@@ -22,7 +21,6 @@ interface ReactionPanelProps {
 const mapStateToProps = (state: State) => ({
 	isConnected: state.common.isSIHostConnected,
 	sex: state.settings.sex,
-	areApellationsEnabled: state.room.areApellationsEnabled,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
@@ -35,14 +33,14 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 });
 
 export function ReactionPanel(props: ReactionPanelProps): JSX.Element | null {
-	const roomState = useAppSelector(state => state.room2);
-	const playerCount = roomState.persons.players.length;
+	const room = useAppSelector(state => state.room2);
+	const playerCount = room.persons.players.length;
 	const appDispatch = useAppDispatch();
 	const rightString = props.sex === Sex.Female ? localization.iAmRightFemale : localization.iAmRightMale;
 
 	return (
 		<div className='reactions reactions_panel'>
-			{props.areApellationsEnabled
+			{room.settings.useApellations
 			? (<>
 				<button
 					type='button'

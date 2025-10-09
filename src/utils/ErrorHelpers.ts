@@ -26,6 +26,10 @@ export function getUserError(errorCode: ErrorCode, args: string[]): string {
 		case ErrorCode.CannotKickBots: return 'Cannot kick bots';
 		case ErrorCode.CannotSetHostToYourself: return 'Cannot set host to yourself';
 		case ErrorCode.CannotSetHostToBots: return 'Cannot set host to bots';
+		case ErrorCode.AvatarTooBig: return 'Avatar image is too big';
+		case ErrorCode.InvalidAvatar: return 'Avatar image format is not supported';
+		case ErrorCode.PersonAlreadyExists: return 'Person with the same name already exists';
+		case ErrorCode.AppellationFailedTooFewPlayers: return 'Appellation failed: too few players';
 		default: return '';
 	}
 }

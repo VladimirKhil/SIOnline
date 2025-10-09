@@ -10,8 +10,6 @@ const enum GameMessages {
 
 	Appellation = 'APPELLATION',
 
-	ApellationEnabled = 'APELLATION_ENABLES',
-
 	AskSelectPlayer = 'ASK_SELECT_PLAYER',
 
 	AskStake = 'ASK_STAKE',
@@ -65,6 +63,8 @@ const enum GameMessages {
 
 	GameClosed = 'GAME_CLOSED',
 
+	GameError = 'GAME_ERROR',
+
 	/** Game metadata: game name, package name, contact uri. */
 	GameMetadata = 'GAMEMETADATA',
 
@@ -107,10 +107,18 @@ const enum GameMessages {
 
 	PersonFinalAnswer = 'PERSONFINALANSWER',
 
+	PersonFinalStake = 'PERSONFINALSTAKE',
+
+	PersonStake = 'PERSONSTAKE',
+
 	Pin = 'PIN',
 
 	/** Displays player's answer to the question. */
 	PlayerAnswer = 'PLAYER_ANSWER',
+
+	PlayerAppellating = 'PLAYER_APPELLATING',
+
+	PlayerScoreChanged = 'PLAYER_SCORE_CHANGED',
 
 	PlayerState = 'PLAYER_STATE',
 
@@ -152,6 +160,8 @@ const enum GameMessages {
 	RightAnswerStart = 'RIGHT_ANSWER_START',
 
 	RoundContent = 'ROUNDCONTENT',
+
+	RoundEnd = 'ROUND_END',
 
 	RoundsNames = 'ROUNDSNAMES',
 

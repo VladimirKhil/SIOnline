@@ -250,12 +250,6 @@ const roomReducer: Reducer<RoomState> = (state: RoomState = initialState, anyAct
 				roundsNames: action.roundsNames
 			};
 
-		case RoomActionTypes.AreApellationsEnabledChanged:
-			return {
-				...state,
-				areApellationsEnabled: action.areApellationsEnabled
-			};
-
 		case RoomActionTypes.ButtonBlockingTimeChanged:
 			return {
 				...state,

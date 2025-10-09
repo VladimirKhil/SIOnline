@@ -193,6 +193,14 @@ export default class ClientController {
 		private loadStart: Date | null = null,
 	) {}
 
+	addSimpleMessage(message: string) {
+		this.appDispatch(addToChat({
+			sender: '',
+			text: message,
+			level: MessageLevel.System,
+		}));
+	}
+
 	preprocessServerUri(uri: string) {
 		const result = uri.replace(
 			'<SERVERHOST>',
@@ -334,10 +342,6 @@ export default class ClientController {
 		this.appDispatch(setIsAppellation(appellation));
 	}
 
-	onApellationEnabled(enabled: boolean) {
-		this.dispatch(roomActionCreators.areApellationsEnabledChanged(enabled));
-	}
-
 	onAskAnswer() {
 		if (this.getState().table.layoutMode === LayoutMode.Simple) {
 			this.dispatch(roomActionCreators.isAnswering());
@@ -430,6 +434,8 @@ export default class ClientController {
 			default:
 				break;
 		}
+
+		this.addSimpleMessage(stringFormat(localization.connected, account.name));
 	}
 
 	onContentHint(hint: string) {
@@ -446,12 +452,11 @@ export default class ClientController {
 	onDisconnected(name: string) {
 		this.appDispatch(personRemoved(name));
 
-		// TODO: uncomment after stopping Special replics support
-		// this.appDispatch(addToChat({
-		// 	sender: '',
-		// 	text: name + localization.disconnected,
-		// 	level: MessageLevel.System,
-		// }));
+		this.appDispatch(addToChat({
+			sender: '',
+			text: name + localization.disconnected,
+			level: MessageLevel.System,
+		}));
 
 		const state = this.getState();
 
@@ -470,12 +475,11 @@ export default class ClientController {
 	onGameClosed() {
 		this.appDispatch(showText(localization.gameClosed));
 		this.appDispatch(userWarnChanged(localization.gameClosed));
+		this.addSimpleMessage(localization.gameClosed);
+	}
 
-		this.appDispatch(addToChat({
-			sender: '',
-			text: localization.gameClosed,
-			level: MessageLevel.System,
-		}));
+	onGameError() {
+		this.addSimpleMessage(localization.gameError);
 	}
 
 	onGameThemes(gameThemes: string[]) {
@@ -831,6 +835,30 @@ export default class ClientController {
 		this.appDispatch(playerReplicChanged({ playerIndex, replic: answer }));
 	}
 
+	onPlayerAppellating(playerName: string) {
+		this.addSimpleMessage(stringFormat(localization.requestedAppellation, playerName));
+	}
+
+	onPlayerScoreChanged(playerIndex: number, newScore: number) {
+		const state = this.getState();
+
+		if (playerIndex < 0 || playerIndex >= state.room2.persons.players.length) {
+			return;
+		}
+
+		const player = state.room2.persons.players[playerIndex];
+		const oldScore = player.sum;
+
+		if (oldScore === newScore) {
+			return;
+		}
+
+		const showmanName = state.room2.persons.showman.name;
+
+		this.appDispatch(playerSumChanged({ index: playerIndex, value: newScore }));
+		this.addSimpleMessage(stringFormat(localization.playerScoreChanged, showmanName, player.name, oldScore.toString(), newScore.toString()));
+	}
+
 	onPlayerState(state: PlayerStates, playerIndicies: number[]) {
 		this.appDispatch(playerStatesChanged({ indices: playerIndicies, state }));
 
@@ -983,6 +1011,23 @@ export default class ClientController {
 		processFiles();
 	}
 
+	onRoundEnd(reason: string) {
+		switch (reason) {
+			case 'empty':
+				this.addSimpleMessage(localization.roundEndedEmpty);
+				break;
+
+			case 'timeout':
+				this.addSimpleMessage(localization.roundEndedTimeout);
+				break;
+
+			case 'manual':
+				default:
+				this.addSimpleMessage(localization.roundEndedManual);
+				break;
+		}
+	}
+
 	onRoundThemes(roundThemesNames: string[], playMode: ThemesPlayMode) {
 		if (playMode === ThemesPlayMode.OneByOne) {
 			this.playGameSound(GameSound.ROUND_THEMES, true);
@@ -1101,12 +1146,7 @@ export default class ClientController {
 
 	onUnbanned(name: string) {
 		this.dispatch(roomActionCreators.unbanned(name));
-
-		this.appDispatch(addToChat({
-			sender: '',
-			text: stringFormat(localization.userUnbanned, name),
-			level: MessageLevel.System,
-		}));
+		this.addSimpleMessage(stringFormat(localization.userUnbanned, name));
 	}
 
 	onWinner() {
@@ -1583,6 +1623,13 @@ export default class ClientController {
 
 	addPlayerTable() {
 		this.appDispatch(playerAdded());
+		const { hostName } = this.getState().room2.persons;
+
+		if (!hostName) {
+			return;
+		}
+
+		this.addSimpleMessage(stringFormat(localization.addedNewSlot, hostName));
 	}
 
 	deletePlayerTable(index: number) {
@@ -1597,6 +1644,14 @@ export default class ClientController {
 		} else if (player.name === state.room2.name) {
 			this.appDispatch(setRoomRole(Role.Viewer));
 		}
+
+		const { hostName } = this.getState().room2.persons;
+
+		if (!hostName) {
+			return;
+		}
+
+		this.addSimpleMessage(stringFormat(localization.deletedSlot, hostName, (index + 1).toString()));
 	}
 
 	onPause(isPaused: boolean, currentTime: number[]) {
@@ -1678,6 +1733,18 @@ export default class ClientController {
 		if (person && person.name === state.room2.name) {
 			this.appDispatch(setRoomRole(Role.Viewer));
 		}
+
+		const { hostName } = state.room2.persons;
+
+		if (!hostName) {
+			return;
+		}
+
+		this.addSimpleMessage(stringFormat(
+			localization.changedSlotType,
+			hostName,
+			account.name,
+			isHuman ? localization.human : localization.computer));
 	}
 
 	onTableSet(role: string, index: number, replacer: string, replacerSex: Sex) {
@@ -1747,6 +1814,14 @@ export default class ClientController {
 		} else if (replacer === state.room2.name) {
 			this.appDispatch(setRoomRole(isPlayer ? Role.Player : Role.Showman));
 		}
+
+		const { hostName } = state.room2.persons;
+
+		if (!hostName) {
+			return;
+		}
+
+		this.addSimpleMessage(stringFormat(localization.replacedSlot, hostName, account.name, replacer));
 	}
 
 	onTableFree(personType: string, index: number) {
@@ -1762,6 +1837,14 @@ export default class ClientController {
 		if (account.name === state.room2.name) {
 			this.appDispatch(setRoomRole(Role.Viewer));
 		}
+
+		const { hostName } = state.room2.persons;
+
+		if (!hostName) {
+			return;
+		}
+
+		this.addSimpleMessage(stringFormat(localization.freedSlot, hostName, account.name));
 	}
 
 	onSetChooser(chooserIndex: number, setActive: boolean, manually: boolean) {

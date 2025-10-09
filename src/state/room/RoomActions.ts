@@ -32,7 +32,6 @@ export const enum RoomActionTypes {
 	RoundsNamesChanged = 'ROUNDS_NAMES_CHANGED',
 	ChooserChanged = 'CHOOSER_CHANGED',
 	PlayerInGameChanged = 'PLAYER_IN_GAME_CHANGED',
-	AreApellationsEnabledChanged = 'ARE_APELLATIONS_ENABLED_CHANGED',
 	ButtonBlockingTimeChanged = 'BUTTON_BLOCKING_TIME_CHANGED',
 	GameMetadataChanged = 'GAME_METADATA_CHANGED',
 	BannedListChanged = 'BANNED_LIST_CHANGED',
@@ -84,7 +83,6 @@ export type ClearDecisionsAndMainTimerAction = { type: RoomActionTypes.ClearDeci
 export type HintChangedAction = { type: RoomActionTypes.HintChanged, hint: string | null };
 export type ThemeNameChangedAction = { type: RoomActionTypes.ThemeNameChanged, themeName: string };
 export type RoundsNamesChangedAction = { type: RoomActionTypes.RoundsNamesChanged, roundsNames: string[] };
-export type AreApellationsEnabledChangedAction = { type: RoomActionTypes.AreApellationsEnabledChanged, areApellationsEnabled: boolean };
 export type ButtonBlockingChangedAction = { type: RoomActionTypes.ButtonBlockingTimeChanged, buttonBlockingTime: number };
 
 export type GameMetadataChangedAction = {
@@ -132,7 +130,6 @@ export type KnownRoomAction =
 	| HintChangedAction
 	| ThemeNameChangedAction
 	| RoundsNamesChangedAction
-	| AreApellationsEnabledChangedAction
 	| ButtonBlockingChangedAction
 	| GameMetadataChangedAction
 	| BannedListChangedAction

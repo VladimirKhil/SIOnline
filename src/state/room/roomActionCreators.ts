@@ -310,10 +310,6 @@ const navigateToRound: ActionCreator<ThunkAction<void, State, DataContext, Actio
 	await dataContext.game.moveToRound(roundIndex);
 };
 
-const areApellationsEnabledChanged: ActionCreator<RunActions.AreApellationsEnabledChangedAction> = (areApellationsEnabled: boolean) => ({
-	type: RunActions.RoomActionTypes.AreApellationsEnabledChanged, areApellationsEnabled
-});
-
 const buttonBlockingTimeChanged: ActionCreator<RunActions.ButtonBlockingChangedAction> = (buttonBlockingTime: number) => ({
 	type: RunActions.RoomActionTypes.ButtonBlockingTimeChanged, buttonBlockingTime
 });
@@ -427,7 +423,6 @@ const roomActionCreators = {
 	navigateToRound,
 	ready,
 	roundsNamesChanged,
-	areApellationsEnabledChanged,
 	buttonBlockingTimeChanged,
 	gameMetadataChanged,
 	bannedListChanged,
