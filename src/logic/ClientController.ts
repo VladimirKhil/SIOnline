@@ -43,6 +43,7 @@ import { answerOptions,
 	resumeMedia,
 	rightOption,
 	setAnswerView,
+	setExternalMediaWarning,
 	setThemesComments,
 	showBackgroundAudio,
 	showContent,
@@ -61,7 +62,8 @@ import { answerOptions,
 	switchToContent,
 	updateOption,
 	updateOptionState,
-	updateQuestion } from '../state/tableSlice';
+	updateQuestion,
+	appendExternalMediaWarning} from '../state/tableSlice';
 
 import {
 	ContextView,
@@ -216,6 +218,16 @@ export default class ClientController {
 		return result;
 	}
 
+	private isExternalUri(uri: string): boolean {
+		if (!this.dataContext.contentUris || this.dataContext.contentUris.length === 0) {
+			// If no content URIs defined, check against server URI
+			return !uri.startsWith(this.dataContext.serverUri);
+		}
+
+		// Check if URI starts with any of the allowed content URIs
+		return !this.dataContext.contentUris.some(contentUri => uri.startsWith(contentUri));
+	}
+
 	private playGameSound(sound: GameSound, loop = false): void {
 		const isSoundEnabled = this.getState().settings.appSound;
 
@@ -231,13 +243,14 @@ export default class ClientController {
 		let group: ContentGroup | null = null;
 
 		let runContentLoadTimer = false;
+		const externalUris: string[] = [];
 		const state = this.getState();
 
-		for	(let i = 0; i < content.length; i++) {
+		for	(let i = 0; i < content.length; i += 1) {
 			const { type, value } = content[i];
 
 			switch (type) {
-				case 'text':
+				case 'text': {
 					if (group) {
 						groups.push(group);
 						initGroup(group);
@@ -261,21 +274,41 @@ export default class ClientController {
 					}
 
 					break;
+				}
 
 				case 'image':
+				case 'video':
+				case 'html': {
 					if (!group) {
 						group = { weight: Constants.LARGE_CONTENT_WEIGHT, content: [], columnCount: 1 };
 					}
 
+					const processedUri = this.preprocessServerUri(value);
+
+					// Check if this is external media
+					if (this.isExternalUri(processedUri)) {
+						externalUris.push(processedUri);
+					}
+
+					let contentType: ContentType;
+					if (type === 'image') {
+						contentType = ContentType.Image;
+					} else if (type === 'video') {
+						contentType = ContentType.Video;
+					} else {
+						contentType = ContentType.Html;
+					}
+
 					group.content.push({
-						type: ContentType.Image,
-						value: this.preprocessServerUri(value),
+						type: contentType,
+						value: processedUri,
 						read: false,
 						partial: false,
 					});
 
 					// TODO: this logic should be moved to server
-					if (state.room.stage.isQuestion &&
+					if (type === 'image' &&
+						state.room.stage.isQuestion &&
 						state.room.stage.questionType === 'simple' &&
 						!state.table.isAnswer &&
 						!state.room2.settings.falseStart &&
@@ -285,32 +318,7 @@ export default class ClientController {
 					}
 
 					break;
-
-				case 'video':
-					if (!group) {
-						group = { weight: Constants.LARGE_CONTENT_WEIGHT, content: [], columnCount: 1 };
-					}
-
-					group.content.push({
-						type: ContentType.Video,
-						value: this.preprocessServerUri(value),
-						read: false,
-						partial: false,
-					});
-					break;
-
-				case 'html':
-					if (!group) {
-						group = { weight: Constants.LARGE_CONTENT_WEIGHT, content: [], columnCount: 1 };
-					}
-
-					group.content.push({
-						type: ContentType.Html,
-						value: this.preprocessServerUri(value),
-						read: false,
-						partial: false,
-					});
-					break;
+				}
 
 				default:
 					break;
@@ -322,9 +330,14 @@ export default class ClientController {
 			initGroup(group);
 		}
 
+		// Set external media warning
+		if (externalUris.length > 0) {
+			this.appDispatch(setExternalMediaWarning(externalUris));
+		}
+
 		this.appDispatch(showContent(groups));
 
-		if (runContentLoadTimer) {
+		if (runContentLoadTimer && externalUris.length === 0) {
 			this.appDispatch(startLoadTimer());
 			this.loadStart = new Date();
 		}
@@ -964,23 +977,27 @@ export default class ClientController {
 
 					this.appDispatch(addToChat({
 						sender: '',
-						text: getErrorMessage(error),
+						text: 'Content preload error: ' + getErrorMessage(error),
 						level: MessageLevel.System,
 					}));
 					// Don't reject - just log the failure and continue
 				}
 			});
 
-		// Process files one by one using a for loop
+		// Process files one by one, skipping external ones
 		const processFiles = async () => {
 			const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
-			const totalFiles = content.length;
-
+			
 			for (let i = 0; i < content.length; i += 1) {
 				const url = content[i];
 				const contentUri = this.preprocessServerUri(url);
 
-				// Add delay between requests (except for first request)
+				// Skip external media files
+				if (this.isExternalUri(contentUri)) {
+					continue;
+				}
+
+				// Add delay between requests (except for first processed request)
 				if (i > 0) {
 					// eslint-disable-next-line no-await-in-loop
 					await delay(baseDelay);
@@ -995,7 +1012,7 @@ export default class ClientController {
 				}
 
 				// Calculate and notify progress after each file
-				const progress = (i + 1) / totalFiles;
+				const progress = (i + 1) / content.length;
 				notifyProgress(progress);
 			}
 
@@ -1190,8 +1207,8 @@ export default class ClientController {
 				this.onScreenContent(content);
 				break;
 
-			case 'replic':
-				const replic = content[0];
+			case 'replic': {
+				const [replic] = content;
 
 				if (replic.type === 'text') {
 					this.onReplic('s', replic.value);
@@ -1199,12 +1216,18 @@ export default class ClientController {
 
 				this.dispatch(switchToContent());
 				break;
+			}
 
-			case 'background':
-				const backgroundContent = content[0];
+			case 'background': {
+				const [backgroundContent] = content;
 
 				if (backgroundContent.type === 'audio') {
 					const uri = this.preprocessServerUri(backgroundContent.value);
+
+					// Check if background audio is external
+					if (this.isExternalUri(uri)) {
+						this.appDispatch(appendExternalMediaWarning(uri));
+					}
 
 					if (this.getState().table.audio === uri) {
 						this.appDispatch(clearAudio()); // Forcing audio reload
@@ -1213,6 +1236,7 @@ export default class ClientController {
 					this.appDispatch(showBackgroundAudio(uri));
 				}
 				break;
+			}
 
 			default:
 				break;

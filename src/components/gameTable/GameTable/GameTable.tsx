@@ -153,7 +153,7 @@ export function GameTable(props: GameTableProps): JSX.Element {
 			{props.showMainTimer ? (
 				<ProgressBar
 					className={`commonProgress ${caption ? 'captioned' : ''}`}
-					value={1 - props.decisionTimer.value / props.decisionTimer.maximum}
+					value={1 - (props.decisionTimer.value / props.decisionTimer.maximum)}
 					valueChangeDuration={isRunning(props.decisionTimer) ? (props.decisionTimer.maximum - props.decisionTimer.value) / 10 : 0}
 				/>
 			) : null}

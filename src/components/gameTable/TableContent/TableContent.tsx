@@ -10,6 +10,7 @@ import LayoutMode from '../../../model/enums/LayoutMode';
 import AnswerOptions from '../AnswerOptions/AnswerOptions';
 import Constants from '../../../model/enums/Constants';
 import StackedContent from '../StackedContent/StackedContent';
+import ExternalMediaWarning from '../ExternalMediaWarning/ExternalMediaWarning';
 
 import './TableContent.css';
 
@@ -21,6 +22,7 @@ interface TableContentProps {
 	audio: string;
 	prependText: string;
 	appendText: string;
+	externalMediaUris: string[];
 	attachContentToTable: boolean;
 }
 
@@ -34,6 +36,7 @@ const mapStateToProps = (state: State) => ({
 	layoutMode: state.table.layoutMode,
 	prependText: state.table.prependText,
 	appendText: state.table.appendText,
+	externalMediaUris: state.table.externalMediaUris,
 	attachContentToTable: state.settings.attachContentToTable,
 });
 
@@ -104,6 +107,10 @@ export class TableContent extends React.Component<TableContentProps, TableConten
 
 	render() {
 		let { content } = this.props;
+
+		if (this.props.externalMediaUris.length > 0) {
+			return <ExternalMediaWarning />;
+		}
 
 		if (this.props.attachContentToTable &&
 			((this.props.audio.length > 0 &&

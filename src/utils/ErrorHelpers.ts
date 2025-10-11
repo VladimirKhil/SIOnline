@@ -10,6 +10,8 @@ function getLocalizedError(error: Error): string {
 		return localization.failedToCompleteNegotiationWithTheServer;
 	} else if (error.message.startsWith('429 API calls quota exceeded')) {
 		return localization.apiCallsQuotaExceeded;
+	} else if (error.message.startsWith('HTTP 503')) {
+		return 'Service Temporarily Unavailable';
 	} else {
 		return error.message;
 	}

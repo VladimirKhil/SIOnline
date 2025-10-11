@@ -38,6 +38,7 @@ export interface TableState {
 	loadTimer: TimerInfo;
 	isAnswer: boolean;
 	statistics: PlayerStatistics[];
+	externalMediaUris: string[];
 }
 
 const initialState: TableState = {
@@ -74,6 +75,7 @@ const initialState: TableState = {
 	},
 	isAnswer: false,
 	statistics: [],
+	externalMediaUris: [],
 };
 
 export const tableSlice = createSlice({
@@ -215,6 +217,7 @@ export const tableSlice = createSlice({
 			state.layoutMode = LayoutMode.Simple;
 			state.isSelectable = false;
 			state.isAnswer = false;
+			state.externalMediaUris = [];
 		},
 		answerOptions: (state, action: PayloadAction<{ questionHasScreenContent: boolean, options: AnswerOption[] }>) => {
 			state.layoutMode = LayoutMode.AnswerOptions;
@@ -294,6 +297,14 @@ export const tableSlice = createSlice({
 			state.statistics = action.payload;
 			state.mode = TableMode.Statistics;
 		},
+		setExternalMediaWarning: (state, action: PayloadAction<string[]>) => {
+			state.externalMediaUris = action.payload;
+		},
+		appendExternalMediaWarning: (state, action: PayloadAction<string>) => {
+			if (!state.externalMediaUris.includes(action.payload)) {
+				state.externalMediaUris.push(action.payload);
+			}
+		},
 	}
 });
 
@@ -337,6 +348,8 @@ export const {
 	resumeLoadTimer,
 	showContentHint,
 	showStatistics,
+	setExternalMediaWarning,
+	appendExternalMediaWarning,
 } = tableSlice.actions;
 
 export default tableSlice.reducer;
