@@ -357,7 +357,7 @@ async function run(host: IHost) {
 		const state = setState(initialState, savedState, config, host.isDesktop());
 
 		const noOpHubConnection = new signalR.HubConnectionBuilder().withUrl('http://fake').build();
-		const gameClient = new GameServerClient();
+		const gameClient = new GameServerClient('');
 
 		const dataContext: DataContext = {
 			config,

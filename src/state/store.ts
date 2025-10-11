@@ -29,7 +29,7 @@ if (!serverUri) {
 }
 
 const noOpHubConnection = new signalR.HubConnectionBuilder().withUrl('http://fake').build();
-const gameClient = new GameServerClient();
+const gameClient = new GameServerClient('');
 
 const dataContext: DataContext = {
 	config,

@@ -9,41 +9,89 @@ import GetGameByPinResponse from './contracts/GetGameByPinResponse';
 import * as signalR from '@microsoft/signalr';
 import * as signalRMsgPack from '@microsoft/signalr-protocol-msgpack';
 import StorageFilter from './contracts/StorageFilter';
+import IGameServerListener from './IGameServerListener';
 
 /** Represents a connection to a SIGame Server. */
 export default class GameServerClient implements IGameServerClient {
+	private isDisconnecting = false;
+
 	/** Underlying SignalR connection. */
-	public connection: signalR.HubConnection;
+	private connection?: signalR.HubConnection;
 
 	/**
 	 * Initializes a new instance of {@link GameServerClient}.
 	 */
-	constructor(private serverUri?: string) {
-		if (!serverUri) {
-			this.connection = new signalR.HubConnectionBuilder().withUrl('http://fake').build();
-			return;
-		}
+	constructor(private serverUri: string) {}
 
+	isConnected(): boolean {
+		return this.connection?.state === signalR.HubConnectionState.Connected;
+	}
+
+	async connect(runtimeUri: string, listener: IGameServerListener): Promise<void> {
 		const connectionBuilder = new signalR.HubConnectionBuilder()
 			.withAutomaticReconnect({
 				nextRetryDelayInMilliseconds: (retryContext: signalR.RetryContext) => 1000 * (retryContext.previousRetryCount + 1)
 			})
-			.withUrl(`${serverUri}/sionline`)
+			.withUrl(`${runtimeUri}/sionline`)
 			.withHubProtocol(new signalRMsgPack.MessagePackHubProtocol());
 
 		this.connection = connectionBuilder.build();
-	}
 
-	isConnected(): boolean {
-		return this.connection.state === signalR.HubConnectionState.Connected;
-	}
+		this.connection.on('GameCreated', listener.onGameCreated);
+		this.connection.on('GameChanged', listener.onGameChanged);
+		this.connection.on('GameDeleted', listener.onGameDeleted);
 
-	async connect(): Promise<void> {
+		this.connection.onreconnecting(e => {
+			if (this.isDisconnecting) {
+				return;
+			}
+
+			listener.onReconnecting(e);
+		});
+
+		this.connection.onreconnected(() => {
+			if (this.isDisconnecting) {
+				return;
+			}
+
+			listener.onReconnected();
+		});
+
+		this.connection.onclose(async e => {
+			if (this.isDisconnecting) {
+				return;
+			}
+
+			listener.onClose(e);
+
+			if (e) {
+				try {
+					await this.connection?.start();
+				} catch (error) {
+					console.error('Error while restarting connection: ' + error);
+				}
+			}
+		});
+
 		await this.connection.start();
 	}
 
 	async disconnect(): Promise<void> {
-		await this.connection.stop();
+		if (!this.connection) {
+			return;
+		}
+
+		this.connection.off('GameCreated');
+		this.connection.off('GameChanged');
+		this.connection.off('GameDeleted');
+
+		this.isDisconnecting = true;
+
+		try {
+			await this.connection.stop();
+		} finally {
+			this.isDisconnecting = false;
+		}
 	}
 
 	async getComputerAccountsAsync(culture: string): Promise<string[]> {
@@ -85,6 +133,10 @@ export default class GameServerClient implements IGameServerClient {
 	}
 
 	getGamesSliceAsync(fromId: number): Promise<Slice<GameInfo>> {
+		if (!this.connection) {
+			return Promise.reject(new Error('Not connected to the server'));
+		}
+
 		return this.connection.invoke<Slice<GameInfo>>('GetGamesSlice', fromId);
 	}
 

@@ -6,14 +6,13 @@ import RunGameResponse from './contracts/RunGameResponse';
 import RunAutoGameRequest from './contracts/RunAutoGameRequest';
 import GetGameByPinResponse from './contracts/GetGameByPinResponse';
 import StorageFilter from './contracts/StorageFilter';
+import IGameServerListener from './IGameServerListener';
 
 /** Defines the SIGame Server client. */
 export default interface IGameServerClient {
-	connection: signalR.HubConnection;
-
 	isConnected(): boolean;
 
-	connect(): Promise<void>;
+	connect(runtimeUri: string, listener: IGameServerListener): Promise<void>;
 
 	disconnect(): Promise<void>;
 

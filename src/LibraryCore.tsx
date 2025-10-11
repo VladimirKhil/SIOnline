@@ -295,7 +295,7 @@ function processMessage(controller: ClientController, payload: any, appDispatch:
 export default function runCore(game?: IGameClient): Store<State, AnyAction> {
 	const noOpHubConnection = new HubConnectionBuilder().withUrl('http://fake').build();
 
-	const gameClient = new GameServerClient();
+	const gameClient = new GameServerClient('');
 
 	const dataContext: DataContext = {
 		config: {

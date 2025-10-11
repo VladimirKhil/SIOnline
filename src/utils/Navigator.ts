@@ -5,7 +5,7 @@ import { loadLobby } from '../state/online2Slice';
 import { AppDispatch, RootState } from '../state/store';
 import { INavigationState, navigateCore } from '../state/uiSlice';
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { activeConnections, attachListeners, detachListeners, removeConnection } from './ConnectionHelpers';
+import GameServerListener from './GameServerListener';
 import { userErrorChanged } from '../state/commonSlice';
 import localization from '../model/resources/localization';
 import getErrorMessage from './ErrorHelpers';
@@ -51,45 +51,32 @@ function saveNavigationState(navigation: INavigationState, dataContext: DataCont
 	}
 }
 
-const connectToSIGameServerAsync = async (gameServerClient: IGameServerClient, appDispatch: AppDispatch): Promise<boolean> => {
+const connectToSIGameServerAsync = async (
+	gameServerClient: IGameServerClient,
+	appDispatch: AppDispatch,
+	state: RootState,
+	dataContext: DataContext
+): Promise<boolean> => {
 	if (gameServerClient.isConnected()) {
 		return true;
 	}
 
-	try {
-		await gameServerClient.connect();
-	} catch (error: any) {
-		return false;
-	}
+	const { useProxy } = state.settings;
+	const runtimeUri = useProxy && dataContext.proxyUri ? dataContext.proxyUri : dataContext.serverUri;
+	const listener = new GameServerListener(appDispatch);
 
 	try {
-		if (gameServerClient.connection.connectionId) {
-			activeConnections.push(gameServerClient.connection.connectionId);
-		}
-
-		// Listeners should be attached after first successfull request to be sure that connection is working
-		attachListeners(gameServerClient, appDispatch);
+		await gameServerClient.connect(runtimeUri, listener);
 		return true;
-	} catch (error) {
+	} catch (error: unknown) {
+		console.log('Cannot connect to SIGame Server: ' + getErrorMessage(error));
 		return false;
 	}
 };
 
 const disconnectFromGameServerAsync = async (gameServerClient: IGameServerClient, appDispatch: AppDispatch) => {
-	const { connection } = gameServerClient;
-
-	if (!connection) {
-		return;
-	}
-
 	try {
-		if (connection.connectionId) {
-			activeConnections.splice(activeConnections.indexOf(connection.connectionId), 1);
-		}
-
-		detachListeners(connection);
 		await gameServerClient.disconnect();
-		removeConnection(connection);
 	} catch (error) {
 		appDispatch(userErrorChanged(getErrorMessage(error)) as any);
 	}
@@ -125,7 +112,10 @@ export const navigate = createAsyncThunk(
 			case Path.Lobby:
 				const connectionResult = await connectToSIGameServerAsync(
 					(thunkAPI.extra as DataContext).gameClient,
-					thunkAPI.dispatch as AppDispatch);
+					thunkAPI.dispatch as AppDispatch,
+					thunkAPI.getState() as RootState,
+					thunkAPI.extra as DataContext,
+				);
 
 				if (!connectionResult) {
 					thunkAPI.dispatch(userErrorChanged(localization.cannotConnectToServer));

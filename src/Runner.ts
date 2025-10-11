@@ -202,7 +202,7 @@ async function initializeApp() {
 	const serverUri = await getServerUri('https://vladimirkhil.com/api/si/servers');
 
 	const noOpHubConnection = new signalR.HubConnectionBuilder().withUrl('http://fake').build();
-	const gameClient = new GameServerClient();
+	const gameClient = new GameServerClient('');
 
 	const dataContext: DataContext = {
 		config: {

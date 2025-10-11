@@ -1,79 +1,48 @@
-import * as signalR from '@microsoft/signalr';
 import localization from '../model/resources/localization';
 import GameInfo from '../client/contracts/GameInfo';
-import IGameServerClient from '../client/IGameServerClient';
 import getErrorMessage from './ErrorHelpers';
 import { AppDispatch } from '../state/store';
 import { isConnectedChanged, userErrorChanged } from '../state/commonSlice';
 import { gameChanged, gameCreated, gameDeleted } from '../state/online2Slice';
+import IGameServerListener from '../client/IGameServerListener';
 
-export const activeConnections: string[] = [];
+export default class GameServerListener implements IGameServerListener {
+	constructor(private appDispatch: AppDispatch) {}
 
-const detachedConnections: signalR.HubConnection[] = [];
+	onGameCreated = (gameInfo: GameInfo): void => {
+		this.appDispatch(gameCreated(gameInfo));
+	};
 
-export function attachListeners(
-	gameClient: IGameServerClient,
-	appDispatch: AppDispatch,
-): void {
-	const { connection } = gameClient;
+	onGameChanged = (gameInfo: GameInfo): void => {
+		this.appDispatch(gameChanged(gameInfo));
+	};
 
-	connection.on('GameCreated', (game: GameInfo) => appDispatch(gameCreated(game)));
-	connection.on('GameChanged', (game: GameInfo) => appDispatch(gameChanged(game)));
-	connection.on('GameDeleted', (id: number) => appDispatch(gameDeleted(id)));
+	onGameDeleted = (gameId: number): void => {
+		this.appDispatch(gameDeleted(gameId));
+	};
 
-	connection.onreconnecting((e) => {
-		if (detachedConnections.includes(connection)) {
-			return;
-		}
+	onReconnecting = (error?: Error): void => {
+		const errorMessage = error ? ` (${error.message})` : '';
 
-		const errorMessage = e ? ` (${e.message})` : '';
-
-		appDispatch(isConnectedChanged({
+		this.appDispatch(isConnectedChanged({
 			isConnected: false,
 			reason: `${localization.connectionReconnecting}${errorMessage}`,
 		}));
-	});
+	};
 
-	connection.onreconnected(() => {
-		if (detachedConnections.includes(connection)) {
-			return;
-		}
-
-		appDispatch(isConnectedChanged({
+	onReconnected = (): void => {
+		this.appDispatch(isConnectedChanged({
 			isConnected: true,
 			reason: localization.connectionReconnected,
 		}));
-	});
+	};
 
-	connection.onclose(async (e) => {
-		if (detachedConnections.includes(connection)) {
-			return;
+	onClose = (error?: Error): void => {
+		if (error) {
+			console.log('Connection close error: ' + getErrorMessage(error));
 		}
 
-		if (e) {
-			console.log('Connection close error: ' + getErrorMessage(e));
-
-			try {
-				await connection.start();
-				return;
-			} catch {
-				// empty
-			}
-		}
-
-		appDispatch(isConnectedChanged({ isConnected: false, reason: '' }));
-		appDispatch(userErrorChanged(`${localization.connectionClosed} ${e?.message || ''}`));
-	});
-}
-
-export function detachListeners(connection: signalR.HubConnection): void {
-	connection.off('GameCreated');
-	connection.off('GameChanged');
-	connection.off('GameDeleted');
-
-	detachedConnections.push(connection);
-}
-
-export function removeConnection(connection: signalR.HubConnection): void {
-	detachedConnections.splice(detachedConnections.indexOf(connection), 1);
+		this.appDispatch(isConnectedChanged({ isConnected: false, reason: '' }));
+		this.appDispatch(userErrorChanged(`${localization.connectionClosed} ${error?.message || ''}`));
+	};
 }

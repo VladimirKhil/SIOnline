@@ -314,10 +314,8 @@ const connectToServerAsync = async (
 	dataContext: DataContext
 ) => {
 	const state = getState();
-	const { serverUri, proxyUri } = dataContext;
-	const { useProxy } = state.settings;
-	const effectiveUri = useProxy && proxyUri ? proxyUri : serverUri;
-	const gameServerClient = new GameServerClient(effectiveUri);
+	const { serverUri } = dataContext;
+	const gameServerClient = new GameServerClient(serverUri);
 	dataContext.gameClient = gameServerClient;
 
 	const requestCulture = getFullCulture(state);
