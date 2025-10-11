@@ -142,6 +142,12 @@ export default function MainMenu(): JSX.Element {
 						</button>
 					))}
 				</div>
+
+				{common.proxyAvailable && (
+					<div className='proxyHint'>
+						📡 {localization.useProxyOnErrors}
+					</div>
+				)}
 			</div>
 
 			{common.clearUrls ? null : <div className='links'>

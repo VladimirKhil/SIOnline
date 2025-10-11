@@ -86,6 +86,7 @@ function getCaption(props: GameTableProps): string | null {
 			return localization.gameThemes;
 
 		case TableMode.RoundThemes:
+		case TableMode.ThemeStack:
 			return localization.roundThemes;
 
 		case TableMode.Logo:

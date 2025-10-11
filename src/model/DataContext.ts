@@ -13,6 +13,9 @@ export default interface DataContext {
 	/** Game server uri. */
 	serverUri: string;
 
+	/** Game server proxy uri. */
+	proxyUri?: string;
+
 	/** Game server client. */
 	gameClient: IGameServerClient;
 

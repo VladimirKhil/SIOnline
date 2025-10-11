@@ -27,6 +27,7 @@ export interface SettingsState {
 	showVideoAvatars: boolean;
 	theme: ThemeSettings;
 	writeGameLog: boolean;
+	useProxy: boolean;
 }
 
 const initialState: SettingsState = {
@@ -58,6 +59,7 @@ const initialState: SettingsState = {
 		},
 	},
 	writeGameLog: false,
+	useProxy: false,
 };
 
 export const settingsSlice = createSlice({
@@ -190,6 +192,9 @@ export const settingsSlice = createSlice({
 		setWriteGameLog: (state: SettingsState, action: PayloadAction<boolean>) => {
 			state.writeGameLog = action.payload;
 		},
+		setUseProxy: (state: SettingsState, action: PayloadAction<boolean>) => {
+			state.useProxy = action.payload;
+		},
 		resetSettings: (state: SettingsState) => {
 			const { culture } = state.appSettings;
 			Object.assign(state, initialState, { appSettings: { ...initialAppSettings, culture } });
@@ -240,6 +245,7 @@ export const {
 	setTableBackgroundColor,
 	setTableFontFamily,
 	setWriteGameLog,
+	setUseProxy,
 	resetSettings,
 } = settingsSlice.actions;
 

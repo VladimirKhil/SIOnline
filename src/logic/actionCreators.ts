@@ -184,13 +184,18 @@ const connectToSIHostAsync = async (
 	getState: () => State,
 	dataContext: DataContext
 ): Promise<ISIHostClient> => {
-	const siHostUriChecked = siHostUri.endsWith('/') ? siHostUri : siHostUri + '/';
+	const state = getState();
+	const { useProxy } = state.settings;
+
+	// Use proxy if enabled and proxy URI is available
+	const effectiveUri = useProxy && dataContext.proxyUri && siHostUri === dataContext.serverUri ? dataContext.proxyUri : siHostUri;
+	const uriChecked = effectiveUri.endsWith('/') ? effectiveUri : effectiveUri + '/';
 
 	const connectionBuilder = new signalR.HubConnectionBuilder()
 		.withAutomaticReconnect({
 			nextRetryDelayInMilliseconds: (retryContext: signalR.RetryContext) => 1000 * (retryContext.previousRetryCount + 1)
 		})
-		.withUrl(siHostUriChecked + 'sihost')
+		.withUrl(uriChecked + 'sihost')
 		.withHubProtocol(new signalRMsgPack.MessagePackHubProtocol());
 
 	const connection = connectionBuilder.build();
@@ -306,11 +311,15 @@ const initStage3NavigateAsync = async (
 const connectToServerAsync = async (
 	appDispatch: AppDispatch,
 	getState: () => State,
-	dataContext: DataContext) => {
-	const gameServerClient = new GameServerClient(dataContext.serverUri);
+	dataContext: DataContext
+) => {
+	const state = getState();
+	const { serverUri, proxyUri } = dataContext;
+	const { useProxy } = state.settings;
+	const effectiveUri = useProxy && proxyUri ? proxyUri : serverUri;
+	const gameServerClient = new GameServerClient(effectiveUri);
 	dataContext.gameClient = gameServerClient;
 
-	const state = getState();
 	const requestCulture = getFullCulture(state);
 
 	const computerAccounts = await dataContext.gameClient.getComputerAccountsAsync(requestCulture);

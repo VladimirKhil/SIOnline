@@ -11,6 +11,7 @@ import { setAppSound,
 	setShowVideoAvatars,
 	setSound,
 	setSoundVolume,
+	setUseProxy,
 	setWriteGameLog } from '../../../state/settingsSlice';
 
 export function CommonSettingsView(): JSX.Element {
@@ -21,6 +22,17 @@ export function CommonSettingsView(): JSX.Element {
 
 	return (
 		<div>
+			<div className="settingItem">
+				<input
+					id="useProxy"
+					type="checkbox"
+					checked={settings.useProxy}
+					onChange={() => appDispatch(setUseProxy(!settings.useProxy))}
+				/>
+				<label htmlFor="useProxy">{localization.useProxy}</label>
+				<div className="hint">{localization.useProxyHint}</div>
+			</div>
+
 			<p className="header">{localization.language}</p>
 
 			<LanguageView disabled={false} />

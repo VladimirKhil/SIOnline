@@ -63,7 +63,7 @@ import { answerOptions,
 	updateOption,
 	updateOptionState,
 	updateQuestion,
-	appendExternalMediaWarning} from '../state/tableSlice';
+	appendExternalMediaWarning } from '../state/tableSlice';
 
 import {
 	ContextView,
@@ -1356,12 +1356,6 @@ export default class ClientController {
 			this.appDispatch(showmanReplicChanged(text));
 			return;
 		}
-
-		// if (personCode !== 'l') {
-		// 	return;
-		// }
-
-		// this.appDispatch(addToChat({ sender: '', text, level: MessageLevel.System }));
 	}
 
 	onTable(table: ThemeInfo[]) {

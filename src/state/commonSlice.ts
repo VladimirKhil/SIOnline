@@ -36,6 +36,7 @@ export interface CommonState {
 	logSupported?: boolean;
 	isDesktop?: boolean;
 	siHosts: Record<string, string>;
+	proxyAvailable: boolean;
 }
 
 const initialState: CommonState = {
@@ -64,6 +65,7 @@ const initialState: CommonState = {
 	logSupported: true,
 	isDesktop: false,
 	siHosts: {},
+	proxyAvailable: false,
 };
 
 export const commonSlice = createSlice({
@@ -149,6 +151,9 @@ export const commonSlice = createSlice({
 		setLogSupported: (state: CommonState, action: PayloadAction<boolean>) => {
 			state.logSupported = action.payload;
 		},
+		setProxyAvailable: (state: CommonState, action: PayloadAction<boolean>) => {
+			state.proxyAvailable = action.payload;
+		},
 	}
 });
 
@@ -203,6 +208,7 @@ export const {
 	setRoomLinkEnabled,
 	setHostManagedUrls,
 	setLogSupported,
+	setProxyAvailable,
 } = commonSlice.actions;
 
 export default commonSlice.reducer;

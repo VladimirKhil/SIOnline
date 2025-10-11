@@ -20,6 +20,7 @@ import { Analytics, getAnalytics } from 'firebase/analytics';
 import { ErrorView } from './components/views/Error/ErrorView';
 import Constants from './model/enums/Constants';
 import getErrorMessage from './utils/ErrorHelpers';
+import { setProxyAvailable } from './state/commonSlice';
 import enableNoSleep from './utils/NoSleepHelper';
 import getDeviceType from './utils/getDeviceType';
 import isSafari from './utils/isSafari';
@@ -269,7 +270,7 @@ async function registerServiceWorker2() {
 	}
 }
 
-async function getServerUri(serverDiscoveryUri: string) {
+async function getServerInfo(serverDiscoveryUri: string) {
 	// Using random number to prevent serverUri caching
 	const serverUrisResponse = await fetch(`${serverDiscoveryUri}?r=${Math.random()}`); // throwing TypeError here is ok
 
@@ -283,7 +284,7 @@ async function getServerUri(serverDiscoveryUri: string) {
 		throw new Error('Server uris object is broken');
 	}
 
-	return serverUris[0].uri;
+	return serverUris[0];
 }
 
 function getInitialView(historyState: INavigationState): INavigationState {
@@ -338,6 +339,7 @@ async function run(host: IHost) {
 		}
 
 		let { serverUri } = config;
+		let proxyUri: string | undefined;
 
 		if (!serverUri) {
 			const { serverDiscoveryUri } = config;
@@ -346,7 +348,9 @@ async function run(host: IHost) {
 				throw new Error('Server uri is undefined');
 			}
 
-			serverUri = await getServerUri(serverDiscoveryUri);
+			const { uri, proxyUri: serverProxyUri } = await getServerInfo(serverDiscoveryUri);
+			serverUri = uri;
+			proxyUri = serverProxyUri;
 		}
 
 		const savedState = loadState();
@@ -358,6 +362,7 @@ async function run(host: IHost) {
 		const dataContext: DataContext = {
 			config,
 			serverUri,
+			proxyUri,
 			gameClient,
 			game: new GameClient(new SIHostClient(noOpHubConnection, () => { }), false),
 			contentUris: null,
@@ -371,6 +376,9 @@ async function run(host: IHost) {
 			state,
 			applyMiddleware(reduxThunk.withExtraArgument(dataContext))
 		);
+
+		// Set proxy availability based on whether proxy URI is provided
+		store.dispatch(setProxyAvailable(!!proxyUri));
 
 		let currentSettings = state.settings;
 
