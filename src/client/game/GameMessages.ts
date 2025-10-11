@@ -57,8 +57,6 @@ const enum GameMessages {
 
 	EndTry = 'ENDTRY',
 
-	FinalRound = 'FINALROUND',
-
 	FinalThink = 'FINALTHINK',
 
 	GameClosed = 'GAME_CLOSED',

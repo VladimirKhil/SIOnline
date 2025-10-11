@@ -39,7 +39,7 @@ const initialState: SettingsState = {
 	sex: Sex.Male,
 	avatarKey: null,
 	appSettings: initialAppSettings,
-	gameButtonKey: Constants.KEY_CTRL,
+	gameButtonKey: Constants.KEY_SPACE,
 	passButtonKey: '/',
 	nextButtonKey: Constants.KEY_RIGHT,
 	yesButtonKey: '+',

@@ -25,7 +25,7 @@ const localization = new LocalizedStrings({
 			A question is asked, time is given for thinking, and each of the players submits their answer to the host.
 			After that, the correct answer is announced, and each of the players receives or loses money according to their bet.`,
 			'The game winner is the player with the highest score after the last question.',
-			'The game button can also be activated using the Ctrl key or the right mouse button.'
+			'The game button can also be activated using the specified key or the right mouse button.'
 		],
 		aboutAuthor: 'Author',
 		aboutSupport: 'Technical support',
@@ -595,7 +595,7 @@ The package will be automatically deleted from the server after the game ends`,
 			`В игре также может быть финальный раунд, в котором каждый из игроков делает ставку. Звучит вопрос, даётся время на размышление,
 	и каждый из игроков письменно сдаёт свой ответ. После этого оглашается правильный ответ, и каждый из игроков получает или теряет деньги.`,
 			'Победителем игры становится игрок, набравший после последнего вопроса наибольшую сумму.',
-			'Игровую кнопку можно также активировать при помощи клавиши Ctrl или правой кнопки мыши.'
+			'Игровую кнопку можно также активировать при помощи назначенной клавиши или правой кнопки мыши.'
 		],
 		aboutAuthor: 'Автор',
 		aboutSupport: 'Техническая поддержка',
@@ -1168,7 +1168,7 @@ The package will be automatically deleted from the server after the game ends`,
 			Postavlja se pitanje, daje se vreme za razmišljanje, i svaki od igrača šalje svoj odgovor domaćinu.
 			Nakon toga se objavljuje tačan odgovor, i svaki od igrača dobija ili gubi novac prema svom ulogu.`,
 			'Pobednik igre je igrač sa najvišim rezultatom nakon poslednjeg pitanja.',
-			'Dugme za igru se takođe može aktivirati pomoću Ctrl tastera ili desnog dugmeta miša.'
+			'Dugme za igru se takođe može aktivirati pomoću imenovanog tastera ili desnog dugmeta miša.'
 		],
 		aboutAuthor: 'Autor',
 		aboutSupport: 'Tehnička podrška',

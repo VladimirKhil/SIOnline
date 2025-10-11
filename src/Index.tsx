@@ -142,7 +142,7 @@ function setState(state: State, savedState: SavedState | null, c: Config, isDesk
 					backgroundImageKey: theme?.room?.backgroundImageKey || null,
 				},
 			},
-			gameButtonKey: savedState.settings.gameButtonKey || Constants.KEY_CTRL,
+			gameButtonKey: savedState.settings.gameButtonKey || Constants.KEY_SPACE,
 		} : state.settings,
 	};
 }

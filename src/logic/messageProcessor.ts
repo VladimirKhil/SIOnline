@@ -367,16 +367,6 @@ const viewerHandler = (
 			break;
 		}
 
-		case GameMessages.FinalRound:
-			const playersLength = state.room2.persons.players.length;
-
-			for (let i = 1; i < Math.min(args.length, playersLength + 1); i++) {
-				appDispatch(playerInGameChanged({ playerIndex: i - 1, inGame: args[i] === '+' }));
-			}
-
-			dispatch(roomActionCreators.afterQuestionStateChanged(false));
-			break;
-
 		case GameMessages.FinalThink:
 			controller.onFinalThink();
 			break;
