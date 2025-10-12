@@ -1,0 +1,160 @@
+.settingItem select {
+	font-size: 16px;
+	max-width: 95%;
+	width: 95%;
+	padding: 5px 6px;
+	background-color: white;
+}
+
+.rulesSettingsView {
+	.block {
+		height: 130px;
+
+		&.bigger {
+			height: 160px;
+
+			.blockGameTypeValue {
+				display: flex;
+				align-items: center;
+				justify-content: flex-start;
+
+				.gameType {
+					flex: 0 0 180px;
+				}
+
+				.gameTypeHint {
+					flex: 1;
+					margin: 2px;
+				}
+			}
+		}
+	}
+}
+
+.rulesSettingsView .headerBlock {
+	height: 40px;
+	display: flex;
+	align-items: center;
+	font-size: 22px;
+	margin-left: 5px;
+}
+
+.rulesSettingsView .blockName {
+    flex: 0 0 150px;
+}
+
+.rulesSettingsView .blockValue {
+    flex-direction: column;
+	align-items: center;
+}
+
+.rulesSettingsView .blockValue div {
+	text-align: center;
+}
+
+.rulesSettingsView input[type='checkbox'] {
+    height: 25px;
+	width: 25px;
+	text-align: left;
+	accent-color: #181B64;
+	cursor: pointer;
+}
+
+.rulesSettingsView input[type='number'] {
+	background: #181B64;
+	color: white;
+	border: 1px solid #347DFF;
+	border-radius: 5px;
+}
+
+.rulesSettingsView .hint {
+	margin-top: 5px;
+	font-size: 12px;
+}
+
+.rulesSettingsView .smallHint {
+	margin-left: 20px;
+}
+
+.rulesSettingsView .valueEditor {
+	margin-left: 20px;
+}
+
+.rulesSettingsView .reset {
+    font-size: 25px;
+    margin: 20px 0;
+    padding: 5px 25px;
+}
+
+@media screen and (min-width: 800px) {
+	.rulesSettingsView {
+		.block {
+			height: 54px;
+
+			.blockValue {
+				flex-direction: row;
+
+				.hint {
+					margin-top: 0;
+					margin-left: 5px;
+					font-size: 12px;
+				}
+			}
+
+			&.bigger {
+				height: 160px;
+
+				.blockGameTypeBody {
+					height: 100%;
+				}
+
+				.blockGameTypeValue {
+					flex-direction: column;
+					align-items: flex-start;
+
+					.gameType {
+						flex: initial;
+					}
+
+					.hint {
+						margin-top: 10px;
+						margin-left: 5px;
+						font-size: 12px;
+					}
+				}
+			}
+		}
+	}
+
+	.rulesSettingsView .blockName {
+		flex: 0 0 350px;
+	}
+
+	.gameTypeHint {
+		width: 100%;
+	}
+}
+
+@media screen and (min-width: 1100px) {
+	.rulesSettingsView {
+		.block {
+			height: 54px;
+
+			.blockValue {
+				.hint {
+					font-size: 14px;
+				}
+			}
+
+			&.bigger {
+				height: 135px;
+
+				.blockGameTypeValue {
+					.hint {
+						font-size: 14px;
+					}
+				}
+			}
+		}
+	}
+}

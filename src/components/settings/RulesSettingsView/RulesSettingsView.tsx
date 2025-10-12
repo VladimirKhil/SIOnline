@@ -28,7 +28,7 @@ import { resetSettings,
 import { setType } from '../../../state/gameSlice';
 import PenaltyType from '../../../model/enums/PenaltyType';
 
-import './RulesSettingsView.css';
+import './RulesSettingsView.scss';
 
 export default function RulesSettingsView(): JSX.Element {
 	const settings = useAppSelector(state => state.settings);
@@ -51,23 +51,65 @@ export default function RulesSettingsView(): JSX.Element {
 		appDispatch(setButtonPressMode(parseInt(e.target.value, 10)));
 	}
 
+	function getGameTypeTableHint(): React.ReactNode {
+		switch (game.type) {
+			case GameType.Classic:
+				return localization.gameTypeClassicTableHint;
+
+			case GameType.Simple:
+				return localization.gameTypeSimpleTableHint;
+
+			case GameType.Quiz:
+				return localization.gameTypeQuizTableHint;
+
+			default:
+				return localization.gameTypeTurnTakingTableHint;
+		}
+	}
+
+	function getGameTypeThemeListHint(): React.ReactNode {
+		switch (game.type) {
+			case GameType.Classic:
+				return localization.gameTypeClassicThemeListHint;
+
+			case GameType.Simple:
+				return localization.gameTypeSimpleThemeListHint;
+
+			case GameType.Quiz:
+				return localization.gameTypeQuizThemeListHint;
+
+			default:
+				return localization.gameTypeTurnTakingThemeListHint;
+		}
+	}
+
 	return (
 		<div className='rulesSettingsView'>
-			<div className="block">
+			<div className="block bigger">
 				<div className='blockName'>{localization.gameType}</div>
 
-				<div className='blockValue'>
-					<select aria-label='Game type' className='blockValue' value={game.type} onChange={onGameTypeChanged}>
-						<option value="1">{localization.sport}</option>
-						<option value="0">{localization.tv}</option>
-					</select>
+				<div className='blockGameTypeBody'>
+					<div className='blockGameTypeValue'>
+						<select aria-label='Game type' className='blockValue gameType' value={game.type} onChange={onGameTypeChanged}>
+							<option value="0">{localization.tv}</option>
+							<option value="1">{localization.sport}</option>
+							<option value="2">{localization.quiz}</option>
+							<option value="3">{localization.turnTaking}</option>
+						</select>
 
-					<div className='hint gameTypeHint'>
-						{game.type === GameType.Classic ? localization.gameTypeClassicHint : localization.gameTypeSimpleHint}
-					</div>
+						{game.type === GameType.Classic ? (
+							<div className='hint gameTypeHint'>
+								{localization.gameTypeShowGameThemes}
+							</div>
+						) : null}
 
-					<div className='hint gameTypeHint'>
-						{localization.gameTypeFinalHint}
+						<div className='hint gameTypeHint'>
+							{getGameTypeTableHint()}
+						</div>
+
+						<div className='hint gameTypeHint'>
+							{getGameTypeThemeListHint()}
+						</div>
 					</div>
 				</div>
 			</div>
