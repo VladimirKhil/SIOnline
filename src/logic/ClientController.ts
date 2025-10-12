@@ -843,6 +843,37 @@ export default class ClientController {
 		}
 	}
 
+	onPackageAuthors(authors: string[]) {
+		this.appDispatch(showObject({
+			header: '',
+			text: authors.join(', '),
+			hint: authors.length === 1 ? localization.presents : localization.presentsPlural,
+			large: false,
+			animate: false,
+		}));
+	}
+
+	onPackageComments(comments: string) {
+		this.appDispatch(captionChanged(localization.packageComments));
+		this.appDispatch(showText(comments));
+	}
+
+	onPackageDate(packageDate: string) {
+		this.appDispatch(addToChat({
+			sender: localization.packageDate,
+			text: packageDate,
+			level: MessageLevel.System,
+		}));
+	}
+
+	onPackageSources(sources: string[]) {
+		this.appDispatch(addToChat({
+			sender: localization.packageSources,
+			text: sources.join(', '),
+			level: MessageLevel.System,
+		}));
+	}
+
 	onPass(playerIndex: number) {
 		this.appDispatch(playerStateChanged({ index: playerIndex, state: PlayerStates.Pass }));
 	}
@@ -948,6 +979,19 @@ export default class ClientController {
 		this.appDispatch(setReport(report));
 	}
 
+	onRoundAuthors(authors: string[]) {
+		this.appDispatch(addToChat({
+			sender: localization.roundAuthors,
+			text: authors.join(', '),
+			level: MessageLevel.System,
+		}));
+	}
+
+	onRoundComments(comments: string) {
+		this.appDispatch(captionChanged(localization.roundComments));
+		this.appDispatch(showText(comments));
+	}
+
 	onRoundContent(content: string[]) {
 		const baseDelay = 500; // Base delay between requests
 		const maxRetries = 3;
@@ -1049,6 +1093,14 @@ export default class ClientController {
 				this.addSimpleMessage(localization.roundEndedManual);
 				break;
 		}
+	}
+
+	onRoundSources(sources: string[]) {
+		this.appDispatch(addToChat({
+			sender: localization.roundSources,
+			text: sources.join(', '),
+			level: MessageLevel.System,
+		}));
 	}
 
 	onRoundThemes(roundThemesNames: string[], playMode: ThemesPlayMode) {

@@ -513,6 +513,38 @@ const viewerHandler = (
 			controller.onPackage(packageName, packageLogo);
 			break;
 
+		case GameMessages.PackageAuthors:
+			if (args.length < 2) {
+				break;
+			}
+
+			controller.onPackageAuthors(args.slice(1));
+			break;
+
+		case GameMessages.PackageComments:
+			if (args.length < 2) {
+				break;
+			}
+
+			controller.onPackageComments(unescapeNewLines(args[1]));
+			break;
+
+		case GameMessages.PackageDate:
+			if (args.length < 2) {
+				break;
+			}
+
+			controller.onPackageDate(args[1]);
+			break;
+
+		case GameMessages.PackageSources:
+			if (args.length < 2) {
+				break;
+			}
+
+			controller.onPackageSources(args.slice(1));
+			break;
+
 		case GameMessages.Pause:
 			const isPaused = args[1] === '+';
 			controller.onPause(isPaused, args.slice(2).map(v => parseInt(v, 10)));
@@ -740,6 +772,24 @@ const viewerHandler = (
 		case GameMessages.RoundEnd:
 			if (args.length > 1) {
 				controller.onRoundEnd(args[1]);
+			}
+			break;
+
+		case GameMessages.RoundAuthors:
+			if (args.length > 1) {
+				controller.onRoundAuthors(args.slice(1));
+			}
+			break;
+
+		case GameMessages.RoundComments:
+			if (args.length > 1) {
+				controller.onRoundComments(unescapeNewLines(args[1]));
+			}
+			break;
+
+		case GameMessages.RoundSources:
+			if (args.length > 1) {
+				controller.onRoundSources(args.slice(1));
 			}
 			break;
 

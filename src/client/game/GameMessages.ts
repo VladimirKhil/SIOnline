@@ -95,6 +95,14 @@ const enum GameMessages {
 
 	Package = 'PACKAGE',
 
+	PackageAuthors = 'PACKAGE_AUTHORS',
+
+	PackageComments = 'PACKAGE_COMMENTS',
+
+	PackageDate = 'PACKAGE_DATE',
+
+	PackageSources = 'PACKAGE_SOURCES',
+
 	Pass = 'PASS',
 
 	Pause = 'PAUSE',
@@ -157,11 +165,17 @@ const enum GameMessages {
 	/** Notifies about complex answer start. */
 	RightAnswerStart = 'RIGHT_ANSWER_START',
 
+	RoundAuthors = 'ROUND_AUTHORS',
+
+	RoundComments = 'ROUND_COMMENTS',
+
 	RoundContent = 'ROUNDCONTENT',
 
 	RoundEnd = 'ROUND_END',
 
 	RoundsNames = 'ROUNDSNAMES',
+
+	RoundSources = 'ROUND_SOURCES',
 
 	/** Round themes names. */
 	RoundThemes2 = 'ROUND_THEMES2',
