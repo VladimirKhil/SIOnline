@@ -8,7 +8,6 @@ import DataContext from '../model/DataContext';
 import 'es6-promise/auto';
 import localization from '../model/resources/localization';
 
-import roomActionCreators from '../state/room/roomActionCreators';
 import Constants from '../model/enums/Constants';
 
 import GameServerClient from '../client/GameServerClient';
@@ -202,7 +201,7 @@ const connectToSIHostAsync = async (
 
 	const siHostClient = new SIHostClient(
 		connection,
-		e => appDispatch(addOperationErrorMessage(getErrorMessage(e)) as object as AnyAction)
+		e => appDispatch(addOperationErrorMessage(getErrorMessage(e)))
 	);
 
 	await connection.start();

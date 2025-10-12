@@ -2,7 +2,6 @@ import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import GameInfo from '../client/contracts/GameInfo';
 import PersonInfo from '../client/contracts/PersonInfo';
 import GamesResponse from 'sistatistics-client/dist/models/GamesResponse';
-import GamesStatistic from 'sistatistics-client/dist/models/GamesStatistic';
 import PackagesStatistic from 'sistatistics-client/dist/models/PackagesStatistic';
 import GamesFilter from '../model/enums/GamesFilter';
 import DataContext from '../model/DataContext';

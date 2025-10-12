@@ -72,6 +72,7 @@ export interface Room2State {
 		isEditingTables: boolean;
 		isGamePaused: boolean;
 		decisionType: DecisionType;
+		questionCounter: number;
 	}
 
 	validation: {
@@ -136,6 +137,7 @@ const initialState: Room2State = {
 		isEditingTables: false,
 		isGamePaused: false,
 		decisionType: DecisionType.None,
+		questionCounter: 0,
 	},
 
 	validation: {
@@ -602,6 +604,12 @@ export const room2Slice = createSlice({
 			state.isEditTableEnabled = false;
 			state.areSumsEditable = false;
 		},
+		incrementQuestionCounter(state: Room2State) {
+			state.stage.questionCounter += 1;
+		},
+		resetQuestionCounter(state: Room2State) {
+			state.stage.questionCounter = 0;
+		},
 		setSettingDisplayAnswerOptionsLabels: (state: Room2State, action: PayloadAction<boolean>) => {
 			state.settings.displayAnswerOptionsLabels = action.payload;
 		},
@@ -906,6 +914,8 @@ export const {
 	setIsEditingTables,
 	setIsPaused,
 	setRoomRole,
+	incrementQuestionCounter,
+	resetQuestionCounter,
 	setSettingDisplayAnswerOptionsLabels,
 	setSettingFalseStart,
 	setSettingOral,

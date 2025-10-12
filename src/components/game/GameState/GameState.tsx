@@ -8,6 +8,7 @@ import { Action } from 'redux';
 import roomActionCreators from '../../../state/room/roomActionCreators';
 import GameProgress from '../GameProgress/GameProgress';
 import MoveRoundButton from '../MoveRoundButton/MoveRoundButton';
+import QuestionCounter from '../QuestionCounter/QuestionCounter';
 import Role from '../../../model/Role';
 
 import './GameState.scss';
@@ -61,6 +62,11 @@ const GameState: React.FC<GameStateProps> = (props: GameStateProps) => {
 					</span>
 
 					<GameProgress />
+
+					<div className='right'>
+						<QuestionCounter />
+					</div>
+
 					{room.role === Role.Showman ? <MoveRoundButton /> : null}
 				</h1>
 			</header>

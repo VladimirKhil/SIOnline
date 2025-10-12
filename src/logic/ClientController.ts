@@ -106,6 +106,8 @@ import {
 	setIsPaused,
 	setReport,
 	setRoomRole,
+	incrementQuestionCounter,
+	resetQuestionCounter,
 	setSettingDisplayAnswerOptionsLabels,
 	setSettingFalseStart,
 	setSettingManaged,
@@ -341,6 +343,13 @@ export default class ClientController {
 			this.appDispatch(startLoadTimer());
 			this.loadStart = new Date();
 		}
+	}
+
+	private initQuestion() {
+		this.appDispatch(playersStateCleared());
+		this.dispatch(roomActionCreators.afterQuestionStateChanged(false));
+		this.appDispatch(questionReset());
+		this.appDispatch(incrementQuestionCounter());
 	}
 
 	onAds(ads: string) {
@@ -957,10 +966,12 @@ export default class ClientController {
 
 		// Helper function to preload a single file with retry logic
 		const preloadFile = (contentUri: string, retryCount = 0): Promise<void> => fetch(contentUri, { cache: 'force-cache' })
-			.then((response) => {
+			.then(async (response) => {
 				if (!response.ok) {
 					throw new Error(`HTTP ${response.status}: ${response.statusText}`);
 				}
+
+				await response.blob(); // Wait for the content to be fully downloaded
 			})
 			.catch((error) => {
 				if (retryCount < maxRetries) {
@@ -974,12 +985,7 @@ export default class ClientController {
 					});
 				} else {
 					console.warn(`Failed to preload ${contentUri} after ${maxRetries} attempts: ${getErrorMessage(error)}`);
-
-					this.appDispatch(addToChat({
-						sender: '',
-						text: 'Content preload error: ' + getErrorMessage(error),
-						level: MessageLevel.System,
-					}));
+					this.addSimpleMessage('Content preload error: ' + getErrorMessage(error));
 					// Don't reject - just log the failure and continue
 				}
 			});
@@ -987,7 +993,7 @@ export default class ClientController {
 		// Process files one by one, skipping external ones
 		const processFiles = async () => {
 			const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
-			
+
 			for (let i = 0; i < content.length; i += 1) {
 				const url = content[i];
 				const contentUri = this.preprocessServerUri(url);
@@ -1099,6 +1105,7 @@ export default class ClientController {
 			const { roundTail } = localization;
 			const roundName = stageName.endsWith(roundTail) ? stageName.substring(0, stageName.length - roundTail.length) : stageName;
 			this.appDispatch(showObject({ header: localization.round, text: roundName, hint: getRuleString(rules), large: true, animate: false }));
+			this.appDispatch(resetQuestionCounter());
 
 			if (stage === GameStage.Round) {
 				for	(let i = 0; i < state.room2.persons.players.length; i++) {
@@ -1374,9 +1381,7 @@ export default class ClientController {
 	}
 
 	onQuestionSelected(themeIndex: number, questionIndex: number) {
-		this.appDispatch(playersStateCleared());
-		this.dispatch(roomActionCreators.afterQuestionStateChanged(false));
-		this.appDispatch(questionReset());
+		this.initQuestion();
 		this.playGameSound(GameSound.QUESTION_SELECTED);
 
 		const state = this.getState();
@@ -1431,11 +1436,9 @@ export default class ClientController {
 
 	onQuestion(questionPrice: string) {
 		const { themeName } = this.getState().room.stage;
-		this.appDispatch(playersStateCleared());
-		this.dispatch(roomActionCreators.afterQuestionStateChanged(false));
+		this.initQuestion();
 		this.appDispatch(showObject({ header: themeName, text: questionPrice, hint: '', large: true, animate: false }));
 		this.appDispatch(captionChanged(`${themeName}, ${questionPrice}`));
-		this.appDispatch(questionReset());
 		this.dispatch(roomActionCreators.currentPriceChanged(questionPrice));
 	}
 
