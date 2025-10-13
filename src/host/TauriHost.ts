@@ -15,7 +15,7 @@ import localization from '../model/resources/localization';
 
 const ACCEPT_LICENSE_KEY = 'ACCEPT_LICENSE';
 
-const isSteam = true; // TODO: STEAM_CLIENT: true
+const isSteam = false; // TODO: STEAM_CLIENT: true
 
 declare global {
 	interface Window {
