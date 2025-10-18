@@ -29,7 +29,6 @@ import clearUrls from '../utils/clearUrls';
 import ThemesPlayMode from '../model/enums/ThemesPlayMode';
 import { AppDispatch } from '../state/store';
 import { addToChat,
-	playerInGameChanged,
 	playerStakeChanged,
 	playerStateChanged } from '../state/room2Slice';
 import StakeTypes from '../model/enums/StakeTypes';

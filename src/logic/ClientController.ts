@@ -473,12 +473,7 @@ export default class ClientController {
 
 	onDisconnected(name: string) {
 		this.appDispatch(personRemoved(name));
-
-		this.appDispatch(addToChat({
-			sender: '',
-			text: name + localization.disconnected,
-			level: MessageLevel.System,
-		}));
+		this.addSimpleMessage(stringFormat(localization.disconnected, name));
 
 		const state = this.getState();
 
