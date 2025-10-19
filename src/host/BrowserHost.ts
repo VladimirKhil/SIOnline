@@ -127,4 +127,8 @@ export default class BrowserHost implements IHost {
 	getPackageSource(): string | undefined {
 		return 'https://www.sibrowser.ru'; // Using this source for statistics for now
 	}
+
+	getFallbackPackageSource(): string | undefined {
+		return undefined;
+	}
 }

@@ -136,6 +136,10 @@ class ManagedHost implements IHost {
 	getPackageSource(): string | undefined {
 		return undefined;
 	}
+
+	getFallbackPackageSource(): string | undefined {
+		return undefined;
+	}
 }
 
 async function getServerUri(serverDiscoveryUri: string) {

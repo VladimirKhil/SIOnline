@@ -105,14 +105,6 @@ fn get_workshop_subscribed_items(
 }
 
 #[cfg(feature = "steam_client")]
-#[derive(serde::Serialize, serde::Deserialize)]
-struct FileInfo {
-    path: String,
-    size: u64,
-    chunk_count: u64,
-}
-
-#[cfg(feature = "steam_client")]
 // File info structure for metadata
 #[derive(serde::Serialize, serde::Deserialize)]
 struct SteamWorkshopFileInfo {

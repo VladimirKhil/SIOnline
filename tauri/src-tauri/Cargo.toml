@@ -1,12 +1,12 @@
 [package]
 name = "SIGame"
-version = "8.7.0"
+version = "8.8.0"
 description = "SIGame"
 authors = ["Vladimir Khil"]
 license = "GPLv3"
 repository = "https://github.com/VladimirKhil/SIOnline"
 edition = "2021"
-rust-version = "1.77.2"
+rust-version = "1.90.0"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
@@ -32,4 +32,3 @@ steamworks = { version = "0.11.0", optional = true }
 tauri-plugin-dialog = "2"
 tauri-plugin-log = "2"
 log = "0.4"
-glib = "0.20.0"

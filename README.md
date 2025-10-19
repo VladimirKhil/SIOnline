@@ -24,7 +24,7 @@ npm run build-prod
 
 src/host/TauriHost.ts:
 
-const isSteam = false;
+const isSteam = false; // Also important for Web build too
 
 tauri/src-tauri/tauri.conf.json:
 
@@ -49,3 +49,9 @@ tauri/src-tauri/tauri.conf.json:
 tauri/vite.config.ts:
 
 uncomment: root: '../dist'
+
+Set new version in Cargo.toml and tauri.conf.json
+
+run:
+npm run build-prod
+tauri/build-steam.ps1

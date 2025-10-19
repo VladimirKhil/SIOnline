@@ -54,4 +54,6 @@ export default interface IHost {
 	getRandomValue?: () => number;
 
 	getPackageSource(): string | undefined;
+
+	getFallbackPackageSource(): string | undefined;
 }

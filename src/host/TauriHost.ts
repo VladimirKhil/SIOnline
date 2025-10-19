@@ -324,4 +324,8 @@ export default class TauriHost implements IHost {
 	getPackageSource(): string | undefined {
 		return isSteam ? 'https://steamcommunity.com' : 'https://www.sibrowser.ru'; // Using this source for statistics for now
 	}
+
+	getFallbackPackageSource(): string | undefined {
+		return isSteam ? 'https://www.sibrowser.ru' : undefined;
+	}
 }
