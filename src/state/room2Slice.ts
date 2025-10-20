@@ -75,6 +75,8 @@ export interface Room2State {
 		questionCounter: number;
 	}
 
+	roundsNames: string[];
+
 	validation: {
 		header: string;
 		message: string;
@@ -102,9 +104,11 @@ export interface Room2State {
 	areSumsEditable: boolean;
 	chatScrollPosition: number;
 	noRiskMode: boolean;
+	showMainTimer: boolean;
 
 	settings: AppSettings;
 	joinMode: JoinMode;
+	kicked: boolean;
 }
 
 const initialState: Room2State = {
@@ -140,6 +144,8 @@ const initialState: Room2State = {
 		questionCounter: 0,
 	},
 
+	roundsNames: [],
+
 	validation: {
 		header: '',
 		message: '',
@@ -167,9 +173,11 @@ const initialState: Room2State = {
 	areSumsEditable: false,
 	chatScrollPosition: 0,
 	noRiskMode: false,
+	showMainTimer: false,
 
 	settings: initialAppSettings,
 	joinMode: JoinMode.AnyRole,
+	kicked: false,
 };
 
 export const complain = createAsyncThunk(
@@ -708,6 +716,15 @@ export const room2Slice = createSlice({
 		setAreSumsEditable: (state: Room2State, action: PayloadAction<boolean>) => {
 			state.areSumsEditable = action.payload;
 		},
+		setKicked: (state: Room2State, action: PayloadAction<boolean>) => {
+			state.kicked = action.payload;
+		},
+		setRoundsNames: (state: Room2State, action: PayloadAction<string[]>) => {
+			state.roundsNames = action.payload;
+		},
+		setShowMainTimer: (state: Room2State, action: PayloadAction<boolean>) => {
+			state.showMainTimer = action.payload;
+		},
 	},
 	extraReducers: (builder) => {
 		builder.addCase(sendAnswer.fulfilled, (state) => {
@@ -944,6 +961,9 @@ export const {
 	addOperationErrorMessage,
 	setJoinMode,
 	setAreSumsEditable,
+	setKicked,
+	setRoundsNames,
+	setShowMainTimer,
 } = room2Slice.actions;
 
 export default room2Slice.reducer;

@@ -24,8 +24,6 @@ export enum DemoStage {
 }
 
 export default class DemoGameClient implements IGameClient {
-	gameServerClient!: IClientBase;
-
 	shouldClose!: boolean;
 
 	stage: DemoStage = DemoStage.Init;

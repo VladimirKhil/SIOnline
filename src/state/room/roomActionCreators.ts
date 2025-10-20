@@ -5,12 +5,9 @@ import State from '../State';
 import DataContext from '../../model/DataContext';
 import localization from '../../model/resources/localization';
 import { stopAudio, userErrorChanged } from '../commonSlice';
-import Path from '../../model/enums/Path';
-import actionCreators from '../../logic/actionCreators';
 import { AppDispatch } from '../store';
-import { clearChat, setIsAppellation, setIsPaused, showmanReplicChanged } from '../room2Slice';
+import { clearChat, setIsAppellation, setIsPaused, setKicked, setShowMainTimer, showmanReplicChanged } from '../room2Slice';
 import StakeModes from '../../client/game/StakeModes';
-import { navigate } from '../../utils/Navigator';
 import { clearGameLog } from '../globalActions';
 
 let timerRef: number | null = null;
@@ -70,11 +67,7 @@ const exitGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (
 ) => {
 	try {
 		// TODO: show progress bar
-		if (dataContext.game.shouldClose) {
-			await actionCreators.closeSIHostClientAsync(appDispatch, dataContext);
-		} else {
-			await dataContext.game.leaveGame();
-		}
+		await dataContext.game.leaveGame();
 	} catch (e) {
 		appDispatch(userErrorChanged(localization.exitError) as any);
 	}
@@ -85,23 +78,18 @@ const exitGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (
 	}
 
 	appDispatch(clearChat());
-	dispatch(onKicked(false));
+	appDispatch(setKicked(false));
 
 	dispatch(stopTimer(0));
 	dispatch(stopTimer(1));
 	dispatch(stopTimer(2));
 
-	dispatch(roundsNamesChanged([]));
-
 	appDispatch(setIsPaused(false));
 	appDispatch(setIsAppellation(false));
-	dispatch(clearDecisionsAndMainTimer());
+	appDispatch(setShowMainTimer(false));
 
 	appDispatch(stopAudio());
 	appDispatch(clearGameLog());
-
-	const state = getState();
-	dispatch(navigate({ navigation: { path: state.ui.navigation.returnToLobby ? Path.Lobby : Path.Menu }, saveState: true }) as unknown as Action);
 };
 
 const tableSelected: ActionCreator<RunActions.TableSelectedAction> = (tableIndex: number) => ({
@@ -258,14 +246,6 @@ const timerMaximumChanged: ActionCreator<RunActions.TimerMaximumChangedAction> =
 	type: RunActions.RoomActionTypes.TimerMaximumChanged, timerIndex, maximumTime
 });
 
-const showMainTimer: ActionCreator<RunActions.ShowMainTimerAction> = () => ({
-	type: RunActions.RoomActionTypes.ShowMainTimer
-});
-
-const clearDecisionsAndMainTimer: ActionCreator<RunActions.ClearDecisionsAndMainTimerAction> = () => ({
-	type: RunActions.RoomActionTypes.ClearDecisionsAndMainTimer
-});
-
 const hintChanged: ActionCreator<RunActions.HintChangedAction> = (hint: string | null) => ({
 	type: RunActions.RoomActionTypes.HintChanged, hint
 });
@@ -285,10 +265,6 @@ const ready: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (isR
 ) => {
 	await dataContext.game.ready(isReady);
 };
-
-const roundsNamesChanged: ActionCreator<RunActions.RoundsNamesChangedAction> = (roundsNames: string[]) => ({
-	type: RunActions.RoomActionTypes.RoundsNamesChanged, roundsNames
-});
 
 const themeNameChanged: ActionCreator<RunActions.ThemeNameChangedAction> = (themeName: string) => ({
 	type: RunActions.RoomActionTypes.ThemeNameChanged, themeName
@@ -355,10 +331,6 @@ const mediaLoaded: ActionCreator<ThunkAction<void, State, DataContext, Action>> 
 	await dataContext.game.mediaLoaded();
 };
 
-const onKicked: ActionCreator<RunActions.KickedAction> = (kicked: boolean) => ({
-	type: RunActions.RoomActionTypes.Kicked, kicked,
-});
-
 const onReconnect: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
 	_dispatch: Dispatch<any>,
 	_getState: () => State,
@@ -414,15 +386,12 @@ const roomActionCreators = {
 	resumeTimer,
 	stopTimer,
 	timerMaximumChanged,
-	showMainTimer,
-	clearDecisionsAndMainTimer,
 	hintChanged,
 	startGame,
 	themeNameChanged,
 	moveNext,
 	navigateToRound,
 	ready,
-	roundsNamesChanged,
 	buttonBlockingTimeChanged,
 	gameMetadataChanged,
 	bannedListChanged,
@@ -431,7 +400,6 @@ const roomActionCreators = {
 	selectBannedItem,
 	unban,
 	mediaLoaded,
-	onKicked,
 	onReconnect,
 	setWebCamera,
 };

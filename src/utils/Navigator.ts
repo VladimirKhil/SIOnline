@@ -4,7 +4,7 @@ import Path from '../model/enums/Path';
 import { loadLobby } from '../state/online2Slice';
 import { AppDispatch, RootState } from '../state/store';
 import { INavigationState, navigateCore } from '../state/uiSlice';
-import { createAsyncThunk } from '@reduxjs/toolkit';
+import { createAsyncThunk, UnknownAction } from '@reduxjs/toolkit';
 import GameServerListener from './GameServerListener';
 import { userErrorChanged } from '../state/commonSlice';
 import localization from '../model/resources/localization';
@@ -15,6 +15,7 @@ import DemoGameClient from './DemoGameClient';
 import ClientController from '../logic/ClientController';
 import State from '../state/State';
 import { showText } from '../state/tableSlice';
+import roomActionCreators from '../state/room/roomActionCreators';
 
 function saveNavigationState(navigation: INavigationState, dataContext: DataContext, siHosts: Record<string, string>, replaceState: boolean) {
 	if (typeof window === 'undefined') {
@@ -82,6 +83,10 @@ const disconnectFromGameServerAsync = async (gameServerClient: IGameServerClient
 	}
 };
 
+function leaveRoom(appDispatch: AppDispatch, getState: () => State, dataContext: DataContext) {
+	appDispatch(roomActionCreators.exitGame(appDispatch) as unknown as UnknownAction);
+}
+
 export const navigate = createAsyncThunk(
 	'global/navigate',
 	async (arg: { navigation: INavigationState, saveState: boolean, replaceState?: boolean }, thunkAPI) => {
@@ -107,6 +112,19 @@ export const navigate = createAsyncThunk(
 		}
 
 		thunkAPI.dispatch(navigateCore(nav));
+
+		switch (previousPath) {
+			case Path.Lobby:
+				await disconnectFromGameServerAsync((thunkAPI.extra as DataContext).gameClient, thunkAPI.dispatch as AppDispatch);
+				break;
+
+			case Path.Room:
+				leaveRoom(thunkAPI.dispatch as AppDispatch, thunkAPI.getState as () => State, thunkAPI.extra as DataContext);
+				break;
+
+			default:
+				break;
+		}
 
 		switch (nav.path) {
 			case Path.Lobby:
@@ -150,11 +168,8 @@ export const navigate = createAsyncThunk(
 				break;
 
 			default:
-				if (previousPath === Path.Lobby) {
-					await disconnectFromGameServerAsync((thunkAPI.extra as DataContext).gameClient, thunkAPI.dispatch as AppDispatch);
-				}
-
 				break;
 		}
 	}
 );
+

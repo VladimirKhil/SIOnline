@@ -25,11 +25,8 @@ export const enum RoomActionTypes {
 	ResumeTimer = 'RESUME_TIMER',
 	StopTimer = 'STOP_TIMER',
 	TimerMaximumChanged = 'TIMER_MAXIMUM_CHANGED',
-	ShowMainTimer = 'SHOW_MAIN_TIMER',
-	ClearDecisionsAndMainTimer = 'CLEAR_DECISIONS_AND_MAIN_TIMER',
 	HintChanged = 'HINT_CHANGED',
 	ThemeNameChanged = 'THEME_NAME_CHANGED',
-	RoundsNamesChanged = 'ROUNDS_NAMES_CHANGED',
 	ChooserChanged = 'CHOOSER_CHANGED',
 	PlayerInGameChanged = 'PLAYER_IN_GAME_CHANGED',
 	ButtonBlockingTimeChanged = 'BUTTON_BLOCKING_TIME_CHANGED',
@@ -39,7 +36,6 @@ export const enum RoomActionTypes {
 	Unbanned = 'UNBANNED',
 	SelectBannedItem = 'SELECT_BANNED_ITEM',
 	PlayerMediaLoaded = 'PLAYER_MEDIA_LOADED',
-	Kicked = 'KICKED',
 	WebCameraUrlChanged = 'WEB_CAMERA_URL_CHANGED',
 	IsQuestionChanged = 'IsQuestionChanged',
 }
@@ -60,7 +56,6 @@ export type CurrentPriceChangedAction = { type: RoomActionTypes.CurrentPriceChan
 export type ClearDecisionsAction = { type: RoomActionTypes.ClearDecisions };
 export type IsAnsweringAction = { type: RoomActionTypes.IsAnswering };
 export type AnswerChangedAction = { type: RoomActionTypes.AnswerChanged, answer: string };
-export type KickedAction = { type: RoomActionTypes.Kicked, kicked: boolean };
 
 export type SetStakesAction = {
 	type: RoomActionTypes.SetStakes,
@@ -78,11 +73,8 @@ export type PauseTimerAction = { type: RoomActionTypes.PauseTimer, timerIndex: n
 export type ResumeTimerAction = { type: RoomActionTypes.ResumeTimer, timerIndex: number, runByUser: boolean };
 export type StopTimerAction = { type: RoomActionTypes.StopTimer, timerIndex: number };
 export type TimerMaximumChangedAction = { type: RoomActionTypes.TimerMaximumChanged, timerIndex: number, maximumTime: number };
-export type ShowMainTimerAction = { type: RoomActionTypes.ShowMainTimer };
-export type ClearDecisionsAndMainTimerAction = { type: RoomActionTypes.ClearDecisionsAndMainTimer };
 export type HintChangedAction = { type: RoomActionTypes.HintChanged, hint: string | null };
 export type ThemeNameChangedAction = { type: RoomActionTypes.ThemeNameChanged, themeName: string };
-export type RoundsNamesChangedAction = { type: RoomActionTypes.RoundsNamesChanged, roundsNames: string[] };
 export type ButtonBlockingChangedAction = { type: RoomActionTypes.ButtonBlockingTimeChanged, buttonBlockingTime: number };
 
 export type GameMetadataChangedAction = {
@@ -125,17 +117,13 @@ export type KnownRoomAction =
 	| ResumeTimerAction
 	| StopTimerAction
 	| TimerMaximumChangedAction
-	| ShowMainTimerAction
-	| ClearDecisionsAndMainTimerAction
 	| HintChangedAction
 	| ThemeNameChangedAction
-	| RoundsNamesChangedAction
 	| ButtonBlockingChangedAction
 	| GameMetadataChangedAction
 	| BannedListChangedAction
 	| BannedAction
 	| UnbannedAction
 	| SelectBannedItemAction
-	| KickedAction
 	| WebCameraUrlChangedAction
 	| IsQuestionChangedAction;

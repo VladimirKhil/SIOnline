@@ -3,18 +3,17 @@ import State from '../../../state/State';
 import { connect } from 'react-redux';
 import roomActionCreators from '../../../state/room/roomActionCreators';
 import { Action, Dispatch } from 'redux';
+import { useAppSelector } from '../../../state/hooks';
 
 import './ManageGameView.css';
 
 interface ManageGameViewProps {
-	roundsNames: string[] | null;
 	roundIndex: number;
 	navigateToRound: (roundIndex: number) => void;
 	onClose: () => void;
 }
 
 const mapStateToProps = (state: State) => ({
-	roundsNames: state.room.roundsNames,
 	roundIndex: state.room.stage.roundIndex,
 });
 
@@ -25,10 +24,13 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 });
 
 export function ManageGameView(props: ManageGameViewProps) {
+	const room = useAppSelector(state => state.room2);
+
 	return (
 		<div className='manageGameView'>
-			{props.roundsNames?.map((name, index) => (
+			{room.roundsNames?.map((name, index) => (
 				<button
+					type='button'
 					key={index}
 					className={index === props.roundIndex ? 'activeRound' : ''}
 					onClick={() => { props.navigateToRound(index); props.onClose(); }}

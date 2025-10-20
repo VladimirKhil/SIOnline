@@ -793,7 +793,7 @@ const viewerHandler = (
 			break;
 
 		case GameMessages.RoundsNames:
-			dispatch(roomActionCreators.roundsNamesChanged(args.slice(1)));
+			controller.onRoundsNames(args.slice(1));
 			break;
 
 		case GameMessages.RoundThemes2: {

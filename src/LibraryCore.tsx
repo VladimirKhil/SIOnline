@@ -4,7 +4,6 @@ import { AnyAction, Store, applyMiddleware, createStore } from 'redux';
 import State, { initialState } from './state/State';
 import reducer from './state/reducer';
 import reduxThunk from 'redux-thunk';
-import { HubConnectionBuilder } from '@microsoft/signalr';
 import GameServerClient from './client/GameServerClient';
 import GameClient from './client/game/GameClient';
 import DataContext from './model/DataContext';
@@ -293,8 +292,6 @@ function processMessage(controller: ClientController, payload: any, appDispatch:
 }
 
 export default function runCore(game?: IGameClient): Store<State, AnyAction> {
-	const noOpHubConnection = new HubConnectionBuilder().withUrl('http://fake').build();
-
 	const gameClient = new GameServerClient('');
 
 	const dataContext: DataContext = {
@@ -304,7 +301,7 @@ export default function runCore(game?: IGameClient): Store<State, AnyAction> {
 		},
 		serverUri: '',
 		gameClient,
-		game: game ?? new GameClient(new SIHostClient(noOpHubConnection, () => { }), false),
+		game: game ?? new GameClient(new SIHostClient()),
 		contentUris: null,
 		contentClients: [],
 		storageClients: [],

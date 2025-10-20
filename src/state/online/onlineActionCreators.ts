@@ -30,7 +30,18 @@ import RandomPackageParameters from 'sistorage-client/dist/models/RandomPackageP
 import SIStorageServiceError from 'sistorage-client/dist/models/SIStorageServiceError';
 import { AppDispatch } from '../store';
 import { showWelcome, tableReset } from '../tableSlice';
-import { ContextView, nameChanged, resetQuestionCounter, setAreSumsEditable, setContext, setIsGameStarted, setRoomRole } from '../room2Slice';
+
+import {
+	ContextView,
+	nameChanged,
+	resetQuestionCounter,
+	setAreSumsEditable,
+	setContext,
+	setIsGameStarted,
+	setRoomRole,
+	setRoundsNames
+} from '../room2Slice';
+
 import { GameState, PackageData, setGameSet } from '../gameSlice';
 import { saveStateToStorage } from '../StateHelpers';
 import { INavigationState } from '../uiSlice';
@@ -114,12 +125,12 @@ const initGameAsync = async (
 	dispatch(roomActionCreators.stopTimer(0));
 	dispatch(roomActionCreators.stopTimer(1));
 	dispatch(roomActionCreators.stopTimer(2));
-	dispatch(roomActionCreators.onKicked(false));
 	appDispatch(setIsGameStarted(false));
 	dispatch(roomActionCreators.afterQuestionStateChanged(false));
 	dispatch(roomActionCreators.isQuestionChanged(false, ''));
 	appDispatch(setAreSumsEditable(false));
 	appDispatch(resetQuestionCounter());
+	appDispatch(setRoundsNames([]));
 
 	await gameClient.info();
 	await gameClient.moveable();
@@ -138,7 +149,7 @@ function getServerRole(role: Role) {
 }
 
 const joinGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
-	(hostUri: string, gameId: number, userName: string, role: Role, pin: number | null, appDispatch: AppDispatch) => async (
+	(hostUri: string, gameId: number, userName: string, role: Role, pin: number | null, appDispatch: AppDispatch, isAutomatic: boolean) => async (
 	dispatch: Dispatch<any>,
 	getState: () => State,
 	dataContext: DataContext
@@ -167,7 +178,7 @@ const joinGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 			return;
 		}
 
-		await initGameAsync(dispatch, appDispatch, dataContext.game, gameId, userName, role, false);
+		await initGameAsync(dispatch, appDispatch, dataContext.game, gameId, userName, role, isAutomatic);
 		saveStateToStorage(getState()); // use state that could be changed by initGameAsync
 
 		const navigation: INavigationState = {
@@ -203,7 +214,7 @@ const joinByPin: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 		return;
 	}
 
-	appDispatch(joinGame(gameInfo.hostUri, gameInfo.gameId, userName, role, pin, appDispatch) as unknown as UnknownAction);
+	appDispatch(joinGame(gameInfo.hostUri, gameInfo.gameId, userName, role, pin, appDispatch, false) as unknown as UnknownAction);
 };
 
 function createGameSettings(
@@ -505,7 +516,7 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 				appDispatch(userErrorChanged(GameErrorsHelper.getMessage(result.errorType)));
 			} else {
 				appDispatch(passwordChanged(gameSettings.networkGamePassword));
-				dispatch(joinGame(result.hostUri, result.gameId, state.user.login, role, null, appDispatch));
+				dispatch(joinGame(result.hostUri, result.gameId, state.user.login, role, null, appDispatch, false));
 			}
 		} catch (error) {
 			const userError = getErrorMessage(error);
@@ -535,7 +546,7 @@ const createNewAutoGame: ActionCreator<ThunkAction<void, State, DataContext, Act
 			if (!result.isSuccess) {
 				appDispatch(userErrorChanged(GameErrorsHelper.getMessage(result.errorType)));
 			} else {
-				dispatch(joinGame(result.hostUri, result.gameId, state.user.login, Role.Player, null, appDispatch));
+				dispatch(joinGame(result.hostUri, result.gameId, state.user.login, Role.Player, null, appDispatch, true));
 			}
 		} catch (error) {
 			appDispatch(userErrorChanged(getErrorMessage(error)));

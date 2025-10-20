@@ -17,7 +17,6 @@ export default interface RoomState {
 	};
 
 	timers: Timers;
-	showMainTimer: boolean;
 
 	selection: {
 		isEnabled: boolean;
@@ -39,7 +38,6 @@ export default interface RoomState {
 	manageGameVisible: boolean;
 	avatarViewVivible: boolean;
 	hint: string | null;
-	roundsNames: string[] | null;
 	buttonBlockingTimeSeconds: number;
 
 	metadata: {
@@ -54,7 +52,6 @@ export default interface RoomState {
 		selectedIp: string | null;
 	};
 
-	kicked: boolean;
 	webCameraUrl: string;
 }
 
@@ -98,8 +95,6 @@ export const initialState: RoomState = {
 		}
 	},
 
-	showMainTimer: false,
-
 	selection: {
 		isEnabled: false,
 	},
@@ -120,7 +115,6 @@ export const initialState: RoomState = {
 	manageGameVisible: false,
 	avatarViewVivible: false,
 	hint: null,
-	roundsNames: null,
 	buttonBlockingTimeSeconds: 3,
 
 	metadata: {
@@ -135,6 +129,5 @@ export const initialState: RoomState = {
 		selectedIp: null,
 	},
 
-	kicked: false,
 	webCameraUrl: '',
 };

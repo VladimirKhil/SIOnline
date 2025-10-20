@@ -27,7 +27,6 @@ import './GameTable.css';
 interface GameTableProps {
 	mode: TableMode;
 	isConnected: boolean;
-	showMainTimer: boolean;
 	decisionTimer: TimerInfo;
 	caption: string;
 	windowWidth: number;
@@ -36,7 +35,6 @@ interface GameTableProps {
 const mapStateToProps = (state: State) => ({
 	isConnected: state.common.isSIHostConnected,
 	mode: state.table.mode,
-	showMainTimer: state.room.showMainTimer,
 	decisionTimer: state.room.timers.decision,
 	caption: state.table.caption,
 	windowWidth: state.ui.windowWidth,
@@ -151,7 +149,7 @@ export function GameTable(props: GameTableProps): JSX.Element {
 
 			{tableState.contentHint.length > 0 ? <div className='contentHint'>{tableState.contentHint}</div> : null}
 
-			{props.showMainTimer ? (
+			{room.showMainTimer ? (
 				<ProgressBar
 					className={`commonProgress ${caption ? 'captioned' : ''}`}
 					value={1 - (props.decisionTimer.value / props.decisionTimer.maximum)}

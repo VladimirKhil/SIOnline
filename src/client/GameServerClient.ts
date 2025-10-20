@@ -37,9 +37,9 @@ export default class GameServerClient implements IGameServerClient {
 
 		this.connection = connectionBuilder.build();
 
-		this.connection.on('GameCreated', listener.onGameCreated);
-		this.connection.on('GameChanged', listener.onGameChanged);
-		this.connection.on('GameDeleted', listener.onGameDeleted);
+		this.connection.on('GameCreated', listener.onGameCreated.bind(listener));
+		this.connection.on('GameChanged', listener.onGameChanged.bind(listener));
+		this.connection.on('GameDeleted', listener.onGameDeleted.bind(listener));
 
 		this.connection.onreconnecting(e => {
 			if (this.isDisconnecting) {
@@ -92,6 +92,8 @@ export default class GameServerClient implements IGameServerClient {
 		} finally {
 			this.isDisconnecting = false;
 		}
+
+		this.connection = undefined;
 	}
 
 	async getComputerAccountsAsync(culture: string): Promise<string[]> {

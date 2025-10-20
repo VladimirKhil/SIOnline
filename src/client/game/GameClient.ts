@@ -8,7 +8,7 @@ export default class GameClient implements IGameClient {
 	 * Initializes a new instance of {@link GameClient}.
 	 * @param gameServerClient Underlying SIGameServer client.
 	 */
-	constructor(public gameServerClient: IClientBase, public shouldClose: boolean) { }
+	constructor(private gameServerClient: IClientBase) { }
 
 	addTable(): Promise<boolean> {
 		return this.gameServerClient.msgAsync(Messages.Config, 'ADDTABLE');
@@ -50,8 +50,14 @@ export default class GameClient implements IGameClient {
 		return this.gameServerClient.msgAsync(Messages.Ban, personName);
 	}
 
-	leaveGame(): Promise<void> {
-		return this.gameServerClient.leaveGameAsync();
+	async leaveGame(): Promise<void> {
+		try {
+			await this.gameServerClient.leaveGameAsync();
+		} catch {
+			// Ignore errors on leaving game
+		}
+
+		await this.gameServerClient.disconnectAsync();
 	}
 
 	markQuestion(questionId: number, comment: string): Promise<boolean> {

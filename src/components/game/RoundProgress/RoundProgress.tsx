@@ -6,19 +6,18 @@ import TimerInfo from '../../../model/TimerInfo';
 import { isRunning } from '../../../utils/TimerInfoHelpers';
 import localization from '../../../model/resources/localization';
 import GameStage from '../../../model/enums/GameStage';
+import { useAppSelector } from '../../../state/hooks';
 
 import './RoundProgress.css';
 
 interface RoundProgressProps {
 	roundTimer: TimerInfo;
-	roundsNames: string[] | null;
 	roundIndex: number;
 	stageName: string;
 }
 
 const mapStateToProps = (state: State) => ({
 	roundTimer: state.room.timers.round,
-	roundsNames: state.room.roundsNames,
 	roundIndex: state.room.stage.roundIndex,
 	stageName: state.room.stage.name,
 });
@@ -37,8 +36,10 @@ function getLocalizedStageName(stageName: string): string {
 }
 
 export function RoundProgress(props: RoundProgressProps): JSX.Element {
-	const roundName = props.roundsNames && props.roundIndex > -1 && props.roundIndex < props.roundsNames.length
-		? props.roundsNames[props.roundIndex]
+	const room = useAppSelector(state => state.room2);
+
+	const roundName = room.roundsNames && props.roundIndex > -1 && props.roundIndex < room.roundsNames.length
+		? room.roundsNames[props.roundIndex]
 		: getLocalizedStageName(props.stageName);
 
 	return (

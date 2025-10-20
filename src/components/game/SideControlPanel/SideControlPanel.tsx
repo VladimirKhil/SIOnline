@@ -9,7 +9,6 @@ import Role from '../../../model/Role';
 import { isHost } from '../../../utils/StateHelpers';
 import isWellFormedUri from '../../../utils/isWellFormedUri';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
-import { AppDispatch } from '../../../state/store';
 
 import { addTable,
 	DecisionType,
@@ -27,19 +26,19 @@ import './SideControlPanel.css';
 import nextImg from '../../../../assets/images/next.png';
 import pauseImg from '../../../../assets/images/pause.png';
 import exitImg from '../../../../assets/images/exit.png';
+import { navigate } from '../../../utils/Navigator';
+import Path from '../../../model/enums/Path';
 
 interface SideControlPanelProps {
 	isConnected: boolean;
 	isHost: boolean;
 	areStakesVisible: boolean;
-	roundsNames: string[] | null;
 	voiceChatUri: string | null;
 
 	onShowPersons: () => void;
 	onShowBanned: () => void;
 	onShowGameInfo: () => void;
 	onGiveTurn: () => void;
-	onExit: (appDispatch: AppDispatch) => void;
 	onMoveNext: () => void;
 	showGameManageDialog: () => void;
 	onStart: () => void;
@@ -50,7 +49,6 @@ const mapStateToProps = (state: State) => ({
 	isConnected: state.common.isSIHostConnected,
 	isHost: isHost(state),
 	areStakesVisible: state.room.stakes.areVisible,
-	roundsNames: state.room.roundsNames,
 	voiceChatUri: state.room.metadata.voiceChatUri,
 });
 
@@ -66,9 +64,6 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	},
 	onGiveTurn: () => {
 		dispatch(roomActionCreators.giveTurn() as unknown as Action);
-	},
-	onExit: (appDispatch: AppDispatch) => {
-		dispatch(roomActionCreators.exitGame(appDispatch) as unknown as Action);
 	},
 	onMoveNext: () => {
 		dispatch(roomActionCreators.moveNext() as unknown as Action);
@@ -87,6 +82,7 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 	const appDispatch = useAppDispatch();
 	const room = useAppSelector(state => state.room2);
+	const ui = useAppSelector(state => state.ui);
 
 	const chatButtonStyle: React.CSSProperties = room.chat.isActive ? {
 		backgroundColor: 'lightyellow'
@@ -100,7 +96,7 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 	const canPause = props.isHost || room.role === Role.Showman;
 
 	const enabledClass = props.isConnected ? '' : 'disabled';
-	const enabledManagementClass = props.isConnected && props.roundsNames && props.roundsNames.length >= 2 ? '' : 'disabled';
+	const enabledManagementClass = props.isConnected && room.roundsNames.length >= 2 ? '' : 'disabled';
 
 	const { voiceChatUri } = props;
 	const canAddTable = room.persons.players.length < Constants.MAX_PLAYER_COUNT;
@@ -117,6 +113,10 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 	const moveNext = () => {
 		props.onMoveNext();
 		appDispatch(setAreSumsEditable(false));
+	};
+
+	const onExit = () => {
+		appDispatch(navigate({ navigation: { path: ui.navigation.returnToLobby ? Path.Lobby : Path.Menu }, saveState: true }));
 	};
 
 	return (
@@ -227,7 +227,7 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 									<ul>
 										<li
 											className={enabledClass}
-											onClick={() => props.onExit(appDispatch)}>
+											onClick={onExit}>
 											{localization.exitFromGame}
 										</li>
 									</ul>

@@ -48,7 +48,7 @@ const mapStateToProps = (state: State) => ({
 
 const mapDispatchToProps = (dispatch: any) => ({
 	onJoin: (hostUri: string, gameId: number, name: string, role: Role, appDispatch: AppDispatch) => {
-		dispatch(onlineActionCreators.joinGame(hostUri, gameId, name, role, null, appDispatch));
+		dispatch(onlineActionCreators.joinGame(hostUri, gameId, name, role, null, appDispatch, false));
 	}
 });
 

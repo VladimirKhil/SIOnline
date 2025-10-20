@@ -1,12 +1,7 @@
-import IClientBase from '../IClientBase';
 import JoinMode from './JoinMode';
 
 /** Defines a high level game client built over IGameServerClient layer. */
 export default interface IGameClient {
-	gameServerClient: IClientBase;
-
-	shouldClose: boolean;
-
 	addTable(): Promise<boolean>;
 
 	apellate(forRightAnswer: boolean): Promise<boolean>;

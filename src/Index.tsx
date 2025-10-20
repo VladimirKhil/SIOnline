@@ -1,6 +1,5 @@
 ﻿import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import * as signalR from '@microsoft/signalr';
 import { Action, AnyAction, applyMiddleware, createStore, Store } from 'redux';
 import { Provider } from 'react-redux';
 import reduxThunk from 'redux-thunk';
@@ -356,15 +355,14 @@ async function run(host: IHost) {
 		const savedState = loadState();
 		const state = setState(initialState, savedState, config, host.isDesktop());
 
-		const noOpHubConnection = new signalR.HubConnectionBuilder().withUrl('http://fake').build();
-		const gameClient = new GameServerClient('');
+		const gameClient = new GameServerClient(serverUri);
 
 		const dataContext: DataContext = {
 			config,
 			serverUri,
 			proxyUri,
 			gameClient,
-			game: new GameClient(new SIHostClient(noOpHubConnection, () => { }), false),
+			game: new GameClient(new SIHostClient()),
 			contentUris: null,
 			contentClients: [],
 			storageClients: [],

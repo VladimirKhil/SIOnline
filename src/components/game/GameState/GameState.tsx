@@ -1,34 +1,27 @@
-import React, { Dispatch } from 'react';
+import React from 'react';
 import localization from '../../../model/resources/localization';
 import FlyoutButton, { FlyoutHorizontalOrientation, FlyoutTheme, FlyoutVerticalOrientation } from '../../common/FlyoutButton/FlyoutButton';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
-import { connect } from 'react-redux';
-import { AppDispatch } from '../../../state/store';
-import { Action } from 'redux';
-import roomActionCreators from '../../../state/room/roomActionCreators';
 import GameProgress from '../GameProgress/GameProgress';
 import MoveRoundButton from '../MoveRoundButton/MoveRoundButton';
 import QuestionCounter from '../QuestionCounter/QuestionCounter';
 import Role from '../../../model/Role';
+import Path from '../../../model/enums/Path';
+import { navigate } from '../../../utils/Navigator';
 
 import './GameState.scss';
 import exitImg from '../../../../assets/images/exit.png';
 
-interface GameStateProps {
-	onExit: (appDispatch: AppDispatch) => void;
-}
-
-const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
-	onExit: (appDispatch: AppDispatch) => {
-		dispatch(roomActionCreators.exitGame(appDispatch) as unknown as Action);
-	},
-});
-
-const GameState: React.FC<GameStateProps> = (props: GameStateProps) => {
+export default function GameState(): JSX.Element {
 	const appDispatch = useAppDispatch();
 	const common = useAppSelector(state => state.common);
 	const room = useAppSelector(state => state.room2);
+	const ui = useAppSelector(state => state.ui);
 	const enabledClass = common.isSIHostConnected ? '' : 'disabled';
+
+	const onExit = () => {
+		appDispatch(navigate({ navigation: { path: ui.navigation.returnToLobby ? Path.Lobby : Path.Menu }, saveState: true }));
+	};
 
 	return (
 		<div className='gameState'>
@@ -45,7 +38,7 @@ const GameState: React.FC<GameStateProps> = (props: GameStateProps) => {
 										<ul>
 											<li
 												className={enabledClass}
-												onClick={() => props.onExit(appDispatch)}>
+												onClick={onExit}>
 												{localization.exitFromGame}
 											</li>
 										</ul>
@@ -72,6 +65,4 @@ const GameState: React.FC<GameStateProps> = (props: GameStateProps) => {
 			</header>
 		</div>
 	);
-};
-
-export default connect(null, mapDispatchToProps)(GameState);
+}

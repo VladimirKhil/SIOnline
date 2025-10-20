@@ -217,18 +217,6 @@ const roomReducer: Reducer<RoomState> = (state: RoomState = initialState, anyAct
 				}))
 			};
 
-		case RoomActionTypes.ShowMainTimer:
-			return {
-				...state,
-				showMainTimer: true
-			};
-
-		case RoomActionTypes.ClearDecisionsAndMainTimer:
-			return {
-				...state,
-				showMainTimer: false,
-			};
-
 		case RoomActionTypes.HintChanged:
 			return {
 				...state,
@@ -242,12 +230,6 @@ const roomReducer: Reducer<RoomState> = (state: RoomState = initialState, anyAct
 					...state.stage,
 					themeName: action.themeName
 				}
-			};
-
-		case RoomActionTypes.RoundsNamesChanged:
-			return {
-				...state,
-				roundsNames: action.roundsNames
 			};
 
 		case RoomActionTypes.ButtonBlockingTimeChanged:
@@ -304,12 +286,6 @@ const roomReducer: Reducer<RoomState> = (state: RoomState = initialState, anyAct
 					...state.banned,
 					selectedIp: action.ip
 				},
-			};
-
-		case RoomActionTypes.Kicked:
-			return {
-				...state,
-				kicked: action.kicked,
 			};
 
 		case RoomActionTypes.WebCameraUrlChanged:

@@ -1,7 +1,5 @@
 ﻿import { Action, Dispatch, ActionCreator, AnyAction } from 'redux';
 import { ThunkAction } from 'redux-thunk';
-import * as signalR from '@microsoft/signalr';
-import * as signalRMsgPack from '@microsoft/signalr-protocol-msgpack';
 import State from '../state/State';
 import DataContext from '../model/DataContext';
 
@@ -23,7 +21,6 @@ import Sex from '../model/enums/Sex';
 import onlineActionCreators from '../state/online/onlineActionCreators';
 import { AppDispatch } from '../state/store';
 import SIHostClient from '../client/SIHostClient';
-import { activeSIHostConnections, attachSIHostListeners, detachSIHostListeners, removeSIHostConnection } from '../utils/SIHostConnectionHelpers';
 import ISIHostClient from '../client/ISIHostClient';
 import Role from '../model/Role';
 import ServerRole from '../client/contracts/ServerRole';
@@ -50,7 +47,7 @@ import { navigate } from '../utils/Navigator';
 import registerApp from '../utils/registerApp';
 import { setStorages } from '../state/siPackagesSlice';
 import SIStorageInfo from '../client/contracts/SIStorageInfo';
-import { addOperationErrorMessage } from '../state/room2Slice';
+import SIHostListener from '../utils/SIHostListener';
 
 async function uploadAvatarAsync(appDispatch: AppDispatch, dataContext: DataContext) {
 	if (typeof localStorage === 'undefined') {
@@ -190,55 +187,15 @@ const connectToSIHostAsync = async (
 	const effectiveUri = useProxy && dataContext.proxyUri && siHostUri === dataContext.serverUri ? dataContext.proxyUri : siHostUri;
 	const uriChecked = effectiveUri.endsWith('/') ? effectiveUri : effectiveUri + '/';
 
-	const connectionBuilder = new signalR.HubConnectionBuilder()
-		.withAutomaticReconnect({
-			nextRetryDelayInMilliseconds: (retryContext: signalR.RetryContext) => 1000 * (retryContext.previousRetryCount + 1)
-		})
-		.withUrl(uriChecked + 'sihost')
-		.withHubProtocol(new signalRMsgPack.MessagePackHubProtocol());
-
-	const connection = connectionBuilder.build();
-
-	const siHostClient = new SIHostClient(
-		connection,
-		e => appDispatch(addOperationErrorMessage(getErrorMessage(e)))
-	);
-
-	await connection.start();
-
-	if (connection.connectionId) {
-		activeSIHostConnections.push(connection.connectionId);
-	}
-
 	const controller = new ClientController(dispatch, appDispatch, getState, dataContext);
+	const listener = new SIHostListener(controller, dispatch, appDispatch);
 
-	attachSIHostListeners(siHostClient, connection, dispatch, appDispatch, controller);
+	const siHostClient = new SIHostClient();
+	await siHostClient.connectAsync(uriChecked, listener);
 
-	dataContext.game = new GameClient(siHostClient, true);
+	dataContext.game = new GameClient(siHostClient);
 
 	return siHostClient;
-};
-
-const closeSIHostClientAsync = async (appDispatch: AppDispatch, dataContext: DataContext) => {
-	const { connection } = dataContext.game.gameServerClient;
-
-	if (!connection) {
-		return;
-	}
-
-	try {
-		await dataContext.game.leaveGame();
-
-		if (connection.connectionId) {
-			activeSIHostConnections.splice(activeSIHostConnections.indexOf(connection.connectionId), 1);
-		}
-
-		detachSIHostListeners(connection);
-		await connection.stop();
-		removeSIHostConnection(connection);
-	} catch (error) {
-		appDispatch(userErrorChanged(getErrorMessage(error)) as any);
-	}
 };
 
 function getServerRole(role: Role) {
@@ -453,7 +410,6 @@ const actionCreators = {
 	sendAvatar,
 	login,
 	connectToSIHostAsync,
-	closeSIHostClientAsync,
 	acceptLicense,
 };
 

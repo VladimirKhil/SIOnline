@@ -127,6 +127,8 @@ import {
 	addToChat,
 	setJoinMode,
 	showMediaPreloadProgress,
+	setRoundsNames,
+	setShowMainTimer,
 } from '../state/room2Slice';
 
 import PersonInfo from '../model/PersonInfo';
@@ -1090,6 +1092,10 @@ export default class ClientController {
 		}
 	}
 
+	onRoundsNames(roundNames: string[]) {
+		this.appDispatch(setRoundsNames(roundNames));
+	}
+
 	onRoundSources(sources: string[]) {
 		this.appDispatch(addToChat({
 			sender: localization.roundSources,
@@ -1174,7 +1180,7 @@ export default class ClientController {
 		this.appDispatch(playersStateCleared());
 		this.appDispatch(playerRoundStateCleared());
 		this.dispatch(roomActionCreators.gameStateCleared());
-		this.dispatch(roomActionCreators.clearDecisionsAndMainTimer());
+		this.appDispatch(setShowMainTimer(false));
 		this.appDispatch(clearDecisions());
 		this.appDispatch(setDecisionType(DecisionType.None));
 		this.appDispatch(stopValidation());
@@ -1504,7 +1510,7 @@ export default class ClientController {
 			if (timerPersonIndex === -1) {
 				this.appDispatch(activateShowmanDecision());
 			} else if (timerPersonIndex === -2) {
-				this.dispatch(roomActionCreators.showMainTimer());
+				this.appDispatch(setShowMainTimer(true));
 			} else if (timerPersonIndex > -1 && timerPersonIndex < this.getState().room2.persons.players.length) {
 				this.appDispatch(activatePlayerDecision(timerPersonIndex));
 			}
@@ -1523,7 +1529,7 @@ export default class ClientController {
 		this.dispatch(roomActionCreators.stopTimer(timerIndex));
 
 		if (timerIndex === 2) {
-			this.dispatch(roomActionCreators.clearDecisionsAndMainTimer());
+			this.appDispatch(setShowMainTimer(false));
 			this.appDispatch(clearDecisions());
 			this.appDispatch(stopAudio());
 		}
@@ -1640,13 +1646,13 @@ export default class ClientController {
 		this.appDispatch(setDecisionType(DecisionType.Choose));
 	}
 
-	onStop() {
+	onStop() { // Round finished
 		this.dispatch(roomActionCreators.stopTimer(0));
 		this.dispatch(roomActionCreators.stopTimer(1));
 		this.dispatch(roomActionCreators.stopTimer(2));
 
 		this.appDispatch(showLogo());
-		this.dispatch(roomActionCreators.clearDecisionsAndMainTimer());
+		this.appDispatch(setShowMainTimer(false));
 		this.appDispatch(clearDecisions());
 
 		this.onQuestionEnd(); // TODO: That should be sent by server, but we can call it here to ensure the game state is reset

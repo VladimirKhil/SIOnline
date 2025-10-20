@@ -8,7 +8,6 @@ import SIStorageInfo from './client/contracts/SIStorageInfo';
 import GameServerClient from './client/GameServerClient';
 import SIHostClient from './client/SIHostClient';
 import GameClient from './client/game/GameClient';
-import * as signalR from '@microsoft/signalr';
 import reduxThunk from 'redux-thunk';
 import actionCreators from './logic/actionCreators';
 import { INavigationState } from './state/uiSlice';
@@ -205,8 +204,7 @@ async function callOpenAI(question: string): Promise<string> {
 async function initializeApp() {
 	const serverUri = await getServerUri('https://vladimirkhil.com/api/si/servers');
 
-	const noOpHubConnection = new signalR.HubConnectionBuilder().withUrl('http://fake').build();
-	const gameClient = new GameServerClient('');
+	const gameClient = new GameServerClient(serverUri);
 
 	const dataContext: DataContext = {
 		config: {
@@ -215,7 +213,7 @@ async function initializeApp() {
 		},
 		serverUri: serverUri,
 		gameClient,
-		game: new GameClient(new SIHostClient(noOpHubConnection, () => { }), false),
+		game: new GameClient(new SIHostClient()),
 		contentUris: null,
 		contentClients: [],
 		storageClients: [],

@@ -31,6 +31,8 @@ import ReportDialog from '../../panels/ReportDialog/ReportDialog';
 import GameState from '../../game/GameState/GameState';
 import Role from '../../../model/Role';
 import Link from '../../common/Link/Link';
+import Path from '../../../model/enums/Path';
+import { navigate } from '../../../utils/Navigator';
 
 import './Room.css';
 import closeSvg from '../../../../assets/images/close.svg';
@@ -42,7 +44,6 @@ interface RoomProps {
 	isGameInfoDialogVisible: boolean;
 	isManageGameDialogVisible: boolean;
 	floatingControls: boolean;
-	kicked: boolean;
 	isConnected: boolean;
 	isConnectedReason: string;
 	avatarViewVisible: boolean;
@@ -51,7 +52,6 @@ interface RoomProps {
 	onBannedDialogClose: () => void;
 	onGameInfoDialogClose: () => void;
 	onManageGameDialogClose: () => void;
-	onExit: (appDispatch: AppDispatch) => void;
 	onReconnect: () => void;
 	clearDecisions: () => void;
 }
@@ -63,7 +63,6 @@ const mapStateToProps = (state: State) => ({
 	isGameInfoDialogVisible: state.room.gameInfoVisible,
 	isManageGameDialogVisible: state.room.manageGameVisible,
 	floatingControls: state.settings.floatingControls,
-	kicked: state.room.kicked,
 	isConnected: state.common.isSIHostConnected,
 	isConnectedReason: state.common.isSIHostConnectedReason,
 	avatarViewVisible: state.room.avatarViewVivible,
@@ -81,9 +80,6 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	},
 	onManageGameDialogClose: () => {
 		dispatch(roomActionCreators.runHideManageGame());
-	},
-	onExit: (appDispatch: AppDispatch) => {
-		dispatch(roomActionCreators.exitGame(appDispatch) as unknown as Action);
 	},
 	onReconnect: () => {
 		dispatch(roomActionCreators.onReconnect() as unknown as Action);
@@ -113,14 +109,15 @@ export function Room(props: RoomProps) : JSX.Element {
 	const appDispatch = useAppDispatch();
 	const room = useAppSelector((rootState: RootState) => rootState.room2);
 	const settings = useAppSelector((rootState: RootState) => rootState.settings);
+	const ui = useAppSelector((rootState: RootState) => rootState.ui);
 	const { backgroundImageKey } = settings.theme.room;
 
 	React.useEffect(() => {
-		if (props.kicked) {
+		if (room.kicked) {
 			appDispatch(userErrorChanged(localization.youAreKicked));
-			props.onExit(appDispatch);
+			appDispatch(navigate({ navigation: { path: ui.navigation.returnToLobby ? Path.Lobby : Path.Menu }, saveState: true }));
 		}
-	}, [props.kicked]);
+	}, [room.kicked]);
 
 	const prevPropsRef = React.useRef<RoomProps>();
 

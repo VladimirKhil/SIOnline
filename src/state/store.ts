@@ -1,5 +1,4 @@
 import { configureStore } from '@reduxjs/toolkit';
-import * as signalR from '@microsoft/signalr';
 import userReducer from './userSlice';
 import loginReducer from './loginSlice';
 import uiReducer from './uiSlice';
@@ -28,14 +27,13 @@ if (!serverUri) {
 	serverUri = '';
 }
 
-const noOpHubConnection = new signalR.HubConnectionBuilder().withUrl('http://fake').build();
-const gameClient = new GameServerClient('');
+const gameClient = new GameServerClient(serverUri);
 
 const dataContext: DataContext = {
 	config,
 	serverUri,
 	gameClient,
-	game: new GameClient(new SIHostClient(noOpHubConnection, () => { }), false),
+	game: new GameClient(new SIHostClient()),
 	contentUris: null,
 	contentClients: [],
 	storageClients: [],

@@ -11,13 +11,11 @@ import moveRoundImg from '../../../../assets/images/move_round.png';
 import './MoveRoundButton.scss';
 
 interface MoveRoundButtonProps {
-	roundsNames: string[] | null;
 	roundIndex: number;
 	navigateToRound: (roundIndex: number) => void;
 }
 
 const mapStateToProps = (state: State) => ({
-	roundsNames: state.room.roundsNames,
 	roundIndex: state.room.stage.roundIndex,
 });
 
@@ -29,13 +27,14 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 
 const MoveRoundButton: React.FC<MoveRoundButtonProps> = (props: MoveRoundButtonProps) => {
 	const common = useAppSelector(state => state.common);
+	const room = useAppSelector(state => state.room2);
 
 	return <FlyoutButton
 			className="standard imageButton moveRoundButton"
-			disabled={!common.isSIHostConnected || !props.roundsNames || props.roundsNames.length < 2}
+			disabled={!common.isSIHostConnected || room.roundsNames.length < 2}
 			flyout={
 				<ul>
-					{props.roundsNames?.map((name, index) => (
+					{room.roundsNames?.map((name, index) => (
 						<li
 							key={index}
 							className={index === props.roundIndex ? 'sideButtonActiveRound' : ''}
