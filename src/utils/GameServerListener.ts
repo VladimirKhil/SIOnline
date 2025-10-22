@@ -2,8 +2,8 @@ import localization from '../model/resources/localization';
 import GameInfo from '../client/contracts/GameInfo';
 import getErrorMessage from './ErrorHelpers';
 import { AppDispatch } from '../state/store';
-import { isConnectedChanged, userErrorChanged } from '../state/commonSlice';
-import { gameChanged, gameCreated, gameDeleted } from '../state/online2Slice';
+import { isConnectedChanged, userErrorChanged, userInfoChanged, userWarnChanged } from '../state/commonSlice';
+import { gameChanged, gameCreated, gameDeleted, loadGames } from '../state/online2Slice';
 import IGameServerListener from '../client/IGameServerListener';
 
 export default class GameServerListener implements IGameServerListener {
@@ -28,6 +28,8 @@ export default class GameServerListener implements IGameServerListener {
 			isConnected: false,
 			reason: `${localization.connectionReconnecting}${errorMessage}`,
 		}));
+
+		this.appDispatch(userWarnChanged(localization.connectionReconnecting + errorMessage));
 	};
 
 	onReconnected = (): void => {
@@ -35,6 +37,9 @@ export default class GameServerListener implements IGameServerListener {
 			isConnected: true,
 			reason: localization.connectionReconnected,
 		}));
+
+		this.appDispatch(userInfoChanged(localization.connectionReconnected));
+		this.appDispatch(loadGames());
 	};
 
 	onClose = (error?: Error): void => {

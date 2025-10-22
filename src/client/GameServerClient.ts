@@ -67,6 +67,7 @@ export default class GameServerClient implements IGameServerClient {
 			if (e) {
 				try {
 					await this.connection?.start();
+					listener.onReconnected();
 				} catch (error) {
 					console.error('Error while restarting connection: ' + error);
 				}

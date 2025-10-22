@@ -383,7 +383,7 @@ const viewerHandler = (
 				break;
 			}
 
-			dispatch(roomActionCreators.gameMetadataChanged(args[1], args[2], args[3], args.length > 4 ? args[4] : null));
+			controller.onGameMetadata(args[1], args[2], args[3], args.length > 4 ? args[4] : null);
 			break;
 
 		case GameMessages.GameStatistics: {
@@ -630,7 +630,7 @@ const viewerHandler = (
 
 		case GameMessages.Pin:
 			if (args.length > 1) {
-				const pin = args[1];
+				const [, pin] = args;
 				controller.onPin(pin);
 			}
 			break;

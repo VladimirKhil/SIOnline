@@ -69,6 +69,7 @@ export default class SIHostClient implements ISIHostClient, IClientBase {
 				try {
 					await this.connection?.start();
 					await this.reconnectAsync();
+					listener.onReconnected();
 				} catch (error) {
 					// empty
 				}

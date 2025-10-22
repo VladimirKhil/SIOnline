@@ -560,6 +560,15 @@ export default class ClientController {
 		}
 	}
 
+	onGameMetadata(
+		gameName: string,
+		packageName: string,
+		contactUri: string,
+		voiceChatUri: string | null
+	) {
+		this.dispatch(roomActionCreators.gameMetadataChanged(gameName, packageName, contactUri, voiceChatUri));
+	}
+
 	onHint(hint: string) {
 		this.dispatch(roomActionCreators.hintChanged(hint));
 	}

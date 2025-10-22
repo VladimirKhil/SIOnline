@@ -53,21 +53,32 @@ const initialState: Online2State = {
 	joinGameProgress: false,
 };
 
-async function loadGamesAsync(dispatch: AppDispatch, gameClient: IGameServerClient, clear: boolean | undefined) {
-	let gamesSlice: Slice<GameInfo> = { Data: [], IsLastSlice: false };
-	let whileGuard = 100;
+export const loadGames = createAsyncThunk(
+	'online2/loadGames',
+	async (arg: void, thunkAPI) => {
+		const { dispatch } = thunkAPI;
+		const dataContext = thunkAPI.extra as DataContext;
+		const state = thunkAPI.getState() as RootState;
+		const { gameClient } = dataContext;
+		const clear = state.common.clearUrls;
 
-	do {
-		const fromId = gamesSlice.Data.length > 0 ? gamesSlice.Data[gamesSlice.Data.length - 1].GameID + 1 : 0;
+		let gamesSlice: Slice<GameInfo> = { Data: [], IsLastSlice: false };
+		let whileGuard = 100;
 
-		gamesSlice = await gameClient.getGamesSliceAsync(fromId);
+		dispatch(clearGames());
 
-		dispatch(online2Slice.actions.receiveGames(
-			clear ? gamesSlice.Data.map(d => ({ ...d, PackageName: clearUrls(d.PackageName) })) : gamesSlice.Data));
+		do {
+			const fromId = gamesSlice.Data.length > 0 ? gamesSlice.Data[gamesSlice.Data.length - 1].GameID + 1 : 0;
 
-		whileGuard--;
-	} while (!gamesSlice.IsLastSlice && whileGuard > 0);
-}
+			gamesSlice = await gameClient.getGamesSliceAsync(fromId);
+
+			dispatch(online2Slice.actions.receiveGames(
+				clear ? gamesSlice.Data.map(d => ({ ...d, PackageName: clearUrls(d.PackageName) })) : gamesSlice.Data));
+
+			whileGuard--;
+		} while (!gamesSlice.IsLastSlice && whileGuard > 0);
+	},
+);
 
 async function loadStatisticsAsync(dispatch: AppDispatch, dataContext: DataContext) {
 	const siStatisticsClient = new SIStatisticsClient({ serviceUri: dataContext.config.siStatisticsServiceUri });
@@ -113,7 +124,7 @@ export const loadLobby = createAsyncThunk(
 		const state = thunkAPI.getState() as RootState;
 
 		// Games filtering is performed on client
-		await loadGamesAsync(dispatch as AppDispatch, dataContext.gameClient, state.common.clearUrls);
+		dispatch(loadGames());
 
 		try {
 			await loadStatisticsAsync(dispatch as AppDispatch, dataContext);
@@ -134,6 +145,9 @@ export const online2Slice = createSlice({
 	name: 'online2',
 	initialState,
 	reducers: {
+		clearGames: (state) => {
+			state.games = {};
+		},
 		gameCreated: (state: Online2State, action: PayloadAction<GameInfo>) => {
 			state.games[action.payload.GameID] = action.payload;
 		},
@@ -217,7 +231,6 @@ export const online2Slice = createSlice({
 		builder.addCase(loadLobby.pending, (state) => {
 			state.inProgress = true;
 			state.error = '';
-			state.games = {};
 		});
 		builder.addCase(loadLobby.fulfilled, (state) => {
 			state.inProgress = false;
@@ -230,6 +243,7 @@ export const online2Slice = createSlice({
 });
 
 export const {
+	clearGames,
 	gameCreated,
 	gameChanged,
 	gameDeleted,
