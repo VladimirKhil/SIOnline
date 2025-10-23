@@ -1442,7 +1442,7 @@ export default class ClientController {
 		this.appDispatch(captionChanged(caption));
 	}
 
-	onQuestionSelected(themeIndex: number, questionIndex: number) {
+	onQuestionSelected(themeIndex: number, questionIndex: number, questionPrice: number) {
 		this.initQuestion();
 		this.playGameSound(GameSound.QUESTION_SELECTED);
 
@@ -1452,7 +1452,7 @@ export default class ClientController {
 
 		if (themeInfo) {
 			if (questionIndex > -1 && questionIndex <= themeInfo.questions.length) {
-				const price = themeInfo.questions[questionIndex]; // Can be 0
+				const price = questionPrice > -1 ? questionPrice : themeInfo.questions[questionIndex]; // Can be 0
 				this.dispatch(roomActionCreators.currentPriceChanged(price));
 				this.appDispatch(captionChanged(`${themeInfo.name}, ${price}`));
 				this.appDispatch(blinkQuestion({ themeIndex, questionIndex }));

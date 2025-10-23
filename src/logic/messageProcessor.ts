@@ -224,8 +224,9 @@ const viewerHandler = (
 
 				const themeIndex = parseInt(args[1], 10);
 				const questIndex = parseInt(args[2], 10);
+				const questionPrice = args.length > 3 ? parseInt(args[3], 10) : -1;
 
-				controller.onQuestionSelected(themeIndex, questIndex);
+				controller.onQuestionSelected(themeIndex, questIndex, questionPrice);
 			}
 			break;
 

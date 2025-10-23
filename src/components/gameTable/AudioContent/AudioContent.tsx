@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useEffect, useRef, useCallback } from 'react';
+import { useEffect, useRef } from 'react';
 import State from '../../../state/State';
 import { Dispatch, Action } from 'redux';
 import { connect } from 'react-redux';
@@ -74,24 +74,24 @@ export const AudioContent: React.FC<AudioContentProps> = ({
 		};
 	}, [audioContext]);
 
-	const operationError = useCallback((message: string) => {
+	const operationError = (message: string) => {
 		appDispatch(addOperationErrorMessage(message));
-	}, [appDispatch]);
+	};
 
-	const onMediaCompleted = useCallback(() => {
+	const onMediaCompleted = () => {
 		appDispatch(onMediaEnded({ contentType: 'audio', contentValue: audio }));
-	}, [audio, appDispatch]);
+	};
 
-	const stop = useCallback(() => {
+	const stop = () => {
 		if (audioSourceRef.current && audioSourceRef.current.context.state === 'running') {
 			pauseTimeRef.current += audioContext.currentTime - startTimeRef.current;
 			audioSourceRef.current.onended = null;
 			audioSourceRef.current.stop();
 			audioSourceRef.current = null;
 		}
-	}, [audioContext]);
+	};
 
-	const play = useCallback(() => {
+	const play = () => {
 		if (!autoPlayEnabled || isMediaStopped || !isVisible) {
 			return;
 		}
@@ -112,9 +112,9 @@ export const AudioContent: React.FC<AudioContentProps> = ({
 		}
 		startTimeRef.current = audioContext.currentTime;
 		audioSourceRef.current.start(0, pauseTimeRef.current);
-	}, [audioContext, autoPlayEnabled, isMediaStopped, isVisible, onMediaCompleted]);
+	};
 
-	const load = useCallback(async () => {
+	const load = async () => {
 		try {
 			const response = await fetch(audio);
 
@@ -134,7 +134,7 @@ export const AudioContent: React.FC<AudioContentProps> = ({
 		} catch (e) {
 			operationError(getErrorMessage(e));
 		}
-	}, [audio, audioContext, mediaLoaded, operationError, play]);
+	};
 
 	// ComponentDidMount equivalent
 	useEffect(() => {
@@ -158,40 +158,46 @@ export const AudioContent: React.FC<AudioContentProps> = ({
 	useEffect(() => {
 		const prevProps = prevPropsRef.current;
 
-		// Update gain volume if changed
-		if (soundVolume !== prevProps.soundVolume && gainNodeRef.current) {
-			gainNodeRef.current.gain.value = soundVolume;
-		}
-
-		// Handle audio change
-		if (audio !== prevProps.audio) {
+		try {
 			if (audio === '') {
-				stop();
-			} else {
+				if (prevProps.audio !== '') {
+					stop();
+				}
+
+				return;
+			}
+
+			// Update gain volume if changed
+			if (soundVolume !== prevProps.soundVolume && gainNodeRef.current) {
+				gainNodeRef.current.gain.value = soundVolume;
+			}
+
+			// Handle audio change
+			if (audio !== prevProps.audio) {
 				stop();
 				load();
-			}
-		} else {
-			// Handle other prop changes only if audio hasn't changed
-			if (autoPlayEnabled !== prevProps.autoPlayEnabled && autoPlayEnabled) {
-				play();
-			} else if (isMediaStopped !== prevProps.isMediaStopped || isVisible !== prevProps.isVisible) {
-				if (isMediaStopped || !isVisible) {
-					stop();
-				} else if (!completedRef.current) {
+			} else {
+				// Handle other prop changes only if audio hasn't changed
+				if (autoPlayEnabled !== prevProps.autoPlayEnabled && autoPlayEnabled) {
 					play();
+				} else if (isMediaStopped !== prevProps.isMediaStopped || isVisible !== prevProps.isVisible) {
+					if (isMediaStopped || !isVisible) {
+						stop();
+					} else if (!completedRef.current) {
+						play();
+					}
 				}
 			}
+		} finally {
+			// Update previous props for next render
+			prevPropsRef.current = {
+				audio,
+				soundVolume,
+				isMediaStopped,
+				isVisible,
+				autoPlayEnabled
+			};
 		}
-
-		// Update previous props for next render
-		prevPropsRef.current = {
-			audio,
-			soundVolume,
-			isMediaStopped,
-			isVisible,
-			autoPlayEnabled
-		};
 	}, [audio, soundVolume, isMediaStopped, isVisible, autoPlayEnabled, stop, load, play]);
 
 	// ComponentWillUnmount equivalent

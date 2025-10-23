@@ -151,7 +151,7 @@ function processMessage(controller: ClientController, payload: any, appDispatch:
 			break;
 
 		case 'questionSelected':
-			controller.onQuestionSelected(payload.themeIndex, payload.questionIndex);
+			controller.onQuestionSelected(payload.themeIndex, payload.questionIndex, -1);
 			break;
 
 		case 'questionType':
