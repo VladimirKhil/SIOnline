@@ -78,20 +78,20 @@ export const AudioContent: React.FC<AudioContentProps> = ({
 		appDispatch(addOperationErrorMessage(message));
 	};
 
-	const onMediaCompleted = () => {
+	const onMediaCompleted = React.useCallback(() => {
 		appDispatch(onMediaEnded({ contentType: 'audio', contentValue: audio }));
-	};
+	}, [audio, appDispatch]);
 
-	const stop = () => {
+	const stop = React.useCallback(() => {
 		if (audioSourceRef.current && audioSourceRef.current.context.state === 'running') {
 			pauseTimeRef.current += audioContext.currentTime - startTimeRef.current;
 			audioSourceRef.current.onended = null;
 			audioSourceRef.current.stop();
 			audioSourceRef.current = null;
 		}
-	};
+	}, [audioContext]);
 
-	const play = () => {
+	const play = React.useCallback(() => {
 		if (!autoPlayEnabled || isMediaStopped || !isVisible) {
 			return;
 		}
@@ -112,9 +112,9 @@ export const AudioContent: React.FC<AudioContentProps> = ({
 		}
 		startTimeRef.current = audioContext.currentTime;
 		audioSourceRef.current.start(0, pauseTimeRef.current);
-	};
+	}, [autoPlayEnabled, isMediaStopped, isVisible, audioContext]);
 
-	const load = async () => {
+	const load = React.useCallback(async () => {
 		try {
 			const response = await fetch(audio);
 
@@ -134,7 +134,7 @@ export const AudioContent: React.FC<AudioContentProps> = ({
 		} catch (e) {
 			operationError(getErrorMessage(e));
 		}
-	};
+	}, [audio, audioContext]);
 
 	// ComponentDidMount equivalent
 	useEffect(() => {
@@ -152,6 +152,8 @@ export const AudioContent: React.FC<AudioContentProps> = ({
 			isVisible,
 			autoPlayEnabled
 		};
+
+		return () => stop();
 	}, []);
 
 	// Single ComponentDidUpdate equivalent
@@ -198,10 +200,7 @@ export const AudioContent: React.FC<AudioContentProps> = ({
 				autoPlayEnabled
 			};
 		}
-	}, [audio, soundVolume, isMediaStopped, isVisible, autoPlayEnabled, stop, load, play]);
-
-	// ComponentWillUnmount equivalent
-	useEffect(() => () => stop(), [stop]);
+	}, [audio, soundVolume, isMediaStopped, isVisible, autoPlayEnabled]);
 
 	return null;
 };
