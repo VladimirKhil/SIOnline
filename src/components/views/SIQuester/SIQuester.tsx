@@ -42,9 +42,9 @@ const SIQuester: React.FC = () => {
 				<div className='siquester__title'>SIQuester</div>
 
 				<div className='siquester__actions'>
-					{/* <button type='button' className='standard' onClick={handleNewPackageClick}>
+					<button type='button' className='standard' onClick={handleNewPackageClick}>
 						{localization.createPackage.toLocaleUpperCase()}
-					</button> */}
+					</button>
 
 					<button type='button' className='standard' onClick={handleButtonClick}>
 						{localization.openFile.toLocaleUpperCase()}

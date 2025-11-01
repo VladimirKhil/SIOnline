@@ -38,7 +38,8 @@ export function createDefaultPackage(): Package {
 		difficulty: 5,
 		language: getFullCulture(),
 		tags: [],
-		rounds: []
+		rounds: [],
+		isQualityMarked: true,
 	};
 
 	// Create 3 rounds

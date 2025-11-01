@@ -204,7 +204,6 @@ const ScreensView: React.FC<ScreensViewProps> = ({
 					<textarea
 						className='screensView__editable__text'
 						value={contentItem.value}
-						rows={Math.max(2, Math.ceil(contentItem.value.length / 50))}
 						placeholder="Enter text content..."
 						aria-label="Edit text content"
 						onChange={(e) => handleContentChange('value', e.target.value)}

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { useAppSelector } from '../../../../state/hooks';
-import { NumberSet, ContentParam, Question, InfoOwner, SelectionMode } from '../../../../model/siquester/package';
+import { NumberSet, ContentParam, Question, InfoOwner, SelectionMode, QuestionTypes } from '../../../../model/siquester/package';
 import localization from '../../../../model/resources/localization';
 import {
 	updateQuestionProperty,
@@ -26,6 +26,22 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ item, isEditMode }) => {
 	const question = item;
 	const indices = findItemIndices(pack || null, item);
 	const { answerOptions } = question.params;
+
+	// Check if current question type is a predefined type
+	const predefinedTypes = [
+		QuestionTypes.Simple,
+		QuestionTypes.Stake,
+		QuestionTypes.NoRisk,
+		QuestionTypes.Secret,
+		QuestionTypes.SecretPublicPrice,
+		QuestionTypes.SecretNoQuestion,
+		QuestionTypes.ForAll,
+		QuestionTypes.StakeAll
+	];
+
+	const isCustomType = question.type && !predefinedTypes.includes(question.type);
+	const [isCustomMode, setIsCustomMode] = React.useState(isCustomType);
+	const [customTypeValue, setCustomTypeValue] = React.useState(isCustomType ? question.type : '');
 
 	function getSetAnswererSelect(setAnswererSelect: SelectionMode): string {
 		switch (setAnswererSelect) {
@@ -81,6 +97,7 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ item, isEditMode }) => {
 		switch (answerType) {
 			case 'text': return localization.text;
 			case 'select': return localization.answerTypeSelect;
+			case 'number': return localization.number;
 			default: return answerType;
 		}
 	}
@@ -233,6 +250,24 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ item, isEditMode }) => {
 		}
 	};
 
+	const handleQuestionTypeChange = (value: string) => {
+		if (value === 'custom') {
+			setIsCustomMode(true);
+			// Don't change the actual question type yet, wait for custom input
+		} else {
+			setIsCustomMode(false);
+			setCustomTypeValue('');
+			handleQuestionChange('type', value);
+		}
+	};
+
+	const handleCustomTypeChange = (value: string) => {
+		setCustomTypeValue(value);
+		if (value.trim()) {
+			handleQuestionChange('type', value.trim());
+		}
+	};
+
 	return (
 		<div className='info packageView__question__info'>
 			<header>
@@ -263,14 +298,44 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ item, isEditMode }) => {
 						? <>
 							<label htmlFor='type' className='header'>{localization.type}</label>
 
-							<input
-								id='type'
-								type='text'
-								className='packageView__question__type'
-								value={getQuestionTypeName(question.type)}
-								readOnly={!isEditMode}
-								onChange={(e) => handleQuestionChange('type', e.target.value)}
-							/>
+							{isEditMode ? (
+								<>
+									<select
+										id='type'
+										className='packageView__question__type'
+										value={isCustomMode ? 'custom' : question.type}
+										onChange={(e) => handleQuestionTypeChange(e.target.value)}
+									>
+										<option value={QuestionTypes.Simple}>{localization.questionTypeSimple}</option>
+										<option value={QuestionTypes.Stake}>{localization.questionTypeStake}</option>
+										<option value={QuestionTypes.NoRisk}>{localization.questionTypeForYourself}</option>
+										<option value={QuestionTypes.Secret}>{localization.questionTypeSecret}</option>
+										<option value={QuestionTypes.SecretPublicPrice}>{localization.questionTypeSecretPublicPrice}</option>
+										<option value={QuestionTypes.SecretNoQuestion}>{localization.questionTypeSecretNoQuestion}</option>
+										<option value={QuestionTypes.ForAll}>{localization.questionTypeForAll}</option>
+										<option value={QuestionTypes.StakeAll}>{localization.questionTypeForAllWithStake}</option>
+										<option value='custom'>Custom...</option>
+									</select>
+									{isCustomMode && (
+										<input
+											type='text'
+											className='packageView__question__customType'
+											placeholder='Enter custom question type'
+											value={customTypeValue}
+											onChange={(e) => handleCustomTypeChange(e.target.value)}
+											style={{ marginTop: '5px' }}
+										/>
+									)}
+								</>
+							) : (
+								<input
+									id='type'
+									type='text'
+									className='packageView__question__type'
+									value={getQuestionTypeName(question.type)}
+									readOnly
+								/>
+							)}
 						</>
 					: null}
 
@@ -337,7 +402,20 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ item, isEditMode }) => {
 							{question.params.answerType
 								? <>
 									<label htmlFor='answerType' className='header'>{localization.answerType}</label>
-									<input id='answerType' type='text' value={getAnswerType(question.params.answerType)} readOnly />
+									{isEditMode ? (
+										<select 
+											id='answerType' 
+											className='packageView__question__answerType'
+											value={question.params.answerType}
+											onChange={(e) => handleQuestionParamChange('answerType', e.target.value)}
+										>
+											<option value='text'>{localization.text}</option>
+											<option value='select'>{localization.answerTypeSelect}</option>
+											<option value='number'>{localization.number}</option>
+										</select>
+									) : (
+										<input id='answerType' type='text' value={getAnswerType(question.params.answerType)} readOnly />
+									)}
 								</>
 							: null}
 
@@ -400,16 +478,28 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ item, isEditMode }) => {
 
 							<label htmlFor='name' className='header'>{localization.rightAnswers}</label>
 
-							{question.right.answer.map((answer, ri) => (
-								<input
-									aria-label='author'
-									key={ri}
+							{answerOptions && isEditMode && question.right.answer.length === 1 ? (
+								<select
 									className='packageView__theme__info__author'
-									value={answer}
-									readOnly={!isEditMode}
-									onChange={(e) => handleRightAnswerChange(ri, e.target.value)}
-								/>
-							))}
+									value={question.right.answer[0]}
+									onChange={(e) => handleRightAnswerChange(0, e.target.value)}
+								>
+									{Object.keys(answerOptions).map((key) => (
+										<option key={key} value={key}>{key}</option>
+									))}
+								</select>
+							) : (
+								question.right.answer.map((answer, ri) => (
+									<input
+										aria-label='author'
+										key={ri}
+										className='packageView__theme__info__author'
+										value={answer}
+										readOnly={!isEditMode}
+										onChange={(e) => handleRightAnswerChange(ri, e.target.value)}
+									/>
+								))
+							)}
 
 							{question.wrong
 								? <>

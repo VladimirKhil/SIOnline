@@ -16,6 +16,11 @@ export async function downloadPackageAsSIQ(pack: Package, zip?: JSZip): Promise<
 		// Add content.xml to ZIP
 		packageZip.file('content.xml', xmlContent);
 
+		// Add quality.marker file if package has quality mark
+		if (pack.isQualityMarked) {
+			packageZip.file('quality.marker', '');
+		}
+
 		// Generate ZIP file
 		const blob = await packageZip.generateAsync({ type: 'blob' });
 

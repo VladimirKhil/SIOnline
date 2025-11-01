@@ -238,9 +238,29 @@
 				margin: 5px 0;
 				padding: 5px;
 				font-size: 16px;
+				height: 32px;
+				border: 1px solid #ccc;
+				border-radius: 4px;
 
 				&[readonly] {
 					background-color: #ccc;
+				}
+			}
+
+			select {
+				margin: 5px 0;
+				padding: 5px;
+				font-size: 16px;
+				height: 32px;
+				border: 1px solid #ccc;
+				border-radius: 4px;
+				background-color: white;
+				color: black;
+
+				&:focus {
+					outline: none;
+					border-color: #2860ef;
+					box-shadow: 0 0 0 2px rgba(40, 96, 239, 0.2);
 				}
 			}
 
@@ -261,6 +281,26 @@
 				display: flex;
 				justify-content: center;
 				align-items: center;
+			}
+
+			.packageView__package__info__qualityMark {
+				display: flex;
+				align-items: center;
+				margin: 10px 0;
+				gap: 8px;
+
+				input[type="checkbox"] {
+					margin: 0;
+					width: 18px;
+					height: 18px;
+					cursor: pointer;
+				}
+
+				label {
+					margin: 0;
+					font-size: 16px;
+					cursor: pointer;
+				}
 			}
 
 			.packageView__info__comments {

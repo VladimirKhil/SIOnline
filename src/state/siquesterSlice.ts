@@ -1,12 +1,13 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import JSZip from 'jszip';
 import localization from '../model/resources/localization';
-import { Package, parseXMLtoPackage, Round, Theme, Question, ContentParam, ContentItem } from '../model/siquester/package';
+import { Package, Round, Theme, Question, ContentParam, ContentItem } from '../model/siquester/package';
 import { navigate } from '../utils/Navigator';
 import Path from '../model/enums/Path';
 import DataContext from '../model/DataContext';
 import { createDefaultPackage, createDefaultZip } from '../model/siquester/packageGenerator';
 import { downloadPackageAsSIQ } from '../model/siquester/packageExporter';
+import { parseXMLtoPackage } from '../model/siquester/packageLoader';
 
 export interface SIQuesterState {
 	zip?: JSZip;
@@ -36,6 +37,12 @@ export const openFile = createAsyncThunk(
 		const parser = new DOMParser();
 		const xmlDoc = parser.parseFromString(content, 'application/xml');
 		const pack = parseXMLtoPackage(xmlDoc);
+
+		const qualityMarkerFile = zip.file('quality.marker');
+
+		if (qualityMarkerFile) {
+			pack.isQualityMarked = true;
+		}
 
 		thunkAPI.dispatch(navigate({ navigation: { path: Path.SIQuesterPackage }, saveState: true }));
 		return { zip, pack };
@@ -73,8 +80,9 @@ export const siquesterSlice = createSlice({
 	reducers: {
 		updatePackageProperty: (state, action: { 
 			payload: { 
-				property: 'name' | 'version' | 'id' | 'restriction' | 'date' | 'publisher' | 'difficulty' | 'language' | 'contactUri'; 
-				value: string | number 
+				property: 'name' | 'version' | 'id' | 'restriction' | 'date' | 'publisher' | 'difficulty' 
+					| 'language' | 'contactUri' | 'isQualityMarked'; 
+				value: string | number | boolean 
 			} 
 		}) => {
 			if (state.pack) {
@@ -105,6 +113,9 @@ export const siquesterSlice = createSlice({
 						break;
 					case 'contactUri':
 						state.pack.contactUri = action.payload.value as string;
+						break;
+					case 'isQualityMarked':
+						state.pack.isQualityMarked = action.payload.value as boolean;
 						break;
 					default:
 						break;

@@ -33,14 +33,17 @@
 
 .screensView__editable__text {
 	width: 100%;
-	min-height: 60px;
+	min-height: 100px;
+	max-height: 300px;
 	padding: 8px;
-	font-size: 14px;
+	font-size: 16px;
 	font-family: inherit;
 	border: 1px solid #ccc;
 	border-radius: 4px;
 	resize: vertical;
 	background-color: white;
+	box-sizing: border-box;
+	overflow-y: auto;
 
 	&:focus {
 		outline: none;

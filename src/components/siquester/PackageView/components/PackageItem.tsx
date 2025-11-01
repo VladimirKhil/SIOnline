@@ -166,14 +166,26 @@ const PackageItem: React.FC<PackageItemProps> = ({ item, isEditMode }) => {
 
 				<label htmlFor='language' className='header'>{localization.language}</label>
 
-				<input
-					id='language'
-					type='text'
-					className='packageView__package__info__language'
-					value={getLanguage(currentPack.language)}
-					readOnly={!isEditMode}
-					onChange={(e) => isEditMode && dispatch(updatePackageProperty({ property: 'language', value: e.target.value }))}
-				/>
+				{isEditMode ? (
+					<select
+						id='language'
+						className='packageView__package__info__language'
+						value={currentPack.language}
+						onChange={(e) => dispatch(updatePackageProperty({ property: 'language', value: e.target.value }))}
+					>
+						<option value='en-US'>{localization.languageEn}</option>
+						<option value='ru-RU'>{localization.languageRu}</option>
+						<option value='sr-RS'>{localization.languageSr}</option>
+					</select>
+				) : (
+					<input
+						id='language'
+						type='text'
+						className='packageView__package__info__language'
+						value={getLanguage(currentPack.language)}
+						readOnly
+					/>
+				)}
 
 				<label htmlFor='publisher' className='header'>{localization.publisher}</label>
 				<input
@@ -199,14 +211,30 @@ const PackageItem: React.FC<PackageItemProps> = ({ item, isEditMode }) => {
 				<input
 					id='difficulty'
 					type='number'
+					min='1'
+					max='10'
 					className='packageView__package__info__difficulty'
 					value={currentPack.difficulty}
 					readOnly={!isEditMode}
 					onChange={(e) => isEditMode && dispatch(updatePackageProperty({ 
 						property: 'difficulty', 
-						value: parseInt(e.target.value, 10) || 0 
+						value: Math.min(10, Math.max(1, parseInt(e.target.value, 10) || 1))
 					}))}
 				/>
+
+				<div className='packageView__package__info__qualityMark'>
+					<input
+						id='isQualityMarked'
+						type='checkbox'
+						checked={currentPack.isQualityMarked}
+						disabled={!isEditMode}
+						onChange={(e) => isEditMode && dispatch(updatePackageProperty({ 
+							property: 'isQualityMarked', 
+							value: e.target.checked 
+						}))}
+					/>
+					<label htmlFor='isQualityMarked'>{localization.packageQualityMark}</label>
+				</div>
 
 				{currentPack.tags.length > 0
 					? <>

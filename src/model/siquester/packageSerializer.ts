@@ -73,6 +73,91 @@ function serializeContentParam(xmlDoc: Document, paramElement: Element, contentP
 	});
 }
 
+function serializeUnknownParam(xmlDoc: Document, paramName: string, paramValue: unknown): Element | null {
+	if (paramValue === undefined || paramValue === null) {
+		return null;
+	}
+
+	const paramElement = xmlDoc.createElement('param');
+	paramElement.setAttribute('name', paramName);
+
+	// Handle different types of unknown parameters
+	if (typeof paramValue === 'string') {
+		// Simple string parameter
+		paramElement.textContent = paramValue;
+	} else if (typeof paramValue === 'object' && paramValue !== null) {
+		// Check if it looks like a content parameter
+		if ('items' in paramValue && Array.isArray((paramValue as Record<string, unknown>).items)) {
+			// Serialize as content parameter
+			paramElement.setAttribute('type', StepParameterTypes.Content);
+			serializeContentParam(xmlDoc, paramElement, paramValue as ContentParam);
+		} else if ('numberSet' in paramValue && typeof (paramValue as Record<string, unknown>).numberSet === 'object') {
+			// Serialize as number set parameter
+			paramElement.setAttribute('type', StepParameterTypes.NumberSet);
+			const { numberSet } = paramValue as Record<string, Record<string, unknown>>;
+			const numberSetElement = xmlDoc.createElement('numberSet');
+			numberSetElement.setAttribute('minimum', numberSet.minimum?.toString() || '0');
+			numberSetElement.setAttribute('maximum', numberSet.maximum?.toString() || '0');
+			numberSetElement.setAttribute('step', numberSet.step?.toString() || '0');
+			paramElement.appendChild(numberSetElement);
+		} else if ('_textContent' in paramValue) {
+			// Handle preserved structure with attributes and children
+			const preserved = paramValue as Record<string, unknown>;
+			
+			// Set text content
+			if (preserved._textContent && typeof preserved._textContent === 'string') {
+				paramElement.textContent = preserved._textContent;
+			}
+			
+			// Restore attributes
+			if (preserved._attributes && typeof preserved._attributes === 'object' && preserved._attributes !== null) {
+				const attributes = preserved._attributes as Record<string, string>;
+				Object.keys(attributes).forEach(attrName => {
+					paramElement.setAttribute(attrName, attributes[attrName]);
+				});
+			}
+			
+			// Restore child elements
+			if (preserved._children && Array.isArray(preserved._children)) {
+				const children = preserved._children as Array<{
+					tagName: string;
+					textContent?: string;
+					attributes?: Record<string, string>;
+				}>;
+				children.forEach(child => {
+					const childElement = xmlDoc.createElement(child.tagName);
+					if (child.textContent) {
+						childElement.textContent = child.textContent;
+					}
+					if (child.attributes && typeof child.attributes === 'object') {
+						Object.keys(child.attributes).forEach(attrName => {
+							if (child.attributes) {
+								childElement.setAttribute(attrName, child.attributes[attrName]);
+							}
+						});
+					}
+					paramElement.appendChild(childElement);
+				});
+			}
+		} else {
+			// Handle as group parameter with nested parameters
+			paramElement.setAttribute('type', StepParameterTypes.Group);
+			Object.keys(paramValue as Record<string, unknown>).forEach(key => {
+				const nestedValue = (paramValue as Record<string, unknown>)[key];
+				const nestedParam = serializeUnknownParam(xmlDoc, key, nestedValue);
+				if (nestedParam) {
+					paramElement.appendChild(nestedParam);
+				}
+			});
+		}
+	} else {
+		// For other primitive types, convert to string
+		paramElement.textContent = String(paramValue);
+	}
+
+	return paramElement;
+}
+
 function serializeQuestion(xmlDoc: Document, question: Question): Element {
 	const questionElement = xmlDoc.createElement('question');
 
@@ -174,6 +259,18 @@ function serializeQuestion(xmlDoc: Document, question: Question): Element {
 			serializeContentParam(xmlDoc, paramElement, question.params.answer);
 			paramsElement.appendChild(paramElement);
 		}
+
+		// Add unknown parameters
+		const knownParams = new Set(['question', 'theme', 'price', 'selectionMode', 'answer', 'answerType', 'answerOptions']);
+		Object.keys(question.params).forEach(paramName => {
+			if (!knownParams.has(paramName)) {
+				const paramValue = question.params[paramName];
+				const paramElement = serializeUnknownParam(xmlDoc, paramName, paramValue);
+				if (paramElement) {
+					paramsElement.appendChild(paramElement);
+				}
+			}
+		});
 
 		questionElement.appendChild(paramsElement);
 	}

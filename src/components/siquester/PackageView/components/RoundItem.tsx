@@ -158,18 +158,29 @@ const RoundItem: React.FC<RoundItemProps> = ({ item, isEditMode }) => {
 				/>
 
 				<label htmlFor='type' className='header'>{localization.type}</label>
-				<input
-					id='type'
-					type='text'
-					className='packageView__round__info__type'
-					value={getRoundType(currentRound.type)}
-					readOnly={!isEditMode}
-					onChange={(e) => isEditMode && indices.roundIndex !== undefined && dispatch(updateRoundProperty({ 
-						roundIndex: indices.roundIndex, 
-						property: 'type', 
-						value: e.target.value 
-					}))}
-				/>
+				{isEditMode ? (
+					<select
+						id='type'
+						className='packageView__round__info__type'
+						value={currentRound.type}
+						onChange={(e) => indices.roundIndex !== undefined && dispatch(updateRoundProperty({ 
+							roundIndex: indices.roundIndex, 
+							property: 'type', 
+							value: e.target.value 
+						}))}
+					>
+						<option value={RoundTypes.Standard}>{localization.roundTypeTable}</option>
+						<option value={RoundTypes.Final}>{localization.themeList}</option>
+					</select>
+				) : (
+					<input
+						id='type'
+						type='text'
+						className='packageView__round__info__type'
+						value={getRoundType(currentRound.type)}
+						readOnly
+					/>
+				)}
 
 				{getInfo(currentRound, isEditMode, indices)}
 			</section>
