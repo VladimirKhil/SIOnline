@@ -1561,7 +1561,7 @@ export default class ClientController {
 				break;
 
 			case 'forAll':
-				this.playGameSound(GameSound.QUESTION_ALL);
+				this.playGameSound(GameSound.QUESTION_FOR_ALL);
 				text = localization.questionTypeForAll;
 				hint = localization.questionTypeForAllHint;
 				break;
@@ -1573,7 +1573,7 @@ export default class ClientController {
 				break;
 
 			case 'stakeAll': // 'forAllWithStake':
-				this.playGameSound(GameSound.QUESTION_STAKE_ALL);
+				this.playGameSound(GameSound.QUESTION_FOR_ALL_WITH_STAKE);
 				text = localization.questionTypeForAllWithStake;
 				hint = localization.questionTypeForAllWithStakeHint;
 				break;
@@ -1588,7 +1588,7 @@ export default class ClientController {
 				break;
 
 			case 'noRisk': // 'forYourself':
-				this.playGameSound(GameSound.QUESTION_NORISK);
+				this.playGameSound(GameSound.QUESTION_FOR_YOURSELF);
 				text = localization.questionTypeForYourself;
 				hint = localization.questionTypeForYourselfHint;
 				break;

@@ -20,6 +20,8 @@
 	STUDIA_BACKGROUND_KEY: 'studiaBackground',
 	STUDIA_BACKGROUND_NAME_KEY: 'studiaBackgroundName',
 
+	CUSTOM_SOUNDS_PREFIX: 'customSound_',
+
 	LARGE_CONTENT_WEIGHT: 5,
 
 	RANDOM_PACKAGE: '@{random}'

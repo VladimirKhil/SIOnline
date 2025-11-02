@@ -3,6 +3,7 @@ import Dialog from '../../common/Dialog/Dialog';
 import localization from '../../../model/resources/localization';
 import CommonSettingsView from '../CommonSettingsView/CommonSettingsView';
 import ThemeSettingsView from '../ThemeSettingsView/ThemeSettingsView';
+import SoundsSettingsView from '../SoundsSettingsView/SoundsSettingsView';
 import { useAppDispatch } from '../../../state/hooks';
 import { resetSettings } from '../../../state/settingsSlice';
 import { showSettings } from '../../../state/uiSlice';
@@ -15,6 +16,7 @@ const enum SettingsView {
 	Common,
 	Keys,
 	Theme,
+	Sounds,
 }
 
 const SettingsDialog: React.FC = () => {
@@ -58,6 +60,9 @@ const SettingsDialog: React.FC = () => {
 			case SettingsView.Theme:
 				return <ThemeSettingsView />;
 
+			case SettingsView.Sounds:
+				return <SoundsSettingsView />;
+
 			default:
 				return null;
 		}
@@ -72,6 +77,7 @@ const SettingsDialog: React.FC = () => {
 							{ id: SettingsView.Common, label: localization.common },
 							{ id: SettingsView.Keys, label: localization.keys },
 							{ id: SettingsView.Theme, label: localization.theme },
+							{ id: SettingsView.Sounds, label: localization.sounds },
 						]}
 						activeTab={view}
 						onTabClick={setView} />

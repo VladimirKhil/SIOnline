@@ -16,6 +16,7 @@ import roundThemesSfx from '../../assets/sounds/round_themes.mp3';
 import roundTimeoutSfx from '../../assets/sounds/round_timeout.mp3';
 
 import GameSound from '../model/enums/GameSound';
+import Constants from '../model/enums/Constants';
 
 class GameSoundPlayer {
 	private sounds: Map<GameSound, string>;
@@ -29,12 +30,12 @@ class GameSoundPlayer {
 			[GameSound.FINAL_DELETE, finalDeleteSfx],
 			[GameSound.FINAL_THINK, finalThinkSfx],
 			[GameSound.MAIN_MENU, mainMenuSfx],
-			[GameSound.QUESTION_ALL, questionAllSfx],
+			[GameSound.QUESTION_FOR_ALL, questionAllSfx],
 			[GameSound.QUESTION_NOANSWERS, questionNoAnswersSfx],
-			[GameSound.QUESTION_NORISK, questionNoRiskSfx],
+			[GameSound.QUESTION_FOR_YOURSELF, questionNoRiskSfx],
 			[GameSound.QUESTION_SECRET, questionSecretSfx],
 			[GameSound.QUESTION_STAKE, questionStakeSfx],
-			[GameSound.QUESTION_STAKE_ALL, questionStakeAllSfx],
+			[GameSound.QUESTION_FOR_ALL_WITH_STAKE, questionStakeAllSfx],
 			[GameSound.ROUND_BEGIN, roundBeginSfx],
 			[GameSound.ROUND_THEMES, roundThemesSfx],
 			[GameSound.ROUND_TIMEOUT, roundTimeoutSfx],
@@ -42,6 +43,15 @@ class GameSoundPlayer {
 	}
 
 	getSound(sound: GameSound) {
+		// First, check if there's a custom sound for this GameSound
+		const customSoundKey = `${Constants.CUSTOM_SOUNDS_PREFIX}${sound}`;
+		const customSound = localStorage.getItem(customSoundKey);
+
+		if (customSound) {
+			return `data:audio/mp3;base64,${customSound}`;
+		}
+
+		// Fall back to default sound
 		return this.sounds.get(sound);
 	}
 

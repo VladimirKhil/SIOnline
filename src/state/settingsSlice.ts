@@ -28,6 +28,7 @@ export interface SettingsState {
 	theme: ThemeSettings;
 	writeGameLog: boolean;
 	useProxy: boolean;
+	customSounds: Record<string, string | null>;
 }
 
 const initialState: SettingsState = {
@@ -60,6 +61,7 @@ const initialState: SettingsState = {
 	},
 	writeGameLog: false,
 	useProxy: false,
+	customSounds: {},
 };
 
 export const settingsSlice = createSlice({
@@ -195,6 +197,9 @@ export const settingsSlice = createSlice({
 		setUseProxy: (state: SettingsState, action: PayloadAction<boolean>) => {
 			state.useProxy = action.payload;
 		},
+		setCustomSound: (state: SettingsState, action: PayloadAction<{ soundKey: string, value: string | null }>) => {
+			state.customSounds[action.payload.soundKey] = action.payload.value;
+		},
 		resetSettings: (state: SettingsState) => {
 			const { culture } = state.appSettings;
 			Object.assign(state, initialState, { appSettings: { ...initialAppSettings, culture } });
@@ -246,6 +251,7 @@ export const {
 	setTableFontFamily,
 	setWriteGameLog,
 	setUseProxy,
+	setCustomSound,
 	resetSettings,
 } = settingsSlice.actions;
 
