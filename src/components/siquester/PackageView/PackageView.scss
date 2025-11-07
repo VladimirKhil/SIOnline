@@ -249,7 +249,7 @@
 
 			select {
 				margin: 5px 0;
-				padding: 5px;
+				padding: 0 1px;
 				font-size: 16px;
 				height: 32px;
 				border: 1px solid #ccc;
@@ -300,6 +300,137 @@
 					margin: 0;
 					font-size: 16px;
 					cursor: pointer;
+				}
+			}
+
+			.packageView__package__info__tag-container {
+				display: flex;
+				align-items: center;
+				gap: 8px;
+				margin: 5px 0;
+
+				.packageView__package__info__tag {
+					flex: 1;
+					margin: 0;
+				}
+
+				.packageView__package__info__tag-remove {
+					width: 32px;
+					height: 32px;
+					background: #d32f2f;
+					color: white;
+					border: none;
+					border-radius: 4px;
+					cursor: pointer;
+					font-size: 18px;
+					font-weight: bold;
+					display: flex;
+					align-items: center;
+					justify-content: center;
+					line-height: 1;
+
+					&:hover {
+						background: #b71c1c;
+					}
+
+					&:focus {
+						outline: none;
+						box-shadow: 0 0 0 2px rgba(211, 47, 47, 0.3);
+					}
+				}
+			}
+
+			.packageView__package__info__tag-add {
+				width: 32px;
+				height: 32px;
+				background: #2e7d32;
+				color: white;
+				border: none;
+				border-radius: 4px;
+				cursor: pointer;
+				font-size: 18px;
+				font-weight: bold;
+				margin: 5px 0;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				line-height: 1;
+
+				&:hover {
+					background: #1b5e20;
+				}
+
+				&:focus {
+					outline: none;
+					box-shadow: 0 0 0 2px rgba(46, 125, 50, 0.3);
+				}
+			}
+
+			// Common styles for collection editors (authors, sources, tags)
+			.packageView__info__author-container,
+			.packageView__info__source-container {
+				display: flex;
+				align-items: center;
+				gap: 8px;
+				margin: 5px 0;
+
+				.packageView__info__author,
+				.packageView__info__source {
+					flex: 1;
+					margin: 0;
+				}
+
+				.packageView__info__author-remove,
+				.packageView__info__source-remove {
+					width: 32px;
+					height: 32px;
+					background: #d32f2f;
+					color: white;
+					border: none;
+					border-radius: 4px;
+					cursor: pointer;
+					font-size: 18px;
+					font-weight: bold;
+					display: flex;
+					align-items: center;
+					justify-content: center;
+					line-height: 1;
+
+					&:hover {
+						background: #b71c1c;
+					}
+
+					&:focus {
+						outline: none;
+						box-shadow: 0 0 0 2px rgba(211, 47, 47, 0.3);
+					}
+				}
+			}
+
+			.packageView__info__author-add,
+			.packageView__info__source-add {
+				width: 32px;
+				height: 32px;
+				background: #2e7d32;
+				color: white;
+				border: none;
+				border-radius: 4px;
+				cursor: pointer;
+				font-size: 18px;
+				font-weight: bold;
+				margin: 5px 0;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				line-height: 1;
+
+				&:hover {
+					background: #1b5e20;
+				}
+
+				&:focus {
+					outline: none;
+					box-shadow: 0 0 0 2px rgba(46, 125, 50, 0.3);
 				}
 			}
 

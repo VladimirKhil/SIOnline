@@ -274,6 +274,97 @@ export const siquesterSlice = createSlice({
 				state.pack.tags[action.payload.tagIndex].value = action.payload.value;
 			}
 		},
+		addTag: (state) => {
+			if (state.pack) {
+				state.pack.tags.push({ value: '' });
+			}
+		},
+		removeTag: (state, action: { payload: { tagIndex: number } }) => {
+			if (state.pack && state.pack.tags[action.payload.tagIndex] !== undefined) {
+				state.pack.tags.splice(action.payload.tagIndex, 1);
+			}
+		},
+		addInfoItem: (state, action: { 
+			payload: { 
+				targetType: 'package' | 'round' | 'theme' | 'question'; 
+				roundIndex?: number; 
+				themeIndex?: number; 
+				questionIndex?: number; 
+				property: 'authors' | 'sources'; 
+			} 
+		}) => {
+			let target: Package | Round | Theme | Question | null = null;
+			
+			if (action.payload.targetType === 'package') {
+				target = state.pack || null;
+			} else if (action.payload.targetType === 'round' && typeof action.payload.roundIndex === 'number') {
+				target = state.pack?.rounds[action.payload.roundIndex] || null;
+			} else if (action.payload.targetType === 'theme' && 
+				typeof action.payload.roundIndex === 'number' && 
+				typeof action.payload.themeIndex === 'number') {
+				target = state.pack?.rounds[action.payload.roundIndex]?.themes[action.payload.themeIndex] || null;
+			} else if (action.payload.targetType === 'question' && 
+				typeof action.payload.roundIndex === 'number' && 
+				typeof action.payload.themeIndex === 'number' && 
+				typeof action.payload.questionIndex === 'number') {
+				target = state.pack?.rounds[action.payload.roundIndex]
+					?.themes[action.payload.themeIndex]?.questions[action.payload.questionIndex] || null;
+			}
+			
+			if (target) {
+				if (!target.info) {
+					target.info = {};
+				}
+				
+				if (action.payload.property === 'authors') {
+					if (!target.info.authors) {
+						target.info.authors = [];
+					}
+					target.info.authors.push({ name: '' });
+				} else if (action.payload.property === 'sources') {
+					if (!target.info.sources) {
+						target.info.sources = [];
+					}
+					target.info.sources.push({ value: '' });
+				}
+			}
+		},
+		removeInfoItem: (state, action: { 
+			payload: { 
+				targetType: 'package' | 'round' | 'theme' | 'question'; 
+				roundIndex?: number; 
+				themeIndex?: number; 
+				questionIndex?: number; 
+				property: 'authors' | 'sources'; 
+				index: number; 
+			} 
+		}) => {
+			let target: Package | Round | Theme | Question | null = null;
+			
+			if (action.payload.targetType === 'package') {
+				target = state.pack || null;
+			} else if (action.payload.targetType === 'round' && typeof action.payload.roundIndex === 'number') {
+				target = state.pack?.rounds[action.payload.roundIndex] || null;
+			} else if (action.payload.targetType === 'theme' && 
+				typeof action.payload.roundIndex === 'number' && 
+				typeof action.payload.themeIndex === 'number') {
+				target = state.pack?.rounds[action.payload.roundIndex]?.themes[action.payload.themeIndex] || null;
+			} else if (action.payload.targetType === 'question' && 
+				typeof action.payload.roundIndex === 'number' && 
+				typeof action.payload.themeIndex === 'number' && 
+				typeof action.payload.questionIndex === 'number') {
+				target = state.pack?.rounds[action.payload.roundIndex]
+					?.themes[action.payload.themeIndex]?.questions[action.payload.questionIndex] || null;
+			}
+			
+			if (target && target.info) {
+				if (action.payload.property === 'authors' && target.info.authors && target.info.authors[action.payload.index] !== undefined) {
+					target.info.authors.splice(action.payload.index, 1);
+				} else if (action.payload.property === 'sources' && target.info.sources && target.info.sources[action.payload.index] !== undefined) {
+					target.info.sources.splice(action.payload.index, 1);
+				}
+			}
+		},
 		updateContentItem: (state, action: { 
 			payload: { 
 				roundIndex: number; 
@@ -360,6 +451,10 @@ export const {
 	updateQuestionWrongAnswer,
 	updateInfoProperty,
 	updateTag,
+	addTag,
+	removeTag,
+	addInfoItem,
+	removeInfoItem,
 	updateContentItem,
 	setCurrentItem,
 } = siquesterSlice.actions;

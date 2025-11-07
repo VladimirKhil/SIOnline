@@ -323,14 +323,6 @@ const unban: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (ip:
 	await dataContext.game.unban(ip);
 };
 
-const mediaLoaded: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
-	_dispatch: Dispatch<any>,
-	_getState: () => State,
-	dataContext: DataContext
-) => {
-	await dataContext.game.mediaLoaded();
-};
-
 const onReconnect: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
 	_dispatch: Dispatch<any>,
 	_getState: () => State,
@@ -399,7 +391,6 @@ const roomActionCreators = {
 	unbanned,
 	selectBannedItem,
 	unban,
-	mediaLoaded,
 	onReconnect,
 	setWebCamera,
 };

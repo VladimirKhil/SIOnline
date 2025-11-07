@@ -1,70 +1,50 @@
 import * as React from 'react';
-import { connect } from 'react-redux';
-import { Dispatch, Action } from 'redux';
-import roomActionCreators from '../../../state/room/roomActionCreators';
+import { useSelector } from 'react-redux';
 import State from '../../../state/State';
-import TimerInfo from '../../../model/TimerInfo';
 import { isRunning } from '../../../utils/TimerInfoHelpers';
+import { useAppDispatch } from '../../../state/hooks';
+import { onMediaLoaded } from '../../../state/serverActions';
 
 import './ImageContent.css';
 import spinnerSvg from '../../../../assets/images/spinner.svg';
 
 interface ImageContentProps {
 	uri: string;
-	loadTimer: TimerInfo;
-	partialImageTime: number;
-
-	mediaLoaded: () => void;
 }
 
-const mapStateToProps = (state: State) => ({
-	loadTimer: state.table.loadTimer,
-	partialImageTime: state.room2.settings.timeSettings.partialImageTime,
-});
+const ImageContent: React.FC<ImageContentProps> = ({ uri }) => {
+	const spinnerRef = React.useRef<HTMLImageElement>(null);
+	const appDispatch = useAppDispatch();
 
-const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
-	mediaLoaded: () => {
-		dispatch(roomActionCreators.mediaLoaded() as unknown as Action);
-	},
-});
+	const loadTimer = useSelector((state: State) => state.table.loadTimer);
+	const partialImageTime = useSelector((state: State) => state.room2.settings.timeSettings.partialImageTime);
 
-export class ImageContent extends React.Component<ImageContentProps> {
-	private spinnerRef: React.RefObject<HTMLImageElement>;
+	const handleImageLoad = React.useCallback(() => {
+		appDispatch(onMediaLoaded());
 
-	constructor(props: ImageContentProps) {
-		super(props);
-
-		this.spinnerRef = React.createRef();
-	}
-
-	onImageLoad = () => {
-		this.props.mediaLoaded();
-
-		if (!this.spinnerRef.current) {
+		if (!spinnerRef.current) {
 			return;
 		}
 
-		this.spinnerRef.current.style.display = 'none';
+		spinnerRef.current.style.display = 'none';
+	}, [appDispatch]);
+
+	const isTimerRunning = isRunning(loadTimer);
+	const animatingClass = isTimerRunning ? ' animate' : '';
+	const animationDuration = `${(loadTimer.maximum - loadTimer.value) * partialImageTime}s`;
+	const clipPath = `inset(0 0 ${(loadTimer.maximum - loadTimer.value) * 100}% 0)`;
+
+	const cropStyle: React.CSSProperties = {
+		animationDuration,
+		clipPath
 	};
 
-	render() {
-		const isTimerRunning = isRunning(this.props.loadTimer);
-		const animatingClass = isTimerRunning ? ' animate' : '';
-		const animationDuration = `${(this.props.loadTimer.maximum - this.props.loadTimer.value) * this.props.partialImageTime}s`;
-		const clipPath = `inset(0 0 ${(this.props.loadTimer.maximum - this.props.loadTimer.value) * 100}% 0)`;
+	return (
+		<div className='image-host'>
+			<img alt='spinner' className="spinnerImg" ref={spinnerRef} src={spinnerSvg} />
+			<img alt='image' className={`inGameImg ${animatingClass}`} style={cropStyle} src={uri} onLoad={handleImageLoad} />
+		</div>
+	);
+};
 
-		const cropStyle: React.CSSProperties = {
-			animationDuration,
-			clipPath
-		};
-
-		return (
-			<div className='image-host'>
-				<img alt='spinner' className="spinnerImg" ref={this.spinnerRef} src={spinnerSvg} />
-				<img alt='image' className={`inGameImg ${animatingClass}`} style={cropStyle} src={this.props.uri} onLoad={() => this.onImageLoad()} />
-			</div>
-		);
-	}
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(ImageContent);
+export default ImageContent;

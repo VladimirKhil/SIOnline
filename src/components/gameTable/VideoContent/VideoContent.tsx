@@ -1,14 +1,12 @@
 import * as React from 'react';
 import { useRef, useEffect, useCallback } from 'react';
 import State from '../../../state/State';
-import { Dispatch, Action } from 'redux';
 import { connect } from 'react-redux';
-import roomActionCreators from '../../../state/room/roomActionCreators';
 import getErrorMessage from '../../../utils/ErrorHelpers';
 import localization from '../../../model/resources/localization';
 import getExtension from '../../../utils/FileHelper';
 import { useAppDispatch } from '../../../state/hooks';
-import { onMediaEnded } from '../../../state/serverActions';
+import { onMediaEnded, onMediaLoaded } from '../../../state/serverActions';
 import { addOperationErrorMessage } from '../../../state/room2Slice';
 
 import './VideoContent.css';
@@ -19,8 +17,6 @@ interface VideoContentProps {
 	isMediaStopped: boolean;
 	autoPlayEnabled: boolean;
 	isVisible: boolean;
-
-	mediaLoaded: () => void;
 }
 
 const mapStateToProps = (state: State) => ({
@@ -29,19 +25,12 @@ const mapStateToProps = (state: State) => ({
 	isVisible: state.ui.isVisible,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
-	mediaLoaded: () => {
-		dispatch(roomActionCreators.mediaLoaded() as unknown as Action);
-	}
-});
-
 export const VideoContent: React.FC<VideoContentProps> = ({
 	soundVolume,
 	uri,
 	isMediaStopped,
 	autoPlayEnabled,
 	isVisible,
-	mediaLoaded
 }) => {
 	const videoRef = useRef<HTMLVideoElement>(null);
 	const playPromiseRef = useRef<Promise<void> | null>(null);
@@ -162,11 +151,11 @@ export const VideoContent: React.FC<VideoContentProps> = ({
 				ref={videoRef}
 				autoPlay={!isMediaStopped && isVisible}
 				onEnded={onVideoEnded}
-				onLoadedData={() => mediaLoaded()}>
+				onLoadedData={() => appDispatch(onMediaLoaded())}>
 				<source src={uri} />
 			</video>
 		</div>
 	);
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(VideoContent);
+export default connect(mapStateToProps)(VideoContent);

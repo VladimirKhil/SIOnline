@@ -7,11 +7,16 @@ import getLanguage from '../../../../utils/getLanguage';
 import {
 	updatePackageProperty,
 	updateTag,
+	addTag,
+	removeTag,
 	setCurrentItem,
 	findItemIndices,
-	updateInfoProperty
+	updateInfoProperty,
+	addInfoItem,
+	removeInfoItem
 } from '../../../../state/siquesterSlice';
 import MediaItem from '../../MediaItem/MediaItem';
+import CollectionEditor from '../../CollectionEditor/CollectionEditor';
 
 interface PackageItemProps {
 	item: Package;
@@ -64,6 +69,56 @@ const PackageItem: React.FC<PackageItemProps> = ({ item, isEditMode }) => {
 			}
 		};
 
+		const handleAddAuthor = () => {
+			if (isEditable) {
+				dispatch(addInfoItem({
+					targetType: getTargetType(),
+					roundIndex: itemIndices?.roundIndex,
+					themeIndex: itemIndices?.themeIndex,
+					questionIndex: itemIndices?.questionIndex,
+					property: 'authors'
+				}));
+			}
+		};
+
+		const handleRemoveAuthor = (authorIndex: number) => {
+			if (isEditable) {
+				dispatch(removeInfoItem({
+					targetType: getTargetType(),
+					roundIndex: itemIndices?.roundIndex,
+					themeIndex: itemIndices?.themeIndex,
+					questionIndex: itemIndices?.questionIndex,
+					property: 'authors',
+					index: authorIndex
+				}));
+			}
+		};
+
+		const handleAddSource = () => {
+			if (isEditable) {
+				dispatch(addInfoItem({
+					targetType: getTargetType(),
+					roundIndex: itemIndices?.roundIndex,
+					themeIndex: itemIndices?.themeIndex,
+					questionIndex: itemIndices?.questionIndex,
+					property: 'sources'
+				}));
+			}
+		};
+
+		const handleRemoveSource = (sourceIndex: number) => {
+			if (isEditable) {
+				dispatch(removeInfoItem({
+					targetType: getTargetType(),
+					roundIndex: itemIndices?.roundIndex,
+					themeIndex: itemIndices?.themeIndex,
+					questionIndex: itemIndices?.questionIndex,
+					property: 'sources',
+					index: sourceIndex
+				}));
+			}
+		};
+
 		const handleCommentsChange = (value: string) => {
 			if (isEditable) {
 				dispatch(updateInfoProperty({
@@ -78,37 +133,29 @@ const PackageItem: React.FC<PackageItemProps> = ({ item, isEditMode }) => {
 		};
 
 		return <>
-			{infoOwner.info?.authors && infoOwner.info.authors.length > 0
-				? <>
-					<label className='header'>{localization.authors}</label>
+			<CollectionEditor
+				label={localization.authors}
+				items={infoOwner.info?.authors || []}
+				isEditMode={isEditable}
+				className='packageView__info__author'
+				getValue={(author) => author.name}
+				onItemChange={handleAuthorChange}
+				onAddItem={handleAddAuthor}
+				onRemoveItem={handleRemoveAuthor}
+				placeholder='Enter author name'
+			/>
 
-					{infoOwner.info?.authors?.map((author, ai) => (
-						<input 
-							aria-label='author' 
-							key={ai} 
-							className='packageView__info__author' 
-							value={author.name} 
-							readOnly={!isEditable}
-							onChange={(e) => handleAuthorChange(ai, e.target.value)}
-						/>
-					))}
-				</> : null}
-
-			{infoOwner.info?.sources && infoOwner.info.sources.length > 0
-				? <>
-					<label className='header' htmlFor='sources'>{localization.sources}</label>
-
-					{infoOwner.info?.sources?.map((source, si) => (
-						<input 
-							id='sources' 
-							key={si} 
-							className='packageView__info__source' 
-							value={source.value} 
-							readOnly={!isEditable}
-							onChange={(e) => handleSourceChange(si, e.target.value)}
-						/>
-					))}
-				</> : null}
+			<CollectionEditor
+				label={localization.sources}
+				items={infoOwner.info?.sources || []}
+				isEditMode={isEditable}
+				className='packageView__info__source'
+				getValue={(source) => source.value}
+				onItemChange={handleSourceChange}
+				onAddItem={handleAddSource}
+				onRemoveItem={handleRemoveSource}
+				placeholder='Enter source'
+			/>
 
 			{infoOwner.info?.comments && infoOwner.info.comments.length > 0
 				? <>
@@ -138,7 +185,29 @@ const PackageItem: React.FC<PackageItemProps> = ({ item, isEditMode }) => {
 			</header>
 
 			<section className='info__content'>
+				<div className='packageView__package__info__qualityMark'>
+					{/* <input
+						id='isQualityMarked'
+						type='checkbox'
+						checked={currentPack.isQualityMarked}
+						disabled={!isEditMode}
+						onChange={(e) => isEditMode && dispatch(updatePackageProperty({
+							property: 'isQualityMarked',
+							value: e.target.checked
+						}))}
+					/> */}
+					<input
+						id='isQualityMarked'
+						type='checkbox'
+						checked={currentPack.isQualityMarked}
+						disabled={true}
+					/>
+
+					<label htmlFor='isQualityMarked'>{localization.packageQualityMark}</label>
+				</div>
+
 				<label htmlFor='name' className='header'>{localization.name}</label>
+
 				<input
 					id='name'
 					type='text'
@@ -216,43 +285,25 @@ const PackageItem: React.FC<PackageItemProps> = ({ item, isEditMode }) => {
 					className='packageView__package__info__difficulty'
 					value={currentPack.difficulty}
 					readOnly={!isEditMode}
-					onChange={(e) => isEditMode && dispatch(updatePackageProperty({ 
-						property: 'difficulty', 
+					onChange={(e) => isEditMode && dispatch(updatePackageProperty({
+						property: 'difficulty',
 						value: Math.min(10, Math.max(1, parseInt(e.target.value, 10) || 1))
 					}))}
 				/>
 
-				<div className='packageView__package__info__qualityMark'>
-					<input
-						id='isQualityMarked'
-						type='checkbox'
-						checked={currentPack.isQualityMarked}
-						disabled={!isEditMode}
-						onChange={(e) => isEditMode && dispatch(updatePackageProperty({ 
-							property: 'isQualityMarked', 
-							value: e.target.checked 
-						}))}
-					/>
-					<label htmlFor='isQualityMarked'>{localization.packageQualityMark}</label>
-				</div>
+				<CollectionEditor
+					label={localization.tags}
+					items={currentPack.tags}
+					isEditMode={isEditMode}
+					className='packageView__package__info__tag'
+					getValue={(tag) => tag.value}
+					onItemChange={(index, value) => dispatch(updateTag({ tagIndex: index, value }))}
+					onAddItem={() => dispatch(addTag())}
+					onRemoveItem={(index) => dispatch(removeTag({ tagIndex: index }))}
+					placeholder='Enter tag'
+				/>
 
-				{currentPack.tags.length > 0
-					? <>
-						<label className='header'>{localization.tags}</label>
-
-						{currentPack.tags.map((tag, ti) => (
-							<input
-								aria-label='tag'
-								key={ti}
-								className='packageView__package__info__tag'
-								value={tag.value}
-								readOnly={!isEditMode}
-								onChange={(e) => isEditMode && dispatch(updateTag({ tagIndex: ti, value: e.target.value }))}
-							/>
-						))}
-					</> : null}
-
-				{currentPack.contactUri
+				{currentPack.contactUri || isEditMode
 					? <>
 						<label htmlFor='contactUri' className='header'>{localization.contactUri}</label>
 
@@ -262,7 +313,7 @@ const PackageItem: React.FC<PackageItemProps> = ({ item, isEditMode }) => {
 							className='packageView__package__info__contactUri'
 							value={currentPack.contactUri}
 							readOnly={!isEditMode}
-							onChange={(e) => isEditMode && dispatch(updatePackageProperty({ 
+							onChange={(e) => isEditMode && dispatch(updatePackageProperty({
 								property: 'contactUri',
 								value: e.target.value
 							}))}

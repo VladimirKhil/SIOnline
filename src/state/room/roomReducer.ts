@@ -190,7 +190,10 @@ const roomReducer: Reducer<RoomState> = (state: RoomState = initialState, anyAct
 				...state,
 				timers: updateTimers(state.timers, action.timerIndex, timer => ({
 					...timer,
-					state: TimerStates.Running,
+					state: timer.state === TimerStates.Paused ||
+						(!action.runByUser && !timer.isPausedByUser) // For timeIndex 1 resume command is used to start the timer
+							? TimerStates.Running
+							: timer.state,
 					isPausedByUser: action.runByUser ? false : timer.isPausedByUser,
 					isPausedBySystem: !action.runByUser ? false : timer.isPausedBySystem
 				}))

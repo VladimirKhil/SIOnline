@@ -15,12 +15,13 @@ import PackageItem from './components/PackageItem';
 import RoundItem from './components/RoundItem';
 import ThemeItem from './components/ThemeItem';
 import QuestionItem from './components/QuestionItem';
+import MediaView from './components/MediaView/MediaView';
 
 import './PackageView.scss';
 import exitImg from '../../../../assets/images/exit.png';
 import editImg from '../../../../assets/images/edit.png';
 
-enum Mode { Rounds, Questions }
+enum Mode { Rounds, Questions, Media }
 
 const PackageView: React.FC = () => {
 	const appDispatch = useDispatch();
@@ -65,8 +66,33 @@ const PackageView: React.FC = () => {
 		return <QuestionItem item={item as Question} isEditMode={isEditMode} />;
 	}
 
+	function getModeLabel(): string {
+		switch (mode) {
+			case Mode.Questions:
+				return localization.questions;
+			case Mode.Rounds:
+				return localization.rounds;
+			case Mode.Media:
+				return 'Media';
+			default:
+				return localization.questions;
+		}
+	}
+
 	function switchMode() {
-		setMode(mode === Mode.Questions ? Mode.Rounds : Mode.Questions);
+		switch (mode) {
+			case Mode.Questions:
+				setMode(Mode.Rounds);
+				break;
+			case Mode.Rounds:
+				setMode(Mode.Questions); //setMode(Mode.Media);
+				break;
+			case Mode.Media:
+				setMode(Mode.Questions);
+				break;
+			default:
+				setMode(Mode.Questions);
+		}
 	}
 
 	function toggleEditMode() {
@@ -128,6 +154,19 @@ const PackageView: React.FC = () => {
 		</div>;
 	}
 
+	function getContentView(packageData: Package): React.ReactNode {
+		switch (mode) {
+			case Mode.Questions:
+				return getQuestionsView(packageData);
+			case Mode.Rounds:
+				return getRoundsView(packageData);
+			case Mode.Media:
+				return zip ? <MediaView zip={zip} /> : <div>No package loaded</div>;
+			default:
+				return getQuestionsView(packageData);
+		}
+	}
+
 	return (
 		<div className='packageView'>
 			<div className='packageView__structure'>
@@ -140,7 +179,7 @@ const PackageView: React.FC = () => {
 						<img src={exitImg} alt='Exit' />
 					</button>
 
-					<button
+					{/* <button
 						type='button'
 						className='standard imageButton'
 						onClick={onSave}
@@ -162,14 +201,14 @@ const PackageView: React.FC = () => {
 						onClick={toggleEditMode}
 						title={localization.enableEditMode}>
 						<img src={editImg} alt='Edit' />
-					</button>
+					</button> */}
 
 					<button
 						type='button'
 						className='standard imageButton modes'
 						title={localization.viewMode}
 						onClick={switchMode}>
-						{mode === Mode.Questions ? localization.questions : localization.rounds}
+						{getModeLabel()}
 					</button>
 
 					<div
@@ -181,10 +220,10 @@ const PackageView: React.FC = () => {
 					</div>
 				</header>
 
-				{mode === Mode.Questions ? getQuestionsView(pack) : getRoundsView(pack)}
+				{getContentView(pack)}
 			</div>
 
-			{currentItem ? <div className='packageView__object'>
+			{currentItem && mode !== Mode.Media ? <div className='packageView__object'>
 				{getItemView(currentItem)}
 			</div> : null}
 		</div>
