@@ -55,6 +55,7 @@ const AudioContent: React.FC<AudioContentProps> = ({
 	};
 
 	const onMediaCompleted = () => {
+		console.log(`Audio playback completed: ${audio}`);
 		appDispatch(onMediaEnded({ contentType: 'audio', contentValue: audio }));
 	};
 
@@ -94,6 +95,7 @@ const AudioContent: React.FC<AudioContentProps> = ({
 
 	const load = async () => {
 		try {
+			console.log(`Loading audio: ${audio}`);
 			const response = await fetch(audio);
 
 			if (!response.ok) {

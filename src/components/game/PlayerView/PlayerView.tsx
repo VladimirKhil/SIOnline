@@ -43,7 +43,7 @@ interface PlayerViewProps {
 
 const mapStateToProps = (state: State) => ({
 	isSelectionEnabled: state.room.selection.isEnabled,
-	decisionTimer: state.room.timers.decision,
+	decisionTimer: state.room2.timers.decision,
 	showVideoAvatars: state.settings.showVideoAvatars,
 	windowWidth: state.ui.windowWidth,
 	windowHeight: state.ui.windowHeight,

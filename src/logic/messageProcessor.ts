@@ -5,7 +5,6 @@ import State from '../state/State';
 import DataContext from '../model/DataContext';
 import * as RoomActions from '../state/room/RoomActions';
 import ChatMessage from '../model/ChatMessage';
-import roomActionCreators from '../state/room/roomActionCreators';
 import Account from '../model/Account';
 import Sex from '../model/enums/Sex';
 import PlayerStates, { parsePlayerStatesFromString } from '../model/enums/PlayerStates';
@@ -134,7 +133,6 @@ function onQuestionAnswers(controller: ClientController, args: string[]) {
 
 const viewerHandler = (
 	controller: ClientController,
-	dispatch: Dispatch<any>,
 	appDispatch: AppDispatch,
 	state: State,
 	args: string[]) => {
@@ -941,7 +939,7 @@ const viewerHandler = (
 				&& args[2] === 'GO'
 				&& args[4] === '-2') {
 				const leftSeconds = parseInt(args[3], 10) / 10;
-				roomActionCreators.showLeftSeconds(leftSeconds, appDispatch);
+				controller.onAutomaticGameTimer(leftSeconds);
 			} else if (args.length > 2) {
 				const timerIndex = parseInt(args[1], 10);
 				const timerCommand = args[2];
@@ -962,7 +960,7 @@ const viewerHandler = (
 						break;
 
 					case 'USER_PAUSE':
-						dispatch(roomActionCreators.pauseTimer(timerIndex, timerArgument, true));
+						controller.onTimerUserPause(timerIndex, timerArgument);
 						break;
 
 					case 'RESUME':
@@ -970,7 +968,7 @@ const viewerHandler = (
 						break;
 
 					case 'USER_RESUME':
-						dispatch(roomActionCreators.resumeTimer(timerIndex, true));
+						controller.onTimerUserResume(timerIndex);
 						break;
 
 					case 'MAXTIME':
@@ -1283,7 +1281,7 @@ const processSystemMessage: ActionCreator<ThunkAction<void, State, DataContext, 
 		const { role } = state.room2;
 		const args = message.Text.split('\n');
 
-		viewerHandler(controller, dispatch, appDispatch, state, args);
+		viewerHandler(controller, appDispatch, state, args);
 
 		if (role === Role.Player) {
 			playerHandler(controller, args);

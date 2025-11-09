@@ -2,8 +2,6 @@ import { AnyAction, Reducer } from 'redux';
 import RoomState, { initialState } from './RoomState';
 import { KnownRoomAction, RoomActionTypes } from './RoomActions';
 import { removeS } from '../../utils/RecordExtensions';
-import { updateTimers } from '../../utils/TimerInfoHelpers';
-import TimerStates from '../../model/enums/TimeStates';
 
 const roomReducer: Reducer<RoomState> = (state: RoomState = initialState, anyAction: AnyAction): RoomState => {
 	const action = anyAction as KnownRoomAction;
@@ -159,65 +157,6 @@ const roomReducer: Reducer<RoomState> = (state: RoomState = initialState, anyAct
 				selection: {
 					isEnabled: true,
 				},
-			};
-
-		case RoomActionTypes.RunTimer:
-			return {
-				...state,
-				timers: updateTimers(state.timers, action.timerIndex, timer => ({
-					state: TimerStates.Running,
-					isPausedByUser: action.runByUser ? false : timer.isPausedByUser,
-					isPausedBySystem: !action.runByUser ? false : timer.isPausedBySystem,
-					maximum: action.maximumTime,
-					value: 0
-				}))
-			};
-
-		case RoomActionTypes.PauseTimer:
-			return {
-				...state,
-				timers: updateTimers(state.timers, action.timerIndex, timer => ({
-					...timer,
-					state: timer.state === TimerStates.Running ? TimerStates.Paused : timer.state,
-					isPausedByUser: action.pausedByUser ? true : timer.isPausedByUser,
-					isPausedBySystem: !action.pausedByUser ? true : timer.isPausedBySystem,
-					value: timer.state === TimerStates.Running ? action.currentTime : timer.value
-				}))
-			};
-
-		case RoomActionTypes.ResumeTimer:
-			return {
-				...state,
-				timers: updateTimers(state.timers, action.timerIndex, timer => ({
-					...timer,
-					state: timer.state === TimerStates.Paused ||
-						(!action.runByUser && !timer.isPausedByUser) // For timeIndex 1 resume command is used to start the timer
-							? TimerStates.Running
-							: timer.state,
-					isPausedByUser: action.runByUser ? false : timer.isPausedByUser,
-					isPausedBySystem: !action.runByUser ? false : timer.isPausedBySystem
-				}))
-			};
-
-		case RoomActionTypes.StopTimer:
-			return {
-				...state,
-				timers: updateTimers(state.timers, action.timerIndex, timer => ({
-					...timer,
-					state: TimerStates.Stopped,
-					isPausedByUser: false,
-					isPausedBySystem: true,
-					value: 0
-				}))
-			};
-
-		case RoomActionTypes.TimerMaximumChanged:
-			return {
-				...state,
-				timers: updateTimers(state.timers, action.timerIndex, timer => ({
-					...timer,
-					maximum: action.maximumTime
-				}))
 			};
 
 		case RoomActionTypes.HintChanged:

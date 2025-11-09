@@ -129,6 +129,11 @@ import {
 	showMediaPreloadProgress,
 	setRoundsNames,
 	setShowMainTimer,
+	runTimer,
+	pauseTimer,
+	resumeTimer,
+	stopTimer,
+	timerMaximumChanged,
 } from '../state/room2Slice';
 
 import PersonInfo from '../model/PersonInfo';
@@ -391,6 +396,10 @@ export default class ClientController {
 
 	onAskValidate(playerIndex: number, answer: string) {
 		this.appDispatch(askValidation({ playerIndex, answer }));
+	}
+
+	onAutomaticGameTimer(leftSeconds: number) {
+		roomActionCreators.showLeftSeconds(leftSeconds, this.appDispatch);
 	}
 
 	onAvatarChanged(personName: string, contentType: string, uri: string) {
@@ -1218,6 +1227,14 @@ export default class ClientController {
 		this.playGameSound(GameSound.ROUND_TIMEOUT);
 	}
 
+	onTimerUserPause(timerIndex: number, timerArgument: number) {
+		this.appDispatch(pauseTimer({ timerIndex, currentTime: timerArgument, pausedByUser: true }));
+	}
+
+	onTimerUserResume(timerIndex: number) {
+		this.appDispatch(resumeTimer({ timerIndex, runByUser: true }));
+	}
+
 	onValidation(
 		header: string,
 		name: string,
@@ -1402,7 +1419,7 @@ export default class ClientController {
 
 	onEndPressButtonByTimeout() {
 		this.appDispatch(canPressChanged(false));
-		this.dispatch(roomActionCreators.stopTimer(1));
+		this.appDispatch(stopTimer(1));
 		this.playGameSound(GameSound.QUESTION_NOANSWERS);
 	}
 
@@ -1435,7 +1452,7 @@ export default class ClientController {
 		this.appDispatch(showRoundTable());
 		this.appDispatch(stopAudio());
 		this.appDispatch(canPressChanged(false));
-		this.dispatch(roomActionCreators.stopTimer(1));
+		this.appDispatch(stopTimer(1));
 	}
 
 	onTableCaption(caption: string) {
@@ -1483,7 +1500,7 @@ export default class ClientController {
 			this.appDispatch(showmanReplicChanged(''));
 			this.dispatch(roomActionCreators.afterQuestionStateChanged(false));
 			this.appDispatch(canPressChanged(false));
-			this.dispatch(roomActionCreators.stopTimer(1));
+			this.appDispatch(stopTimer(1));
 		} else {
 			this.dispatch(captionChanged(localization.roundThemes));
 		}
@@ -1505,7 +1522,7 @@ export default class ClientController {
 	}
 
 	onTimerMaximumChanged(timerIndex: number, maximum: number) {
-		this.dispatch(roomActionCreators.timerMaximumChanged(timerIndex, maximum));
+		this.appDispatch(timerMaximumChanged({ timerIndex, maximumTime: maximum }));
 	}
 
 	onPlayersVisibilityChanged(isVisible: boolean) {
@@ -1513,7 +1530,7 @@ export default class ClientController {
 	}
 
 	onTimerRun(timerIndex: number, timerArgument: number, timerPersonIndex: number | null) {
-		this.dispatch(roomActionCreators.runTimer(timerIndex, timerArgument, false));
+		this.appDispatch(runTimer({ timerIndex, maximumTime: timerArgument, runByUser: false }));
 
 		if (timerIndex === 2 && timerPersonIndex !== null) {
 			if (timerPersonIndex === -1) {
@@ -1527,15 +1544,15 @@ export default class ClientController {
 	}
 
 	onTimerPause(timerIndex: number, currentTime: number) {
-		this.dispatch(roomActionCreators.pauseTimer(timerIndex, currentTime, false));
+		this.appDispatch(pauseTimer({ timerIndex, currentTime, pausedByUser: false }));
 	}
 
 	onTimerResume(timerIndex: number) {
-		this.dispatch(roomActionCreators.resumeTimer(timerIndex, false));
+		this.appDispatch(resumeTimer({ timerIndex, runByUser: false }));
 	}
 
 	onTimerStop(timerIndex: number) {
-		this.dispatch(roomActionCreators.stopTimer(timerIndex));
+		this.appDispatch(stopTimer(timerIndex));
 
 		if (timerIndex === 2) {
 			this.appDispatch(setShowMainTimer(false));
@@ -1656,9 +1673,9 @@ export default class ClientController {
 	}
 
 	onStop() { // Round finished
-		this.dispatch(roomActionCreators.stopTimer(0));
-		this.dispatch(roomActionCreators.stopTimer(1));
-		this.dispatch(roomActionCreators.stopTimer(2));
+		this.appDispatch(stopTimer(0));
+		this.appDispatch(stopTimer(1));
+		this.appDispatch(stopTimer(2));
 
 		this.appDispatch(showLogo());
 		this.appDispatch(setShowMainTimer(false));
@@ -1742,15 +1759,15 @@ export default class ClientController {
 
 		if (currentTime.length > 2) {
 			if (isPaused) {
-				this.dispatch(roomActionCreators.pauseTimer(0, currentTime[0], true));
-				this.dispatch(roomActionCreators.pauseTimer(1, currentTime[1], true));
-				this.dispatch(roomActionCreators.pauseTimer(2, currentTime[2], true));
+				this.appDispatch(pauseTimer({ timerIndex: 0, currentTime: currentTime[0], pausedByUser: true }));
+				this.appDispatch(pauseTimer({ timerIndex: 1, currentTime: currentTime[1], pausedByUser: true }));
+				this.appDispatch(pauseTimer({ timerIndex: 2, currentTime: currentTime[2], pausedByUser: true }));
 
 				this.pauseLoadTimerIfNeeded();
 			} else {
-				this.dispatch(roomActionCreators.resumeTimer(0, true));
-				this.dispatch(roomActionCreators.resumeTimer(1, true));
-				this.dispatch(roomActionCreators.resumeTimer(2, true));
+				this.appDispatch(resumeTimer({ timerIndex: 0, runByUser: true }));
+				this.appDispatch(resumeTimer({ timerIndex: 1, runByUser: true }));
+				this.appDispatch(resumeTimer({ timerIndex: 2, runByUser: true }));
 
 				this.resumeLoadTimerIfNeeded();
 			}

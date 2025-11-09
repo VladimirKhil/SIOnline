@@ -35,7 +35,7 @@ interface GameTableProps {
 const mapStateToProps = (state: State) => ({
 	isConnected: state.common.isSIHostConnected,
 	mode: state.table.mode,
-	decisionTimer: state.room.timers.decision,
+	decisionTimer: state.room2.timers.decision,
 	caption: state.table.caption,
 	windowWidth: state.ui.windowWidth,
 });

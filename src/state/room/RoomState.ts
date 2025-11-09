@@ -1,5 +1,3 @@
-import Timers from '../../model/Timers';
-import TimerStates from '../../model/enums/TimeStates';
 import StakeModes from '../../client/game/StakeModes';
 
 export default interface RoomState {
@@ -15,8 +13,6 @@ export default interface RoomState {
 		isQuestion: boolean;
 		questionType: string;
 	};
-
-	timers: Timers;
 
 	selection: {
 		isEnabled: boolean;
@@ -67,32 +63,6 @@ export const initialState: RoomState = {
 		themeName: '',
 		isQuestion: false,
 		questionType: '',
-	},
-
-	timers: {
-		round: {
-			state: TimerStates.Stopped,
-			isPausedBySystem: true,
-			isPausedByUser: false,
-			value: 0,
-			maximum: 0,
-		},
-
-		press: {
-			state: TimerStates.Stopped,
-			isPausedBySystem: true,
-			isPausedByUser: false,
-			value: 0,
-			maximum: 0
-		},
-
-		decision: {
-			state: TimerStates.Stopped,
-			isPausedBySystem: true,
-			isPausedByUser: false,
-			value: 0,
-			maximum: 0
-		}
 	},
 
 	selection: {

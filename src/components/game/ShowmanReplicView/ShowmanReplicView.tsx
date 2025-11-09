@@ -24,7 +24,7 @@ interface ShowmanReplicViewProps {
 
 const mapStateToProps = (state: State) => ({
 	all: state.room2.persons.all,
-	decisionTimer: state.room.timers.decision,
+	decisionTimer: state.room2.timers.decision,
 	avatar: state.user.avatar,
 	showVideoAvatars: state.settings.showVideoAvatars,
 });

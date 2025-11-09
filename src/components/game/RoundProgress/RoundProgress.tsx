@@ -17,7 +17,7 @@ interface RoundProgressProps {
 }
 
 const mapStateToProps = (state: State) => ({
-	roundTimer: state.room.timers.round,
+	roundTimer: state.room2.timers.round,
 	roundIndex: state.room.stage.roundIndex,
 	stageName: state.room.stage.name,
 });

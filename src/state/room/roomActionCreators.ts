@@ -6,7 +6,7 @@ import DataContext from '../../model/DataContext';
 import localization from '../../model/resources/localization';
 import { stopAudio, userErrorChanged } from '../commonSlice';
 import { AppDispatch } from '../store';
-import { clearChat, setIsAppellation, setIsPaused, setKicked, setShowMainTimer, showmanReplicChanged } from '../room2Slice';
+import { clearChat, setIsAppellation, setIsPaused, setKicked, setShowMainTimer, showmanReplicChanged, stopTimer } from '../room2Slice';
 import StakeModes from '../../client/game/StakeModes';
 import { clearGameLog } from '../globalActions';
 
@@ -80,9 +80,9 @@ const exitGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (
 	appDispatch(clearChat());
 	appDispatch(setKicked(false));
 
-	dispatch(stopTimer(0));
-	dispatch(stopTimer(1));
-	dispatch(stopTimer(2));
+	appDispatch(stopTimer(0));
+	appDispatch(stopTimer(1));
+	appDispatch(stopTimer(2));
 
 	appDispatch(setIsPaused(false));
 	appDispatch(setIsAppellation(false));
@@ -226,26 +226,6 @@ const changePlayerSum: ActionCreator<ThunkAction<void, State, DataContext, Actio
 	await dataContext.game.setPlayerScore(playerIndex, sum);
 };
 
-const runTimer: ActionCreator<RunActions.RunTimerAction> = (timerIndex: number, maximumTime: number, runByUser: boolean) => ({
-	type: RunActions.RoomActionTypes.RunTimer, timerIndex, maximumTime, runByUser
-});
-
-const pauseTimer: ActionCreator<RunActions.PauseTimerAction> = (timerIndex: number, currentTime: number, pausedByUser: boolean) => ({
-	type: RunActions.RoomActionTypes.PauseTimer, timerIndex, currentTime, pausedByUser
-});
-
-const resumeTimer: ActionCreator<RunActions.ResumeTimerAction> = (timerIndex: number, runByUser: boolean) => ({
-	type: RunActions.RoomActionTypes.ResumeTimer, timerIndex, runByUser
-});
-
-const stopTimer: ActionCreator<RunActions.StopTimerAction> = (timerIndex: number) => ({
-	type: RunActions.RoomActionTypes.StopTimer, timerIndex
-});
-
-const timerMaximumChanged: ActionCreator<RunActions.TimerMaximumChangedAction> = (timerIndex: number, maximumTime: number) => ({
-	type: RunActions.RoomActionTypes.TimerMaximumChanged, timerIndex, maximumTime
-});
-
 const hintChanged: ActionCreator<RunActions.HintChangedAction> = (hint: string | null) => ({
 	type: RunActions.RoomActionTypes.HintChanged, hint
 });
@@ -373,11 +353,6 @@ const roomActionCreators = {
 	selectionEnabled,
 	showLeftSeconds,
 	changePlayerSum,
-	runTimer,
-	pauseTimer,
-	resumeTimer,
-	stopTimer,
-	timerMaximumChanged,
 	hintChanged,
 	startGame,
 	themeNameChanged,

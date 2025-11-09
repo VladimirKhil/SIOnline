@@ -15,6 +15,9 @@ import MessageLevel from '../model/enums/MessageLevel';
 import JoinMode from '../client/game/JoinMode';
 import Account from '../model/Account';
 import Persons from '../model/Persons';
+import Timers from '../model/Timers';
+import TimerInfo from '../model/TimerInfo';
+import TimerStates from '../model/enums/TimeStates';
 
 export enum DialogView {
 	None,
@@ -76,6 +79,7 @@ export interface Room2State {
 	}
 
 	roundsNames: string[];
+	timers: Timers;
 
 	validation: {
 		header: string;
@@ -145,6 +149,32 @@ const initialState: Room2State = {
 	},
 
 	roundsNames: [],
+
+	timers: {
+		round: {
+			state: TimerStates.Stopped,
+			isPausedBySystem: true,
+			isPausedByUser: false,
+			value: 0,
+			maximum: 0,
+		},
+
+		press: {
+			state: TimerStates.Stopped,
+			isPausedBySystem: true,
+			isPausedByUser: false,
+			value: 0,
+			maximum: 0
+		},
+
+		decision: {
+			state: TimerStates.Stopped,
+			isPausedBySystem: true,
+			isPausedByUser: false,
+			value: 0,
+			maximum: 0
+		}
+	},
 
 	validation: {
 		header: '',
@@ -725,6 +755,120 @@ export const room2Slice = createSlice({
 		setShowMainTimer: (state: Room2State, action: PayloadAction<boolean>) => {
 			state.showMainTimer = action.payload;
 		},
+		runTimer: (state: Room2State, action: PayloadAction<{ timerIndex: number, maximumTime: number, runByUser: boolean }>) => {
+			const updateTimer = (timer: TimerInfo): TimerInfo => ({
+				state: TimerStates.Running,
+				isPausedByUser: action.payload.runByUser ? false : timer.isPausedByUser,
+				isPausedBySystem: !action.payload.runByUser ? false : timer.isPausedBySystem,
+				maximum: action.payload.maximumTime,
+				value: 0
+			});
+
+			switch (action.payload.timerIndex) {
+				case 0:
+					state.timers.round = updateTimer(state.timers.round);
+					break;
+				case 1:
+					state.timers.press = updateTimer(state.timers.press);
+					break;
+				case 2:
+					state.timers.decision = updateTimer(state.timers.decision);
+					break;
+				default:
+					break;
+			}
+		},
+		pauseTimer: (state: Room2State, action: PayloadAction<{ timerIndex: number, currentTime: number, pausedByUser: boolean }>) => {
+			const updateTimer = (timer: TimerInfo): TimerInfo => ({
+				...timer,
+				state: timer.state === TimerStates.Running ? TimerStates.Paused : timer.state,
+				isPausedByUser: action.payload.pausedByUser ? true : timer.isPausedByUser,
+				isPausedBySystem: !action.payload.pausedByUser ? true : timer.isPausedBySystem,
+				value: timer.state === TimerStates.Running ? action.payload.currentTime : timer.value
+			});
+
+			switch (action.payload.timerIndex) {
+				case 0:
+					state.timers.round = updateTimer(state.timers.round);
+					break;
+				case 1:
+					state.timers.press = updateTimer(state.timers.press);
+					break;
+				case 2:
+					state.timers.decision = updateTimer(state.timers.decision);
+					break;
+				default:
+					break;
+			}
+		},
+		resumeTimer: (state: Room2State, action: PayloadAction<{ timerIndex: number, runByUser: boolean }>) => {
+			const updateTimer = (timer: TimerInfo): TimerInfo => ({
+				...timer,
+				state: timer.state === TimerStates.Paused ||
+					(!action.payload.runByUser && !timer.isPausedByUser)
+						? TimerStates.Running
+						: timer.state,
+				isPausedByUser: action.payload.runByUser ? false : timer.isPausedByUser,
+				isPausedBySystem: !action.payload.runByUser ? false : timer.isPausedBySystem
+			});
+
+			switch (action.payload.timerIndex) {
+				case 0:
+					state.timers.round = updateTimer(state.timers.round);
+					break;
+				case 1:
+					state.timers.press = updateTimer(state.timers.press);
+					break;
+				case 2:
+					state.timers.decision = updateTimer(state.timers.decision);
+					break;
+				default:
+					break;
+			}
+		},
+		stopTimer: (state: Room2State, action: PayloadAction<number>) => {
+			const updateTimer = (timer: TimerInfo): TimerInfo => ({
+				...timer,
+				state: TimerStates.Stopped,
+				isPausedByUser: false,
+				isPausedBySystem: true,
+				value: 0
+			});
+
+			switch (action.payload) {
+				case 0:
+					state.timers.round = updateTimer(state.timers.round);
+					break;
+				case 1:
+					state.timers.press = updateTimer(state.timers.press);
+					break;
+				case 2:
+					state.timers.decision = updateTimer(state.timers.decision);
+					break;
+				default:
+					break;
+			}
+		},
+		timerMaximumChanged: (state: Room2State, action: PayloadAction<{ timerIndex: number, maximumTime: number }>) => {
+			const updateTimer = (timer: TimerInfo): TimerInfo => ({
+				...timer,
+				maximum: action.payload.maximumTime
+			});
+
+			switch (action.payload.timerIndex) {
+				case 0:
+					state.timers.round = updateTimer(state.timers.round);
+					break;
+				case 1:
+					state.timers.press = updateTimer(state.timers.press);
+					break;
+				case 2:
+					state.timers.decision = updateTimer(state.timers.decision);
+					break;
+				default:
+					break;
+			}
+		},
 	},
 	extraReducers: (builder) => {
 		builder.addCase(sendAnswer.fulfilled, (state) => {
@@ -964,6 +1108,11 @@ export const {
 	setKicked,
 	setRoundsNames,
 	setShowMainTimer,
+	runTimer,
+	pauseTimer,
+	resumeTimer,
+	stopTimer,
+	timerMaximumChanged,
 } = room2Slice.actions;
 
 export default room2Slice.reducer;

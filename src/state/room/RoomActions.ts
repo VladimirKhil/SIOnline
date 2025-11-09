@@ -20,11 +20,6 @@ export const enum RoomActionTypes {
 	SetStakes = 'SET_STAKES',
 	StakeChanged = 'STAKE_CHANGED',
 	SelectionEnabled = 'SELECTION_ENABLED',
-	RunTimer = 'RUN_TIMER',
-	PauseTimer = 'PAUSE_TIMER',
-	ResumeTimer = 'RESUME_TIMER',
-	StopTimer = 'STOP_TIMER',
-	TimerMaximumChanged = 'TIMER_MAXIMUM_CHANGED',
 	HintChanged = 'HINT_CHANGED',
 	ThemeNameChanged = 'THEME_NAME_CHANGED',
 	ChooserChanged = 'CHOOSER_CHANGED',
@@ -68,11 +63,6 @@ export type SetStakesAction = {
 
 export type StakeChangedAction = { type: RoomActionTypes.StakeChanged, stake: number };
 export type SelectionEnabledAction = { type: RoomActionTypes.SelectionEnabled };
-export type RunTimerAction = { type: RoomActionTypes.RunTimer, timerIndex: number, maximumTime: number, runByUser: boolean };
-export type PauseTimerAction = { type: RoomActionTypes.PauseTimer, timerIndex: number, currentTime: number, pausedByUser: boolean };
-export type ResumeTimerAction = { type: RoomActionTypes.ResumeTimer, timerIndex: number, runByUser: boolean };
-export type StopTimerAction = { type: RoomActionTypes.StopTimer, timerIndex: number };
-export type TimerMaximumChangedAction = { type: RoomActionTypes.TimerMaximumChanged, timerIndex: number, maximumTime: number };
 export type HintChangedAction = { type: RoomActionTypes.HintChanged, hint: string | null };
 export type ThemeNameChangedAction = { type: RoomActionTypes.ThemeNameChanged, themeName: string };
 export type ButtonBlockingChangedAction = { type: RoomActionTypes.ButtonBlockingTimeChanged, buttonBlockingTime: number };
@@ -112,11 +102,6 @@ export type KnownRoomAction =
 	| SetStakesAction
 	| StakeChangedAction
 	| SelectionEnabledAction
-	| RunTimerAction
-	| PauseTimerAction
-	| ResumeTimerAction
-	| StopTimerAction
-	| TimerMaximumChangedAction
 	| HintChangedAction
 	| ThemeNameChangedAction
 	| ButtonBlockingChangedAction

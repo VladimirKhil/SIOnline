@@ -15,7 +15,7 @@ import Path from './model/enums/Path';
 import { navigate } from './utils/Navigator';
 import onlineActionCreators from './state/online/onlineActionCreators';
 import { changeLogin } from './state/userSlice';
-import { setName, setPackageType, setRole, setPlayersCount, setType } from './state/gameSlice';
+import { setName, setPackageType, setRole, setPlayersCount, setType, setPassword } from './state/gameSlice';
 import PackageType from './model/enums/PackageType';
 import Role from './model/Role';
 import GameType from './model/GameType';
@@ -164,7 +164,7 @@ let isProcessingQuestion = false;
 let preparedAnswer: string | null = null;
 let canPressButton = false;
 
-async function callOpenAI(question: string): Promise<string> {
+async function callOpenAI(question: string, options?: string[], themeName?: string, themeComment?: string): Promise<string> {
 	const apiKey = process.env.OPENAI_API_KEY;
 
 	if (!apiKey) {
@@ -175,9 +175,33 @@ async function callOpenAI(question: string): Promise<string> {
 	try {
 		const openai = new OpenAI({ apiKey });
 
-		const prompt = 'You are an expert trivia player. Answer this trivia question with just the answer - ' +
-			'no explanations, no reasoning, just the answer. If you are not at least 90% confident in your answer, ' +
-			'respond with exactly "-".\n\nQuestion: ' + question + '\n\nAnswer:';
+		// Build context information
+		let contextInfo = '';
+		if (themeName) {
+			contextInfo = `\n\nContext:\nTheme: ${themeName}`;
+			if (themeComment) {
+				contextInfo += `\nTheme comment: ${themeComment}`;
+			}
+		}
+
+		let prompt: string;
+
+		if (options && options.length > 0) {
+			// Multiple choice mode - provide options to choose from
+			const optionsList = options.map((opt, idx) => `${idx + 1}. ${opt}`).join('\n');
+			prompt = 'You are an expert trivia player. Answer this multiple choice trivia question by selecting the correct option. ' +
+				'Respond with ONLY the exact text of the correct answer option (without the number). ' +
+				'If you are not at least 90% confident, respond with exactly "-".' +
+				contextInfo +
+				`\n\nQuestion: ${question}\n\nOptions:\n${optionsList}\n\nAnswer:`;
+		} else {
+			// Free-form answer mode
+			prompt = 'You are an expert trivia player. Answer this trivia question with just the answer - ' +
+				'no explanations, no reasoning, just the answer. If you are not at least 90% confident in your answer, ' +
+				'respond with exactly "-".' +
+				contextInfo +
+				'\n\nQuestion: ' + question + '\n\nAnswer:';
+		}
 
 		console.log('\x1b[33mAsking OpenAI...\x1b[0m');
 
@@ -280,7 +304,7 @@ async function initializeApp() {
 		}
 	}
 
-	async function startThinkingOnQuestion(questionText: string): Promise<void> {
+	async function startThinkingOnQuestion(questionText: string, answerOptions?: string[], themeName?: string, themeComment?: string): Promise<void> {
 		// Clear any existing timeout
 		if (questionTimeout) {
 			clearTimeout(questionTimeout);
@@ -295,7 +319,15 @@ async function initializeApp() {
 		isProcessingQuestion = true;
 		preparedAnswer = null;
 
-		console.log('\x1b[33m> Starting to think on question...\x1b[0m');
+		if (answerOptions && answerOptions.length > 0) {
+			console.log(`\x1b[33m> Starting to think on question with ${answerOptions.length} options...\x1b[0m`);
+		} else {
+			console.log('\x1b[33m> Starting to think on question...\x1b[0m');
+		}
+
+		if (themeName) {
+			console.log(`\x1b[33m> Theme: ${themeName}${themeComment ? ` (${themeComment})` : ''}\x1b[0m`);
+		}
 
 		// Set up 5-second timeout
 		const timeoutPromise = new Promise<string>((resolve) => {
@@ -308,7 +340,7 @@ async function initializeApp() {
 		try {
 			// Race between OpenAI response and timeout
 			const answer = await Promise.race([
-				callOpenAI(questionText),
+				callOpenAI(questionText, answerOptions, themeName, themeComment),
 				timeoutPromise
 			]);
 
@@ -354,20 +386,37 @@ async function initializeApp() {
 		}
 
 		let optionIndex = Math.floor(Math.random() * availableOptions.length);
+		let matchType = 'random';
 
 		if (preparedAnswer && preparedAnswer !== '-') {
-			// If we have a prepared answer, try to find it in the options
-			for (let i = 0; i < availableOptions.length; i++) {
-				if (availableOptions[i].content.value.toLowerCase() === preparedAnswer.toLowerCase()) {
+			// Try to find exact match first
+			for (let i = 0; i < availableOptions.length; i += 1) {
+				if (availableOptions[i].content.value.toLowerCase().trim() === preparedAnswer.toLowerCase().trim()) {
 					optionIndex = i;
+					matchType = 'exact';
 					break;
+				}
+			}
+
+			// If no exact match, try partial match (AI answer contains option or vice versa)
+			if (matchType === 'random') {
+				for (let i = 0; i < availableOptions.length; i += 1) {
+					const optionText = availableOptions[i].content.value.toLowerCase().trim();
+					const answerText = preparedAnswer.toLowerCase().trim();
+
+					if (optionText.includes(answerText) || answerText.includes(optionText)) {
+						optionIndex = i;
+						matchType = 'partial';
+						break;
+					}
 				}
 			}
 		}
 
-		console.log(`\x1b[33m> Selecting answer option: ${availableOptions[optionIndex].label}\x1b[0m`);
+		const selectedOption = availableOptions[optionIndex];
+		console.log(`\x1b[33m> Selecting answer option (${matchType}): ${selectedOption.label} - ${selectedOption.content.value}\x1b[0m`);
 
-		const { label } = availableOptions[optionIndex];
+		const { label } = selectedOption;
 		store.dispatch(selectAnswerOption(label) as unknown as Action);
 	}
 
@@ -420,7 +469,7 @@ async function initializeApp() {
 		store.dispatch(sendAllIn() as unknown as Action);
 	}
 
-	store.subscribe(() => {
+	store.subscribe(async () => {
 		const state = store.getState();
 		const tempOldState = oldState;
 		oldState = state;
@@ -446,6 +495,9 @@ async function initializeApp() {
 		}
 
 		if (state.room2.stage.decisionType !== tempOldState.room2.stage.decisionType) {
+			// add small delay here to simulate thinking time
+			await new Promise(resolve => setTimeout(resolve, 1000));
+
 			switch (state.room2.stage.decisionType) {
 				case DecisionType.Choose:
 					if (state.table.mode === TableMode.RoundTable) {
@@ -489,8 +541,16 @@ async function initializeApp() {
 			state.table.content[0].content[0].type === ContentType.Text) {
 			const questionText = state.table.content[0].content[0].value;
 
-			// Start thinking on the question immediately
-			startThinkingOnQuestion(questionText);
+			if (state.table.layoutMode !== LayoutMode.AnswerOptions) {
+				// Get theme context
+				const { themeName, themeIndex } = state.room.stage;
+				const themeComment = themeIndex >= 0 && themeIndex < state.table.roundInfo.length
+					? state.table.roundInfo[themeIndex].comment
+					: undefined;
+
+				// Start thinking on the question immediately for non-answer-options mode
+				startThinkingOnQuestion(questionText, undefined, themeName, themeComment);
+			}
 		}
 
 		const { header, text, hint, caption } = state.table;
@@ -502,7 +562,11 @@ async function initializeApp() {
 					break;
 
 				case TableMode.GameThemes:
-					console.log(`\x1b[36mGame themes\x1b[0m: ${state.table.gameThemes.join(', ')}`);
+					console.log('\x1b[36mGame themes\x1b[0m:');
+
+					for (const theme of state.table.roundInfo) {
+						console.log(theme.name);
+					}
 					break;
 
 				case TableMode.Content:
@@ -579,7 +643,7 @@ async function initializeApp() {
 					console.log('\x1b[36mAnswer options:\x1b[0m');
 				}
 
-				for (let i = 0; i < state.table.answerOptions.length; i++) {
+				for (let i = 0; i < state.table.answerOptions.length; i += 1) {
 					const option = state.table.answerOptions[i];
 
 					if (option.state === ItemState.Normal && (tempOldState.table.answerOptions[i]?.state !== ItemState.Normal ||
@@ -590,6 +654,30 @@ async function initializeApp() {
 					} else if (option.state === ItemState.Right && tempOldState.table.answerOptions[i]?.state !== ItemState.Right) {
 						console.log(`\x1b[32m${option.label}\x1b[0m: (correct)`);
 					}
+				}
+
+				// Check if all answer options have been populated (last option arrived)
+				const allOptionsPopulated = state.table.answerOptions.length > 0 &&
+					state.table.answerOptions.every(option => option.content.value.length > 0);
+
+				const wasAllOptionsPopulated = tempOldState.table.answerOptions.length > 0 &&
+					tempOldState.table.answerOptions.every(option => option.content.value.length > 0);
+
+				// If all options just became populated, start thinking
+				if (allOptionsPopulated && !wasAllOptionsPopulated && state.table.content.length > 0 &&
+					state.table.content[0].content.length > 0 &&
+					state.table.content[0].content[0].type === ContentType.Text) {
+					const questionText = state.table.content[0].content[0].value;
+					const options = state.table.answerOptions.map(opt => opt.content.value);
+
+					// Get theme context
+					const { themeName, themeIndex } = state.room.stage;
+					const themeComment = themeIndex >= 0 && themeIndex < state.table.roundInfo.length
+						? state.table.roundInfo[themeIndex].comment
+						: undefined;
+
+					console.log('\x1b[33m> All answer options received, starting to think...\x1b[0m');
+					startThinkingOnQuestion(questionText, options, themeName, themeComment);
 				}
 			}
 		}
@@ -638,7 +726,8 @@ async function initializeApp() {
 		store.dispatch(newGame());
 
 		// Configure game settings
-		store.dispatch(setName('Simulated Game'));
+		store.dispatch(setName('Simulated Game ' + new Date().toISOString()));
+		store.dispatch(setPassword('Password'));
 		store.dispatch(setRole(Role.Player));
 		store.dispatch(setPlayersCount(3));
 		store.dispatch(setType(GameType.Classic));
@@ -646,7 +735,7 @@ async function initializeApp() {
 		console.log('Game configured as: Classic game with 3 players');
 
 		// Step 4: Create a new game (single player vs bots)
-		store.dispatch(onlineActionCreators.createNewGame(true, store.dispatch) as unknown as Action);
+		store.dispatch(onlineActionCreators.createNewGame(false, store.dispatch) as unknown as Action);
 
 		// Wait for game creation
 		await new Promise(resolve => setTimeout(resolve, 5000));
@@ -657,6 +746,20 @@ async function initializeApp() {
 		if (currentState.ui.navigation.path !== Path.Room) {
 			throw new Error(`Expected path to be ${Path.Room}, but got ${currentState.ui.navigation.path}`);
 		}
+
+		// Add tables for 2 more players (we already have 1 player - the bot player)
+		console.log('Adding bot players...');
+
+		// Add first bot
+		await dataContext.game.changeTableType(false, 1);
+
+		// Add second bot
+		await dataContext.game.changeTableType(false, 2);
+
+		// Wait a bit for bots to be ready
+		await new Promise(resolve => setTimeout(resolve, 2000));
+
+		console.log('Bot players added, ready to start game');
 	}
 
 	// Start the simulation

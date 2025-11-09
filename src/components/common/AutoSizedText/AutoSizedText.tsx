@@ -34,8 +34,13 @@ export class AutoSizedText extends React.Component<AutoSizedTextProps> {
 		window.addEventListener('resize', this.resizeText);
 	}
 
-	componentDidUpdate(): void {
-		this.resizeText();
+	componentDidUpdate(prevProps: AutoSizedTextProps): void {
+		if (prevProps.children !== this.props.children ||
+			prevProps.maxFontSize !== this.props.maxFontSize ||
+			prevProps.minFontSize !== this.props.minFontSize ||
+			prevProps.fontsReady !== this.props.fontsReady) {
+			this.resizeText();
+		}
 	}
 
 	componentWillUnmount(): void {
