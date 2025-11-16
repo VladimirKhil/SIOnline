@@ -14,7 +14,9 @@
 
 	&__content {
 		overflow-y: auto;
+		overflow-x: hidden;
 		padding: 10px 0;
+		flex: 1;
 	}
 
 	&__empty {
@@ -32,10 +34,11 @@
 
 		&--images {
 			grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+			align-items: start;
 		}
 
 		&--audio {
-			grid-template-columns: 1fr;
+			grid-template-columns: repeat(auto-fill, minmax(350px, 350px));
 		}
 
 		&--video {
@@ -54,6 +57,9 @@
 		background: rgb(56, 56, 56);
 		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 		transition: box-shadow 0.2s ease;
+		display: flex;
+		flex-direction: column;
+		height: 280px;
 
 		&:hover {
 			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
@@ -66,7 +72,10 @@
 			font-size: 12px;
 			font-weight: 500;
 			color: white;
-			word-break: break-all;
+			height: 36px;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
 		}
 
 		&__content {
@@ -74,24 +83,32 @@
 			display: flex;
 			align-items: center;
 			justify-content: center;
-			min-height: 120px;
+			flex: 1;
+			overflow: hidden;
 
 			img {
 				max-width: 100%;
-				max-height: 200px;
+				max-height: 100%;
 				object-fit: contain;
 			}
 
-			audio, video {
+			audio {
+				width: 100%;
+				max-width: 100%;
+				height: auto;
+			}
+
+			video {
 				width: 100%;
 				max-width: 100%;
 			}
 
 			iframe {
 				width: 100%;
-				height: 300px;
+				height: 100%;
 				border: none;
 				border-radius: 4px;
+				overflow: hidden;
 			}
 		}
 	}

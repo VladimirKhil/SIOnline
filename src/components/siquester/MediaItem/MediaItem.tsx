@@ -12,8 +12,51 @@ interface MediaItemProps {
 
 const MediaItem: React.FC<MediaItemProps> = ({ src, type, isRef }) => {
 	const siquester = useAppSelector(state => state.siquester);
-	const { zip, pack } = siquester;
+	const { zip } = siquester;
 	const [item, setItem] = React.useState<string | undefined>(undefined);
+
+	function getMimeType(filename: string, mediaType: 'image' | 'audio' | 'video' | 'html'): string {
+		const ext = filename.toLowerCase().split('.').pop() || '';
+
+		if (mediaType === 'image') {
+			const imageTypes: Record<string, string> = {
+				'png': 'image/png',
+				'jpg': 'image/jpeg',
+				'jpeg': 'image/jpeg',
+				'gif': 'image/gif',
+				'webp': 'image/webp',
+				'svg': 'image/svg+xml',
+				'bmp': 'image/bmp'
+			};
+			return imageTypes[ext] || 'image/png';
+		}
+
+		if (mediaType === 'audio') {
+			const audioTypes: Record<string, string> = {
+				'mp3': 'audio/mpeg',
+				'wav': 'audio/wav',
+				'ogg': 'audio/ogg',
+				'm4a': 'audio/mp4',
+				'aac': 'audio/aac',
+				'flac': 'audio/flac'
+			};
+			return audioTypes[ext] || 'audio/mpeg';
+		}
+
+		if (mediaType === 'video') {
+			const videoTypes: Record<string, string> = {
+				'mp4': 'video/mp4',
+				'webm': 'video/webm',
+				'ogg': 'video/ogg',
+				'avi': 'video/x-msvideo',
+				'mov': 'video/quicktime',
+				'wmv': 'video/x-ms-wmv'
+			};
+			return videoTypes[ext] || 'video/mp4';
+		}
+
+		return '';
+	}
 
 	function getSourceFolderName() {
 		switch (type) {
@@ -36,7 +79,8 @@ const MediaItem: React.FC<MediaItemProps> = ({ src, type, isRef }) => {
 
 	async function loadItem(file: JSZip, isMounted: React.MutableRefObject<boolean>) {
 		const sourceFolder = getSourceFolderName();
-		const data = file.file(sourceFolder + '/' + encodeURIComponent(src));
+		// src is already encoded from the ZIP file path, so don't encode again
+		const data = file.file(sourceFolder + '/' + src);
 
 		if (!data) {
 			return;
@@ -59,22 +103,8 @@ const MediaItem: React.FC<MediaItemProps> = ({ src, type, isRef }) => {
 			return;
 		}
 
-		switch (type) {
-			case 'image':
-				setItem(`data:image/png;base64,${base64}`);
-				break;
-
-			case 'audio':
-				setItem(`data:audio/mp3;base64,${base64}`);
-				break;
-
-			case 'video':
-				setItem(`data:video/mp4;base64,${base64}`);
-				break;
-
-			default:
-				break;
-		}
+		const mimeType = getMimeType(src, type);
+		setItem(`data:${mimeType};base64,${base64}`);
 	}
 
 	React.useEffect(() => {
@@ -87,7 +117,7 @@ const MediaItem: React.FC<MediaItemProps> = ({ src, type, isRef }) => {
 		return () => {
 			isMounted.current = false;
 		};
-	}, [pack]);
+	}, [zip, src, type, isRef]);
 
 	const source = isRef ? item : src;
 
@@ -97,27 +127,27 @@ const MediaItem: React.FC<MediaItemProps> = ({ src, type, isRef }) => {
 				return <img src={source} alt='Media' className='packageView__question__content__item' />;
 
 			case 'audio':
-				return <audio src={source} controls className='packageView__question__content__item' />;
+				return <audio src={source} controls className='packageView__question__content__item packageView__question__content__item--audio' />;
 
 			case 'video':
 				return <video src={source} controls className='packageView__question__content__item' />;
 
-			case 'html':
-				return isRef
-					? <iframe
-						srcDoc={source}
-						title='HTML content'
-						className='packageView__question__content__item'
-						sandbox='allow-scripts allow-same-origin'
-					/>
-					: <iframe
-						src={source}
-						title='HTML content'
-						className='packageView__question__content__item'
-						sandbox='allow-scripts allow-same-origin'
-					/>;
-
-			default:
+		case 'html':
+			return isRef
+				? <iframe
+					srcDoc={source}
+					title='HTML content'
+					className='packageView__question__content__item'
+					sandbox='allow-scripts allow-same-origin'
+					scrolling='no'
+				/>
+				: <iframe
+					src={source}
+					title='HTML content'
+					className='packageView__question__content__item'
+					sandbox='allow-scripts allow-same-origin'
+					scrolling='no'
+				/>;			default:
 				return null;
 		}
 	}

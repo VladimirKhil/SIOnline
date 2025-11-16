@@ -3,6 +3,7 @@
 	flex-direction: column;
 	width: 100%;
 	overflow: hidden;
+	animation: welcomeFadeIn 0.6s ease-out;
 
 	.table-welcome__content {
 		flex: 1 0 0;
@@ -11,6 +12,7 @@
 		justify-content: center;
 		align-items: center;
 		overflow: hidden;
+		background: radial-gradient(ellipse at center, rgba(13, 64, 205, 0.1) 0%, transparent 70%);
 	}
 
 	.table-welcome__buttons {
@@ -19,9 +21,42 @@
 		display: flex;
 		flex-direction: row;
 		justify-content: space-around;
+		animation: buttonSlideUp 0.5s ease-out 0.3s backwards;
 
 		button {
 			width: 30%;
+			transition: all 0.3s ease;
+			
+			&:hover:not(:disabled) {
+				transform: translateY(-2px);
+				box-shadow: 0 4px 12px rgba(13, 64, 205, 0.4);
+			}
+			
+			&:active:not(:disabled) {
+				transform: translateY(0);
+			}
 		}
+	}
+}
+
+@keyframes welcomeFadeIn {
+	from {
+		opacity: 0;
+		transform: scale(0.98);
+	}
+	to {
+		opacity: 1;
+		transform: scale(1);
+	}
+}
+
+@keyframes buttonSlideUp {
+	from {
+		opacity: 0;
+		transform: translateY(20px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
 	}
 }

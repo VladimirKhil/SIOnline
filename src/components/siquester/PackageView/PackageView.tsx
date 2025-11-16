@@ -73,7 +73,7 @@ const PackageView: React.FC = () => {
 			case Mode.Rounds:
 				return localization.rounds;
 			case Mode.Media:
-				return 'Media';
+				return localization.media;
 			default:
 				return localization.questions;
 		}
@@ -84,12 +84,15 @@ const PackageView: React.FC = () => {
 			case Mode.Questions:
 				setMode(Mode.Rounds);
 				break;
+
 			case Mode.Rounds:
-				setMode(Mode.Questions); //setMode(Mode.Media);
+				setMode(Mode.Media);
 				break;
+
 			case Mode.Media:
 				setMode(Mode.Questions);
 				break;
+
 			default:
 				setMode(Mode.Questions);
 		}

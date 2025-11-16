@@ -59,7 +59,7 @@ function getContent(mode: TableMode) {
 	}
 }
 
-function getCaption(mode: TableMode, caption: string): string | null {
+function getCaption(mode: TableMode, caption: string): string {
 	switch (mode) {
 		case TableMode.GameThemes:
 			return localization.gameThemes;

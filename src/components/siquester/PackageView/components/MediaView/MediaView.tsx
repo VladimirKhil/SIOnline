@@ -26,6 +26,7 @@ const MediaView: React.FC<MediaViewProps> = ({ zip }) => {
 		html: []
 	});
 	const [loading, setLoading] = React.useState(true);
+	const [displayedFiles, setDisplayedFiles] = React.useState<MediaFile[]>([]);
 
 	const loadMediaFiles = async () => {
 		setLoading(true);
@@ -48,7 +49,7 @@ const MediaView: React.FC<MediaViewProps> = ({ zip }) => {
 					files.images.push({
 						name: decodeURIComponent(fileName),
 						type: 'image',
-						path: fileName
+						path: fileName // Keep encoded path for loading
 					});
 				}
 			} else if (relativePath.startsWith('Audio/')) {
@@ -57,7 +58,7 @@ const MediaView: React.FC<MediaViewProps> = ({ zip }) => {
 					files.audio.push({
 						name: decodeURIComponent(fileName),
 						type: 'audio',
-						path: fileName
+						path: fileName // Keep encoded path for loading
 					});
 				}
 			} else if (relativePath.startsWith('Video/')) {
@@ -66,7 +67,7 @@ const MediaView: React.FC<MediaViewProps> = ({ zip }) => {
 					files.video.push({
 						name: decodeURIComponent(fileName),
 						type: 'video',
-						path: fileName
+						path: fileName // Keep encoded path for loading
 					});
 				}
 			} else if (relativePath.startsWith('Html/')) {
@@ -87,12 +88,24 @@ const MediaView: React.FC<MediaViewProps> = ({ zip }) => {
 		});
 
 		setMediaFiles(files);
+		setDisplayedFiles(files[activeTab]);
 		setLoading(false);
 	};
 
 	React.useEffect(() => {
 		loadMediaFiles();
 	}, [zip]);
+
+	React.useEffect(() => {
+		// Clear displayed files when switching tabs
+		setDisplayedFiles([]);
+		// Use a small delay to ensure the previous content is cleared before showing new content
+		const timer = setTimeout(() => {
+			setDisplayedFiles(mediaFiles[activeTab]);
+		}, 0);
+
+		return () => clearTimeout(timer);
+	}, [activeTab, mediaFiles]);
 
 	const getTabLabel = (tab: MediaTab, count: number): string => {
 		switch (tab) {
@@ -112,8 +125,6 @@ const MediaView: React.FC<MediaViewProps> = ({ zip }) => {
 	if (loading) {
 		return <div className="mediaView__loading">Loading media files...</div>;
 	}
-
-	const currentFiles = mediaFiles[activeTab];
 
 	return (
 		<div className="mediaView">
@@ -145,15 +156,15 @@ const MediaView: React.FC<MediaViewProps> = ({ zip }) => {
 			</div>
 
 			<div className="mediaView__content">
-				{currentFiles.length === 0 ? (
+				{displayedFiles.length === 0 ? (
 					<div className="mediaView__empty">
 						No {activeTab} files found in package
 					</div>
 				) : (
 					<div className={`mediaView__grid mediaView__grid--${activeTab}`}>
-						{currentFiles.map((file, index) => (
+						{displayedFiles.map((file, index) => (
 							<div key={index} className="mediaView__item">
-								<div className="mediaView__item__name">
+								<div className="mediaView__item__name" title={file.name}>
 									{file.name}
 								</div>
 								<div className="mediaView__item__content">

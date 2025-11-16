@@ -1,7 +1,7 @@
 @use "../../../scss/variables" as v;
 
 #table .roundTable {
-	text-shadow: 1px 1px 0 #000;
+	text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 	width: 100%;
 	height: 100%;
 	padding: 2px 0;
@@ -35,9 +35,9 @@
 	transform: translate(-100%);
 }
 
-	#table .roundTable .roundTableRow.right {
-		transform: translate(100%);
-	}
+#table .roundTable .roundTableRow.right {
+	transform: translate(100%);
+}
 
 #table .roundTable .roundTableCell {
 	height: 100%;
@@ -46,9 +46,10 @@
 	align-items: center;
 	background-color: transparent;
 	margin: 2px;
-	transition: background-color 1s, transform 0.2s;
+	transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 	overflow: hidden;
 	border: 2px solid transparent;
+	border-radius: 4px;
 }
 
 #table .roundTable .roundTableCell div {
@@ -66,9 +67,9 @@
 
 #table .roundTable .themeHeader {
 	flex: 0 0 40%;
-	background: #0A0E30;
+	background: rgba(255, 255, 255, 0.05);
 	margin: 2px;
-	border: 2px solid #14183E;
+	border: 2px solid rgba(255, 255, 255, 0.15);
 }
 
 #table .roundTable .questHeader {
@@ -76,21 +77,37 @@
 }
 
 #table .roundTable .questHeader.active {
-	background: v.$table-cell-background-color;
-	border-color: v.$table-cell-border-color;
+	background: rgba(255, 255, 255, 0.1);
+	border-color: rgba(255, 255, 255, 0.2);
+	box-shadow: 
+		inset 0 0 20px rgba(255, 255, 255, 0.05),
+		0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 #table .roundTable.selectable .questHeader.active {
 	cursor: pointer;
-	background: v.$table-cell-selectable-background-color;
+	background: rgba(255, 255, 255, 0.15);
+	border-color: rgba(255, 255, 255, 0.25);
 }
 
 #table .roundTable.selectable .questHeader.active:hover {
-	background: v.$table-cell-active-background-color;
+	background: rgba(255, 255, 255, 0.3);
+	border-color: rgba(255, 255, 255, 0.5);
+	box-shadow: 
+		inset 0 0 30px rgba(255, 255, 255, 0.15),
+		0 0 20px rgba(255, 255, 255, 0.3),
+		0 4px 12px rgba(0, 0, 0, 0.4);
+	transform: scale(1.05);
+}
+
+#table .roundTable.selectable .questHeader.active:focus {
+	outline: 2px solid rgba(255, 255, 255, 0.6);
+	outline-offset: 2px;
 }
 
 #table .roundTable.selectable .questHeader.active:active {
-	transform: scale(0.9,0.9);
+	transform: scale(0.95);
+	transition: transform 0.1s;
 }
 
 #table .roundTable .questHeader.editable {
@@ -99,8 +116,10 @@
 
 #table .roundTable .questHeader.editable:hover {
 	background: v.$accept-button-background;
+	border-color: rgba(39, 203, 92, 0.6);
 }
 
 #table .roundTable .questHeader.editable.active:hover {
 	background: v.$reject-button-background;
+	border-color: rgba(206, 32, 19, 0.6);
 }

@@ -2,9 +2,22 @@
 
 #table .finalTable {
     margin: 20px;
+    padding: 0 10px;
     height: calc(100% - 40px);
-    width: 100%;
-    text-shadow: 1px 1px 0 #000;
+    width: calc(100% - 40px);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    animation: finalTableFadeIn 0.5s ease-out;
+}
+
+@keyframes finalTableFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
 }
 
 #table .finalTableCell {
@@ -17,25 +30,71 @@
     flex: 1 0 0;
     overflow: hidden;
 	border: 2px solid transparent;
+	border-radius: 4px;
+	transition: border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+	transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+	transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-    #table .finalTableCell.blink {
-        animation: blink;
-        animation-duration: 1s;
-        animation-fill-mode: forwards;
-        color: darkblue;
-    }
+#table .finalTableCell.blink {
+    animation: finalCellBlink 1s ease-in-out forwards;
+}
 
-    #table .finalTable .finalTableCell.active {
-		background: v.$table-cell-background-color;
-		border-color: v.$table-cell-border-color;
+@keyframes finalCellBlink {
+    0% {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: rgba(255, 255, 255, 0.2);
+        box-shadow: 0 0 0 rgba(255, 255, 255, 0);
     }
+    50% {
+        background: rgba(255, 255, 255, 0.4);
+        border-color: rgba(255, 255, 255, 0.6);
+        box-shadow: 0 0 30px rgba(255, 255, 255, 0.5);
+        transform: scale(1.05);
+    }
+    100% {
+        background: rgba(255, 255, 255, 0.3);
+        border-color: rgba(255, 255, 255, 0.5);
+        box-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
+        transform: scale(1);
+    }
+}
+
+#table .finalTable .finalTableCell.active {
+	background: rgba(255, 255, 255, 0.1);
+	border-color: rgba(255, 255, 255, 0.2);
+	box-shadow: 
+		inset 0 0 20px rgba(255, 255, 255, 0.05),
+		0 2px 8px rgba(0, 0, 0, 0.3);
+}
 
 #table .finalTable.selectable .finalTableCell.active {
-    background: v.$table-cell-selectable-background-color;
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.25);
     cursor: pointer;
 }
 
 #table .finalTable.selectable .finalTableCell.active:hover {
-    background: v.$table-cell-active-background-color;
+    background: rgba(255, 80, 80, 0.3);
+    border-color: rgba(255, 100, 100, 0.5);
+	box-shadow: 
+		inset 0 0 30px rgba(255, 80, 80, 0.15),
+		0 0 25px rgba(255, 100, 100, 0.3),
+		0 4px 12px rgba(0, 0, 0, 0.4);
+	transform: scale(1.05);
+}
+
+#table .finalTable.selectable .finalTableCell.active:focus {
+	outline: 2px solid rgba(255, 255, 255, 0.6);
+	outline-offset: 2px;
+}
+
+#table .finalTable.selectable .finalTableCell.active:active {
+	background: rgba(255, 50, 50, 0.4);
+	border-color: rgba(255, 80, 80, 0.6);
+	box-shadow: 
+		inset 0 0 40px rgba(255, 50, 50, 0.2),
+		0 0 20px rgba(255, 80, 80, 0.4);
+	transform: scale(0.95);
+	transition: transform 0.1s;
 }

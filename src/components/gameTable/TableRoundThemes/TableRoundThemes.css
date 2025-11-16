@@ -1,10 +1,27 @@
 #table .scaleText {
 	transform: scale(0);
-	transition: transform .2s linear;
+	transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
 	width: calc(100% - 10px);
 	height: calc(100% - 10px);
 	margin: 5px;
 	padding: 5px;
+	filter: drop-shadow(0 0 20px rgba(125, 162, 255, 0.4));
+}
+
+#table .scaleText[style*="scale(1)"] {
+	animation: themeGlow 0.5s ease-out;
+}
+
+@keyframes themeGlow {
+	0% {
+		filter: drop-shadow(0 0 5px rgba(125, 162, 255, 0.2));
+	}
+	50% {
+		filter: drop-shadow(0 0 40px rgba(125, 162, 255, 0.8));
+	}
+	100% {
+		filter: drop-shadow(0 0 20px rgba(125, 162, 255, 0.4));
+	}
 }
 
 @media screen and (min-width: 1100px) {

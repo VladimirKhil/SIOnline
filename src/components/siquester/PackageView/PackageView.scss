@@ -10,8 +10,10 @@
 
 	.packageView__structure {
 		flex: 2;
-		overflow: auto;
+		overflow: hidden;
 		margin-right: 10px;
+		display: flex;
+		flex-direction: column;
 
 		.packageView__header {
 			display: flex;
@@ -82,6 +84,8 @@
 			display: flex;
 			flex-direction: column;
 			margin-top: 10px;
+			overflow: auto;
+			flex: 1;
 
 			.packageView__roundInfo__round {
 				height: 50px;
@@ -136,6 +140,8 @@
 
 		.packageView__table {
 			margin-top: 10px;
+			overflow: auto;
+			flex: 1;
 		}
 
 		.packageView__theme {

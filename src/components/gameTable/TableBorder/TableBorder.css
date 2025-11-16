@@ -1,6 +1,8 @@
 #table .tableBorder {
 	flex-grow: 1;
-	border: 10px solid transparent;
+	border: 14px solid transparent;
+	--border-edge-opacity: 0;
+	--border-center-opacity: 1;
 }
 
 #table .tableBorderCentered {
@@ -10,62 +12,141 @@
 	flex-grow: 1;
 }
 
-.tableBorder .topBorder {
+.tableBorder .topBorder,
+.tableBorder .rightBorder,
+.tableBorder .bottomBorder,
+.tableBorder .leftBorder {
 	position: absolute;
-	top: 0;
-	left: auto;
-	right: auto;
-	width: 100%;
-	height: 10px;
-	background-color: #FFFFFF;
+	box-shadow: 
+		0 0 10px rgba(255, 255, 255, 0.3),
+		inset 0 0 5px rgba(255, 255, 255, 0.5);
 }
 
-.tableBorder .topBorder.animate, .tableBorder .bottomBorder.animate {
-	animation-name: animateWidth;
-	animation-fill-mode: forwards;
-	animation-timing-function: linear;
+.tableBorder .topBorder {
+	position: absolute;
+	top: 2px;
+	left: 50%;
+	transform: translateX(-50%);
+	height: 10px;
+	pointer-events: none;
+	-webkit-mask-image: linear-gradient(to left, 
+		rgba(0, 0, 0, var(--border-edge-opacity)) 0%, 
+		rgba(0, 0, 0, var(--border-center-opacity)) 20%, 
+		rgba(0, 0, 0, var(--border-center-opacity)) 8%, 
+		rgba(0, 0, 0, var(--border-edge-opacity)) 100%);
+	mask-image: linear-gradient(to left, 
+		rgba(0, 0, 0, var(--border-edge-opacity)) 0%, 
+		rgba(0, 0, 0, var(--border-center-opacity)) 20%, 
+		rgba(0, 0, 0, var(--border-center-opacity)) 80%, 
+		rgba(0, 0, 0, var(--border-edge-opacity)) 100%);
 }
 
 .tableBorder .rightBorder {
 	position: absolute;
-	right: 0;
-	top: auto;
-	bottom: auto;
-	height: 100%;
+	right: 2px;
+	top: 50%;
+	transform: translateY(-50%);
 	width: 10px;
-	background-color: #FFFFFF;
+	pointer-events: none;
+	-webkit-mask-image: linear-gradient(to top, 
+		rgba(0, 0, 0, var(--border-edge-opacity)) 0%, 
+		rgba(0, 0, 0, var(--border-center-opacity)) 20%, 
+		rgba(0, 0, 0, var(--border-center-opacity)) 80%, 
+		rgba(0, 0, 0, var(--border-edge-opacity)) 100%);
+	mask-image: linear-gradient(to top, 
+		rgba(0, 0, 0, var(--border-edge-opacity)) 0%, 
+		rgba(0, 0, 0, var(--border-center-opacity)) 20%, 
+		rgba(0, 0, 0, var(--border-center-opacity)) 80%, 
+		rgba(0, 0, 0, var(--border-edge-opacity)) 100%);
 }
 
 .tableBorder .bottomBorder {
 	position: absolute;
-	bottom: 0;
-	left: auto;
-	right: auto;
-	width: 100%;
+	bottom: 2px;
+	left: 50%;
+	transform: translateX(-50%);
 	height: 10px;
-	background-color: #FFFFFF;
+	pointer-events: none;
+	-webkit-mask-image: linear-gradient(to left, 
+		rgba(0, 0, 0, var(--border-edge-opacity)) 0%, 
+		rgba(0, 0, 0, var(--border-center-opacity)) 20%, 
+		rgba(0, 0, 0, var(--border-center-opacity)) 80%, 
+		rgba(0, 0, 0, var(--border-edge-opacity)) 100%);
+	mask-image: linear-gradient(to left, 
+		rgba(0, 0, 0, var(--border-edge-opacity)) 0%, 
+		rgba(0, 0, 0, var(--border-center-opacity)) 20%, 
+		rgba(0, 0, 0, var(--border-center-opacity)) 80%, 
+		rgba(0, 0, 0, var(--border-edge-opacity)) 100%);
 }
 
 .tableBorder .leftBorder {
 	position: absolute;
-	left: 0;
-	top: auto;
-	bottom: auto;
-	height: 100%;
+	left: 2px;
+	top: 50%;
+	transform: translateY(-50%);
 	width: 10px;
-	background-color: #FFFFFF;
+	pointer-events: none;
+	-webkit-mask-image: linear-gradient(to top, 
+		rgba(0, 0, 0, var(--border-edge-opacity)) 0%, 
+		rgba(0, 0, 0, var(--border-center-opacity)) 20%, 
+		rgba(0, 0, 0, var(--border-center-opacity)) 80%, 
+		rgba(0, 0, 0, var(--border-edge-opacity)) 100%);
+	mask-image: linear-gradient(to top, 
+		rgba(0, 0, 0, var(--border-edge-opacity)) 0%, 
+		rgba(0, 0, 0, var(--border-center-opacity)) 20%, 
+		rgba(0, 0, 0, var(--border-center-opacity)) 80%, 
+		rgba(0, 0, 0, var(--border-edge-opacity)) 100%);
 }
 
-.tableBorder .leftBorder.animate, .tableBorder .rightBorder.animate {
-	animation-name: animateHeight;
-	animation-fill-mode: forwards;
-	animation-timing-function: linear;
+/* Animated borders with pulsing glow effect - shrink on edges */
+.tableBorder .topBorder.animate, 
+.tableBorder .bottomBorder.animate {
+	animation: 
+		animateWidth linear forwards,
+		pulseBorderHorizontal 1.5s ease-in-out infinite;
+}
+
+.tableBorder .leftBorder.animate, 
+.tableBorder .rightBorder.animate {
+	animation: 
+		animateHeight linear forwards,
+		pulseBorderVertical 1.5s ease-in-out infinite;
 }
 
 @keyframes animateWidth {
-	100% { width: 0; }
+	100% { 
+		width: 0;
+	}
 }
 
 @keyframes animateHeight {
-	100% { height: 0; }
+	100% { 
+		height: 0;
+	}
+}
+
+@keyframes pulseBorderHorizontal {
+	0%, 100% {
+		box-shadow: 
+			0 0 10px rgba(255, 255, 255, 0.3),
+			inset 0 0 5px rgba(255, 255, 255, 0.5);
+	}
+	50% {
+		box-shadow: 
+			0 0 20px rgba(255, 255, 255, 0.5),
+			inset 0 0 10px rgba(255, 255, 255, 0.7);
+	}
+}
+
+@keyframes pulseBorderVertical {
+	0%, 100% {
+		box-shadow: 
+			0 0 10px rgba(255, 255, 255, 0.3),
+			inset 0 0 5px rgba(255, 255, 255, 0.5);
+	}
+	50% {
+		box-shadow: 
+			0 0 20px rgba(255, 255, 255, 0.5),
+			inset 0 0 10px rgba(255, 255, 255, 0.7);
+	}
 }
