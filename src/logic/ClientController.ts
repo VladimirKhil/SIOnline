@@ -63,7 +63,9 @@ import { answerOptions,
 	updateOption,
 	updateOptionState,
 	updateQuestion,
-	appendExternalMediaWarning } from '../state/tableSlice';
+	appendExternalMediaWarning,
+	addRoundTheme,
+	clearRoundThemes } from '../state/tableSlice';
 
 import {
 	ContextView,
@@ -108,6 +110,7 @@ import {
 	setRoomRole,
 	incrementQuestionCounter,
 	resetQuestionCounter,
+	setTheme,
 	setSettingDisplayAnswerOptionsLabels,
 	setSettingFalseStart,
 	setSettingManaged,
@@ -1123,13 +1126,10 @@ export default class ClientController {
 	}
 
 	onRoundThemes(roundThemesNames: string[], playMode: ThemesPlayMode) {
-		if (playMode === ThemesPlayMode.OneByOne) {
-			this.playGameSound(GameSound.ROUND_THEMES, true);
+		if (playMode !== ThemesPlayMode.OneByOne) {
+			const roundThemes: ThemeInfo[] = roundThemesNames.map(t => ({ name: t, comment: '', questions: [] }));
+			this.appDispatch(setRoundThemes(roundThemes));
 		}
-
-		const roundThemes: ThemeInfo[] = roundThemesNames.map(t => ({ name: t, comment: '', questions: [] }));
-
-		this.appDispatch(setRoundThemes(roundThemes));
 
 		if (playMode === ThemesPlayMode.AllTogether) {
 			this.appDispatch(showThemeStack());
@@ -1171,12 +1171,13 @@ export default class ClientController {
 			this.appDispatch(setIsGameStarted(true));
 		}
 
-		if (stage === GameStage.Round || stage === GameStage.Final) {
+		if (stage === GameStage.Round) {
 			this.playGameSound(GameSound.ROUND_BEGIN);
 			const { roundTail } = localization;
 			const roundName = stageName.endsWith(roundTail) ? stageName.substring(0, stageName.length - roundTail.length) : stageName;
 			this.appDispatch(showObject({ header: localization.round, text: roundName, hint: getRuleString(rules), large: true, animate: false }));
 			this.appDispatch(resetQuestionCounter());
+			this.appDispatch(clearRoundThemes());
 
 			if (stage === GameStage.Round) {
 				for	(let i = 0; i < state.room2.persons.players.length; i++) {
@@ -1468,6 +1469,8 @@ export default class ClientController {
 		const themeInfo = state.table.roundInfo[themeIndex];
 
 		if (themeInfo) {
+			this.appDispatch(setTheme({ name: themeInfo.name, comments: themeInfo.comment }));
+
 			if (questionIndex > -1 && questionIndex <= themeInfo.questions.length) {
 				const price = questionPrice > -1 ? questionPrice : themeInfo.questions[questionIndex]; // Can be 0
 				this.dispatch(roomActionCreators.currentPriceChanged(price));
@@ -1493,7 +1496,9 @@ export default class ClientController {
 		}
 	}
 
-	onTheme(themeName: string, animate: boolean) {
+	onTheme(themeName: string, animate: boolean, comments: string, authors: string[], sources: string[]) {
+		this.onThemeInfo(themeName, comments);
+
 		if (!animate) {
 			// TODO: looks like all this is handled by endquestion message, so we can remove this
 			this.appDispatch(playersStateCleared());
@@ -1503,21 +1508,42 @@ export default class ClientController {
 			this.appDispatch(stopTimer(1));
 		} else {
 			this.dispatch(captionChanged(localization.roundThemes));
+			this.playGameSound(GameSound.ROUND_THEMES, true);
+			this.appDispatch(addRoundTheme({ name: themeName, comment: comments }));
 		}
 
-		this.appDispatch(showObject({ header: animate ? '' : localization.theme, text: themeName, hint: '', large: false, animate }));
-		this.dispatch(roomActionCreators.themeNameChanged(themeName));
+		this.appDispatch(showObject({ header: animate ? '' : localization.theme, text: themeName, hint: comments, large: false, animate }));
+
+		if (authors.length > 0) {
+			this.appDispatch(addToChat({
+				sender: localization.themeAuthors,
+				text: authors.join(', '),
+				level: MessageLevel.System,
+			}));
+		}
+
+		if (sources.length > 0) {
+			this.appDispatch(addToChat({
+				sender: localization.themeSources,
+				text: sources.join(', '),
+				level: MessageLevel.System,
+			}));
+		}
 
 		if (this.getState().settings.writeGameLog) {
 			this.appDispatch(addGameLog(`${localization.theme}: ${themeName}`));
 		}
 	}
 
+	onThemeInfo(themeName: string, comments: string) {
+		this.appDispatch(setTheme({ name: themeName, comments }));
+	}
+
 	onQuestion(questionPrice: string) {
-		const { themeName } = this.getState().room.stage;
+		const { theme } = this.getState().room2;
 		this.initQuestion();
-		this.appDispatch(showObject({ header: themeName, text: questionPrice, hint: '', large: true, animate: false }));
-		this.appDispatch(captionChanged(`${themeName}, ${questionPrice}`));
+		this.appDispatch(showObject({ header: theme.name, text: questionPrice, hint: '', large: true, animate: false }));
+		this.appDispatch(captionChanged(`${theme.name}, ${questionPrice}`));
 		this.dispatch(roomActionCreators.currentPriceChanged(questionPrice));
 	}
 

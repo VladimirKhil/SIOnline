@@ -23,7 +23,6 @@ import TableContextView from '../../game/TableContextView/TableContextView';
 import ChatInput from '../../game/ChatInput/ChatInput';
 import MessageLevel from '../../../model/enums/MessageLevel';
 import { userErrorChanged } from '../../../state/commonSlice';
-import { AppDispatch, RootState } from '../../../state/store';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 import { addToChat, DecisionType, DialogView, rejectAnswer, setChatVisibility } from '../../../state/room2Slice';
 import ComplainDialog from '../../panels/ComplainDialog/ComplainDialog';
@@ -38,15 +37,10 @@ import './Room.css';
 import closeSvg from '../../../../assets/images/close.svg';
 
 interface RoomProps {
-	windowWidth: number;
 	isPersonsDialogVisible: boolean;
 	isBannedDialogVisible: boolean;
 	isGameInfoDialogVisible: boolean;
 	isManageGameDialogVisible: boolean;
-	floatingControls: boolean;
-	isConnected: boolean;
-	isConnectedReason: string;
-	avatarViewVisible: boolean;
 
 	onPersonsDialogClose: () => void;
 	onBannedDialogClose: () => void;
@@ -56,16 +50,27 @@ interface RoomProps {
 	clearDecisions: () => void;
 }
 
+function getDialog(dialogView: DialogView) : JSX.Element | null {
+	switch (dialogView) {
+		case DialogView.None:
+			return null;
+
+		case DialogView.Complain:
+			return <ComplainDialog />;
+
+		case DialogView.Report:
+			return <ReportDialog />;
+
+		default:
+			return null;
+	}
+}
+
 const mapStateToProps = (state: State) => ({
-	windowWidth: state.ui.windowWidth,
 	isPersonsDialogVisible: state.room.personsVisible,
 	isBannedDialogVisible: state.room.bannedVisible,
 	isGameInfoDialogVisible: state.room.gameInfoVisible,
 	isManageGameDialogVisible: state.room.manageGameVisible,
-	floatingControls: state.settings.floatingControls,
-	isConnected: state.common.isSIHostConnected,
-	isConnectedReason: state.common.isSIHostConnectedReason,
-	avatarViewVisible: state.room.avatarViewVivible,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
@@ -89,54 +94,67 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	},
 });
 
-function getDialog(dialogView: DialogView) : JSX.Element | null {
-	switch (dialogView) {
-		case DialogView.None:
-			return null;
-
-		case DialogView.Complain:
-			return <ComplainDialog />;
-
-		case DialogView.Report:
-			return <ReportDialog />;
-
-		default:
-			return null;
-	}
-}
-
 export function Room(props: RoomProps) : JSX.Element {
 	const appDispatch = useAppDispatch();
-	const room = useAppSelector((rootState: RootState) => rootState.room2);
-	const settings = useAppSelector((rootState: RootState) => rootState.settings);
-	const ui = useAppSelector((rootState: RootState) => rootState.ui);
-	const { backgroundImageKey } = settings.theme.room;
+
+	// Combine selectors to minimize selector calls
+	const { windowWidth, returnToLobby } = useAppSelector((state) => ({
+		windowWidth: state.ui.windowWidth,
+		returnToLobby: state.ui.navigation.returnToLobby,
+	}));
+
+	const { floatingControls, backgroundImageKey } = useAppSelector((state) => ({
+		floatingControls: state.settings.floatingControls,
+		backgroundImageKey: state.settings.theme.room.backgroundImageKey,
+	}));
+
+	const { isConnected, isConnectedReason } = useAppSelector((state) => ({
+		isConnected: state.common.isSIHostConnected,
+		isConnectedReason: state.common.isSIHostConnectedReason,
+	}));
+
+	const {
+		kicked,
+		chat: { isVisible: chatIsVisible },
+		stage: { decisionType },
+		validation: { queue: { length: validationQueueLength }, header: validationHeader },
+		role,
+		dialogView,
+	} = useAppSelector((state) => ({
+		kicked: state.room2.kicked,
+		chat: { isVisible: state.room2.chat.isVisible },
+		stage: { decisionType: state.room2.stage.decisionType },
+		validation: {
+			queue: { length: state.room2.validation.queue.length },
+			header: state.room2.validation.header,
+		},
+		role: state.room2.role,
+		dialogView: state.room2.dialogView,
+	}));
 
 	React.useEffect(() => {
-		if (room.kicked) {
+		if (kicked) {
 			appDispatch(userErrorChanged(localization.youAreKicked));
-			appDispatch(navigate({ navigation: { path: ui.navigation.returnToLobby ? Path.Lobby : Path.Menu }, saveState: true }));
+			appDispatch(navigate({ navigation: { path: returnToLobby ? Path.Lobby : Path.Menu }, saveState: true }));
 		}
-	}, [room.kicked]);
+	}, [kicked, returnToLobby, appDispatch]);
 
-	const prevPropsRef = React.useRef<RoomProps>();
-
-	React.useEffect(() => {
-		prevPropsRef.current = prevPropsRef.current || props;
-	});
+	const prevConnectionStateRef = React.useRef({ isConnected, isConnectedReason });
 
 	React.useEffect(() => {
-		if (prevPropsRef.current && prevPropsRef.current.isConnected !== props.isConnected) {
-			prevPropsRef.current = props;
-			appDispatch(addToChat({ sender: '', text: props.isConnectedReason, level: MessageLevel.System }));
+		const prevState = prevConnectionStateRef.current;
 
-			if (props.isConnected) {
+		if (prevState.isConnected !== isConnected) {
+			prevConnectionStateRef.current = { isConnected, isConnectedReason };
+			appDispatch(addToChat({ sender: '', text: isConnectedReason, level: MessageLevel.System }));
+
+			if (isConnected) {
 				props.onReconnect();
 			}
 		}
-	}, [props.isConnected]);
+	}, [isConnected, isConnectedReason, appDispatch, props]);
 
-	const isScreenWide = props.windowWidth >= Constants.WIDE_WINDOW_WIDTH; // TODO: try to replace with CSS
+	const isScreenWide = windowWidth >= Constants.WIDE_WINDOW_WIDTH; // TODO: try to replace with CSS
 
 	const onReject = (factor: number) => {
 		appDispatch(rejectAnswer(factor));
@@ -185,7 +203,7 @@ export function Room(props: RoomProps) : JSX.Element {
 							<GameTable />
 							<TableContextView />
 
-							{room.chat.isVisible && !isScreenWide ? (
+							{chatIsVisible && !isScreenWide ? (
 								<div className="compactChatView">
 									<div className='compactChatHeader'>{localization.chat}</div>
 
@@ -211,7 +229,7 @@ export function Room(props: RoomProps) : JSX.Element {
 				</div>
 			</div>
 
-			<div className={`game__mainArea ${props.floatingControls && isScreenWide ? 'floatable' : ''}`}>
+			<div className={`game__mainArea ${floatingControls && isScreenWide ? 'floatable' : ''}`}>
 				{isScreenWide ? <GameChatView /> : null}
 				<SideControlPanel />
 			</div>
@@ -242,15 +260,15 @@ export function Room(props: RoomProps) : JSX.Element {
 				</Dialog>
 			) : null}
 
-			{room.stage.decisionType === DecisionType.Validation &&
-				room.validation.queue.length > 0 &&
+			{decisionType === DecisionType.Validation &&
+				validationQueueLength > 0 &&
 				!isScreenWide &&
-				room.role === Role.Showman ? (
-				<Dialog className='answerValidationDialog' title={room.validation.header} onClose={() => onReject(1.0)}>
+				role === Role.Showman ? (
+				<Dialog className='answerValidationDialog' title={validationHeader} onClose={() => onReject(1.0)}>
 					<AnswerValidation />
 				</Dialog>
 			) : null}
-			{getDialog(room.dialogView)}
+			{getDialog(dialogView)}
 		</section>
 	);
 }

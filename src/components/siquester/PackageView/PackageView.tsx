@@ -179,7 +179,7 @@ const PackageView: React.FC = () => {
 						<img src={exitImg} alt='Exit' />
 					</button>
 
-					{/* <button
+					<button
 						type='button'
 						className='standard imageButton'
 						onClick={onSave}
@@ -201,7 +201,7 @@ const PackageView: React.FC = () => {
 						onClick={toggleEditMode}
 						title={localization.enableEditMode}>
 						<img src={editImg} alt='Edit' />
-					</button> */}
+					</button>
 
 					<button
 						type='button'

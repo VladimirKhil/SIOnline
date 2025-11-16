@@ -1,6 +1,4 @@
 ﻿import * as React from 'react';
-import { connect } from 'react-redux';
-import State from '../../../state/State';
 import TableMode from '../../../model/enums/TableMode';
 import TableLogo from '../TableLogo/TableLogo';
 import TableText from '../TableText/TableText';
@@ -10,7 +8,6 @@ import RoundTable from '../RoundTable/RoundTable';
 import ThemeStack from '../ThemeStack/ThemeStack';
 import AutoSizedText from '../../common/AutoSizedText/AutoSizedText';
 import localization from '../../../model/resources/localization';
-import TimerInfo from '../../../model/TimerInfo';
 import ProgressBar from '../../common/ProgressBar/ProgressBar';
 import { isRunning } from '../../../utils/TimerInfoHelpers';
 import TableContent from '../TableContent/TableContent';
@@ -23,22 +20,6 @@ import Role from '../../../model/Role';
 import { DecisionType } from '../../../state/room2Slice';
 
 import './GameTable.css';
-
-interface GameTableProps {
-	mode: TableMode;
-	isConnected: boolean;
-	decisionTimer: TimerInfo;
-	caption: string;
-	windowWidth: number;
-}
-
-const mapStateToProps = (state: State) => ({
-	isConnected: state.common.isSIHostConnected,
-	mode: state.table.mode,
-	decisionTimer: state.room2.timers.decision,
-	caption: state.table.caption,
-	windowWidth: state.ui.windowWidth,
-});
 
 function getContent(mode: TableMode) {
 	switch (mode) {
@@ -78,8 +59,8 @@ function getContent(mode: TableMode) {
 	}
 }
 
-function getCaption(props: GameTableProps): string | null {
-	switch (props.mode) {
+function getCaption(mode: TableMode, caption: string): string | null {
+	switch (mode) {
 		case TableMode.GameThemes:
 			return localization.gameThemes;
 
@@ -93,40 +74,67 @@ function getCaption(props: GameTableProps): string | null {
 		case TableMode.Object:
 		case TableMode.QuestionType:
 		case TableMode.Statistics:
-			return props.caption ? props.caption : ' ';
+			return caption ? caption : ' ';
 
 		default:
 			return ' ';
 	}
 }
 
-export function GameTable(props: GameTableProps): JSX.Element {
-	const tableState = useAppSelector((state) => state.table);
-	const theme = useAppSelector((state) => state.settings.theme);
-	const room = useAppSelector((state) => state.room2);
-	const caption = getCaption(props);
+export function GameTable(): JSX.Element {
+	// Combine related selectors to minimize selector calls while maintaining granular subscriptions
+	const isConnected = useAppSelector((state) => state.common.isSIHostConnected);
+
+	const { mode, caption: tableCaption, contentHint } = useAppSelector((state) => ({
+		mode: state.table.mode,
+		caption: state.table.caption,
+		contentHint: state.table.contentHint,
+	}));
+
+	const tableTheme = useAppSelector((state) => state.settings.theme.table);
+
+	const {
+		stage: { isGamePaused: isPaused, decisionType, isAppellation },
+		noRiskMode,
+		validation: { queue: { length: validationQueueLength } },
+		role,
+		showMainTimer,
+		isEditTableEnabled,
+		decisionTimer,
+	} = useAppSelector((state) => ({
+		stage: {
+			isGamePaused: state.room2.stage.isGamePaused,
+			decisionType: state.room2.stage.decisionType,
+			isAppellation: state.room2.stage.isAppellation,
+		},
+		noRiskMode: state.room2.noRiskMode,
+		validation: { queue: { length: state.room2.validation.queue.length } },
+		role: state.room2.role,
+		showMainTimer: state.room2.showMainTimer,
+		isEditTableEnabled: state.room2.isEditTableEnabled,
+		decisionTimer: state.room2.timers.decision,
+	}));
+
+	const caption = getCaption(mode, tableCaption);
 	const themeProperties: React.CSSProperties = {};
 
-	if (theme.table.textColor) {
-		themeProperties.color = theme.table.textColor;
+	if (tableTheme.textColor) {
+		themeProperties.color = tableTheme.textColor;
 	}
 
-	if (theme.table.backgroundColor) {
-		themeProperties.backgroundColor = theme.table.backgroundColor;
+	if (tableTheme.backgroundColor) {
+		themeProperties.backgroundColor = tableTheme.backgroundColor;
 	}
 
-	if (theme.table.fontFamily) {
-		themeProperties.fontFamily = theme.table.fontFamily;
+	if (tableTheme.fontFamily) {
+		themeProperties.fontFamily = tableTheme.fontFamily;
 	}
 
-	const isPaused = room.stage.isGamePaused;
-	const { noRiskMode } = room;
+	const shouldShowAnswerValidationInTable = decisionType === DecisionType.Validation &&
+		validationQueueLength > 0 &&
+		role === Role.Player;
 
-	const shouldShowAnswerValidationInTable = room.stage.decisionType === DecisionType.Validation &&
-		room.validation.queue.length > 0 &&
-		room.role === Role.Player;
-
-	const showAppelation = room.stage.isAppellation && !shouldShowAnswerValidationInTable;
+	const showAppelation = isAppellation && !shouldShowAnswerValidationInTable;
 
 	return (
 		<div id="table" style={themeProperties}>
@@ -138,7 +146,7 @@ export function GameTable(props: GameTableProps): JSX.Element {
 			) : null}
 
 			<div className="tableContent">
-				{getContent(props.mode)}
+				{getContent(mode)}
 			</div>
 
 			{shouldShowAnswerValidationInTable ? (
@@ -147,20 +155,20 @@ export function GameTable(props: GameTableProps): JSX.Element {
 				</div>
 			) : null}
 
-			{tableState.contentHint.length > 0 ? <div className='contentHint'>{tableState.contentHint}</div> : null}
+			{contentHint.length > 0 ? <div className='contentHint'>{contentHint}</div> : null}
 
-			{room.showMainTimer ? (
+			{showMainTimer ? (
 				<ProgressBar
 					className={`commonProgress ${caption ? 'captioned' : ''}`}
-					value={1 - (props.decisionTimer.value / props.decisionTimer.maximum)}
-					valueChangeDuration={isRunning(props.decisionTimer) ? (props.decisionTimer.maximum - props.decisionTimer.value) / 10 : 0}
+					value={1 - (decisionTimer.value / decisionTimer.maximum)}
+					valueChangeDuration={isRunning(decisionTimer) ? (decisionTimer.maximum - decisionTimer.value) / 10 : 0}
 				/>
 			) : null}
 
-			{(isPaused && !room.isEditTableEnabled) || showAppelation || !props.isConnected ? (
+			{(isPaused && !isEditTableEnabled) || showAppelation || !isConnected ? (
 				<AutoSizedText
 					maxFontSize={144}
-					className={`pauseLogo tableText tableTextCenter ${props.isConnected ? '' : 'warning'}`}
+					className={`pauseLogo tableText tableTextCenter ${isConnected ? '' : 'warning'}`}
 				>
 					{isPaused ? localization.pause : (showAppelation ? localization.apellation : localization.connectionClosed)}
 				</AutoSizedText>
@@ -169,4 +177,4 @@ export function GameTable(props: GameTableProps): JSX.Element {
 	);
 }
 
-export default connect(mapStateToProps)(GameTable);
+export default GameTable;

@@ -113,6 +113,12 @@ export const tableSlice = createSlice({
 			state.appendText = '';
 			state.prependText = '';
 		},
+		clearRoundThemes: (state: TableState) => {
+			state.roundInfo = [];
+		},
+		addRoundTheme: (state: TableState, action: PayloadAction<{ name: string, comment: string }>) => {
+			state.roundInfo.push({ name: action.payload.name, comment: action.payload.comment, questions: [] });
+		},
 		setRoundThemes: (state: TableState, action: PayloadAction<ThemeInfo[]>) => {
 			state.roundInfo = action.payload;
 		},
@@ -313,6 +319,8 @@ export const {
 	showGameThemes,
 	showObject,
 	showQuestionType,
+	clearRoundThemes,
+	addRoundTheme,
 	setRoundThemes,
 	showThemeStack,
 	setThemesComments,

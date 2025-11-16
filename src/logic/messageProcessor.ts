@@ -795,7 +795,7 @@ const viewerHandler = (
 			controller.onRoundsNames(args.slice(1));
 			break;
 
-		case GameMessages.RoundThemes2: {
+		case GameMessages.RoundThemes2: { // TODO: remove in future versions
 			const playMode = args[1] as ThemesPlayMode;
 			const roundThemes: string[] = [];
 
@@ -908,7 +908,7 @@ const viewerHandler = (
 
 				maxQuestionsInTheme = Math.max(maxQuestionsInTheme, questions.length);
 
-				const newTheme: ThemeInfo = { name: roundInfo[i].name, comment: '', questions };
+				const newTheme: ThemeInfo = { name: roundInfo[i].name, comment: roundInfo[i].comment, questions };
 				newRoundInfo.push(newTheme);
 
 				index++;
@@ -983,8 +983,28 @@ const viewerHandler = (
 
 		case GameMessages.Theme:
 		case GameMessages.Theme2:
-			if (args.length > 3) {
-				controller.onTheme(args[1], args[3] === '+'); // TODO: handle comments
+			if (args.length > 5) {
+				const comments = unescapeNewLines(args[4]);
+				const authorCount = parseInt(args[5], 10);
+
+				const authors: string[] = [];
+
+				for (let i = 0; i < authorCount; i++) {
+					if (args.length > 6 + i) {
+						authors.push(args[6 + i]);
+					}
+				}
+
+				const sourceCount = parseInt(args[6 + authorCount], 10);
+				const sources: string[] = [];
+
+				for (let i = 0; i < sourceCount; i++) {
+					if (args.length > 7 + authorCount + i) {
+						sources.push(args[7 + authorCount + i]);
+					}
+				}
+
+				controller.onTheme(args[1], args[3] === '+', comments, authors, sources);
 			}
 			break;
 
@@ -996,8 +1016,9 @@ const viewerHandler = (
 			break;
 
 		case GameMessages.ThemeInfo:
-			if (args.length > 1) {
-				controller.onTheme(args[1], false); // TODO: handle comments
+			if (args.length > 3) {
+				const comments = unescapeNewLines(args[3]);
+				controller.onThemeInfo(args[1], comments);
 			}
 			break;
 

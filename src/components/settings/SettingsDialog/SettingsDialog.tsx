@@ -77,7 +77,7 @@ const SettingsDialog: React.FC = () => {
 							{ id: SettingsView.Common, label: localization.common },
 							{ id: SettingsView.Keys, label: localization.keys },
 							{ id: SettingsView.Theme, label: localization.theme },
-							//{ id: SettingsView.Sounds, label: localization.sounds },
+							{ id: SettingsView.Sounds, label: localization.sounds },
 						]}
 						activeTab={view}
 						onTabClick={setView} />

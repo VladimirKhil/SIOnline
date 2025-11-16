@@ -146,6 +146,10 @@ function processMessage(controller: ClientController, payload: any, appDispatch:
 			controller.onQuestion(payload.questionPrice);
 			break;
 
+		case 'questionComments':
+			controller.onQuestionComments(payload.questionComments);
+			break;
+
 		case 'questionEnd':
 			controller.onQuestionEnd();
 			break;
@@ -247,7 +251,7 @@ function processMessage(controller: ClientController, payload: any, appDispatch:
 			break;
 
 		case 'theme':
-			controller.onTheme(payload.themeName, payload.animate);
+			controller.onTheme(payload.themeName, payload.animate, payload.comments, payload.authors, payload.sources);
 			break;
 
 		case 'themeComments':

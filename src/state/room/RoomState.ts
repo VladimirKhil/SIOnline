@@ -7,9 +7,7 @@ export default interface RoomState {
 		name: string;
 		roundIndex: number;
 		isAfterQuestion: boolean;
-		themeIndex: number;
 		currentPrice: number;
-		themeName: string;
 		isQuestion: boolean;
 		questionType: string;
 	};
@@ -58,9 +56,7 @@ export const initialState: RoomState = {
 		name: '',
 		roundIndex: -1,
 		isAfterQuestion: false,
-		themeIndex: -1,
 		currentPrice: 0,
-		themeName: '',
 		isQuestion: false,
 		questionType: '',
 	},

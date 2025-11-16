@@ -81,6 +81,11 @@ export interface Room2State {
 	roundsNames: string[];
 	timers: Timers;
 
+	theme: {
+		name: string;
+		comments: string;
+	}
+
 	validation: {
 		header: string;
 		message: string;
@@ -174,6 +179,11 @@ const initialState: Room2State = {
 			value: 0,
 			maximum: 0
 		}
+	},
+
+	theme: {
+		name: '',
+		comments: '',
 	},
 
 	validation: {
@@ -620,6 +630,9 @@ export const room2Slice = createSlice({
 		},
 		nameChanged(state: Room2State, action: PayloadAction<string>) {
 			state.name = action.payload;
+		},
+		setTheme(state: Room2State, action: PayloadAction<{ name: string, comments: string }>) {
+			state.theme = action.payload;
 		},
 		toggleEditTable(state: Room2State) {
 			state.isEditTableEnabled = !state.isEditTableEnabled;
@@ -1069,6 +1082,7 @@ export const {
 	askValidation,
 	stopValidation,
 	nameChanged,
+	setTheme,
 	toggleEditTable,
 	setIsGameStarted,
 	setIsAppellation,

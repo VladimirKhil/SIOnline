@@ -246,10 +246,6 @@ const ready: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (isR
 	await dataContext.game.ready(isReady);
 };
 
-const themeNameChanged: ActionCreator<RunActions.ThemeNameChangedAction> = (themeName: string) => ({
-	type: RunActions.RoomActionTypes.ThemeNameChanged, themeName
-});
-
 const moveNext: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
 	_dispatch: Dispatch<any>,
 	_getState: () => State,
@@ -355,7 +351,6 @@ const roomActionCreators = {
 	changePlayerSum,
 	hintChanged,
 	startGame,
-	themeNameChanged,
 	moveNext,
 	navigateToRound,
 	ready,

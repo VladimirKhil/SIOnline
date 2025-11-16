@@ -543,13 +543,10 @@ async function initializeApp() {
 
 			if (state.table.layoutMode !== LayoutMode.AnswerOptions) {
 				// Get theme context
-				const { themeName, themeIndex } = state.room.stage;
-				const themeComment = themeIndex >= 0 && themeIndex < state.table.roundInfo.length
-					? state.table.roundInfo[themeIndex].comment
-					: undefined;
+				const { theme } = state.room2;
 
 				// Start thinking on the question immediately for non-answer-options mode
-				startThinkingOnQuestion(questionText, undefined, themeName, themeComment);
+				startThinkingOnQuestion(questionText, undefined, theme.name, theme.comments);
 			}
 		}
 
@@ -671,13 +668,10 @@ async function initializeApp() {
 					const options = state.table.answerOptions.map(opt => opt.content.value);
 
 					// Get theme context
-					const { themeName, themeIndex } = state.room.stage;
-					const themeComment = themeIndex >= 0 && themeIndex < state.table.roundInfo.length
-						? state.table.roundInfo[themeIndex].comment
-						: undefined;
+					const { theme } = state.room2;
 
 					console.log('\x1b[33m> All answer options received, starting to think...\x1b[0m');
-					startThinkingOnQuestion(questionText, options, themeName, themeComment);
+					startThinkingOnQuestion(questionText, options, theme.name, theme.comments);
 				}
 			}
 		}

@@ -165,15 +165,6 @@ const roomReducer: Reducer<RoomState> = (state: RoomState = initialState, anyAct
 				hint: action.hint
 			};
 
-		case RoomActionTypes.ThemeNameChanged:
-			return {
-				...state,
-				stage: {
-					...state.stage,
-					themeName: action.themeName
-				}
-			};
-
 		case RoomActionTypes.ButtonBlockingTimeChanged:
 			return {
 				...state,
