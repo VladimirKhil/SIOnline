@@ -23,7 +23,7 @@ import { newGame } from './state/online2Slice';
 import { randomBytes } from 'crypto';
 import { selectAnswerOption, selectQuestion, selectTheme } from './state/serverActions';
 import ContentType from './model/enums/ContentType';
-import ServerInfo from './model/server/ServerInfo';
+import ServerInfo from './client/contracts/ServerInfo';
 import { DecisionType, playerSelected, pressGameButton, sendAllIn, sendAnswer, sendPass, sendStake } from './state/room2Slice';
 import TableMode from './model/enums/TableMode';
 import StakeModes from './client/game/StakeModes';
@@ -31,6 +31,7 @@ import GameStage from './model/enums/GameStage';
 import ItemState from './model/enums/ItemState';
 import LayoutMode from './model/enums/LayoutMode';
 import OpenAI from 'openai';
+import getServerInfo from './client/GameServerLocator';
 
 class ManagedHost implements IHost {
 	private readonly isSimulation = true;
@@ -141,23 +142,6 @@ class ManagedHost implements IHost {
 	}
 }
 
-async function getServerUri(serverDiscoveryUri: string) {
-	// Using random number to prevent serverUri caching
-	const serverUrisResponse = await fetch(`${serverDiscoveryUri}?r=${Math.random()}`); // throwing TypeError here is ok
-
-	if (!serverUrisResponse.ok) {
-		throw new Error(`Server discovery is broken: ${serverUrisResponse.status} ${await serverUrisResponse.text()}`);
-	}
-
-	const serverUris = (await serverUrisResponse.json()) as ServerInfo[];
-
-	if (!serverUris || serverUris.length === 0) {
-		throw new Error('Server uris object is broken');
-	}
-
-	return serverUris[0].uri;
-}
-
 // Global variables to track question processing
 let questionTimeout: NodeJS.Timeout | null = null;
 let isProcessingQuestion = false;
@@ -226,16 +210,16 @@ async function callOpenAI(question: string, options?: string[], themeName?: stri
 }
 
 async function initializeApp() {
-	const serverUri = await getServerUri('https://vladimirkhil.com/api/si/servers');
+	const serverInfo = await getServerInfo('https://vladimirkhil.com/api/si/servers');
 
-	const gameClient = new GameServerClient(serverUri);
+	const gameClient = new GameServerClient(serverInfo.uri);
 
 	const dataContext: DataContext = {
 		config: {
 			siStatisticsServiceUri: '',
 			appRegistryServiceUri: '',
 		},
-		serverUri: serverUri,
+		serverUri: serverInfo.uri,
 		gameClient,
 		game: new GameClient(new SIHostClient()),
 		contentUris: null,

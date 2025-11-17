@@ -12,7 +12,6 @@ import DataContext from './model/DataContext';
 import Config from './Config';
 import roomActionCreators from './state/room/roomActionCreators';
 import localization from './model/resources/localization';
-import ServerInfo from './model/server/ServerInfo';
 import GameClient from './client/game/GameClient';
 import { FirebaseApp, FirebaseOptions, initializeApp } from 'firebase/app';
 import { Analytics, getAnalytics } from 'firebase/analytics';
@@ -45,6 +44,7 @@ import { navigate } from './utils/Navigator';
 import TauriHost from './host/TauriHost';
 import { approveAnswerDefault, pressGameButton, rejectAnswerDefault } from './state/room2Slice';
 import { pauseGame } from './state/serverActions';
+import getServerInfo from './client/GameServerLocator';
 
 import './utils/polyfills';
 import './scss/style.scss';
@@ -267,23 +267,6 @@ async function registerServiceWorker2() {
 	} catch (error) {
 		console.log('Service worker Registration Failed: ' + getErrorMessage(error));
 	}
-}
-
-async function getServerInfo(serverDiscoveryUri: string) {
-	// Using random number to prevent serverUri caching
-	const serverUrisResponse = await fetch(`${serverDiscoveryUri}?r=${Math.random()}`); // throwing TypeError here is ok
-
-	if (!serverUrisResponse.ok) {
-		throw new Error(`Server discovery is broken: ${serverUrisResponse.status} ${await serverUrisResponse.text()}`);
-	}
-
-	const serverUris = (await serverUrisResponse.json()) as ServerInfo[];
-
-	if (!serverUris || serverUris.length === 0) {
-		throw new Error('Server uris object is broken');
-	}
-
-	return serverUris[0];
 }
 
 function getInitialView(historyState: INavigationState): INavigationState {

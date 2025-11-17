@@ -2,7 +2,7 @@ import ErrorCode from '../client/contracts/ErrorCode';
 import localization from '../model/resources/localization';
 
 function getLocalizedError(error: Error): string {
-	if (error.message === 'Failed to fetch') {
+	if (error.message === 'Failed to fetch' || error.message.includes('error sending request')) {
 		return localization.failedToFetch;
 	} else if (error.name === 'NotReadableError') {
 		return localization.fileNonReadable;
