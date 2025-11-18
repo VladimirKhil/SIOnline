@@ -1,3 +1,55 @@
 .languageArea {
-	font-size: 20px;
+    font-size: 20px;
+    line-height: 0;
+}
+
+.languageArea button {
+    background: transparent;
+	border-width: 0;
+    border-radius: 0;
+    color: white;
+    padding: 6px 12px;
+    margin: 0;
+    margin-left: -1px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    font-weight: 500;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    vertical-align: top;
+}
+
+.languageArea button:first-child {
+    margin-left: 0;
+}
+
+.languageArea.selector button:hover:not(:disabled) {
+	border: 1px solid rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    z-index: 1;
+	transform: scale(1);
+}
+
+.languageArea button > * {
+    transition: transform 0.3s ease;
+    display: inline-block;
+}
+
+.languageArea.selector button.unselectable {
+    background: rgba(255, 255, 255, 0.6);
+    color: #04071B;
+    border-color: rgba(255, 255, 255, 1);
+    box-shadow: 0 4px 16px rgba(255, 255, 255, 0.5), inset 0 1px 3px rgba(255, 255, 255, 0.3);
+    z-index: 2;
+    font-weight: 600;
+    transform: scale(1);
+}
+
+.languageArea button:disabled {
+    opacity: 0.6;
+    cursor: initial;
 }

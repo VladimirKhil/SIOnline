@@ -4,19 +4,20 @@
     top: 0;
     width: 100%;
     border-radius: 0;
-    background-color: lightgray;
+    background-color: rgba(255, 255, 255, 0.15);
     overflow: hidden;
     z-index: 2;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
 .progress.indeterminate {
-    background-color: darkblue;
+    background: linear-gradient(90deg, rgba(24, 27, 100, 0.5) 0%, rgba(52, 125, 255, 0.3) 50%, rgba(24, 27, 100, 0.5) 100%);
 }
 
 .progress-bar {
-    background-color: #183CF3;
-    background: linear-gradient(to right, darkblue, #183CF3, darkblue);
+    background: linear-gradient(90deg, #347DFF 0%, #5a9eff 50%, #347DFF 100%);
     height: 5px;
+    box-shadow: 0 0 10px rgba(52, 125, 255, 0.8);
 }
 
 .progress.indeterminate .progress-bar {

@@ -1,23 +1,27 @@
 .avatarArea {
     cursor: pointer;
     margin: 0 10px 0 0;
-    border: 2px solid transparent;
-	display: flex;
-	justify-content: center;
+    border: 1px solid rgba(128, 128, 128, 0.4);
+    display: flex;
+    justify-content: center;
     align-items: center;
-	background-color: rgba(0, 0, 0, 0.1);
+    background-color: rgba(0, 0, 0, 0.1);
     width: 124px;
     height: 124px;
     padding: 0;
+    transition: background-color 0.4s ease, border 0.3s ease;
+    border-radius: 12px;
 }
 
 .avatarArea:hover {
-    border: 2px solid gray;
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    background-color: rgba(255, 255, 255, 0.2);
 }
 
 .avatarArea.unselectable:hover {
     border: 2px solid transparent;
     cursor: initial;
+    background-color: rgba(0, 0, 0, 0.1);
 }
 
 .avatarArea .emptyAvatar {
@@ -26,10 +30,11 @@
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
+    transition: all 0.3s ease;
 }
 
 .avatarArea:hover .emptyAvatar {
-    background-color: white;
+    background-color: rgba(255, 255, 255, 0.05);
 }
 
 .avatarView {

@@ -1,12 +1,30 @@
 .selector button {
-	width: 40px;
-	height: 40px;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.15);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    margin: 0 6px;
+}
+
+.selector button:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 .selector button.unselectable {
-	background-color: rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.9);
+    border-color: rgba(255, 255, 255, 1);
+    box-shadow: 0 4px 16px rgba(255, 255, 255, 0.5), inset 0 1px 3px rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
 }
 
 .selector button:disabled {
-	cursor: initial;
+    cursor: initial;
+    opacity: 0.6;
 }

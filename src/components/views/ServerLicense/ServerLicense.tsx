@@ -26,17 +26,19 @@ export function ServerLicense(props: ServerLicenseProps): JSX.Element | null {
 
 	return (
 		<div className='server__license'>
-			<div className='server__license__body'>
+			<div className='server__license__body animated'>
 				<div className='license__header'>{localization.serverLicense}</div>
-				<div className='license__text'>{common.serverLicense}</div>
+				<div className='license__text'>{common.serverLicense?.split('\n').map((text, index) => <p key={index}>{text}</p>)}</div>
 
-				<input
-					id='accept'
-					type='checkbox'
-					checked={accepted}
-					onChange={() => setAccepted(!accepted)} />
+				<div className='license__accept'>
+					<input
+						id='accept'
+						type='checkbox'
+						checked={accepted}
+						onChange={() => setAccepted(!accepted)} />
 
-				<label htmlFor='accept'>{localization.acceptLicense}</label>
+					<label htmlFor='accept'>{localization.acceptLicense}</label>
+				</div>
 
 				<div className='license__button__area'>
 					<button type='button' className='standard' disabled={!accepted} onClick={() => props.accept(appDispatch)}>OK</button>

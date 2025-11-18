@@ -69,6 +69,13 @@ async function uploadAvatarAsync(appDispatch: AppDispatch, dataContext: DataCont
 		const { buffer } = data;
 
 		const { contentClients } = dataContext;
+
+		if (!contentClients || contentClients.length === 0) {
+			console.log('No SIContent service available for avatar upload');
+			appDispatch(avatarLoadEnd());
+			return;
+		}
+
 		const contentIndex = Math.floor(Math.random() * contentClients.length);
 		const contentClient = contentClients[contentIndex];
 
