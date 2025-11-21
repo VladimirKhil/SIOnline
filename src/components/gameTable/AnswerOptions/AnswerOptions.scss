@@ -107,12 +107,17 @@
 	color: white;
 	margin-left: 1px;
 	margin-right: 10px;
-	flex: 0 0 30px;
+	flex: 0 0 10px;
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	height: 100%;
 	text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+	overflow: hidden;
+
+	@media screen and (min-width: 1100px) {
+		flex: 0 0 30px;
+	}
 }
 
 .optionLabel div {

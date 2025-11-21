@@ -26,7 +26,16 @@
 }
 
 .stakeHost {
-	display: none;
+	flex: 0 0 10px;
+	color: white;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 18px;
+
+	@media screen and (min-width: 800px) {
+		flex: 0 0 45px;
+	}
 }
 
 .stakeHost .answer {
@@ -196,6 +205,20 @@
     border-width: 1px 1px 0 0;
     border-color: lightgray;
     border-style: solid;
+}
+
+.appellationMark {
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    background: linear-gradient(135deg, rgba(255, 107, 107, 0.7), rgba(255, 68, 68, 0.7));
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 2px;
 }
 
 .playerInfo .staticSum {

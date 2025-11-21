@@ -271,6 +271,17 @@ export function PlayerView(props: PlayerViewProps): JSX.Element {
 				{player.mediaLoaded ? (
 					<div className='mediaLoadedMark' title={localization.mediaLoadedMark} />
 				) : null}
+
+				{player.isAppellating ? (
+					<span
+						className='appellationMark'
+						role="img"
+						aria-label="exclamation"
+						title={localization.appellationMark}
+					>
+						❗
+					</span>
+				) : null}
 			</div>
 
 			<div className='preload__progress'>

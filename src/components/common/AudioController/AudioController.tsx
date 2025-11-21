@@ -1,9 +1,11 @@
 import * as React from 'react';
+import { useEffect, useRef } from 'react';
 import State from '../../../state/State';
 import { connect } from 'react-redux';
 import getErrorMessage from '../../../utils/ErrorHelpers';
 import localization from '../../../model/resources/localization';
 import { gameSoundPlayer } from '../../../utils/GameSoundPlayer';
+import { useAudioContext } from '../../../contexts/AudioContextProvider';
 
 interface AudioControllerProps {
 	soundVolume: number;
@@ -19,123 +21,118 @@ const mapStateToProps = (state: State) => ({
 	isVisible: state.ui.isVisible,
 });
 
-export class AudioController extends React.Component<AudioControllerProps> {
-	private audioContext = new AudioContext();
+const AudioControllerComponent: React.FC<AudioControllerProps> = (props) => {
+	const { audioContext } = useAudioContext();
 
-	private startTime = 0;
+	const startTimeRef = useRef(0);
+	const pauseTimeRef = useRef(0);
+	const completedRef = useRef(false);
+	const audioBufferRef = useRef<AudioBuffer | null>(null);
+	const audioSourceRef = useRef<AudioBufferSourceNode | null>(null);
+	const gainNodeRef = useRef<GainNode | null>(null);
 
-	private pauseTime = 0;
+	// Initialize gain node
+	useEffect(() => {
+		gainNodeRef.current = audioContext.createGain();
+		gainNodeRef.current.connect(audioContext.destination);
+		gainNodeRef.current.gain.value = props.soundVolume;
 
-	private completed = false;
+		return () => {
+			if (gainNodeRef.current) {
+				gainNodeRef.current.disconnect();
+			}
+		};
+	}, [audioContext, props.soundVolume]);
 
-	private audioBuffer: AudioBuffer | null = null;
+	// Update volume when soundVolume changes
+	useEffect(() => {
+		if (gainNodeRef.current) {
+			gainNodeRef.current.gain.value = props.soundVolume;
+		}
+	}, [props.soundVolume]);
 
-	private audioSource: AudioBufferSourceNode | null = null;
-
-	private gainNode: GainNode;
-
-	constructor(props: AudioControllerProps) {
-		super(props);
-
-		this.gainNode = this.audioContext.createGain();
-		this.gainNode.connect(this.audioContext.destination);
-		this.gainNode.gain.value = props.soundVolume;
-	}
-
-	async load(audio: string) {
-		try {
-			const response = await fetch(audio);
-
-			if (!response.ok) {
-				console.error(`${localization.audioLoadError} ${audio}: ${response.statusText}`);
-				return;
+	// Stop audio source
+	const stop = () => {
+		if (audioSourceRef.current) {
+			if (audioSourceRef.current.context.state === 'running') {
+				pauseTimeRef.current += audioContext.currentTime - startTimeRef.current;
 			}
 
-			const arrayBuffer = await response.arrayBuffer();
-			this.audioBuffer = await this.audioContext.decodeAudioData(arrayBuffer);
-
-			this.pauseTime = 0;
-			this.play();
-			this.completed = false;
-		} catch (e) {
-			console.error(getErrorMessage(e));
+			audioSourceRef.current.onended = null;
+			audioSourceRef.current.stop();
+			audioSourceRef.current = null;
 		}
-	}
+	};
 
-	play() {
-		if (!this.props.isVisible || !this.props.audio) {
+	// Play audio
+	const play = () => {
+		if (!props.isVisible || !props.audio) {
 			return;
 		}
 
-		this.stop();
+		stop();
 
-		this.audioSource = this.audioContext.createBufferSource();
-		this.audioSource.buffer = this.audioBuffer;
-		this.audioSource.loop = this.props.loop;
+		audioSourceRef.current = audioContext.createBufferSource();
+		audioSourceRef.current.buffer = audioBufferRef.current;
+		audioSourceRef.current.loop = props.loop;
 
-		this.audioSource.onended = () => {
-			if (this.props.isVisible) {
-				this.completed = true;
+		audioSourceRef.current.onended = () => {
+			if (props.isVisible) {
+				completedRef.current = true;
 			}
 		};
 
-		this.audioSource.connect(this.gainNode);
-		this.startTime = this.audioContext.currentTime;
-		this.audioSource.start(0, this.pauseTime);
-	}
-
-	stop() {
-		if (this.audioSource) {
-			if (this.audioSource.context.state === 'running') {
-				this.pauseTime += this.audioContext.currentTime - this.startTime;
-			}
-
-			this.audioSource.onended = null;
-			this.audioSource.stop();
-			this.audioSource = null;
-		}
-	}
-
-	componentDidMount() {
-		if (!this.props.audio) {
-			return;
+		if (gainNodeRef.current) {
+			audioSourceRef.current.connect(gainNodeRef.current);
 		}
 
-		this.load(this.props.audio);
-	}
+		startTimeRef.current = audioContext.currentTime;
+		audioSourceRef.current.start(0, pauseTimeRef.current);
+	};
 
-	componentDidUpdate(prevProps: AudioControllerProps) {
-		if (this.props.audio !== prevProps.audio) {
-			if (prevProps.audio) {
-				this.stop();
-			}
+	// Load audio
+	useEffect(() => {
+		const load = async (audio: string) => {
+			try {
+				const response = await fetch(audio);
 
-			if (!this.props.audio) {
-				return;
-			}
+				if (!response.ok) {
+					console.error(`${localization.audioLoadError} ${audio}: ${response.statusText}`);
+					return;
+				}
 
-			this.load(this.props.audio);
-		} else if (this.props.isVisible !== prevProps.isVisible) {
-			if (!this.props.isVisible) {
-				this.stop();
-			} else if (!this.completed) {
-				this.play();
+				const arrayBuffer = await response.arrayBuffer();
+				audioBufferRef.current = await audioContext.decodeAudioData(arrayBuffer);
+
+				pauseTimeRef.current = 0;
+				completedRef.current = false;
+				play();
+			} catch (e) {
+				console.error(getErrorMessage(e));
 			}
+		};
+
+		if (props.audio) {
+			load(props.audio);
+		} else {
+			stop();
 		}
 
-		if (this.props.soundVolume !== prevProps.soundVolume) {
-			this.gainNode.gain.value = this.props.soundVolume;
+		return () => {
+			stop();
+		};
+	}, [props.audio, audioContext]);
+
+	// Handle visibility changes
+	useEffect(() => {
+		if (!props.isVisible) {
+			stop();
+		} else if (!completedRef.current && audioBufferRef.current) {
+			play();
 		}
-	}
+	}, [props.isVisible]);
 
-	componentWillUnmount(): void {
-		this.stop();
-	}
+	return null;
+};
 
-	// eslint-disable-next-line class-methods-use-this
-	render(): null {
-		return null;
-	}
-}
-
-export default connect(mapStateToProps)(AudioController);
+export default connect(mapStateToProps)(AudioControllerComponent);

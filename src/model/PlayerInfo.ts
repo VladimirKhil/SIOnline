@@ -12,4 +12,5 @@ export default interface PlayerInfo extends PersonInfo {
 	mediaPreloaded: boolean;
 	mediaPreloadProgress: number;
 	answer: string;
+	isAppellating: boolean;
 }

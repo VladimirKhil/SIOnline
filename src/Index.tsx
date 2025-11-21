@@ -19,6 +19,7 @@ import { ErrorView } from './components/views/Error/ErrorView';
 import Constants from './model/enums/Constants';
 import getErrorMessage from './utils/ErrorHelpers';
 import { setProxyAvailable } from './state/commonSlice';
+import { AudioContextProvider } from './contexts/AudioContextProvider';
 import enableNoSleep from './utils/NoSleepHelper';
 import getDeviceType from './utils/getDeviceType';
 import isSafari from './utils/isSafari';
@@ -403,7 +404,9 @@ async function run(host: IHost) {
 		ReactDOM.render(
 			<React.StrictMode>
 				<Provider store={store}>
-					<App />
+					<AudioContextProvider>
+						<App />
+					</AudioContextProvider>
 				</Provider>
 			</React.StrictMode>,
 			document.getElementById('reactHost')

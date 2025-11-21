@@ -18,6 +18,8 @@ import TableStatistics from '../TableStatistics/TableStatistics';
 import AnswerValidationBody from '../../game/AnswerValidationBody/AnswerValidationBody';
 import Role from '../../../model/Role';
 import { DecisionType } from '../../../state/room2Slice';
+import VolumeButton from '../../common/VolumeButton/VolumeButton';
+import { useAudioContext } from '../../../contexts/AudioContextProvider';
 
 import './GameTable.css';
 
@@ -84,6 +86,7 @@ function getCaption(mode: TableMode, caption: string): string {
 export function GameTable(): JSX.Element {
 	// Combine related selectors to minimize selector calls while maintaining granular subscriptions
 	const isConnected = useAppSelector((state) => state.common.isSIHostConnected);
+	const { canPlayAudio } = useAudioContext();
 
 	const { mode, caption: tableCaption, contentHint } = useAppSelector((state) => ({
 		mode: state.table.mode,
@@ -142,6 +145,9 @@ export function GameTable(): JSX.Element {
 				<div className="tableCaption">
 					<div className='caption__left'>{noRiskMode ? <div title={localization.noRiskQuestion}>🛡</div> : ''}</div>
 					<div className='tableCaptionContent'>{caption}</div>
+					<div className='caption__right'>
+						<VolumeButton canPlayAudio={canPlayAudio} />
+					</div>
 				</div>
 			) : null}
 

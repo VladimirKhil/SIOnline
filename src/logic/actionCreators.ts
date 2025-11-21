@@ -277,9 +277,6 @@ const connectToServerAsync = async (
 	dataContext: DataContext
 ) => {
 	const state = getState();
-	const { serverUri } = dataContext;
-	const gameServerClient = new GameServerClient(serverUri);
-	dataContext.gameClient = gameServerClient;
 
 	const requestCulture = getFullCulture(state);
 

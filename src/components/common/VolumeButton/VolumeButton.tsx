@@ -5,13 +5,15 @@ import { setSoundVolume } from '../../../state/settingsSlice';
 import FlyoutButton, { FlyoutHorizontalOrientation, FlyoutVerticalOrientation } from '../FlyoutButton/FlyoutButton';
 
 import './VolumeButton.css';
+import volumeOnIcon from '../../../../assets/images/volume-on.svg';
+import volumeOffIcon from '../../../../assets/images/volume-off.svg';
 
 interface VolumeButtonProps {
 	canPlayAudio: boolean;
 }
 
 export default function VolumeButton(props: VolumeButtonProps) {
-	const settings = useAppSelector(state => state.settings);
+	const soundVolume = useAppSelector(state => state.settings.soundVolume);
 	const appDispatch = useAppDispatch();
 
 	const changeVolumeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -31,16 +33,20 @@ export default function VolumeButton(props: VolumeButtonProps) {
 							max={1}
 							step={0.1}
 							type="range"
-							value={settings.soundVolume}
+							value={soundVolume}
 							onChange={changeVolumeHandler}
 							className="volumeButtonControl"
 						/>
 					</div>
 				}
-				verticalOrientation={FlyoutVerticalOrientation.Top}
+				verticalOrientation={FlyoutVerticalOrientation.Bottom}
 				horizontalOrientation={FlyoutHorizontalOrientation.Left}
 			>
-				{settings.soundVolume && props.canPlayAudio ? '🔈' : '🔇'}
+				<img 
+					src={soundVolume && props.canPlayAudio ? volumeOnIcon : volumeOffIcon} 
+					alt={localization.soundVolume}
+					className="volumeIcon"
+				/>
 			</FlyoutButton>
 		</>
 	);

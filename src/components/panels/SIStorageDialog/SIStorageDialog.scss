@@ -5,6 +5,14 @@
 	flex-flow: column;
 	color: white;
 
+	h1 {
+		font-size: 16px;
+
+		@media screen and (min-width: 800px) {
+			font-size: initial;
+		}
+	}
+
 	.storage__header {
 		display: flex;
 		flex-direction: row;
@@ -18,7 +26,12 @@
 	}
 
 	.disclaimer {
-		margin: 10px 0 0 15px;
+		margin: 10px 10px 0 15px;
+		font-size: 12px;
+
+		@media screen and (min-width: 800px) {
+			font-size: initial;
+		}
 	}
 
 	.search {
@@ -51,9 +64,14 @@
 
 	.filters {
 		display: flex;
-		flex-direction: row;
-		flex-wrap: wrap;
-		justify-content: center;
+		flex-direction: column;
+		justify-content: stretch;
+
+		@media screen and (min-width: 800px) {
+			flex-direction: row;
+			flex-wrap: wrap;
+			justify-content: center;
+		}
 
 		.filter {
 			display: flex;
@@ -63,7 +81,11 @@
 
 			.selector, .selectorsGroup {
 				margin-top: 5px;
-				width: 220px;
+				width: 100%;
+
+				@media screen and (min-width: 800px) {
+					width: 220px;
+				}
 			}
 
 			select {

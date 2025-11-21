@@ -1,10 +1,19 @@
 .volumeButton {
-	position: absolute;
-	bottom: 10px;
-	right: 40px;
-	font-size: 40px;
 	border-width: 0;
-	width: 70px;
+	width: 45px;
+	height: 100%;
+	padding: 8px;
+	margin: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: transparent;
+}
+
+.volumeIcon {
+	width: 24px;
+	height: 24px;
+	color: white;
 }
 
 .volumeButtonControl {

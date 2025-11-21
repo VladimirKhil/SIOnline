@@ -1263,6 +1263,7 @@ function info(controller: ClientController, ...args: string[]) {
 			mediaPreloaded: false,
 			mediaPreloadProgress: 0,
 			answer: '',
+			isAppellating: false,
 		});
 
 		if (isConnected) {

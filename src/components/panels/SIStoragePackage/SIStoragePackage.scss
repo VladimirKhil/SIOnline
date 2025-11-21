@@ -3,9 +3,13 @@
 	background-color: #181B64;
 	color: white;
 	margin: 3px;
-	width: 300px;
+	width: calc(100% - 6px);
 	position: relative;
 	border-radius: 10px;
+
+	@media screen and (min-width: 800px) {
+		width: 300px;
+	}
 }
 
 .siStorageDialog ul {

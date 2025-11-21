@@ -137,6 +137,7 @@ import {
 	resumeTimer,
 	stopTimer,
 	timerMaximumChanged,
+	setPlayerApellating,
 } from '../state/room2Slice';
 
 import PersonInfo from '../model/PersonInfo';
@@ -908,6 +909,13 @@ export default class ClientController {
 
 	onPlayerAppellating(playerName: string) {
 		this.addSimpleMessage(stringFormat(localization.requestedAppellation, playerName));
+
+		const state = this.getState();
+		const playerIndex = state.room2.persons.players.findIndex(p => p.name === playerName);
+
+		if (playerIndex !== -1) {
+			this.appDispatch(setPlayerApellating({ index: playerIndex, isAppellating: true }));
+		}
 	}
 
 	onPlayerScoreChanged(playerIndex: number, newScore: number) {

@@ -432,6 +432,7 @@ export const room2Slice = createSlice({
 				p.answer = '';
 				p.mediaLoaded = false;
 				p.canBeSelected = false;
+				p.isAppellating = false;
 			});
 		},
 		playerRoundStateCleared: (state: Room2State) => {
@@ -466,6 +467,7 @@ export const room2Slice = createSlice({
 				mediaPreloaded: false,
 				mediaPreloadProgress: 0,
 				answer: '',
+				isAppellating: false,
 			});
 		},
 		playerChanged: (state: Room2State, action: PayloadAction<{ index: number, name: string, isHuman?: boolean, isReady?: boolean }>) => {
@@ -495,6 +497,9 @@ export const room2Slice = createSlice({
 			const temp = players[action.payload.index1];
 			players[action.payload.index1] = players[action.payload.index2];
 			players[action.payload.index2] = temp;
+		},
+		setPlayerApellating: (state: Room2State, action: PayloadAction<{ index: number, isAppellating: boolean }>) => {
+			state.persons.players[action.payload.index].isAppellating = action.payload.isAppellating;
 		},
 		playerStateChanged: (state: Room2State, action: PayloadAction<{ index: number, state: PlayerStates }>) => {
 			state.persons.players[action.payload.index].state = action.payload.state;
@@ -1056,6 +1061,7 @@ export const {
 	setPlayerAnswer,
 	playerDeleted,
 	playersSwap,
+	setPlayerApellating,
 	playerStateChanged,
 	playerStatesChanged,
 	playerLostStateDropped,

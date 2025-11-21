@@ -17,10 +17,32 @@
 	align-items: center;
 	justify-content: center;
 	height: 100%;
-	width: 50%;
+	width: calc(100% - 20px);
 	margin-left: 20px;
 }
 
 .block.forPackage {
-    height: 108px;
+    height: 250px;
+
+	@media screen and (min-width: 800px) {
+		height: 108px;
+	}
+
+	.blockValue {
+		flex-direction: column;
+
+		@media screen and (min-width: 800px) {
+			flex-direction: row;
+		}
+
+		.packageName {
+			text-align: center;
+			font-size: 10px;
+			word-break: break-all;
+
+			@media screen and (min-width: 800px) {
+				font-size: initial;
+			}
+		}
+	}
 }
