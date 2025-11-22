@@ -11,7 +11,7 @@ interface LanguageViewProps {
 }
 
 export default function LanguageView(props: LanguageViewProps): JSX.Element {
-	const culture = useAppSelector(state => state.settings.appSettings.culture || localization.getLanguage());
+	const culture = useAppSelector(state => state.settings.appSettings.culture) || localization.getLanguage();
 	const appDispatch = useAppDispatch();
 
 	function onLanguageChanged(language: string | null): void {

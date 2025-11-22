@@ -6,7 +6,6 @@ import { sendJoinMode } from '../../../state/serverActions';
 import PersonView from '../PersonView/PersonView';
 import { isHost } from '../../../utils/StateHelpers';
 import JoinMode from '../../../client/game/JoinMode';
-import Persons from '../../../model/Persons';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 import { getPin } from '../../../state/room2Slice';
 import inviteLink from '../../../utils/inviteLink';
@@ -15,30 +14,36 @@ import './PersonsView.css';
 
 interface PersonsViewProps {
 	isHost: boolean;
-	all: Persons;
 }
 
 const mapStateToProps = (state: State) => ({
 	isHost: isHost(state),
-	all: state.room2.persons.all,
 });
 
 export function PersonsView(props: PersonsViewProps): JSX.Element {
-	const room = useAppSelector(state => state.room2);
-	const common = useAppSelector(state => state.common);
+	const { persons, joinMode } = useAppSelector(state => ({
+		persons: state.room2.persons,
+		joinMode: state.room2.joinMode,
+	}));
+
+	const { isConnected, clipboardSupported } = useAppSelector(state => ({
+		isConnected: state.common.isSIHostConnected,
+		clipboardSupported: state.common.clipboardSupported,
+	}));
+
 	const appDispatch = useAppDispatch();
 
-	const showman = props.all[room.persons.showman.name];
-	const playersNames = room.persons.players.map(p => p.name);
+	const showman = persons.all[persons.showman.name];
+	const playersNames = persons.players.map(p => p.name);
 
 	const players = playersNames
-		.map(name => props.all[name])
+		.map(name => persons.all[name])
 		.filter(p => p)
 		.sort((p1, p2) => p1.name.localeCompare(p2.name));
 
-	const viewers = Object.keys(props.all)
-		.filter(name => name !== room.persons.showman.name && !playersNames.includes(name))
-		.map(name => props.all[name])
+	const viewers = Object.keys(persons.all)
+		.filter(name => name !== persons.showman.name && !playersNames.includes(name))
+		.map(name => persons.all[name])
 		.sort((p1, p2) => p1.name.localeCompare(p2.name));
 
 	const onJoinModeChanged = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -75,7 +80,7 @@ export function PersonsView(props: PersonsViewProps): JSX.Element {
 				</ul>
 			</div>
 
-			{common.clipboardSupported
+			{clipboardSupported
 				? <div className="buttonsPanel inviteLinkHost sidePanel">
 					<button type="button" className='standard' onClick={() => inviteLink(appDispatch)}>{localization.inviteLink}</button>
 					{props.isHost ? <button type='button' className='standard' onClick={getPinCore}>{localization.getPin}</button> : null}
@@ -87,9 +92,9 @@ export function PersonsView(props: PersonsViewProps): JSX.Element {
 
 				<select
 					title={localization.joinMode}
-					value = {room.joinMode}
+					value = {joinMode}
 					onChange={onJoinModeChanged}
-					disabled={!common.isSIHostConnected || !props.isHost}>
+					disabled={!isConnected || !props.isHost}>
 					<option value={JoinMode.AnyRole}>{localization.joinModeAnyRole}</option>
 					<option value={JoinMode.OnlyViewer}>{localization.joinModeViewer}</option>
 					<option value={JoinMode.Forbidden}>{localization.joinModeForbidden}</option>

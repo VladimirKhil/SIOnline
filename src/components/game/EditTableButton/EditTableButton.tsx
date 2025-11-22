@@ -6,15 +6,15 @@ import { toggleEditTable } from '../../../state/room2Slice';
 import './EditTableButton.scss';
 
 const EditTableButton: React.FC = () => {
-	const common = useAppSelector(state => state.common);
-	const room = useAppSelector(state => state.room2);
+	const isConnected = useAppSelector(state => state.common.isSIHostConnected);
+	const isEditTableEnabled = useAppSelector(state => state.room2.isEditTableEnabled);
 	const appDispatch = useAppDispatch();
 
 	return (
 		<button
 			type="button"
-			className={`edit-table-button standard ${room.isEditTableEnabled ? 'active' : ''}`}
-			disabled={!common.isSIHostConnected}
+			className={`edit-table-button standard ${isEditTableEnabled ? 'active' : ''}`}
+			disabled={!isConnected}
 			onClick={() => appDispatch(toggleEditTable())}
 		>
 			{localization.editTable.toLocaleUpperCase()}

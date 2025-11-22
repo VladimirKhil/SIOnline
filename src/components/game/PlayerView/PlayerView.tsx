@@ -56,7 +56,12 @@ export function PlayerView(props: PlayerViewProps): JSX.Element {
 	const sumFieldRef = React.useRef<HTMLDivElement>(null);
 	const [isScoreEditorVisible, setIsScoreEditorVisible] = React.useState(false);
 	const { player, isMe, sex, avatar, avatarClass, avatarVideo, index } = props;
-	const room = useAppSelector(state => state.room2);
+
+	const { areSumsEditable, stage } = useAppSelector(state => ({
+		areSumsEditable: state.room2.areSumsEditable,
+		stage: state.room2.stage,
+	}));
+
 	const appDispatch = useAppDispatch();
 
 	// Get the default change value from recent question price (fallback to 100)
@@ -64,10 +69,10 @@ export function PlayerView(props: PlayerViewProps): JSX.Element {
 
 	// Hide ScoreEditor when sum editing is disabled
 	React.useEffect(() => {
-		if (!room.areSumsEditable && isScoreEditorVisible) {
+		if (!areSumsEditable && isScoreEditorVisible) {
 			setIsScoreEditorVisible(false);
 		}
-	}, [room.areSumsEditable]);
+	}, [areSumsEditable]);
 
 	const buildPlayerClasses = () => {
 		const stateClass = `state_${(PlayerStates[player.state] ?? '').toLowerCase()}`;
@@ -206,7 +211,7 @@ export function PlayerView(props: PlayerViewProps): JSX.Element {
 							{player.name}
 						</AutoSizedText>
 
-						{room.areSumsEditable ? (
+						{areSumsEditable ? (
 							<ScoreEditor
 								ref={scoreEditorRef}
 								currentSum={player.sum}
@@ -220,7 +225,7 @@ export function PlayerView(props: PlayerViewProps): JSX.Element {
 					</div>
 
 					<div ref={sumFieldRef} className="sum" title={player.sum.toString()}>
-						{room.areSumsEditable ? (
+						{areSumsEditable ? (
 							<NumericTextBox
 								value={player.sum}
 								onValueChanged={value => onSumChanged(value)}
@@ -254,7 +259,7 @@ export function PlayerView(props: PlayerViewProps): JSX.Element {
 			) : null}
 
 			<div className='marksArea'>
-				{player.isReady && !room.stage.isGameStarted ? (
+				{player.isReady && !stage.isGameStarted ? (
 					<span
 						className='readyMark'
 						role="img"

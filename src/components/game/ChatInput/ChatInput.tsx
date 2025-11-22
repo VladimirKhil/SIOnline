@@ -13,8 +13,13 @@ import './ChatInput.scss';
 export default function ChatInput() {
 	const inputRef = React.useRef<HTMLInputElement>(null);
 	const appDispatch = useAppDispatch();
-	const room = useAppSelector(state => state.room2);
-	const common = useAppSelector(state => state.common);
+
+	const { name, chat } = useAppSelector(state => ({
+		name: state.room2.name,
+		chat: state.room2.chat
+	}));
+
+	const isConnected = useAppSelector(state => state.common.isSIHostConnected);
 
 	const onMessageChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
 		appDispatch(setChatMessage(e.target.value));
@@ -22,9 +27,9 @@ export default function ChatInput() {
 
 	const onMessageKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
 		if (e.key === Constants.KEY_ENTER_NEW) {
-			if (common.isSIHostConnected) {
+			if (isConnected) {
 				appDispatch(sendChatMessage());
-				appDispatch(addGameLog(`${room.name}: ${room.chat.message}`));
+				appDispatch(addGameLog(`${name}: ${chat.message}`));
 			}
 
 			e.preventDefault();
@@ -32,7 +37,7 @@ export default function ChatInput() {
 	};
 
 	const onEmojiClick = (emojiData: EmojiClickData) => {
-		appDispatch(setChatMessage(room.chat.message + emojiData.emoji));
+		appDispatch(setChatMessage(chat.message + emojiData.emoji));
 	};
 
 	return (
@@ -41,8 +46,8 @@ export default function ChatInput() {
 				<input
 					ref={inputRef}
 					placeholder={localization.message}
-					className={`gameInputBox ${common.isSIHostConnected ? '' : 'disconnected'}`}
-					value={room.chat.message}
+					className={`gameInputBox ${isConnected ? '' : 'disconnected'}`}
+					value={chat.message}
 					onChange={onMessageChanged}
 					onKeyPress={onMessageKeyPress} />
 

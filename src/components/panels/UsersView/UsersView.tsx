@@ -6,9 +6,9 @@ import OnlineMode from '../../../model/enums/OnlineMode';
 import './UsersView.css';
 
 export default function UsersView(): JSX.Element | null {
-	const ui = useAppSelector(state => state.ui);
+	const onlineView = useAppSelector(state => state.ui.onlineView);
 
-	return <section className={`chatHost gamesblock ${ui.onlineView === OnlineMode.Games ? 'bottom' : 'top'}`}>
+	return <section className={`chatHost gamesblock ${onlineView === OnlineMode.Games ? 'bottom' : 'top'}`}>
 		<div className="chatBody">
 			<Trends />
 		</div>

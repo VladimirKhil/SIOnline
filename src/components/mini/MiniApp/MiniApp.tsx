@@ -38,8 +38,11 @@ const getContent = (path: Path) => {
 
 /** Provides simplified view allowing only to join an existing game. */
 const MiniApp: React.FC<MiniAppProps> = (props: MiniAppProps) => {
-	const common = useAppSelector(state => state.common);
-	const { error, userError, messageLevel } = common;
+	const { error, userError, messageLevel } = useAppSelector(state => ({
+		error: state.common.error,
+		userError: state.common.userError,
+		messageLevel: state.common.messageLevel,
+	}));
 
 	return error
 		? <ErrorView error={error} />

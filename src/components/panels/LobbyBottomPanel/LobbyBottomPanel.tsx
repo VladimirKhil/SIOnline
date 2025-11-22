@@ -9,7 +9,7 @@ import RandomGameButton from '../RandomGameButton/RandomGameButton';
 import './LobbyBottomPanel.scss';
 
 const LobbyBottomPanel: React.FC = () => {
-	const ui = useAppSelector(state => state.ui);
+	const onlineView = useAppSelector(state => state.ui.onlineView);
 	const appDispatch = useAppDispatch();
 
 	const changeView = (view: OnlineMode) => {
@@ -20,7 +20,7 @@ const LobbyBottomPanel: React.FC = () => {
 		<RandomGameButton />
 		<NewGameButton simple={true} />
 
-		{ui.onlineView === OnlineMode.Games ? (
+		{onlineView === OnlineMode.Games ? (
 			<button type='button' className='standard' onClick={() => changeView(OnlineMode.Trends)}>{localization.trends}</button>
 		) : <button type='button' className='standard' onClick={() => changeView(OnlineMode.Games)}>{localization.games}</button>}
 	</div>);

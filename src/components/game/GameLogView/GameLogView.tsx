@@ -7,15 +7,20 @@ import { setChatMessage, setChatScrollPosition } from '../../../state/room2Slice
 import './GameLogView.css';
 
 export default function GameLogView() {
-	const room = useAppSelector(state => state.room2);
+	const { name, chat, chatScrollPosition } = useAppSelector(state => ({
+		name: state.room2.name,
+		chat: state.room2.chat,
+		chatScrollPosition: state.room2.chatScrollPosition
+	}));
+
 	const appDispatch = useAppDispatch();
 
 	const appendMentionedUser = (nickname: string) => {
-		if (hasUserMentioned(room.chat.message, nickname)) {
+		if (hasUserMentioned(chat.message, nickname)) {
 			return;
 		}
 
-		appDispatch(setChatMessage(`${room.chat.message} @${nickname} `));
+		appDispatch(setChatMessage(`${chat.message} @${nickname} `));
 	};
 
 	const handleScrollPositionChanged = (position: number) => {
@@ -26,11 +31,11 @@ export default function GameLogView() {
 		<div className="game__log">
 			<ChatLog
 				className="gameLog"
-				messages={room.chat.messages}
-				user={room.name}
-				message={room.chat.message}
+				messages={chat.messages}
+				user={name}
+				message={chat.message}
 				onNicknameClick={appendMentionedUser}
-				scrollPosition={room.chatScrollPosition}
+				scrollPosition={chatScrollPosition}
 				onScrollPositionChanged={handleScrollPositionChanged}
 			/>
 		</div>

@@ -24,11 +24,11 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 });
 
 export function ManageGameView(props: ManageGameViewProps) {
-	const room = useAppSelector(state => state.room2);
+	const roundsNames = useAppSelector(state => state.room2.roundsNames);
 
 	return (
 		<div className='manageGameView'>
-			{room.roundsNames?.map((name, index) => (
+			{roundsNames?.map((name, index) => (
 				<button
 					type='button'
 					key={index}

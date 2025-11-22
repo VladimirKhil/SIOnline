@@ -5,13 +5,13 @@ import { QRCodeSVG } from 'qrcode.react';
 import './QRCodeView.scss';
 
 const QRCodeView: React.FC = () => {
-	const ui = useAppSelector((state) => state.ui);
+	const qrCode = useAppSelector((state) => state.ui.qrCode);
 
-	if (!ui.qrCode) {
+	if (!qrCode) {
 		return null;
 	}
 
-	return <QRCodeSVG className='qrCode' value={ui.qrCode} size={256} />;
+	return <QRCodeSVG className='qrCode' value={qrCode} size={256} />;
 };
 
 export default QRCodeView;

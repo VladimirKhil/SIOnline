@@ -13,7 +13,7 @@ interface GamesListProps {
 
 export default function GamesList(props: GamesListProps): JSX.Element {
 	const appDispatch = useAppDispatch();
-	const online = useAppSelector(state => state.online2);
+	const error = useAppSelector(state => state.online2.error);
 	const sortedGames = props.games.slice();
 	sortedGames.sort((game1, game2) => game1.GameName.localeCompare(game2.GameName));
 
@@ -23,7 +23,7 @@ export default function GamesList(props: GamesListProps): JSX.Element {
 
 	return (
 		<section className="gameslistHost gamesblock">
-			{online.error.length === 0 ? (
+			{error.length === 0 ? (
 				<ul className="gamenames">
 					{sortedGames.map(game => (
 						<li
@@ -36,7 +36,7 @@ export default function GamesList(props: GamesListProps): JSX.Element {
 						</li>
 					))}
 				</ul>
-			) : <span className="loadError">{online.error}</span>}
+			) : <span className="loadError">{error}</span>}
 		</section>
 	);
 }

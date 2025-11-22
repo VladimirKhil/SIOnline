@@ -19,13 +19,16 @@ const mapDispatchToProps = (dispatch: any) => ({
 
 const RandomGameButton: React.FC<RandomGameButtonProps> = (props: RandomGameButtonProps) => {
 	const appDispatch = useAppDispatch();
-	const online = useAppSelector(state => state.online2);
+	const { gameCreationProgress, joinGameProgress } = useAppSelector(state => ({
+		gameCreationProgress: state.online2.gameCreationProgress,
+		joinGameProgress: state.online2.joinGameProgress
+	}));
 
 	return <button
 		className='standard randomGameButton'
 		type="button"
 		title={localization.anyonePlay}
-		disabled={online.gameCreationProgress || online.joinGameProgress}
+		disabled={gameCreationProgress || joinGameProgress}
 		onClick={() => props.anyonePlay(appDispatch)}
 	>
 		<svg width="26" height="28" viewBox="0 0 26 28" fill="none" xmlns="http://www.w3.org/2000/svg">

@@ -30,10 +30,15 @@ const mapStateToProps = (state: State) => ({
 });
 
 export function ShowmanReplicView(props: ShowmanReplicViewProps): JSX.Element {
-	const room = useAppSelector(state => state.room2);
-	const account = props.all[room.persons.showman.name];
-	const { isReady, isDeciding } = room.persons.showman;
-	const isMe = account?.name === room.name;
+	const { name, persons, stage } = useAppSelector(state => ({
+		name: state.room2.name,
+		persons: state.room2.persons,
+		stage: state.room2.stage,
+	}));
+
+	const account = props.all[persons.showman.name];
+	const { isReady, isDeciding } = persons.showman;
+	const isMe = account?.name === name;
 
 	const avatar = isMe && props.avatar ? props.avatar : account?.avatar;
 
@@ -43,21 +48,21 @@ export function ShowmanReplicView(props: ShowmanReplicViewProps): JSX.Element {
 
 	const avatarClass = getAvatarClass(account);
 
-	const showmanInfoStyle: React.CSSProperties = room.stage.isGameStarted ? {} : {
+	const showmanInfoStyle: React.CSSProperties = stage.isGameStarted ? {} : {
 		display: 'flex'
 	};
 
 	const meClass = isMe ? 'me' : '';
 
 	return (
-		<div className={`showmanArea ${room.stage.decisionType !== DecisionType.None ? 'highlighted' : ''}`}>
+		<div className={`showmanArea ${stage.decisionType !== DecisionType.None ? 'highlighted' : ''}`}>
 			<div className="showmanInfo" style={showmanInfoStyle}>
 				{props.showVideoAvatars && account?.avatarVideo
 					? <div className='showmanAvatar'><iframe title='Video avatar' src={account?.avatarVideo} /></div>
 					: <div className={`showmanAvatar ${avatarClass}`} style={avatarStyle} />}
 
 				<div className="showmanName">
-					{isReady && !room.stage.isGameStarted ? (
+					{isReady && !stage.isGameStarted ? (
 						<span
 							role="img"
 							aria-label="checkmark"

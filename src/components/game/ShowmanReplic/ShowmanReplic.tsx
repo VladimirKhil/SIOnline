@@ -16,8 +16,11 @@ const mapStateToProps = (state: State) => ({
 });
 
 export function ShowmanReplic(props: ShowmanReplicProps): JSX.Element {
-	const roomState = useAppSelector(state => state.room2);
-	const { replic } = roomState.persons.showman;
+	const { persons } = useAppSelector(state => ({
+		persons: state.room2.persons,
+	}));
+
+	const { replic } = persons.showman;
 	const isScreenWide = props.windowWidth >= Constants.WIDE_WINDOW_WIDTH;
 
 	return (

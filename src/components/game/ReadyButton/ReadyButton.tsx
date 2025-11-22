@@ -10,6 +10,8 @@ import { useAppSelector } from '../../../state/hooks';
 import { Room2State } from '../../../state/room2Slice';
 
 import './ReadyButton.scss';
+import PersonInfo from '../../../model/PersonInfo';
+import PlayerInfo from '../../../model/PlayerInfo';
 
 interface ReadyButtonProps {
 	isConnected: boolean;
@@ -18,15 +20,13 @@ interface ReadyButtonProps {
 	onReady: (isReady: boolean) => void;
 }
 
-const getIsReady = (state: Room2State) => {
-	const { persons, role, name } = state;
-
+const getIsReady = (role: Role, showman: PersonInfo, players: PlayerInfo[], name: string) => {
 	if (role === Role.Showman) {
-		return persons.showman.isReady;
+		return showman.isReady;
 	}
 
 	if (role === Role.Player) {
-		const me = persons.players.find(p => p.name === name);
+		const me = players.find(p => p.name === name);
 
 		if (me) {
 			return me.isReady;
@@ -56,8 +56,13 @@ function getReadyMessage(props: ReadyButtonProps) {
 }
 
 export function ReadyButton(props: ReadyButtonProps): JSX.Element | null {
-	const room = useAppSelector(state => state.room2);
-	const isReady = getIsReady(room);
+	const { role, persons, name } = useAppSelector(state => ({
+		role: state.room2.role,
+		persons: state.room2.persons,
+		name: state.room2.name,
+	}));
+
+	const isReady = getIsReady(role, persons.showman, persons.players, name);
 	const enabledClass = props.isConnected ? '' : 'disabled';
 	const label = isReady ? getReadyMessage(props) : getNotReadyMessage(props);
 	const buttonLabel = isReady ? '❌' : '✔️';

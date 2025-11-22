@@ -22,12 +22,16 @@ const mapStateToProps = (state: State) => ({
 
 export function PersonView(props: PersonViewProps): JSX.Element {
 	const appDispatch = useAppDispatch();
-	const room = useAppSelector(state => state.room2);
-	const isMe = props.account.name === room.name;
-	const isHost = props.account.name === room.persons.hostName;
+	const { name, persons } = useAppSelector(state => ({
+		name: state.room2.name,
+		persons: state.room2.persons,
+	}));
+
+	const isMe = props.account.name === name;
+	const isHost = props.account.name === persons.hostName;
 
 	const avatar = isMe ? props.avatar : props.account.avatar;
-	const canManage = room.persons.hostName === room.name && !isMe && props.account.isHuman;
+	const canManage = persons.hostName === name && !isMe && props.account.isHuman;
 
 	return (
 		<li className={`personItem ${isMe ? 'me' : ''}`}>

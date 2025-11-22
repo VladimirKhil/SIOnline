@@ -7,18 +7,24 @@ import { pressGameButton } from '../../../state/room2Slice';
 import './AnswerButton.scss';
 
 export default function AnswerButton() {
-	const common = useAppSelector((state) => state.common);
-	const room = useAppSelector((state) => state.room2);
-	const table = useAppSelector((state) => state.table);
+	const isConnected = useAppSelector((state) => state.common.isSIHostConnected);
+
+	const { name, persons, isGameButtonEnabled } = useAppSelector((state) => ({
+		name: state.room2.name,
+		persons: state.room2.persons,
+		isGameButtonEnabled: state.room2.isGameButtonEnabled,
+	}));
+
+	const canPress = useAppSelector((state) => state.table.canPress);
 	const appDispatch = useAppDispatch();
-	const me = room.persons.players.find(p => p.name === room.name);
+	const me = persons.players.find(p => p.name === name);
 	const canAnswer = me && (me.state === PlayerStates.None || me.state === PlayerStates.Lost);
 
 	return (
 		<button
 			type='button'
-			className={`playerButton mainAction active ${canAnswer ? '' : ' hidden'} ${table.canPress ? ' can-press' : ''}`}
-			disabled={!common.isSIHostConnected || !room.isGameButtonEnabled || !canAnswer}
+			className={`playerButton mainAction active ${canAnswer ? '' : ' hidden'} ${canPress ? ' can-press' : ''}`}
+			disabled={!isConnected || !isGameButtonEnabled || !canAnswer}
 			onClick={() => appDispatch(pressGameButton())}>
 			{localization.makeAnswer.toLocaleUpperCase()}
 		</button>

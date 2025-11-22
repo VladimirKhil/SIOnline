@@ -26,15 +26,15 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 });
 
 const MoveRoundButton: React.FC<MoveRoundButtonProps> = (props: MoveRoundButtonProps) => {
-	const common = useAppSelector(state => state.common);
-	const room = useAppSelector(state => state.room2);
+	const isConnected = useAppSelector(state => state.common.isSIHostConnected);
+	const roundsNames = useAppSelector(state => state.room2.roundsNames);
 
 	return <FlyoutButton
 			className="standard imageButton moveRoundButton"
-			disabled={!common.isSIHostConnected || room.roundsNames.length < 2}
+			disabled={!isConnected || roundsNames.length < 2}
 			flyout={
 				<ul>
-					{room.roundsNames?.map((name, index) => (
+					{roundsNames?.map((name, index) => (
 						<li
 							key={index}
 							className={index === props.roundIndex ? 'sideButtonActiveRound' : ''}

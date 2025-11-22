@@ -36,7 +36,7 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 
 const PlayersView: React.FC<PlayersViewProps> = (props) => {
 	const appDispatch = useAppDispatch();
-	const room = useAppSelector(state => state.room2);
+	const name = useAppSelector(state => state.room2.name);
 	const listRef = React.useRef<HTMLUListElement>(null);
 
 	const onPlayerSelected = (index: number) => {
@@ -47,7 +47,7 @@ const PlayersView: React.FC<PlayersViewProps> = (props) => {
 
 	const renderPlayer = (player: PlayerInfo, index: number): JSX.Element => {
 		const account = props.all[player.name];
-		const isMe = player.name === room.name;
+		const isMe = player.name === name;
 		const avatar = isMe && props.avatar ? props.avatar : account?.avatar;
 		const avatarClass = getAvatarClass(account);
 

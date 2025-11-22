@@ -15,7 +15,7 @@ interface PackageSourcesProps {
 
 export default function PackageSources(props: PackageSourcesProps): JSX.Element {
 	const appDispatch = useAppDispatch();
-	const common = useAppSelector(state => state.common);
+	const clearUrls = useAppSelector(state => state.common.clearUrls);
 	const siPackages = useAppSelector(state => state.siPackages);
 
 	const onRandomThemesSelected = () => {
@@ -28,7 +28,7 @@ export default function PackageSources(props: PackageSourcesProps): JSX.Element 
 
 		{siPackages.storages.map((storage, index) => <li key={index} onClick={() => props.setIsSIStorageOpen(true, index)}>{`${storage.name}…`}</li>)}
 
-		{!common.clearUrls && localization.userPackages.length > 0
+		{!clearUrls && localization.userPackages.length > 0
 		? <>
 			<li>
 				<Link
@@ -42,7 +42,7 @@ export default function PackageSources(props: PackageSourcesProps): JSX.Element 
 		</>
 		: null}
 
-		{!common.clearUrls && isWindowsOS()
+		{!clearUrls && isWindowsOS()
 			? <li>
 				<Link
 					className='simpleLink'

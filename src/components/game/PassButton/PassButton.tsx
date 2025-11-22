@@ -19,16 +19,16 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 });
 
 export function PassButton(props: PassButtonProps): JSX.Element {
-	const common = useAppSelector((state) => state.common);
-	const room = useAppSelector((state) => state.room2);
-	const me = room.persons.players.find(p => p.name === room.name);
+	const isConnected = useAppSelector(state => state.common.isSIHostConnected);
+	const { name, persons } = useAppSelector((state) => state.room2);
+	const me = persons.players.find(p => p.name === name);
 	const canPass = me && (me.state === PlayerStates.None || me.state === PlayerStates.Lost);
 
 	return (
 		<button
 			type="button"
 			className={`passButton ${canPass ? '' : ' hidden'}`}
-			disabled={!common.isSIHostConnected || !canPass}
+			disabled={!isConnected || !canPass}
 			onClick={() => props.onPass()}
 		>
 			{localization.pass.toLocaleUpperCase()}

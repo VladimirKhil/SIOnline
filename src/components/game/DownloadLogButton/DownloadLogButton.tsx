@@ -1,21 +1,20 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 import localization from '../../../model/resources/localization';
-import { RootState } from '../../../state/store';
 import { openGameLog } from '../../../state/globalActions';
 
 import './DownloadLogButton.scss';
 
 const DownloadLogButton: React.FC = () => {
-	const settings = useSelector((state: RootState) => state.settings);
-	const common = useSelector((state: RootState) => state.common);
-	const appDispatch = useDispatch();
+	const writeGameLog = useAppSelector(state => state.settings.writeGameLog);
+	const logSupported = useAppSelector(state => state.common.logSupported);
+	const appDispatch = useAppDispatch();
 
 	const handleDownload = () => {
 		appDispatch(openGameLog());
 	};
 
-	return settings.writeGameLog && common.logSupported ? (
+	return writeGameLog && logSupported ? (
 		<button
 			type='button'
 			onClick={handleDownload}

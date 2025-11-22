@@ -44,15 +44,15 @@ export function ProfileView(props: ProfileViewProps): JSX.Element {
 	const appDispatch = useAppDispatch();
 	const [webCameraUrl, setWebCameraUrl] = React.useState(props.webCameraUrl);
 	const [tempLogin, setTempLogin] = React.useState('');
-	const ui = useAppSelector(state => state.ui);
-	const user = useAppSelector(state => state.user);
+	const navigation = useAppSelector(state => state.ui.navigation);
+	const login = useAppSelector(state => state.user.login);
 
-	const inRoom = 	ui.navigation.path === Path.Room;
+	const inRoom = 	navigation.path === Path.Room;
 
 	// Initialize temp login from Redux state
 	React.useEffect(() => {
-		setTempLogin(user.login);
-	}, [user.login]);
+		setTempLogin(login);
+	}, [login]);
 
 	const onCameraChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setWebCameraUrl(e.target.value);
@@ -95,7 +95,7 @@ export function ProfileView(props: ProfileViewProps): JSX.Element {
 		if (validationError) {
 			appDispatch(userErrorChanged(validationError));
 			// Reset to the last valid value from Redux
-			setTempLogin(user.login);
+			setTempLogin(login);
 			return;
 		}
 

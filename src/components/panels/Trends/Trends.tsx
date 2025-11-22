@@ -51,17 +51,20 @@ function downloadPackage(source: string, packageName: string): void {
 }
 
 export default function Trends(): JSX.Element {
-	const common = useAppSelector(state => state.common);
-	const online = useAppSelector(state => state.online2);
+	const commonClearUrls = useAppSelector(state => state.common.clearUrls);
+	const { packagesStatistics, latestGames } = useAppSelector(state => ({
+		packagesStatistics: state.online2.packagesStatistics,
+		latestGames: state.online2.latestGames
+	}));
 
 	const [trendsMode, setTrendsMode] = React.useState(0);
 
 	const getContent = () => {
 		switch (trendsMode) {
 			case 0:
-				return online.packagesStatistics
+				return packagesStatistics
 				? <div>
-					{online.packagesStatistics.packages
+					{packagesStatistics.packages
 						.filter(p => p.package.name !== Constants.RANDOM_PACKAGE)
 						.map((p, i) => {
 							const trimmedPackageName = trimLength(p.package.name, 75);
@@ -70,7 +73,7 @@ export default function Trends(): JSX.Element {
 							return <div key={i} className='trendPackage'>
 								<div className='packageHeader'>
 									<div><span className='packageName'>
-										{common.clearUrls ? clearUrls(trimmedPackageName) : trimmedPackageName}</span>
+										{commonClearUrls ? clearUrls(trimmedPackageName) : trimmedPackageName}</span>
 									</div>
 
 									{isValidSourceForDownload(p.package.source) && (
@@ -107,7 +110,7 @@ export default function Trends(): JSX.Element {
 										{isValidLink(p.package.authorsContacts)
 											? <Link href={p.package.authorsContacts} target='_blank' rel='noopener noreferrer'>{trimmedAuthors}</Link>
 											: <span
-												title={common.clearUrls ? undefined : p.package.authorsContacts}
+												title={commonClearUrls ? undefined : p.package.authorsContacts}
 												className={p.package.authorsContacts && p.package.authorsContacts.length > 0 ? 'hasContact' : ''}>
 												{trimmedAuthors}
 											</span>}
@@ -120,9 +123,9 @@ export default function Trends(): JSX.Element {
 				: null;
 
 			case 1:
-				return online.latestGames
+				return latestGames
 				? <div>
-					{online.latestGames.results.map((g, i) => <div key={i} className='trendGame'>
+					{latestGames.results.map((g, i) => <div key={i} className='trendGame'>
 						<div className='gameName'>{g.name}</div>
 						<div>{print(g.results)}</div>
 						{Object.keys(g.reviews).length > 0 ? <div>{localization.reviews}: {print(g.reviews)}</div> : null}

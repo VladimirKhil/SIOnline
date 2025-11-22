@@ -22,10 +22,14 @@ const mapStateToProps: MapStateToProps<GameMetadataViewProps, unknown, State> = 
 });
 
 export function GameMetadataView(props: GameMetadataViewProps): JSX.Element {
-	const room = useAppSelector((state: RootState) => state.room2);
-	const room2Settings = room.settings;
+	const { name, persons, room2Settings } = useAppSelector(state => ({
+		name: state.room2.name,
+		persons: state.room2.persons,
+		room2Settings: state.room2.settings
+	}));
+
 	const appDispatch = useAppDispatch();
-	const isHost = room.name === room.persons.hostName;
+	const isHost = name === persons.hostName;
 
 	// Local state for editing numeric values
 	const [readingSpeedValue, setReadingSpeedValue] = React.useState(room2Settings.readingSpeed.toString());

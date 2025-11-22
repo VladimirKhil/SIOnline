@@ -21,6 +21,7 @@ export default function Selector<T extends (string | number)>(props: SelectorPro
 		<div className={`selector ${props.className}`}>
 			{props.data.map(item => (
 				<button
+					type='button'
 					key={item.value.toString()}
 					className={props.value === item.value ? 'unselectable' : ''}
 					disabled={props.value === item.value || props.disabled}

@@ -22,13 +22,13 @@ const mapDispatchToProps = (dispatch: any) => ({
 export function ServerLicense(props: ServerLicenseProps): JSX.Element | null {
 	const [accepted, setAccepted] = useState(false);
 	const appDispatch = useAppDispatch();
-	const common = useAppSelector(state => state.common);
+	const serverLicense = useAppSelector(state => state.common.serverLicense);
 
 	return (
 		<div className='server__license'>
 			<div className='server__license__body animated'>
 				<div className='license__header'>{localization.serverLicense}</div>
-				<div className='license__text'>{common.serverLicense?.split('\n').map((text, index) => <p key={index}>{text}</p>)}</div>
+				<div className='license__text'>{serverLicense?.split('\n').map((text, index) => <p key={index}>{text}</p>)}</div>
 
 				<div className='license__accept'>
 					<input

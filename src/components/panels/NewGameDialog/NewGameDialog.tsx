@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { Dispatch, Action } from 'redux';
 import localization from '../../../model/resources/localization';
 import Dialog from '../../common/Dialog/Dialog';
-import ProgressBar from '../../common/ProgressBar/ProgressBar';
 import SIStorageDialog from '../SIStorageDialog/SIStorageDialog';
 import onlineActionCreators from '../../../state/online/onlineActionCreators';
 import { AppDispatch } from '../../../state/store';
@@ -35,16 +34,21 @@ export function NewGameDialog(props: NewGameDialogProps) {
 	const [activeTab, setActiveTab] = React.useState(0);
 	const [isSIStorageOpen, setIsSIStorageOpen] = React.useState(false);
 	const appDispatch = useAppDispatch();
-	const ui = useAppSelector(state => state.ui);
-	const game = useAppSelector(state => state.game);
-	const online = useAppSelector(state => state.online2);
+	const navigation = useAppSelector(state => state.ui.navigation);
+	const gameName = useAppSelector(state => state.game.name);
+	const { gameCreationProgress, uploadPackageProgress, uploadPackagePercentage, downloadPackageProgress } = useAppSelector(state => ({
+		gameCreationProgress: state.online2.gameCreationProgress,
+		uploadPackageProgress: state.online2.uploadPackageProgress,
+		uploadPackagePercentage: state.online2.uploadPackagePercentage,
+		downloadPackageProgress: state.online2.downloadPackageProgress
+	}));
 
 	React.useEffect(() => {
-		if (ui.navigation.packageUri) {
+		if (navigation.packageUri) {
 			appDispatch(setPackageLibrary({
 				id: '',
-				name: ui.navigation.packageName ?? ui.navigation.packageUri,
-				uri: ui.navigation.packageUri
+				name: navigation.packageName ?? navigation.packageUri,
+				uri: navigation.packageUri
 			}));
 		}
 	});
@@ -84,9 +88,9 @@ export function NewGameDialog(props: NewGameDialogProps) {
 		}
 	}
 
-	const progressMessage = online.downloadPackageProgress
+	const progressMessage = downloadPackageProgress
 		? localization.downloadingPackage
-		: (online.uploadPackageProgress
+		: (uploadPackageProgress
 			? localization.sendingPackage
 			: localization.creatingGame);
 
@@ -106,18 +110,18 @@ export function NewGameDialog(props: NewGameDialogProps) {
 					<button
 						type="button"
 						className="startGame mainAction active"
-						disabled={online.gameCreationProgress || (!props.isSingleGame && game.name.length === 0)}
+						disabled={gameCreationProgress || (!props.isSingleGame && gameName.length === 0)}
 						onClick={() => props.onCreate(props.isSingleGame, appDispatch)}
 					>
 						{localization.startGame.toLocaleUpperCase()}
 					</button>
 				</div>
 
-				{online.gameCreationProgress
+				{gameCreationProgress
 					? <ProgressDialog
 						title={progressMessage}
-						isIndeterminate={!online.uploadPackageProgress}
-						value={online.uploadPackageProgress ? online.uploadPackagePercentage : undefined} />
+						isIndeterminate={!uploadPackageProgress}
+						value={uploadPackageProgress ? uploadPackagePercentage : undefined} />
 					: null}
 			</Dialog>
 

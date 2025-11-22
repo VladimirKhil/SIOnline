@@ -11,13 +11,16 @@ interface NewGameButtonProps {
 
 const NewGameButton: React.FC<NewGameButtonProps> = ({ simple }) => {
 	const appDispatch = useAppDispatch();
-	const online = useAppSelector(state => state.online2);
+	const { gameCreationProgress, joinGameProgress } = useAppSelector(state => ({
+		gameCreationProgress: state.online2.gameCreationProgress,
+		joinGameProgress: state.online2.joinGameProgress
+	}));
 
 	return <button
 		className={`newGame standard ${simple ? ' simple' : ''}`}
 		type="button"
 		title={simple ? localization.newGame : undefined}
-		disabled={online.gameCreationProgress || online.joinGameProgress}
+		disabled={gameCreationProgress || joinGameProgress}
 		onClick={() => appDispatch(newGame())}
 	>
 		{simple ? '+' : localization.newGame.toLocaleUpperCase()}

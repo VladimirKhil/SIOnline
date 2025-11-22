@@ -12,9 +12,9 @@ interface LinkProps {
 }
 
 export default function Link(props: LinkProps): JSX.Element {
-	const common = useAppSelector(state => state.common);
+	const clearUrls = useAppSelector(state => state.common.clearUrls);
+	const hostManagedUrls = useAppSelector(state => state.common.hostManagedUrls);
 	const appDispatch = useAppDispatch();
-	const { clearUrls, hostManagedUrls } = common;
 
 	if (hostManagedUrls) {
 		const open = () => {

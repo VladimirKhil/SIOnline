@@ -6,7 +6,7 @@ import { onGamesSearchChanged } from '../../../state/online2Slice';
 import './GamesSearch.scss';
 
 export default function GamesSearch() {
-	const online = useAppSelector(state => state.online2);
+	const gamesSearch = useAppSelector(state => state.online2.gamesSearch);
 	const appDispatch = useAppDispatch();
 
 	return (
@@ -15,7 +15,7 @@ export default function GamesSearch() {
 			className="gamesSearch"
 			type="search"
 			autoComplete="off"
-			value={online.gamesSearch}
+			value={gamesSearch}
 			placeholder={localization.searchGames}
 			onChange={e => appDispatch(onGamesSearchChanged(e.target.value))} />
 	);

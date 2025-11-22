@@ -18,7 +18,6 @@ import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 
 import { addTable,
 	DecisionType,
-	Room2State,
 	selectPlayers,
 	setAreSumsEditable,
 	setChatMode,
@@ -58,8 +57,8 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	},
 });
 
-function getSideArea(props: GameChatViewProps, room: Room2State): React.ReactNode {
-	switch (room.chat.mode) {
+function getSideArea(props: GameChatViewProps, chatMode: ChatMode, usersMode: UsersMode): React.ReactNode {
+	switch (chatMode) {
 		case ChatMode.Chat:
 			return (
 				<div className="game__chat">
@@ -76,7 +75,7 @@ function getSideArea(props: GameChatViewProps, room: Room2State): React.ReactNod
 
 		case ChatMode.Users:
 			{
-				switch (room.chat.usersMode) {
+				switch (usersMode) {
 					case UsersMode.Users:
 						return (
 							<div className="game__persons">
@@ -106,8 +105,16 @@ function getSideArea(props: GameChatViewProps, room: Room2State): React.ReactNod
 
 export function GameChatView(props: GameChatViewProps): JSX.Element {
 	const appDispatch = useAppDispatch();
-	const room = useAppSelector(state => state.room2);
-	const canAddTable = room.persons.players.length < Constants.MAX_PLAYER_COUNT;
+
+	const { persons, stage, chat, role, areSumsEditable } = useAppSelector(state => ({
+		persons: state.room2.persons,
+		stage: state.room2.stage,
+		chat: state.room2.chat,
+		role: state.room2.role,
+		areSumsEditable: state.room2.areSumsEditable
+	}));
+
+	const canAddTable = persons.players.length < Constants.MAX_PLAYER_COUNT;
 
 	const onGiveTurn = () =>{
 		props.onGiveTurn();
@@ -143,9 +150,9 @@ export function GameChatView(props: GameChatViewProps): JSX.Element {
 
 			<button
 				type="button"
-				className={`sumsButton standard imageButton wide commandButton bottomButton ${room.stage.isEditingTables ? 'active' : ''}`}
-				onClick={() => appDispatch(setIsEditingTables(!room.stage.isEditingTables))}
-				disabled={!props.isConnected || !room.stage.isGameStarted}
+				className={`sumsButton standard imageButton wide commandButton bottomButton ${stage.isEditingTables ? 'active' : ''}`}
+				onClick={() => appDispatch(setIsEditingTables(!stage.isEditingTables))}
+				disabled={!props.isConnected || !stage.isGameStarted}
 				title={localization.editTables}
 			>
 				<svg width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -174,7 +181,7 @@ export function GameChatView(props: GameChatViewProps): JSX.Element {
 					<div className='right'>
 						<button
 							type='button'
-							className={room.chat.mode === ChatMode.Chat ? 'activeTab' : ''}
+							className={chat.mode === ChatMode.Chat ? 'activeTab' : ''}
 							onClick={() => appDispatch(setChatMode(ChatMode.Chat))}
 							title={localization.chat}>
 							<svg width="22" height="20" viewBox="0 0 22 20" fill="none">
@@ -184,7 +191,7 @@ export function GameChatView(props: GameChatViewProps): JSX.Element {
 
 						<button
 							type='button'
-							className={room.chat.mode === ChatMode.Users ? 'activeTab' : ''}
+							className={chat.mode === ChatMode.Users ? 'activeTab' : ''}
 							onClick={() => appDispatch(setChatMode(ChatMode.Users))}
 							title={localization.members}>
 							<svg width="24" height="18" viewBox="0 0 24 18" fill="none">
@@ -194,7 +201,7 @@ export function GameChatView(props: GameChatViewProps): JSX.Element {
 
 						<button
 							type='button'
-							className={room.chat.mode === ChatMode.Info ? 'activeTab' : ''}
+							className={chat.mode === ChatMode.Info ? 'activeTab' : ''}
 							onClick={() => appDispatch(setChatMode(ChatMode.Info))}
 							title={localization.gameInfo}>
 							ℹ
@@ -205,21 +212,21 @@ export function GameChatView(props: GameChatViewProps): JSX.Element {
 				</h1>
 			</header>
 
-			{room.chat.mode === ChatMode.Users
+			{chat.mode === ChatMode.Users
 				? <div className="wide tabHeader usersHeader">
 					<TabControl
 						tabs={[
 							{ id: UsersMode.Users, label: localization.members },
 							{ id: UsersMode.Banned, label: '🚫', title: localization.bannedList } ]}
-						activeTab={room.chat.usersMode}
+						activeTab={chat.usersMode}
 						onTabClick={n => appDispatch(setUsersMode(n))} />
 				</div> : null}
 
 			<div className="sideArea">
-				{getSideArea(props, room)}
+				{getSideArea(props, chat.mode, chat.usersMode)}
 			</div>
 
-			{room.role === Role.Showman ? (
+			{role === Role.Showman ? (
 				<>
 					<ValidationArea />
 
@@ -238,9 +245,9 @@ export function GameChatView(props: GameChatViewProps): JSX.Element {
 
 						<button
 							type="button"
-							className={`sumsButton standard imageButton wide commandButton bottomButton ${room.areSumsEditable ? 'active' : ''}`}
+							className={`sumsButton standard imageButton wide commandButton bottomButton ${areSumsEditable ? 'active' : ''}`}
 							disabled={!props.isConnected}
-							onClick={() => appDispatch(setAreSumsEditable(!room.areSumsEditable))}
+							onClick={() => appDispatch(setAreSumsEditable(!areSumsEditable))}
 							title={localization.changeSums}
 						>
 							<img src={sumsImg} />

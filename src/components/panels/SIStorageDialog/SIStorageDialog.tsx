@@ -47,8 +47,7 @@ const mapStateToProps = (state: State): StateProps => ({
 const SIStorageDialog: React.FC<SIStorageDialogProps> = (props) => {
 	const siPackages = useAppSelector(state => state.siPackages);
 	const storage = siPackages.storages[siPackages.storageIndex];
-	const common = useAppSelector(state => state.common);
-	const { clearUrls } = common;
+	const clearUrls = useAppSelector(state => state.common.clearUrls);
 
 	const [filters, setFilters] = React.useState<PackageFilters>({
 		restrictionIds: [-1],

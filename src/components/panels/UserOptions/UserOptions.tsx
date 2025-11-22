@@ -7,21 +7,25 @@ import Sex from '../../../model/enums/Sex';
 import './UserOptions.css';
 
 const UserOptions: React.FC = () => {
-	const user = useAppSelector(state => state.user);
+	const { login, avatar } = useAppSelector(state => ({
+		login: state.user.login,
+		avatar: state.user.avatar
+	}));
+
 	const dispatch = useAppDispatch();
 	const sex = useAppSelector(state => state.settings.sex);
-	const avatarClass = user.avatar ? null : (sex === Sex.Male ? 'avatarMale' : 'avatarFemale');
+	const avatarClass = avatar ? null : (sex === Sex.Male ? 'avatarMale' : 'avatarFemale');
 
-	const avatarStyle : React.CSSProperties = user.avatar
-		? { backgroundImage: `url("${user.avatar}")` }
+	const avatarStyle : React.CSSProperties = avatar
+		? { backgroundImage: `url("${avatar}")` }
 		: {};
 
 	return (
 		<div className='userOptions'>
 			<SettingsButton />
 
-			<button type='button' className='userInfo' title={user.login} onClick={() => dispatch(showProfile(true))}>
-				<div className={`userAvatar ${avatarClass}`} style={avatarStyle} title={user.login} />
+			<button type='button' className='userInfo' title={login} onClick={() => dispatch(showProfile(true))}>
+				<div className={`userAvatar ${avatarClass}`} style={avatarStyle} title={login} />
 			</button>
 		</div>
 	);

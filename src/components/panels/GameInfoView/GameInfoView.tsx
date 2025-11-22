@@ -106,8 +106,11 @@ export function GameInfoView(props: GameInfoViewProps): JSX.Element {
 	}
 
 	const appDispatch = useAppDispatch();
-	const online = useAppSelector(state => state.online2);
-	const { password, joinGameProgress, gameCreationProgress } = online;
+	const { password, joinGameProgress, gameCreationProgress } = useAppSelector(state => ({
+		password: state.online2.password,
+		joinGameProgress: state.online2.joinGameProgress,
+		gameCreationProgress: state.online2.gameCreationProgress,
+	}));
 
 	const [userName, setUserName] = React.useState(props.login);
 

@@ -10,9 +10,12 @@ import getLanguage from '../../../utils/getLanguage';
 import './GamesFilterView.scss';
 
 export default function GamesFilterView() {
-	const online = useAppSelector(state => state.online2);
+	const { gamesFilter } = useAppSelector(state => ({
+		gamesFilter: state.online2.gamesFilter,
+	}));
+
 	const appDispatch = useAppDispatch();
-	const isActive = online.gamesFilter > 0;
+	const isActive = gamesFilter > 0;
 
 	const onToggleFilterItem = (gamesFilterItem: GamesFilter) => {
 		appDispatch(onGameFilterToggle(gamesFilterItem));
@@ -28,23 +31,23 @@ export default function GamesFilterView() {
 			flyout={(
 				<ul className="gamesFilter">
 					<li onClick={() => onToggleFilterItem(GamesFilter.New)}>
-						<CheckBox isChecked={(online.gamesFilter & GamesFilter.New) > 0} header={localization.new} />
+						<CheckBox isChecked={(gamesFilter & GamesFilter.New) > 0} header={localization.new} />
 					</li>
 
 					<li onClick={() => onToggleFilterItem(GamesFilter.Sport)}>
-						<CheckBox isChecked={(online.gamesFilter & GamesFilter.Sport) > 0} header={localization.sportPlural} />
+						<CheckBox isChecked={(gamesFilter & GamesFilter.Sport) > 0} header={localization.sportPlural} />
 					</li>
 
 					<li onClick={() => onToggleFilterItem(GamesFilter.Tv)}>
-						<CheckBox isChecked={(online.gamesFilter & GamesFilter.Tv) > 0} header={localization.tvPlural} />
+						<CheckBox isChecked={(gamesFilter & GamesFilter.Tv) > 0} header={localization.tvPlural} />
 					</li>
 
 					<li onClick={() => onToggleFilterItem(GamesFilter.NoPassword)}>
-						<CheckBox isChecked={(online.gamesFilter & GamesFilter.NoPassword) > 0} header={localization.withoutPassword} />
+						<CheckBox isChecked={(gamesFilter & GamesFilter.NoPassword) > 0} header={localization.withoutPassword} />
 					</li>
 
 					<li onClick={() => onToggleFilterItem(GamesFilter.MyLanguage)}>
-						<CheckBox isChecked={(online.gamesFilter & GamesFilter.MyLanguage) > 0} header={localization.language + ': ' + myLanguage} />
+						<CheckBox isChecked={(gamesFilter & GamesFilter.MyLanguage) > 0} header={localization.language + ': ' + myLanguage} />
 					</li>
 				</ul>
 			)}

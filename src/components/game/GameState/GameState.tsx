@@ -14,13 +14,13 @@ import exitImg from '../../../../assets/images/exit.png';
 
 export default function GameState(): JSX.Element {
 	const appDispatch = useAppDispatch();
-	const common = useAppSelector(state => state.common);
-	const room = useAppSelector(state => state.room2);
-	const ui = useAppSelector(state => state.ui);
-	const enabledClass = common.isSIHostConnected ? '' : 'disabled';
+	const isConnected = useAppSelector(state => state.common.isSIHostConnected);
+	const role = useAppSelector(state => state.room2.role);
+	const navigation = useAppSelector(state => state.ui.navigation);
+	const enabledClass = isConnected ? '' : 'disabled';
 
 	const onExit = () => {
-		appDispatch(navigate({ navigation: { path: ui.navigation.returnToLobby ? Path.Lobby : Path.Menu }, saveState: true }));
+		appDispatch(navigate({ navigation: { path: navigation.returnToLobby ? Path.Lobby : Path.Menu }, saveState: true }));
 	};
 
 	return (
@@ -60,7 +60,7 @@ export default function GameState(): JSX.Element {
 						<QuestionCounter />
 					</div>
 
-					{room.role === Role.Showman ? <MoveRoundButton /> : null}
+					{role === Role.Showman ? <MoveRoundButton /> : null}
 				</h1>
 			</header>
 		</div>

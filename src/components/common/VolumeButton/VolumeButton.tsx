@@ -42,7 +42,7 @@ export default function VolumeButton(props: VolumeButtonProps) {
 				verticalOrientation={FlyoutVerticalOrientation.Bottom}
 				horizontalOrientation={FlyoutHorizontalOrientation.Left}
 			>
-				<img 
+				<img
 					src={soundVolume && props.canPlayAudio ? volumeOnIcon : volumeOffIcon} 
 					alt={localization.soundVolume}
 					className="volumeIcon"

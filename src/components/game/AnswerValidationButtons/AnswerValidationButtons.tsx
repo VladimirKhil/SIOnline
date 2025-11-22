@@ -8,7 +8,7 @@ import './AnswerValidationButtons.scss';
 export default function AnswerValidationButtons(): JSX.Element {
 	const appDispatch = useAppDispatch();
 	const validation = useAppSelector(state => state.room2.validation);
-	const common = useAppSelector(state => state.common);
+	const isConnected = useAppSelector(state => state.common.isSIHostConnected);
 
 	const [firstValidationItem] = validation.queue;
 
@@ -49,7 +49,7 @@ export default function AnswerValidationButtons(): JSX.Element {
 					<button
 						type="button"
 						className='standard validationButton acceptButton'
-						disabled={!common.isSIHostConnected || buttonsBlocked}
+						disabled={!isConnected || buttonsBlocked}
 						onClick={() => onApprove(1.0)}>
 						{localization.yes}
 					</button>
@@ -58,7 +58,7 @@ export default function AnswerValidationButtons(): JSX.Element {
 						<button
 							type="button"
 							className='standard halfPrice extraButton acceptButton'
-							disabled={!common.isSIHostConnected || buttonsBlocked}
+							disabled={!isConnected || buttonsBlocked}
 							onClick={() => onApprove(0.5)}>
 							×0.5
 						</button>
@@ -66,7 +66,7 @@ export default function AnswerValidationButtons(): JSX.Element {
 						<button
 							type="button"
 							className='standard doublePrice extraButton acceptButton'
-							disabled={!common.isSIHostConnected || buttonsBlocked}
+							disabled={!isConnected || buttonsBlocked}
 							onClick={() => onApprove(2.0)}>
 							×2
 						</button>
@@ -77,7 +77,7 @@ export default function AnswerValidationButtons(): JSX.Element {
 					<button
 						type="button"
 						className='standard validationButton rejectButton'
-						disabled={!common.isSIHostConnected || buttonsBlocked}
+						disabled={!isConnected || buttonsBlocked}
 						onClick={() => onReject(1.0)}>
 						{localization.no}
 					</button>
@@ -86,7 +86,7 @@ export default function AnswerValidationButtons(): JSX.Element {
 						<button
 							type="button"
 							className='standard halfPrice extraButton rejectButton'
-							disabled={!common.isSIHostConnected || buttonsBlocked}
+							disabled={!isConnected || buttonsBlocked}
 							onClick={() => onReject(0.5)}>
 							×0.5
 						</button>
@@ -94,7 +94,7 @@ export default function AnswerValidationButtons(): JSX.Element {
 						<button
 							type="button"
 							className='standard doublePrice extraButton rejectButton'
-							disabled={!common.isSIHostConnected || buttonsBlocked}
+							disabled={!isConnected || buttonsBlocked}
 							onClick={() => onReject(2.0)}>
 							×2
 						</button>

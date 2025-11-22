@@ -19,7 +19,7 @@ const mapStateToProps = (state: State) => ({
 
 export function ReportDialog(props: ComplainDialogProps): JSX.Element {
 	const appDispatch = useAppDispatch();
-	const roomState = useAppSelector(state => state.room2);
+	const report = useAppSelector(state => state.room2.playState.report);
 	const [comment, setComment] = React.useState('');
 
 	return (
@@ -28,7 +28,7 @@ export function ReportDialog(props: ComplainDialogProps): JSX.Element {
 			title={localization.rateGame}
 			onClose={() => appDispatch(showDialog(DialogView.None))}>
 			<div className='dialogBody'>
-				<div className='reportText'>{roomState.playState.report}</div>
+				<div className='reportText'>{report}</div>
 
 				<label className='complainTextComment' htmlFor='complainText'>{localization.comment}</label>
 

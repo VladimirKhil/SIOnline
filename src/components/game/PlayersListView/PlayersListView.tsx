@@ -34,7 +34,11 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 
 export function PlayersListView(props: PlayersListViewProps): JSX.Element {
 	const appDispatch = useAppDispatch();
-	const room = useAppSelector(state => state.room2);
+
+	const { name, areSumsEditable } = useAppSelector(state => ({
+		name: state.room2.name,
+		areSumsEditable: state.room2.areSumsEditable,
+	}));
 
 	const onSumChanged = (index: number, value: number) => {
 		props.onSumChanged(index, value);
@@ -52,7 +56,7 @@ export function PlayersListView(props: PlayersListViewProps): JSX.Element {
 		<ul>
 			{props.players.map((player, index) => {
 				const account = props.all[player.name];
-				const isMe = player.name === room.name;
+				const isMe = player.name === name;
 				const avatarClass = getAvatarClass(account);
 
 				const avatar = isMe && props.avatar ? props.avatar : account?.avatar;
@@ -68,7 +72,7 @@ export function PlayersListView(props: PlayersListViewProps): JSX.Element {
 						<div className="name">{player.name}</div>
 
 						<div className="sum" title={player.sum.toString()}>
-							{room.areSumsEditable ? (
+							{areSumsEditable ? (
 								<NumericTextBox
 									value={player.sum}
 									onValueChanged={value => onSumChanged(index, value)}

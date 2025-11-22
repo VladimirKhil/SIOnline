@@ -9,7 +9,6 @@ import PlayerButtonsPanel from '../PlayerButtonsPanel/PlayerButtonsPanel';
 import ReadyButton from '../ReadyButton/ReadyButton';
 import GameHint from '../GameHint/GameHint';
 import { useAppSelector } from '../../../state/hooks';
-import { RootState } from '../../../state/store';
 import { ContextView } from '../../../state/room2Slice';
 import ReportButton from '../ReportButton/ReportButton';
 import EditTableButton from '../EditTableButton/EditTableButton';
@@ -94,20 +93,26 @@ function renderBody(
 }
 
 export function TableContextView(props: TableContextViewProps): JSX.Element | null {
-	const state = useAppSelector((rootState: RootState) => rootState.room2);
-	const ui = useAppSelector(rootState => rootState.ui);
-	const table = useAppSelector(rootState => rootState.table);
-	const room = useAppSelector(rootState => rootState.room2);
+	const windowWidth = useAppSelector(rootState => rootState.ui.windowWidth);
+	const tableMode = useAppSelector(rootState => rootState.table.mode);
+
+	const { contextView, isGameStarted, isGamePaused, role, decisionType } = useAppSelector(rootState => ({
+		contextView: rootState.room2.contextView,
+		isGameStarted: rootState.room2.stage.isGameStarted,
+		isGamePaused: rootState.room2.stage.isGamePaused,
+		role: rootState.room2.role,
+		decisionType: rootState.room2.stage.decisionType,
+	}));
 
 	const body = renderBody(
 		props,
-		state.contextView,
-		ui.windowWidth,
-		table.mode,
-		room.stage.isGameStarted,
-		room.stage.isGamePaused,
-		room.role,
-		room.stage.decisionType,
+		contextView,
+		windowWidth,
+		tableMode,
+		isGameStarted,
+		isGamePaused,
+		role,
+		decisionType,
 	);
 
 	return body == null ? null : <div className='tableContextView'>{body}</div>;

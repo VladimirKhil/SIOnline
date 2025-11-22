@@ -14,11 +14,11 @@ const mapStateToProps = (state: State) => ({
 });
 
 export function GameProgress(props: GameProgressProps): JSX.Element | null {
-	const room = useAppSelector(state => state.room2);
+	const roundsNames = useAppSelector(state => state.room2.roundsNames);
 
-	return room.roundsNames && room.roundsNames.length > 0 && props.roundIndex > -1 ? (
+	return roundsNames && roundsNames.length > 0 && props.roundIndex > -1 ? (
 		<div className='game_progress'>
-			{props.roundIndex + 1} / {room.roundsNames.length}
+			{props.roundIndex + 1} / {roundsNames.length}
 		</div>
 	) : <div className='game_progress' />;
 }

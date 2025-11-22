@@ -41,30 +41,34 @@ function loadPersonReplacementList(
 }
 
 const EditTableMenu: React.FC<EditTableMenuProps> = (props) => {
-	const common = useAppSelector(state => state.common);
-	const ui = useAppSelector(state => state.ui);
-	const room = useAppSelector(state => state.room2);
+	const isConnected = useAppSelector(state => state.common.isSIHostConnected);
+	const computerAccounts = useAppSelector(state => state.common.computerAccounts);
+	const windowWidth = useAppSelector(state => state.ui.windowWidth);
+	const { name, persons, stage } = useAppSelector(state => ({
+		name: state.room2.name,
+		persons: state.room2.persons,
+		stage: state.room2.stage
+	}));
 	const appDispatch = useAppDispatch();
-	const isHost = room.name === room.persons.hostName;
-	const isWide = ui.windowWidth >= Constants.WIDE_WINDOW_WIDTH;
-
+	const isHost = name === persons.hostName;
+	const isWide = windowWidth >= Constants.WIDE_WINDOW_WIDTH;
 	const canFree = props.account && props.account.isHuman;
-	const canDelete = props.isPlayerScope && room.persons.players.length > Constants.MIN_PLAYER_COUNT;
+	const canDelete = props.isPlayerScope && persons.players.length > Constants.MIN_PLAYER_COUNT;
 	const isBot = props.account && !props.account.isHuman;
 
 	// Get replacement list for the current table
-	const { showman, players } = room.persons;
+	const { showman, players } = persons;
 	const isPlayerSelected = props.isPlayerScope;
 	const selectedPerson = props.isPlayerScope ? players[props.tableIndex] : showman;
 
 	const replacementList: string[] = loadPersonReplacementList(
 		selectedPerson,
-		room.persons.all,
-		common.computerAccounts,
+		persons.all,
+		computerAccounts,
 		isPlayerSelected
 	);
 
-	if (!common.isSIHostConnected || !isHost || (room.stage.isGameStarted && !room.stage.isEditingTables)) {
+	if (!isConnected || !isHost || (stage.isGameStarted && !stage.isEditingTables)) {
 		return null;
 	}
 

@@ -65,10 +65,9 @@ function getPackageName(packageType: PackageType, packageName: string, packageDa
 
 export function RoomOptions(props: RoomOptionsProps) {
 	const game = useAppSelector((state) => state.game);
-	const commonState = useAppSelector((state) => state.common);
+	const maxPackageSizeMb = useAppSelector(state => state.common.maxPackageSizeMb);
 	const childRef = React.useRef<HTMLInputElement>(null);
 	const appDispatch = useAppDispatch();
-	const { maxPackageSizeMb } = commonState;
 
 	const onFilePackageSelected = () => {
 		if (childRef.current) {
