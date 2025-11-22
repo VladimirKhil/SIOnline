@@ -21,10 +21,9 @@ import GameMetadataView from '../../game/GameMetadataView/GameMetadataView';
 import BannedView from '../../game/BannedView/BannedView';
 import TableContextView from '../../game/TableContextView/TableContextView';
 import ChatInput from '../../game/ChatInput/ChatInput';
-import MessageLevel from '../../../model/enums/MessageLevel';
 import { userErrorChanged } from '../../../state/commonSlice';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
-import { addToChat, DecisionType, DialogView, rejectAnswer, setChatVisibility } from '../../../state/room2Slice';
+import { DecisionType, DialogView, rejectAnswer, setChatVisibility } from '../../../state/room2Slice';
 import ComplainDialog from '../../panels/ComplainDialog/ComplainDialog';
 import ReportDialog from '../../panels/ReportDialog/ReportDialog';
 import GameState from '../../game/GameState/GameState';
@@ -46,7 +45,6 @@ interface RoomProps {
 	onBannedDialogClose: () => void;
 	onGameInfoDialogClose: () => void;
 	onManageGameDialogClose: () => void;
-	onReconnect: () => void;
 	clearDecisions: () => void;
 }
 
@@ -86,9 +84,6 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	onManageGameDialogClose: () => {
 		dispatch(roomActionCreators.runHideManageGame());
 	},
-	onReconnect: () => {
-		dispatch(roomActionCreators.onReconnect() as unknown as Action);
-	},
 	clearDecisions: () => {
 		dispatch(roomActionCreators.clearDecisions());
 	},
@@ -106,11 +101,6 @@ export function Room(props: RoomProps) : JSX.Element {
 	const { floatingControls, backgroundImageKey } = useAppSelector((state) => ({
 		floatingControls: state.settings.floatingControls,
 		backgroundImageKey: state.settings.theme.room.backgroundImageKey,
-	}));
-
-	const { isConnected, isConnectedReason } = useAppSelector((state) => ({
-		isConnected: state.common.isSIHostConnected,
-		isConnectedReason: state.common.isSIHostConnectedReason,
 	}));
 
 	const {
@@ -138,21 +128,6 @@ export function Room(props: RoomProps) : JSX.Element {
 			appDispatch(navigate({ navigation: { path: returnToLobby ? Path.Lobby : Path.Menu }, saveState: true }));
 		}
 	}, [kicked, returnToLobby, appDispatch]);
-
-	const prevConnectionStateRef = React.useRef({ isConnected, isConnectedReason });
-
-	React.useEffect(() => {
-		const prevState = prevConnectionStateRef.current;
-
-		if (prevState.isConnected !== isConnected) {
-			prevConnectionStateRef.current = { isConnected, isConnectedReason };
-			appDispatch(addToChat({ sender: '', text: isConnectedReason, level: MessageLevel.System }));
-
-			if (isConnected) {
-				props.onReconnect();
-			}
-		}
-	}, [isConnected, isConnectedReason, appDispatch, props]);
 
 	const isScreenWide = windowWidth >= Constants.WIDE_WINDOW_WIDTH; // TODO: try to replace with CSS
 

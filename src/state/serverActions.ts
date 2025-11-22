@@ -5,6 +5,15 @@ import { isSelectableChanged } from './tableSlice';
 import { DecisionType, setDecisionType } from './room2Slice';
 import JoinMode from '../client/game/JoinMode';
 
+export const initRoom = createAsyncThunk(
+	'server/initRoom',
+	async (arg: void, thunkAPI) => {
+		const dataContext = thunkAPI.extra as DataContext;
+		await dataContext.game.info();
+		await dataContext.game.moveable();
+	}
+);
+
 export const mediaPreloaded = createAsyncThunk(
 	'server/mediaPreloaded',
 	async (_, thunkAPI) => (thunkAPI.extra as DataContext).game.mediaPreloaded(),

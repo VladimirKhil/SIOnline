@@ -60,6 +60,7 @@ import { downloadPackageFinished,
 	uploadPackageProgress,
 	uploadPackageStarted } from '../online2Slice';
 import WellKnownSIStorageServiceErrorCode from 'sistorage-client/dist/models/WellKnownSIStorageServiceErrorCode';
+import { initRoom } from '../serverActions';
 
 async function uploadPackageAsync2(
 	contentClient: SIContentClient,
@@ -133,8 +134,7 @@ const initGameAsync = async (
 	appDispatch(resetQuestionCounter());
 	appDispatch(setRoundsNames([]));
 
-	await gameClient.info();
-	await gameClient.moveable();
+	appDispatch(initRoom());
 
 	if (autoReady && (role === Role.Player || role === Role.Showman)) {
 		await gameClient.ready(true);

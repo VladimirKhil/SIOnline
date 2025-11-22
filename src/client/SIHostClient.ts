@@ -164,7 +164,11 @@ export default class SIHostClient implements ISIHostClient, IClientBase {
 
 	async reconnectAsync(): Promise<any> {
 		if (this.joinInfo) {
-			await this.joinGameAsync(this.joinInfo);
+			const result = await this.joinGameAsync(this.joinInfo);
+
+			if (!result.IsSuccess) {
+				throw new Error(`Reconnection failed: ${result.ErrorType} ${result.Message ?? ''}`);
+			}
 		}
 	}
 

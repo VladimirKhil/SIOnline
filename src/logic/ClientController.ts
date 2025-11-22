@@ -373,6 +373,10 @@ export default class ClientController {
 
 	onAppellation(appellation: boolean) {
 		this.appDispatch(setIsAppellation(appellation));
+
+		if (appellation) {
+			this.appDispatch(isSelectableChanged(false));
+		}
 	}
 
 	onAskAnswer() {
@@ -443,7 +447,7 @@ export default class ClientController {
 		this.appDispatch(setDecisionType(DecisionType.None));
 		this.appDispatch(stopValidation());
 		this.appDispatch(deselectPlayers());
-		this.dispatch(isSelectableChanged(false));
+		this.appDispatch(isSelectableChanged(false));
 
 		// TODO: remove setTimeout after server adjustement
 		setTimeout(
@@ -1034,31 +1038,70 @@ export default class ClientController {
 			}
 		};
 
-		// Helper function to preload a single file with retry logic
-		const preloadFile = (contentUri: string, retryCount = 0): Promise<void> => fetch(contentUri, { cache: 'force-cache' })
-			.then(async (response) => {
-				if (!response.ok) {
-					throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+		// Helper function to preload a single file with retry logic using actual DOM elements
+		const preloadFile = (contentUri: string, retryCount = 0): Promise<void> => new Promise((resolve, reject) => {
+			// Determine file type from URI (check video first as .ogg can be both)
+			const isVideo = /\.(mp4|webm|ogv)$/i.test(contentUri);
+			const isAudio = /\.(mp3|wav|ogg|oga|opus|m4a|aac)$/i.test(contentUri);
+
+			let element: HTMLImageElement | HTMLVideoElement | HTMLAudioElement;
+
+			if (isVideo) {
+				element = document.createElement('video');
+				(element as HTMLVideoElement).preload = 'auto';
+			} else if (isAudio) {
+				element = document.createElement('audio');
+				(element as HTMLAudioElement).preload = 'auto';
+			} else {
+				// Assume image for everything else
+				element = new Image();
+			}
+
+			const handleSuccess = () => {
+				// Clean up event listeners
+				element.onload = null;
+				element.onerror = null;
+				if ('onloadeddata' in element) {
+					(element as HTMLVideoElement | HTMLAudioElement).onloadeddata = null;
+				}
+				resolve();
+			};
+
+			const handleError = (error: Event | string) => {
+				// Clean up event listeners
+				element.onload = null;
+				element.onerror = null;
+				if ('onloadeddata' in element) {
+					(element as HTMLVideoElement | HTMLAudioElement).onloadeddata = null;
 				}
 
-				await response.blob(); // Wait for the content to be fully downloaded
-			})
-			.catch((error) => {
 				if (retryCount < maxRetries) {
 					const retryDelay = Math.min(baseDelay * Math.pow(2, retryCount), 5000);
 					console.log(`Retrying preload of ${contentUri} (attempt ${retryCount + 1}/${maxRetries}) after ${retryDelay}ms`);
 
-					return new Promise<void>((resolve, reject) => {
-						setTimeout(() => {
-							preloadFile(contentUri, retryCount + 1).then(resolve).catch(reject);
-						}, retryDelay);
-					});
+					setTimeout(() => {
+						preloadFile(contentUri, retryCount + 1).then(resolve).catch(reject);
+					}, retryDelay);
 				} else {
-					console.warn(`Failed to preload ${contentUri} after ${maxRetries} attempts: ${getErrorMessage(error)}`);
-					this.addSimpleMessage('Content preload error: ' + getErrorMessage(error));
+					const errorMessage = error instanceof Event ? `Failed to load media: ${contentUri}` : String(error);
+					console.warn(`Failed to preload ${contentUri} after ${maxRetries} attempts: ${errorMessage}`);
+					this.addSimpleMessage('Content preload error: ' + errorMessage);
 					// Don't reject - just log the failure and continue
+					resolve();
 				}
-			});
+			};
+
+			// Set up event listeners
+			if (isVideo || isAudio) {
+				(element as HTMLVideoElement | HTMLAudioElement).onloadeddata = handleSuccess;
+			} else {
+				element.onload = handleSuccess;
+			}
+			element.onerror = handleError;
+
+			// Start loading by setting src
+			element.src = contentUri;
+		});
 
 		// Process files one by one, skipping external ones
 		const processFiles = async () => {
