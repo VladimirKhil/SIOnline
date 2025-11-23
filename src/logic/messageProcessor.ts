@@ -151,6 +151,14 @@ const viewerHandler = (
 			controller.onAds(ads);
 			break;
 
+		case GameMessages.AnswerDeviation:
+			if (args.length < 2) {
+				break;
+			}
+
+			controller.onAnswerDeviation(parseInt(args[1], 10));
+			break;
+
 		case GameMessages.Answers:
 			if (args.length === 1) {
 				break;
@@ -1095,7 +1103,7 @@ function onAskStake(controller: ClientController, args: string[]) {
 const playerHandler = (controller: ClientController, args: string[]) => {
 	switch (args[0]) {
 		case GameMessages.Answer:
-			controller.onAskAnswer();
+			controller.onAskAnswer(args.length > 1 ? args[1] : null);
 			break;
 
 		case GameMessages.AskSelectPlayer:
@@ -1180,7 +1188,7 @@ const showmanHandler = (controller: ClientController, args: string[]) => {
 
 		// Player commands for oral game
 		case GameMessages.Answer:
-			controller.onAskAnswer();
+			controller.onAskAnswer(args.length > 1 ? args[1] : null);
 			break;
 
 		case GameMessages.AskStake:

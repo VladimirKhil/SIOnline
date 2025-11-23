@@ -65,7 +65,8 @@ import { answerOptions,
 	updateQuestion,
 	appendExternalMediaWarning,
 	addRoundTheme,
-	clearRoundThemes } from '../state/tableSlice';
+	clearRoundThemes,
+	setAnswerDeviation } from '../state/tableSlice';
 
 import {
 	ContextView,
@@ -138,6 +139,9 @@ import {
 	stopTimer,
 	timerMaximumChanged,
 	setPlayerApellating,
+	answerChanged,
+	answerTypeChanged,
+	showLeftSeconds,
 } from '../state/room2Slice';
 
 import PersonInfo from '../model/PersonInfo';
@@ -146,15 +150,15 @@ import PlayerInfo from '../model/PlayerInfo';
 import actionCreators from './actionCreators';
 import StakeModes from '../client/game/StakeModes';
 import { playAudio, stopAudio, userInfoChanged, userWarnChanged } from '../state/commonSlice';
-import getErrorMessage, { getUserError } from '../utils/ErrorHelpers';
+import { getUserError } from '../utils/ErrorHelpers';
 import { playersVisibilityChanged, setQrCode } from '../state/uiSlice';
 import ErrorCode from '../client/contracts/ErrorCode';
 import { setAttachContentToTable } from '../state/settingsSlice';
 import { addGameLog, appendGameLog, copyToClipboard } from '../state/globalActions';
-import { mediaPreloaded, mediaPreloadProgress } from '../state/serverActions';
 import stringFormat from '../utils/StringHelpers';
 import JoinMode from '../client/game/JoinMode';
 import getBestRowColumnCount from '../utils/stackedContentHelper';
+import { preloadRoundContent } from './contentPreloader';
 
 // Non-idempotent initialization of group properties
 function initGroup(group: ContentGroup) {
@@ -367,6 +371,10 @@ export default class ClientController {
 		this.appDispatch(showText(ads));
 	}
 
+	onAnswerDeviation(deviation: number) {
+		this.appDispatch(setAnswerDeviation(deviation));
+	}
+
 	onAnswers(answers: string[]) {
 		this.appDispatch(playersAnswersChanged(answers));
 	}
@@ -379,10 +387,10 @@ export default class ClientController {
 		}
 	}
 
-	onAskAnswer() {
+	onAskAnswer(answerType: string | null) {
 		if (this.getState().table.layoutMode === LayoutMode.Simple) {
-			this.dispatch(roomActionCreators.isAnswering());
-			this.appDispatch(setContext(ContextView.Answer));
+			this.appDispatch(answerChanged(''));
+			this.appDispatch(answerTypeChanged(answerType ?? ''));
 		} else {
 			this.appDispatch(isSelectableChanged(true));
 		}
@@ -407,7 +415,7 @@ export default class ClientController {
 	}
 
 	onAutomaticGameTimer(leftSeconds: number) {
-		roomActionCreators.showLeftSeconds(leftSeconds, this.appDispatch);
+		this.appDispatch(showLeftSeconds(leftSeconds));
 	}
 
 	onAvatarChanged(personName: string, contentType: string, uri: string) {
@@ -1023,128 +1031,13 @@ export default class ClientController {
 	}
 
 	onRoundContent(content: string[]) {
-		const baseDelay = 500; // Base delay between requests
-		const maxRetries = 3;
-		let lastNotifiedProgressTens = 0;
-
-		// Helper function to notify progress at 10% intervals
-		const notifyProgress = (progress: number) => {
-			const progressPercent = Math.floor(progress * 100);
-			const progressTens = Math.floor(progressPercent / 10) * 10;
-
-			if (progressTens > lastNotifiedProgressTens && progressTens >= 10) {
-				lastNotifiedProgressTens = progressTens;
-				this.appDispatch(mediaPreloadProgress(progressPercent));
-			}
-		};
-
-		// Helper function to preload a single file with retry logic using actual DOM elements
-		const preloadFile = (contentUri: string, retryCount = 0): Promise<void> => new Promise((resolve, reject) => {
-			// Determine file type from URI (check video first as .ogg can be both)
-			const isVideo = /\.(mp4|webm|ogv)$/i.test(contentUri);
-			const isAudio = /\.(mp3|wav|ogg|oga|opus|m4a|aac)$/i.test(contentUri);
-
-			let element: HTMLImageElement | HTMLVideoElement | HTMLAudioElement;
-
-			if (isVideo) {
-				element = document.createElement('video');
-				(element as HTMLVideoElement).preload = 'auto';
-			} else if (isAudio) {
-				element = document.createElement('audio');
-				(element as HTMLAudioElement).preload = 'auto';
-			} else {
-				// Assume image for everything else
-				element = new Image();
-			}
-
-			const handleSuccess = () => {
-				// Clean up event listeners
-				element.onload = null;
-				element.onerror = null;
-				if ('onloadeddata' in element) {
-					(element as HTMLVideoElement | HTMLAudioElement).onloadeddata = null;
-				}
-				resolve();
-			};
-
-			const handleError = (error: Event | string) => {
-				// Clean up event listeners
-				element.onload = null;
-				element.onerror = null;
-				if ('onloadeddata' in element) {
-					(element as HTMLVideoElement | HTMLAudioElement).onloadeddata = null;
-				}
-
-				if (retryCount < maxRetries) {
-					const retryDelay = Math.min(baseDelay * Math.pow(2, retryCount), 5000);
-					console.log(`Retrying preload of ${contentUri} (attempt ${retryCount + 1}/${maxRetries}) after ${retryDelay}ms`);
-
-					setTimeout(() => {
-						preloadFile(contentUri, retryCount + 1).then(resolve).catch(reject);
-					}, retryDelay);
-				} else {
-					const errorMessage = error instanceof Event ? `Failed to load media: ${contentUri}` : String(error);
-					console.warn(`Failed to preload ${contentUri} after ${maxRetries} attempts: ${errorMessage}`);
-					this.addSimpleMessage('Content preload error: ' + errorMessage);
-					// Don't reject - just log the failure and continue
-					resolve();
-				}
-			};
-
-			// Set up event listeners
-			if (isVideo || isAudio) {
-				(element as HTMLVideoElement | HTMLAudioElement).onloadeddata = handleSuccess;
-			} else {
-				element.onload = handleSuccess;
-			}
-			element.onerror = handleError;
-
-			// Start loading by setting src
-			element.src = contentUri;
-		});
-
-		// Process files one by one, skipping external ones
-		const processFiles = async () => {
-			const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
-
-			for (let i = 0; i < content.length; i += 1) {
-				const url = content[i];
-				const contentUri = this.preprocessServerUri(url);
-
-				// Skip external media files
-				if (this.isExternalUri(contentUri)) {
-					continue;
-				}
-
-				// Add delay between requests (except for first processed request)
-				if (i > 0) {
-					// eslint-disable-next-line no-await-in-loop
-					await delay(baseDelay);
-				}
-
-				try {
-					// eslint-disable-next-line no-await-in-loop
-					await preloadFile(contentUri);
-				} catch (error) {
-					// Continue processing even if this file failed
-					console.error(`Failed to preload ${url}: ${getErrorMessage(error)}`);
-				}
-
-				// Calculate and notify progress after each file
-				const progress = (i + 1) / content.length;
-				notifyProgress(progress);
-			}
-
-			// Ensure 100% is always notified at the end
-			if (lastNotifiedProgressTens < 100) {
-				this.appDispatch(mediaPreloadProgress(100));
-			}
-
-			this.appDispatch(mediaPreloaded());
-		};
-
-		// Start processing files
-		processFiles();
+		preloadRoundContent(
+			content,
+			this.preprocessServerUri.bind(this),
+			this.isExternalUri.bind(this),
+			this.appDispatch,
+			this.addSimpleMessage.bind(this)
+		);
 	}
 
 	onRoundEnd(reason: string) {
@@ -1352,7 +1245,7 @@ export default class ClientController {
 					this.onReplic('s', replic.value);
 				}
 
-				this.dispatch(switchToContent());
+				this.appDispatch(switchToContent());
 				break;
 			}
 
@@ -1558,7 +1451,7 @@ export default class ClientController {
 			this.appDispatch(canPressChanged(false));
 			this.appDispatch(stopTimer(1));
 		} else {
-			this.dispatch(captionChanged(localization.roundThemes));
+			this.appDispatch(captionChanged(localization.roundThemes));
 			this.playGameSound(GameSound.ROUND_THEMES, true);
 			this.appDispatch(addRoundTheme({ name: themeName, comment: comments }));
 		}

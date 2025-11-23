@@ -114,19 +114,6 @@ const roomReducer: Reducer<RoomState> = (state: RoomState = initialState, anyAct
 					...state.stakes,
 					areVisible: false
 				},
-				answer: null,
-			};
-
-		case RoomActionTypes.IsAnswering:
-			return {
-				...state,
-				answer: null
-			};
-
-		case RoomActionTypes.AnswerChanged:
-			return {
-				...state,
-				answer: action.answer
 			};
 
 		case RoomActionTypes.SetStakes:

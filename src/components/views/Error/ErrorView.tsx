@@ -30,7 +30,7 @@ export function ErrorView(props: ErrorViewProps): JSX.Element {
 	return (
 		<div className='errorView'>
 			<div className='errorBox'>
-				<div className="errorTitle">{localization.errorHappened}</div>
+				<header className="errorTitle"><h1>{localization.errorHappened}</h1></header>
 				<div className='errorBody'>{props.error}</div>
 
 				<div className='buttons'>

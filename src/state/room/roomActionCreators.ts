@@ -3,14 +3,7 @@ import { ThunkAction } from 'redux-thunk';
 import * as RunActions from './RoomActions';
 import State from '../State';
 import DataContext from '../../model/DataContext';
-import localization from '../../model/resources/localization';
-import { stopAudio, userErrorChanged } from '../commonSlice';
-import { AppDispatch } from '../store';
-import { clearChat, setIsAppellation, setIsPaused, setKicked, setShowMainTimer, showmanReplicChanged, stopTimer } from '../room2Slice';
 import StakeModes from '../../client/game/StakeModes';
-import { clearGameLog } from '../globalActions';
-
-let timerRef: number | null = null;
 
 const onPass: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
 	_dispatch: Dispatch<RunActions.KnownRoomAction>,
@@ -60,38 +53,6 @@ const clearDecisions: ActionCreator<RunActions.ClearDecisionsAction> = () => ({
 	type: RunActions.RoomActionTypes.ClearDecisions
 });
 
-const exitGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (appDispatch: AppDispatch) => async (
-	dispatch: Dispatch<Action>,
-	getState: () => State,
-	dataContext: DataContext
-) => {
-	try {
-		// TODO: show progress bar
-		await dataContext.game.leaveGame();
-	} catch (e) {
-		appDispatch(userErrorChanged(localization.exitError) as any);
-	}
-
-	if (timerRef) {
-		window.clearTimeout(timerRef);
-		timerRef = null;
-	}
-
-	appDispatch(clearChat());
-	appDispatch(setKicked(false));
-
-	appDispatch(stopTimer(0));
-	appDispatch(stopTimer(1));
-	appDispatch(stopTimer(2));
-
-	appDispatch(setIsPaused(false));
-	appDispatch(setIsAppellation(false));
-	appDispatch(setShowMainTimer(false));
-
-	appDispatch(stopAudio());
-	appDispatch(clearGameLog());
-};
-
 const tableSelected: ActionCreator<RunActions.TableSelectedAction> = (tableIndex: number) => ({
 	type: RunActions.RoomActionTypes.TableSelected, tableIndex
 });
@@ -132,52 +93,6 @@ const disagree: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (
 	await dataContext.game.apellate(false);
 };
 
-const isAnswering: ActionCreator<RunActions.IsAnsweringAction> = () => ({
-	type: RunActions.RoomActionTypes.IsAnswering
-});
-
-const onAnswerChanged: ActionCreator<RunActions.AnswerChangedAction> = (answer: string) => ({
-	type: RunActions.RoomActionTypes.AnswerChanged, answer
-});
-
-let isAnswerVersionThrottled = false;
-let answerLock: number | null = null;
-
-const updateAnswer: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (answer: string) => async (
-	dispatch: Dispatch<any>,
-	getState: () => State,
-	dataContext: DataContext
-	) => {
-	dispatch(onAnswerChanged(answer));
-
-	if (isAnswerVersionThrottled) {
-		return;
-	}
-
-	isAnswerVersionThrottled = true;
-
-	answerLock = window.setTimeout(
-		async () => {
-			isAnswerVersionThrottled = false;
-			const latestAnswer = getState().room.answer;
-
-			if (latestAnswer) {
-				await dataContext.game.sendAnswerVersion(latestAnswer);
-			}
-		},
-		3000
-	);
-};
-
-const sendAnswer: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (dispatch: Dispatch<any>) => {
-	if (answerLock) {
-		window.clearTimeout(answerLock);
-		answerLock = null;
-	}
-
-	dispatch(clearDecisions());
-};
-
 const setStakes: ActionCreator<RunActions.SetStakesAction> = (
 	stakeModes: StakeModes,
 	minimum: number,
@@ -195,25 +110,6 @@ const stakeChanged: ActionCreator<RunActions.StakeChangedAction> = (stake: numbe
 const selectionEnabled: ActionCreator<RunActions.SelectionEnabledAction> = () => ({
 	type: RunActions.RoomActionTypes.SelectionEnabled
 });
-
-const showLeftSeconds = (leftSeconds: number, appDispatch: AppDispatch): void => {
-	let leftSecondsString = (leftSeconds % 60).toString();
-
-	if (leftSecondsString.length < 2) {
-		leftSecondsString = `0${leftSeconds}`;
-	}
-
-	appDispatch(showmanReplicChanged(`${localization.theGameWillStartIn} 00:00:${leftSecondsString} ${localization.orByFilling}`));
-
-	if (leftSeconds > 0) {
-		timerRef = window.setTimeout(
-			() => {
-				showLeftSeconds(leftSeconds - 1, appDispatch);
-			},
-			1000
-		);
-	}
-};
 
 const changePlayerSum: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (
 	playerIndex: number,
@@ -323,7 +219,6 @@ const roomActionCreators = {
 	runHideGameInfo,
 	runShowManageGame,
 	runHideManageGame,
-	exitGame,
 	tableSelected,
 	stageChanged,
 	gameStateCleared,
@@ -333,13 +228,9 @@ const roomActionCreators = {
 	clearDecisions,
 	apellate,
 	disagree,
-	isAnswering,
-	updateAnswer,
-	sendAnswer,
 	setStakes,
 	stakeChanged,
 	selectionEnabled,
-	showLeftSeconds,
 	changePlayerSum,
 	hintChanged,
 	startGame,

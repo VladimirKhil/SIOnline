@@ -157,13 +157,13 @@ const PackageItem: React.FC<PackageItemProps> = ({ item, isEditMode }) => {
 				placeholder='Enter source'
 			/>
 
-			{infoOwner.info?.comments && infoOwner.info.comments.length > 0
+			{(infoOwner.info?.comments && infoOwner.info.comments.length > 0) || isEditable
 				? <>
 					<label className='header' htmlFor='comments'>{localization.comments}</label>
-					<textarea 
-						id='comments' 
-						className='packageView__info__comments' 
-						value={infoOwner.info.comments} 
+					<textarea
+						id='comments'
+						className='packageView__info__comments'
+						value={infoOwner.info?.comments || ''}
 						readOnly={!isEditable}
 						onChange={(e) => handleCommentsChange(e.target.value)}
 					/>

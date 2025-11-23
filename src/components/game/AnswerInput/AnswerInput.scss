@@ -9,7 +9,7 @@
 	padding-right: 2px;
 }
 
-.answerInput {
+input[type='text'].answerInput, input[type='number'].answerInput {
 	border: 0;
     max-width: none;
     box-sizing: border-box;

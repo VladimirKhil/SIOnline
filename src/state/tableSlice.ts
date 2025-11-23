@@ -37,6 +37,7 @@ export interface TableState {
 	appendText: string;
 	loadTimer: TimerInfo;
 	isAnswer: boolean;
+	answerDeviation: number;
 	statistics: PlayerStatistics[];
 	externalMediaUris: string[];
 }
@@ -74,6 +75,7 @@ const initialState: TableState = {
 		isPausedByUser: false,
 	},
 	isAnswer: false,
+	answerDeviation: 0,
 	statistics: [],
 	externalMediaUris: [],
 };
@@ -223,6 +225,7 @@ export const tableSlice = createSlice({
 			state.layoutMode = LayoutMode.Simple;
 			state.isSelectable = false;
 			state.isAnswer = false;
+			state.answerDeviation = 0;
 			state.externalMediaUris = [];
 		},
 		answerOptions: (state, action: PayloadAction<{ questionHasScreenContent: boolean, options: AnswerOption[] }>) => {
@@ -311,6 +314,9 @@ export const tableSlice = createSlice({
 				state.externalMediaUris.push(action.payload);
 			}
 		},
+		setAnswerDeviation: (state, action: PayloadAction<number>) => {
+			state.answerDeviation = action.payload;
+		},
 	}
 });
 
@@ -358,6 +364,7 @@ export const {
 	showStatistics,
 	setExternalMediaWarning,
 	appendExternalMediaWarning,
+	setAnswerDeviation,
 } = tableSlice.actions;
 
 export default tableSlice.reducer;

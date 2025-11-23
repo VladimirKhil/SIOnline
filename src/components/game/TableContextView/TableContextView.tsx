@@ -16,6 +16,7 @@ import TableMode from '../../../model/enums/TableMode';
 import OralAnswer from '../OralAnswer/OralAnswer';
 import AnswerValidationButtons from '../AnswerValidationButtons/AnswerValidationButtons';
 import { DecisionType } from '../../../state/room2Slice';
+import LayoutMode from '../../../model/enums/LayoutMode';
 
 import './TableContextView.css';
 
@@ -42,17 +43,29 @@ function renderBody(
 	isGamePaused: boolean,
 	role: Role,
 	decisionType: DecisionType,
+	layoutMode: LayoutMode,
 ) : JSX.Element | null {
-	// Check for DecisionType.Validation first for players
-	if (decisionType === DecisionType.Validation && role === Role.Player) {
-		return <AnswerValidationButtons />;
+	switch (decisionType) {
+		case DecisionType.Answer:
+			if (layoutMode === LayoutMode.Simple) {
+				return <AnswerInput />;
+			}
+
+			break;
+
+		case DecisionType.Validation:
+			if (role === Role.Player) {
+				return <AnswerValidationButtons />;
+			}
+
+			break;
+
+		default:
+			break;
 	}
 
 	// TODO: Switch to enum to select view to display
 	switch (contextView) {
-		case ContextView.Answer:
-			return <AnswerInput id="answerBoxWide" />;
-
 		case ContextView.OralAnswer:
 			return <OralAnswer />;
 
@@ -96,12 +109,13 @@ export function TableContextView(props: TableContextViewProps): JSX.Element | nu
 	const windowWidth = useAppSelector(rootState => rootState.ui.windowWidth);
 	const tableMode = useAppSelector(rootState => rootState.table.mode);
 
-	const { contextView, isGameStarted, isGamePaused, role, decisionType } = useAppSelector(rootState => ({
+	const { contextView, isGameStarted, isGamePaused, role, decisionType, layoutMode } = useAppSelector(rootState => ({
 		contextView: rootState.room2.contextView,
 		isGameStarted: rootState.room2.stage.isGameStarted,
 		isGamePaused: rootState.room2.stage.isGamePaused,
 		role: rootState.room2.role,
 		decisionType: rootState.room2.stage.decisionType,
+		layoutMode: rootState.table.layoutMode,
 	}));
 
 	const body = renderBody(
@@ -113,6 +127,7 @@ export function TableContextView(props: TableContextViewProps): JSX.Element | nu
 		isGamePaused,
 		role,
 		decisionType,
+		layoutMode,
 	);
 
 	return body == null ? null : <div className='tableContextView'>{body}</div>;

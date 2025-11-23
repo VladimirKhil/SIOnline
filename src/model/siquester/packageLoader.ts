@@ -390,14 +390,14 @@ function parseContentParam(paramElement: Element): ContentParam {
 
 function parseUnknownParam(paramElement: Element): unknown {
 	const type = paramElement.getAttribute('type');
-	
+
 	// If it has a type attribute, try to preserve structure based on known patterns
 	switch (type) {
 		case 'content': {
 			// Try to parse as content parameter
 			return parseContentParam(paramElement);
 		}
-		
+
 		case 'numberSet': {
 			// Try to parse as number set
 			const numberSetElement = getDirectChildByTagName(paramElement, 'numberSet');
@@ -413,7 +413,7 @@ function parseUnknownParam(paramElement: Element): unknown {
 			// Fallback to text content
 			return paramElement.textContent || '';
 		}
-		
+
 		case 'group': {
 			// Parse as group with nested parameters
 			const result: Record<string, unknown> = {};
@@ -425,14 +425,14 @@ function parseUnknownParam(paramElement: Element): unknown {
 			});
 			return result;
 		}
-		
+
 		default: {
 			// For simple parameters or unknown types, store as text
 			// But also preserve all attributes for complete fidelity
 			const result: Record<string, unknown> = {
 				_textContent: paramElement.textContent || '',
 			};
-			
+
 			// Store all attributes
 			const attributes: Record<string, string> = {};
 			for (let i = 0; i < paramElement.attributes.length; i += 1) {
@@ -441,11 +441,11 @@ function parseUnknownParam(paramElement: Element): unknown {
 					attributes[attr.name] = attr.value;
 				}
 			}
-			
+
 			if (Object.keys(attributes).length > 0) {
 				result._attributes = attributes;
 			}
-			
+
 			// Store child elements if any
 			const childElements = Array.from(paramElement.children);
 			if (childElements.length > 0) {
@@ -458,12 +458,12 @@ function parseUnknownParam(paramElement: Element): unknown {
 					}, {} as Record<string, string>)
 				}));
 			}
-			
+
 			// If it's just simple text content with no attributes or children, return just the text
 			if (!result._attributes && !result._children && result._textContent) {
 				return result._textContent;
 			}
-			
+
 			return result;
 		}
 	}

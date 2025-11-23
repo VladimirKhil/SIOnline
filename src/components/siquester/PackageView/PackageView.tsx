@@ -5,7 +5,6 @@ import { Package, Question, Round, Theme, RoundTypes } from '../../../model/siqu
 import localization from '../../../model/resources/localization';
 import { navigate } from '../../../utils/Navigator';
 import Path from '../../../model/enums/Path';
-import AutoSizedText from '../../common/AutoSizedText/AutoSizedText';
 import {
 	savePackage,
 	setCurrentItem,
@@ -121,7 +120,7 @@ const PackageView: React.FC = () => {
 						<div className={`packageView__theme__name ${currentItem === theme ? 'selected' : ''}`} onClick={() => {
 							appDispatch(setCurrentItem({ roundIndex, themeIndex: ti }));
 						}}>
-							<AutoSizedText maxFontSize={18}>{theme.name}</AutoSizedText>
+							{theme.name}
 						</div>
 
 						{theme.questions.map((question, qi) => (
@@ -222,6 +221,12 @@ const PackageView: React.FC = () => {
 						{pack.name}
 					</div>
 				</header>
+
+				{isEditMode && (
+					<div className='packageView__disclaimer'>
+						{localization.editModeDisclaimer}
+					</div>
+				)}
 
 				{getContentView(pack)}
 			</div>

@@ -1,8 +1,6 @@
 import StakeModes from '../../client/game/StakeModes';
 
 export default interface RoomState {
-	answer: string | null;
-
 	stage: {
 		name: string;
 		roundIndex: number;
@@ -50,8 +48,6 @@ export default interface RoomState {
 }
 
 export const initialState: RoomState = {
-	answer: null,
-
 	stage: {
 		name: '',
 		roundIndex: -1,

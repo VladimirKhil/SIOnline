@@ -15,8 +15,6 @@ export const enum RoomActionTypes {
 	AfterQuestionStateChanged = 'AFTER_QUESTION_STATE_CHANGED',
 	CurrentPriceChanged = 'CURRENT_PRICE_CHANGED',
 	ClearDecisions = 'CLEAR_DECISIONS',
-	IsAnswering = 'IS_ANSWERING',
-	AnswerChanged = 'ANSWER_CHANGED',
 	SetStakes = 'SET_STAKES',
 	StakeChanged = 'STAKE_CHANGED',
 	SelectionEnabled = 'SELECTION_ENABLED',
@@ -48,8 +46,6 @@ export type GameStateClearedAction = { type: RoomActionTypes.GameStateCleared };
 export type AfterQuestionStateChangedAction = { type: RoomActionTypes.AfterQuestionStateChanged, isAfterQuestion: boolean };
 export type CurrentPriceChangedAction = { type: RoomActionTypes.CurrentPriceChanged, currentPrice: number };
 export type ClearDecisionsAction = { type: RoomActionTypes.ClearDecisions };
-export type IsAnsweringAction = { type: RoomActionTypes.IsAnswering };
-export type AnswerChangedAction = { type: RoomActionTypes.AnswerChanged, answer: string };
 
 export type SetStakesAction = {
 	type: RoomActionTypes.SetStakes,
@@ -95,8 +91,6 @@ export type KnownRoomAction =
 	| AfterQuestionStateChangedAction
 	| CurrentPriceChangedAction
 	| ClearDecisionsAction
-	| IsAnsweringAction
-	| AnswerChangedAction
 	| SetStakesAction
 	| StakeChangedAction
 	| SelectionEnabledAction

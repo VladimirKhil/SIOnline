@@ -23,13 +23,13 @@ const AudioContent: React.FC<AudioContentProps> = ({
 	const gainNodeRef = useRef<GainNode | null>(null);
 
 	const appDispatch = useAppDispatch();
-	const settings = useAppSelector(state => state.settings);
-	const ui = useAppSelector(state => state.ui);
-	const table = useAppSelector(state => state.table);
-	const room = useAppSelector(state => state.room2);
 
-	const isMediaStopped = room.stage.isGamePaused || table.isMediaStopped;
-	const { audio } = table;
+	const { isVisible, soundVolume, isMediaStopped, audio } = useAppSelector(state => ({
+		isVisible: state.ui.isVisible,
+		soundVolume: state.settings.soundVolume,
+		isMediaStopped: state.room2.stage.isGamePaused || state.table.isMediaStopped,
+		audio: state.table.audio || '',
+	}));
 
 	// Initialize gain node
 	useEffect(() => {
@@ -46,9 +46,9 @@ const AudioContent: React.FC<AudioContentProps> = ({
 	// Update volume when soundVolume changes
     useEffect(() => {
         if (gainNodeRef.current) {
-            gainNodeRef.current.gain.value = settings.soundVolume;
+            gainNodeRef.current.gain.value = soundVolume;
         }
-    }, [settings.soundVolume]);
+    }, [soundVolume]);
 
 	const operationError = (message: string) => {
 		appDispatch(addOperationErrorMessage(message));
@@ -69,7 +69,7 @@ const AudioContent: React.FC<AudioContentProps> = ({
 	};
 
 	const play = () => {
-		if (!autoPlayEnabled || isMediaStopped || !ui.isVisible ||
+		if (!autoPlayEnabled || isMediaStopped || !isVisible ||
 			(audioSourceRef.current && audioSourceRef.current.context.state === 'running')) {
 			return;
 		}
@@ -79,7 +79,7 @@ const AudioContent: React.FC<AudioContentProps> = ({
 		audioSourceRef.current.loop = false;
 
 		audioSourceRef.current.onended = () => {
-			if (!isMediaStopped && ui.isVisible) {
+			if (!isMediaStopped && isVisible) {
 				completedRef.current = true;
 				onMediaCompleted();
 			}
@@ -134,12 +134,12 @@ const AudioContent: React.FC<AudioContentProps> = ({
 			return;
 		}
 
-		if (isMediaStopped || !ui.isVisible) {
+		if (isMediaStopped || !isVisible) {
 			stop();
 		} else if (autoPlayEnabled && !completedRef.current) {
 			play();
 		}
-	}, [isMediaStopped, ui.isVisible, autoPlayEnabled]);
+	}, [isMediaStopped, isVisible, autoPlayEnabled]);
 
 	return null;
 };

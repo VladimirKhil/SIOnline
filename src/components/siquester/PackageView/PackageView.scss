@@ -80,6 +80,17 @@
 			}
 		}
 
+		.packageView__disclaimer {
+			margin-top: 10px;
+			padding: 10px 15px;
+			background-color: #ef8528;
+			color: white;
+			font-size: 14px;
+			text-align: center;
+			border-radius: 4px;
+			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+		}
+
 		.packageView__roundInfo {
 			display: flex;
 			flex-direction: column;
@@ -151,14 +162,16 @@
 
 			.packageView__theme__name {
 				margin: 3px;
-				padding: 3px;
+				padding: 3px 6px;
 				flex: 200px 0 0;
-				display: flex;
-				justify-content: center;
-				align-items: center;
-				text-align: center;
+				display: block;
+				line-height: 44px;
+				text-align: left;
 				background-color: rgb(56, 56, 56);
 				cursor: pointer;
+				overflow: hidden;
+				white-space: nowrap;
+				text-overflow: ellipsis;
 
 				&:hover {
 					background-color: #777777;
@@ -257,7 +270,7 @@
 				margin: 5px 0;
 				padding: 0 1px;
 				font-size: 16px;
-				height: 32px;
+				flex: 0 0 32px;
 				border: 1px solid #ccc;
 				border-radius: 4px;
 				background-color: white;
@@ -374,20 +387,23 @@
 
 			// Common styles for collection editors (authors, sources, tags)
 			.packageView__info__author-container,
-			.packageView__info__source-container {
+			.packageView__info__source-container,
+			.packageView__info__answer-container {
 				display: flex;
 				align-items: center;
 				gap: 8px;
 				margin: 5px 0;
 
 				.packageView__info__author,
-				.packageView__info__source {
+				.packageView__info__source,
+				.packageView__info__answer {
 					flex: 1;
 					margin: 0;
 				}
 
 				.packageView__info__author-remove,
-				.packageView__info__source-remove {
+				.packageView__info__source-remove,
+				.packageView__info__answer-remove {
 					width: 32px;
 					height: 32px;
 					background: #d32f2f;
@@ -414,7 +430,8 @@
 			}
 
 			.packageView__info__author-add,
-			.packageView__info__source-add {
+			.packageView__info__source-add,
+			.packageView__info__answer-add {
 				width: 32px;
 				height: 32px;
 				background: #2e7d32;

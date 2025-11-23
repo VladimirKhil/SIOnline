@@ -6,6 +6,9 @@ const enum GameMessages {
 	/** Asks person answer. */
 	Answer = 'ANSWER',
 
+	/** Defines acceptable deviation for number answers. */
+	AnswerDeviation = 'ANSWER_DEVIATION',
+
 	Answers = 'ANSWERS',
 
 	Appellation = 'APPELLATION',

@@ -234,7 +234,6 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 									<p>{localization.exitConfirmation}</p>
 									<ul>
 										<li
-											className={enabledClass}
 											onClick={onExit}>
 											{localization.exitFromGame}
 										</li>

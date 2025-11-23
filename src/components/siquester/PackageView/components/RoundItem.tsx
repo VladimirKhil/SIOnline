@@ -7,8 +7,11 @@ import {
 	updateRoundProperty,
 	setCurrentItem,
 	findItemIndices,
-	updateInfoProperty
+	updateInfoProperty,
+	addInfoItem,
+	removeInfoItem
 } from '../../../../state/siquesterSlice';
+import CollectionEditor from '../../CollectionEditor/CollectionEditor';
 
 interface RoundItemProps {
 	item: Round;
@@ -69,6 +72,56 @@ const RoundItem: React.FC<RoundItemProps> = ({ item, isEditMode }) => {
 			}
 		};
 
+		const handleAddAuthor = () => {
+			if (isEditable) {
+				dispatch(addInfoItem({
+					targetType: getTargetType(),
+					roundIndex: itemIndices?.roundIndex,
+					themeIndex: itemIndices?.themeIndex,
+					questionIndex: itemIndices?.questionIndex,
+					property: 'authors'
+				}));
+			}
+		};
+
+		const handleRemoveAuthor = (authorIndex: number) => {
+			if (isEditable) {
+				dispatch(removeInfoItem({
+					targetType: getTargetType(),
+					roundIndex: itemIndices?.roundIndex,
+					themeIndex: itemIndices?.themeIndex,
+					questionIndex: itemIndices?.questionIndex,
+					property: 'authors',
+					index: authorIndex
+				}));
+			}
+		};
+
+		const handleAddSource = () => {
+			if (isEditable) {
+				dispatch(addInfoItem({
+					targetType: getTargetType(),
+					roundIndex: itemIndices?.roundIndex,
+					themeIndex: itemIndices?.themeIndex,
+					questionIndex: itemIndices?.questionIndex,
+					property: 'sources'
+				}));
+			}
+		};
+
+		const handleRemoveSource = (sourceIndex: number) => {
+			if (isEditable) {
+				dispatch(removeInfoItem({
+					targetType: getTargetType(),
+					roundIndex: itemIndices?.roundIndex,
+					themeIndex: itemIndices?.themeIndex,
+					questionIndex: itemIndices?.questionIndex,
+					property: 'sources',
+					index: sourceIndex
+				}));
+			}
+		};
+
 		const handleCommentsChange = (value: string) => {
 			if (isEditable) {
 				dispatch(updateInfoProperty({
@@ -83,45 +136,37 @@ const RoundItem: React.FC<RoundItemProps> = ({ item, isEditMode }) => {
 		};
 
 		return <>
-			{infoOwner.info?.authors && infoOwner.info.authors.length > 0
-				? <>
-					<label className='header'>{localization.authors}</label>
+			<CollectionEditor
+				label={localization.authors}
+				items={infoOwner.info?.authors || []}
+				isEditMode={isEditable}
+				className='packageView__info__author'
+				getValue={(author) => author.name}
+				onItemChange={handleAuthorChange}
+				onAddItem={handleAddAuthor}
+				onRemoveItem={handleRemoveAuthor}
+				placeholder='Enter author name'
+			/>
 
-					{infoOwner.info?.authors?.map((author, ai) => (
-						<input 
-							aria-label='author' 
-							key={ai} 
-							className='packageView__info__author' 
-							value={author.name} 
-							readOnly={!isEditable}
-							onChange={(e) => handleAuthorChange(ai, e.target.value)}
-						/>
-					))}
-				</> : null}
+			<CollectionEditor
+				label={localization.sources}
+				items={infoOwner.info?.sources || []}
+				isEditMode={isEditable}
+				className='packageView__info__source'
+				getValue={(source) => source.value}
+				onItemChange={handleSourceChange}
+				onAddItem={handleAddSource}
+				onRemoveItem={handleRemoveSource}
+				placeholder='Enter source'
+			/>
 
-			{infoOwner.info?.sources && infoOwner.info.sources.length > 0
-				? <>
-					<label className='header' htmlFor='sources'>{localization.sources}</label>
-
-					{infoOwner.info?.sources?.map((source, si) => (
-						<input 
-							id='sources' 
-							key={si} 
-							className='packageView__info__source' 
-							value={source.value} 
-							readOnly={!isEditable}
-							onChange={(e) => handleSourceChange(si, e.target.value)}
-						/>
-					))}
-				</> : null}
-
-			{infoOwner.info?.comments && infoOwner.info.comments.length > 0
+			{(infoOwner.info?.comments && infoOwner.info.comments.length > 0) || isEditable
 				? <>
 					<label className='header' htmlFor='comments'>{localization.comments}</label>
-					<textarea 
-						id='comments' 
-						className='packageView__info__comments' 
-						value={infoOwner.info.comments} 
+					<textarea
+						id='comments'
+						className='packageView__info__comments'
+						value={infoOwner.info?.comments || ''}
 						readOnly={!isEditable}
 						onChange={(e) => handleCommentsChange(e.target.value)}
 					/>

@@ -365,7 +365,7 @@ export default class DemoGameClient implements IGameClient {
 
 			case DemoStage.Answer:
 				this.controller.onReplic('s', localization.demoGiveAnswer);
-				this.controller.onAskAnswer();
+				this.controller.onAskAnswer(null);
 				this.controller.onEndPressButtonByPlayer(2);
 				break;
 

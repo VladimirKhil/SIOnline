@@ -71,7 +71,7 @@ function processMessage(controller: ClientController, payload: any, appDispatch:
 			break;
 
 		case 'askAnswer':
-			controller.onAskAnswer();
+			controller.onAskAnswer(null);
 			break;
 
 		case 'askStake':

@@ -198,6 +198,18 @@ const ScreensView: React.FC<ScreensViewProps> = ({
 			}
 		};
 
+		// For internal refs (when isRef is true), encode the URI to find the correct file in the ZIP package
+		// For external URLs (when isRef is false), use as-is
+		const getMediaSrc = (value: string, isRef: boolean): string => {
+			if (isRef) {
+				// Internal ZIP reference - encode to match file paths in ZIP
+				return encodeURIComponent(value);
+			}
+
+			// External URL - use as-is
+			return value;
+		};
+
 		switch (contentItem.type) {
 			case 'text':
 				return isEditMode ? (
@@ -211,10 +223,10 @@ const ScreensView: React.FC<ScreensViewProps> = ({
 				) : (
 					<AutoSizedText maxFontSize={20}>{contentItem.value}</AutoSizedText>
 				);
-			case 'image': return <MediaItem src={contentItem.value} type='image' isRef={contentItem.isRef} />;
-			case 'audio': return <MediaItem src={contentItem.value} type='audio' isRef={contentItem.isRef} />;
-			case 'video': return <MediaItem src={contentItem.value} type='video' isRef={contentItem.isRef} />;
-			case 'html': return <MediaItem src={contentItem.value} type='html' isRef={contentItem.isRef} />;
+			case 'image': return <MediaItem src={getMediaSrc(contentItem.value, contentItem.isRef)} type='image' isRef={contentItem.isRef} />;
+			case 'audio': return <MediaItem src={getMediaSrc(contentItem.value, contentItem.isRef)} type='audio' isRef={contentItem.isRef} />;
+			case 'video': return <MediaItem src={getMediaSrc(contentItem.value, contentItem.isRef)} type='video' isRef={contentItem.isRef} />;
+			case 'html': return <MediaItem src={getMediaSrc(contentItem.value, contentItem.isRef)} type='html' isRef={contentItem.isRef} />;
 			default: return null;
 		}
 	}

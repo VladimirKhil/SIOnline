@@ -18,6 +18,8 @@ import Persons from '../model/Persons';
 import Timers from '../model/Timers';
 import TimerInfo from '../model/TimerInfo';
 import TimerStates from '../model/enums/TimeStates';
+import { stopAudio, userErrorChanged } from './commonSlice';
+import { clearGameLog } from './globalActions';
 
 export enum DialogView {
 	None,
@@ -27,7 +29,6 @@ export enum DialogView {
 
 export enum ContextView {
 	None,
-	Answer,
 	OralAnswer,
 	Report,
 }
@@ -50,6 +51,10 @@ interface ValidationInfo {
 	name: string;
 	answer: string;
 }
+
+let isAnswerVersionThrottled = false;
+let answerLock: number | null = null;
+let timerRef: number | null = null;
 
 export interface Room2State {
 	persons: {
@@ -85,6 +90,9 @@ export interface Room2State {
 		name: string;
 		comments: string;
 	}
+
+	answer: string;
+	answerType: string;
 
 	validation: {
 		header: string;
@@ -186,6 +194,9 @@ const initialState: Room2State = {
 		comments: '',
 	},
 
+	answer: '',
+	answerType: '',
+
 	validation: {
 		header: '',
 		message: '',
@@ -255,6 +266,11 @@ export const sendAnswer = createAsyncThunk(
 	async (answer: string, thunkAPI) => {
 		const dataContext = thunkAPI.extra as DataContext;
 		await dataContext.game.sendAnswer(answer);
+
+		if (answerLock) {
+			window.clearTimeout(answerLock);
+			answerLock = null;
+		}
 	},
 );
 
@@ -569,7 +585,7 @@ export const room2Slice = createSlice({
 			state.persons.players[action.payload].mediaPreloaded = true;
 		},
 		setPlayerMediaPreloadProgress(state: Room2State, action: PayloadAction<{ playerName: string, progress: number }>) {
-			for (let i = 0; i < state.persons.players.length; i++) {
+			for (let i = 0; i < state.persons.players.length; i += 1) {
 				if (state.persons.players[i].name === action.payload.playerName) {
 					state.persons.players[i].mediaPreloadProgress = action.payload.progress;
 					return;
@@ -638,6 +654,12 @@ export const room2Slice = createSlice({
 		},
 		setTheme(state: Room2State, action: PayloadAction<{ name: string, comments: string }>) {
 			state.theme = action.payload;
+		},
+		answerChanged(state: Room2State, action: PayloadAction<string>) {
+			state.answer = action.payload;
+		},
+		answerTypeChanged(state: Room2State, action: PayloadAction<string>) {
+			state.answerType = action.payload;
 		},
 		toggleEditTable(state: Room2State) {
 			state.isEditTableEnabled = !state.isEditTableEnabled;
@@ -892,6 +914,7 @@ export const room2Slice = createSlice({
 		builder.addCase(sendAnswer.fulfilled, (state) => {
 			state.contextView = ContextView.None;
 			state.stage.decisionType = DecisionType.None;
+			state.answer = '';
 		});
 
 		builder.addCase(sendPass.fulfilled, (state) => {
@@ -1043,6 +1066,87 @@ export const sendChatMessage = createAsyncThunk(
 	},
 );
 
+export const updateAnswer = createAsyncThunk(
+	'room2/updateAnswer',
+	async (answer: string, thunkAPI) => {
+		const dataContext = thunkAPI.extra as DataContext;
+		thunkAPI.dispatch(room2Slice.actions.answerChanged(answer));
+
+		if (isAnswerVersionThrottled) {
+			return;
+		}
+
+		isAnswerVersionThrottled = true;
+
+		answerLock = window.setTimeout(
+			async () => {
+				isAnswerVersionThrottled = false;
+				const latestAnswer = (thunkAPI.getState() as State).room2.answer;
+
+				if (latestAnswer) {
+					await dataContext.game.sendAnswerVersion(latestAnswer);
+				}
+			},
+			3000
+		);
+	},
+);
+
+export const showLeftSeconds = createAsyncThunk(
+	'room2/showLeftSeconds',
+	async (leftSeconds: number, thunkAPI) => {
+		let leftSecondsString = (leftSeconds % 60).toString();
+
+		if (leftSecondsString.length < 2) {
+			leftSecondsString = `0${leftSeconds}`;
+		}
+
+		thunkAPI.dispatch(showmanReplicChanged(`${localization.theGameWillStartIn} 00:00:${leftSecondsString} ${localization.orByFilling}`));
+
+		if (leftSeconds > 0) {
+			timerRef = window.setTimeout(
+				() => {
+					thunkAPI.dispatch(showLeftSeconds(leftSeconds - 1));
+				},
+				1000
+			);
+		}
+	},
+);
+
+export const exitGame = createAsyncThunk(
+	'room2/exitGame',
+	async (_arg: void, thunkAPI) => {
+		const dataContext = thunkAPI.extra as DataContext;
+
+		try {
+			// TODO: show progress bar
+			await dataContext.game.leaveGame();
+		} catch (e) {
+			thunkAPI.dispatch(userErrorChanged(localization.exitError));
+		}
+
+		if (timerRef) {
+			window.clearTimeout(timerRef);
+			timerRef = null;
+		}
+
+		thunkAPI.dispatch(clearChat());
+		thunkAPI.dispatch(setKicked(false));
+
+		thunkAPI.dispatch(stopTimer(0));
+		thunkAPI.dispatch(stopTimer(1));
+		thunkAPI.dispatch(stopTimer(2));
+
+		thunkAPI.dispatch(setIsPaused(false));
+		thunkAPI.dispatch(setIsAppellation(false));
+		thunkAPI.dispatch(setShowMainTimer(false));
+
+		thunkAPI.dispatch(stopAudio());
+		thunkAPI.dispatch(clearGameLog());
+	},
+);
+
 export const {
 	showDialog,
 	setContext,
@@ -1089,6 +1193,8 @@ export const {
 	stopValidation,
 	nameChanged,
 	setTheme,
+	answerChanged,
+	answerTypeChanged,
 	toggleEditTable,
 	setIsGameStarted,
 	setIsAppellation,

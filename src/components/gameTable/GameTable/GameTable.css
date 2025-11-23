@@ -27,7 +27,12 @@
 
 .caption__left {
     padding: 0 5px 5px 5px;
-    width: 30px;
+}
+
+.answer__deviation {
+    font-size: 18px;
+    border-radius: 4px;
+    padding: 2px 6px;
 }
 
 .caption__right {

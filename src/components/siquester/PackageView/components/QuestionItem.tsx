@@ -8,10 +8,17 @@ import {
 	updateQuestionParam,
 	updateQuestionRightAnswer,
 	updateQuestionWrongAnswer,
+	addQuestionRightAnswer,
+	removeQuestionRightAnswer,
+	addQuestionWrongAnswer,
+	removeQuestionWrongAnswer,
 	setCurrentItem,
 	findItemIndices,
-	updateInfoProperty
+	updateInfoProperty,
+	addInfoItem,
+	removeInfoItem
 } from '../../../../state/siquesterSlice';
+import CollectionEditor from '../../CollectionEditor/CollectionEditor';
 import MediaItem from '../../MediaItem/MediaItem';
 import ScreensView from '../../ScreensView/ScreensView';
 
@@ -142,6 +149,56 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ item, isEditMode }) => {
 			}
 		};
 
+		const handleAddAuthor = () => {
+			if (isEditable) {
+				dispatch(addInfoItem({
+					targetType: getTargetType(),
+					roundIndex: itemIndices?.roundIndex,
+					themeIndex: itemIndices?.themeIndex,
+					questionIndex: itemIndices?.questionIndex,
+					property: 'authors'
+				}));
+			}
+		};
+
+		const handleRemoveAuthor = (authorIndex: number) => {
+			if (isEditable) {
+				dispatch(removeInfoItem({
+					targetType: getTargetType(),
+					roundIndex: itemIndices?.roundIndex,
+					themeIndex: itemIndices?.themeIndex,
+					questionIndex: itemIndices?.questionIndex,
+					property: 'authors',
+					index: authorIndex
+				}));
+			}
+		};
+
+		const handleAddSource = () => {
+			if (isEditable) {
+				dispatch(addInfoItem({
+					targetType: getTargetType(),
+					roundIndex: itemIndices?.roundIndex,
+					themeIndex: itemIndices?.themeIndex,
+					questionIndex: itemIndices?.questionIndex,
+					property: 'sources'
+				}));
+			}
+		};
+
+		const handleRemoveSource = (sourceIndex: number) => {
+			if (isEditable) {
+				dispatch(removeInfoItem({
+					targetType: getTargetType(),
+					roundIndex: itemIndices?.roundIndex,
+					themeIndex: itemIndices?.themeIndex,
+					questionIndex: itemIndices?.questionIndex,
+					property: 'sources',
+					index: sourceIndex
+				}));
+			}
+		};
+
 		const handleCommentsChange = (value: string) => {
 			if (isEditable) {
 				dispatch(updateInfoProperty({
@@ -156,45 +213,37 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ item, isEditMode }) => {
 		};
 
 		return <>
-			{infoOwner.info?.authors && infoOwner.info.authors.length > 0
-				? <>
-					<label className='header'>{localization.authors}</label>
+			<CollectionEditor
+				label={localization.authors}
+				items={infoOwner.info?.authors || []}
+				isEditMode={isEditable}
+				className='packageView__info__author'
+				getValue={(author) => author.name}
+				onItemChange={handleAuthorChange}
+				onAddItem={handleAddAuthor}
+				onRemoveItem={handleRemoveAuthor}
+				placeholder='Enter author name'
+			/>
 
-					{infoOwner.info?.authors?.map((author, ai) => (
-						<input 
-							aria-label='author' 
-							key={ai} 
-							className='packageView__info__author' 
-							value={author.name} 
-							readOnly={!isEditable}
-							onChange={(e) => handleAuthorChange(ai, e.target.value)}
-						/>
-					))}
-				</> : null}
+			<CollectionEditor
+				label={localization.sources}
+				items={infoOwner.info?.sources || []}
+				isEditMode={isEditable}
+				className='packageView__info__source'
+				getValue={(source) => source.value}
+				onItemChange={handleSourceChange}
+				onAddItem={handleAddSource}
+				onRemoveItem={handleRemoveSource}
+				placeholder='Enter source'
+			/>
 
-			{infoOwner.info?.sources && infoOwner.info.sources.length > 0
-				? <>
-					<label className='header' htmlFor='sources'>{localization.sources}</label>
-
-					{infoOwner.info?.sources?.map((source, si) => (
-						<input 
-							id='sources' 
-							key={si} 
-							className='packageView__info__source' 
-							value={source.value} 
-							readOnly={!isEditable}
-							onChange={(e) => handleSourceChange(si, e.target.value)}
-						/>
-					))}
-				</> : null}
-
-			{infoOwner.info?.comments && infoOwner.info.comments.length > 0
+			{(infoOwner.info?.comments && infoOwner.info.comments.length > 0) || isEditable
 				? <>
 					<label className='header' htmlFor='comments'>{localization.comments}</label>
-					<textarea 
-						id='comments' 
-						className='packageView__info__comments' 
-						value={infoOwner.info.comments} 
+					<textarea
+						id='comments'
+						className='packageView__info__comments'
+						value={infoOwner.info?.comments || ''}
 						readOnly={!isEditable}
 						onChange={(e) => handleCommentsChange(e.target.value)}
 					/>
@@ -246,6 +295,48 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ item, isEditMode }) => {
 				questionIndex: indices.questionIndex, 
 				answerIndex, 
 				value 
+			}));
+		}
+	};
+
+	const handleAddRightAnswer = () => {
+		if (isEditMode && indices.roundIndex !== undefined && indices.themeIndex !== undefined && indices.questionIndex !== undefined) {
+			dispatch(addQuestionRightAnswer({ 
+				roundIndex: indices.roundIndex, 
+				themeIndex: indices.themeIndex, 
+				questionIndex: indices.questionIndex
+			}));
+		}
+	};
+
+	const handleRemoveRightAnswer = (answerIndex: number) => {
+		if (isEditMode && indices.roundIndex !== undefined && indices.themeIndex !== undefined && indices.questionIndex !== undefined) {
+			dispatch(removeQuestionRightAnswer({ 
+				roundIndex: indices.roundIndex, 
+				themeIndex: indices.themeIndex, 
+				questionIndex: indices.questionIndex,
+				answerIndex
+			}));
+		}
+	};
+
+	const handleAddWrongAnswer = () => {
+		if (isEditMode && indices.roundIndex !== undefined && indices.themeIndex !== undefined && indices.questionIndex !== undefined) {
+			dispatch(addQuestionWrongAnswer({ 
+				roundIndex: indices.roundIndex, 
+				themeIndex: indices.themeIndex, 
+				questionIndex: indices.questionIndex
+			}));
+		}
+	};
+
+	const handleRemoveWrongAnswer = (answerIndex: number) => {
+		if (isEditMode && indices.roundIndex !== undefined && indices.themeIndex !== undefined && indices.questionIndex !== undefined) {
+			dispatch(removeQuestionWrongAnswer({ 
+				roundIndex: indices.roundIndex, 
+				themeIndex: indices.themeIndex, 
+				questionIndex: indices.questionIndex,
+				answerIndex
 			}));
 		}
 	};
@@ -476,47 +567,47 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ item, isEditMode }) => {
 								</>
 							: null}
 
-							<label htmlFor='name' className='header'>{localization.rightAnswers}</label>
-
 							{answerOptions && isEditMode && question.right.answer.length === 1 ? (
-								<select
-									className='packageView__theme__info__author'
-									value={question.right.answer[0]}
-									onChange={(e) => handleRightAnswerChange(0, e.target.value)}
-								>
-									{Object.keys(answerOptions).map((key) => (
-										<option key={key} value={key}>{key}</option>
-									))}
-								</select>
+								<>
+									<label htmlFor='name' className='header'>{localization.rightAnswers}</label>
+									<select
+										aria-label='right answer'
+										className='packageView__info__answer'
+										value={question.right.answer[0]}
+										onChange={(e) => handleRightAnswerChange(0, e.target.value)}
+									>
+										{Object.keys(answerOptions).map((key) => (
+											<option key={key} value={key}>{key}</option>
+										))}
+									</select>
+								</>
 							) : (
-								question.right.answer.map((answer, ri) => (
-									<input
-										aria-label='author'
-										key={ri}
-										className='packageView__theme__info__author'
-										value={answer}
-										readOnly={!isEditMode}
-										onChange={(e) => handleRightAnswerChange(ri, e.target.value)}
-									/>
-								))
+								<CollectionEditor
+									label={localization.rightAnswers}
+									items={question.right.answer}
+									isEditMode={isEditMode}
+									className='packageView__info__answer'
+									getValue={(answer) => answer}
+									onItemChange={handleRightAnswerChange}
+									onAddItem={handleAddRightAnswer}
+									onRemoveItem={handleRemoveRightAnswer}
+									placeholder='Enter answer'
+								/>
 							)}
 
-							{question.wrong
-								? <>
-									<label htmlFor='name' className='header'>{localization.wrongAnswers}</label>
-
-									{question.wrong.answer.map((answer, ri) => (
-										<input
-											aria-label='author'
-											key={ri}
-											className='packageView__theme__info__author'
-											value={answer}
-											readOnly={!isEditMode}
-											onChange={(e) => handleWrongAnswerChange(ri, e.target.value)}
-										/>
-									))}
-								</>
-							: null}
+							{(question.wrong && question.wrong.answer.length > 0) || isEditMode ? (
+								<CollectionEditor
+									label={localization.wrongAnswers}
+									items={question.wrong?.answer || []}
+									isEditMode={isEditMode}
+									className='packageView__info__answer'
+									getValue={(answer) => answer}
+									onItemChange={handleWrongAnswerChange}
+									onAddItem={handleAddWrongAnswer}
+									onRemoveItem={handleRemoveWrongAnswer}
+									placeholder='Enter wrong answer'
+								/>
+							) : null}
 						</>
 						: null
 					}

@@ -216,6 +216,63 @@ export const siquesterSlice = createSlice({
 				question.wrong.answer[action.payload.answerIndex] = action.payload.value;
 			}
 		},
+		addQuestionRightAnswer: (state, action: { 
+			payload: { 
+				roundIndex: number; 
+				themeIndex: number; 
+				questionIndex: number; 
+			} 
+		}) => {
+			const question = state.pack?.rounds[action.payload.roundIndex]
+				?.themes[action.payload.themeIndex]?.questions[action.payload.questionIndex];
+			if (question) {
+				question.right.answer.push('');
+			}
+		},
+		removeQuestionRightAnswer: (state, action: { 
+			payload: { 
+				roundIndex: number; 
+				themeIndex: number; 
+				questionIndex: number; 
+				answerIndex: number; 
+			} 
+		}) => {
+			const question = state.pack?.rounds[action.payload.roundIndex]
+				?.themes[action.payload.themeIndex]?.questions[action.payload.questionIndex];
+			if (question && question.right.answer[action.payload.answerIndex] !== undefined) {
+				question.right.answer.splice(action.payload.answerIndex, 1);
+			}
+		},
+		addQuestionWrongAnswer: (state, action: { 
+			payload: { 
+				roundIndex: number; 
+				themeIndex: number; 
+				questionIndex: number; 
+			} 
+		}) => {
+			const question = state.pack?.rounds[action.payload.roundIndex]
+				?.themes[action.payload.themeIndex]?.questions[action.payload.questionIndex];
+			if (question) {
+				if (!question.wrong) {
+					question.wrong = { answer: [] };
+				}
+				question.wrong.answer.push('');
+			}
+		},
+		removeQuestionWrongAnswer: (state, action: { 
+			payload: { 
+				roundIndex: number; 
+				themeIndex: number; 
+				questionIndex: number; 
+				answerIndex: number; 
+			} 
+		}) => {
+			const question = state.pack?.rounds[action.payload.roundIndex]
+				?.themes[action.payload.themeIndex]?.questions[action.payload.questionIndex];
+			if (question?.wrong && question.wrong.answer[action.payload.answerIndex] !== undefined) {
+				question.wrong.answer.splice(action.payload.answerIndex, 1);
+			}
+		},
 		updateInfoProperty: (state, action: { 
 			payload: { 
 				targetType: 'package' | 'round' | 'theme' | 'question'; 
@@ -449,6 +506,10 @@ export const {
 	updateQuestionParam,
 	updateQuestionRightAnswer,
 	updateQuestionWrongAnswer,
+	addQuestionRightAnswer,
+	removeQuestionRightAnswer,
+	addQuestionWrongAnswer,
+	removeQuestionWrongAnswer,
 	updateInfoProperty,
 	updateTag,
 	addTag,

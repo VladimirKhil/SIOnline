@@ -14,10 +14,8 @@ import exitImg from '../../../../assets/images/exit.png';
 
 export default function GameState(): JSX.Element {
 	const appDispatch = useAppDispatch();
-	const isConnected = useAppSelector(state => state.common.isSIHostConnected);
 	const role = useAppSelector(state => state.room2.role);
 	const navigation = useAppSelector(state => state.ui.navigation);
-	const enabledClass = isConnected ? '' : 'disabled';
 
 	const onExit = () => {
 		appDispatch(navigate({ navigation: { path: navigation.returnToLobby ? Path.Lobby : Path.Menu }, saveState: true }));
@@ -37,7 +35,6 @@ export default function GameState(): JSX.Element {
 										<p>{localization.exitConfirmation}</p>
 										<ul>
 											<li
-												className={enabledClass}
 												onClick={onExit}>
 												{localization.exitFromGame}
 											</li>

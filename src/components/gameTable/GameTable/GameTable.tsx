@@ -20,6 +20,7 @@ import Role from '../../../model/Role';
 import { DecisionType } from '../../../state/room2Slice';
 import VolumeButton from '../../common/VolumeButton/VolumeButton';
 import { useAudioContext } from '../../../contexts/AudioContextProvider';
+import ContentType from '../../../model/enums/ContentType';
 
 import './GameTable.css';
 
@@ -88,10 +89,12 @@ export function GameTable(): JSX.Element {
 	const isConnected = useAppSelector((state) => state.common.isSIHostConnected);
 	const { canPlayAudio } = useAudioContext();
 
-	const { mode, caption: tableCaption, contentHint } = useAppSelector((state) => ({
+	const { mode, caption: tableCaption, contentHint, audio, content } = useAppSelector((state) => ({
 		mode: state.table.mode,
 		caption: state.table.caption,
 		contentHint: state.table.contentHint,
+		audio: state.table.audio,
+		content: state.table.content,
 	}));
 
 	const tableTheme = useAppSelector((state) => state.settings.theme.table);
@@ -104,6 +107,7 @@ export function GameTable(): JSX.Element {
 		showMainTimer,
 		isEditTableEnabled,
 		decisionTimer,
+		answerDeviation,
 	} = useAppSelector((state) => ({
 		stage: {
 			isGamePaused: state.room2.stage.isGamePaused,
@@ -116,17 +120,21 @@ export function GameTable(): JSX.Element {
 		showMainTimer: state.room2.showMainTimer,
 		isEditTableEnabled: state.room2.isEditTableEnabled,
 		decisionTimer: state.room2.timers.decision,
+		answerDeviation: state.table.answerDeviation,
 	}));
 
 	const caption = getCaption(mode, tableCaption);
 	const themeProperties: React.CSSProperties = {};
+	const reversedPropeties: React.CSSProperties = {};
 
 	if (tableTheme.textColor) {
 		themeProperties.color = tableTheme.textColor;
+		reversedPropeties.backgroundColor = tableTheme.textColor;
 	}
 
 	if (tableTheme.backgroundColor) {
 		themeProperties.backgroundColor = tableTheme.backgroundColor;
+		reversedPropeties.color = tableTheme.backgroundColor;
 	}
 
 	if (tableTheme.fontFamily) {
@@ -138,15 +146,23 @@ export function GameTable(): JSX.Element {
 		role === Role.Player;
 
 	const showAppelation = isAppellation && !shouldShowAnswerValidationInTable;
+	const hasSound = audio.length > 0 || content.some(g => g.content.some(c => c.type === ContentType.Video));
 
 	return (
 		<div id="table" style={themeProperties}>
 			{caption ? (
 				<div className="tableCaption">
-					<div className='caption__left'>{noRiskMode ? <div title={localization.noRiskQuestion}>🛡</div> : ''}</div>
+					<div className='caption__left'>
+						{noRiskMode ? <div title={localization.noRiskQuestion}>🛡</div> : ''}
+						{answerDeviation !== 0
+							? <div className='answer__deviation' style={reversedPropeties} title={localization.answerDeviation}>
+								± {answerDeviation}
+								</div>
+							: ''}
+					</div>
 					<div className='tableCaptionContent'>{caption}</div>
 					<div className='caption__right'>
-						<VolumeButton canPlayAudio={canPlayAudio} />
+						{hasSound && <VolumeButton canPlayAudio={canPlayAudio} />}
 					</div>
 				</div>
 			) : null}
