@@ -9,23 +9,23 @@ import './TableBorder.css';
 
 interface TableBorderProps {
 	canTry: boolean;
-	pressTimer: TimerInfo;
 	children: React.ReactNode;
 }
 
 const mapStateToProps = (state: State) => ({
 	canTry: state.table.canPress,
-	pressTimer: state.room2.timers.press
 });
 
 export function TableBorder(props: TableBorderProps) {
 	const theme = useAppSelector(state => state.settings.theme);
-	const isTimerRunning = props.canTry && isRunning(props.pressTimer);
+	const pressTimer = useAppSelector(state => state.room2.timers.press);
+	const isTimerRunning = props.canTry && isRunning(pressTimer);
 	const animatingClass = isTimerRunning ? ' animate' : '';
-	const animationDuration = `${(props.pressTimer.maximum - props.pressTimer.value) / 10}s`;
+	const shrinkingClass = (isTimerRunning || pressTimer.value > 0) ? ' shrinking' : '';
+	const animationDuration = `${(pressTimer.maximum - pressTimer.value) / 10}s`;
 
-	const initialSize = props.pressTimer.maximum > 0
-		? 100 * (props.pressTimer.maximum - props.pressTimer.value) / props.pressTimer.maximum
+	const initialSize = pressTimer.maximum > 0
+		? 100 * (pressTimer.maximum - pressTimer.value) / pressTimer.maximum
 		: 100;
 
 	const styleHorizontal: React.CSSProperties = {
@@ -48,10 +48,10 @@ export function TableBorder(props: TableBorderProps) {
 			{props.children}
 			{props.canTry ? (
 				<>
-					<div className={`topBorder ${animatingClass}`} style={styleHorizontal} />
-					<div className={`rightBorder ${animatingClass}`} style={styleVertical} />
-					<div className={`bottomBorder ${animatingClass}`} style={styleHorizontal} />
-					<div className={`leftBorder ${animatingClass}`} style={styleVertical} />
+					<div className={`topBorder ${animatingClass} ${shrinkingClass}`} style={styleHorizontal} />
+					<div className={`rightBorder ${animatingClass} ${shrinkingClass}`} style={styleVertical} />
+					<div className={`bottomBorder ${animatingClass} ${shrinkingClass}`} style={styleHorizontal} />
+					<div className={`leftBorder ${animatingClass} ${shrinkingClass}`} style={styleVertical} />
 				</>
 			) : null}
 		</div>

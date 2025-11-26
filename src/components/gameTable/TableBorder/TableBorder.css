@@ -24,78 +24,38 @@
 
 .tableBorder .topBorder {
 	position: absolute;
-	top: 2px;
+	top: 0;
 	left: 50%;
 	transform: translateX(-50%);
 	height: 10px;
 	pointer-events: none;
-	-webkit-mask-image: linear-gradient(to left, 
-		rgba(0, 0, 0, var(--border-edge-opacity)) 0%, 
-		rgba(0, 0, 0, var(--border-center-opacity)) 20%, 
-		rgba(0, 0, 0, var(--border-center-opacity)) 8%, 
-		rgba(0, 0, 0, var(--border-edge-opacity)) 100%);
-	mask-image: linear-gradient(to left, 
-		rgba(0, 0, 0, var(--border-edge-opacity)) 0%, 
-		rgba(0, 0, 0, var(--border-center-opacity)) 20%, 
-		rgba(0, 0, 0, var(--border-center-opacity)) 80%, 
-		rgba(0, 0, 0, var(--border-edge-opacity)) 100%);
 }
 
 .tableBorder .rightBorder {
 	position: absolute;
-	right: 2px;
+	right: 0;
 	top: 50%;
 	transform: translateY(-50%);
 	width: 10px;
 	pointer-events: none;
-	-webkit-mask-image: linear-gradient(to top, 
-		rgba(0, 0, 0, var(--border-edge-opacity)) 0%, 
-		rgba(0, 0, 0, var(--border-center-opacity)) 20%, 
-		rgba(0, 0, 0, var(--border-center-opacity)) 80%, 
-		rgba(0, 0, 0, var(--border-edge-opacity)) 100%);
-	mask-image: linear-gradient(to top, 
-		rgba(0, 0, 0, var(--border-edge-opacity)) 0%, 
-		rgba(0, 0, 0, var(--border-center-opacity)) 20%, 
-		rgba(0, 0, 0, var(--border-center-opacity)) 80%, 
-		rgba(0, 0, 0, var(--border-edge-opacity)) 100%);
 }
 
 .tableBorder .bottomBorder {
 	position: absolute;
-	bottom: 2px;
+	bottom: 0;
 	left: 50%;
 	transform: translateX(-50%);
 	height: 10px;
 	pointer-events: none;
-	-webkit-mask-image: linear-gradient(to left, 
-		rgba(0, 0, 0, var(--border-edge-opacity)) 0%, 
-		rgba(0, 0, 0, var(--border-center-opacity)) 20%, 
-		rgba(0, 0, 0, var(--border-center-opacity)) 80%, 
-		rgba(0, 0, 0, var(--border-edge-opacity)) 100%);
-	mask-image: linear-gradient(to left, 
-		rgba(0, 0, 0, var(--border-edge-opacity)) 0%, 
-		rgba(0, 0, 0, var(--border-center-opacity)) 20%, 
-		rgba(0, 0, 0, var(--border-center-opacity)) 80%, 
-		rgba(0, 0, 0, var(--border-edge-opacity)) 100%);
 }
 
 .tableBorder .leftBorder {
 	position: absolute;
-	left: 2px;
+	left: 0;
 	top: 50%;
 	transform: translateY(-50%);
 	width: 10px;
 	pointer-events: none;
-	-webkit-mask-image: linear-gradient(to top, 
-		rgba(0, 0, 0, var(--border-edge-opacity)) 0%, 
-		rgba(0, 0, 0, var(--border-center-opacity)) 20%, 
-		rgba(0, 0, 0, var(--border-center-opacity)) 80%, 
-		rgba(0, 0, 0, var(--border-edge-opacity)) 100%);
-	mask-image: linear-gradient(to top, 
-		rgba(0, 0, 0, var(--border-edge-opacity)) 0%, 
-		rgba(0, 0, 0, var(--border-center-opacity)) 20%, 
-		rgba(0, 0, 0, var(--border-center-opacity)) 80%, 
-		rgba(0, 0, 0, var(--border-edge-opacity)) 100%);
 }
 
 /* Animated borders with pulsing glow effect - shrink on edges */
@@ -106,11 +66,39 @@
 		pulseBorderHorizontal 1.5s ease-in-out infinite;
 }
 
+.tableBorder .topBorder.shrinking, 
+.tableBorder .bottomBorder.shrinking {
+	-webkit-mask-image: linear-gradient(to left, 
+		rgba(0, 0, 0, var(--border-edge-opacity)) 0%, 
+		rgba(0, 0, 0, var(--border-center-opacity)) 20%, 
+		rgba(0, 0, 0, var(--border-center-opacity)) 80%, 
+		rgba(0, 0, 0, var(--border-edge-opacity)) 100%);
+	mask-image: linear-gradient(to left, 
+		rgba(0, 0, 0, var(--border-edge-opacity)) 0%, 
+		rgba(0, 0, 0, var(--border-center-opacity)) 20%, 
+		rgba(0, 0, 0, var(--border-center-opacity)) 80%, 
+		rgba(0, 0, 0, var(--border-edge-opacity)) 100%);
+}
+
 .tableBorder .leftBorder.animate, 
 .tableBorder .rightBorder.animate {
 	animation: 
 		animateHeight linear forwards,
 		pulseBorderVertical 1.5s ease-in-out infinite;
+}
+
+.tableBorder .leftBorder.shrinking, 
+.tableBorder .rightBorder.shrinking {
+	-webkit-mask-image: linear-gradient(to top, 
+		rgba(0, 0, 0, var(--border-edge-opacity)) 0%, 
+		rgba(0, 0, 0, var(--border-center-opacity)) 20%, 
+		rgba(0, 0, 0, var(--border-center-opacity)) 80%, 
+		rgba(0, 0, 0, var(--border-edge-opacity)) 100%);
+	mask-image: linear-gradient(to top, 
+		rgba(0, 0, 0, var(--border-edge-opacity)) 0%, 
+		rgba(0, 0, 0, var(--border-center-opacity)) 20%, 
+		rgba(0, 0, 0, var(--border-center-opacity)) 80%, 
+		rgba(0, 0, 0, var(--border-edge-opacity)) 100%);
 }
 
 @keyframes animateWidth {

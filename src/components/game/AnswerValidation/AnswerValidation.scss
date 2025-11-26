@@ -14,112 +14,28 @@
     flex-direction: column;
 }
 
-.answerValidationBody {
-    flex: 1;
-}
-
-.answerValidationBody .validationHeader {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    margin: 13px;
-    min-width: 0;
-}
-
-.answerValidationBody .validationHeader p {
-    overflow: hidden;
-    display: inline-block !important;
-    max-height: 120px;
-}
-
-.answerValidationBody p {
-    margin: 0;
-    display: flex;
-    align-items: center;
-    text-align: center;
-}
-
-.answerValidationBody .answersPanel {
-    margin: 13px;
-    display: flex;
-    flex: 1;
-    overflow: hidden;
-}
-
-.answerValidationBody .answers {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin: 0 2px;
-    flex: 1;
-}
-
-.answerValidationBody .answers p {
-    font-weight: bold;
-    text-align: center;
-    vertical-align: top;
-    height: 40px;
-}
-
-.answerValidationBody .answers ul {
-    overflow-y: auto;
-    overflow-x: hidden;
-    scrollbar-width: thin;
-    width: 100%;
-    flex: 1;
-}
-
-.answerValidationBody .answers li {
-    vertical-align: middle;
-    font-size: larger;
-    text-align: center;
-}
-
-.answerValidationBody .answers li span {
-    vertical-align: middle;
-}
-
-.answerValidationBody .mainMessage {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-}
-
-.answerValidationBody .playerTitle {
-    display: block !important;
-}
-
-.answerValidationBody .playerAnswer {
-    font-weight: bold;
-    text-align: center;
-    display: block !important;
-    font-size: 20px;
-    margin-top: 5px;
-}
-
-.answerValidationBody .answersPanel.answersHidden {
-    opacity: 0;
-}
-
-.answerValidationBody {
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    border: 1px solid white;
-    border-radius: 4px;
-}
-
 .answerValidationDialog .answerValidation {
     height: calc(100% - 60px);
 }
 
 .rightAnswers {
-    color: #54996a;
+    color: #FFFFFF;
+    background: linear-gradient(135deg, rgba(76, 175, 80, 0.3), rgba(46, 125, 50, 0.3));
+    border: 2px solid rgba(76, 175, 80, 0.6);
+}
+
+.rightAnswers li {
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
 }
 
 .wrongAnswers {
-    color: #a8372f;
+    color: #FFFFFF;
+    background: linear-gradient(135deg, rgba(244, 67, 54, 0.3), rgba(198, 40, 40, 0.3));
+    border: 2px solid rgba(244, 67, 54, 0.6);
+}
+
+.wrongAnswers li {
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
 }
 
 @media screen and (min-width: 1100px) {

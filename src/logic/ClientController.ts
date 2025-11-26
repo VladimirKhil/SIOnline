@@ -412,6 +412,12 @@ export default class ClientController {
 
 	onAskValidate(playerIndex: number, answer: string) {
 		this.appDispatch(askValidation({ playerIndex, answer }));
+		
+		const state = this.getState();
+		if (playerIndex >= 0 && playerIndex < state.room2.persons.players.length) {
+			const playerName = state.room2.persons.players[playerIndex].name;
+			this.appDispatch(captionChanged(localization.validateAnswer.replace('{0}', playerName)));
+		}
 	}
 
 	onAutomaticGameTimer(leftSeconds: number) {
@@ -1117,8 +1123,7 @@ export default class ClientController {
 
 		if (stage === GameStage.Round) {
 			this.playGameSound(GameSound.ROUND_BEGIN);
-			const { roundTail } = localization;
-			const roundName = stageName.endsWith(roundTail) ? stageName.substring(0, stageName.length - roundTail.length) : stageName;
+			const roundName = stageName;
 			this.appDispatch(showObject({ header: localization.round, text: roundName, hint: getRuleString(rules), large: true, animate: false }));
 			this.appDispatch(resetQuestionCounter());
 			this.appDispatch(clearRoundThemes());
@@ -1190,6 +1195,7 @@ export default class ClientController {
 		wrongAnswers: string[],
 		showExtraRightButtons: boolean) {
 		this.appDispatch(validate({ header, name, answer, message, rightAnswers, wrongAnswers, showExtraRightButtons }));
+		this.appDispatch(captionChanged(localization.validateAnswer.replace('{0}', name)));
 	}
 
 	onUnbanned(name: string) {

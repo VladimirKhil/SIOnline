@@ -1,0 +1,166 @@
+.answerValidationBody {
+	flex: 1;
+	margin-bottom: 20px;
+	animation: validationFadeIn 0.4s ease-out;
+}
+
+@keyframes validationFadeIn {
+	from {
+		opacity: 0;
+		transform: translateY(-10px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+.answerValidationBody {
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+}
+
+.answerValidationBody .validationHeader {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: space-between;
+	margin: 13px;
+	min-width: 0;
+}
+
+.answerValidationBody p {
+	margin: 0;
+	display: flex;
+	align-items: center;
+	text-align: center;
+}
+
+.answerValidationBody .answersPanel {
+	margin: 13px;
+	display: flex;
+	flex: 1;
+	overflow: hidden;
+	gap: 10px;
+}
+
+.answerValidationBody .answers {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	margin: 0;
+	flex: 1;
+	border-radius: 8px;
+	padding: 15px;
+	-webkit-backdrop-filter: blur(5px);
+	backdrop-filter: blur(5px);
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+	transition: transform 0.2s ease;
+}
+
+.answerValidationBody .answersContent {
+	width: 100%;
+	height: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.answerValidationBody .answersList {
+	width: 100%;
+	height: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+	font-weight: bold;
+	text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+	white-space: pre-wrap;
+	word-break: break-word;
+}
+
+.answerValidationBody .mainMessage {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.answerValidationBody .playerAnswer {
+	width: 100%;
+	height: 100%;
+	min-height: 50px;
+	display: flex !important;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+	font-weight: bold;
+	margin-top: 5px;
+	padding: 12px 16px;
+	border-radius: 6px;
+	background: linear-gradient(135deg, rgba(255, 140, 0, 0.25), rgba(255, 100, 0, 0.25));
+	border: 2px solid rgba(255, 140, 0, 0.5);
+	-webkit-backdrop-filter: blur(8px);
+	backdrop-filter: blur(8px);
+	box-shadow: 0 4px 12px rgba(255, 140, 0, 0.2);
+	text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+	animation: answerPulse 0.5s ease-out 0.2s backwards;
+	white-space: pre-wrap;
+	word-break: break-word;
+}
+
+@keyframes answerPulse {
+	from {
+		opacity: 0;
+		transform: scale(0.95);
+	}
+	to {
+		opacity: 1;
+		transform: scale(1);
+	}
+}
+
+.answerValidationBody .answersPanel.answersHidden {
+	opacity: 0;
+}
+
+.rightAnswersContainer {
+	background: linear-gradient(135deg, rgba(76, 175, 80, 0.3), rgba(46, 125, 50, 0.3));
+	border: 2px solid rgba(76, 175, 80, 0.6);
+}
+
+.wrongAnswersContainer {
+	background: linear-gradient(135deg, rgba(244, 67, 54, 0.3), rgba(198, 40, 40, 0.3));
+	border: 2px solid rgba(244, 67, 54, 0.6);
+}
+
+// Minimize spacing when inside AnswerValidation component
+.answerValidation .answerValidationBody {
+	margin-bottom: 5px;
+}
+
+.answerValidation .answerValidationBody .validationHeader {
+	margin: 5px 8px;
+}
+
+.answerValidation .answerValidationBody .answersPanel {
+	margin: 5px 8px;
+	gap: 5px;
+}
+
+.answerValidation .answerValidationBody .answers {
+	padding: 8px;
+	border-radius: 6px;
+}
+
+.answerValidation .answerValidationBody .playerAnswer {
+	min-height: 35px;
+	padding: 8px 12px;
+	margin-top: 3px;
+}
+
+.answerValidation .answerValidationBody .mainMessage {
+	gap: 4px;
+}

@@ -121,7 +121,6 @@ export const loadLobby = createAsyncThunk(
 	async (arg: void, thunkAPI) => {
 		const { dispatch } = thunkAPI;
 		const dataContext = thunkAPI.extra as DataContext;
-		const state = thunkAPI.getState() as RootState;
 
 		// Games filtering is performed on client
 		dispatch(loadGames());
@@ -130,13 +129,6 @@ export const loadLobby = createAsyncThunk(
 			await loadStatisticsAsync(dispatch as AppDispatch, dataContext);
 		} catch (error) {
 			dispatch(userWarnChanged(getErrorMessage(error)));
-		}
-		const online = state.online2;
-		const { ui } = state;
-		const filteredGames = filterGames(Object.values(online.games), online.gamesFilter, online.gamesSearch);
-
-		if (filteredGames.length > 1 && ui.windowWidth >= 1100) {
-			dispatch(selectGameById(filteredGames[0].GameID));
 		}
 	},
 );
