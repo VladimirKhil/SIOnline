@@ -228,21 +228,26 @@ export function GameInfoView(props: GameInfoViewProps): JSX.Element {
 									<span>{game.PackageName == Constants.RANDOM_PACKAGE ? localization.randomThemes : game.PackageName}</span>
 								</dt>
 
-								<div className='info__block rules'>{rules.map(name => <div className='rule' key={name}>{name}</div>)}</div>
-								<div className='language' title={localization.language}>{getLanguage(game.Language)}</div>
+							<div className='info__block rules'>{rules.map(name => <div className='rule' key={name}>{name}</div>)}</div>
+							<div className='language' title={localization.language}>{getLanguage(game.Language)}</div>
 
-								<div className='info__block players'>
-									<img alt='players' title={localization.players} src={personsSvg} />
-									<span>{totalPlayers - freePlayers}/{totalPlayers}</span>
-									{players.map((name, i) => <div className='player' key={i}>{name}</div>)}
+							{showman ? (
+								<div className='info__block showman'>
+									<img alt='showman' title={localization.showman} src={personSvg} />
+									<span style={{ marginLeft: '8px' }}>{showman}</span>
 								</div>
+							) : null}
 
-								<dt>
-									<img alt='stage' title={localization.status} src={timerSvg} />
-									<span>{buildStage(game.Stage, game.ProgressCurrent, game.ProgressTotal)}</span>
-								</dt>
+							<div className='info__block players'>
+								<img alt='players' title={localization.players} src={personsSvg} />
+								<span>{totalPlayers - freePlayers}/{totalPlayers}</span>
+								{players.map((name, i) => <div className='player' key={i}>{name}</div>)}
+							</div>
 
-								{duration.length > 0 ? (<>
+							<dt>
+								<img alt='stage' title={localization.status} src={timerSvg} />
+								<span>{buildStage(game.Stage, game.ProgressCurrent, game.ProgressTotal)}</span>
+							</dt>								{duration.length > 0 ? (<>
 									<dt></dt>
 									<dd title={localization.duration}>{duration}</dd>
 								</>) : (<>

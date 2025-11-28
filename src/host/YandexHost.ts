@@ -4,6 +4,7 @@ import { changeLogin } from '../state/userSlice';
 import { setClearUrls, setMinimalLogo, setRoomLinkEnabled } from '../state/commonSlice';
 import SIStorageClient from 'sistorage-client';
 import SIStorageInfo from '../client/contracts/SIStorageInfo';
+import { visibilityChanged } from '../state/uiSlice';
 
 const SDK_PATH = 'https://sdk.games.s3.yandex.net/sdk.js';
 
@@ -11,7 +12,9 @@ declare const YaGames: any;
 
 export default class YandexHost implements IHost {
 	private gameLog = '';
+
 	private ysdk: any;
+
 	private player: any;
 
 	private playerData: any;
@@ -41,6 +44,11 @@ export default class YandexHost implements IHost {
 		store.dispatch(setMinimalLogo(true));
 		store.dispatch(setClearUrls(true));
 		store.dispatch(setRoomLinkEnabled(false));
+
+		window.addEventListener('visibilitychange', () => {
+			store.dispatch(visibilityChanged(document.visibilityState === 'visible'));
+			return false;
+		});
 
 		console.log('Loaded from Yandex');
 	}

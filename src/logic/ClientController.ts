@@ -490,6 +490,8 @@ export default class ClientController {
 				break;
 		}
 
+		this.appDispatch(stopAudio()); // To erase previous ROOM_ENTRY sound (hacky way. Is there an alternative?)
+		this.playGameSound(GameSound.ROOM_ENTRY);
 		this.addSimpleMessage(stringFormat(localization.connected, account.name));
 	}
 

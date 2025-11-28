@@ -40,7 +40,7 @@ import { setFullScreen,
 	setYesButtonKey } from './state/settingsSlice';
 import { commonErrorChanged, setFontsReady } from './state/commonSlice';
 import { saveStateToStorage } from './state/StateHelpers';
-import { INavigationState, setFullScreenSupported, settingKeyChanged, visibilityChanged, windowSizeChanged } from './state/uiSlice';
+import { INavigationState, setFullScreenSupported, settingKeyChanged, windowSizeChanged } from './state/uiSlice';
 import { navigate } from './utils/Navigator';
 import TauriHost from './host/TauriHost';
 import { approveAnswerDefault, pressGameButton, rejectAnswerDefault } from './state/room2Slice';
@@ -243,13 +243,6 @@ function subscribeToExternalEvents(store: Store<State, any>, stateManager: IHost
 		return false;
 	});
 
-	if (!host.isDesktop()) {
-		window.addEventListener('visibilitychange', () => {
-			store.dispatch(visibilityChanged(document.visibilityState === 'visible'));
-			return false;
-		});
-	}
-
 	document.fonts.ready.then(() => {
 		window.setTimeout(() => store.dispatch(setFontsReady(true)), 1000);
 	});
@@ -428,7 +421,6 @@ const urlParams = new URLSearchParams(window.location.hash.substring(1));
 const origin = urlParams.get('origin');
 
 if (origin === OriginYandex) {
-	console.log('Loading from Yandex');
 	config.askForConsent = false;
 	config.enableNoSleep = false;
 	config.registerServiceWorker = false;
@@ -436,16 +428,25 @@ if (origin === OriginYandex) {
 	config.rewriteUrl = false;
 	config.ads = '';
 } else if (origin === OriginTauri || window.__TAURI__) {
-	console.log('Loading from Tauri');
 	config.askForConsent = false;
 	config.enableNoSleep = false;
 	config.registerServiceWorker = false;
 }
 
-const host = origin === OriginYandex
-	? new YandexHost()
-	: (origin === OriginTauri || window.__TAURI_INTERNALS__ ? new TauriHost(origin !== OriginTauri) : new BrowserHost());
+function getHost(originValue: string | null): IHost {
+	switch (originValue) {
+		case OriginYandex:
+			return new YandexHost();
 
+		case OriginTauri:
+			return new TauriHost(false);
+
+		default:
+			return window.__TAURI_INTERNALS__ ? new TauriHost(true) : new BrowserHost();
+	}
+}
+
+const host = getHost(origin);
 run(host);
 
 if ('serviceWorker' in navigator && config && config.registerServiceWorker) {
@@ -454,7 +455,7 @@ if ('serviceWorker' in navigator && config && config.registerServiceWorker) {
 
 const deviceType = getDeviceType();
 
-if (config.enableNoSleep && deviceType == 'mobile' && !isSafari()) {
+if (config.enableNoSleep && deviceType === 'mobile' && !isSafari()) {
 	enableNoSleep();
 }
 

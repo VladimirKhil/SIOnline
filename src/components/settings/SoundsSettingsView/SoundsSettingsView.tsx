@@ -25,6 +25,7 @@ const soundDisplayNames: Record<GameSound, keyof typeof localization> = {
 	[GameSound.QUESTION_SECRET]: 'soundQuestionSecret',
 	[GameSound.QUESTION_STAKE]: 'soundQuestionStake',
 	[GameSound.QUESTION_FOR_ALL_WITH_STAKE]: 'soundQuestionStakeAll',
+	[GameSound.ROOM_ENTRY]: 'soundRoomEntry',
 	[GameSound.ROUND_BEGIN]: 'soundRoundBegin',
 	[GameSound.ROUND_THEMES]: 'soundRoundThemes',
 	[GameSound.ROUND_TIMEOUT]: 'soundRoundTimeout',
@@ -126,6 +127,7 @@ const SoundsSettingsView: React.FC = () => {
 		GameSound.APPLAUSE_SMALL,
 		GameSound.FINAL_DELETE,
 		GameSound.ROUND_TIMEOUT,
+		GameSound.ROOM_ENTRY,
 	];
 
 	return (

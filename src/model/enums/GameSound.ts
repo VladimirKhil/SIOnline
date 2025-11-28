@@ -15,6 +15,7 @@ const enum GameSound {
 	QUESTION_SELECTED = 'question_selected',
 	QUESTION_STAKE = 'question_stake',
 	QUESTION_FOR_ALL_WITH_STAKE = 'question_for_all_with_stake',
+	ROOM_ENTRY = 'room_entry',
 	ROUND_BEGIN = 'round_begin',
 	ROUND_THEMES = 'round_themes',
 	ROUND_TIMEOUT = 'round_timeout',

@@ -18,24 +18,26 @@
     height: calc(100% - 60px);
 }
 
-.rightAnswers {
-    color: #FFFFFF;
-    background: linear-gradient(135deg, rgba(76, 175, 80, 0.3), rgba(46, 125, 50, 0.3));
-    border: 2px solid rgba(76, 175, 80, 0.6);
-}
+.answerValidation {
+    .rightAnswers {
+        color: #FFFFFF;
+        background: linear-gradient(135deg, rgba(76, 175, 80, 0.3), rgba(46, 125, 50, 0.3));
+        border: 2px solid rgba(76, 175, 80, 0.6);
+    }
 
-.rightAnswers li {
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
-}
+    .rightAnswers li {
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+    }
 
-.wrongAnswers {
-    color: #FFFFFF;
-    background: linear-gradient(135deg, rgba(244, 67, 54, 0.3), rgba(198, 40, 40, 0.3));
-    border: 2px solid rgba(244, 67, 54, 0.6);
-}
+    .wrongAnswers {
+        color: #FFFFFF;
+        background: linear-gradient(135deg, rgba(244, 67, 54, 0.3), rgba(198, 40, 40, 0.3));
+        border: 2px solid rgba(244, 67, 54, 0.6);
+    }
 
-.wrongAnswers li {
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+    .wrongAnswers li {
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+    }
 }
 
 @media screen and (min-width: 1100px) {

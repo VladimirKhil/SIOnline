@@ -14,6 +14,7 @@ import questionSecretSfx from '../../assets/sounds/question_secret.mp3';
 import roundBeginSfx from '../../assets/sounds/round_begin.mp3';
 import roundThemesSfx from '../../assets/sounds/round_themes.mp3';
 import roundTimeoutSfx from '../../assets/sounds/round_timeout.mp3';
+import roomEntrySfx from '../../assets/sounds/room_entry.mp3';
 
 import GameSound from '../model/enums/GameSound';
 import Constants from '../model/enums/Constants';
@@ -36,6 +37,7 @@ class GameSoundPlayer {
 			[GameSound.QUESTION_SECRET, questionSecretSfx],
 			[GameSound.QUESTION_STAKE, questionStakeSfx],
 			[GameSound.QUESTION_FOR_ALL_WITH_STAKE, questionStakeAllSfx],
+			[GameSound.ROOM_ENTRY, roomEntrySfx],
 			[GameSound.ROUND_BEGIN, roundBeginSfx],
 			[GameSound.ROUND_THEMES, roundThemesSfx],
 			[GameSound.ROUND_TIMEOUT, roundTimeoutSfx],
