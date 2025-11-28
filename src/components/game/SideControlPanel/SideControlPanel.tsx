@@ -81,19 +81,22 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 
 export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 	const appDispatch = useAppDispatch();
-	const { chat, stage, role, roundsNames, areSumsEditable, lastReplic, persons } = useAppSelector(state => ({
-		chat: state.room2.chat,
-		stage: state.room2.stage,
+	const { chatIsActive, chatIsVisible, isGamePaused, isGameStarted, isEditingTables, role, roundsNames, areSumsEditable, lastReplic, playersCount } = useAppSelector(state => ({
+		chatIsActive: state.room2.chat.isActive,
+		chatIsVisible: state.room2.chat.isVisible,
+		isGamePaused: state.room2.stage.isGamePaused,
+		isGameStarted: state.room2.stage.isGameStarted,
+		isEditingTables: state.room2.stage.isEditingTables,
 		role: state.room2.role,
 		roundsNames: state.room2.roundsNames,
 		areSumsEditable: state.room2.areSumsEditable,
 		lastReplic: state.room2.lastReplic,
-		persons: state.room2.persons,
+		playersCount: state.room2.persons.players.length,
 	}));
 
 	const ui = useAppSelector(state => state.ui);
 
-	const chatButtonStyle: React.CSSProperties = chat.isActive ? {
+	const chatButtonStyle: React.CSSProperties = chatIsActive ? {
 		backgroundColor: 'lightyellow'
 	} : {};
 
@@ -101,16 +104,16 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 		flex: '1 0 0'
 	};
 
-	const pauseTitle = stage.isGamePaused ? localization.resume : localization.pause;
+	const pauseTitle = isGamePaused ? localization.resume : localization.pause;
 	const canPause = props.isHost || role === Role.Showman;
 
 	const enabledClass = props.isConnected ? '' : 'disabled';
 	const enabledManagementClass = props.isConnected && roundsNames.length >= 2 ? '' : 'disabled';
 
 	const { voiceChatUri } = props;
-	const canAddTable = persons.players.length < Constants.MAX_PLAYER_COUNT;
+	const canAddTable = playersCount < Constants.MAX_PLAYER_COUNT;
 
-	const canStart = !stage.isGameStarted && props.isHost;
+	const canStart = !isGameStarted && props.isHost;
 
 	const onGiveTurn = () =>{
 		props.onGiveTurn();
@@ -160,17 +163,15 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 
 									{props.isHost
 										? <>
-											{canAddTable ? <li onClick={() => appDispatch(addTable())}>{localization.addTable}</li> : null}
+							{canAddTable ? <li onClick={() => appDispatch(addTable())}>{localization.addTable}</li> : null}
 
-											{stage.isGameStarted
-												? <li onClick={() => appDispatch(setIsEditingTables(!stage.isEditingTables))}>
-													{localization.editTables}
-												</li>
-												: null}
-										</>
-										: null}
-
-									<li onClick={() => props.onShowBanned()}>{localization.bannedList}</li>
+							{isGameStarted
+								? <li onClick={() => appDispatch(setIsEditingTables(!isEditingTables))}>
+									{localization.editTables}
+								</li>
+								: null}
+						</>
+						: null}									<li onClick={() => props.onShowBanned()}>{localization.bannedList}</li>
 									<li onClick={() => props.onShowGameInfo()}>{localization.gameInfo}</li>
 
 									{role === Role.Showman ? (
@@ -193,29 +194,27 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 						</FlyoutButton>
 					</div>
 
+				<button
+					type="button"
+					className={`standard imageButton showChat ${chatIsVisible ? 'active' : ''}`}
+					onClick={() => appDispatch(setChatVisibility(!chatIsVisible))}
+					style={chatButtonStyle}
+					title={localization.showChat}
+				>
+					<span>💬</span>
+				</button>
+
+				{canPause ? (
 					<button
 						type="button"
-						className={`standard imageButton showChat ${chat.isVisible ? 'active' : ''}`}
-						onClick={() => appDispatch(setChatVisibility(!chat.isVisible))}
-						style={chatButtonStyle}
-						title={localization.showChat}
+						className={`pauseButton standard imageButton ${isGamePaused ? 'active' : ''}`}
+						title={pauseTitle}
+						disabled={!props.isConnected || !isGameStarted}
+						onClick={() => appDispatch(pauseGame())}
 					>
-						<span>💬</span>
+						<img alt='pause' src={pauseImg} />
 					</button>
-
-					{canPause ? (
-						<button
-							type="button"
-							className={`pauseButton standard imageButton ${stage.isGamePaused ? 'active' : ''}`}
-							title={pauseTitle}
-							disabled={!props.isConnected || !stage.isGameStarted}
-							onClick={() => appDispatch(pauseGame())}
-						>
-							<img alt='pause' src={pauseImg} />
-						</button>
-					) : null}
-
-					{props.isHost ? (
+				) : null}					{props.isHost ? (
 						<button
 							type="button"
 							className={`nextButton standard imageButton ${canStart ? 'startButton' : ''}`}

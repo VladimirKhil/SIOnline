@@ -105,19 +105,18 @@ export function Room(props: RoomProps) : JSX.Element {
 
 	const {
 		kicked,
-		chat: { isVisible: chatIsVisible },
-		stage: { decisionType },
-		validation: { queue: { length: validationQueueLength }, header: validationHeader },
+		chatIsVisible,
+		decisionType,
+		validationQueueLength,
+		validationHeader,
 		role,
 		dialogView,
 	} = useAppSelector((state) => ({
 		kicked: state.room2.kicked,
-		chat: { isVisible: state.room2.chat.isVisible },
-		stage: { decisionType: state.room2.stage.decisionType },
-		validation: {
-			queue: { length: state.room2.validation.queue.length },
-			header: state.room2.validation.header,
-		},
+		chatIsVisible: state.room2.chat.isVisible,
+		decisionType: state.room2.stage.decisionType,
+		validationQueueLength: state.room2.validation.queue.length,
+		validationHeader: state.room2.validation.header,
 		role: state.room2.role,
 		dialogView: state.room2.dialogView,
 	}));

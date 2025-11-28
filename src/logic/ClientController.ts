@@ -412,7 +412,7 @@ export default class ClientController {
 
 	onAskValidate(playerIndex: number, answer: string) {
 		this.appDispatch(askValidation({ playerIndex, answer }));
-		
+
 		const state = this.getState();
 		if (playerIndex >= 0 && playerIndex < state.room2.persons.players.length) {
 			const playerName = state.room2.persons.players[playerIndex].name;

@@ -21,8 +21,10 @@ const mapStateToProps = (state: State) => ({
 });
 
 export function PersonsView(props: PersonsViewProps): JSX.Element {
-	const { persons, joinMode } = useAppSelector(state => ({
-		persons: state.room2.persons,
+	const { personsAll, showmanName, playersNames, joinMode } = useAppSelector(state => ({
+		personsAll: state.room2.persons.all,
+		showmanName: state.room2.persons.showman.name,
+		playersNames: state.room2.persons.players.map(p => p.name),
 		joinMode: state.room2.joinMode,
 	}));
 
@@ -33,17 +35,16 @@ export function PersonsView(props: PersonsViewProps): JSX.Element {
 
 	const appDispatch = useAppDispatch();
 
-	const showman = persons.all[persons.showman.name];
-	const playersNames = persons.players.map(p => p.name);
+	const showman = personsAll[showmanName];
 
 	const players = playersNames
-		.map(name => persons.all[name])
+		.map(name => personsAll[name])
 		.filter(p => p)
 		.sort((p1, p2) => p1.name.localeCompare(p2.name));
 
-	const viewers = Object.keys(persons.all)
-		.filter(name => name !== persons.showman.name && !playersNames.includes(name))
-		.map(name => persons.all[name])
+	const viewers = Object.keys(personsAll)
+		.filter(name => name !== showmanName && !playersNames.includes(name))
+		.map(name => personsAll[name])
 		.sort((p1, p2) => p1.name.localeCompare(p2.name));
 
 	const onJoinModeChanged = (e: React.ChangeEvent<HTMLSelectElement>) => {

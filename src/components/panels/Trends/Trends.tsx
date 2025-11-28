@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { shallowEqual } from 'react-redux';
 import localization from '../../../model/resources/localization';
 import Link from '../../common/Link/Link';
 import Constants from '../../../model/enums/Constants';
@@ -55,7 +56,7 @@ export default function Trends(): JSX.Element {
 	const { packagesStatistics, latestGames } = useAppSelector(state => ({
 		packagesStatistics: state.online2.packagesStatistics,
 		latestGames: state.online2.latestGames
-	}));
+	}), shallowEqual);
 
 	const [trendsMode, setTrendsMode] = React.useState(0);
 
