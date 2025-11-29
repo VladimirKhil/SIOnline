@@ -105,6 +105,7 @@ const localization = new LocalizedStrings({
 		createPackage: 'Create package',
 		creatingGame: 'Creating game…',
 		date: 'Date',
+		default: 'Common',
 		defaultFont: '(default)',
 		defaultShowman: 'Leonardo da Vinci',
 		delete: 'Delete',
@@ -627,7 +628,15 @@ Package authors are responsible for package content. The package will be automat
 		wrongGameSettings: 'Wrong game settings!',
 		yes: 'Yes',
 		youAreKicked: 'You have been kicked from the game!',
-		yourName: 'Your name'
+		yourName: 'Your name',
+		custom: 'Custom',
+		enterAnswer: 'Enter answer',
+		enterAuthorName: 'Enter author name',
+		enterCustomQuestionType: 'Enter custom question type',
+		enterSource: 'Enter source',
+		enterTag: 'Enter tag',
+		enterTextContent: 'Enter text content...',
+		enterWrongAnswer: 'Enter wrong answer'
 	},
 	ru: {
 		about: [
@@ -726,6 +735,7 @@ Package authors are responsible for package content. The package will be automat
 		createPackage: 'Создать пакет',
 		creatingGame: 'Создание игры…',
 		date: 'Дата',
+		default: 'Обычный',
 		defaultFont: '(по умолчанию)',
 		defaultShowman: 'Леонардо да Винчи',
 		delete: 'Удалить',
@@ -1247,7 +1257,15 @@ Package authors are responsible for package content. The package will be automat
 		wrongGameSettings: 'Неверные настройки игры!',
 		yes: 'Да',
 		youAreKicked: 'Вас выгнали из игры!',
-		yourName: 'Ваше имя'
+		yourName: 'Ваше имя',
+		custom: 'Произвольный',
+		enterAnswer: 'Введите ответ',
+		enterAuthorName: 'Введите имя автора',
+		enterCustomQuestionType: 'Введите произвольный тип вопроса',
+		enterSource: 'Введите источник',
+		enterTag: 'Введите тег',
+		enterTextContent: 'Введите текст...',
+		enterWrongAnswer: 'Введите неправильный ответ'
 	},
 	sr: {
 		about: [
@@ -1351,6 +1369,7 @@ Package authors are responsible for package content. The package will be automat
 		createPackage: 'Kreirati paket',
 		creatingGame: 'Kreiranje igre…',
 		date: 'Datum',
+		default: 'Obični',
 		defaultFont: '(podrazumevano)',
 		defaultShowman: 'Leonardo da Vinči',
 		delete: 'Obrisati',
@@ -1865,13 +1884,19 @@ Autori paketa odgovorni su za sadržaj paketa. Paket će biti automatski obrisan
 		withoutPassword: 'Bez lozinke',
 		withStep: 'sa korakom',
 		writeGameLog: 'Beležiti dnevnik igre',
-		wrongAnswer: 'Netačan odgovor',
-		wrongAnswers: 'Netačni odgovori',
-		wrongGameSettings: 'Neispravne postavke igre!',
-		yes: 'Da',
-		youAreKicked: 'Izbačeni ste iz igre!',
-		yourName: 'Vaše ime'
-	}
-});
-
-export default localization;
+	wrongAnswer: 'Netačan odgovor',
+	wrongAnswers: 'Netačni odgovori',
+	wrongGameSettings: 'Neispravne postavke igre!',
+	yes: 'Da',
+	youAreKicked: 'Izbačeni ste iz igre!',
+	yourName: 'Vaše ime',
+	custom: 'Prilagođeno',
+	enterAnswer: 'Unesite odgovor',
+	enterAuthorName: 'Unesite ime autora',
+	enterCustomQuestionType: 'Unesite prilagođeni tip pitanja',
+	enterSource: 'Unesite izvor',
+	enterTag: 'Unesite oznaku',
+	enterTextContent: 'Unesite tekst...',
+	enterWrongAnswer: 'Unesite netačan odgovor'
+}
+});export default localization;

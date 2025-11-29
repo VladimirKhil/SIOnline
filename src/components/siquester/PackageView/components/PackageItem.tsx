@@ -142,7 +142,8 @@ const PackageItem: React.FC<PackageItemProps> = ({ item, isEditMode }) => {
 				onItemChange={handleAuthorChange}
 				onAddItem={handleAddAuthor}
 				onRemoveItem={handleRemoveAuthor}
-				placeholder='Enter author name'
+				placeholder={localization.enterAuthorName}
+				preventDeleteLast={getTargetType() === 'package'}
 			/>
 
 			<CollectionEditor
@@ -154,7 +155,7 @@ const PackageItem: React.FC<PackageItemProps> = ({ item, isEditMode }) => {
 				onItemChange={handleSourceChange}
 				onAddItem={handleAddSource}
 				onRemoveItem={handleRemoveSource}
-				placeholder='Enter source'
+				placeholder={localization.enterSource}
 			/>
 
 			{(infoOwner.info?.comments && infoOwner.info.comments.length > 0) || isEditable
@@ -300,7 +301,7 @@ const PackageItem: React.FC<PackageItemProps> = ({ item, isEditMode }) => {
 					onItemChange={(index, value) => dispatch(updateTag({ tagIndex: index, value }))}
 					onAddItem={() => dispatch(addTag())}
 					onRemoveItem={(index) => dispatch(removeTag({ tagIndex: index }))}
-					placeholder='Enter tag'
+					placeholder={localization.enterTag}
 				/>
 
 				{currentPack.contactUri || isEditMode

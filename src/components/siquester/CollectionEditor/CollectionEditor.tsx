@@ -11,6 +11,7 @@ interface CollectionEditorProps<T> {
 	onRemoveItem: (index: number) => void;
 	placeholder?: string;
 	inputType?: 'input' | 'textarea';
+	preventDeleteLast?: boolean;
 }
 
 function CollectionEditor<T>({
@@ -23,7 +24,8 @@ function CollectionEditor<T>({
 	onAddItem,
 	onRemoveItem,
 	placeholder = '',
-	inputType = 'input'
+	inputType = 'input',
+	preventDeleteLast = false
 }: CollectionEditorProps<T>): React.ReactElement | null {
 	if (items.length === 0 && !isEditMode) {
 		return null;
@@ -54,7 +56,7 @@ function CollectionEditor<T>({
 							onChange={(e) => isEditMode && onItemChange(index, e.target.value)}
 						/>
 					)}
-					{isEditMode && (
+					{isEditMode && !(preventDeleteLast && items.length === 1) && (
 						<button
 							type='button'
 							className={`${className}-remove`}

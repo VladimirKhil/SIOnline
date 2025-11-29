@@ -137,7 +137,7 @@ const ThemeItem: React.FC<ThemeItemProps> = ({ item, isEditMode }) => {
 				onItemChange={handleAuthorChange}
 				onAddItem={handleAddAuthor}
 				onRemoveItem={handleRemoveAuthor}
-				placeholder='Enter author name'
+				placeholder={localization.enterAuthorName}
 			/>
 
 			<CollectionEditor
@@ -149,7 +149,7 @@ const ThemeItem: React.FC<ThemeItemProps> = ({ item, isEditMode }) => {
 				onItemChange={handleSourceChange}
 				onAddItem={handleAddSource}
 				onRemoveItem={handleRemoveSource}
-				placeholder='Enter source'
+				placeholder={localization.enterSource}
 			/>
 
 			{(infoOwner.info?.comments && infoOwner.info.comments.length > 0) || isEditable

@@ -216,7 +216,7 @@ const ScreensView: React.FC<ScreensViewProps> = ({
 					<textarea
 						className='screensView__editable__text'
 						value={contentItem.value}
-						placeholder="Enter text content..."
+						placeholder={localization.enterTextContent}
 						aria-label="Edit text content"
 						onChange={(e) => handleContentChange('value', e.target.value)}
 					/>

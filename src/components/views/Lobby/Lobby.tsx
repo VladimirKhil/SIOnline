@@ -42,12 +42,29 @@ const topMenu = (onExit: () => void) => (
 
 export function Lobby() {
 	const appDispatch = useDispatch();
-	const online = useAppSelector(state => state.online2);
-	const common = useAppSelector(state => state.common);
 
-	const filteredGames = filterGames(Object.values(online.games), online.gamesFilter, online.gamesSearch);
-	const selectedGame = online.games[online.selectedGameId];
+	const { games,
+		gamesFilter,
+		gamesSearch,
+		selectedGameId,
+		newGameShown,
+		gameCreationProgress,
+		joinGameProgress,
+		inProgress } = useAppSelector(state => ({
+		games: state.online2.games,
+		gamesFilter: state.online2.gamesFilter,
+		gamesSearch: state.online2.gamesSearch,
+		selectedGameId: state.online2.selectedGameId,
+		newGameShown: state.online2.newGameShown,
+		gameCreationProgress: state.online2.gameCreationProgress,
+		joinGameProgress: state.online2.joinGameProgress,
+		inProgress: state.online2.inProgress
+	}));
 
+	const isConnected = useAppSelector(state => state.common.isConnected);
+
+	const filteredGames = filterGames(Object.values(games), gamesFilter, gamesSearch);
+	const selectedGame = games[selectedGameId];
 	const newGame = (
 		<div className='newGameArea'>
 			<NewGameDialog isSingleGame={false} onClose={() => appDispatch(newGameCancel())} />
@@ -65,30 +82,30 @@ export function Lobby() {
 			{topMenu(onExit)}
 
 			<div className='onlineView'>
-				{online.inProgress ? <ProgressBar isIndeterminate /> : null}
+				{inProgress ? <ProgressBar isIndeterminate /> : null}
 
 				<div className='gamesArea'>
 					<GamesControlPanel games={filteredGames} />
 
 					<div className='gamesView'>
-						<GamesList games={filteredGames} selectedGameId={online.selectedGameId} />
+						<GamesList games={filteredGames} selectedGameId={selectedGameId} />
 
 						{selectedGame
 							? <Dialog className="gameInfoView" title={selectedGame.GameName} onClose={onCloseGameInfo}>
-								<GameInfoView canJoinAsViewer={true} isConnected={common.isConnected} game={selectedGame} showGameName={false} />
+								<GameInfoView canJoinAsViewer={true} isConnected={isConnected} game={selectedGame} showGameName={false} />
 							</Dialog>
 							: <div className='emptyGameInfo' />}
 					</div>
 				</div>
 
 				<UsersView />
-				{online.newGameShown ? newGame : null}
+				{newGameShown ? newGame : null}
 
-				{!online.newGameShown && online.gameCreationProgress
+				{!newGameShown && gameCreationProgress
 					? <ProgressDialog title={localization.creatingGame} isIndeterminate={true} />
 					: null}
 
-				{online.joinGameProgress
+				{joinGameProgress
 					? <ProgressDialog title={localization.joiningGame} isIndeterminate={true} />
 					: null}
 			</div>

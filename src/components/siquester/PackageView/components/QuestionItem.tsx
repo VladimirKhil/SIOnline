@@ -109,10 +109,10 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ item, isEditMode }) => {
 		}
 	}
 
-	function getInfo(infoOwner: InfoOwner, isEditable = false, itemIndices?: { 
-		roundIndex?: number; 
-		themeIndex?: number; 
-		questionIndex?: number; 
+	function getInfo(infoOwner: InfoOwner, isEditable = false, itemIndices?: {
+		roundIndex?: number;
+		themeIndex?: number;
+		questionIndex?: number;
 	}): React.ReactNode {
 		const getTargetType = (): 'package' | 'round' | 'theme' | 'question' => {
 			if (typeof itemIndices?.questionIndex === 'number') return 'question';
@@ -222,7 +222,7 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ item, isEditMode }) => {
 				onItemChange={handleAuthorChange}
 				onAddItem={handleAddAuthor}
 				onRemoveItem={handleRemoveAuthor}
-				placeholder='Enter author name'
+				placeholder={localization.enterAuthorName}
 			/>
 
 			<CollectionEditor
@@ -234,7 +234,7 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ item, isEditMode }) => {
 				onItemChange={handleSourceChange}
 				onAddItem={handleAddSource}
 				onRemoveItem={handleRemoveSource}
-				placeholder='Enter source'
+				placeholder={localization.enterSource}
 			/>
 
 			{(infoOwner.info?.comments && infoOwner.info.comments.length > 0) || isEditable
@@ -289,21 +289,21 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ item, isEditMode }) => {
 
 	const handleWrongAnswerChange = (answerIndex: number, value: string) => {
 		if (isEditMode && indices.roundIndex !== undefined && indices.themeIndex !== undefined && indices.questionIndex !== undefined) {
-			dispatch(updateQuestionWrongAnswer({ 
-				roundIndex: indices.roundIndex, 
-				themeIndex: indices.themeIndex, 
-				questionIndex: indices.questionIndex, 
-				answerIndex, 
-				value 
+			dispatch(updateQuestionWrongAnswer({
+				roundIndex: indices.roundIndex,
+				themeIndex: indices.themeIndex,
+				questionIndex: indices.questionIndex,
+				answerIndex,
+				value
 			}));
 		}
 	};
 
 	const handleAddRightAnswer = () => {
 		if (isEditMode && indices.roundIndex !== undefined && indices.themeIndex !== undefined && indices.questionIndex !== undefined) {
-			dispatch(addQuestionRightAnswer({ 
-				roundIndex: indices.roundIndex, 
-				themeIndex: indices.themeIndex, 
+			dispatch(addQuestionRightAnswer({
+				roundIndex: indices.roundIndex,
+				themeIndex: indices.themeIndex,
 				questionIndex: indices.questionIndex
 			}));
 		}
@@ -311,9 +311,9 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ item, isEditMode }) => {
 
 	const handleRemoveRightAnswer = (answerIndex: number) => {
 		if (isEditMode && indices.roundIndex !== undefined && indices.themeIndex !== undefined && indices.questionIndex !== undefined) {
-			dispatch(removeQuestionRightAnswer({ 
-				roundIndex: indices.roundIndex, 
-				themeIndex: indices.themeIndex, 
+			dispatch(removeQuestionRightAnswer({
+				roundIndex: indices.roundIndex,
+				themeIndex: indices.themeIndex,
 				questionIndex: indices.questionIndex,
 				answerIndex
 			}));
@@ -322,9 +322,9 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ item, isEditMode }) => {
 
 	const handleAddWrongAnswer = () => {
 		if (isEditMode && indices.roundIndex !== undefined && indices.themeIndex !== undefined && indices.questionIndex !== undefined) {
-			dispatch(addQuestionWrongAnswer({ 
-				roundIndex: indices.roundIndex, 
-				themeIndex: indices.themeIndex, 
+			dispatch(addQuestionWrongAnswer({
+				roundIndex: indices.roundIndex,
+				themeIndex: indices.themeIndex,
 				questionIndex: indices.questionIndex
 			}));
 		}
@@ -332,9 +332,9 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ item, isEditMode }) => {
 
 	const handleRemoveWrongAnswer = (answerIndex: number) => {
 		if (isEditMode && indices.roundIndex !== undefined && indices.themeIndex !== undefined && indices.questionIndex !== undefined) {
-			dispatch(removeQuestionWrongAnswer({ 
-				roundIndex: indices.roundIndex, 
-				themeIndex: indices.themeIndex, 
+			dispatch(removeQuestionWrongAnswer({
+				roundIndex: indices.roundIndex,
+				themeIndex: indices.themeIndex,
 				questionIndex: indices.questionIndex,
 				answerIndex
 			}));
@@ -385,7 +385,7 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ item, isEditMode }) => {
 						onChange={(e) => handleQuestionChange('price', parseInt(e.target.value, 10) || 0)}
 					/>
 
-					{question.type
+					{question.type || isEditMode
 						? <>
 							<label htmlFor='type' className='header'>{localization.type}</label>
 
@@ -394,7 +394,7 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ item, isEditMode }) => {
 									<select
 										id='type'
 										className='packageView__question__type'
-										value={isCustomMode ? 'custom' : question.type}
+										value={isCustomMode ? 'custom' : (question.type ?? 'default')}
 										onChange={(e) => handleQuestionTypeChange(e.target.value)}
 									>
 										<option value={QuestionTypes.Simple}>{localization.questionTypeSimple}</option>
@@ -405,13 +405,15 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ item, isEditMode }) => {
 										<option value={QuestionTypes.SecretNoQuestion}>{localization.questionTypeSecretNoQuestion}</option>
 										<option value={QuestionTypes.ForAll}>{localization.questionTypeForAll}</option>
 										<option value={QuestionTypes.StakeAll}>{localization.questionTypeForAllWithStake}</option>
-										<option value='custom'>Custom...</option>
+										<option value='custom'>{localization.custom}</option>
+										<option value='default'>{localization.default}</option>
 									</select>
+
 									{isCustomMode && (
 										<input
 											type='text'
 											className='packageView__question__customType'
-											placeholder='Enter custom question type'
+											placeholder={localization.enterCustomQuestionType}
 											value={customTypeValue}
 											onChange={(e) => handleCustomTypeChange(e.target.value)}
 											style={{ marginTop: '5px' }}
@@ -423,7 +425,7 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ item, isEditMode }) => {
 									id='type'
 									type='text'
 									className='packageView__question__type'
-									value={getQuestionTypeName(question.type)}
+									value={getQuestionTypeName(question.type ?? '')}
 									readOnly
 								/>
 							)}
@@ -446,13 +448,25 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ item, isEditMode }) => {
 					{question.params.selectionMode
 						? <>
 							<label htmlFor='selectionMode' className='header'>{localization.selectionMode}</label>
-							<input
-								id='selectionMode'
-								type='text'
-								value={getSetAnswererSelect(question.params.selectionMode)}
-								readOnly={!isEditMode}
-								onChange={(e) => handleQuestionParamChange('selectionMode', e.target.value)}
-							/>
+
+							{isEditMode ? (
+								<select
+									id='selectionMode'
+									value={question.params.selectionMode}
+									onChange={(e) => handleQuestionParamChange('selectionMode', e.target.value)}
+								>
+									<option value='any'>{localization.setAnswererSelectAny}</option>
+									<option value='exceptCurrent'>{localization.setAnswererSelectExceptCurrent}</option>
+								</select>
+							) : (
+								<input
+									id='selectionMode'
+									type='text'
+									value={getSetAnswererSelect(question.params.selectionMode)}
+									readOnly={!isEditMode}
+									onChange={(e) => handleQuestionParamChange('selectionMode', e.target.value)}
+								/>
+							)}
 						</>
 					: null}
 
@@ -567,35 +581,34 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ item, isEditMode }) => {
 								</>
 							: null}
 
-							{answerOptions && isEditMode && question.right.answer.length === 1 ? (
-								<>
-									<label htmlFor='name' className='header'>{localization.rightAnswers}</label>
-									<select
-										aria-label='right answer'
-										className='packageView__info__answer'
-										value={question.right.answer[0]}
-										onChange={(e) => handleRightAnswerChange(0, e.target.value)}
-									>
-										{Object.keys(answerOptions).map((key) => (
-											<option key={key} value={key}>{key}</option>
-										))}
-									</select>
-								</>
-							) : (
-								<CollectionEditor
-									label={localization.rightAnswers}
-									items={question.right.answer}
-									isEditMode={isEditMode}
-									className='packageView__info__answer'
-									getValue={(answer) => answer}
-									onItemChange={handleRightAnswerChange}
-									onAddItem={handleAddRightAnswer}
-									onRemoveItem={handleRemoveRightAnswer}
-									placeholder='Enter answer'
-								/>
-							)}
-
-							{(question.wrong && question.wrong.answer.length > 0) || isEditMode ? (
+			{answerOptions && isEditMode && question.right.answer.length === 1 ? (
+				<>
+					<label htmlFor='name' className='header'>{localization.rightAnswers}</label>
+					<select
+						aria-label='right answer'
+						className='packageView__info__answer'
+						value={question.right.answer[0]}
+						onChange={(e) => handleRightAnswerChange(0, e.target.value)}
+					>
+						{Object.keys(answerOptions).map((key) => (
+							<option key={key} value={key}>{key}</option>
+						))}
+					</select>
+				</>
+			) : (
+				<CollectionEditor
+					label={localization.rightAnswers}
+					items={question.right.answer}
+					isEditMode={isEditMode}
+					className='packageView__info__answer'
+					getValue={(answer) => answer}
+					onItemChange={handleRightAnswerChange}
+					onAddItem={handleAddRightAnswer}
+					onRemoveItem={handleRemoveRightAnswer}
+					placeholder={localization.enterAnswer}
+					preventDeleteLast={true}
+				/>
+			)}							{(question.wrong && question.wrong.answer.length > 0) || isEditMode ? (
 								<CollectionEditor
 									label={localization.wrongAnswers}
 									items={question.wrong?.answer || []}
@@ -605,7 +618,7 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ item, isEditMode }) => {
 									onItemChange={handleWrongAnswerChange}
 									onAddItem={handleAddWrongAnswer}
 									onRemoveItem={handleRemoveWrongAnswer}
-									placeholder='Enter wrong answer'
+									placeholder={localization.enterWrongAnswer}
 								/>
 							) : null}
 						</>

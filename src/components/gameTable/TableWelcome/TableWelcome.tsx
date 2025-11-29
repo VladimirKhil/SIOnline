@@ -20,7 +20,11 @@ const mapStateToProps = (state: State) => ({
 
 const TableWelcome: React.FC<TableWelcomeProps> = (props: TableWelcomeProps) => {
 	const appDispatch = useAppDispatch();
-	const common = useAppSelector(state => state.common);
+	const { clipboardSupported, roomLinkEnabled, isSIHostConnected } = useAppSelector(state => ({
+		clipboardSupported: state.common.clipboardSupported,
+		roomLinkEnabled: state.common.roomLinkEnabled,
+		isSIHostConnected: state.common.isSIHostConnected,
+	}));
 
 	const getPinCore = () => {
 		appDispatch(getPin());
@@ -33,16 +37,16 @@ const TableWelcome: React.FC<TableWelcomeProps> = (props: TableWelcomeProps) => 
 			</AutoSizedText>
 		</div>
 
-		{common.clipboardSupported && (common.roomLinkEnabled || props.isHost)
+		{clipboardSupported && (roomLinkEnabled || props.isHost)
 			? <div className='table-welcome__buttons'>
-				{common.roomLinkEnabled
-					? <button type="button" className='standard' disabled={!common.isSIHostConnected} onClick={() => inviteLink(appDispatch)}>
+				{roomLinkEnabled
+					? <button type="button" className='standard' disabled={!isSIHostConnected} onClick={() => inviteLink(appDispatch)}>
 						{localization.inviteLink}
 					</button>
 					: null}
 
 				{props.isHost
-					? <button type='button' className='standard' disabled={!common.isSIHostConnected} onClick={getPinCore}>
+					? <button type='button' className='standard' disabled={!isSIHostConnected} onClick={getPinCore}>
 						{localization.getPin}
 					</button>
 					: null}
