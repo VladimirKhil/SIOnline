@@ -1,5 +1,8 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import JSZip from 'jszip';
+import SIStatisticsClient from 'sistatistics-client';
+import QuestionStats from 'sistatistics-client/dist/models/QuestionStats';
+import PackageTopLevelStats from 'sistatistics-client/dist/models/PackageTopLevelStats';
 import localization from '../model/resources/localization';
 import { Package, Round, Theme, Question, ContentParam, ContentItem } from '../model/siquester/package';
 import { navigate } from '../utils/Navigator';
@@ -16,6 +19,10 @@ export interface SIQuesterState {
 	themeIndex?: number;
 	questionIndex?: number;
 	isPackageSelected?: boolean;
+	packageStats?: Record<string, QuestionStats>;
+	packageTopLevelStats?: PackageTopLevelStats;
+	packageStatsLoading?: boolean;
+	showPackageStats?: boolean;
 }
 
 const initialState: SIQuesterState = {};
@@ -71,6 +78,31 @@ export const savePackage = createAsyncThunk(
 		}
 
 		await downloadPackageAsSIQ(pack, zip);
+	},
+);
+
+export const loadPackageStatistics = createAsyncThunk(
+	'siquester/loadPackageStatistics',
+	async (_, thunkAPI) => {
+		const dataContext = thunkAPI.extra as DataContext;
+		const state = thunkAPI.getState() as { siquester: SIQuesterState };
+		const { pack } = state.siquester;
+
+		if (!pack) {
+			throw new Error('No package to load statistics for');
+		}
+
+		const siStatisticsClient = new SIStatisticsClient({ serviceUri: dataContext.config.siStatisticsServiceUri });
+
+		const authors = pack.info?.authors?.map(a => a.name) || [];
+
+		const packageStats = await siStatisticsClient.getPackageStats({
+			name: pack.name,
+			hash: '',
+			authors
+		});
+
+		return packageStats;
 	},
 );
 
@@ -477,6 +509,9 @@ export const siquesterSlice = createSlice({
 			state.questionIndex = action.payload.questionIndex;
 			state.isPackageSelected = action.payload.isPackageSelected;
 		},
+		togglePackageStats: (state) => {
+			state.showPackageStats = !state.showPackageStats;
+		},
 	},
 	extraReducers: builder => {
 		builder.addCase(openFile.fulfilled, (state, action) => {
@@ -494,6 +529,18 @@ export const siquesterSlice = createSlice({
 			state.themeIndex = undefined;
 			state.questionIndex = undefined;
 			state.isPackageSelected = false;
+		});
+		builder.addCase(loadPackageStatistics.pending, (state) => {
+			state.packageStatsLoading = true;
+		});
+		builder.addCase(loadPackageStatistics.fulfilled, (state, action) => {
+			state.packageStats = action.payload.questionStats;
+			state.packageTopLevelStats = action.payload.topLevelStats;
+			state.packageStatsLoading = false;
+			state.showPackageStats = true;
+		});
+		builder.addCase(loadPackageStatistics.rejected, (state) => {
+			state.packageStatsLoading = false;
 		});
 	},
 });
@@ -518,6 +565,7 @@ export const {
 	removeInfoItem,
 	updateContentItem,
 	setCurrentItem,
+	togglePackageStats,
 } = siquesterSlice.actions;
 
 // Selector to get the current item based on the indices

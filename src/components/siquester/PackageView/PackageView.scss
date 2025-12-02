@@ -56,6 +56,21 @@
 				&.editActive {
 					background: linear-gradient(180deg, #ef8528 14.29%, rgb(237, 139, 39) 100%);
 				}
+
+				&.statistics {
+					&:hover {
+						background: linear-gradient(180deg, #28a745 14.29%, rgb(39, 167, 69) 100%);
+					}
+
+					&.active {
+						background: linear-gradient(180deg, #28a745 14.29%, rgb(39, 167, 69) 100%);
+					}
+
+					&.loading {
+						opacity: 0.6;
+						cursor: wait;
+					}
+				}
 			}
 		}
 
@@ -78,6 +93,16 @@
 				color: black;
 				cursor: default;
 			}
+		}
+
+		.packageView__statsBar {
+			margin-top: 10px;
+			padding: 8px 15px;
+			background-color: #28a745;
+			color: white;
+			font-size: 14px;
+			text-align: center;
+			border-radius: 4px;
 		}
 
 		.packageView__disclaimer {
@@ -189,6 +214,7 @@
 				flex: 60px 0 0;
 				background-color: rgb(56, 56, 56);
 				display: flex;
+				flex-direction: column;
 				justify-content: center;
 				align-items: center;
 				cursor: pointer;
@@ -205,6 +231,25 @@
 					background-color: white;
 					color: black;
 					cursor: default;
+				}
+
+				.packageView__question__price {
+					font-size: 14px;
+				}
+
+				.packageView__question__stats {
+					display: flex;
+					gap: 4px;
+					margin-top: 2px;
+					font-size: 10px;
+
+					.tries {
+						color: #ffcc00;
+					}
+
+					.right {
+						color: #28a745;
+					}
 				}
 			}
 		}

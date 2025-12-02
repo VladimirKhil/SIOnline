@@ -8,7 +8,9 @@ import Path from '../../../model/enums/Path';
 import {
 	savePackage,
 	setCurrentItem,
-	selectCurrentItem
+	selectCurrentItem,
+	loadPackageStatistics,
+	togglePackageStats
 } from '../../../state/siquesterSlice';
 import PackageItem from './components/PackageItem';
 import RoundItem from './components/RoundItem';
@@ -25,7 +27,7 @@ enum Mode { Rounds, Questions, Media }
 const PackageView: React.FC = () => {
 	const appDispatch = useDispatch();
 	const siquester = useAppSelector(state => state.siquester);
-	const { zip, pack } = siquester;
+	const { zip, pack, packageStats, packageTopLevelStats, packageStatsLoading, showPackageStats } = siquester;
 	const currentItem = useAppSelector(selectCurrentItem);
 	const [roundIndex, setRoundIndex] = React.useState(0);
 	const [mode, setMode] = React.useState(Mode.Questions);
@@ -39,6 +41,14 @@ const PackageView: React.FC = () => {
 
 	const onSave = () => {
 		appDispatch(savePackage());
+	};
+
+	const onLoadStatistics = () => {
+		if (packageStats) {
+			appDispatch(togglePackageStats());
+		} else {
+			appDispatch(loadPackageStatistics());
+		}
 	};
 
 	const round = pack.rounds[roundIndex];
@@ -101,6 +111,29 @@ const PackageView: React.FC = () => {
 		setIsEditMode(!isEditMode);
 	}
 
+	function getQuestionStatsKey(ri: number, ti: number, qi: number): string {
+		return `${ri}:${ti}:${qi}`;
+	}
+
+	function getQuestionStats(ri: number, ti: number, qi: number): { triesPercent: number; rightPercent: number } | null {
+		if (!packageStats || !showPackageStats) {
+			return null;
+		}
+
+		const key = getQuestionStatsKey(ri, ti, qi);
+		const stats = packageStats[key];
+
+		if (!stats || stats.playerSeenCount === 0) {
+			return null;
+		}
+
+		const totalTries = stats.correctCount + stats.wrongCount;
+		const triesPercent = Math.round((stats.answeredCount / stats.shownCount) * 100);
+		const rightPercent = totalTries > 0 ? Math.round((stats.correctCount / totalTries) * 100) : 0;
+
+		return { triesPercent, rightPercent };
+	}
+
 	function getQuestionsView(packageData: Package): React.ReactNode {
 		return <>
 			<div className='packageView__rounds'>
@@ -123,18 +156,29 @@ const PackageView: React.FC = () => {
 							{theme.name}
 						</div>
 
-						{theme.questions.map((question, qi) => (
-							<div
-								key={qi}
-								className={`packageView__question
-									${currentItem === question ? 'selected' : ''}
-									${isThemeList ? 'wide' : ''}`}
-								onClick={() => {
-									appDispatch(setCurrentItem({ roundIndex, themeIndex: ti, questionIndex: qi }));
-								}}>
-								{isThemeList ? localization.question : getQuestionDisplay(question.price)}
-							</div>
-						))}
+						{theme.questions.map((question, qi) => {
+							const stats = getQuestionStats(roundIndex, ti, qi);
+							return (
+								<div
+									key={qi}
+									className={`packageView__question
+										${currentItem === question ? 'selected' : ''}
+										${isThemeList ? 'wide' : ''}`}
+									onClick={() => {
+										appDispatch(setCurrentItem({ roundIndex, themeIndex: ti, questionIndex: qi }));
+									}}>
+									<span className='packageView__question__price'>
+										{isThemeList ? localization.question : getQuestionDisplay(question.price)}
+									</span>
+									{stats && (
+										<span className='packageView__question__stats'>
+											<span className='tries' title={localization.answerTries}>{stats.triesPercent}%</span>
+											<span className='right' title={localization.rightAnswers}>{stats.rightPercent}%</span>
+										</span>
+									)}
+								</div>
+							);
+						})}
 					</div>
 				))}
 			</div> : null}
@@ -207,6 +251,21 @@ const PackageView: React.FC = () => {
 
 					<button
 						type='button'
+						className={`standard imageButton statistics ${packageStatsLoading ? 'loading' : ''} ${showPackageStats ? 'active' : ''}`}
+						onClick={onLoadStatistics}
+						disabled={packageStatsLoading}
+						title={localization.downloadPackageStatistics}>
+						<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+							<path d="M4 20H20" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+							<path d="M4 16V10" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+							<path d="M9 16V6" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+							<path d="M14 16V12" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+							<path d="M19 16V4" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+						</svg>
+					</button>
+
+					<button
+						type='button'
 						className='standard imageButton modes'
 						title={localization.viewMode}
 						onClick={switchMode}>
@@ -221,6 +280,17 @@ const PackageView: React.FC = () => {
 						{pack.name}
 					</div>
 				</header>
+
+				{showPackageStats && packageTopLevelStats && (
+					<div className='packageView__statsBar'>
+						{localization.completedGames
+							.replace('{0}', packageTopLevelStats.completedGameCount.toString())
+							.replace('{1}', packageTopLevelStats.startedGameCount.toString())
+							.replace('{2}', packageTopLevelStats.startedGameCount > 0
+								? Math.round((packageTopLevelStats.completedGameCount / packageTopLevelStats.startedGameCount) * 100).toString()
+								: '0')}
+					</div>
+				)}
 
 				{isEditMode && (
 					<div className='packageView__disclaimer'>
