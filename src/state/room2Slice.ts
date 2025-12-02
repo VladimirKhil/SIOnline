@@ -30,7 +30,6 @@ export enum DialogView {
 export enum ContextView {
 	None,
 	OralAnswer,
-	Report,
 }
 
 export enum DecisionType {
@@ -42,6 +41,7 @@ export enum DecisionType {
 	OralAnswer,
 	Choose,
 	Validation,
+	Review,
 }
 
 // Helper function to check if a decision is needed
@@ -69,6 +69,7 @@ export interface Room2State {
 
 	playState: {
 		report: string;
+		packageUri: string | null;
 	};
 
 	dialogView: DialogView;
@@ -147,6 +148,7 @@ const initialState: Room2State = {
 
 	playState: {
 		report: '',
+		packageUri: null,
 	},
 
 	dialogView: DialogView.None,
@@ -420,7 +422,13 @@ export const room2Slice = createSlice({
 		},
 		setReport: (state: Room2State, action: PayloadAction<string>) => {
 			state.playState.report = action.payload;
-			state.contextView = ContextView.Report;
+			state.playState.packageUri = null;
+			state.stage.decisionType = DecisionType.Review;
+		},
+		setReview: (state: Room2State, action: PayloadAction<string | null>) => {
+			state.playState.report = '';
+			state.playState.packageUri = action.payload;
+			state.stage.decisionType = DecisionType.Review;
 		},
 		showmanReplicChanged: (state: Room2State, action: PayloadAction<string>) => {
 			state.persons.showman.replic = action.payload;
@@ -1151,6 +1159,7 @@ export const {
 	showDialog,
 	setContext,
 	setReport,
+	setReview,
 	showmanReplicChanged,
 	playerReplicChanged,
 	infoChanged,

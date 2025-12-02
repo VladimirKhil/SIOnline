@@ -10,7 +10,7 @@ import ReadyButton from '../ReadyButton/ReadyButton';
 import GameHint from '../GameHint/GameHint';
 import { useAppSelector } from '../../../state/hooks';
 import { ContextView } from '../../../state/room2Slice';
-import ReportButton from '../ReportButton/ReportButton';
+import ReportPanel from '../ReportPanel/ReportPanel';
 import EditTableButton from '../EditTableButton/EditTableButton';
 import TableMode from '../../../model/enums/TableMode';
 import OralAnswer from '../OralAnswer/OralAnswer';
@@ -60,6 +60,9 @@ function renderBody(
 
 			break;
 
+		case DecisionType.Review:
+			return <ReportPanel />;
+
 		default:
 			break;
 	}
@@ -68,9 +71,6 @@ function renderBody(
 	switch (contextView) {
 		case ContextView.OralAnswer:
 			return <OralAnswer />;
-
-		case ContextView.Report:
-			return <ReportButton />;
 
 		default:
 			break;

@@ -13,6 +13,8 @@ const enum GameMessages {
 
 	Appellation = 'APPELLATION',
 
+	AskReview = 'ASK_REVIEW',
+
 	AskSelectPlayer = 'ASK_SELECT_PLAYER',
 
 	AskStake = 'ASK_STAKE',

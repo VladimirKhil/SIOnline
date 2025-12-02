@@ -142,6 +142,7 @@ import {
 	answerChanged,
 	answerTypeChanged,
 	showLeftSeconds,
+	setReview,
 } from '../state/room2Slice';
 
 import PersonInfo from '../model/PersonInfo';
@@ -396,6 +397,10 @@ export default class ClientController {
 		}
 
 		this.appDispatch(setDecisionType(DecisionType.Answer));
+	}
+
+	onAskReview(packageUri: string | null) {
+		this.appDispatch(setReview(packageUri));
 	}
 
 	onAskSelectPlayer(reason: string, indices: number[]) {
