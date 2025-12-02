@@ -51,6 +51,8 @@ const PackageView: React.FC = () => {
 		}
 	};
 
+	const hasPackageStats = packageStats && Object.keys(packageStats).length > 0;
+
 	const round = pack.rounds[roundIndex];
 	const isThemeList = round?.type === RoundTypes.Final;
 
@@ -251,9 +253,9 @@ const PackageView: React.FC = () => {
 
 					<button
 						type='button'
-						className={`standard imageButton statistics ${packageStatsLoading ? 'loading' : ''} ${showPackageStats ? 'active' : ''}`}
+						className={`standard imageButton statistics ${packageStatsLoading ? 'loading' : ''} ${showPackageStats && hasPackageStats ? 'active' : ''}`}
 						onClick={onLoadStatistics}
-						disabled={packageStatsLoading}
+						disabled={packageStatsLoading || (packageStats !== undefined && !hasPackageStats)}
 						title={localization.downloadPackageStatistics}>
 						<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 							<path d="M4 20H20" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>

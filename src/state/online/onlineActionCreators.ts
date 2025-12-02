@@ -33,10 +33,12 @@ import { showWelcome, tableReset } from '../tableSlice';
 
 import {
 	ContextView,
+	DecisionType,
 	nameChanged,
 	resetQuestionCounter,
 	setAreSumsEditable,
 	setContext,
+	setDecisionType,
 	setIsGameStarted,
 	setRoomRole,
 	setRoundsNames,
@@ -121,6 +123,7 @@ const initGameAsync = async (
 	appDispatch(tableReset());
 	appDispatch(showWelcome());
 	appDispatch(setContext(ContextView.None));
+	appDispatch(setDecisionType(DecisionType.None));
 	// TODO: provide single action to reset room state
 	appDispatch(nameChanged(name));
 	appDispatch(setRoomRole(role));

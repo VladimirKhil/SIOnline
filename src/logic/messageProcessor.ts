@@ -1106,6 +1106,11 @@ const playerHandler = (controller: ClientController, args: string[]) => {
 			controller.onAskAnswer(args.length > 1 ? args[1] : null);
 			break;
 
+		case GameMessages.AskReview:
+			const packageUri = args.length > 1 ? args[1] : null;
+			controller.onAskReview(packageUri);
+			break;
+
 		case GameMessages.AskSelectPlayer:
 			if (args.length < 3) {
 				return;

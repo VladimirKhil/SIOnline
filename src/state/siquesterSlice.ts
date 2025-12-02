@@ -96,13 +96,21 @@ export const loadPackageStatistics = createAsyncThunk(
 
 		const authors = pack.info?.authors?.map(a => a.name) || [];
 
-		const packageStats = await siStatisticsClient.getPackageStats({
-			name: pack.name,
-			hash: '',
-			authors
-		});
+		try {
+			const packageStats = await siStatisticsClient.getPackageStats({
+				name: pack.name,
+				hash: '',
+				authors
+			});
 
-		return packageStats;
+			return packageStats;
+		} catch (error: unknown) {
+			// Return empty stats on 404 or other errors
+			return {
+				topLevelStats: { startedGameCount: 0, completedGameCount: 0 },
+				questionStats: {}
+			};
+		}
 	},
 );
 
@@ -521,6 +529,9 @@ export const siquesterSlice = createSlice({
 			state.themeIndex = undefined;
 			state.questionIndex = undefined;
 			state.isPackageSelected = false;
+			state.packageStats = undefined;
+			state.packageTopLevelStats = undefined;
+			state.showPackageStats = false;
 		});
 		builder.addCase(createNewPackage.fulfilled, (state, action) => {
 			state.zip = action.payload.zip;
@@ -529,6 +540,9 @@ export const siquesterSlice = createSlice({
 			state.themeIndex = undefined;
 			state.questionIndex = undefined;
 			state.isPackageSelected = false;
+			state.packageStats = undefined;
+			state.packageTopLevelStats = undefined;
+			state.showPackageStats = false;
 		});
 		builder.addCase(loadPackageStatistics.pending, (state) => {
 			state.packageStatsLoading = true;
