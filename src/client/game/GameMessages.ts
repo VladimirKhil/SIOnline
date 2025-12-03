@@ -234,9 +234,6 @@ const enum GameMessages {
 	UserError = 'USER_ERROR',
 
 	/** Answer validation. */
-	Validation = 'VALIDATION',
-
-	/** Answer validation. */
 	Validation2 = 'VALIDATION2',
 
 	Winner = 'WINNER',

@@ -42,7 +42,8 @@ import {
 	setIsGameStarted,
 	setRoomRole,
 	setRoundsNames,
-	stopTimer
+	stopTimer,
+	stopValidation
 } from '../room2Slice';
 
 import { GameState, PackageData, setGameSet } from '../gameSlice';
@@ -124,6 +125,7 @@ const initGameAsync = async (
 	appDispatch(showWelcome());
 	appDispatch(setContext(ContextView.None));
 	appDispatch(setDecisionType(DecisionType.None));
+	appDispatch(stopValidation());
 	// TODO: provide single action to reset room state
 	appDispatch(nameChanged(name));
 	appDispatch(setRoomRole(role));

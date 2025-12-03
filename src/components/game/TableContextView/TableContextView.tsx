@@ -9,7 +9,7 @@ import PlayerButtonsPanel from '../PlayerButtonsPanel/PlayerButtonsPanel';
 import ReadyButton from '../ReadyButton/ReadyButton';
 import GameHint from '../GameHint/GameHint';
 import { useAppSelector } from '../../../state/hooks';
-import { ContextView } from '../../../state/room2Slice';
+import { ContextView, ValidationInfo } from '../../../state/room2Slice';
 import ReportPanel from '../ReportPanel/ReportPanel';
 import EditTableButton from '../EditTableButton/EditTableButton';
 import TableMode from '../../../model/enums/TableMode';
@@ -17,6 +17,7 @@ import OralAnswer from '../OralAnswer/OralAnswer';
 import AnswerValidationButtons from '../AnswerValidationButtons/AnswerValidationButtons';
 import { DecisionType } from '../../../state/room2Slice';
 import LayoutMode from '../../../model/enums/LayoutMode';
+import localization from '../../../model/resources/localization';
 
 import './TableContextView.css';
 
@@ -44,6 +45,7 @@ function renderBody(
 	role: Role,
 	decisionType: DecisionType,
 	layoutMode: LayoutMode,
+	validationQueue: ValidationInfo[]
 ) : JSX.Element | null {
 	switch (decisionType) {
 		case DecisionType.Answer:
@@ -56,9 +58,9 @@ function renderBody(
 		case DecisionType.Validation:
 			if (role === Role.Player) {
 				return <AnswerValidationButtons />;
+			} else {
+				return <div className='oral__answer'>{localization.validateAnswer.replace('{0}', validationQueue[0]?.name)}</div>;
 			}
-
-			break;
 
 		case DecisionType.Review:
 			return <ReportPanel />;
@@ -109,13 +111,14 @@ export function TableContextView(props: TableContextViewProps): JSX.Element | nu
 	const windowWidth = useAppSelector(rootState => rootState.ui.windowWidth);
 	const tableMode = useAppSelector(rootState => rootState.table.mode);
 
-	const { contextView, isGameStarted, isGamePaused, role, decisionType, layoutMode } = useAppSelector(rootState => ({
+	const { contextView, isGameStarted, isGamePaused, role, decisionType, layoutMode, validationQueue } = useAppSelector(rootState => ({
 		contextView: rootState.room2.contextView,
 		isGameStarted: rootState.room2.stage.isGameStarted,
 		isGamePaused: rootState.room2.stage.isGamePaused,
 		role: rootState.room2.role,
 		decisionType: rootState.room2.stage.decisionType,
 		layoutMode: rootState.table.layoutMode,
+		validationQueue: rootState.room2.validation.queue,
 	}));
 
 	const body = renderBody(
@@ -128,6 +131,7 @@ export function TableContextView(props: TableContextViewProps): JSX.Element | nu
 		role,
 		decisionType,
 		layoutMode,
+		validationQueue,
 	);
 
 	return body == null ? null : <div className='tableContextView'>{body}</div>;

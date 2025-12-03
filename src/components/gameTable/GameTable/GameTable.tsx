@@ -100,22 +100,22 @@ export function GameTable(): JSX.Element {
 	const tableTheme = useAppSelector((state) => state.settings.theme.table);
 
 	const {
-		stage: { isGamePaused: isPaused, decisionType, isAppellation },
+		isGamePaused,
+		decisionType,
+		isAppellation,
 		noRiskMode,
-		validation: { queue: { length: validationQueueLength } },
+		validationQueue,
 		role,
 		showMainTimer,
 		isEditTableEnabled,
 		decisionTimer,
 		answerDeviation,
 	} = useAppSelector((state) => ({
-		stage: {
-			isGamePaused: state.room2.stage.isGamePaused,
-			decisionType: state.room2.stage.decisionType,
-			isAppellation: state.room2.stage.isAppellation,
-		},
+		isGamePaused: state.room2.stage.isGamePaused,
+		decisionType: state.room2.stage.decisionType,
+		isAppellation: state.room2.stage.isAppellation,
 		noRiskMode: state.room2.noRiskMode,
-		validation: { queue: { length: state.room2.validation.queue.length } },
+		validationQueue: state.room2.validation.queue,
 		role: state.room2.role,
 		showMainTimer: state.room2.showMainTimer,
 		isEditTableEnabled: state.room2.isEditTableEnabled,
@@ -123,8 +123,15 @@ export function GameTable(): JSX.Element {
 		answerDeviation: state.table.answerDeviation,
 	}));
 
-	const caption = getCaption(mode, tableCaption);
-	const themeProperties: React.CSSProperties = {};
+	const shouldShowAnswerValidationInTable = decisionType === DecisionType.Validation &&
+		validationQueue.length > 0 &&
+		role === Role.Player;
+
+	const caption = shouldShowAnswerValidationInTable
+		? localization.validateAnswer.replace('{0}', validationQueue[0].name)
+		: getCaption(mode, tableCaption);
+
+		const themeProperties: React.CSSProperties = {};
 	const reversedPropeties: React.CSSProperties = {};
 
 	if (tableTheme.textColor) {
@@ -140,10 +147,6 @@ export function GameTable(): JSX.Element {
 	if (tableTheme.fontFamily) {
 		themeProperties.fontFamily = tableTheme.fontFamily;
 	}
-
-	const shouldShowAnswerValidationInTable = decisionType === DecisionType.Validation &&
-		validationQueueLength > 0 &&
-		role === Role.Player;
 
 	const showAppelation = isAppellation && !shouldShowAnswerValidationInTable;
 	const hasSound = audio.length > 0 || content.some(g => g.content.some(c => c.type === ContentType.Video));
@@ -187,12 +190,12 @@ export function GameTable(): JSX.Element {
 				/>
 			) : null}
 
-			{(isPaused && !isEditTableEnabled) || showAppelation || !isConnected ? (
+			{(isGamePaused && !isEditTableEnabled) || showAppelation || !isConnected ? (
 				<AutoSizedText
 					maxFontSize={144}
 					className={`pauseLogo tableText tableTextCenter ${isConnected ? '' : 'warning'}`}
 				>
-					{isPaused ? localization.pause : (showAppelation ? localization.apellation : localization.connectionClosed)}
+					{isGamePaused ? localization.pause : (showAppelation ? localization.apellation : localization.connectionClosed)}
 				</AutoSizedText>
 			) : null}
 		</div>

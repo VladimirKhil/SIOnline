@@ -13,10 +13,17 @@ export default function AnswerValidationButtons(): JSX.Element {
 	const [firstValidationItem] = validation.queue;
 
 	const [buttonsBlocked, setButtonsBlocked] = React.useState(false);
+	const timeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+
+	React.useEffect(() => () => {
+		if (timeoutRef.current) {
+			clearTimeout(timeoutRef.current);
+		}
+	}, []);
 
 	const blockButtons = () => {
 		setButtonsBlocked(true);
-		setTimeout(() => setButtonsBlocked(false), 500);
+		timeoutRef.current = setTimeout(() => setButtonsBlocked(false), 500);
 	};
 
 	const onApprove = (factor: number) => {

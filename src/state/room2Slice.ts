@@ -47,7 +47,7 @@ export enum DecisionType {
 // Helper function to check if a decision is needed
 export const isDecisionNeeded = (decisionType: DecisionType): boolean => decisionType !== DecisionType.None;
 
-interface ValidationInfo {
+export interface ValidationInfo {
 	name: string;
 	answer: string;
 }

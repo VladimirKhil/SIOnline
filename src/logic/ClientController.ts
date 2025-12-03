@@ -1200,9 +1200,9 @@ export default class ClientController {
 		rightAnswers:
 		string[],
 		wrongAnswers: string[],
-		showExtraRightButtons: boolean) {
+		showExtraRightButtons: boolean,
+	) {
 		this.appDispatch(validate({ header, name, answer, message, rightAnswers, wrongAnswers, showExtraRightButtons }));
-		this.appDispatch(captionChanged(localization.validateAnswer.replace('{0}', name)));
 	}
 
 	onUnbanned(name: string) {
