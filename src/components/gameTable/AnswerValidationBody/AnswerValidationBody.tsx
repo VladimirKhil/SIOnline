@@ -34,6 +34,7 @@ const AnswerValidationBody: React.FC = () => {
 
 			<div className='validationHeader'>
 				<div className='mainMessage'>
+					<div className='answererName'>{localization.playerAnswerLabel.replace('{0}', firstValidationItem.name)}</div>
 					<AutoSizedText maxFontSize={32} className='playerAnswer' title={localization.playersAnswer}>
 						{firstValidationItem.answer}
 					</AutoSizedText>

@@ -420,8 +420,7 @@ export default class ClientController {
 
 		const state = this.getState();
 		if (playerIndex >= 0 && playerIndex < state.room2.persons.players.length) {
-			const playerName = state.room2.persons.players[playerIndex].name;
-			this.appDispatch(captionChanged(localization.validateAnswer.replace('{0}', playerName)));
+			this.appDispatch(captionChanged(localization.validateAnswer));
 		}
 	}
 

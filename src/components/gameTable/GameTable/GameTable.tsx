@@ -15,7 +15,7 @@ import ObjectView from '../ObjectView/ObjectView';
 import { useAppSelector } from '../../../state/hooks';
 import TableWelcome from '../TableWelcome/TableWelcome';
 import TableStatistics from '../TableStatistics/TableStatistics';
-import AnswerValidationBody from '../../game/AnswerValidationBody/AnswerValidationBody';
+import AnswerValidationBody from '../AnswerValidationBody/AnswerValidationBody';
 import Role from '../../../model/Role';
 import { DecisionType } from '../../../state/room2Slice';
 import VolumeButton from '../../common/VolumeButton/VolumeButton';
@@ -128,7 +128,7 @@ export function GameTable(): JSX.Element {
 		role === Role.Player;
 
 	const caption = shouldShowAnswerValidationInTable
-		? localization.validateAnswer.replace('{0}', validationQueue[0].name)
+		? localization.validateAnswer
 		: getCaption(mode, tableCaption);
 
 		const themeProperties: React.CSSProperties = {};

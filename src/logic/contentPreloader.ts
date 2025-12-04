@@ -20,9 +20,11 @@ function preloadFile(contentUri: string, addSimpleMessage: (message: string) => 
 		if (isVideo) {
 			element = document.createElement('video');
 			(element as HTMLVideoElement).preload = 'auto';
+			(element as HTMLVideoElement).crossOrigin = 'anonymous';
 		} else if (isAudio) {
 			element = document.createElement('audio');
 			(element as HTMLAudioElement).preload = 'auto';
+			(element as HTMLAudioElement).crossOrigin = 'anonymous';
 		} else if (isHtml) {
 			// For HTML content, use fetch to load and cache it
 			fetch(contentUri)
