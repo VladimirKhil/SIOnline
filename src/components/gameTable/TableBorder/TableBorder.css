@@ -1,8 +1,6 @@
 #table .tableBorder {
 	flex-grow: 1;
 	border: 14px solid transparent;
-	--border-edge-opacity: 0;
-	--border-center-opacity: 1;
 }
 
 #table .tableBorderCentered {
@@ -17,13 +15,10 @@
 .tableBorder .bottomBorder,
 .tableBorder .leftBorder {
 	position: absolute;
-	box-shadow: 
-		0 0 10px rgba(255, 255, 255, 0.3),
-		inset 0 0 5px rgba(255, 255, 255, 0.5);
+    border-radius: 4px;
 }
 
 .tableBorder .topBorder {
-	position: absolute;
 	top: 0;
 	left: 50%;
 	transform: translateX(-50%);
@@ -32,7 +27,6 @@
 }
 
 .tableBorder .rightBorder {
-	position: absolute;
 	right: 0;
 	top: 50%;
 	transform: translateY(-50%);
@@ -41,7 +35,6 @@
 }
 
 .tableBorder .bottomBorder {
-	position: absolute;
 	bottom: 0;
 	left: 50%;
 	transform: translateX(-50%);
@@ -50,7 +43,6 @@
 }
 
 .tableBorder .leftBorder {
-	position: absolute;
 	left: 0;
 	top: 50%;
 	transform: translateY(-50%);
@@ -58,83 +50,25 @@
 	pointer-events: none;
 }
 
-/* Animated borders with pulsing glow effect - shrink on edges */
-.tableBorder .topBorder.animate, 
+.tableBorder .topBorder.animate,
 .tableBorder .bottomBorder.animate {
-	animation: 
-		animateWidth linear forwards,
-		pulseBorderHorizontal 1.5s ease-in-out infinite;
+	animation: animateWidth linear forwards;
 }
 
-.tableBorder .topBorder.shrinking, 
-.tableBorder .bottomBorder.shrinking {
-	-webkit-mask-image: linear-gradient(to left, 
-		rgba(0, 0, 0, var(--border-edge-opacity)) 0%, 
-		rgba(0, 0, 0, var(--border-center-opacity)) 20%, 
-		rgba(0, 0, 0, var(--border-center-opacity)) 80%, 
-		rgba(0, 0, 0, var(--border-edge-opacity)) 100%);
-	mask-image: linear-gradient(to left, 
-		rgba(0, 0, 0, var(--border-edge-opacity)) 0%, 
-		rgba(0, 0, 0, var(--border-center-opacity)) 20%, 
-		rgba(0, 0, 0, var(--border-center-opacity)) 80%, 
-		rgba(0, 0, 0, var(--border-edge-opacity)) 100%);
-}
-
-.tableBorder .leftBorder.animate, 
+.tableBorder .leftBorder.animate,
 .tableBorder .rightBorder.animate {
-	animation: 
-		animateHeight linear forwards,
-		pulseBorderVertical 1.5s ease-in-out infinite;
-}
-
-.tableBorder .leftBorder.shrinking, 
-.tableBorder .rightBorder.shrinking {
-	-webkit-mask-image: linear-gradient(to top, 
-		rgba(0, 0, 0, var(--border-edge-opacity)) 0%, 
-		rgba(0, 0, 0, var(--border-center-opacity)) 20%, 
-		rgba(0, 0, 0, var(--border-center-opacity)) 80%, 
-		rgba(0, 0, 0, var(--border-edge-opacity)) 100%);
-	mask-image: linear-gradient(to top, 
-		rgba(0, 0, 0, var(--border-edge-opacity)) 0%, 
-		rgba(0, 0, 0, var(--border-center-opacity)) 20%, 
-		rgba(0, 0, 0, var(--border-center-opacity)) 80%, 
-		rgba(0, 0, 0, var(--border-edge-opacity)) 100%);
+	animation: animateHeight linear forwards;
 }
 
 @keyframes animateWidth {
-	100% { 
+	100% {
 		width: 0;
 	}
 }
 
 @keyframes animateHeight {
-	100% { 
+	100% {
 		height: 0;
-	}
-}
-
-@keyframes pulseBorderHorizontal {
-	0%, 100% {
 		box-shadow: 
-			0 0 10px rgba(255, 255, 255, 0.3),
-			inset 0 0 5px rgba(255, 255, 255, 0.5);
-	}
-	50% {
-		box-shadow: 
-			0 0 20px rgba(255, 255, 255, 0.5),
-			inset 0 0 10px rgba(255, 255, 255, 0.7);
-	}
-}
-
-@keyframes pulseBorderVertical {
-	0%, 100% {
-		box-shadow: 
-			0 0 10px rgba(255, 255, 255, 0.3),
-			inset 0 0 5px rgba(255, 255, 255, 0.5);
-	}
-	50% {
-		box-shadow: 
-			0 0 20px rgba(255, 255, 255, 0.5),
-			inset 0 0 10px rgba(255, 255, 255, 0.7);
 	}
 }

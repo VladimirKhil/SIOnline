@@ -210,9 +210,7 @@
     overflow: hidden;
     z-index: 3;
     border: 1px solid rgba(255, 255, 255, 0.4);
-    box-shadow: 
-        0 0 15px rgba(255, 255, 255, 0.3),
-        inset 0 0 5px rgba(255, 255, 255, 0.5);
+    border-radius: 4px;
 }
 
 .commonProgress.captioned {
@@ -220,30 +218,9 @@
 }
 
 .commonProgress .progress-bar {
-    background: linear-gradient(90deg, 
-        rgba(255, 255, 255, 1.0) 0%, 
-        rgba(255, 255, 255, 1.0) 80%, 
-        rgba(255, 255, 255, 0.6) 100%);
-    background-size: 200% 100%;
+    background: #fff;
     height: 15px;
-    animation: progressShimmer 2s linear infinite;
-    -webkit-mask-image: linear-gradient(to right, 
-        rgba(0, 0, 0, 1) 0%, 
-        rgba(0, 0, 0, 1) 80%, 
-        rgba(0, 0, 0, 0) 100%);
-    mask-image: linear-gradient(to right, 
-        rgba(0, 0, 0, 1) 0%, 
-        rgba(0, 0, 0, 1) 80%, 
-        rgba(0, 0, 0, 0) 100%);
-}
-
-@keyframes progressShimmer {
-    0% {
-        background-position: 200% 0;
-    }
-    100% {
-        background-position: -200% 0;
-    }
+    box-shadow: none;
 }
 
 .answerValidationInTable {

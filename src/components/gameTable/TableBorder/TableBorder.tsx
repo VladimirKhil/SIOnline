@@ -1,7 +1,6 @@
 import * as React from 'react';
 import State from '../../../state/State';
 import { connect } from 'react-redux';
-import TimerInfo from '../../../model/TimerInfo';
 import { isRunning } from '../../../utils/TimerInfoHelpers';
 import { useAppSelector } from '../../../state/hooks';
 
@@ -21,7 +20,6 @@ export function TableBorder(props: TableBorderProps) {
 	const pressTimer = useAppSelector(state => state.room2.timers.press);
 	const isTimerRunning = props.canTry && isRunning(pressTimer);
 	const animatingClass = isTimerRunning ? ' animate' : '';
-	const shrinkingClass = (isTimerRunning || pressTimer.value > 0) ? ' shrinking' : '';
 	const animationDuration = `${(pressTimer.maximum - pressTimer.value) / 10}s`;
 
 	const initialSize = pressTimer.maximum > 0
@@ -30,28 +28,25 @@ export function TableBorder(props: TableBorderProps) {
 
 	const styleHorizontal: React.CSSProperties = {
 		animationDuration,
-		width: `${initialSize}%`
+		width: `${initialSize}%`,
+		backgroundColor: theme.table.textColor
 	};
 
 	const styleVertical: React.CSSProperties = {
 		animationDuration,
-		height: `${initialSize}%`
+		height: `${initialSize}%`,
+		backgroundColor: theme.table.textColor
 	};
-
-	if (theme.table.textColor) {
-		styleHorizontal.backgroundColor = theme.table.textColor;
-		styleVertical.backgroundColor = theme.table.textColor;
-	}
 
 	return (
 		<div className="tableBorder tableBorderCentered">
 			{props.children}
 			{props.canTry ? (
 				<>
-					<div className={`topBorder ${animatingClass} ${shrinkingClass}`} style={styleHorizontal} />
-					<div className={`rightBorder ${animatingClass} ${shrinkingClass}`} style={styleVertical} />
-					<div className={`bottomBorder ${animatingClass} ${shrinkingClass}`} style={styleHorizontal} />
-					<div className={`leftBorder ${animatingClass} ${shrinkingClass}`} style={styleVertical} />
+					<div className={`topBorder${animatingClass}`} style={styleHorizontal} />
+					<div className={`rightBorder${animatingClass}`} style={styleVertical} />
+					<div className={`bottomBorder${animatingClass}`} style={styleHorizontal} />
+					<div className={`leftBorder${animatingClass}`} style={styleVertical} />
 				</>
 			) : null}
 		</div>

@@ -131,7 +131,7 @@ export function GameTable(): JSX.Element {
 		? localization.validateAnswer
 		: getCaption(mode, tableCaption);
 
-		const themeProperties: React.CSSProperties = {};
+	const themeProperties: React.CSSProperties = {};
 	const reversedPropeties: React.CSSProperties = {};
 
 	if (tableTheme.textColor) {
