@@ -27,6 +27,7 @@
 
 .caption__left {
     padding: 0 5px 5px 5px;
+    width: 152px;
 }
 
 .answer__deviation {
@@ -37,7 +38,7 @@
 
 .caption__right {
     padding: 0;
-    width: 50px;
+    width: 152px;
     height: 45px;
     display: flex;
     align-items: center;
@@ -201,7 +202,7 @@
 .commonProgress {
     position: absolute;
     top: initial;
-    bottom: 6px;
+    bottom: 2px;
     left: 4px;
     right: 4px;
     width: calc(100% - 8px);
@@ -221,6 +222,14 @@
     background: #fff;
     height: 15px;
     box-shadow: none;
+    -webkit-mask-image: linear-gradient(to right,
+        rgba(0, 0, 0, 1) 0%,
+        rgba(0, 0, 0, 1) 80%,
+        rgba(0, 0, 0, 0.5) 100%);
+    mask-image: linear-gradient(to right,
+        rgba(0, 0, 0, 1) 0%,
+        rgba(0, 0, 0, 1) 80%,
+        rgba(0, 0, 0, 0.5) 100%);
 }
 
 .answerValidationInTable {

@@ -20,6 +20,7 @@ export function TableBorder(props: TableBorderProps) {
 	const pressTimer = useAppSelector(state => state.room2.timers.press);
 	const isTimerRunning = props.canTry && isRunning(pressTimer);
 	const animatingClass = isTimerRunning ? ' animate' : '';
+	const shrinkingClass = (isTimerRunning || pressTimer.value > 0) ? ' shrinking' : '';
 	const animationDuration = `${(pressTimer.maximum - pressTimer.value) / 10}s`;
 
 	const initialSize = pressTimer.maximum > 0
@@ -43,10 +44,10 @@ export function TableBorder(props: TableBorderProps) {
 			{props.children}
 			{props.canTry ? (
 				<>
-					<div className={`topBorder${animatingClass}`} style={styleHorizontal} />
-					<div className={`rightBorder${animatingClass}`} style={styleVertical} />
-					<div className={`bottomBorder${animatingClass}`} style={styleHorizontal} />
-					<div className={`leftBorder${animatingClass}`} style={styleVertical} />
+					<div className={`topBorder${animatingClass}${shrinkingClass}`} style={styleHorizontal} />
+					<div className={`rightBorder${animatingClass}${shrinkingClass}`} style={styleVertical} />
+					<div className={`bottomBorder${animatingClass}${shrinkingClass}`} style={styleHorizontal} />
+					<div className={`leftBorder${animatingClass}${shrinkingClass}`} style={styleVertical} />
 				</>
 			) : null}
 		</div>

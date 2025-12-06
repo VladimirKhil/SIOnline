@@ -19,6 +19,8 @@
 			display: flex;
 			flex-direction: row;
 			align-items: center;
+			flex-wrap: nowrap;
+			min-height: 45px;
 
 			button.standard {
 				display: flex !important;
@@ -28,6 +30,7 @@
 				overflow: hidden;
 				justify-content: center;
 				align-items: center;
+				flex-shrink: 0;
 
 				&.modes {
 					flex: 0 0 90px;
@@ -79,10 +82,14 @@
 			margin-left: 5px;
 			height: 45px;
 			padding: 0 20px;
-			display: flex;
-			justify-content: center;
-			align-items: center;
+			display: block;
+			line-height: 45px;
 			cursor: pointer;
+			flex: 1;
+			min-width: 0;
+			overflow: hidden;
+			white-space: nowrap;
+			text-overflow: ellipsis;
 
 			&:hover {
 				background-color: #777777;
@@ -147,10 +154,49 @@
 			}
 		}
 
+		.packageView__rounds-wrapper {
+			display: flex;
+			flex-direction: row;
+			align-items: center;
+			margin-top: 10px;
+			gap: 5px;
+
+			.packageView__rounds-nav {
+				width: 30px;
+				height: 50px;
+				background: rgb(56, 56, 56);
+				border: none;
+				color: white;
+				font-size: 24px;
+				cursor: pointer;
+				flex-shrink: 0;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+
+				&:hover {
+					background: #777777;
+				}
+
+				&:active {
+					background: #555555;
+				}
+			}
+		}
+
 		.packageView__rounds {
 			display: flex;
 			flex-direction: row;
-			margin-top: 10px;
+			overflow-x: auto;
+			scroll-behavior: smooth;
+			flex: 1;
+			min-width: 0;
+			-ms-overflow-style: none;
+			scrollbar-width: none;
+
+			&::-webkit-scrollbar {
+				display: none;
+			}
 
 			.packageView__round {
 				height: 50px;
@@ -161,6 +207,11 @@
 				padding: 0 20px;
 				font-size: 20px;
 				cursor: pointer;
+				flex-shrink: 0;
+				max-width: 200px;
+				overflow: hidden;
+				white-space: nowrap;
+				text-overflow: ellipsis;
 
 				&:hover {
 					background-color: #777777;
@@ -617,6 +668,87 @@
 
 h1 {
 	margin: 0;
+}
+
+@media screen and (max-width: 600px) {
+	.packageView {
+		padding: 5px;
+
+		.packageView__structure {
+			margin-right: 0;
+
+			.packageView__header {
+				button.standard {
+					height: 40px;
+
+					&.imageButton {
+						width: 40px;
+
+						svg, img {
+							width: 20px;
+							height: 20px;
+						}
+					}
+
+					&.modes {
+						flex: 0 0 70px;
+						font-size: 12px;
+					}
+				}
+			}
+
+			.packageView__package {
+				font-size: 16px;
+				padding: 0 10px;
+				height: 40px;
+			}
+
+			.packageView__rounds-wrapper {
+				.packageView__rounds-nav {
+					width: 25px;
+					height: 40px;
+					font-size: 20px;
+				}
+
+				.packageView__rounds {
+					.packageView__round {
+						height: 40px;
+						padding: 0 12px;
+						font-size: 14px;
+						max-width: 120px;
+					}
+				}
+			}
+
+			.packageView__theme {
+				height: auto;
+				min-height: 40px;
+
+				.packageView__theme__name {
+					flex: 120px 0 0;
+					font-size: 12px;
+					line-height: 34px;
+				}
+
+				.packageView__question {
+					flex: 40px 0 0;
+					min-width: 40px;
+
+					&.wide {
+						flex: 100px 0 0;
+					}
+
+					.packageView__question__price {
+						font-size: 12px;
+					}
+
+					.packageView__question__stats {
+						font-size: 8px;
+					}
+				}
+			}
+		}
+	}
 }
 
 @media screen and (min-width: 800px) {

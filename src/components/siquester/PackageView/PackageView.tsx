@@ -32,6 +32,31 @@ const PackageView: React.FC = () => {
 	const [roundIndex, setRoundIndex] = React.useState(0);
 	const [mode, setMode] = React.useState(Mode.Questions);
 	const [isEditMode, setIsEditMode] = React.useState(false);
+	const roundsContainerRef = React.useRef<HTMLDivElement>(null);
+	const [isScrollable, setIsScrollable] = React.useState(false);
+
+	const checkScrollable = React.useCallback(() => {
+		if (roundsContainerRef.current) {
+			const { scrollWidth, clientWidth } = roundsContainerRef.current;
+			setIsScrollable(scrollWidth > clientWidth);
+		}
+	}, []);
+
+	React.useEffect(() => {
+		checkScrollable();
+		window.addEventListener('resize', checkScrollable);
+		return () => window.removeEventListener('resize', checkScrollable);
+	}, [checkScrollable]);
+
+	const scrollRounds = (direction: 'left' | 'right') => {
+		if (roundsContainerRef.current) {
+			const scrollAmount = 150;
+			roundsContainerRef.current.scrollBy({
+				left: direction === 'left' ? -scrollAmount : scrollAmount,
+				behavior: 'smooth'
+			});
+		}
+	};
 
 	if (!zip || !pack) {
 		return <div>Loading...</div>;
@@ -138,15 +163,36 @@ const PackageView: React.FC = () => {
 
 	function getQuestionsView(packageData: Package): React.ReactNode {
 		return <>
-			<div className='packageView__rounds'>
-				{packageData.rounds.map((roundData, ri) => (
-					<div
-						key={ri}
-						className={`packageView__round ${ri === roundIndex ? 'selected' : ''}`}
-						onClick={() => { setRoundIndex(ri); appDispatch(setCurrentItem({ isPackageSelected: false })); }}>
-						{roundData.name}
-					</div>
-				))}
+			<div className='packageView__rounds-wrapper'>
+				{isScrollable && (
+					<button
+						type='button'
+						className='packageView__rounds-nav packageView__rounds-nav--left'
+						onClick={() => scrollRounds('left')}
+						aria-label='Scroll left'>
+						&#8249;
+					</button>
+				)}
+				<div className='packageView__rounds' ref={roundsContainerRef}>
+					{packageData.rounds.map((roundData, ri) => (
+						<div
+							key={ri}
+							className={`packageView__round ${ri === roundIndex ? 'selected' : ''}`}
+							onClick={() => { setRoundIndex(ri); appDispatch(setCurrentItem({ isPackageSelected: false })); }}
+							title={roundData.name}>
+							{roundData.name}
+						</div>
+					))}
+				</div>
+				{isScrollable && (
+					<button
+						type='button'
+						className='packageView__rounds-nav packageView__rounds-nav--right'
+						onClick={() => scrollRounds('right')}
+						aria-label='Scroll right'>
+						&#8250;
+					</button>
+				)}
 			</div>
 
 			{round ? <div className='packageView__table'>
@@ -278,7 +324,8 @@ const PackageView: React.FC = () => {
 						className={`packageView__package ${currentItem === pack ? 'selected' : ''}`}
 						onClick={() => {
 							appDispatch(setCurrentItem({ isPackageSelected: true }));
-						}}>
+						}}
+						title={pack.name}>
 						{pack.name}
 					</div>
 				</header>

@@ -1,13 +1,9 @@
-.volumeButton {
-	border-width: 0;
-	width: 45px;
-	height: 100%;
-	padding: 8px;
-	margin: 0;
+.volumeContainer {
 	display: flex;
 	align-items: center;
-	justify-content: center;
-	background: transparent;
+	height: 100%;
+	padding: 8px;
+	gap: 8px;
 }
 
 .volumeIcon {
@@ -18,14 +14,13 @@
 
 .volumeButtonControl {
 	cursor: grab;
+	width: 100px;
+	opacity: 0.25;
+	transition: opacity 0.2s;
 }
 
-.volumeFlyout {
-	width: 180px;
-	height: 50px;
-	display: flex;
-	align-items: center;
-	justify-content: center;
+.volumeButtonControl:hover {
+	opacity: 1;
 }
 
 .volumeButtonControl:active {
