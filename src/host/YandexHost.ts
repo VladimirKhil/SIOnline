@@ -142,7 +142,7 @@ export default class YandexHost implements IHost {
 		return false;
 	}
 
-	getPackageSource(): string | undefined {
+	getPackageSource(_packageId?: string): string | undefined {
 		return 'http://non-existent-package-source'; // External links are prohibited
 	}
 

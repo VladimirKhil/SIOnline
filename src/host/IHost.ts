@@ -8,6 +8,13 @@ export enum FullScreenMode {
 	No,
 }
 
+/** Callbacks for upload progress reporting */
+export interface UploadCallbacks {
+	onStartUpload: () => void;
+	onUploadProgress: (progress: number) => void;
+	onFinishUpload: () => void;
+}
+
 export default interface IHost {
 	isDesktop(): boolean;
 
@@ -53,7 +60,24 @@ export default interface IHost {
 
 	getRandomValue?: () => number;
 
-	getPackageSource(): string | undefined;
+	getPackageSource(packageId?: string): string | undefined;
 
 	getFallbackPackageSource(): string | undefined;
+
+	/**
+	 * Upload a package directly to the content service (bypassing web transfer).
+	 * This is optional and only supported by certain hosts (e.g., TauriHost with Steam).
+	 *
+	 * @param id Package ID (e.g., workshop item ID)
+	 * @param packageName Name for the package
+	 * @param contentServiceUri URI of the content service
+	 * @param callbacks Upload progress callbacks
+	 * @returns Package URI if successful, null if not supported or failed
+	 */
+	uploadPackageToContentService?(
+		id: string,
+		packageName: string,
+		contentServiceUri: string,
+		callbacks: UploadCallbacks
+	): Promise<string | null>;
 }

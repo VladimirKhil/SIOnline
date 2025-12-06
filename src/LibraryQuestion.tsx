@@ -4,6 +4,7 @@ import runCore from './LibraryCore';
 import React from 'react';
 import GameTable from './components/gameTable/GameTable/GameTable';
 import ShowmanReplic from './components/game/ShowmanReplic/ShowmanReplic';
+import { AudioContextProvider } from './contexts/AudioContextProvider';
 
 import './scss/style.scss';
 
@@ -19,10 +20,12 @@ export function run(elementId: string): void {
 
 	ReactDOM.render(
 		<Provider store={store}>
-			<div className='replicAndTable'>
-				<ShowmanReplic />
-				<GameTable />
-			</div>
+			<AudioContextProvider>
+				<div className='replicAndTable'>
+					<ShowmanReplic />
+					<GameTable />
+				</div>
+			</AudioContextProvider>
 		</Provider>,
 		host
 	);

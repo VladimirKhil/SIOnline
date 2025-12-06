@@ -377,6 +377,37 @@ async function getPackageInfoAsync(state: State, game: GameState, dataContext: D
 				throw new Error('Package id not found');
 			}
 
+			// Select content client for sharding
+			const hostContentClient = selectContentClientBySharding(dataContext.contentClients, game.package);
+
+			// Try direct upload from host (bypasses web transfer for efficiency)
+			if (dataContext.host.uploadPackageToContentService) {
+				const packageUri = await dataContext.host.uploadPackageToContentService(
+					game.package.id,
+					game.package.name || 'package.siq',
+					hostContentClient.options.serviceUri,
+					{
+						onStartUpload: () => dispatch(uploadPackageStarted()),
+						onUploadProgress: (progress: number) => dispatch(uploadPackageProgress(progress)),
+						onFinishUpload: () => dispatch(uploadPackageFinished()),
+					}
+				);
+
+				if (packageUri) {
+					return {
+						type: PackageType2.Content,
+						uri: packageUri,
+						contentServiceUri: hostContentClient.options.serviceUri,
+						secret: null,
+						source: dataContext.host.getPackageSource(game.package.id) ?? null,
+					};
+				}
+
+				// If direct upload returned null, fall back to the old method
+				console.warn('Direct upload failed, falling back to web-based upload');
+			}
+
+			// Fallback: download to web and upload from there
 			dispatch(downloadPackageStarted());
 
 			let packageData: [File, string] | null = null;
@@ -391,8 +422,7 @@ async function getPackageInfoAsync(state: State, game: GameState, dataContext: D
 				throw new Error('Package data not found');
 			}
 
-			const contentClient = selectContentClientBySharding(dataContext.contentClients, game.package);
-			const packageInfo2 = await uploadPackageAsync2(contentClient, packageData[0], packageData[1], dispatch);
+			const packageInfo2 = await uploadPackageAsync2(hostContentClient, packageData[0], packageData[1], dispatch);
 			return packageInfo2;
 		}
 

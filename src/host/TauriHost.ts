@@ -7,7 +7,7 @@ import { setClearUrls,
 	setLogSupported,
 	setSteamLinkSupported } from '../state/commonSlice';
 import { getCookie, setCookie } from '../utils/CookieHelpers';
-import IHost, { FullScreenMode } from './IHost';
+import IHost, { FullScreenMode, UploadCallbacks } from './IHost';
 import { Store } from 'redux';
 import SIStorageInfo from '../client/contracts/SIStorageInfo';
 import SteamWorkshopStorageClient from './SteamWorkshopStorageClient';
@@ -16,6 +16,21 @@ import localization from '../model/resources/localization';
 const ACCEPT_LICENSE_KEY = 'ACCEPT_LICENSE';
 
 const isSteam = false; // TODO: STEAM_CLIENT: true
+
+/** Payload for upload progress events from Rust */
+export interface UploadProgressPayload {
+	loaded: number;
+	total: number;
+	progress: number;
+}
+
+/** Payload for upload result events from Rust */
+export interface UploadResultPayload {
+	success: boolean;
+	uri: string | null;
+	error: string | null;
+	already_existed: boolean;
+}
 
 declare global {
 	interface Window {
@@ -45,6 +60,9 @@ interface TauriAPI {
 	};
 	process?: {
 		exit: (code: number) => void;
+	};
+	event?: {
+		listen: <T>(event: string, handler: (event: { payload: T }) => void) => Promise<() => void>;
 	};
 }
 
@@ -321,11 +339,119 @@ export default class TauriHost implements IHost {
 		}
 	}
 
-	getPackageSource(): string | undefined {
-		return isSteam ? 'https://steamcommunity.com' : 'https://www.sibrowser.ru'; // Using this source for statistics for now
+	getPackageSource(packageId?: string): string | undefined {
+		if (isSteam) {
+			return packageId
+				? `https://steamcommunity.com/sharedfiles/filedetails/?id=${packageId}`
+				: 'https://steamcommunity.com';
+		}
+
+		return 'https://www.sibrowser.ru'; // Using this source for statistics for now
 	}
 
 	getFallbackPackageSource(): string | undefined {
 		return isSteam ? 'https://www.sibrowser.ru' : undefined;
+	}
+
+	/**
+	 * Upload a workshop package directly to the content service from Rust.
+	 * This avoids transferring large files through the webview.
+	 *
+	 * @param id Workshop item ID
+	 * @param packageName Name for the package
+	 * @param contentServiceUri URI of the content service to upload to
+	 * @param callbacks Upload progress callbacks
+	 * @returns Package URI if successful, null otherwise
+	 */
+	async uploadPackageToContentService(
+		id: string,
+		packageName: string,
+		contentServiceUri: string,
+		callbacks: UploadCallbacks,
+	): Promise<string | null> {
+		const app = this.app;
+		if (!app || !app.core || !app.event) {
+			console.warn('Tauri app core or event module is not available, cannot upload package directly');
+			return null;
+		}
+
+		const itemId = parseInt(id, 10);
+
+		if (isNaN(itemId)) {
+			console.error('Invalid workshop item ID:', id);
+			return null;
+		}
+
+		console.log(`Starting direct upload of workshop item ${itemId} to ${contentServiceUri}`);
+
+		let progressUnlisten: (() => void) | null = null;
+		let resultUnlisten: (() => void) | null = null;
+
+		const cleanup = () => {
+			if (progressUnlisten) {
+				progressUnlisten();
+			}
+			if (resultUnlisten) {
+				resultUnlisten();
+			}
+		};
+
+		try {
+			// Set up event listeners first, before invoking the command
+			const resultPromise = new Promise<string | null>((resolve) => {
+				// We need to set up the listener asynchronously but use the promise synchronously
+				// So we'll use a nested approach
+
+				const setupListeners = async () => {
+					progressUnlisten = await app.event?.listen<UploadProgressPayload>(
+						'upload-progress',
+						(event) => {
+							if (event.payload.progress === 0 && event.payload.loaded === 0) {
+								callbacks.onStartUpload();
+							}
+							callbacks.onUploadProgress(event.payload.progress);
+						}
+					) ?? null;
+
+					resultUnlisten = await app.event?.listen<UploadResultPayload>(
+						'upload-result',
+						(event) => {
+							callbacks.onFinishUpload();
+
+							if (event.payload.success && event.payload.uri) {
+								console.log(`Package uploaded successfully: ${event.payload.uri}`);
+								cleanup();
+								resolve(event.payload.uri);
+							} else {
+								console.error('Package upload failed:', event.payload.error);
+								cleanup();
+								resolve(null);
+							}
+						}
+					) ?? null;
+
+					// Invoke the Rust command to start the upload
+					await app.core?.invoke('upload_workshop_package', {
+						itemId,
+						contentServiceUri,
+						packageName,
+					});
+				};
+
+				setupListeners().catch((error) => {
+					console.error('Failed to set up upload listeners:', error);
+					callbacks.onFinishUpload();
+					cleanup();
+					resolve(null);
+				});
+			});
+
+			return await resultPromise;
+		} catch (error) {
+			console.error('Failed to invoke upload_workshop_package:', error);
+			callbacks.onFinishUpload();
+			cleanup();
+			return null;
+		}
 	}
 }

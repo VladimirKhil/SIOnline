@@ -124,7 +124,7 @@ export default class BrowserHost implements IHost {
 		return true;
 	}
 
-	getPackageSource(): string | undefined {
+	getPackageSource(_packageId?: string): string | undefined {
 		return 'https://www.sibrowser.ru'; // Using this source for statistics for now
 	}
 

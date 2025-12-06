@@ -1,4 +1,7 @@
 #[cfg(feature = "steam_client")]
+mod content_service;
+
+#[cfg(feature = "steam_client")]
 use serde::{Deserialize, Serialize};
 #[cfg(feature = "steam_client")]
 use std::fs::File;
@@ -13,6 +16,8 @@ use steamworks::{AppIDs, AppId, Client, PublishedFileId, UGCType, UserList, User
 use tauri::Manager;
 #[cfg(feature = "steam_client")]
 use tauri_plugin_dialog::{DialogExt, MessageDialogButtons};
+#[cfg(feature = "steam_client")]
+use tauri::Emitter;
 
 #[cfg(feature = "steam_client")]
 #[derive(Serialize, Deserialize)]
@@ -201,6 +206,189 @@ fn get_workshop_file_url(
             } else {
                 Err("Failed to download Workshop item".to_string())
             }
+        }
+    }
+}
+
+#[cfg(feature = "steam_client")]
+/// Payload for upload progress events
+#[derive(Clone, Serialize)]
+struct UploadProgressPayload {
+    loaded: u64,
+    total: u64,
+    progress: f64,
+}
+
+#[cfg(feature = "steam_client")]
+/// Payload for upload result events
+#[derive(Clone, Serialize)]
+struct UploadResultPayload {
+    success: bool,
+    uri: Option<String>,
+    error: Option<String>,
+    already_existed: bool,
+}
+
+#[cfg(feature = "steam_client")]
+/// Get the file path for a workshop item, downloading if necessary
+/// This function is synchronous to avoid Send issues with Steam client
+fn get_workshop_file_path_sync(
+    client_state: &tauri::State<'_, Client>,
+    item_id: u64,
+) -> Result<String, String> {
+    let ugc = client_state.ugc();
+    let workshop_id = PublishedFileId(item_id);
+
+    // Check if item is already installed
+    if let Some(info) = ugc.item_install_info(workshop_id) {
+        let mut path = info.folder.clone();
+        path.push_str("/package.siq");
+
+        if std::path::Path::new(&path).exists() {
+            return Ok(path);
+        }
+    }
+
+    log::info!("Workshop item not installed, attempting to download: {}", item_id);
+
+    // Try to download the item
+    if !ugc.download_item(workshop_id, true) {
+        return Err("Failed to start download of Workshop item".to_string());
+    }
+
+    // Wait for download to complete (synchronously)
+    let mut retries = 0;
+    loop {
+        if retries >= 3000 {
+            // 300 seconds timeout
+            return Err("Timed out waiting for Workshop item to download".to_string());
+        }
+
+        if let Some(info) = ugc.item_install_info(workshop_id) {
+            let mut path = info.folder.clone();
+            path.push_str("/package.siq");
+
+            if std::path::Path::new(&path).exists() {
+                return Ok(path);
+            }
+        }
+
+        retries += 1;
+        std::thread::sleep(std::time::Duration::from_millis(100));
+    }
+}
+
+#[cfg(feature = "steam_client")]
+/// Upload a workshop package directly to the content service
+/// This avoids transferring the file through the webview
+#[tauri::command]
+async fn upload_workshop_package(
+    app_handle: tauri::AppHandle,
+    client_state: tauri::State<'_, Client>,
+    item_id: u64,
+    content_service_uri: String,
+    package_name: String,
+) -> Result<(), String> {
+    use content_service::{FileKey, SIContentServiceClient, read_file_with_hash};
+
+    log::info!(
+        "Starting upload of workshop item {} to content service: {}",
+        item_id,
+        content_service_uri
+    );
+
+    // Get the file path synchronously to avoid Send issues with Steam client
+    let package_path = get_workshop_file_path_sync(&client_state, item_id)
+        .map_err(|e| {
+            let _ = app_handle.emit("upload-result", UploadResultPayload {
+                success: false,
+                uri: None,
+                error: Some(e.clone()),
+                already_existed: false,
+            });
+            e
+        })?;
+
+    log::info!("Reading package file from: {}", package_path);
+
+    // Read file and calculate hash
+    let (file_data, hash) = match read_file_with_hash(std::path::Path::new(&package_path)).await {
+        Ok(result) => result,
+        Err(e) => {
+            let error_msg = format!("Failed to read package file: {}", e);
+            let _ = app_handle.emit("upload-result", UploadResultPayload {
+                success: false,
+                uri: None,
+                error: Some(error_msg.clone()),
+                already_existed: false,
+            });
+            return Err(error_msg);
+        }
+    };
+
+    let file_size = file_data.len() as u64;
+    log::info!("Package size: {} bytes, MD5 hash: {}", file_size, hash);
+
+    let package_key = FileKey {
+        name: package_name,
+        hash,
+    };
+
+    // Create content service client
+    let content_client = SIContentServiceClient::new(&content_service_uri);
+
+    // Clone app_handle for the progress callback
+    let app_handle_progress = app_handle.clone();
+
+    // Upload the package with progress reporting
+    let result = content_client
+        .upload_package_if_not_exists(&package_key, file_data, move |loaded, total| {
+            let progress = if total > 0 {
+                (loaded as f64) / (total as f64)
+            } else {
+                0.0
+            };
+
+            let _ = app_handle_progress.emit(
+                "upload-progress",
+                UploadProgressPayload {
+                    loaded,
+                    total,
+                    progress,
+                },
+            );
+        })
+        .await;
+
+    match result {
+        Ok(upload_result) => {
+            log::info!(
+                "Upload completed successfully: {} (already existed: {})",
+                upload_result.uri,
+                upload_result.already_existed
+            );
+
+            let _ = app_handle.emit("upload-result", UploadResultPayload {
+                success: true,
+                uri: Some(upload_result.uri),
+                error: None,
+                already_existed: upload_result.already_existed,
+            });
+
+            Ok(())
+        }
+        Err(e) => {
+            let error_msg = format!("Upload failed: {}", e);
+            log::error!("{}", error_msg);
+
+            let _ = app_handle.emit("upload-result", UploadResultPayload {
+                success: false,
+                uri: None,
+                error: Some(error_msg.clone()),
+                already_existed: false,
+            });
+
+            Err(error_msg)
         }
     }
 }
@@ -401,6 +589,7 @@ pub fn run() {
             open_url_in_steam_overlay,
             get_workshop_subscribed_items,
             get_workshop_file_url,
+            upload_workshop_package,
             append_text_file
         ]);
     }
