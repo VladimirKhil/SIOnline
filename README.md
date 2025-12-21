@@ -20,6 +20,10 @@ npm install
 npm run build-prod
 ```
 
+# Testing
+
+For detailed instructions on visual testing the application, see [TESTING.md](./TESTING.md).
+
 # Desktop build
 
 src/host/TauriHost.ts:
