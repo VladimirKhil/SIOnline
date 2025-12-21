@@ -261,3 +261,4 @@ __pycache__/
 *.pyc
 /dist
 /tauri/dist
+test-screenshots/

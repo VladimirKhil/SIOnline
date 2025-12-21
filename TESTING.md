@@ -168,6 +168,43 @@ During gameplay, verify:
 
 ## Troubleshooting
 
+### Automated Testing with Playwright
+
+For automated visual testing with CORS bypass, you can use Playwright with disabled web security:
+
+```javascript
+const { chromium } = require('playwright');
+
+const browser = await chromium.launch({
+    args: [
+        '--disable-web-security',
+        '--disable-features=IsolateOrigins,site-per-process'
+    ]
+});
+```
+
+A sample automated test script (`visual-test.js`) is included in the repository. To run it:
+
+1. Install Playwright:
+   ```bash
+   npm install --save-dev playwright
+   npx playwright install chromium
+   ```
+
+2. Start the development server:
+   ```bash
+   npm start
+   ```
+
+3. Run the test (in another terminal):
+   ```bash
+   node visual-test.js
+   ```
+
+The script will automatically navigate through the application and capture screenshots to `test-screenshots/` directory.
+
+## Troubleshooting
+
 ### Development Server Issues
 
 **Problem**: `npm start` fails
