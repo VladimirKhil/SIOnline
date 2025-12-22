@@ -170,7 +170,16 @@ During gameplay, verify:
 
 ### Automated Testing with Playwright
 
-For automated visual testing with CORS bypass, you can use Playwright with disabled web security:
+For automated visual testing with CORS bypass, you can use Playwright with disabled web security.
+
+**Note:** The automated test uses **Playwright's Chromium browser** (not your system Chrome/Edge), which is automatically downloaded when you run `npx playwright install chromium`. This ensures consistent testing across different environments.
+
+The test script (`visual-test.js`) launches Playwright's Chromium with these flags:
+- `--disable-web-security` - Bypasses CORS restrictions
+- `--disable-features=IsolateOrigins,site-per-process` - Disables site isolation
+- `--disable-site-isolation-trials` - Additional isolation bypass
+
+Example usage in code:
 
 ```javascript
 const { chromium } = require('playwright');
@@ -183,9 +192,9 @@ const browser = await chromium.launch({
 });
 ```
 
-A sample automated test script (`visual-test.js`) is included in the repository. To run it:
+A complete automated test script (`visual-test.js`) is included in the repository. To run it:
 
-1. Install Playwright:
+1. Install Playwright and its Chromium browser:
    ```bash
    npm install --save-dev playwright
    npx playwright install chromium
@@ -201,7 +210,23 @@ A sample automated test script (`visual-test.js`) is included in the repository.
    node visual-test.js
    ```
 
-The script will automatically navigate through the application and capture screenshots to `test-screenshots/` directory.
+The script will automatically:
+- Navigate through the application workflow
+- Enter a test username
+- Sign in to the application
+- Navigate to online games (if available)
+- Create a game with bots (if available)
+- Start and capture gameplay
+- Save screenshots to `test-screenshots/` directory
+
+**Testing Stages Captured:**
+- Initial application load
+- Name entry screen
+- After sign-in / main menu
+- Online games lobby
+- Game creation screen
+- Bot player configuration
+- Game started / gameplay
 
 ## Troubleshooting
 

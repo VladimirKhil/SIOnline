@@ -77,24 +77,104 @@ async function visualTest() {
                 console.log('✓ Screenshot: 4-license-accepted.png');
             }
             
-            console.log('6. Looking for online games section...');
-            await sleep(2000);
+            console.log('6. Looking for main menu...');
+            await sleep(3000);
+            
+            // Get page content to understand structure
+            const pageContent = await page.textContent('body').catch(() => '');
+            console.log('Page contains:', pageContent.substring(0, 200));
+            
             await page.screenshot({ path: path.join(screenshotDir, '5-main-menu.png'), fullPage: true });
             console.log('✓ Screenshot: 5-main-menu.png');
             
-            // Try to find and click online games
-            const onlineGames = await page.locator('text=Online, text=Онлайн, button:has-text("Online"), button:has-text("Онлайн")').first().isVisible({ timeout: 5000 }).catch(() => false);
-            if (onlineGames) {
-                console.log('7. Navigating to online games...');
-                await page.locator('text=Online, text=Онлайн, button:has-text("Online"), button:has-text("Онлайн")').first().click();
-                await sleep(3000);
-                await page.screenshot({ path: path.join(screenshotDir, '6-online-games.png'), fullPage: true });
-                console.log('✓ Screenshot: 6-online-games.png');
+            // Try to find and click online games or lobby button with multiple selectors
+            console.log('7. Looking for online games / lobby...');
+            
+            // Try multiple approaches to find navigation
+            let clicked = false;
+            
+            // Approach 1: Look for specific text
+            const textOptions = ['Online', 'ONLINE', 'Онлайн', 'ОНЛАЙН', 'Lobby', 'LOBBY', 'Лобби', 'ЛОББИ'];
+            for (const text of textOptions) {
+                if (clicked) break;
+                const element = page.locator(`text="${text}"`).first();
+                if (await element.isVisible({ timeout: 1000 }).catch(() => false)) {
+                    console.log(`8. Found and clicking: ${text}`);
+                    await element.click();
+                    clicked = true;
+                    break;
+                }
+            }
+            
+            // Approach 2: Look for clickable elements with online/lobby text
+            if (!clicked) {
+                const buttons = await page.locator('button, a, div[role="button"], [class*="button"]').all();
+                for (const button of buttons) {
+                    const text = await button.textContent().catch(() => '');
+                    if (/online|онлайн|lobby|лобби/i.test(text)) {
+                        console.log(`8. Found button with text: ${text.substring(0, 50)}`);
+                        await button.click();
+                        clicked = true;
+                        break;
+                    }
+                }
+            }
+            
+            if (clicked) {
+                await sleep(4000);
+                await page.screenshot({ path: path.join(screenshotDir, '6-online-lobby.png'), fullPage: true });
+                console.log('✓ Screenshot: 6-online-lobby.png');
                 
-                console.log('8. Looking for create game / bot game options...');
+                // Look for games list or create game button
+                console.log('9. Looking for games or create button...');
                 await sleep(2000);
-                await page.screenshot({ path: path.join(screenshotDir, '7-game-lobby.png'), fullPage: true });
-                console.log('✓ Screenshot: 7-game-lobby.png');
+                
+                // Try to find create/new game or any available game
+                const createTexts = ['Create', 'New', 'Создать', 'Новая'];
+                let gameStarted = false;
+                
+                for (const text of createTexts) {
+                    if (gameStarted) break;
+                    const createBtn = page.locator(`text="${text}"`).first();
+                    if (await createBtn.isVisible({ timeout: 1000 }).catch(() => false)) {
+                        console.log(`10. Clicking: ${text}`);
+                        await createBtn.click();
+                        await sleep(3000);
+                        await page.screenshot({ path: path.join(screenshotDir, '7-create-game.png'), fullPage: true });
+                        console.log('✓ Screenshot: 7-create-game.png');
+                        gameStarted = true;
+                        break;
+                    }
+                }
+                
+                // If in game setup, look for start button
+                if (gameStarted) {
+                    console.log('11. Looking for start/begin button...');
+                    await sleep(2000);
+                    
+                    const startTexts = ['Start', 'Begin', 'Play', 'Начать', 'Играть'];
+                    for (const text of startTexts) {
+                        const startBtn = page.locator(`button:has-text("${text}")`).first();
+                        if (await startBtn.isVisible({ timeout: 1000 }).catch(() => false)) {
+                            console.log(`12. Starting game with: ${text}`);
+                            await startBtn.click();
+                            await sleep(5000);
+                            await page.screenshot({ path: path.join(screenshotDir, '8-game-started.png'), fullPage: true });
+                            console.log('✓ Screenshot: 8-game-started.png');
+                            
+                            // Capture gameplay after a few seconds
+                            await sleep(3000);
+                            await page.screenshot({ path: path.join(screenshotDir, '9-gameplay.png'), fullPage: true });
+                            console.log('✓ Screenshot: 9-gameplay.png');
+                            break;
+                        }
+                    }
+                }
+            } else {
+                console.log('⚠ Could not find online games navigation - capturing current state');
+                // Take additional screenshot to see what's available
+                await page.screenshot({ path: path.join(screenshotDir, '6-current-state.png'), fullPage: true });
+                console.log('✓ Screenshot: 6-current-state.png');
             }
         }
         
