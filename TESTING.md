@@ -219,6 +219,23 @@ The script will automatically:
 - Start and capture gameplay
 - Save screenshots to `test-screenshots/` directory
 
+**Extended Game Test:**
+
+For a more comprehensive end-to-end game test, you can use the `full-game-test.js` script:
+
+```bash
+node full-game-test.js
+```
+
+This script attempts to complete the entire game playing scenario:
+- Login and authentication
+- Navigation to game lobby
+- Creating or joining a game
+- Adding bot players
+- Starting the game
+- Capturing multiple gameplay stages
+- Interactive gameplay testing
+
 **Testing Stages Captured:**
 - Initial application load
 - Name entry screen
