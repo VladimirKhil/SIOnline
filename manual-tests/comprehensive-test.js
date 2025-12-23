@@ -100,21 +100,39 @@ async function comprehensiveGameTest() {
         
         await sleep(3000);
         
-        // Step 3.5: Check for and click OK/Accept button (license agreement, etc.)
+        // Step 3.5: Check for and accept license/agreement dialog
         console.log('\n[3.5] Checking for license/agreement dialog...');
         const okButton = page.locator('button:has-text("OK"), button:has-text("Accept"), button:has-text("Agree"), button:has-text("Принять")').first();
         if (await okButton.isVisible({ timeout: 2000 }).catch(() => false)) {
-            console.log('  Found OK/Accept button - waiting for it to be enabled...');
+            console.log('  Found OK/Accept button');
+            
+            // Look for checkbox that needs to be checked first
+            console.log('  Looking for agreement checkbox...');
+            const checkbox = page.locator('input[type="checkbox"]').first();
+            if (await checkbox.isVisible({ timeout: 2000 }).catch(() => false)) {
+                const isChecked = await checkbox.isChecked().catch(() => false);
+                if (!isChecked) {
+                    console.log('  Found unchecked checkbox - clicking to accept...');
+                    await checkbox.click();
+                    console.log('  ✓ Checkbox checked');
+                    await sleep(1000);
+                } else {
+                    console.log('  Checkbox already checked');
+                }
+            } else {
+                console.log('  No checkbox found - may need to scroll or wait');
+            }
+            
             try {
-                // Wait for button to become enabled (might be loading license text)
-                await page.waitForSelector('button:has-text("OK"):not([disabled]), button:has-text("Accept"):not([disabled])', { timeout: 15000 });
+                // Wait for button to become enabled after checkbox is checked
+                await page.waitForSelector('button:has-text("OK"):not([disabled]), button:has-text("Accept"):not([disabled])', { timeout: 5000 });
                 console.log('  Button is now enabled - clicking...');
                 await okButton.click();
                 console.log('  ✓ Clicked OK/Accept');
                 await sleep(3000);
                 await takeScreenshot(page, '03.5-after-accept.png', 'After accepting');
             } catch (e) {
-                console.log(`  ⚠ OK button remained disabled or took too long: ${e.message}`);
+                console.log(`  ⚠ OK button remained disabled: ${e.message}`);
                 await takeScreenshot(page, '03.5-button-disabled.png', 'Button still disabled');
             }
         } else {
