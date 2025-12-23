@@ -2,9 +2,9 @@ const { chromium } = require('playwright');
 const path = require('path');
 const fs = require('fs');
 
-const screenshotDir = path.join(__dirname, 'test-screenshots');
+const screenshotDir = path.join(__dirname, '..', 'test-screenshots');
 if (!fs.existsSync(screenshotDir)) {
-    fs.mkdirSync(screenshotDir);
+    fs.mkdirSync(screenshotDir, { recursive: true });
 }
 
 async function sleep(ms) {

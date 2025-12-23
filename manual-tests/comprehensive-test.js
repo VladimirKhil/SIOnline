@@ -2,9 +2,9 @@ const { chromium } = require('playwright');
 const path = require('path');
 const fs = require('fs');
 
-const screenshotDir = path.join(__dirname, 'test-screenshots');
+const screenshotDir = path.join(__dirname, '..', 'test-screenshots');
 if (!fs.existsSync(screenshotDir)) {
-    fs.mkdirSync(screenshotDir);
+    fs.mkdirSync(screenshotDir, { recursive: true });
 }
 
 async function sleep(ms) {
@@ -12,8 +12,11 @@ async function sleep(ms) {
 }
 
 async function takeScreenshot(page, name, description) {
-    await page.screenshot({ path: path.join(screenshotDir, name), fullPage: true });
-    console.log(`✓ Screenshot: ${name} - ${description}`);
+    // Sanitize filename to prevent path traversal
+    const safeName = path.basename(name);
+    const screenshotPath = path.join(screenshotDir, safeName);
+    await page.screenshot({ path: screenshotPath, fullPage: true });
+    console.log(`✓ Screenshot: ${safeName} - ${description}`);
 }
 
 async function comprehensiveGameTest() {
