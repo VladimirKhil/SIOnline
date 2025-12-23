@@ -192,7 +192,9 @@ const browser = await chromium.launch({
 });
 ```
 
-A complete automated test script (`visual-test.js`) is included in the repository. To run it:
+**Manual test scripts are located in the `manual-tests/` directory** and should be run manually, not as part of automated CI/CD pipelines.
+
+Complete automated test scripts are included in the repository. To run them:
 
 1. Install Playwright and its Chromium browser:
    ```bash
@@ -205,9 +207,9 @@ A complete automated test script (`visual-test.js`) is included in the repositor
    npm start
    ```
 
-3. Run the test (in another terminal):
+3. Run a test (in another terminal):
    ```bash
-   node visual-test.js
+   node manual-tests/visual-test.js
    ```
 
 The script will automatically:
@@ -224,7 +226,7 @@ The script will automatically:
 For a more comprehensive end-to-end game test, you can use the `full-game-test.js` script:
 
 ```bash
-node full-game-test.js
+node manual-tests/full-game-test.js
 ```
 
 This script attempts to complete the entire game playing scenario:
@@ -241,7 +243,7 @@ This script attempts to complete the entire game playing scenario:
 For the most complete validation including extended gameplay capture, use `comprehensive-test.js`:
 
 ```bash
-node comprehensive-test.js
+node manual-tests/comprehensive-test.js
 ```
 
 This enhanced test includes:
