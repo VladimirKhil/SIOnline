@@ -236,6 +236,35 @@ This script attempts to complete the entire game playing scenario:
 - Capturing multiple gameplay stages
 - Interactive gameplay testing
 
+**Comprehensive Visual Test:**
+
+For the most complete validation including extended gameplay capture, use `comprehensive-test.js`:
+
+```bash
+node comprehensive-test.js
+```
+
+This enhanced test includes:
+- Extended wait times for server connections (up to 30 seconds)
+- Aggressive element detection with multiple selector strategies
+- Game creation workflow validation
+- Bot player addition (attempts to add multiple bots)
+- Game start and extended gameplay capture (12 rounds over 60 seconds)
+- Interactive element clicking during gameplay
+- Comprehensive screenshot capture at each stage
+- Detailed console logging for debugging
+
+The test will create screenshots showing:
+- Application load
+- Name entry
+- Sign-in process
+- Game lobby/menu
+- Game setup screen
+- Bot configuration
+- Game started state
+- Multiple gameplay rounds (12+ screenshots)
+- Final game state
+
 **Testing Stages Captured:**
 - Initial application load
 - Name entry screen
@@ -279,6 +308,13 @@ This script attempts to complete the entire game playing scenario:
 - **Solution**: Check your internet connection
 - **Solution**: Verify that the game server is accessible
 - **Solution**: Check browser console for connection errors
+
+**Problem**: Automated test stuck on login screen
+- **Solution**: The application requires WebSocket connection to game server
+- **Solution**: Verify firewall allows WebSocket connections to vladimirkhil.com
+- **Solution**: Check if server discovery returns valid WebSocket URI
+- **Solution**: The test validates HTTP API connectivity but full gameplay requires WebSocket support
+- **Solution**: Use network tab in browser DevTools to monitor WebSocket connection attempts
 
 **Problem**: Bots don't appear or work
 - **Solution**: Check browser console for JavaScript errors
