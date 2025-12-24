@@ -147,11 +147,37 @@ class TestHost implements IHost {
 }
 
 /**
+ * Test configuration constants
+ */
+const TEST_CONFIG = {
+	// Time to wait between decision making to simulate thinking time
+	DECISION_DELAY_MS: 500,
+	
+	// Default server URL (can be overridden with environment variable)
+	DEFAULT_SERVER_URL: process.env.TEST_SERVER_URL || 'https://vladimirkhil.com/si/api',
+	
+	// Minimum questions to play before test completes
+	MIN_QUESTIONS_TO_PLAY: 3,
+	
+	// Wait timeout for various conditions
+	DEFAULT_WAIT_TIMEOUT_MS: 10000,
+	GAME_START_TIMEOUT_MS: 15000,
+	QUESTION_PLAY_TIMEOUT_MS: 30000,
+};
+
+/**
  * Helper to wait for a condition to be true
+ * 
+ * @param condition Function that returns true when condition is met
+ * @param timeout Maximum time to wait in milliseconds
+ * @param checkInterval How often to check the condition in milliseconds
+ * @returns Promise that resolves when condition is true or rejects on timeout
+ * 
+ * Note: This could be extracted to a shared test utilities module for reuse
  */
 function waitFor(
 	condition: () => boolean,
-	timeout: number = 10000,
+	timeout: number = TEST_CONFIG.DEFAULT_WAIT_TIMEOUT_MS,
 	checkInterval: number = 100
 ): Promise<void> {
 	return new Promise((resolve, reject) => {
@@ -285,13 +311,13 @@ describe('Game Integration Test', () => {
 		let dataContext: DataContext;
 		let gameStarted = false;
 		let questionsPlayed = 0;
-		const minQuestionsToPlay = 3;
 
 		beforeAll(async () => {
 			// This test requires a live server connection
 			// For CI/CD, set SKIP_INTEGRATION_TEST=1 to skip this test
 			console.log('Starting game integration test...');
 			console.log('Note: This test requires a live game server connection');
+			console.log(`Server URL: ${TEST_CONFIG.DEFAULT_SERVER_URL}`);
 		});
 
 		it('should complete a full game flow', async () => {
@@ -300,16 +326,16 @@ describe('Game Integration Test', () => {
 			let oldState: State;
 
 			try {
-				// Create game server client - for testing without live server,
-				// you would mock this
-				const gameClient = new GameServerClient('https://vladimirkhil.com/si/api');
+				// Create game server client
+				// Server URL can be configured via TEST_SERVER_URL environment variable
+				const gameClient = new GameServerClient(TEST_CONFIG.DEFAULT_SERVER_URL);
 
 				dataContext = {
 					config: {
 						siStatisticsServiceUri: '',
 						appRegistryServiceUri: '',
 					},
-					serverUri: 'https://vladimirkhil.com/si/api',
+					serverUri: TEST_CONFIG.DEFAULT_SERVER_URL,
 					gameClient,
 					game: new GameClient(new SIHostClient()),
 					contentUris: null,
@@ -339,7 +365,7 @@ describe('Game Integration Test', () => {
 						events.push(`Decision: ${DecisionType[state.room2.stage.decisionType]}`);
 						
 						// Add small delay to simulate thinking time
-						await new Promise(resolve => setTimeout(resolve, 500));
+						await new Promise(resolve => setTimeout(resolve, TEST_CONFIG.DECISION_DELAY_MS));
 						handleDecision(state, store);
 					}
 
@@ -399,7 +425,7 @@ describe('Game Integration Test', () => {
 				events.push('Created game');
 
 				// Wait for game creation and server response
-				await waitFor(() => store.getState().ui.navigation.path === Path.Room, 10000);
+				await waitFor(() => store.getState().ui.navigation.path === Path.Room, TEST_CONFIG.DEFAULT_WAIT_TIMEOUT_MS);
 				events.push('Entered game room');
 
 				// Step 6: Add bot players
@@ -408,11 +434,11 @@ describe('Game Integration Test', () => {
 				events.push('Added bot player');
 
 				// Wait for game to start
-				await waitFor(() => gameStarted, 15000);
+				await waitFor(() => gameStarted, TEST_CONFIG.GAME_START_TIMEOUT_MS);
 
 				// Step 7: Play through questions
 				// Wait for questions to be played (the subscriber will handle the gameplay)
-				await waitFor(() => questionsPlayed >= minQuestionsToPlay, 30000);
+				await waitFor(() => questionsPlayed >= TEST_CONFIG.MIN_QUESTIONS_TO_PLAY, TEST_CONFIG.QUESTION_PLAY_TIMEOUT_MS);
 
 				// Verify the game flow
 				expect(events).toContain('Initialized');
@@ -421,7 +447,7 @@ describe('Game Integration Test', () => {
 				expect(events).toContain('Configured game');
 				expect(events).toContain('Created game');
 				expect(events).toContain('Game started');
-				expect(questionsPlayed).toBeGreaterThanOrEqual(minQuestionsToPlay);
+				expect(questionsPlayed).toBeGreaterThanOrEqual(TEST_CONFIG.MIN_QUESTIONS_TO_PLAY);
 
 				console.log('\n=== Game Integration Test Results ===');
 				console.log(`Questions played: ${questionsPlayed}`);

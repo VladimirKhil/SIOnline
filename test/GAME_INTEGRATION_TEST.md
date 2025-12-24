@@ -104,6 +104,10 @@ TEST_TIMEOUT=90000 npm run test GameIntegration.test.ts
   - Increase for slower connections
   - Example: `TEST_TIMEOUT=120000 npm test GameIntegration.test.ts`
 
+- **TEST_SERVER_URL**: Game server URL (default: `https://vladimirkhil.com/si/api`)
+  - Use to test against different environments
+  - Example: `TEST_SERVER_URL=https://staging.example.com/api npm test GameIntegration.test.ts`
+
 ## Requirements
 
 ### For Full Test Execution
