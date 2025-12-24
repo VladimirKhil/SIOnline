@@ -9,7 +9,8 @@ This guide provides step-by-step instructions for manually testing the SIOnline 
 3. [Starting the Development Server](#starting-the-development-server)
 4. [Launching Browser with Disabled Web Security](#launching-browser-with-disabled-web-security)
 5. [Testing Procedure](#testing-procedure)
-6. [Troubleshooting](#troubleshooting)
+6. [Automated Integration Testing](#automated-integration-testing)
+7. [Troubleshooting](#troubleshooting)
 
 ## Prerequisites
 
@@ -323,9 +324,89 @@ The test will create screenshots showing:
 - **Solution**: Try creating a new game
 - **Solution**: Verify bot configuration in game settings
 
+## Automated Integration Testing
+
+In addition to manual UI testing, SIOnline includes an automated integration test that validates the complete game flow without requiring a UI. This test is ideal for regression testing and CI/CD pipelines.
+
+### Game Integration Test
+
+**Location**: `test/GameIntegration.test.ts`  
+**Documentation**: [test/GAME_INTEGRATION_TEST.md](test/GAME_INTEGRATION_TEST.md)
+
+This comprehensive test validates:
+- Server connection and authentication
+- Game creation and configuration
+- Bot player management
+- Game start and progression
+- Multiple question gameplay
+- State transitions and event handling
+
+### Running the Integration Test
+
+**With live server connection:**
+```bash
+npm run test GameIntegration.test.ts
+```
+
+**Skip in CI/CD environments:**
+```bash
+SKIP_INTEGRATION_TEST=1 npm test
+```
+
+**Adjust timeout for slower connections:**
+```bash
+TEST_TIMEOUT=120000 npm run test GameIntegration.test.ts
+```
+
+### Test Features
+
+The integration test:
+- ✅ Runs without UI (no Playwright/browser required)
+- ✅ Connects to live game server
+- ✅ Creates and configures game automatically
+- ✅ Adds bot players
+- ✅ Plays through minimum 3 questions
+- ✅ Validates all game state transitions
+- ✅ Provides detailed event logging
+- ✅ Can be skipped for offline testing
+- ✅ Typically completes in 30-60 seconds
+
+### When to Use Integration Test vs Manual Testing
+
+| Scenario | Use Integration Test | Use Manual UI Testing |
+|----------|---------------------|----------------------|
+| Regression testing | ✅ Yes | Optional |
+| CI/CD pipeline | ✅ Yes (with skip flag) | ❌ No |
+| Visual validation | ❌ No | ✅ Yes |
+| Game logic verification | ✅ Yes | ✅ Yes |
+| UI/UX verification | ❌ No | ✅ Yes |
+| Quick validation | ✅ Yes | ⚠️ Slower |
+| Offline development | ⚠️ Can skip | ✅ Yes (with dev server) |
+
+### Comparison with Runner.ts
+
+The integration test is based on `src/Runner.ts`, which is a standalone simulation script. Key differences:
+
+| Feature | GameIntegration.test.ts | Runner.ts |
+|---------|------------------------|-----------|
+| Jest test integration | ✅ Yes | ❌ No |
+| Can skip for CI/CD | ✅ Yes | ❌ No |
+| Validates assertions | ✅ Yes | ⚠️ Manual |
+| OpenAI integration | ❌ No | ✅ Yes |
+| Event tracking | ✅ Yes | ✅ Yes |
+| Purpose | Automated testing | Manual simulation |
+
+To run the standalone Runner.ts simulation:
+```bash
+npm run test-scenario
+```
+
+For detailed information about the integration test, see [test/GAME_INTEGRATION_TEST.md](test/GAME_INTEGRATION_TEST.md).
+
 ## Additional Resources
 
 - **Main Documentation**: [README.md](./README.md)
+- **Integration Test Details**: [test/GAME_INTEGRATION_TEST.md](test/GAME_INTEGRATION_TEST.md)
 - **Project Structure**: [AGENTS.md](./AGENTS.md)
 - **Build Instructions**: See README.md for production builds
 - **Issue Reporting**: https://github.com/VladimirKhil/SIOnline/issues

@@ -22,7 +22,29 @@ npm run build-prod
 
 # Testing
 
-For detailed instructions on visual testing the application, see [TESTING.md](./TESTING.md).
+SIOnline includes multiple testing approaches:
+
+## Unit Tests
+Run Jest unit tests for components and logic:
+```bash
+npm test
+```
+
+## Integration Test
+Comprehensive game flow test without UI (connects to live server):
+```bash
+npm run test GameIntegration.test.ts
+```
+
+Skip integration test in CI/CD:
+```bash
+SKIP_INTEGRATION_TEST=1 npm test
+```
+
+See [test/GAME_INTEGRATION_TEST.md](test/GAME_INTEGRATION_TEST.md) for details.
+
+## Manual Testing
+For detailed instructions on visual testing with UI, see [TESTING.md](./TESTING.md).
 
 # Desktop build
 
