@@ -99,26 +99,28 @@ Enhanced Testing section:
 
 ## How to Use the Test
 
-### Run with Live Server
+### Run During Manual Development
 ```bash
-npm run test GameIntegration.test.ts
+RUN_INTEGRATION_TEST=1 npm run test GameIntegration.test.ts
 ```
 
-### Skip in CI/CD
+### Run All Tests (Integration Test Skipped by Default)
 ```bash
-SKIP_INTEGRATION_TEST=1 npm test
+npm test
 ```
+
+The integration test is **disabled by default** and will be skipped in CI/CD pipelines.
 
 ### Adjust Timeout
 ```bash
-TEST_TIMEOUT=120000 npm run test GameIntegration.test.ts
+RUN_INTEGRATION_TEST=1 TEST_TIMEOUT=120000 npm run test GameIntegration.test.ts
 ```
 
 ### View Documentation Mode
 ```bash
-SKIP_INTEGRATION_TEST=1 npm run test GameIntegration.test.ts
+npm run test GameIntegration.test.ts
 ```
-This runs just the documentation test that outputs the test scenario.
+This runs just the documentation test (always enabled) that outputs the test scenario.
 
 ## Test Output Example
 

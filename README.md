@@ -31,14 +31,11 @@ npm test
 ```
 
 ## Integration Test
-Comprehensive game flow test without UI (connects to live server):
-```bash
-npm run test GameIntegration.test.ts
-```
+Comprehensive game flow test without UI (connects to live server).
 
-Skip integration test in CI/CD:
+**Disabled by default** - only runs when explicitly enabled during manual development:
 ```bash
-SKIP_INTEGRATION_TEST=1 npm test
+RUN_INTEGRATION_TEST=1 npm run test GameIntegration.test.ts
 ```
 
 See [test/GAME_INTEGRATION_TEST.md](test/GAME_INTEGRATION_TEST.md) for details.

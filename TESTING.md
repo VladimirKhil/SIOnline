@@ -343,19 +343,21 @@ This comprehensive test validates:
 
 ### Running the Integration Test
 
-**With live server connection:**
+**Enable and run during manual development:**
 ```bash
-npm run test GameIntegration.test.ts
+RUN_INTEGRATION_TEST=1 npm run test GameIntegration.test.ts
 ```
 
-**Skip in CI/CD environments:**
+**Run all tests (integration test skipped by default):**
 ```bash
-SKIP_INTEGRATION_TEST=1 npm test
+npm test
 ```
+
+The integration test is **disabled by default** and will not run in CI/CD pipelines unless explicitly enabled.
 
 **Adjust timeout for slower connections:**
 ```bash
-TEST_TIMEOUT=120000 npm run test GameIntegration.test.ts
+RUN_INTEGRATION_TEST=1 TEST_TIMEOUT=120000 npm run test GameIntegration.test.ts
 ```
 
 ### Test Features
@@ -368,7 +370,7 @@ The integration test:
 - ✅ Plays through minimum 3 questions
 - ✅ Validates all game state transitions
 - ✅ Provides detailed event logging
-- ✅ Can be skipped for offline testing
+- ✅ Disabled by default (must set `RUN_INTEGRATION_TEST=1` to enable)
 - ✅ Typically completes in 30-60 seconds
 
 ### When to Use Integration Test vs Manual Testing

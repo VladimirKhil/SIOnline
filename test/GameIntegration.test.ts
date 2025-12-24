@@ -11,9 +11,18 @@
  * Purpose: Validate that game logic, server communication, and state management
  * work correctly together. This test serves as a regression test for future changes.
  * 
+ * **IMPORTANT**: This test is DISABLED BY DEFAULT and only runs when explicitly enabled.
+ * Set RUN_INTEGRATION_TEST=1 environment variable to run this test during manual development.
+ * 
+ * The test is skipped by default to prevent failures in CI/CD pipelines where live server
+ * access may not be available or desired.
+ * 
+ * Usage:
+ * - Run during development: RUN_INTEGRATION_TEST=1 npm test GameIntegration.test.ts
+ * - CI/CD (skipped by default): npm test
+ * 
  * Note: This test requires a live game server connection and may take 30+ seconds to complete.
  * Set TEST_TIMEOUT environment variable to control timeout (default: 60000ms).
- * Set SKIP_INTEGRATION_TEST=1 to skip this test in CI/CD environments.
  */
 
 import { Action, AnyAction, applyMiddleware, createStore } from 'redux';
@@ -301,12 +310,13 @@ function handleDecision(state: State, store: any): boolean {
 }
 
 describe('Game Integration Test', () => {
-	// Skip this test if SKIP_INTEGRATION_TEST environment variable is set
-	const shouldSkip = process.env.SKIP_INTEGRATION_TEST === '1';
+	// Skip this test by default - only run when RUN_INTEGRATION_TEST=1 is set
+	// This prevents the test from running in CI/CD pipelines where live server access may not be available
+	const shouldRun = process.env.RUN_INTEGRATION_TEST === '1';
 	const testTimeout = parseInt(process.env.TEST_TIMEOUT || '60000', 10);
 
-	// Mark test as skipped if environment variable is set
-	(shouldSkip ? describe.skip : describe)('Full Game Flow', () => {
+	// Mark test as skipped unless explicitly enabled
+	(shouldRun ? describe : describe.skip)('Full Game Flow', () => {
 		let store: any;
 		let dataContext: DataContext;
 		let gameStarted = false;
@@ -314,7 +324,8 @@ describe('Game Integration Test', () => {
 
 		beforeAll(async () => {
 			// This test requires a live server connection
-			// For CI/CD, set SKIP_INTEGRATION_TEST=1 to skip this test
+			// Test is DISABLED BY DEFAULT - set RUN_INTEGRATION_TEST=1 to enable
+			// This prevents failures in CI/CD pipelines where live server access may not be available
 			console.log('Starting game integration test...');
 			console.log('Note: This test requires a live game server connection');
 			console.log(`Server URL: ${TEST_CONFIG.DEFAULT_SERVER_URL}`);

@@ -74,39 +74,44 @@ The test validates:
 
 ## Running the Test
 
-### Run with Default Settings
+### Run Integration Test (Manual Development)
+
+The integration test is **skipped by default** and only runs when explicitly enabled:
 
 ```bash
-npm run test GameIntegration.test.ts
+RUN_INTEGRATION_TEST=1 npm run test GameIntegration.test.ts
 ```
 
-### Skip Integration Test (for CI/CD)
+### Run All Tests (Skips Integration Test)
 
 ```bash
-SKIP_INTEGRATION_TEST=1 npm run test
+npm test
 ```
+
+The integration test will be skipped automatically in CI/CD pipelines.
 
 ### Adjust Timeout
 
 ```bash
-TEST_TIMEOUT=90000 npm run test GameIntegration.test.ts
+RUN_INTEGRATION_TEST=1 TEST_TIMEOUT=90000 npm run test GameIntegration.test.ts
 ```
 
 ## Configuration
 
 ### Environment Variables
 
-- **SKIP_INTEGRATION_TEST**: Set to `1` to skip this test
-  - Use in CI/CD environments without live server access
-  - Example: `SKIP_INTEGRATION_TEST=1 npm test`
+- **RUN_INTEGRATION_TEST**: Set to `1` to enable this test (disabled by default)
+  - Required to run the integration test during manual development
+  - Test is skipped by default in CI/CD pipelines
+  - Example: `RUN_INTEGRATION_TEST=1 npm test GameIntegration.test.ts`
 
 - **TEST_TIMEOUT**: Timeout in milliseconds (default: 60000)
   - Increase for slower connections
-  - Example: `TEST_TIMEOUT=120000 npm test GameIntegration.test.ts`
+  - Example: `RUN_INTEGRATION_TEST=1 TEST_TIMEOUT=120000 npm test GameIntegration.test.ts`
 
 - **TEST_SERVER_URL**: Game server URL (default: `https://vladimirkhil.com/si/api`)
   - Use to test against different environments
-  - Example: `TEST_SERVER_URL=https://staging.example.com/api npm test GameIntegration.test.ts`
+  - Example: `RUN_INTEGRATION_TEST=1 TEST_SERVER_URL=https://staging.example.com/api npm test GameIntegration.test.ts`
 
 ## Requirements
 
@@ -116,12 +121,11 @@ TEST_TIMEOUT=90000 npm run test GameIntegration.test.ts
 2. **Network Connection**: Stable internet connection
 3. **Server Availability**: Game server must be operational
 4. **Sufficient Time**: Test may take 30-60 seconds to complete
+5. **Explicit Enable**: Set `RUN_INTEGRATION_TEST=1` to run the test
 
-### For Mocked Testing
+### For Skipped Testing
 
-To run without live server:
-1. Set `SKIP_INTEGRATION_TEST=1`
-2. Or modify test to use mocked server responses
+The test is **skipped by default** in all environments. This is intentional to prevent failures in CI/CD pipelines where live server access may not be available.
 
 ## Test Output
 
