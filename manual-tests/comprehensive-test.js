@@ -44,8 +44,19 @@ async function comprehensiveGameTest() {
     // Track network for debugging
     page.on('response', response => {
         const url = response.url();
-        if (url.includes('vladimirkhil.com') || url.includes('signalr')) {
-            console.log(`  NETWORK: ${response.status()} ${url.substring(0, 80)}`);
+        try {
+            const urlObj = new URL(url);
+            // Only log requests to the legitimate vladimirkhil.com domain
+            const isTrustedDomain = urlObj.hostname.endsWith('.vladimirkhil.com') || 
+                                   urlObj.hostname === 'vladimirkhil.com';
+            // Or localhost for dev server
+            const isLocalhost = urlObj.hostname === 'localhost' || urlObj.hostname === '127.0.0.1';
+            
+            if (isTrustedDomain || (isLocalhost && urlObj.pathname.startsWith('/signalr'))) {
+                console.log(`  NETWORK: ${response.status()} ${url.substring(0, 80)}`);
+            }
+        } catch (e) {
+            // Invalid URL, skip logging
         }
     });
     
