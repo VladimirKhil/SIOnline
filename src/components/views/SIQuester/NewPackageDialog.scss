@@ -55,6 +55,22 @@
 			width: 80px;
 		}
 
+		.inputWithError {
+			display: flex;
+			flex-direction: column;
+			gap: 4px;
+
+			input.error {
+				border-color: #ff4444;
+			}
+
+			.errorMessage {
+				color: #ff6666;
+				font-size: 12px;
+				margin-top: 2px;
+			}
+		}
+
 		&.newPackageDialogCheckbox {
 			flex-direction: row;
 			align-items: center;

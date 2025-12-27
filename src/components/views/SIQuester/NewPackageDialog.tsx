@@ -21,27 +21,57 @@ const NewPackageDialog: React.FC<NewPackageDialogProps> = ({ onOk, onCancel }) =
 	const [includeFinalRound, setIncludeFinalRound] = useState(defaultPackageOptions.includeFinalRound);
 	const [finalThemeCount, setFinalThemeCount] = useState(defaultPackageOptions.finalThemeCount);
 
+	// Validation error states
+	const [roundCountError, setRoundCountError] = useState<string>('');
+	const [themeCountError, setThemeCountError] = useState<string>('');
+	const [questionCountError, setQuestionCountError] = useState<string>('');
+	const [finalThemeCountError, setFinalThemeCountError] = useState<string>('');
+
+	const validateNumber = (value: number, min: number, max: number): string => {
+		if (isNaN(value) || value < min || value > max) {
+			return localization.invalidValueRange.replace('{0}', min.toString()).replace('{1}', max.toString());
+		}
+		return '';
+	};
+
 	const handleOk = () => {
-		onOk({
-			packageName,
-			authorName,
-			roundCount,
-			themeCount,
-			questionCount,
-			includeFinalRound,
-			finalThemeCount,
-		});
+		// Validate all fields before submitting
+		const roundError = validateNumber(roundCount, 1, 20);
+		const themeError = validateNumber(themeCount, 1, 20);
+		const questionError = validateNumber(questionCount, 1, 20);
+		const finalThemeError = includeFinalRound ? validateNumber(finalThemeCount, 1, 20) : '';
+
+		setRoundCountError(roundError);
+		setThemeCountError(themeError);
+		setQuestionCountError(questionError);
+		setFinalThemeCountError(finalThemeError);
+
+		// Only submit if all validations pass
+		if (!roundError && !themeError && !questionError && !finalThemeError) {
+			onOk({
+				packageName,
+				authorName,
+				roundCount,
+				themeCount,
+				questionCount,
+				includeFinalRound,
+				finalThemeCount,
+			});
+		}
 	};
 
 	const handleNumberChange = (
 		setter: React.Dispatch<React.SetStateAction<number>>,
+		errorSetter: React.Dispatch<React.SetStateAction<string>>,
 		min: number,
 		max: number
 	) => (e: React.ChangeEvent<HTMLInputElement>) => {
 		const value = parseInt(e.target.value, 10);
-		if (!isNaN(value) && value >= min && value <= max) {
-			setter(value);
-		}
+		setter(value);
+		
+		// Validate and set error message
+		const error = validateNumber(value, min, max);
+		errorSetter(error);
 	};
 
 	return (
@@ -72,38 +102,50 @@ const NewPackageDialog: React.FC<NewPackageDialogProps> = ({ onOk, onCancel }) =
 
 					<div className="newPackageDialogRow">
 						<label htmlFor="roundCount">{localization.roundCount}</label>
-						<input
-							id="roundCount"
-							type="number"
-							min={1}
-							max={20}
-							value={roundCount}
-							onChange={handleNumberChange(setRoundCount, 1, 20)}
-						/>
+						<div className="inputWithError">
+							<input
+								id="roundCount"
+								type="number"
+								min={1}
+								max={20}
+								value={roundCount}
+								onChange={handleNumberChange(setRoundCount, setRoundCountError, 1, 20)}
+								className={roundCountError ? 'error' : ''}
+							/>
+							{roundCountError && <span className="errorMessage">{roundCountError}</span>}
+						</div>
 					</div>
 
 					<div className="newPackageDialogRow">
 						<label htmlFor="themeCount">{localization.themeCount}</label>
-						<input
-							id="themeCount"
-							type="number"
-							min={1}
-							max={20}
-							value={themeCount}
-							onChange={handleNumberChange(setThemeCount, 1, 20)}
-						/>
+						<div className="inputWithError">
+							<input
+								id="themeCount"
+								type="number"
+								min={1}
+								max={20}
+								value={themeCount}
+								onChange={handleNumberChange(setThemeCount, setThemeCountError, 1, 20)}
+								className={themeCountError ? 'error' : ''}
+							/>
+							{themeCountError && <span className="errorMessage">{themeCountError}</span>}
+						</div>
 					</div>
 
 					<div className="newPackageDialogRow">
 						<label htmlFor="questionCount">{localization.questionCountPerTheme}</label>
-						<input
-							id="questionCount"
-							type="number"
-							min={1}
-							max={20}
-							value={questionCount}
-							onChange={handleNumberChange(setQuestionCount, 1, 20)}
-						/>
+						<div className="inputWithError">
+							<input
+								id="questionCount"
+								type="number"
+								min={1}
+								max={20}
+								value={questionCount}
+								onChange={handleNumberChange(setQuestionCount, setQuestionCountError, 1, 20)}
+								className={questionCountError ? 'error' : ''}
+							/>
+							{questionCountError && <span className="errorMessage">{questionCountError}</span>}
+						</div>
 					</div>
 
 					<div className="newPackageDialogRow newPackageDialogCheckbox">
@@ -119,14 +161,18 @@ const NewPackageDialog: React.FC<NewPackageDialogProps> = ({ onOk, onCancel }) =
 					{includeFinalRound && (
 						<div className="newPackageDialogRow">
 							<label htmlFor="finalThemeCount">{localization.themeCountFinal}</label>
-							<input
-								id="finalThemeCount"
-								type="number"
-								min={1}
-								max={20}
-								value={finalThemeCount}
-								onChange={handleNumberChange(setFinalThemeCount, 1, 20)}
-							/>
+							<div className="inputWithError">
+								<input
+									id="finalThemeCount"
+									type="number"
+									min={1}
+									max={20}
+									value={finalThemeCount}
+									onChange={handleNumberChange(setFinalThemeCount, setFinalThemeCountError, 1, 20)}
+									className={finalThemeCountError ? 'error' : ''}
+								/>
+								{finalThemeCountError && <span className="errorMessage">{finalThemeCountError}</span>}
+							</div>
 						</div>
 					)}
 				</div>
