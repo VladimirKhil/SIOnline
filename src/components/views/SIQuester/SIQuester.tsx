@@ -1,15 +1,18 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { useAppDispatch } from '../../../state/hooks';
 import { navigate } from '../../../utils/Navigator';
 import Path from '../../../model/enums/Path';
 import localization from '../../../model/resources/localization';
 import { openFile, createNewPackage } from '../../../state/siquesterSlice';
+import { NewPackageOptions } from '../../../model/siquester/packageGenerator';
+import NewPackageDialog from './NewPackageDialog';
 
 import './SIQuester.scss';
 
 const SIQuester: React.FC = () => {
 	const appDispatch = useAppDispatch();
 	const fileInputRef = useRef<HTMLInputElement>(null);
+	const [showNewPackageDialog, setShowNewPackageDialog] = useState(false);
 
 	const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const file = event.target.files?.[0];
@@ -24,7 +27,16 @@ const SIQuester: React.FC = () => {
 	};
 
 	const handleNewPackageClick = () => {
-		appDispatch(createNewPackage());
+		setShowNewPackageDialog(true);
+	};
+
+	const handleNewPackageOk = (options: NewPackageOptions) => {
+		setShowNewPackageDialog(false);
+		appDispatch(createNewPackage(options));
+	};
+
+	const handleNewPackageCancel = () => {
+		setShowNewPackageDialog(false);
 	};
 
 	return (
@@ -37,14 +49,21 @@ const SIQuester: React.FC = () => {
 				ref={fileInputRef}
 			/>
 
+			{showNewPackageDialog && (
+				<NewPackageDialog
+					onOk={handleNewPackageOk}
+					onCancel={handleNewPackageCancel}
+				/>
+			)}
+
 			<div className='siquester__content'>
 				<div className='siquester__logo' />
 				<div className='siquester__title'>SIQuester</div>
 
 				<div className='siquester__actions'>
-					{/* <button type='button' className='standard' onClick={handleNewPackageClick}>
+					<button type='button' className='standard' onClick={handleNewPackageClick}>
 						{localization.createPackage.toLocaleUpperCase()}
-					</button> */}
+					</button>
 
 					<button type='button' className='standard' onClick={handleButtonClick}>
 						{localization.openFile.toLocaleUpperCase()}
