@@ -11,11 +11,11 @@ interface NewPackageDialogProps {
 }
 
 const NewPackageDialog: React.FC<NewPackageDialogProps> = ({ onOk, onCancel }) => {
+	const layout = React.useRef<HTMLDivElement>(null);
 
 	const [packageName, setPackageName] = useState(defaultPackageOptions.packageName);
 	const [authorName, setAuthorName] = useState(defaultPackageOptions.authorName);
 	const [roundCount, setRoundCount] = useState(defaultPackageOptions.roundCount);
-	const [themeCount, setThemeCount] = useState(defaultPackageOptions.themeCount);
 	const [themeCount, setThemeCount] = useState(defaultPackageOptions.themeCount);
 	const [questionCount, setQuestionCount] = useState(defaultPackageOptions.questionCount);
 	const [includeFinalRound, setIncludeFinalRound] = useState(defaultPackageOptions.includeFinalRound);
