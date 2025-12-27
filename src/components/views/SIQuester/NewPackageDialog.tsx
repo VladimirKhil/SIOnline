@@ -66,12 +66,25 @@ const NewPackageDialog: React.FC<NewPackageDialogProps> = ({ onOk, onCancel }) =
 		min: number,
 		max: number
 	) => (e: React.ChangeEvent<HTMLInputElement>) => {
-		const value = parseInt(e.target.value, 10);
-		setter(value);
+		const inputValue = e.target.value;
 		
-		// Validate and set error message
-		const error = validateNumber(value, min, max);
-		errorSetter(error);
+		// Handle empty input - don't update state if empty
+		if (inputValue === '' || inputValue === '-') {
+			// Keep the current value in state but show error
+			errorSetter(localization.invalidValueRange.replace('{0}', min.toString()).replace('{1}', max.toString()));
+			return;
+		}
+		
+		const value = parseInt(inputValue, 10);
+		
+		// Only update state with valid numbers
+		if (!isNaN(value)) {
+			setter(value);
+			
+			// Validate and set error message
+			const error = validateNumber(value, min, max);
+			errorSetter(error);
+		}
 	};
 
 	return (
