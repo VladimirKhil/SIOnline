@@ -2,6 +2,26 @@ import JSZip from 'jszip';
 import { ContentPlacements, Package, Question, Round, RoundTypes, Theme } from './package';
 import localization from '../resources/localization';
 
+export interface NewPackageOptions {
+	packageName: string;
+	authorName: string;
+	roundCount: number;
+	themeCount: number;
+	questionCount: number;
+	includeFinalRound: boolean;
+	finalThemeCount: number;
+}
+
+export const defaultPackageOptions: NewPackageOptions = {
+	packageName: '',
+	authorName: '',
+	roundCount: 3,
+	themeCount: 6,
+	questionCount: 5,
+	includeFinalRound: true,
+	finalThemeCount: 7,
+};
+
 function generateId(): string {
 	return Math.random().toString(36).substr(2, 9);
 }
@@ -25,11 +45,12 @@ export async function createDefaultZip(): Promise<JSZip> {
 	return zip;
 }
 
-export function createDefaultPackage(): Package {
+export function createDefaultPackage(options?: NewPackageOptions): Package {
+	const opts = options || defaultPackageOptions;
 	const [currentDate] = new Date().toISOString().split('T');
 
 	const pack: Package = {
-		name: localization.package,
+		name: opts.packageName || localization.package,
 		version: '5',
 		id: generateId(),
 		restriction: '',
@@ -42,24 +63,30 @@ export function createDefaultPackage(): Package {
 		isQualityMarked: true,
 	};
 
-	// Create 3 rounds
-	for (let roundIndex = 0; roundIndex < 3; roundIndex += 1) {
+	if (opts.authorName) {
+		pack.info = {
+			authors: [{ name: opts.authorName }]
+		};
+	}
+
+	// Create standard rounds
+	for (let roundIndex = 0; roundIndex < opts.roundCount; roundIndex += 1) {
 		const round: Round = {
 			name: (roundIndex + 1).toString(),
 			type: RoundTypes.Standard,
 			themes: []
 		};
 
-		// Create 6 themes per round
-		for (let themeIndex = 0; themeIndex < 6; themeIndex += 1) {
+		// Create themes per round
+		for (let themeIndex = 0; themeIndex < opts.themeCount; themeIndex += 1) {
 			const theme: Theme = {
 				name: '',
 				questions: []
 			};
 
-			// Create 5 questions per theme
-			for (let questionIndex = 0; questionIndex < 5; questionIndex += 1) {
-				const price = (questionIndex + 1) * 100; // 100, 200, 300, 400, 500
+			// Create questions per theme
+			for (let questionIndex = 0; questionIndex < opts.questionCount; questionIndex += 1) {
+				const price = (questionIndex + 1) * 100 * (roundIndex + 1); // Prices multiplied by round number
 				const question: Question = {
 					price,
 					params: {
@@ -86,43 +113,45 @@ export function createDefaultPackage(): Package {
 		pack.rounds.push(round);
 	}
 
-	// Create final round with 7 themes
-	const finalRound: Round = {
-		name: localization.final,
-		type: RoundTypes.Final,
-		themes: []
-	};
-
-	// Create 7 themes for final round
-	for (let themeIndex = 0; themeIndex < 7; themeIndex += 1) {
-		const theme: Theme = {
-			name: '',
-			questions: []
+	// Create final round if enabled
+	if (opts.includeFinalRound) {
+		const finalRound: Round = {
+			name: localization.final,
+			type: RoundTypes.Final,
+			themes: []
 		};
 
-		// Create 1 question per theme in final round
-		const question: Question = {
-			price: 0, // Final round questions typically don't have prices
-			params: {
-				question: {
-					items: [{
-						type: 'text',
-						value: '',
-						isRef: false,
-						placement: ContentPlacements.Screen
-					}]
+		// Create themes for final round
+		for (let themeIndex = 0; themeIndex < opts.finalThemeCount; themeIndex += 1) {
+			const theme: Theme = {
+				name: '',
+				questions: []
+			};
+
+			// Create 1 question per theme in final round
+			const question: Question = {
+				price: 0, // Final round questions typically don't have prices
+				params: {
+					question: {
+						items: [{
+							type: 'text',
+							value: '',
+							isRef: false,
+							placement: ContentPlacements.Screen
+						}]
+					}
+				},
+				right: {
+					answer: ['']
 				}
-			},
-			right: {
-				answer: ['']
-			}
-		};
+			};
 
-		theme.questions.push(question);
-		finalRound.themes.push(theme);
+			theme.questions.push(question);
+			finalRound.themes.push(theme);
+		}
+
+		pack.rounds.push(finalRound);
 	}
-
-	pack.rounds.push(finalRound);
 
 	return pack;
 }

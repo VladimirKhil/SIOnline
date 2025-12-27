@@ -8,7 +8,9 @@ import { Package, Round, Theme, Question, ContentParam, ContentItem } from '../m
 import { navigate } from '../utils/Navigator';
 import Path from '../model/enums/Path';
 import DataContext from '../model/DataContext';
-import { createDefaultPackage, createDefaultZip } from '../model/siquester/packageGenerator';
+import { createDefaultPackage, createDefaultZip, NewPackageOptions } from '../model/siquester/packageGenerator';
+
+export type { NewPackageOptions };
 import { downloadPackageAsSIQ } from '../model/siquester/packageExporter';
 import { parseXMLtoPackage } from '../model/siquester/packageLoader';
 
@@ -58,8 +60,8 @@ export const openFile = createAsyncThunk(
 
 export const createNewPackage = createAsyncThunk(
 	'siquester/createNewPackage',
-	async (_, thunkAPI) => {
-		const pack = createDefaultPackage();
+	async (options: NewPackageOptions, thunkAPI) => {
+		const pack = createDefaultPackage(options);
 		const zip = await createDefaultZip();
 
 		thunkAPI.dispatch(navigate({ navigation: { path: Path.SIQuesterPackage }, saveState: true }));
