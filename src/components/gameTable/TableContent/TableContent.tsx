@@ -24,6 +24,7 @@ interface TableContentProps {
 	attachContentToTable: boolean;
 	useStackedAnswerLayout: boolean;
 	windowWidth: number;
+	answerOptionsCount: number;
 }
 
 const mapStateToProps = (state: State) => ({
@@ -36,9 +37,17 @@ const mapStateToProps = (state: State) => ({
 	attachContentToTable: state.settings.attachContentToTable,
 	useStackedAnswerLayout: state.table.useStackedAnswerLayout,
 	windowWidth: state.ui.windowWidth,
+	answerOptionsCount: state.table.answerOptions.length,
 });
 
-function getLayout(layoutMode: LayoutMode, mainContent: JSX.Element, useStackedAnswerLayout: boolean, isPhoneMode: boolean) {
+function getLayout(
+	layoutMode: LayoutMode,
+	mainContent: JSX.Element,
+	useStackedAnswerLayout: boolean,
+	isPhoneMode: boolean,
+	content: ContentGroup[],
+	answerOptionsCount: number
+) {
 	if (layoutMode === LayoutMode.Simple) {
 		return mainContent;
 	}
@@ -47,7 +56,36 @@ function getLayout(layoutMode: LayoutMode, mainContent: JSX.Element, useStackedA
 	const shouldStack = isPhoneMode || useStackedAnswerLayout;
 	const layoutClass = shouldStack ? 'optionsLayoutStacked' : 'optionsLayout';
 
-	return <div className={layoutClass}>{mainContent}<AnswerOptions /></div>;
+	// Calculate proportional weights for stacked layout
+	let contentWeight = 2; // Default weight for content
+	let optionsWeight = 1; // Default weight for options
+
+	if (shouldStack) {
+		// Calculate content weight based on content groups
+		const totalContentWeight = content.reduce((sum, group) => sum + group.weight, 0);
+		
+		// For text-only content, use calculated weight; for images/video, use higher weight
+		if (totalContentWeight > 0) {
+			contentWeight = Math.max(1, totalContentWeight);
+		}
+		
+		// Answer options weight based on number of options (more options need more space)
+		optionsWeight = Math.max(1, Math.min(answerOptionsCount * 0.5, 3));
+	}
+
+	const contentStyle = shouldStack ? { flex: `${contentWeight} 0 0` } : undefined;
+	const optionsStyle = shouldStack ? { flex: `${optionsWeight} 0 0` } : undefined;
+
+	return (
+		<div className={layoutClass}>
+			<div style={contentStyle}>
+				{mainContent}
+			</div>
+			<div style={optionsStyle}>
+				<AnswerOptions />
+			</div>
+		</div>
+	);
 }
 
 const TableContentComponent: React.FC<TableContentProps> = (props) => {
@@ -107,7 +145,7 @@ const TableContentComponent: React.FC<TableContentProps> = (props) => {
 	return (
 		<TableBorder>
 			<div className='table-content'>
-				{getLayout(props.layoutMode, mainContent, props.useStackedAnswerLayout, isPhoneMode)}
+				{getLayout(props.layoutMode, mainContent, props.useStackedAnswerLayout, isPhoneMode, content, props.answerOptionsCount)}
 
 				<AudioContent audioContext={audioContext} autoPlayEnabled={canPlayAudio} />
 			</div>
