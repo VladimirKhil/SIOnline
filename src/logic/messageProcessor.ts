@@ -4,7 +4,6 @@ import Message from '../client/contracts/Message';
 import State from '../state/State';
 import DataContext from '../model/DataContext';
 import * as RoomActions from '../state/room/RoomActions';
-import ChatMessage from '../model/ChatMessage';
 import Account from '../model/Account';
 import Sex from '../model/enums/Sex';
 import PlayerStates, { parsePlayerStatesFromString } from '../model/enums/PlayerStates';
@@ -16,7 +15,6 @@ import Constants from '../model/enums/Constants';
 import Role from '../model/Role';
 import localization from '../model/resources/localization';
 import { trimLength } from '../utils/StringHelpers';
-import MessageLevel from '../model/enums/MessageLevel';
 import GameMessages from '../client/game/GameMessages';
 import JoinMode from '../client/game/JoinMode';
 import { parseStakeModesFromString } from '../client/game/StakeModes';
@@ -27,11 +25,7 @@ import ItemState from '../model/enums/ItemState';
 import clearUrls from '../utils/clearUrls';
 import ThemesPlayMode from '../model/enums/ThemesPlayMode';
 import { AppDispatch } from '../state/store';
-import { addToChat,
-	playerStakeChanged,
-	playerStateChanged } from '../state/room2Slice';
 import StakeTypes from '../model/enums/StakeTypes';
-import { addGameLog } from '../state/globalActions';
 
 const MAX_APPEND_TEXT_LENGTH = 150;
 
@@ -570,7 +564,7 @@ const viewerHandler = (
 				const playerIndex = parseInt(args[1], 10);
 
 				if (playerIndex > -1 && playerIndex < state.room2.persons.players.length) {
-					appDispatch(playerStateChanged({ index: playerIndex, state: PlayerStates.HasAnswered }));
+					controller.onSinglePlayerStateChanged(playerIndex, PlayerStates.HasAnswered);
 				}
 			}
 			break;
@@ -580,7 +574,7 @@ const viewerHandler = (
 				const playerIndex = parseInt(args[1], 10);
 
 				if (playerIndex > -1 && playerIndex < state.room2.persons.players.length) {
-					appDispatch(playerStateChanged({ index: playerIndex, state: PlayerStates.HasAnswered }));
+					controller.onSinglePlayerStateChanged(playerIndex, PlayerStates.HasAnswered);
 				}
 			}
 			break;
@@ -594,7 +588,7 @@ const viewerHandler = (
 					break;
 				}
 
-				appDispatch(playerStakeChanged({ index: playerIndex, stake: Constants.HIDDEN_STAKE }));
+				controller.onSinglePlayerStakeChanged(playerIndex, Constants.HIDDEN_STAKE);
 			}
 			break;
 
@@ -631,7 +625,7 @@ const viewerHandler = (
 						break;
 				}
 
-				appDispatch(playerStakeChanged({ index: playerIndex, stake }));
+				controller.onSinglePlayerStakeChanged(playerIndex, stake);
 			}
 			break;
 
@@ -1325,22 +1319,13 @@ const processSystemMessage: ActionCreator<ThunkAction<void, State, DataContext, 
 		}
 	};
 
-const userMessageReceived: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (message: Message, appDispatch: AppDispatch) => (
+const userMessageReceived: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (
+	controller: ClientController,
+	message: Message
+) => (
 	_dispatch: Dispatch<any>,
-	getState: () => State) => {
-		appDispatch(addGameLog(`${message.Sender}: ${message.Text}`));
-
-		if (message.Sender === getState().room2.name) {
-			return;
-		}
-
-		const replic: ChatMessage = {
-			sender: message.Sender,
-			text: message.Text,
-			level: MessageLevel.Information,
-		};
-
-		appDispatch(addToChat(replic));
+	_getState: () => State) => {
+		controller.onMessage(message.Sender, message.Text);
 	};
 
 export default function messageProcessor(controller: ClientController, dispatch: Dispatch<AnyAction>, appDispatch: AppDispatch, message: Message) {
@@ -1349,5 +1334,5 @@ export default function messageProcessor(controller: ClientController, dispatch:
 		return;
 	}
 
-	dispatch((userMessageReceived(message, appDispatch) as object) as AnyAction);
+	dispatch((userMessageReceived(controller, message) as object) as AnyAction);
 }

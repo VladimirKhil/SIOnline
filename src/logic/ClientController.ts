@@ -24,6 +24,8 @@ import RoundRules from '../model/enums/RoundRules';
 import { AppDispatch } from '../state/store';
 import TimerStates from '../model/enums/TimeStates';
 import PlayerStatistics from '../model/PlayerStatistics';
+import IClientController from './IClientController';
+import ChatMessage from '../model/ChatMessage';
 
 import { answerOptions,
 	appendPartialText,
@@ -95,6 +97,7 @@ import {
 	playerRoundStateCleared,
 	playerStateChanged,
 	playerStatesChanged,
+	playerStakeChanged,
 	playerSumChanged,
 	playersAnswersChanged,
 	playersStateCleared,
@@ -204,7 +207,7 @@ function getAskSelectHint(reason: string): string {
 	}
 }
 
-export default class ClientController {
+export default class ClientController implements IClientController {
 	constructor(
 		private dispatch: Dispatch<AnyAction>,
 		private appDispatch: AppDispatch,
@@ -2006,6 +2009,30 @@ export default class ClientController {
 			default:
 				return '';
 		}
+	}
+
+	onMessage(sender: string, text: string): void {
+		this.appDispatch(addGameLog(`${sender}: ${text}`));
+
+		if (sender === this.getState().room2.name) {
+			return;
+		}
+
+		const replic: ChatMessage = {
+			sender,
+			text,
+			level: MessageLevel.Information,
+		};
+
+		this.appDispatch(addToChat(replic));
+	}
+
+	onSinglePlayerStateChanged(playerIndex: number, state: PlayerStates): void {
+		this.appDispatch(playerStateChanged({ index: playerIndex, state }));
+	}
+
+	onSinglePlayerStakeChanged(playerIndex: number, stake: number): void {
+		this.appDispatch(playerStakeChanged({ index: playerIndex, stake }));
 	}
 }
 
