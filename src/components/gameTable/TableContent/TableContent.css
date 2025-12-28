@@ -22,6 +22,14 @@
 	overflow: hidden;
 }
 
+.optionsLayoutStacked {
+    width: 100%;
+    height: 100%;
+    display: flex;
+	flex-direction: column;
+	overflow: hidden;
+}
+
 .mainContent {
 	height: 100%;
 	flex: 3 0 0;
@@ -30,6 +38,11 @@
 	align-items: center;
 	flex-direction: column;
 	overflow: hidden;
+}
+
+/* Adjust flex for stacked layout to give more space proportionally */
+.optionsLayoutStacked .mainContent {
+	flex: 2 0 0;
 }
 
 .clef {

@@ -40,6 +40,7 @@ export interface TableState {
 	answerDeviation: number;
 	statistics: PlayerStatistics[];
 	externalMediaUris: string[];
+	useStackedAnswerLayout: boolean;
 }
 
 const initialState: TableState = {
@@ -78,6 +79,7 @@ const initialState: TableState = {
 	answerDeviation: 0,
 	statistics: [],
 	externalMediaUris: [],
+	useStackedAnswerLayout: false,
 };
 
 export const tableSlice = createSlice({
@@ -227,11 +229,20 @@ export const tableSlice = createSlice({
 			state.isAnswer = false;
 			state.answerDeviation = 0;
 			state.externalMediaUris = [];
+			state.useStackedAnswerLayout = false;
 		},
 		answerOptions: (state, action: PayloadAction<{ questionHasScreenContent: boolean, options: AnswerOption[] }>) => {
 			state.layoutMode = LayoutMode.AnswerOptions;
 			state.answerOptions = action.payload.options;
 			state.mode = TableMode.Content;
+			
+			// Enable stacked layout when: content is single text-only item or no screen content
+			const isSingleTextContent = !action.payload.questionHasScreenContent ||
+				(state.content.length === 1 && 
+				 state.content[0].content.length === 1 && 
+				 state.content[0].content[0].type === ContentType.Text);
+			
+			state.useStackedAnswerLayout = isSingleTextContent;
 		},
 		updateOption: (state, action: PayloadAction<{ index: number, label: string, contentType: ContentType, value: string }>) => {
 			const option = state.answerOptions[action.payload.index];

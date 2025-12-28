@@ -22,6 +22,8 @@ interface TableContentProps {
 	appendText: string;
 	externalMediaUris: string[];
 	attachContentToTable: boolean;
+	useStackedAnswerLayout: boolean;
+	windowWidth: number;
 }
 
 const mapStateToProps = (state: State) => ({
@@ -32,16 +34,25 @@ const mapStateToProps = (state: State) => ({
 	appendText: state.table.appendText,
 	externalMediaUris: state.table.externalMediaUris,
 	attachContentToTable: state.settings.attachContentToTable,
+	useStackedAnswerLayout: state.table.useStackedAnswerLayout,
+	windowWidth: state.ui.windowWidth,
 });
 
-function getLayout(layoutMode: LayoutMode, mainContent: JSX.Element) {
-	return layoutMode === LayoutMode.Simple
-		? mainContent
-		: <div className='optionsLayout'>{mainContent}<AnswerOptions /></div>;
+function getLayout(layoutMode: LayoutMode, mainContent: JSX.Element, useStackedAnswerLayout: boolean, isPhoneMode: boolean) {
+	if (layoutMode === LayoutMode.Simple) {
+		return mainContent;
+	}
+
+	// Use stacked (vertical) layout when in phone mode or when content is single text-only
+	const shouldStack = isPhoneMode || useStackedAnswerLayout;
+	const layoutClass = shouldStack ? 'optionsLayoutStacked' : 'optionsLayout';
+
+	return <div className={layoutClass}>{mainContent}<AnswerOptions /></div>;
 }
 
 const TableContentComponent: React.FC<TableContentProps> = (props) => {
 	const { audioContext, canPlayAudio } = useAudioContext();
+	const isPhoneMode = props.windowWidth < 800;
 
 	const getAudioContent = (): React.ReactNode => props.audio.length > 0
 		? (<div className='centerBlock'><span className="clef rotate">&amp;</span></div>)
@@ -96,7 +107,7 @@ const TableContentComponent: React.FC<TableContentProps> = (props) => {
 	return (
 		<TableBorder>
 			<div className='table-content'>
-				{getLayout(props.layoutMode, mainContent)}
+				{getLayout(props.layoutMode, mainContent, props.useStackedAnswerLayout, isPhoneMode)}
 
 				<AudioContent audioContext={audioContext} autoPlayEnabled={canPlayAudio} />
 			</div>
