@@ -443,11 +443,26 @@ const viewerHandler = (
 			}
 
 			// Read content description from layout message args
-			// args[2]: '+' means question has screen content, '-' means text-only/audio-only
-			// args.slice(3): content type names for answer options
+			// Based on InformLayout implementation:
+			// args[3]: question content count
+			// args[4...3+count]: question content types
+			// args[4+count...]: answer option types
+			const questionContentCount = parseInt(args[3], 10) || 0;
+			const questionContentTypes: string[] = [];
+			
+			for (let i = 0; i < questionContentCount && i + 4 < args.length; i++) {
+				questionContentTypes.push(args[4 + i]);
+			}
+			
+			const answerOptionTypes = args.slice(4 + questionContentCount);
 			const questionHasScreenContent = args[2] === '+';
-			const useStackedAnswerLayout = !questionHasScreenContent; // Use stacked layout when question has no screen content
-			controller.onAnswerOptionsLayout(questionHasScreenContent, args.slice(3), useStackedAnswerLayout);
+			
+			// Use stacked layout when question has single text-only content item
+			const useStackedAnswerLayout = questionContentCount === 1 && 
+				questionContentTypes.length > 0 && 
+				questionContentTypes[0].toLowerCase() === 'text';
+			
+			controller.onAnswerOptionsLayout(questionHasScreenContent, answerOptionTypes, useStackedAnswerLayout);
 			break;
 
 		case GameMessages.MediaLoaded:
