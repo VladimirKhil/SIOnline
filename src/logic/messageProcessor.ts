@@ -446,7 +446,7 @@ const viewerHandler = (
 			// args[2]: '+' means question has screen content, '-' means text-only/audio-only
 			// args.slice(3): content type names for answer options
 			const questionHasScreenContent = args[2] === '+';
-			const useStackedAnswerLayout = args[2] === '-'; // Use stacked layout when question has no screen content
+			const useStackedAnswerLayout = !questionHasScreenContent; // Use stacked layout when question has no screen content
 			controller.onAnswerOptionsLayout(questionHasScreenContent, args.slice(3), useStackedAnswerLayout);
 			break;
 

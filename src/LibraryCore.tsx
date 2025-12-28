@@ -66,9 +66,11 @@ function processMessage(controller: ClientController, payload: any, appDispatch:
 			controller.onAnswerOption(payload.index, payload.label, payload.contentType, payload.contentValue);
 			break;
 
-		case 'answerOptionsLayout':
-			controller.onAnswerOptionsLayout(payload.questionHasScreenContent, payload.typeNames, !payload.questionHasScreenContent);
+		case 'answerOptionsLayout': {
+			const useStackedLayout = !payload.questionHasScreenContent;
+			controller.onAnswerOptionsLayout(payload.questionHasScreenContent, payload.typeNames, useStackedLayout);
 			break;
+		}
 
 		case 'askAnswer':
 			controller.onAskAnswer(null);
