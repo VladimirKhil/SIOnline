@@ -1346,7 +1346,7 @@ export default class ClientController {
 		}
 	}
 
-	onAnswerOptionsLayout(questionHasScreenContent: boolean, typeNames: string[]) {
+	onAnswerOptionsLayout(questionHasScreenContent: boolean, typeNames: string[], useStackedAnswerLayout: boolean) {
 		const options: AnswerOption[] = [];
 
 		for (let i = 0; i < typeNames.length; i++) {
@@ -1359,7 +1359,7 @@ export default class ClientController {
 			});
 		}
 
-		this.appDispatch(answerOptions({ questionHasScreenContent, options }));
+		this.appDispatch(answerOptions({ questionHasScreenContent, options, useStackedAnswerLayout }));
 	}
 
 	onBeginPressButton() {

@@ -67,7 +67,7 @@ function processMessage(controller: ClientController, payload: any, appDispatch:
 			break;
 
 		case 'answerOptionsLayout':
-			controller.onAnswerOptionsLayout(payload.questionHasScreenContent, payload.typeNames);
+			controller.onAnswerOptionsLayout(payload.questionHasScreenContent, payload.typeNames, !payload.questionHasScreenContent);
 			break;
 
 		case 'askAnswer':

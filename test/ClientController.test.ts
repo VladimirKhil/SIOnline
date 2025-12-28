@@ -1435,7 +1435,7 @@ state.settings.appSound = true; // Enable sounds for testing
 
 	describe('onAnswerOptionsLayout', () => {
 		it('should set up answer options layout', () => {
-			controller.onAnswerOptionsLayout(true, ['Text', 'Text', 'Image']);
+			controller.onAnswerOptionsLayout(true, ['Text', 'Text', 'Image'], false);
 
 			expect(mockAppDispatch).toHaveBeenCalled();
 			const actions = dispatchedActions.map(a => a.type);
