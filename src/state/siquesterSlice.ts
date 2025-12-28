@@ -315,6 +315,99 @@ export const siquesterSlice = createSlice({
 				question.wrong.answer.splice(action.payload.answerIndex, 1);
 			}
 		},
+		addRound: (state) => {
+			if (state.pack) {
+				const newRound: Round = {
+					name: '',
+					type: '',
+					themes: []
+				};
+				state.pack.rounds.push(newRound);
+			}
+		},
+		removeRound: (state, action: { payload: { roundIndex: number } }) => {
+			if (state.pack && state.pack.rounds[action.payload.roundIndex]) {
+				state.pack.rounds.splice(action.payload.roundIndex, 1);
+				// Clear current item if it was in the deleted round
+				if (state.roundIndex === action.payload.roundIndex) {
+					state.roundIndex = undefined;
+					state.themeIndex = undefined;
+					state.questionIndex = undefined;
+				}
+			}
+		},
+		addTheme: (state, action: { payload: { roundIndex: number } }) => {
+			const round = state.pack?.rounds[action.payload.roundIndex];
+			if (round) {
+				const newTheme: Theme = {
+					name: '',
+					questions: []
+				};
+				round.themes.push(newTheme);
+			}
+		},
+		removeTheme: (state, action: { 
+			payload: { 
+				roundIndex: number; 
+				themeIndex: number; 
+			} 
+		}) => {
+			const round = state.pack?.rounds[action.payload.roundIndex];
+			if (round && round.themes[action.payload.themeIndex]) {
+				round.themes.splice(action.payload.themeIndex, 1);
+				// Clear current item if it was in the deleted theme
+				if (state.roundIndex === action.payload.roundIndex && state.themeIndex === action.payload.themeIndex) {
+					state.themeIndex = undefined;
+					state.questionIndex = undefined;
+				}
+			}
+		},
+		addQuestion: (state, action: { 
+			payload: { 
+				roundIndex: number; 
+				themeIndex: number; 
+				price?: number;
+			} 
+		}) => {
+			const theme = state.pack?.rounds[action.payload.roundIndex]?.themes[action.payload.themeIndex];
+			if (theme) {
+				const newQuestion: Question = {
+					price: action.payload.price ?? 0,
+					params: {
+						question: {
+							items: [{
+								type: 'text',
+								value: '',
+								isRef: false,
+								placement: 'screen'
+							}]
+						}
+					},
+					right: {
+						answer: ['']
+					}
+				};
+				theme.questions.push(newQuestion);
+			}
+		},
+		removeQuestion: (state, action: { 
+			payload: { 
+				roundIndex: number; 
+				themeIndex: number; 
+				questionIndex: number; 
+			} 
+		}) => {
+			const theme = state.pack?.rounds[action.payload.roundIndex]?.themes[action.payload.themeIndex];
+			if (theme && theme.questions[action.payload.questionIndex]) {
+				theme.questions.splice(action.payload.questionIndex, 1);
+				// Clear current item if it was the deleted question
+				if (state.roundIndex === action.payload.roundIndex && 
+					state.themeIndex === action.payload.themeIndex && 
+					state.questionIndex === action.payload.questionIndex) {
+					state.questionIndex = undefined;
+				}
+			}
+		},
 		updateInfoProperty: (state, action: { 
 			payload: { 
 				targetType: 'package' | 'round' | 'theme' | 'question'; 
@@ -573,6 +666,12 @@ export const {
 	removeQuestionRightAnswer,
 	addQuestionWrongAnswer,
 	removeQuestionWrongAnswer,
+	addRound,
+	removeRound,
+	addTheme,
+	removeTheme,
+	addQuestion,
+	removeQuestion,
 	updateInfoProperty,
 	updateTag,
 	addTag,

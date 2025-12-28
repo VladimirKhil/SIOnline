@@ -10,7 +10,10 @@ import {
 	setCurrentItem,
 	selectCurrentItem,
 	loadPackageStatistics,
-	togglePackageStats
+	togglePackageStats,
+	addRound,
+	addTheme,
+	addQuestion
 } from '../../../state/siquesterSlice';
 import PackageItem from './components/PackageItem';
 import RoundItem from './components/RoundItem';
@@ -227,8 +230,48 @@ const PackageView: React.FC = () => {
 								</div>
 							);
 						})}
+						{isEditMode && (
+							<button
+								type='button'
+								className='packageView__add-button packageView__add-button--question'
+								onClick={() => {
+									const theme = round.themes[ti];
+									const questionsCount = theme.questions.length;
+									let newPrice = 100;
+									
+									if (questionsCount > 0) {
+										const lastQuestion = theme.questions[questionsCount - 1];
+										const lastPrice = lastQuestion.price > 0 ? lastQuestion.price : 100;
+										
+										if (questionsCount > 1) {
+											// Calculate difference between last two questions
+											const prevQuestion = theme.questions[questionsCount - 2];
+											const prevPrice = prevQuestion.price > 0 ? prevQuestion.price : 100;
+											const difference = lastPrice - prevPrice;
+											newPrice = lastPrice + difference;
+										} else {
+											// Only one question exists, add 100
+											newPrice = lastPrice + 100;
+										}
+									}
+									
+									appDispatch(addQuestion({ roundIndex, themeIndex: ti, price: newPrice }));
+								}}
+								title='Add question'>
+								+
+							</button>
+						)}
 					</div>
 				))}
+				{isEditMode && (
+					<button
+						type='button'
+						className='packageView__add-button packageView__add-button--theme'
+						onClick={() => appDispatch(addTheme({ roundIndex }))}
+						title='Add theme'>
+						+
+					</button>
+				)}
 			</div> : null}
 		</>;
 	}
@@ -245,6 +288,15 @@ const PackageView: React.FC = () => {
 					{roundData.name}
 				</div>
 			))}
+			{isEditMode && (
+				<button
+					type='button'
+					className='packageView__add-button packageView__add-button--round'
+					onClick={() => appDispatch(addRound())}
+					title='Add round'>
+					+
+				</button>
+			)}
 		</div>;
 	}
 
