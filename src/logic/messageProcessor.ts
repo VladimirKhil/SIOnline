@@ -434,7 +434,7 @@ const viewerHandler = (
 			break;
 
 		case GameMessages.Layout:
-			if (args.length < 5) {
+			if (args.length < 4) {
 				return;
 			}
 
@@ -444,23 +444,33 @@ const viewerHandler = (
 
 			// Read content description from layout message args
 			// Based on InformLayout implementation:
-			// args[3]: question content count
-			// args[4...3+count]: question content types
-			// args[4+count...]: answer option types
-			const questionContentCount = parseInt(args[3], 10) || 0;
-			const questionContentTypes: string[] = [];
+			// args[2]: screen content sequence (e.g., "text.100+image|text.50")
+			//          Groups are separated by "|", items within groups by "+"
+			//          Format: "type" or "type.length" for text
+			// args[3+]: answer option content types
+			const screenContentString = args[2];
+			const answerOptionTypes = args.slice(3);
 			
-			for (let i = 0; i < questionContentCount && i + 4 < args.length; i++) {
-				questionContentTypes.push(args[4 + i]);
-			}
+			// Parse screen content to determine if it's single text-only
+			// Split by "|" to get groups, then by "+" to get items within groups
+			const contentGroups = screenContentString.split('|');
+			const allContentItems: string[] = [];
 			
-			const answerOptionTypes = args.slice(4 + questionContentCount);
-			const questionHasScreenContent = args[2] === '+';
+			contentGroups.forEach(group => {
+				const items = group.split('+');
+				items.forEach(item => {
+					// Extract type from format "type" or "type.length"
+					const contentType = item.split('.')[0];
+					allContentItems.push(contentType);
+				});
+			});
 			
-			// Use stacked layout when question has single text-only content item
-			const useStackedAnswerLayout = questionContentCount === 1 && 
-				questionContentTypes.length > 0 && 
-				questionContentTypes[0].toLowerCase() === 'text';
+			// Use stacked layout when screen content is single text-only item
+			const useStackedAnswerLayout = allContentItems.length === 1 && 
+				allContentItems[0].toLowerCase() === 'text';
+			
+			// Keep questionHasScreenContent for backward compatibility (deprecated)
+			const questionHasScreenContent = args.length > 2 && screenContentString.length > 0;
 			
 			controller.onAnswerOptionsLayout(questionHasScreenContent, answerOptionTypes, useStackedAnswerLayout);
 			break;
