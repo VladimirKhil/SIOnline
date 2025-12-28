@@ -14,6 +14,12 @@ import { useAudioContext } from '../../../contexts/AudioContextProvider';
 
 import './TableContent.css';
 
+// Constants for proportional layout calculation
+const DEFAULT_CONTENT_WEIGHT = 2;
+const DEFAULT_OPTIONS_WEIGHT = 1;
+const OPTION_WEIGHT_MULTIPLIER = 0.5;
+const MAX_OPTIONS_WEIGHT = 3;
+
 interface TableContentProps {
 	layoutMode: LayoutMode;
 	content: ContentGroup[];
@@ -57,20 +63,20 @@ function getLayout(
 	const layoutClass = shouldStack ? 'optionsLayoutStacked' : 'optionsLayout';
 
 	// Calculate proportional weights for stacked layout
-	let contentWeight = 2; // Default weight for content
-	let optionsWeight = 1; // Default weight for options
+	let contentWeight = DEFAULT_CONTENT_WEIGHT;
+	let optionsWeight = DEFAULT_OPTIONS_WEIGHT;
 
 	if (shouldStack) {
 		// Calculate content weight based on content groups
+		// Content weight comes from the sum of all group weights (text has lower weight ~1-5, media has higher weight ~5)
 		const totalContentWeight = content.reduce((sum, group) => sum + group.weight, 0);
 		
-		// For text-only content, use calculated weight; for images/video, use higher weight
 		if (totalContentWeight > 0) {
 			contentWeight = Math.max(1, totalContentWeight);
 		}
 		
 		// Answer options weight based on number of options (more options need more space)
-		optionsWeight = Math.max(1, Math.min(answerOptionsCount * 0.5, 3));
+		optionsWeight = Math.max(1, Math.min(answerOptionsCount * OPTION_WEIGHT_MULTIPLIER, MAX_OPTIONS_WEIGHT));
 	}
 
 	const contentStyle = shouldStack ? { flex: `${contentWeight} 0 0` } : undefined;

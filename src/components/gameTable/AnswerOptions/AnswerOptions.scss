@@ -8,11 +8,6 @@
 	animation: optionsFadeIn 0.4s ease-out;
 }
 
-/* In stacked layout, give answer options proportional space based on content */
-.optionsLayoutStacked .answerOptions {
-	flex: 1 0 0;
-}
-
 @keyframes optionsFadeIn {
 	from {
 		opacity: 0;

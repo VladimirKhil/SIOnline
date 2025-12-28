@@ -236,13 +236,15 @@ export const tableSlice = createSlice({
 			state.answerOptions = action.payload.options;
 			state.mode = TableMode.Content;
 			
-			// Enable stacked layout when: content is single text-only item or no screen content
-			const isSingleTextContent = !action.payload.questionHasScreenContent ||
-				(state.content.length === 1 && 
-				 state.content[0].content.length === 1 && 
-				 state.content[0].content[0].type === ContentType.Text);
+			// Enable stacked layout when:
+			// 1. No screen content at all (questionHasScreenContent is false)
+			// 2. Content is a single text-only item
+			const hasNoScreenContent = !action.payload.questionHasScreenContent;
+			const isSingleTextContent = state.content.length === 1 && 
+				state.content[0].content.length === 1 && 
+				state.content[0].content[0].type === ContentType.Text;
 			
-			state.useStackedAnswerLayout = isSingleTextContent;
+			state.useStackedAnswerLayout = hasNoScreenContent || isSingleTextContent;
 		},
 		updateOption: (state, action: PayloadAction<{ index: number, label: string, contentType: ContentType, value: string }>) => {
 			const option = state.answerOptions[action.payload.index];
