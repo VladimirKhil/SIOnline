@@ -518,14 +518,14 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ item, isEditMode }) => {
 								</>
 							: null}
 
-							{question.params.answerType
+							{question.params.answerType || isEditMode
 								? <>
 									<label htmlFor='answerType' className='header'>{localization.answerType}</label>
 									{isEditMode ? (
 										<select 
 											id='answerType' 
 											className='packageView__question__answerType'
-											value={question.params.answerType}
+											value={question.params.answerType || 'text'}
 											onChange={(e) => handleQuestionParamChange('answerType', e.target.value)}
 										>
 											<option value='text'>{localization.text}</option>
@@ -533,7 +533,7 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ item, isEditMode }) => {
 											<option value='number'>{localization.number}</option>
 										</select>
 									) : (
-										<input id='answerType' type='text' value={getAnswerType(question.params.answerType)} readOnly />
+										<input id='answerType' type='text' value={getAnswerType(question.params.answerType || 'text')} readOnly />
 									)}
 								</>
 							: null}

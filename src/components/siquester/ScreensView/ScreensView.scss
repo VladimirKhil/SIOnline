@@ -35,6 +35,23 @@
 	height: 100%;
 }
 
+.packageView__question__content__list {
+	display: flex;
+	flex-direction: column;
+	gap: 15px;
+	margin-top: 10px;
+}
+
+.packageView__question__content__list__item {
+	display: flex;
+	flex-direction: column;
+	gap: 5px;
+	
+	.header {
+		margin-bottom: 5px;
+	}
+}
+
 .screensView__editable__text {
 	width: 100%;
 	height: 100%;
@@ -44,7 +61,7 @@
 	font-family: inherit;
 	border: 1px solid #ccc;
 	border-radius: 4px;
-	resize: none;
+	resize: vertical;
 	background-color: white;
 	box-sizing: border-box;
 	overflow-y: auto;
