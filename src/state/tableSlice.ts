@@ -41,6 +41,8 @@ export interface TableState {
 	statistics: PlayerStatistics[];
 	externalMediaUris: string[];
 	useStackedAnswerLayout: boolean;
+	contentWeight: number;
+	optionsWeight: number;
 }
 
 const initialState: TableState = {
@@ -80,6 +82,8 @@ const initialState: TableState = {
 	statistics: [],
 	externalMediaUris: [],
 	useStackedAnswerLayout: false,
+	contentWeight: 2,
+	optionsWeight: 1,
 };
 
 export const tableSlice = createSlice({
@@ -231,7 +235,7 @@ export const tableSlice = createSlice({
 			state.externalMediaUris = [];
 			state.useStackedAnswerLayout = false;
 		},
-		answerOptions: (state, action: PayloadAction<{ questionHasScreenContent: boolean, options: AnswerOption[], useStackedAnswerLayout: boolean }>) => {
+		answerOptions: (state, action: PayloadAction<{ questionHasScreenContent: boolean, options: AnswerOption[], useStackedAnswerLayout: boolean, contentWeight: number, optionsWeight: number }>) => {
 			state.layoutMode = LayoutMode.AnswerOptions;
 			state.answerOptions = action.payload.options;
 			state.mode = TableMode.Content;
@@ -239,6 +243,10 @@ export const tableSlice = createSlice({
 			// Enable stacked layout based on information from Layout message
 			// The flag is set when question has no screen content (text-only or audio-only)
 			state.useStackedAnswerLayout = action.payload.useStackedAnswerLayout;
+			
+			// Set weights for proportional allocation
+			state.contentWeight = action.payload.contentWeight;
+			state.optionsWeight = action.payload.optionsWeight;
 		},
 		updateOption: (state, action: PayloadAction<{ index: number, label: string, contentType: ContentType, value: string }>) => {
 			const option = state.answerOptions[action.payload.index];

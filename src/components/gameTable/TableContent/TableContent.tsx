@@ -14,12 +14,6 @@ import { useAudioContext } from '../../../contexts/AudioContextProvider';
 
 import './TableContent.css';
 
-// Constants for proportional layout calculation
-const DEFAULT_CONTENT_WEIGHT = 2;
-const DEFAULT_OPTIONS_WEIGHT = 1;
-const OPTION_WEIGHT_MULTIPLIER = 0.5;
-const MAX_OPTIONS_WEIGHT = 3;
-
 interface TableContentProps {
 	layoutMode: LayoutMode;
 	content: ContentGroup[];
@@ -31,6 +25,8 @@ interface TableContentProps {
 	useStackedAnswerLayout: boolean;
 	windowWidth: number;
 	answerOptionsCount: number;
+	contentWeight: number;
+	optionsWeight: number;
 }
 
 const mapStateToProps = (state: State) => ({
@@ -44,6 +40,8 @@ const mapStateToProps = (state: State) => ({
 	useStackedAnswerLayout: state.table.useStackedAnswerLayout,
 	windowWidth: state.ui.windowWidth,
 	answerOptionsCount: state.table.answerOptions.length,
+	contentWeight: state.table.contentWeight,
+	optionsWeight: state.table.optionsWeight,
 });
 
 function getLayout(
@@ -52,7 +50,9 @@ function getLayout(
 	useStackedAnswerLayout: boolean,
 	isPhoneMode: boolean,
 	content: ContentGroup[],
-	answerOptionsCount: number
+	answerOptionsCount: number,
+	contentWeight: number,
+	optionsWeight: number
 ) {
 	if (layoutMode === LayoutMode.Simple) {
 		return mainContent;
@@ -62,22 +62,10 @@ function getLayout(
 	const shouldStack = isPhoneMode || useStackedAnswerLayout;
 	const layoutClass = shouldStack ? 'optionsLayoutStacked' : 'optionsLayout';
 
-	// Calculate proportional weights for stacked layout
-	let contentWeight = DEFAULT_CONTENT_WEIGHT;
-	let optionsWeight = DEFAULT_OPTIONS_WEIGHT;
-
-	if (shouldStack) {
-		// Calculate content weight based on content groups
-		// Content weight comes from the sum of all group weights (text has lower weight ~1-5, media has higher weight ~5)
-		const totalContentWeight = content.reduce((sum, group) => sum + group.weight, 0);
-		
-		if (totalContentWeight > 0) {
-			contentWeight = Math.max(1, totalContentWeight);
-		}
-		
-		// Answer options weight based on number of options (more options need more space)
-		optionsWeight = Math.max(1, Math.min(answerOptionsCount * OPTION_WEIGHT_MULTIPLIER, MAX_OPTIONS_WEIGHT));
-	}
+	// Use weights from state (calculated in messageProcessor and ClientController)
+	// These are calculated proportionally:
+	// - contentWeight: proportional to text length (like in onScreenContent)
+	// - optionsWeight: proportional to row count from getBestRowColumnCount
 
 	const contentStyle = shouldStack ? { flex: `${contentWeight} 0 0` } : undefined;
 	const optionsStyle = shouldStack ? { flex: `${optionsWeight} 0 0` } : undefined;
@@ -151,7 +139,7 @@ const TableContentComponent: React.FC<TableContentProps> = (props) => {
 	return (
 		<TableBorder>
 			<div className='table-content'>
-				{getLayout(props.layoutMode, mainContent, props.useStackedAnswerLayout, isPhoneMode, content, props.answerOptionsCount)}
+				{getLayout(props.layoutMode, mainContent, props.useStackedAnswerLayout, isPhoneMode, content, props.answerOptionsCount, props.contentWeight, props.optionsWeight)}
 
 				<AudioContent audioContext={audioContext} autoPlayEnabled={canPlayAudio} />
 			</div>

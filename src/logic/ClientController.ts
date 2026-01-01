@@ -1346,7 +1346,7 @@ export default class ClientController {
 		}
 	}
 
-	onAnswerOptionsLayout(questionHasScreenContent: boolean, typeNames: string[], useStackedAnswerLayout: boolean) {
+	onAnswerOptionsLayout(questionHasScreenContent: boolean, typeNames: string[], useStackedAnswerLayout: boolean, contentWeight: number) {
 		const options: AnswerOption[] = [];
 
 		for (let i = 0; i < typeNames.length; i++) {
@@ -1359,7 +1359,13 @@ export default class ClientController {
 			});
 		}
 
-		this.appDispatch(answerOptions({ questionHasScreenContent, options, useStackedAnswerLayout }));
+		// Calculate options weight based on row count using getBestRowColumnCount
+		// Import getBestRowColumnCount from utils
+		const { rowCount } = getBestRowColumnCount(options.length);
+		// Options weight is proportional to row count (like ContentGroup.weight)
+		const optionsWeight = rowCount;
+
+		this.appDispatch(answerOptions({ questionHasScreenContent, options, useStackedAnswerLayout, contentWeight, optionsWeight }));
 	}
 
 	onBeginPressButton() {

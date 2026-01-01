@@ -68,7 +68,9 @@ function processMessage(controller: ClientController, payload: any, appDispatch:
 
 		case 'answerOptionsLayout': {
 			const useStackedLayout = !payload.questionHasScreenContent;
-			controller.onAnswerOptionsLayout(payload.questionHasScreenContent, payload.typeNames, useStackedLayout);
+			// Default weights when called from library (no screen content info available)
+			const contentWeight = 2;
+			controller.onAnswerOptionsLayout(payload.questionHasScreenContent, payload.typeNames, useStackedLayout, contentWeight);
 			break;
 		}
 
