@@ -43,6 +43,8 @@ export interface TableState {
 	useStackedAnswerLayout: boolean;
 	contentWeight: number;
 	optionsWeight: number;
+	optionsRowCount: number;
+	optionsColumnCount: number;
 }
 
 const initialState: TableState = {
@@ -84,6 +86,8 @@ const initialState: TableState = {
 	useStackedAnswerLayout: false,
 	contentWeight: 2,
 	optionsWeight: 1,
+	optionsRowCount: 1,
+	optionsColumnCount: 1,
 };
 
 export const tableSlice = createSlice({
@@ -235,7 +239,7 @@ export const tableSlice = createSlice({
 			state.externalMediaUris = [];
 			state.useStackedAnswerLayout = false;
 		},
-		answerOptions: (state, action: PayloadAction<{ questionHasScreenContent: boolean, options: AnswerOption[], useStackedAnswerLayout: boolean, contentWeight: number, optionsWeight: number }>) => {
+		answerOptions: (state, action: PayloadAction<{ questionHasScreenContent: boolean, options: AnswerOption[], useStackedAnswerLayout: boolean, contentWeight: number, optionsWeight: number, optionsRowCount: number, optionsColumnCount: number }>) => {
 			state.layoutMode = LayoutMode.AnswerOptions;
 			state.answerOptions = action.payload.options;
 			state.mode = TableMode.Content;
@@ -247,6 +251,10 @@ export const tableSlice = createSlice({
 			// Set weights for proportional allocation
 			state.contentWeight = action.payload.contentWeight;
 			state.optionsWeight = action.payload.optionsWeight;
+			
+			// Set row and column count for answer options layout
+			state.optionsRowCount = action.payload.optionsRowCount;
+			state.optionsColumnCount = action.payload.optionsColumnCount;
 		},
 		updateOption: (state, action: PayloadAction<{ index: number, label: string, contentType: ContentType, value: string }>) => {
 			const option = state.answerOptions[action.payload.index];
