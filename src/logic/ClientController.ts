@@ -1349,20 +1349,42 @@ export default class ClientController implements IClientController {
 		}
 	}
 
-	onAnswerOptionsLayout(questionHasScreenContent: boolean, typeNames: string[]) {
+	onAnswerOptionsLayout(questionHasScreenContent: boolean, typeNames: string[], useStackedAnswerLayout: boolean, contentWeight: number) {
 		const options: AnswerOption[] = [];
+		let hasImageOption = false;
 
 		for (let i = 0; i < typeNames.length; i++) {
 			const typeName = typeNames[i];
+			const contentType = ContentType[typeName as keyof typeof ContentType];
 
 			options.push({
 				label: '',
 				state: ItemState.Normal,
-				content: { type: ContentType[typeName as keyof typeof ContentType], value: '', read: false, partial: false }
+				content: { type: contentType, value: '', read: false, partial: false }
 			});
+
+			// Check if at least one option contains an image
+			if (contentType === ContentType.Image) {
+				hasImageOption = true;
+			}
 		}
 
-		this.appDispatch(answerOptions({ questionHasScreenContent, options }));
+		// Calculate options weight based on row count using getBestRowColumnCount
+		const { rowCount, columnCount } = getBestRowColumnCount(options.length);
+		
+		// Options weight is proportional to row count (like ContentGroup.weight)
+		// Use larger weight if options contain at least one image
+		const optionsWeight = hasImageOption ? Constants.LARGE_CONTENT_WEIGHT : rowCount;
+
+		this.appDispatch(answerOptions({ 
+			questionHasScreenContent, 
+			options, 
+			useStackedAnswerLayout, 
+			contentWeight, 
+			optionsWeight,
+			optionsRowCount: rowCount,
+			optionsColumnCount: columnCount
+		}));
 	}
 
 	onBeginPressButton() {

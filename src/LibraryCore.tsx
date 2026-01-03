@@ -66,9 +66,13 @@ function processMessage(controller: ClientController, payload: any, appDispatch:
 			controller.onAnswerOption(payload.index, payload.label, payload.contentType, payload.contentValue);
 			break;
 
-		case 'answerOptionsLayout':
-			controller.onAnswerOptionsLayout(payload.questionHasScreenContent, payload.typeNames);
+		case 'answerOptionsLayout': {
+			const useStackedLayout = !payload.questionHasScreenContent;
+			// Default weights when called from library (no screen content info available)
+			const contentWeight = 2;
+			controller.onAnswerOptionsLayout(payload.questionHasScreenContent, payload.typeNames, useStackedLayout, contentWeight);
 			break;
+		}
 
 		case 'askAnswer':
 			controller.onAskAnswer(null);
