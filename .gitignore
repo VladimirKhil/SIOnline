@@ -262,3 +262,8 @@ __pycache__/
 /dist
 /tauri/dist
 test-screenshots/
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/

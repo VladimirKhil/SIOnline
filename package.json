@@ -11,6 +11,9 @@
     "build-lib-quest": "webpack --mode production --env type=library-quest",
     "start": "webpack serve --mode development",
     "test": "jest",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:debug": "playwright test --debug",
     "test-scenario": "ts-node --esm ./src/Runner.ts",
     "lint": "eslint . --ext .ts --ext .tsx"
   },
@@ -68,6 +71,7 @@
     "html-loader": "^3.0.1",
     "html-webpack-plugin": "^5.5.0",
     "jest": "^28.1.0",
+    "msw": "^2.12.7",
     "playwright": "^1.57.0",
     "postcss-import": "^14.0.2",
     "postcss-loader": "^7.2.4",
@@ -89,5 +93,10 @@
   "jest": {
     "preset": "ts-jest",
     "testEnvironment": "node"
+  },
+  "msw": {
+    "workerDirectory": [
+      "public"
+    ]
   }
 }

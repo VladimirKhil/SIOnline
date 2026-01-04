@@ -18,7 +18,8 @@ module.exports = (env, argv) => {
 		devtool: argv.mode === 'development' ? 'inline-source-map' : undefined,
 		devServer: {
 			static: './wwwroot',
-			historyApiFallback: true
+			historyApiFallback: true,
+			open: argv.mode === 'development'
 		},
 		module: {
 			rules: [
