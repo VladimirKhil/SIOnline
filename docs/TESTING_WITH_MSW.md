@@ -86,31 +86,37 @@ The following API endpoints are currently mocked:
 
 ### In Jest Tests
 
-MSW is configured to work automatically with Jest tests. Create a setup file if needed:
+**Important Note**: MSW v2 uses ESM modules which can cause compatibility issues with Jest's CommonJS environment. For this reason, MSW setup is **not enabled by default** for Jest tests.
+
+#### Manual Setup for Specific Tests
+
+If you need MSW in specific Jest tests, manually import and setup the server:
 
 ```typescript
-// test/setup.ts
+// test/YourTest.test.ts
 import { server } from '../src/mocks/server';
 
-// Start MSW server before all tests
-beforeAll(() => server.listen());
+describe('API Tests with MSW', () => {
+  beforeAll(() => server.listen());
+  afterEach(() => server.resetHandlers());
+  afterAll(() => server.close());
 
-// Reset handlers after each test
-afterEach(() => server.resetHandlers());
-
-// Clean up after all tests
-afterAll(() => server.close());
+  test('should fetch bot names', async () => {
+    // Your test that makes API calls
+    // MSW will intercept the requests
+  });
+});
 ```
 
-Then use in your test configuration (already in `package.json`):
+#### Global Setup (Optional)
 
-```json
-{
-  "jest": {
-    "setupFilesAfterEnv": ["<rootDir>/test/setup.ts"]
-  }
-}
-```
+If you want MSW enabled for all Jest tests, you need to:
+
+1. Uncomment the setup code in `test/setup.ts`
+2. May need additional Jest configuration for ESM support
+3. Be prepared for potential module resolution issues
+
+**Recommendation**: Use MSW primarily with Playwright E2E tests. For Jest unit tests, consider mocking at the module or function level instead of network level.
 
 ### In Playwright Tests
 

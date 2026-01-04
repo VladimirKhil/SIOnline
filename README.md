@@ -13,6 +13,8 @@ npm install
 npm run start
 ```
 
+The development server will automatically open your browser to `http://localhost:8080`.
+
 Build:
 
 ```
@@ -30,6 +32,19 @@ Run Jest unit tests for components and logic:
 npm test
 ```
 
+## End-to-End Tests
+Run Playwright E2E tests for complete user flows:
+```bash
+# Run all E2E tests
+npm run test:e2e
+
+# Run in UI mode (interactive)
+npm run test:e2e:ui
+
+# Run in debug mode (step-through)
+npm run test:e2e:debug
+```
+
 ## Integration Test
 Comprehensive game flow test without UI (connects to live server).
 
@@ -42,6 +57,9 @@ See [test/GAME_INTEGRATION_TEST.md](test/GAME_INTEGRATION_TEST.md) for details.
 
 ## Manual Testing
 For detailed instructions on visual testing with UI, see [TESTING.md](./TESTING.md).
+
+## Mock Service Worker (MSW)
+API mocking for testing without a live server. See [docs/TESTING_WITH_MSW.md](docs/TESTING_WITH_MSW.md) for details.
 
 # Desktop build
 
