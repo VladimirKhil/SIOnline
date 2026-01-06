@@ -3,6 +3,7 @@ import HostInfo from '../client/contracts/HostInfo';
 import StorageFilter from '../client/contracts/StorageFilter';
 import GameInfo from '../client/contracts/GameInfo';
 import Slice from '../client/contracts/Slice';
+import ServerGameType from '../client/contracts/ServerGameType';
 
 // Mock data for bot names
 const mockBotNames = [
@@ -26,17 +27,21 @@ const mockHostInfo: HostInfo = {
 	maxPackageSizeMb: 100,
 	contentInfos: [
 		{
-			ServiceUri: 'http://localhost:8080/content',
-			ServiceName: 'Mock Content Service',
-			IconUri: null
+			serviceUri: 'http://localhost:8080/content',
+			region: 'en-US'
 		}
 	],
 	storageInfos: [
 		{
-			ServiceUri: 'http://localhost:8080/storage',
-			ServiceName: 'Mock Storage Service',
-			IconUri: null,
-			PackageCount: 150
+			id: 'mock-storage',
+			serviceUri: 'http://localhost:8080/storage',
+			name: 'Mock Storage Service',
+			randomPackagesSupported: true,
+			identifiersSupported: true,
+			maximumPageSize: 50,
+			uri: 'http://localhost:8080/storage',
+			packageProperties: ['Name', 'Publisher', 'Tags'],
+			facets: ['Difficulty', 'Language']
 		}
 	]
 };
@@ -59,7 +64,7 @@ const mockGames: GameInfo[] = [
 		GameID: 1,
 		GameName: 'Test Game 1',
 		Language: 'en-US',
-		Mode: 0, // Classic
+		Mode: ServerGameType.Classic,
 		Owner: 'TestUser',
 		PackageName: 'Test Package 1',
 		PasswordRequired: false,
@@ -82,7 +87,7 @@ const mockGames: GameInfo[] = [
 		GameID: 2,
 		GameName: 'Test Game 2',
 		Language: 'en-US',
-		Mode: 1, // Simple
+		Mode: ServerGameType.Simple,
 		Owner: 'Player2',
 		PackageName: 'Test Package 2',
 		PasswordRequired: true,
