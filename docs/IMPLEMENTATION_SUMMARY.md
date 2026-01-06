@@ -170,11 +170,10 @@ npm run lint          # ESLint
 
 ```json
 "devDependencies": {
-  "msw": "^2.12.7"  // Latest stable version
+  "msw": "^2.12.7",
+  "@playwright/test": "^1.57.0"
 }
 ```
-
-**Note**: Playwright v1.57.0 was already installed
 
 ### MSW Version Information
 
