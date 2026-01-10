@@ -61,7 +61,9 @@ SIOnline supports multiple testing approaches, each suited for different scenari
 # Run all E2E tests
 npm run test:e2e
 
-# Run tests in UI mode (interactive)
+# Run tests in UI mode (interactive) - REQUIRES DISPLAY/X Server
+# Note: UI mode only works on local machines with a graphical display
+# In headless environments (CI, Codespaces), use regular test mode instead
 npm run test:e2e:ui
 
 # Run tests in debug mode (step-through)
@@ -75,6 +77,11 @@ npx playwright test --project=chromium
 npx playwright test --project=firefox
 npx playwright test --project=webkit
 ```
+
+**Important Notes**:
+- **UI mode** (`test:e2e:ui`) requires a graphical display (X Server) and will not work in headless environments like CI pipelines, Docker containers without X forwarding, or GitHub Codespaces
+- For headless environments, use the regular `test:e2e` command instead
+- To use UI mode in Codespaces or similar environments, you would need to set up X11 forwarding or use `xvfb-run`
 
 **Features**:
 - ✅ Runs in multiple browsers (Chromium, Firefox, WebKit)
@@ -382,6 +389,45 @@ During gameplay, verify:
 - ✅ No console errors in browser developer tools (F12)
 
 ## Troubleshooting
+
+### Playwright E2E Tests
+
+#### UI Mode Requires Display
+
+**Error**: `ProtocolError: Protocol error (Browser.getVersion): Internal server error, session closed`
+
+**Cause**: Playwright UI mode (`npm run test:e2e:ui`) requires a graphical display (X Server) and cannot run in headless environments.
+
+**Solution**: 
+- **On local machines with display**: UI mode should work normally after running `npx playwright install`
+- **In headless environments** (CI, Docker, GitHub Codespaces):
+  - Use regular test mode: `npm run test:e2e`
+  - Or use xvfb for virtual display: `xvfb-run npm run test:e2e:ui`
+  - Or run tests with headed:false in config
+
+**Alternative commands for headless environments**:
+```bash
+# Regular test mode (works everywhere)
+npm run test:e2e
+
+# Run with HTML report (viewable after test completes)
+npm run test:e2e
+npx playwright show-report
+
+# Debug specific test
+npx playwright test e2e/game-flow.spec.ts --debug
+```
+
+#### Missing Browsers
+
+**Error**: `Error: browserType.launch: Executable doesn't exist`
+
+**Solution**: Install Playwright browsers:
+```bash
+npx playwright install
+# Or with system dependencies (Linux):
+npx playwright install --with-deps
+```
 
 ### Automated Testing with Playwright
 

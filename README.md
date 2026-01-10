@@ -38,12 +38,15 @@ Run Playwright E2E tests for complete user flows:
 # Run all E2E tests
 npm run test:e2e
 
-# Run in UI mode (interactive)
+# Run in UI mode (interactive) - REQUIRES display/X Server
+# Only works on local machines with graphical display
 npm run test:e2e:ui
 
 # Run in debug mode (step-through)
 npm run test:e2e:debug
 ```
+
+**Note**: The UI mode (`test:e2e:ui`) requires a graphical environment and will not work in headless environments like CI pipelines or GitHub Codespaces. Use `npm run test:e2e` instead in those environments.
 
 ## Integration Test
 Comprehensive game flow test without UI (connects to live server).
