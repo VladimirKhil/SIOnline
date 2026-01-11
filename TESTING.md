@@ -1,16 +1,22 @@
-# Visual Testing Guide for SIOnline
+# Testing Guide for SIOnline
 
-This guide provides step-by-step instructions for manually testing the SIOnline application in a browser.
+This guide provides instructions for testing the SIOnline application using various approaches: automated end-to-end tests, unit tests, integration testing, and manual UI testing.
 
 ## Table of Contents
 
 1. [Prerequisites](#prerequisites)
 2. [Setup](#setup)
-3. [Starting the Development Server](#starting-the-development-server)
-4. [Launching Browser with Disabled Web Security](#launching-browser-with-disabled-web-security)
-5. [Testing Procedure](#testing-procedure)
-6. [Automated Integration Testing](#automated-integration-testing)
-7. [Troubleshooting](#troubleshooting)
+3. [Testing Approaches](#testing-approaches)
+   - [Automated E2E Tests with Playwright](#automated-e2e-tests-with-playwright)
+   - [Unit Tests with Jest](#unit-tests-with-jest)
+   - [Integration Testing](#integration-testing)
+   - [Manual Visual Testing](#manual-visual-testing)
+4. [Mock Service Worker (MSW)](#mock-service-worker-msw)
+5. [Starting the Development Server](#starting-the-development-server)
+6. [When to Use Each Testing Approach](#when-to-use-each-testing-approach)
+7. [Launching Browser with Disabled Web Security](#launching-browser-with-disabled-web-security)
+8. [Testing Procedure](#testing-procedure)
+9. [Troubleshooting](#troubleshooting)
 
 ## Prerequisites
 
@@ -31,6 +37,188 @@ This guide provides step-by-step instructions for manually testing the SIOnline 
    npm install
    ```
 
+3. Install Playwright browsers (if running E2E tests):
+   ```bash
+   npx playwright install
+   ```
+
+## Testing Approaches
+
+SIOnline supports multiple testing approaches, each suited for different scenarios:
+
+### Automated E2E Tests with Playwright
+
+**Purpose**: Comprehensive end-to-end testing of the UI and user flows with automated browser control.
+
+**When to use**:
+- Testing complete user journeys (login → lobby → game creation → gameplay)
+- Visual regression testing
+- CI/CD pipeline validation
+- Cross-browser compatibility testing
+
+**Commands**:
+```bash
+# Run all E2E tests
+npm run test:e2e
+
+# Run tests in UI mode (interactive) - REQUIRES DISPLAY/X Server
+# Note: UI mode only works on local machines with a graphical display
+# In headless environments (CI, Codespaces), use regular test mode instead
+npm run test:e2e:ui
+
+# Run tests in debug mode (step-through)
+npm run test:e2e:debug
+
+# Run specific test file
+npx playwright test e2e/game-flow.spec.ts
+
+# Run tests in specific browser
+npx playwright test --project=chromium
+npx playwright test --project=firefox
+npx playwright test --project=webkit
+```
+
+**Important Notes**:
+- **UI mode** (`test:e2e:ui`) requires a graphical display (X Server) and will not work in headless environments like CI pipelines, Docker containers without X forwarding, or GitHub Codespaces
+- For headless environments, use the regular `test:e2e` command instead
+- To use UI mode in Codespaces or similar environments, you would need to set up X11 forwarding or use `xvfb-run`
+
+**Features**:
+- ✅ Runs in multiple browsers (Chromium, Firefox, WebKit)
+- ✅ Automatic screenshots on failure
+- ✅ Video recording of failed tests
+- ✅ Visual regression testing with snapshots
+- ✅ Integrated with MSW for API mocking
+- ✅ Detailed HTML reports
+
+**Test location**: `e2e/` directory
+
+**Configuration**: `playwright.config.ts`
+
+**Example test**:
+```typescript
+import { test, expect } from '@playwright/test';
+
+test('should load home page', async ({ page }) => {
+  await page.goto('/');
+  await expect(page).toHaveTitle(/SIOnline/);
+});
+```
+
+### Unit Tests with Jest
+
+**Purpose**: Test individual functions, components, and modules in isolation.
+
+**When to use**:
+- Testing utility functions
+- Testing Redux slices and action creators
+- Testing React components (with React Testing Library)
+- Testing business logic
+
+**Commands**:
+```bash
+# Run all unit tests
+npm test
+
+# Run tests in watch mode
+npm test -- --watch
+
+# Run specific test file
+npm test -- ClientController.test.ts
+
+# Run with coverage
+npm test -- --coverage
+```
+
+**Features**:
+- ✅ Fast execution
+- ✅ TypeScript support with ts-jest
+- ✅ Can use MSW for API mocking
+- ✅ Isolated testing environment
+
+**Test location**: `test/` directory
+
+**Configuration**: In `package.json` (jest section)
+
+**Example test**:
+```typescript
+import { calculateScore } from '../src/utils/scoring';
+
+test('should calculate correct score', () => {
+  expect(calculateScore(10, 2)).toBe(20);
+});
+```
+
+### Integration Testing
+
+**Purpose**: Test complete game flows without UI, connecting to live or mocked servers.
+
+**When to use**:
+- Testing game logic and state management
+- Testing server communication
+- Regression testing without UI
+- Automated game scenario validation
+
+**Commands**:
+```bash
+# Run standalone game simulation (connects to live server)
+npm run test-scenario
+
+# Run integration test with Jest (disabled by default)
+RUN_INTEGRATION_TEST=1 npm test GameIntegration.test.ts
+
+# Adjust timeout for slower connections
+RUN_INTEGRATION_TEST=1 TEST_TIMEOUT=120000 npm test GameIntegration.test.ts
+```
+
+**Features**:
+- ✅ No UI required
+- ✅ Tests full game flow including SignalR
+- ✅ Validates game state transitions
+- ✅ Can use OpenAI for automated gameplay (Runner.ts)
+
+**Test files**:
+- `src/Runner.ts` - Standalone simulation with optional OpenAI
+- `test/GameIntegration.test.ts` - Jest integration test
+
+**Documentation**: See [test/GAME_INTEGRATION_TEST.md](test/GAME_INTEGRATION_TEST.md)
+
+### Manual Visual Testing
+
+**Purpose**: Human-in-the-loop testing with real browser interaction.
+
+**When to use**:
+- Visual QA and design validation
+- Exploratory testing
+- Testing with real server interactions
+- Debugging UI issues
+
+**See**: [Manual Visual Testing](#manual-visual-testing-1) section below for detailed instructions.
+
+## Mock Service Worker (MSW)
+
+SIOnline uses MSW to mock API endpoints for testing and development without requiring a live server.
+
+**What it does**:
+- Intercepts HTTP requests at the network level
+- Returns mock data for API endpoints
+- Works in both browser and Node.js environments
+
+**Mocked endpoints**:
+- `GET /api/v1/info/bots` - Bot player names
+- `GET /api/v1/info/host` - Server information
+- `GET /api/v1/info/storage-filter/:id` - Storage filters
+- `POST /api/v1/games` - Game creation
+- `POST /api/v1/games/auto` - Auto game creation
+- `GET /api/v1/games?pin=:pin` - Game lookup by PIN
+
+**Configuration**:
+- Handlers: `src/mocks/handlers.ts`
+- Browser setup: `src/mocks/browser.ts`
+- Test setup: `src/mocks/server.ts`
+
+**Detailed documentation**: [docs/TESTING_WITH_MSW.md](docs/TESTING_WITH_MSW.md)
+
 ## Starting the Development Server
 
 Start the development server with:
@@ -38,6 +226,8 @@ Start the development server with:
 ```bash
 npm start
 ```
+
+**New in this version**: The browser will automatically open to `http://localhost:8080` when the dev server starts.
 
 The application will be available at `http://localhost:8080` (default port may vary).
 
@@ -47,6 +237,37 @@ webpack compiled successfully
 ```
 
 **Keep this terminal window open** - the development server needs to keep running.
+
+## When to Use Each Testing Approach
+
+| Scenario | Recommended Approach | Alternative |
+|----------|---------------------|-------------|
+| Quick validation after code change | Unit tests (Jest) | E2E tests |
+| Visual/UX validation | Manual testing | Playwright E2E with snapshots |
+| CI/CD pipeline | Playwright E2E + Jest | Integration test (if SignalR not needed) |
+| Testing game logic | Integration test or Runner.ts | Jest unit tests |
+| Cross-browser compatibility | Playwright E2E | Manual testing |
+| Performance testing | Manual testing with DevTools | - |
+| Testing with live server | Manual testing or Runner.ts | - |
+| Testing without server | Playwright + MSW or Jest + MSW | - |
+| Debugging UI issues | Manual testing | Playwright debug mode |
+| Automated regression testing | Playwright E2E | Jest + Integration test |
+
+**Decision tree**:
+
+```
+Do you need a live server?
+├─ Yes → Manual testing or Runner.ts
+└─ No → Are you testing UI?
+    ├─ Yes → Playwright E2E with MSW
+    └─ No → Are you testing game flow?
+        ├─ Yes → Integration test (GameIntegration.test.ts)
+        └─ No → Jest unit tests
+```
+
+## Manual Visual Testing
+
+For detailed manual testing instructions, including browser setup and step-by-step procedures, see the sections below.
 
 ## Launching Browser with Disabled Web Security
 
@@ -168,6 +389,45 @@ During gameplay, verify:
 - ✅ No console errors in browser developer tools (F12)
 
 ## Troubleshooting
+
+### Playwright E2E Tests
+
+#### UI Mode Requires Display
+
+**Error**: `ProtocolError: Protocol error (Browser.getVersion): Internal server error, session closed`
+
+**Cause**: Playwright UI mode (`npm run test:e2e:ui`) requires a graphical display (X Server) and cannot run in headless environments.
+
+**Solution**: 
+- **On local machines with display**: UI mode should work normally after running `npx playwright install`
+- **In headless environments** (CI, Docker, GitHub Codespaces):
+  - Use regular test mode: `npm run test:e2e`
+  - Or use xvfb for virtual display: `xvfb-run npm run test:e2e:ui`
+  - Or run tests with headed:false in config
+
+**Alternative commands for headless environments**:
+```bash
+# Regular test mode (works everywhere)
+npm run test:e2e
+
+# Run with HTML report (viewable after test completes)
+npm run test:e2e
+npx playwright show-report
+
+# Debug specific test
+npx playwright test e2e/game-flow.spec.ts --debug
+```
+
+#### Missing Browsers
+
+**Error**: `Error: browserType.launch: Executable doesn't exist`
+
+**Solution**: Install Playwright browsers:
+```bash
+npx playwright install
+# Or with system dependencies (Linux):
+npx playwright install --with-deps
+```
 
 ### Automated Testing with Playwright
 
