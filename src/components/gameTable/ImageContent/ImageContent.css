@@ -27,5 +27,8 @@
 }
 
 @keyframes animateClip {
-	100% { clip-path: inset(0 0 0 0); }
+	100% {
+		clip-path: inset(0 0 0 0);
+		-webkit-clip-path: inset(0 0 0 0);
+	}
 }

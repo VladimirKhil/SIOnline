@@ -43,6 +43,7 @@ const ImageContent: React.FC<ImageContentProps> = ({ uri }) => {
 	const cropStyle: React.CSSProperties = {
 		animationDuration,
 		clipPath,
+		WebkitClipPath: clipPath,
 		opacity: isLoaded ? 1 : 0,
 		transition: 'opacity 0.75s ease-out'
 	};
