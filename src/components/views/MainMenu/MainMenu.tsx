@@ -109,7 +109,10 @@ export default function MainMenu(): JSX.Element {
 							title={localization.serverLicense}
 							onClick={() => setShowLicense(true)}
 						>
-							ⓘ
+							<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+								<circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2"/>
+								<path d="M12 7V7.01M12 11V17" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+							</svg>
 						</button>
 
 						<button
@@ -118,7 +121,16 @@ export default function MainMenu(): JSX.Element {
 							title={localization.aboutTitle}
 							onClick={() => appDispatch(navigate({ navigation: { path: Path.About }, saveState: true }))}
 						>
-							❔
+							<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+								<circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2"/>
+								<path
+									d="M9 9C9 7.34 10.34 6 12 6C13.66 6 15 7.34 15 9C15 10.31 14.16 11.42 13 11.83V13"
+									stroke="currentColor"
+									strokeWidth="2"
+									strokeLinecap="round"
+								/>
+								<circle cx="12" cy="17" r="1" fill="currentColor"/>
+							</svg>
 						</button>
 					</div>
 
@@ -142,12 +154,6 @@ export default function MainMenu(): JSX.Element {
 						</button>
 					))}
 				</div>
-
-				{common.proxyAvailable && (
-					<div className='proxyHint'>
-						📡 {localization.useProxyOnErrors}
-					</div>
-				)}
 			</div>
 
 			{common.clearUrls ? null : <div className='links'>

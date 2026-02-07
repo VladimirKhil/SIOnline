@@ -19,6 +19,7 @@ import GameSound from './model/enums/GameSound';
 import { AppDispatch } from './state/store';
 import { setAppSound, setTableBackgroundColor, setTableTextColor } from './state/settingsSlice';
 import { loadState } from './state/SavedState';
+import { setFontsReady } from './state/commonSlice';
 
 declare global {
     interface Window {
@@ -347,6 +348,16 @@ export default function runCore(game?: IGameClient): Store<State, AnyAction> {
 			});
 		}
 	}
+
+	document.fonts.ready.then(() => {
+		window.setTimeout(() => store.dispatch(setFontsReady(true)), 1000);
+	});
+
+	// Listen for subsequent font loads
+    document.fonts.addEventListener('loadingdone', () => {
+        store.dispatch(setFontsReady(false));
+        window.setTimeout(() => store.dispatch(setFontsReady(true)), 100);
+    });
 
 	return store;
 }

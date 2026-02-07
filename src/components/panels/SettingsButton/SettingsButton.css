@@ -1,8 +1,27 @@
 .settingsButton {
-    display: inline-block;
-    font-size: 26px;
-    padding: 0 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
     border: 0;
-    height: 45px;
+    height: 100%;
     width: 45px;
+    background: transparent;
+    color: #FFFFFF;
+    transition: all 0.2s ease;
+}
+
+.settingsButton svg {
+    width: 100%;
+    height: 100%;
+}
+
+.settingsButton:hover {
+    background: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 0 12px rgba(255, 255, 255, 0.2);
+}
+
+.settingsButton:active {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(0.95);
 }

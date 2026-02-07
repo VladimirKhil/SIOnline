@@ -13,12 +13,13 @@
 	.links {
 		display: none;
 		position: absolute;
-		right: 10px;
-		bottom: 10px;
+		right: 15px;
+		bottom: 15px;
 
 		ul {
 			display: flex;
 			flex-direction: row;
+			gap: 5px;
 		}
 
 		li {
@@ -28,29 +29,31 @@
 			cursor: pointer;
 			width: 40px;
 			height: 40px;
+			padding: 10px;
+			border-radius: 6px;
+			transition: all 0.2s ease;
 
 			&:hover {
-				background: linear-gradient(180deg, #2860ef 14.29%, rgb(39, 108, 237) 100%);
+				background: rgba(255, 255, 255, 0.2);
 			}
 
 			img {
-				width: 80%;
-				height: 80%;
-				margin-left: 5px;
-				margin-top: 5px;
+				width: 100%;
+				height: 100%;
+				object-fit: contain;
 			}
 		}
 	}
 }
 
 .welcomeView .logo, .welcomeView .logoMini {
-    max-width: 600px;
-	width: 90%;
+    max-width: 500px;
+	width: 80%;
     background-size: contain;
 	background-repeat: no-repeat;
 	background-position: center;
     margin-top: 10px;
-	flex: 100px 0 0;
+	flex: 80px 0 0;
 }
 
 .welcomeView .logo {
@@ -86,11 +89,7 @@
 	flex: 0 0 auto;
 }
 
-.mainHeader {
-	.about {
-		width: 45px;
-	}
-}
+
 
 .mainHeader .right {
 	flex: 1 0 0;
@@ -109,15 +108,13 @@
 
 .serverName {
 	color: #FFFFFF;
-	margin-left: 10px;
+	padding: 0 10px;
 	line-height: 45px;
 	height: 45px;
 	display: inline-block;
 }
 
-.serverLicense {
-	margin-left: 10px;
-	font-size: 18px;
+.serverLicense, .about {
 	cursor: pointer;
 	display: inline-flex;
 	align-items: center;
@@ -125,14 +122,32 @@
 	border: 0;
 	flex: 0 0 45px;
 	width: 45px;
-	height: 45px;
-	padding: 3px;
+	height: 100%;
+	padding: 10px;
+	background: transparent;
+	color: #FFFFFF;
+	transition: all 0.2s ease;
+
+	svg {
+		width: 100%;
+		height: 100%;
+	}
+
+	&:hover {
+		background: rgba(255, 255, 255, 0.2);
+		box-shadow: 0 0 12px rgba(255, 255, 255, 0.2);
+	}
+
+	&:active {
+		background: rgba(255, 255, 255, 0.3);
+		transform: scale(0.95);
+	}
 }
 
 .licenseDialog {
 	background-color: #000451dc;
-	backdrop-filter: blur(10px);
 	-webkit-backdrop-filter: blur(10px);
+	backdrop-filter: blur(10px);
 	color: white;
 	overflow-y: hidden;
 	padding: 10px;
@@ -173,19 +188,7 @@
 	overflow: hidden;
 }
 
-.proxyHint {
-	margin-top: 20px;
-	padding: 10px 20px;
-	background-color: rgba(40, 96, 239, 0.1);
-	border: 1px solid rgba(40, 96, 239, 0.3);
-	border-radius: 8px;
-	color: #FFFFFF;
-	font-size: 14px;
-	text-align: center;
-	opacity: 0.8;
-	max-width: 600px;
-	line-height: 1.4;
-}
+
 
 @keyframes welcomeRowsLeft {
 	from {
@@ -208,6 +211,27 @@
 button.standard.welcomeRow {
 	animation-duration: .5s;
 	animation-fill-mode: forwards;
+	background: rgba(255, 255, 255, 0.1);
+	border: 2px solid rgba(255, 255, 255, 0.2);
+	border-radius: 4px;
+	box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.05), 0 2px 8px rgba(0, 0, 0, 0.3);
+	transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+	&:hover {
+		background: rgba(255, 255, 255, 0.25);
+		border-color: rgba(255, 255, 255, 0.4);
+		box-shadow: 
+			inset 0 0 30px rgba(255, 255, 255, 0.1),
+			0 0 20px rgba(255, 255, 255, 0.2),
+			0 4px 12px rgba(0, 0, 0, 0.4);
+		transform: scale(1.02);
+	}
+
+	&:active {
+		background: rgba(255, 255, 255, 0.35);
+		transform: scale(0.98);
+		transition: transform 0.1s;
+	}
 }
 
 .welcomeRow.left {
@@ -282,7 +306,7 @@ button.standard.welcomeExit {
 	}
 
 	.welcomeView .logo {
-		flex: 200px 0 0;
+		flex: 150px 0 0;
 	}
 }
 
@@ -300,7 +324,7 @@ button.standard.welcomeExit {
 
 @media screen and (min-height: 900px) and (min-width: 1100px) {
 	.welcomeView .logo {
-		flex: 300px 0 0;
+		flex: 220px 0 0;
 	}
 
 	.welcomeView .mainArea {
