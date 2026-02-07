@@ -91,7 +91,7 @@ const TableContentComponent: React.FC<TableContentProps> = (props) => {
 	let { content } = props;
 
 	if (props.externalMediaUris.length > 0) {
-		return <ExternalMediaWarning />;
+		return <TableBorder><ExternalMediaWarning /></TableBorder>;
 	}
 
 	if (props.attachContentToTable &&
