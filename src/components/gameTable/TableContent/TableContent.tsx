@@ -12,7 +12,7 @@ import StackedContent from '../StackedContent/StackedContent';
 import ExternalMediaWarning from '../ExternalMediaWarning/ExternalMediaWarning';
 import { useAudioContext } from '../../../contexts/AudioContextProvider';
 
-import './TableContent.css';
+import './TableContent.scss';
 
 interface TableContentProps {
 	layoutMode: LayoutMode;
@@ -49,8 +49,6 @@ function getLayout(
 	mainContent: JSX.Element,
 	useStackedAnswerLayout: boolean,
 	isPhoneMode: boolean,
-	content: ContentGroup[],
-	answerOptionsCount: number,
 	contentWeight: number,
 	optionsWeight: number
 ) {
@@ -72,11 +70,11 @@ function getLayout(
 
 	return (
 		<div className={layoutClass}>
-			<div style={contentStyle}>
+			<div className="layout__content" style={contentStyle}>
 				{mainContent}
 			</div>
-			<div style={optionsStyle}>
-				<AnswerOptions />
+			<div className="layout__options" style={optionsStyle}>
+				<AnswerOptions gridMode={shouldStack} />
 			</div>
 		</div>
 	);
@@ -139,7 +137,7 @@ const TableContentComponent: React.FC<TableContentProps> = (props) => {
 	return (
 		<TableBorder>
 			<div className='table-content'>
-				{getLayout(props.layoutMode, mainContent, props.useStackedAnswerLayout, isPhoneMode, content, props.answerOptionsCount, props.contentWeight, props.optionsWeight)}
+				{getLayout(props.layoutMode, mainContent, props.useStackedAnswerLayout, isPhoneMode, props.contentWeight, props.optionsWeight)}
 
 				<AudioContent audioContext={audioContext} autoPlayEnabled={canPlayAudio} />
 			</div>

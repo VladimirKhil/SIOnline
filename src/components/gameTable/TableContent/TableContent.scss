@@ -20,6 +20,26 @@
     display: flex;
 	flex-direction: row;
 	overflow: hidden;
+
+	.layout__content {
+		flex: 3 0 0;
+		display: flex;
+	}
+
+	.layout__options {
+		flex: 1 0 0;
+		display: flex;
+
+		.answerOptions {
+			display: flex;
+			flex-direction: column;
+
+			.answerOption {
+				flex: 1;
+				margin: 2px;
+			}
+		}
+	}
 }
 
 .optionsLayoutStacked {
@@ -28,10 +48,22 @@
     display: flex;
 	flex-direction: column;
 	overflow: hidden;
+
+	.layout__options {
+		flex: 1 0 0;
+		display: flex;
+
+		.answerOptions {
+			padding: 0 5px;
+
+			.answerOption {
+				margin: 0 1px;
+			}
+		}
+	}
 }
 
-.optionsLayout > div,
-.optionsLayoutStacked > div {
+.layout__content, .layout__options {
 	overflow: hidden;
 }
 

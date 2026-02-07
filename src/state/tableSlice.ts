@@ -239,19 +239,29 @@ export const tableSlice = createSlice({
 			state.externalMediaUris = [];
 			state.useStackedAnswerLayout = false;
 		},
-		answerOptions: (state, action: PayloadAction<{ questionHasScreenContent: boolean, options: AnswerOption[], useStackedAnswerLayout: boolean, contentWeight: number, optionsWeight: number, optionsRowCount: number, optionsColumnCount: number }>) => {
+		answerOptions: (
+			state,
+			action: PayloadAction<{
+				questionHasScreenContent: boolean,
+				options: AnswerOption[],
+				useStackedAnswerLayout: boolean,
+				contentWeight: number,
+				optionsWeight: number,
+				optionsRowCount: number,
+				optionsColumnCount: number }>
+		) => {
 			state.layoutMode = LayoutMode.AnswerOptions;
 			state.answerOptions = action.payload.options;
 			state.mode = TableMode.Content;
-			
+
 			// Enable stacked layout based on information from Layout message
 			// The flag is set when question has no screen content (text-only or audio-only)
 			state.useStackedAnswerLayout = action.payload.useStackedAnswerLayout;
-			
+
 			// Set weights for proportional allocation
 			state.contentWeight = action.payload.contentWeight;
 			state.optionsWeight = action.payload.optionsWeight;
-			
+
 			// Set row and column count for answer options layout
 			state.optionsRowCount = action.payload.optionsRowCount;
 			state.optionsColumnCount = action.payload.optionsColumnCount;

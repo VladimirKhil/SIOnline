@@ -444,44 +444,49 @@ const viewerHandler = (
 			// args[3+]: answer option content types
 			const screenContentString = args[2];
 			const answerOptionTypes = args.slice(3);
-			
+
 			// Parse screen content to determine if it's single text-only
 			// and calculate content weight proportionally to text length
 			const contentGroups = screenContentString.split('|');
 			const allContentItems: string[] = [];
 			let totalTextLength = 0;
-			
+			let hasContent = false;
+
 			contentGroups.forEach(group => {
 				const items = group.split('+');
+
 				items.forEach(item => {
 					// Extract type and length from format "type" or "type.length"
 					const parts = item.split('.');
 					const contentType = parts[0];
 					allContentItems.push(contentType);
-					
+
 					// Sum text lengths for weight calculation
 					if (contentType.toLowerCase() === 'text' && parts.length > 1) {
 						const textLength = parseInt(parts[1], 10);
+
 						if (!isNaN(textLength)) {
 							totalTextLength += textLength;
 						}
+					} else {
+						hasContent = true; // Non-text content exists
 					}
 				});
 			});
-			
+
 			// Calculate content weight proportionally to text length (like in onScreenContent)
 			// Math.min(Constants.LARGE_CONTENT_WEIGHT, Math.max(1, value.length / 80))
-			const contentWeight = totalTextLength > 0 
+			const contentWeight = totalTextLength > 0
 				? Math.min(Constants.LARGE_CONTENT_WEIGHT, Math.max(1, totalTextLength / 80))
-				: Constants.LARGE_CONTENT_WEIGHT; // Default for non-text content
-			
+				: (hasContent ? Constants.LARGE_CONTENT_WEIGHT : 0); // Default for non-text content
+
 			// Use stacked layout when screen content is single text-only item
-			const useStackedAnswerLayout = allContentItems.length === 1 && 
+			const useStackedAnswerLayout = allContentItems.length === 1 &&
 				allContentItems[0].toLowerCase() === 'text';
-			
+
 			// Keep questionHasScreenContent for backward compatibility (deprecated)
 			const questionHasScreenContent = args.length > 2 && screenContentString.length > 0;
-			
+
 			controller.onAnswerOptionsLayout(questionHasScreenContent, answerOptionTypes, useStackedAnswerLayout, contentWeight);
 			break;
 

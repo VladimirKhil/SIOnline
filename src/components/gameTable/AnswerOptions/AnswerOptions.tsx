@@ -24,9 +24,15 @@ function getContent(content: ContentItem): JSX.Element | null {
 	}
 }
 
-export default function AnswerOptions() {
-	const table = useAppSelector((rootState: RootState) => rootState.table);
-	const room = useAppSelector((rootState: RootState) => rootState.room2);
+export default function AnswerOptions({ gridMode = false }: { gridMode?: boolean }): JSX.Element {
+	const { optionsRowCount, optionsColumnCount, answerOptions, isSelectable } = useAppSelector((rootState: RootState) => ({
+		optionsRowCount: rootState.table.optionsRowCount,
+		optionsColumnCount: rootState.table.optionsColumnCount,
+		answerOptions: rootState.table.answerOptions,
+		isSelectable: rootState.table.isSelectable,
+	}));
+
+	const displayAnswerOptionsLabels = useAppSelector((rootState: RootState) => rootState.room2.settings.displayAnswerOptionsLabels);
 	const appDispatch = useAppDispatch();
 
 	function getOptionClass(itemState: ItemState) {
@@ -50,18 +56,18 @@ export default function AnswerOptions() {
 	}
 
 	// Use grid layout with calculated row and column count
-	const gridStyle = {
+	const gridStyle = gridMode ? {
 		display: 'grid',
-		gridTemplateRows: `repeat(${table.optionsRowCount}, 1fr)`,
-		gridTemplateColumns: `repeat(${table.optionsColumnCount}, 1fr)`,
+		gridTemplateRows: `repeat(${optionsRowCount}, 1fr)`,
+		gridTemplateColumns: `repeat(${optionsColumnCount}, 1fr)`,
 		gap: '4px'
-	};
+	} : {};
 
 	return (
-		<div className={`answerOptions ${table.isSelectable ? 'selectable' : ''}`} style={gridStyle}>
-			{table.answerOptions.map((o, i) => (
+		<div className={`answerOptions ${isSelectable ? 'selectable' : ''}`} style={gridStyle}>
+			{answerOptions.map((o, i) => (
 				<div key={i} className={`answerOption ${getOptionClass(o.state)}`} onClick={() => onSelectAnswerOption(o.label)}>
-					{room.settings.displayAnswerOptionsLabels ? <div className='optionLabel'>
+					{displayAnswerOptionsLabels ? <div className='optionLabel'>
 						<AutoSizedText maxFontSize={50}>{o.label}</AutoSizedText>
 					</div> : null}
 
@@ -69,7 +75,7 @@ export default function AnswerOptions() {
 						{getContent(o.content)}
 					</div>
 				</div>
-				))}
+			))}
 		</div>
 	);
 }

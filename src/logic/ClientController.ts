@@ -1371,16 +1371,16 @@ export default class ClientController implements IClientController {
 
 		// Calculate options weight based on row count using getBestRowColumnCount
 		const { rowCount, columnCount } = getBestRowColumnCount(options.length);
-		
+
 		// Options weight is proportional to row count (like ContentGroup.weight)
 		// Use larger weight if options contain at least one image
 		const optionsWeight = hasImageOption ? Constants.LARGE_CONTENT_WEIGHT : rowCount;
 
-		this.appDispatch(answerOptions({ 
-			questionHasScreenContent, 
-			options, 
-			useStackedAnswerLayout, 
-			contentWeight, 
+		this.appDispatch(answerOptions({
+			questionHasScreenContent,
+			options,
+			useStackedAnswerLayout,
+			contentWeight,
 			optionsWeight,
 			optionsRowCount: rowCount,
 			optionsColumnCount: columnCount
