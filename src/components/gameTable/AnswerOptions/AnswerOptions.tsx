@@ -49,8 +49,16 @@ export default function AnswerOptions() {
 		appDispatch(selectAnswerOption(label));
 	}
 
+	// Use grid layout with calculated row and column count
+	const gridStyle = {
+		display: 'grid',
+		gridTemplateRows: `repeat(${table.optionsRowCount}, 1fr)`,
+		gridTemplateColumns: `repeat(${table.optionsColumnCount}, 1fr)`,
+		gap: '4px'
+	};
+
 	return (
-		<div className={`answerOptions ${table.isSelectable ? 'selectable' : ''}`}>
+		<div className={`answerOptions ${table.isSelectable ? 'selectable' : ''}`} style={gridStyle}>
 			{table.answerOptions.map((o, i) => (
 				<div key={i} className={`answerOption ${getOptionClass(o.state)}`} onClick={() => onSelectAnswerOption(o.label)}>
 					{room.settings.displayAnswerOptionsLabels ? <div className='optionLabel'>

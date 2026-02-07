@@ -233,7 +233,7 @@ const ScreensView: React.FC<ScreensViewProps> = ({
 
 	return (
 		<>
-			{screens.length > 1 ? <div className='packageView__question__screens'>
+			{(screens.length > 1 || isEditMode) ? <div className='packageView__question__screens'>
 				{screens.map((_, si) => (
 					<div
 						className={`packageView__question__screen ${screenIndex === si ? 'selected' : ''}`}
@@ -253,29 +253,65 @@ const ScreensView: React.FC<ScreensViewProps> = ({
 						</div>
 					</div> : null}
 
-					{screen.groups.length > 0 ? <div className='packageView__question__current__screen'>
-						{screen.groups.map((screenGroup, gi) => <div
-							className='packageView__question__content__item__group'
-							key={gi}
-							style={{
-								flex: screenGroup.weight,
-								gridTemplateColumns: `repeat(${screenGroup.columnCount}, 1fr)`
-							}}>
-								{screenGroup.content.map((contentItem, ci) => <div
-									className='packageView__question__content__item'
-									key={contentItem.value}>
-										{getContentItem(contentItem, ci)}
+					{isEditMode ? (
+						// Simple vertical list view in edit mode
+						<div className='packageView__question__content__list'>
+							{screen.groups.map((screenGroup, gi) => 
+								screenGroup.content.map((contentItem, ci) => {
+									const globalIndex = content.items.findIndex(item => item === contentItem);
+									return (
+										<div className='packageView__question__content__list__item' key={`${gi}-${ci}`}>
+											{getContentItem(contentItem, globalIndex)}
+										</div>
+									);
+								})
+							)}
+							{screen.background && (
+								<div className='packageView__question__content__list__item'>
+									<label className='header'>Background</label>
+									{getContentItem(screen.background, findContentItemIndex(screen.background))}
+								</div>
+							)}
+							{screen.replic && (
+								<div className='packageView__question__content__list__item'>
+									<label className='header'>Replic</label>
+									{getContentItem(screen.replic, findContentItemIndex(screen.replic))}
+								</div>
+							)}
+						</div>
+					) : (
+						// Original grid layout for view mode
+						<>
+							{screen.groups.length > 0 ? <div className='packageView__question__current__screen'>
+								{screen.groups.map((screenGroup, gi) => <div
+									className='packageView__question__content__item__group'
+									key={gi}
+									style={{
+										flex: screenGroup.weight,
+										gridTemplateColumns: `repeat(${screenGroup.columnCount}, 1fr)`
+									}}>
+										{screenGroup.content.map((contentItem, ci) => {
+											const globalIndex = content.items.findIndex(item => item === contentItem);
+											return (
+												<div
+													className='packageView__question__content__item'
+													key={`${gi}-${ci}`}>
+													{getContentItem(contentItem, globalIndex)}
+												</div>
+											);
+										})}
 									</div>)}
-							</div>)}
-					</div> : null}
+							</div> : null}
 
-					{screen.background ? <div className='packageView__question__background'>
-						{getContentItem(screen.background, findContentItemIndex(screen.background))}
-					</div> : null}
+							{screen.background ? <div className='packageView__question__background'>
+								{getContentItem(screen.background, findContentItemIndex(screen.background))}
+							</div> : null}
 
-					{screen.replic ? <div className='packageView__question__replic'>
-						{getContentItem(screen.replic, findContentItemIndex(screen.replic))}
-					</div> : null}
+							{screen.replic ? <div className='packageView__question__replic'>
+								{getContentItem(screen.replic, findContentItemIndex(screen.replic))}
+							</div> : null}
+						</>
+					)}
 				</>
 				: null}
 		</>

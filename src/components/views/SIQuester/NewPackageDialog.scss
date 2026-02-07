@@ -1,0 +1,102 @@
+.newPackageDialog {
+	background-color: #1a1a2e;
+	overflow: hidden;
+	display: flex;
+	flex-direction: column;
+}
+
+.newPackageDialogBody {
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+	min-height: 0;
+	overflow: hidden;
+
+	.newPackageDialogContent {
+		flex: 1;
+		overflow-y: auto;
+		scrollbar-width: thin;
+		padding: 15px 20px;
+		display: flex;
+		flex-direction: column;
+		gap: 12px;
+	}
+
+	.newPackageDialogRow {
+		display: flex;
+		flex-direction: column;
+		gap: 4px;
+
+		label {
+			color: #fff;
+			font-size: 14px;
+		}
+
+		input[type="text"],
+		input[type="number"] {
+			padding: 8px 10px;
+			font-size: 14px;
+			border: 1px solid #555;
+			border-radius: 4px;
+			background-color: #333;
+			color: #fff;
+
+			&:focus {
+				outline: none;
+				border-color: #888;
+			}
+
+			&::placeholder {
+				color: #888;
+			}
+		}
+
+		input[type="number"] {
+			width: 80px;
+		}
+
+		.inputWithError {
+			display: flex;
+			flex-direction: column;
+			gap: 4px;
+
+			input.error {
+				border-color: #ff4444;
+			}
+
+			.errorMessage {
+				color: #ff6666;
+				font-size: 12px;
+			}
+		}
+
+		&.newPackageDialogCheckbox {
+			flex-direction: row;
+			align-items: center;
+			gap: 8px;
+
+			input[type="checkbox"] {
+				width: 18px;
+				height: 18px;
+				cursor: pointer;
+			}
+
+			label {
+				cursor: pointer;
+			}
+		}
+	}
+
+	.newPackageDialogButtons {
+		display: flex;
+		justify-content: flex-end;
+		gap: 10px;
+		padding: 15px 20px;
+		border-top: 1px solid #333;
+		background-color: #1a1a2e;
+
+		button.standard {
+			min-width: 100px;
+		}
+	}
+}

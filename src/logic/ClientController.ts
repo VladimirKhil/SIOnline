@@ -24,6 +24,8 @@ import RoundRules from '../model/enums/RoundRules';
 import { AppDispatch } from '../state/store';
 import TimerStates from '../model/enums/TimeStates';
 import PlayerStatistics from '../model/PlayerStatistics';
+import IClientController from './IClientController';
+import ChatMessage from '../model/ChatMessage';
 
 import { answerOptions,
 	appendPartialText,
@@ -95,6 +97,7 @@ import {
 	playerRoundStateCleared,
 	playerStateChanged,
 	playerStatesChanged,
+	playerStakeChanged,
 	playerSumChanged,
 	playersAnswersChanged,
 	playersStateCleared,
@@ -204,7 +207,7 @@ function getAskSelectHint(reason: string): string {
 	}
 }
 
-export default class ClientController {
+export default class ClientController implements IClientController {
 	constructor(
 		private dispatch: Dispatch<AnyAction>,
 		private appDispatch: AppDispatch,
@@ -1346,20 +1349,42 @@ export default class ClientController {
 		}
 	}
 
-	onAnswerOptionsLayout(questionHasScreenContent: boolean, typeNames: string[]) {
+	onAnswerOptionsLayout(questionHasScreenContent: boolean, typeNames: string[], useStackedAnswerLayout: boolean, contentWeight: number) {
 		const options: AnswerOption[] = [];
+		let hasImageOption = false;
 
 		for (let i = 0; i < typeNames.length; i++) {
 			const typeName = typeNames[i];
+			const contentType = ContentType[typeName as keyof typeof ContentType];
 
 			options.push({
 				label: '',
 				state: ItemState.Normal,
-				content: { type: ContentType[typeName as keyof typeof ContentType], value: '', read: false, partial: false }
+				content: { type: contentType, value: '', read: false, partial: false }
 			});
+
+			// Check if at least one option contains an image
+			if (contentType === ContentType.Image) {
+				hasImageOption = true;
+			}
 		}
 
-		this.appDispatch(answerOptions({ questionHasScreenContent, options }));
+		// Calculate options weight based on row count using getBestRowColumnCount
+		const { rowCount, columnCount } = getBestRowColumnCount(options.length);
+		
+		// Options weight is proportional to row count (like ContentGroup.weight)
+		// Use larger weight if options contain at least one image
+		const optionsWeight = hasImageOption ? Constants.LARGE_CONTENT_WEIGHT : rowCount;
+
+		this.appDispatch(answerOptions({ 
+			questionHasScreenContent, 
+			options, 
+			useStackedAnswerLayout, 
+			contentWeight, 
+			optionsWeight,
+			optionsRowCount: rowCount,
+			optionsColumnCount: columnCount
+		}));
 	}
 
 	onBeginPressButton() {
@@ -2006,6 +2031,30 @@ export default class ClientController {
 			default:
 				return '';
 		}
+	}
+
+	onMessage(sender: string, text: string): void {
+		this.appDispatch(addGameLog(`${sender}: ${text}`));
+
+		if (sender === this.getState().room2.name) {
+			return;
+		}
+
+		const replic: ChatMessage = {
+			sender,
+			text,
+			level: MessageLevel.Information,
+		};
+
+		this.appDispatch(addToChat(replic));
+	}
+
+	onSinglePlayerStateChanged(playerIndex: number, state: PlayerStates): void {
+		this.appDispatch(playerStateChanged({ index: playerIndex, state }));
+	}
+
+	onSinglePlayerStakeChanged(playerIndex: number, stake: number): void {
+		this.appDispatch(playerStakeChanged({ index: playerIndex, stake }));
 	}
 }
 

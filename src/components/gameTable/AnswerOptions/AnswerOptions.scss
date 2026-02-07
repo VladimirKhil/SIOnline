@@ -1,11 +1,10 @@
 @use "../../../scss/variables" as v;
 
 .answerOptions {
-	display: flex;
-	flex-direction: column;
 	flex: 1 0 0;
 	overflow: hidden;
 	animation: optionsFadeIn 0.4s ease-out;
+	padding: 2px;
 }
 
 @keyframes optionsFadeIn {
@@ -20,7 +19,6 @@
 }
 
 .answerOption {
-	flex: 1 0 0;
 	border-width: 2px;
 	border-style: solid;
 	border-radius: 4px;
@@ -31,7 +29,6 @@
 	align-items: center;
 	justify-content: center;
 	padding: 2px;
-	margin: 2px;
 	overflow: hidden;
 	transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 	box-shadow: 
@@ -63,10 +60,6 @@
 .answerOptions.selectable .answerOption.normal:active {
 	transform: scale(0.98);
 	transition: transform 0.1s;
-}
-
-.answerOption:not(:first-child) {
-	margin-top: 2px;
 }
 
 .answerOption.active {

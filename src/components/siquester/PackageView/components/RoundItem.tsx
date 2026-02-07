@@ -9,7 +9,8 @@ import {
 	findItemIndices,
 	updateInfoProperty,
 	addInfoItem,
-	removeInfoItem
+	removeInfoItem,
+	removeRound
 } from '../../../../state/siquesterSlice';
 import CollectionEditor from '../../CollectionEditor/CollectionEditor';
 
@@ -178,6 +179,19 @@ const RoundItem: React.FC<RoundItemProps> = ({ item, isEditMode }) => {
 		<div className='info packageView__round__info'>
 			<header>
 				<div className='main__header'>{localization.round}</div>
+				{isEditMode && typeof indices.roundIndex === 'number' && (
+					<button
+						type='button'
+						className='packageView__delete-button'
+						onClick={() => dispatch(removeRound({ roundIndex: indices.roundIndex as number }))}
+						title={localization.delete}
+						aria-label={localization.delete}
+					>
+						<svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+							<path d="M6 19C6 20.1 6.9 21 8 21H16C17.1 21 18 20.1 18 19V7H6V19ZM8 9H16V19H8V9ZM15.5 4L14.5 3H9.5L8.5 4H5V6H19V4H15.5Z" fill="currentColor"/>
+						</svg>
+					</button>
+				)}
 				<button
 					type='button'
 					className='standard'

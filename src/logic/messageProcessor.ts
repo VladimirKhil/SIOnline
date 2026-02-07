@@ -4,7 +4,6 @@ import Message from '../client/contracts/Message';
 import State from '../state/State';
 import DataContext from '../model/DataContext';
 import * as RoomActions from '../state/room/RoomActions';
-import ChatMessage from '../model/ChatMessage';
 import Account from '../model/Account';
 import Sex from '../model/enums/Sex';
 import PlayerStates, { parsePlayerStatesFromString } from '../model/enums/PlayerStates';
@@ -16,7 +15,6 @@ import Constants from '../model/enums/Constants';
 import Role from '../model/Role';
 import localization from '../model/resources/localization';
 import { trimLength } from '../utils/StringHelpers';
-import MessageLevel from '../model/enums/MessageLevel';
 import GameMessages from '../client/game/GameMessages';
 import JoinMode from '../client/game/JoinMode';
 import { parseStakeModesFromString } from '../client/game/StakeModes';
@@ -27,11 +25,7 @@ import ItemState from '../model/enums/ItemState';
 import clearUrls from '../utils/clearUrls';
 import ThemesPlayMode from '../model/enums/ThemesPlayMode';
 import { AppDispatch } from '../state/store';
-import { addToChat,
-	playerStakeChanged,
-	playerStateChanged } from '../state/room2Slice';
 import StakeTypes from '../model/enums/StakeTypes';
-import { addGameLog } from '../state/globalActions';
 
 const MAX_APPEND_TEXT_LENGTH = 150;
 
@@ -434,7 +428,7 @@ const viewerHandler = (
 			break;
 
 		case GameMessages.Layout:
-			if (args.length < 5) {
+			if (args.length < 4) {
 				return;
 			}
 
@@ -442,8 +436,53 @@ const viewerHandler = (
 				return;
 			}
 
-			const questionHasScreenContent = args[2] === '+';
-			controller.onAnswerOptionsLayout(questionHasScreenContent, args.slice(3));
+			// Read content description from layout message args
+			// Based on InformLayout implementation:
+			// args[2]: screen content sequence (e.g., "text.100+image|text.50")
+			//          Groups are separated by "|", items within groups by "+"
+			//          Format: "type" or "type.length" for text
+			// args[3+]: answer option content types
+			const screenContentString = args[2];
+			const answerOptionTypes = args.slice(3);
+			
+			// Parse screen content to determine if it's single text-only
+			// and calculate content weight proportionally to text length
+			const contentGroups = screenContentString.split('|');
+			const allContentItems: string[] = [];
+			let totalTextLength = 0;
+			
+			contentGroups.forEach(group => {
+				const items = group.split('+');
+				items.forEach(item => {
+					// Extract type and length from format "type" or "type.length"
+					const parts = item.split('.');
+					const contentType = parts[0];
+					allContentItems.push(contentType);
+					
+					// Sum text lengths for weight calculation
+					if (contentType.toLowerCase() === 'text' && parts.length > 1) {
+						const textLength = parseInt(parts[1], 10);
+						if (!isNaN(textLength)) {
+							totalTextLength += textLength;
+						}
+					}
+				});
+			});
+			
+			// Calculate content weight proportionally to text length (like in onScreenContent)
+			// Math.min(Constants.LARGE_CONTENT_WEIGHT, Math.max(1, value.length / 80))
+			const contentWeight = totalTextLength > 0 
+				? Math.min(Constants.LARGE_CONTENT_WEIGHT, Math.max(1, totalTextLength / 80))
+				: Constants.LARGE_CONTENT_WEIGHT; // Default for non-text content
+			
+			// Use stacked layout when screen content is single text-only item
+			const useStackedAnswerLayout = allContentItems.length === 1 && 
+				allContentItems[0].toLowerCase() === 'text';
+			
+			// Keep questionHasScreenContent for backward compatibility (deprecated)
+			const questionHasScreenContent = args.length > 2 && screenContentString.length > 0;
+			
+			controller.onAnswerOptionsLayout(questionHasScreenContent, answerOptionTypes, useStackedAnswerLayout, contentWeight);
 			break;
 
 		case GameMessages.MediaLoaded:
@@ -570,7 +609,7 @@ const viewerHandler = (
 				const playerIndex = parseInt(args[1], 10);
 
 				if (playerIndex > -1 && playerIndex < state.room2.persons.players.length) {
-					appDispatch(playerStateChanged({ index: playerIndex, state: PlayerStates.HasAnswered }));
+					controller.onSinglePlayerStateChanged(playerIndex, PlayerStates.HasAnswered);
 				}
 			}
 			break;
@@ -580,7 +619,7 @@ const viewerHandler = (
 				const playerIndex = parseInt(args[1], 10);
 
 				if (playerIndex > -1 && playerIndex < state.room2.persons.players.length) {
-					appDispatch(playerStateChanged({ index: playerIndex, state: PlayerStates.HasAnswered }));
+					controller.onSinglePlayerStateChanged(playerIndex, PlayerStates.HasAnswered);
 				}
 			}
 			break;
@@ -594,7 +633,7 @@ const viewerHandler = (
 					break;
 				}
 
-				appDispatch(playerStakeChanged({ index: playerIndex, stake: Constants.HIDDEN_STAKE }));
+				controller.onSinglePlayerStakeChanged(playerIndex, Constants.HIDDEN_STAKE);
 			}
 			break;
 
@@ -631,7 +670,7 @@ const viewerHandler = (
 						break;
 				}
 
-				appDispatch(playerStakeChanged({ index: playerIndex, stake }));
+				controller.onSinglePlayerStakeChanged(playerIndex, stake);
 			}
 			break;
 
@@ -1325,22 +1364,13 @@ const processSystemMessage: ActionCreator<ThunkAction<void, State, DataContext, 
 		}
 	};
 
-const userMessageReceived: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (message: Message, appDispatch: AppDispatch) => (
+const userMessageReceived: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (
+	controller: ClientController,
+	message: Message
+) => (
 	_dispatch: Dispatch<any>,
-	getState: () => State) => {
-		appDispatch(addGameLog(`${message.Sender}: ${message.Text}`));
-
-		if (message.Sender === getState().room2.name) {
-			return;
-		}
-
-		const replic: ChatMessage = {
-			sender: message.Sender,
-			text: message.Text,
-			level: MessageLevel.Information,
-		};
-
-		appDispatch(addToChat(replic));
+	_getState: () => State) => {
+		controller.onMessage(message.Sender, message.Text);
 	};
 
 export default function messageProcessor(controller: ClientController, dispatch: Dispatch<AnyAction>, appDispatch: AppDispatch, message: Message) {
@@ -1349,5 +1379,5 @@ export default function messageProcessor(controller: ClientController, dispatch:
 		return;
 	}
 
-	dispatch((userMessageReceived(message, appDispatch) as object) as AnyAction);
+	dispatch((userMessageReceived(controller, message) as object) as AnyAction);
 }
