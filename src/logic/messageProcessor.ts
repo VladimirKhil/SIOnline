@@ -1,9 +1,6 @@
-import { Action, ActionCreator, AnyAction, Dispatch } from 'redux';
-import { ThunkAction } from 'redux-thunk';
+import { AnyAction, Dispatch } from 'redux';
 import Message from '../client/contracts/Message';
 import State from '../state/State';
-import DataContext from '../model/DataContext';
-import * as RoomActions from '../state/room/RoomActions';
 import Account from '../model/Account';
 import Sex from '../model/enums/Sex';
 import PlayerStates, { parsePlayerStatesFromString } from '../model/enums/PlayerStates';
@@ -24,7 +21,6 @@ import ContentInfo from '../model/ContentInfo';
 import ItemState from '../model/enums/ItemState';
 import clearUrls from '../utils/clearUrls';
 import ThemesPlayMode from '../model/enums/ThemesPlayMode';
-import { AppDispatch } from '../state/store';
 import StakeTypes from '../model/enums/StakeTypes';
 
 const MAX_APPEND_TEXT_LENGTH = 150;
@@ -127,9 +123,9 @@ function onQuestionAnswers(controller: ClientController, args: string[]) {
 
 const viewerHandler = (
 	controller: ClientController,
-	appDispatch: AppDispatch,
 	state: State,
-	args: string[]) => {
+	args: string[]
+) => {
 	switch (args[0]) {
 		case GameMessages.Ads:
 			if (args.length === 1) {
@@ -359,7 +355,7 @@ const viewerHandler = (
 
 			const index = (Number)(args[1]);
 
-			if (!isNaN(index) && index > -1 && index < state.room2.persons.players.length) {
+			if (!isNaN(index) && index > -1) {
 				controller.onEndPressButtonByPlayer(index);
 			} else if (args[1] === 'A') { // This is ENDTRY for All
 				controller.onEndPressButtonByTimeout();
@@ -547,7 +543,7 @@ const viewerHandler = (
 			{
 				const playerIndex = parseInt(args[1], 10);
 
-				if (playerIndex > -1 && playerIndex < state.room2.persons.players.length) {
+				if (playerIndex > -1) {
 					controller.onPass(playerIndex);
 				}
 			}
@@ -613,7 +609,7 @@ const viewerHandler = (
 			{
 				const playerIndex = parseInt(args[1], 10);
 
-				if (playerIndex > -1 && playerIndex < state.room2.persons.players.length) {
+				if (playerIndex > -1) {
 					controller.onSinglePlayerStateChanged(playerIndex, PlayerStates.HasAnswered);
 				}
 			}
@@ -623,7 +619,7 @@ const viewerHandler = (
 			{
 				const playerIndex = parseInt(args[1], 10);
 
-				if (playerIndex > -1 && playerIndex < state.room2.persons.players.length) {
+				if (playerIndex > -1) {
 					controller.onSinglePlayerStateChanged(playerIndex, PlayerStates.HasAnswered);
 				}
 			}
@@ -632,22 +628,20 @@ const viewerHandler = (
 		case GameMessages.PersonFinalStake:
 			{
 				const playerIndex = parseInt(args[1], 10);
-				const player = state.room2.persons.players[playerIndex];
 
-				if (!player) {
+				if (playerIndex < 0) {
 					break;
 				}
 
-				controller.onSinglePlayerStakeChanged(playerIndex, Constants.HIDDEN_STAKE);
+				controller.onSinglePlayerStakeChanged(playerIndex, StakeTypes.Sum, Constants.HIDDEN_STAKE);
 			}
 			break;
 
 		case GameMessages.PersonStake:
 			{
 				const playerIndex = parseInt(args[1], 10);
-				const player = state.room2.persons.players[playerIndex];
 
-				if (!player) {
+				if (playerIndex < 0) {
 					break;
 				}
 
@@ -655,27 +649,15 @@ const viewerHandler = (
 				let stake = 0;
 
 				switch (stakeType) {
-					case StakeTypes.Nominal:
-						stake = state.room.stage.currentPrice;
-						break;
-
 					case StakeTypes.Sum:
 						stake = parseInt(args[3], 10);
-						break;
-
-					case StakeTypes.Pass:
-						stake = 0;
-						break;
-
-					case StakeTypes.AllIn:
-						stake = player.sum;
 						break;
 
 					default:
 						break;
 				}
 
-				controller.onSinglePlayerStakeChanged(playerIndex, stake);
+				controller.onSinglePlayerStakeChanged(playerIndex, stakeType, stake);
 			}
 			break;
 
@@ -925,11 +907,10 @@ const viewerHandler = (
 			break;
 
 		case GameMessages.Sums:
-			const max = Math.min(args.length - 1, Object.keys(state.room2.persons.players).length);
 			const sums: number[] = [];
 
-			for (let i = 0; i < max; i++) {
-				sums.push(parseInt(args[i + 1], 10));
+			for (let i = 1; i < args.length; i++) {
+				sums.push(parseInt(args[i], 10));
 			}
 
 			controller.onSums(sums);
@@ -1351,16 +1332,15 @@ function info(controller: ClientController, ...args: string[]) {
 	controller.onInfo(all, showman, players);
 }
 
-const processSystemMessage: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (
+const processSystemMessage = (
 	controller: ClientController,
 	message: Message,
-	appDispatch: AppDispatch
-) => (dispatch: Dispatch<RoomActions.KnownRoomAction>, getState: () => State) => {
+) => (_dispatch: any, getState: () => State) => {
 		const state = getState();
 		const { role } = state.room2;
 		const args = message.Text.split('\n');
 
-		viewerHandler(controller, appDispatch, state, args);
+		viewerHandler(controller, state, args);
 
 		if (role === Role.Player) {
 			playerHandler(controller, args);
@@ -1369,20 +1349,11 @@ const processSystemMessage: ActionCreator<ThunkAction<void, State, DataContext, 
 		}
 	};
 
-const userMessageReceived: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (
-	controller: ClientController,
-	message: Message
-) => (
-	_dispatch: Dispatch<any>,
-	_getState: () => State) => {
-		controller.onMessage(message.Sender, message.Text);
-	};
-
-export default function messageProcessor(controller: ClientController, dispatch: Dispatch<AnyAction>, appDispatch: AppDispatch, message: Message) {
+export default function messageProcessor(controller: ClientController, dispatch: Dispatch<AnyAction>, message: Message) {
 	if (message.IsSystem) {
-		dispatch((processSystemMessage(controller, message, appDispatch) as object) as AnyAction);
+		dispatch((processSystemMessage(controller, message) as object) as AnyAction);
 		return;
 	}
 
-	dispatch((userMessageReceived(controller, message) as object) as AnyAction);
+	controller.onMessage(message.Sender, message.Text);
 }

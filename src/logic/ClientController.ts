@@ -163,6 +163,7 @@ import stringFormat from '../utils/StringHelpers';
 import JoinMode from '../client/game/JoinMode';
 import getBestRowColumnCount from '../utils/stackedContentHelper';
 import { preloadRoundContent } from './contentPreloader';
+import StakeTypes from '../model/enums/StakeTypes';
 
 // Non-idempotent initialization of group properties
 function initGroup(group: ContentGroup) {
@@ -2053,8 +2054,10 @@ export default class ClientController implements IClientController {
 		this.appDispatch(playerStateChanged({ index: playerIndex, state }));
 	}
 
-	onSinglePlayerStakeChanged(playerIndex: number, stake: number): void {
-		this.appDispatch(playerStakeChanged({ index: playerIndex, stake }));
+	onSinglePlayerStakeChanged(playerIndex: number, stakeType: StakeTypes, stake: number): void {
+		const nominal = this.getState().room.stage.currentPrice;
+		const playerStake = stakeType === StakeTypes.Nominal ? nominal : stake;
+		this.appDispatch(playerStakeChanged({ index: playerIndex, stakeType, stake: playerStake }));
 	}
 }
 

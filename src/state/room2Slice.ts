@@ -20,6 +20,7 @@ import TimerInfo from '../model/TimerInfo';
 import TimerStates from '../model/enums/TimeStates';
 import { stopAudio, userErrorChanged } from './commonSlice';
 import { clearGameLog } from './globalActions';
+import StakeTypes from '../model/enums/StakeTypes';
 
 export enum DialogView {
 	None,
@@ -526,13 +527,16 @@ export const room2Slice = createSlice({
 			state.persons.players[action.payload.index].isAppellating = action.payload.isAppellating;
 		},
 		playerStateChanged: (state: Room2State, action: PayloadAction<{ index: number, state: PlayerStates }>) => {
-			state.persons.players[action.payload.index].state = action.payload.state;
+			if (action.payload.index >= 0 && action.payload.index < state.persons.players.length) {
+				state.persons.players[action.payload.index].state = action.payload.state;
+			}
 		},
 		playerStatesChanged: (state: Room2State, action: PayloadAction<{ indices: number[], state: PlayerStates }>) => {
 			action.payload.indices.map(i => state.persons.players[i].state = action.payload.state);
 		},
 		playerLostStateDropped: (state: Room2State, action: PayloadAction<number>) => {
 			const player = state.persons.players[action.payload];
+
 			if (player.state === PlayerStates.Lost) {
 				player.state = PlayerStates.None;
 			}
@@ -546,8 +550,11 @@ export const room2Slice = createSlice({
 				}
 			});
 		},
-		playerStakeChanged: (state: Room2State, action: PayloadAction<{ index: number, stake: number }>) => {
-			state.persons.players[action.payload.index].stake = action.payload.stake;
+		playerStakeChanged: (state: Room2State, action: PayloadAction<{ index: number, stakeType: StakeTypes, stake: number }>) => {
+			if (action.payload.index >= 0 && action.payload.index < state.persons.players.length) {
+				const player = state.persons.players[action.payload.index];
+				player.stake = action.payload.stakeType === StakeTypes.AllIn ? player.sum : action.payload.stake;
+			}
 		},
 		deselectPlayers(state: Room2State) {
 			state.persons.players.forEach(p => p.canBeSelected = false);

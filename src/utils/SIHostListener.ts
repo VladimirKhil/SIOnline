@@ -21,7 +21,7 @@ export default class SIHostListener implements ISIHostListener {
 	) {}
 
 	onReceive(message: Message): void {
-		messageProcessor(this.controller, this.dispatch, this.appDispatch, message);
+		messageProcessor(this.controller, this.dispatch, message);
 	}
 
 	onDisconnect(): void {
