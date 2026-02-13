@@ -25,9 +25,12 @@
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+.caption__left, .caption__right {
+    width: 52px;
+}
+
 .caption__left {
     padding: 0 5px 5px 5px;
-    width: 152px;
     display: flex;
     overflow: hidden;
 }
@@ -40,7 +43,6 @@
 
 .caption__right {
     padding: 0;
-    width: 152px;
     height: 45px;
     display: flex;
     align-items: center;
@@ -266,6 +268,10 @@
 
     .commonProgress.captioned {
         margin-top: 35px;
+    }
+
+    .caption__left, .caption__right {
+        width: 152px;
     }
 }
 
