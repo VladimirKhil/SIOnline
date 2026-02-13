@@ -392,10 +392,14 @@ export default class ClientController implements IClientController {
 		}
 	}
 
-	onAskAnswer(answerType: string | null) {
+	onAskAnswer(answerType: string | null, deviation: number = 0) {
 		if (this.getState().table.layoutMode === LayoutMode.Simple) {
 			this.appDispatch(answerChanged(''));
 			this.appDispatch(answerTypeChanged(answerType ?? ''));
+
+			if (answerType === 'point') {
+				this.appDispatch(setAnswerDeviation(deviation));
+			}
 		} else {
 			this.appDispatch(isSelectableChanged(true));
 		}

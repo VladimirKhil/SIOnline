@@ -21,6 +21,8 @@ import { DecisionType } from '../../../state/room2Slice';
 import VolumeButton from '../../common/VolumeButton/VolumeButton';
 import { useAudioContext } from '../../../contexts/AudioContextProvider';
 import ContentType from '../../../model/enums/ContentType';
+import LayoutMode from '../../../model/enums/LayoutMode';
+import PointAnswerOverlay from '../PointAnswerOverlay/PointAnswerOverlay';
 
 import './GameTable.css';
 
@@ -110,6 +112,8 @@ export function GameTable(): JSX.Element {
 		isEditTableEnabled,
 		decisionTimer,
 		answerDeviation,
+		answerType,
+		layoutMode,
 	} = useAppSelector((state) => ({
 		isGamePaused: state.room2.stage.isGamePaused,
 		decisionType: state.room2.stage.decisionType,
@@ -121,7 +125,18 @@ export function GameTable(): JSX.Element {
 		isEditTableEnabled: state.room2.isEditTableEnabled,
 		decisionTimer: state.room2.timers.decision,
 		answerDeviation: state.table.answerDeviation,
+		answerType: state.room2.answerType,
+		layoutMode: state.table.layoutMode,
 	}));
+
+	// Count images in table content for point answer type
+	const imageCount = content.reduce((count, group) =>
+		count + group.content.filter(item => item.type === ContentType.Image).length, 0);
+
+	const showPointOverlay = decisionType === DecisionType.Answer
+		&& answerType === 'point'
+		&& layoutMode === LayoutMode.Simple
+		&& imageCount === 1;
 
 	const shouldShowAnswerValidationInTable = decisionType === DecisionType.Validation &&
 		validationQueue.length > 0 &&
@@ -157,7 +172,7 @@ export function GameTable(): JSX.Element {
 				<div className="tableCaption">
 					<div className='caption__left'>
 						{noRiskMode ? <div title={localization.noRiskQuestion}>🛡</div> : ''}
-						{answerDeviation !== 0
+						{answerDeviation !== 0 && answerType !== 'point'
 							? <div className='answer__deviation' style={reversedPropeties} title={localization.answerDeviation}>
 								± {answerDeviation}
 								</div>
@@ -172,6 +187,7 @@ export function GameTable(): JSX.Element {
 
 			<div className="tableContent">
 				{getContent(mode)}
+				{showPointOverlay ? <PointAnswerOverlay deviation={answerDeviation} /> : null}
 			</div>
 
 			{shouldShowAnswerValidationInTable ? (
