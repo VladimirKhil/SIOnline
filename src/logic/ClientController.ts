@@ -68,7 +68,9 @@ import { answerOptions,
 	appendExternalMediaWarning,
 	addRoundTheme,
 	clearRoundThemes,
-	setAnswerDeviation } from '../state/tableSlice';
+	setAnswerDeviation,
+	addPointMarker,
+	overlayPoints } from '../state/tableSlice';
 
 import {
 	ContextView,
@@ -392,16 +394,12 @@ export default class ClientController implements IClientController {
 		}
 	}
 
-	onAskAnswer(answerType: string | null, deviation: number = 0) {
-		if (this.getState().table.layoutMode === LayoutMode.Simple) {
+	onAskAnswer(answerType: string | null) {
+		if (this.getState().table.layoutMode === LayoutMode.AnswerOptions) {
+			this.appDispatch(isSelectableChanged(true));
+		} else {
 			this.appDispatch(answerChanged(''));
 			this.appDispatch(answerTypeChanged(answerType ?? ''));
-
-			if (answerType === 'point') {
-				this.appDispatch(setAnswerDeviation(deviation));
-			}
-		} else {
-			this.appDispatch(isSelectableChanged(true));
 		}
 
 		this.appDispatch(setDecisionType(DecisionType.Answer));
@@ -930,6 +928,24 @@ export default class ClientController implements IClientController {
 	}
 
 	onPlayerAnswer(playerIndex: number, answer: string) {
+		if (this.getState().table.layoutMode === LayoutMode.OverlayPoints) {
+			const parts = answer.split(',');
+
+			if (parts.length >= 2) {
+				const x = parseFloat(parts[0]);
+				const y = parseFloat(parts[1]);
+
+				if (!isNaN(x) && !isNaN(y)) {
+					const state = this.getState();
+					const player = state.room2.persons.players[playerIndex];
+					const label = player ? player.name : undefined;
+
+					this.appDispatch(addPointMarker({ x, y, color: '#FF9030', label }));
+					return;
+				}
+			}
+		}
+
 		// this.appDispatch(setPlayerAnswer({ index: playerIndex, answer })); // TODO: think about providing unified answering experience
 		this.appDispatch(playerReplicChanged({ playerIndex, replic: answer }));
 	}
@@ -1349,6 +1365,10 @@ export default class ClientController implements IClientController {
 		}
 	}
 
+	onOverlayPointsLayout(deviation: number) {
+		this.appDispatch(overlayPoints(deviation));
+	}
+
 	onAnswerOptionsLayout(questionHasScreenContent: boolean, typeNames: string[], useStackedAnswerLayout: boolean, contentWeight: number) {
 		const options: AnswerOption[] = [];
 		let hasImageOption = false;
@@ -1463,7 +1483,7 @@ export default class ClientController implements IClientController {
 						this.appDispatch(updateQuestion({ themeIndex, questionIndex, price: -1 }));
 
 						// Call getState() to use actual state
-						if (this.getState().table.mode === TableMode.RoundTable) {
+						if (this.getState()?.table.mode === TableMode.RoundTable) {
 							this.appDispatch(showObject({ header: themeInfo.name, text: price.toString(), hint: '', large: true, animate: false }));
 						}
 					},
@@ -1657,6 +1677,29 @@ export default class ClientController implements IClientController {
 	}
 
 	onRightAnswer(answer: string) {
+		if (this.getState().table.layoutMode === LayoutMode.OverlayPoints) {
+			const parts = answer.split(',');
+
+			if (parts.length >= 2) {
+				const x = parseFloat(parts[0]);
+				const y = parseFloat(parts[1]);
+
+				if (!isNaN(x) && !isNaN(y)) {
+					this.appDispatch(addPointMarker({ x, y, color: 'rgba(0, 200, 0, 0.35)', isArea: true }));
+					this.appDispatch(captionChanged(localization.rightAnswer));
+
+					this.dispatch(roomActionCreators.afterQuestionStateChanged(true));
+					this.dispatch(roomActionCreators.hintChanged(null));
+
+					if (this.getState().settings.writeGameLog) {
+						this.appDispatch(addGameLog(`${localization.rightAnswer}: ${answer}`));
+					}
+
+					return;
+				}
+			}
+		}
+
 		this.onRightAnswerCore(answer);
 
 		if (this.getState().table.layoutMode === LayoutMode.Simple) {

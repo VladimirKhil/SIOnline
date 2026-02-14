@@ -18,7 +18,6 @@ import AnswerValidationButtons from '../AnswerValidationButtons/AnswerValidation
 import { DecisionType } from '../../../state/room2Slice';
 import LayoutMode from '../../../model/enums/LayoutMode';
 import localization from '../../../model/resources/localization';
-import ContentType from '../../../model/enums/ContentType';
 
 import './TableContextView.css';
 
@@ -46,18 +45,14 @@ function renderBody(
 	role: Role,
 	decisionType: DecisionType,
 	layoutMode: LayoutMode,
-	answerType: string,
-	hasPointImage: boolean,
 ) : JSX.Element | null {
 	switch (decisionType) {
 		case DecisionType.Answer:
-			if (layoutMode === LayoutMode.Simple) {
-				// For point answer type with a single image on the table,
-				// the answer is given by clicking the image (overlay in GameTable)
-				if (answerType === 'point' && hasPointImage) {
-					return <div className='oral__answer'>{localization.pointAnswerHint}</div>;
-				}
+			if (layoutMode === LayoutMode.OverlayPoints) {
+				return <div className='oral__answer'>{localization.pointAnswerHint}</div>;
+			}
 
+			if (layoutMode === LayoutMode.Simple) {
 				return <AnswerInput />;
 			}
 
@@ -119,30 +114,14 @@ export function TableContextView(props: TableContextViewProps): JSX.Element | nu
 	const windowWidth = useAppSelector(rootState => rootState.ui.windowWidth);
 	const tableMode = useAppSelector(rootState => rootState.table.mode);
 
-	const { contextView, isGameStarted, isGamePaused, role, decisionType, layoutMode, answerType } = useAppSelector(rootState => ({
+	const { contextView, isGameStarted, isGamePaused, role, decisionType, layoutMode } = useAppSelector(rootState => ({
 		contextView: rootState.room2.contextView,
 		isGameStarted: rootState.room2.stage.isGameStarted,
 		isGamePaused: rootState.room2.stage.isGamePaused,
 		role: rootState.room2.role,
 		decisionType: rootState.room2.stage.decisionType,
 		layoutMode: rootState.table.layoutMode,
-		answerType: rootState.room2.answerType,
 	}));
-
-	const content = useAppSelector(rootState => rootState.table.content);
-
-	// Check if there is exactly one image in the table content (for point answer type)
-	let imageCount = 0;
-
-	for (const group of content) {
-		for (const item of group.content) {
-			if (item.type === ContentType.Image) {
-				imageCount += 1;
-			}
-		}
-	}
-
-	const hasPointImage = imageCount === 1;
 
 	const body = renderBody(
 		props,
@@ -154,8 +133,6 @@ export function TableContextView(props: TableContextViewProps): JSX.Element | nu
 		role,
 		decisionType,
 		layoutMode,
-		answerType,
-		hasPointImage,
 	);
 
 	return body == null ? null : <div className='tableContextView'>{body}</div>;

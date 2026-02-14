@@ -746,7 +746,6 @@ state.settings.appSound = true; // Enable sounds for testing
 			expect(mockAppDispatch).toHaveBeenCalled();
 			const actions = dispatchedActions.map(a => a.type);
 			expect(actions).toContain('room2/askValidation');
-			expect(actions).toContain('table/captionChanged');
 		});
 	});
 

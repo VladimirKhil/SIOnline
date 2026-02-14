@@ -424,11 +424,17 @@ const viewerHandler = (
 			break;
 
 		case GameMessages.Layout:
-			if (args.length < 4) {
+			if (args.length < 2) {
 				return;
 			}
 
-			if (args[1] !== 'ANSWER_OPTIONS') {
+			if (args[1] === 'OVERLAY_POINTS') {
+				const deviation = args.length > 2 ? parseFloat(args[2]) || 0 : 0;
+				controller.onOverlayPointsLayout(deviation);
+				break;
+			}
+
+			if (args.length < 4 || args[1] !== 'ANSWER_OPTIONS') {
 				return;
 			}
 
@@ -1128,10 +1134,7 @@ function onAskStake(controller: ClientController, args: string[]) {
 const playerHandler = (controller: ClientController, args: string[]) => {
 	switch (args[0]) {
 		case GameMessages.Answer:
-			controller.onAskAnswer(
-				args.length > 1 ? args[1] : null,
-				args.length > 2 ? parseFloat(args[2]) || 0 : 0
-			);
+			controller.onAskAnswer(args.length > 1 ? args[1] : null);
 			break;
 
 		case GameMessages.AskReview:
@@ -1221,10 +1224,7 @@ const showmanHandler = (controller: ClientController, args: string[]) => {
 
 		// Player commands for oral game
 		case GameMessages.Answer:
-			controller.onAskAnswer(
-				args.length > 1 ? args[1] : null,
-				args.length > 2 ? parseFloat(args[2]) || 0 : 0
-			);
+			controller.onAskAnswer(args.length > 1 ? args[1] : null);
 			break;
 
 		case GameMessages.AskStake:

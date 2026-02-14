@@ -52,7 +52,7 @@ function getLayout(
 	contentWeight: number,
 	optionsWeight: number
 ) {
-	if (layoutMode === LayoutMode.Simple) {
+	if (layoutMode !== LayoutMode.AnswerOptions) {
 		return mainContent;
 	}
 

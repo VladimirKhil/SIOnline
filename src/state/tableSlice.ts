@@ -10,6 +10,14 @@ import TimerInfo from '../model/TimerInfo';
 import TimerStates from '../model/enums/TimeStates';
 import PlayerStatistics from '../model/PlayerStatistics';
 
+export interface PointMarker {
+	x: number;
+	y: number;
+	color: string;
+	label?: string;
+	isArea?: boolean;
+}
+
 export interface TableState {
 	mode: TableMode;
 	layoutMode: LayoutMode;
@@ -38,6 +46,7 @@ export interface TableState {
 	loadTimer: TimerInfo;
 	isAnswer: boolean;
 	answerDeviation: number;
+	pointMarkers: PointMarker[];
 	statistics: PlayerStatistics[];
 	externalMediaUris: string[];
 	useStackedAnswerLayout: boolean;
@@ -81,6 +90,7 @@ const initialState: TableState = {
 	},
 	isAnswer: false,
 	answerDeviation: 0,
+	pointMarkers: [],
 	statistics: [],
 	externalMediaUris: [],
 	useStackedAnswerLayout: false,
@@ -124,6 +134,7 @@ export const tableSlice = createSlice({
 			state.content = [];
 			state.appendText = '';
 			state.prependText = '';
+			state.externalMediaUris = [];
 		},
 		clearRoundThemes: (state: TableState) => {
 			state.roundInfo = [];
@@ -236,6 +247,7 @@ export const tableSlice = createSlice({
 			state.isSelectable = false;
 			state.isAnswer = false;
 			state.answerDeviation = 0;
+			state.pointMarkers = [];
 			state.externalMediaUris = [];
 			state.useStackedAnswerLayout = false;
 		},
@@ -347,7 +359,17 @@ export const tableSlice = createSlice({
 				state.externalMediaUris.push(action.payload);
 			}
 		},
+		addPointMarker: (state, action: PayloadAction<PointMarker>) => {
+			state.pointMarkers.push(action.payload);
+		},
+		clearPointMarkers: (state) => {
+			state.pointMarkers = [];
+		},
 		setAnswerDeviation: (state, action: PayloadAction<number>) => {
+			state.answerDeviation = action.payload;
+		},
+		overlayPoints: (state, action: PayloadAction<number>) => {
+			state.layoutMode = LayoutMode.OverlayPoints;
 			state.answerDeviation = action.payload;
 		},
 	}
@@ -397,7 +419,10 @@ export const {
 	showStatistics,
 	setExternalMediaWarning,
 	appendExternalMediaWarning,
+	addPointMarker,
+	clearPointMarkers,
 	setAnswerDeviation,
+	overlayPoints,
 } = tableSlice.actions;
 
 export default tableSlice.reducer;

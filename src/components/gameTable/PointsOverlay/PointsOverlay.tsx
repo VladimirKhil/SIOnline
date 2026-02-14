@@ -1,12 +1,9 @@
 import * as React from 'react';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
-import { sendAnswer } from '../../../state/room2Slice';
+import { DecisionType, sendAnswer } from '../../../state/room2Slice';
+import { PointMarker } from '../../../state/tableSlice';
 
-import './PointAnswerOverlay.css';
-
-interface PointAnswerOverlayProps {
-	deviation: number;
-}
+import './PointsOverlay.css';
 
 /** Computes the actual rendered bounds of an image with object-fit: contain */
 function getImageRenderedBounds(img: HTMLImageElement): { x: number, y: number, width: number, height: number } | null {
@@ -23,11 +20,9 @@ function getImageRenderedBounds(img: HTMLImageElement): { x: number, y: number, 
 	let renderHeight: number;
 
 	if (imageAspect > containerAspect) {
-		// Image is wider relative to container - width is constrained
 		renderWidth = clientWidth;
 		renderHeight = clientWidth / imageAspect;
 	} else {
-		// Image is taller relative to container - height is constrained
 		renderHeight = clientHeight;
 		renderWidth = clientHeight * imageAspect;
 	}
@@ -72,12 +67,35 @@ function getNormalizedImagePoint(
 	};
 }
 
-export default function PointAnswerOverlay({ deviation }: PointAnswerOverlayProps): JSX.Element | null {
+interface PointShape {
+	cx: number;
+	cy: number;
+	rx: number;
+	ry: number;
+}
+
+interface MarkerShape {
+	cx: number;
+	cy: number;
+	rx: number;
+	ry: number;
+	color: string;
+	label?: string;
+	isArea?: boolean;
+}
+
+export default function PointsOverlay(): JSX.Element {
 	const overlayRef = React.useRef<HTMLDivElement>(null);
 	const [selectedPoint, setSelectedPoint] = React.useState<{ x: number, y: number } | null>(null);
 	const [hoverPoint, setHoverPoint] = React.useState<{ x: number, y: number } | null>(null);
 	const appDispatch = useAppDispatch();
+
 	const isConnected = useAppSelector(state => state.common.isSIHostConnected);
+	const deviation = useAppSelector(state => state.table.answerDeviation);
+	const pointMarkers = useAppSelector(state => state.table.pointMarkers);
+	const decisionType = useAppSelector(state => state.room2.stage.decisionType);
+
+	const isInteractive = decisionType === DecisionType.Answer && !selectedPoint;
 
 	const handleMouseMove = React.useCallback((e: React.MouseEvent<HTMLDivElement>) => {
 		const overlay = overlayRef.current;
@@ -140,7 +158,7 @@ export default function PointAnswerOverlay({ deviation }: PointAnswerOverlayProp
 	}, []);
 
 	// Computes SVG coordinates for a point and its deviation ellipse radii
-	const computePointShape = React.useCallback((point: { x: number; y: number }) => {
+	const computePointShape = React.useCallback((point: { x: number; y: number }): PointShape | null => {
 		const overlay = overlayRef.current;
 
 		if (!overlay) {
@@ -180,6 +198,46 @@ export default function PointAnswerOverlay({ deviation }: PointAnswerOverlayProp
 		return { cx, cy, rx, ry };
 	}, [deviation]);
 
+	const computeMarkerShape = React.useCallback((marker: PointMarker): MarkerShape | null => {
+		const overlay = overlayRef.current;
+
+		if (!overlay) {
+			return null;
+		}
+
+		const tableContent = overlay.parentElement;
+
+		if (!tableContent) {
+			return null;
+		}
+
+		const img = tableContent.querySelector<HTMLImageElement>('.inGameImg');
+
+		if (!img) {
+			return null;
+		}
+
+		const bounds = getImageRenderedBounds(img);
+
+		if (!bounds) {
+			return null;
+		}
+
+		const imgRect = img.getBoundingClientRect();
+		const overlayRect = overlay.getBoundingClientRect();
+
+		const imgOffsetX = imgRect.left - overlayRect.left;
+		const imgOffsetY = imgRect.top - overlayRect.top;
+
+		const cx = imgOffsetX + bounds.x + (marker.x * bounds.width);
+		const cy = imgOffsetY + bounds.y + (marker.y * bounds.height);
+
+		const rx = marker.isArea ? deviation * bounds.width : 0;
+		const ry = marker.isArea ? deviation * bounds.height : 0;
+
+		return { cx, cy, rx, ry, color: marker.color, label: marker.label, isArea: marker.isArea };
+	}, [deviation]);
+
 	const [svgSize, setSvgSize] = React.useState<{ width: number, height: number }>({ width: 0, height: 0 });
 
 	React.useEffect(() => {
@@ -201,27 +259,65 @@ export default function PointAnswerOverlay({ deviation }: PointAnswerOverlayProp
 		return () => observer.disconnect();
 	}, []);
 
-	const hoverShape = hoverPoint && svgSize.width > 0 && !selectedPoint
+	const hoverShape = isInteractive && hoverPoint && svgSize.width > 0
 		? computePointShape(hoverPoint)
 		: null;
 
-	const selectedShape = selectedPoint && svgSize.width > 0
-		? computePointShape(selectedPoint)
-		: null;
+	const markerShapes = pointMarkers
+		.map(m => computeMarkerShape(m))
+		.filter((s): s is MarkerShape => s !== null);
 
-	const hasSvgContent = hoverShape || selectedShape;
+	const hasSvgContent = hoverShape || markerShapes.length > 0;
 
 	return (
 		<div
 			ref={overlayRef}
-			className='pointAnswerOverlay'
-			onClick={handleClick}
-			onMouseMove={handleMouseMove}
-			onMouseEnter={handleMouseMove}
-			onMouseLeave={handleMouseLeave}
+			className={`pointsOverlay${isInteractive ? ' pointsOverlay--interactive' : ''}`}
+			onClick={isInteractive ? handleClick : undefined}
+			onMouseMove={isInteractive ? handleMouseMove : undefined}
+			onMouseEnter={isInteractive ? handleMouseMove : undefined}
+			onMouseLeave={isInteractive ? handleMouseLeave : undefined}
 		>
-			{hasSvgContent ? (
-				<svg className='pointAnswerOverlay__svg' width={svgSize.width} height={svgSize.height}>
+			{hasSvgContent && svgSize.width > 0 ? (
+				<svg className='pointsOverlay__svg' width={svgSize.width} height={svgSize.height}>
+					{/* Marker points from other players and right answer */}
+					{markerShapes.map((shape, i) => (
+						<g key={i}>
+							{shape.isArea ? (
+								<ellipse
+									cx={shape.cx}
+									cy={shape.cy}
+									rx={shape.rx}
+									ry={shape.ry}
+									fill={shape.color}
+									stroke="none"
+								/>
+							) : (
+								<>
+									<circle
+										cx={shape.cx}
+										cy={shape.cy}
+										r="7"
+										fill={shape.color}
+										stroke="rgba(0, 0, 0, 0.5)"
+										strokeWidth="1.5"
+									/>
+
+									{shape.label ? (
+										<text
+											x={shape.cx}
+											y={shape.cy - 12}
+											className='pointsOverlay__label'
+										>
+											{shape.label}
+										</text>
+									) : null}
+								</>
+							)}
+						</g>
+					))}
+
+					{/* Hover preview for interactive mode */}
 					{hoverShape ? (
 						<>
 							{deviation > 0 ? (
@@ -245,28 +341,6 @@ export default function PointAnswerOverlay({ deviation }: PointAnswerOverlayProp
 						</>
 					) : null}
 
-					{selectedShape ? (
-						<>
-							{deviation > 0 ? (
-								<ellipse
-									cx={selectedShape.cx}
-									cy={selectedShape.cy}
-									rx={selectedShape.rx}
-									ry={selectedShape.ry}
-									fill="rgba(255, 140, 50, 0.4)"
-									stroke="none"
-								/>
-							) : null}
-
-							<circle
-								cx={selectedShape.cx}
-								cy={selectedShape.cy}
-								r="6"
-								fill="#FF9030"
-								stroke="none"
-							/>
-						</>
-					) : null}
 				</svg>
 			) : null}
 		</div>

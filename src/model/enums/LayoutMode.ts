@@ -5,6 +5,9 @@ const enum LayoutMode {
 
 	/** Content and answer options. */
 	AnswerOptions,
+
+	/** Content with point selection overlay. */
+	OverlayPoints,
 }
 
 export default LayoutMode;
