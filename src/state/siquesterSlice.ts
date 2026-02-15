@@ -21,6 +21,7 @@ export interface SIQuesterState {
 	themeIndex?: number;
 	questionIndex?: number;
 	isPackageSelected?: boolean;
+	isNewPackage?: boolean;
 	packageStats?: Record<string, QuestionStats>;
 	packageTopLevelStats?: PackageTopLevelStats;
 	packageStatsLoading?: boolean;
@@ -226,6 +227,12 @@ export const siquesterSlice = createSlice({
 				?.themes[action.payload.themeIndex]?.questions[action.payload.questionIndex];
 			if (question) {
 				question.params[action.payload.param] = action.payload.value;
+
+				// Clear answer options when switching away from select
+				if (action.payload.param === 'answerType' &&
+					action.payload.value !== 'select') {
+					delete question.params.answerOptions;
+				}
 			}
 		},
 		updateQuestionRightAnswer: (state, action: { 
@@ -612,6 +619,236 @@ export const siquesterSlice = createSlice({
 			state.questionIndex = action.payload.questionIndex;
 			state.isPackageSelected = action.payload.isPackageSelected;
 		},
+		addContentScreen: (state, action: {
+			payload: {
+				roundIndex: number;
+				themeIndex: number;
+				questionIndex: number;
+				paramName: string;
+				afterScreenIndex: number;
+			}
+		}) => {
+			const question = state.pack?.rounds[action.payload.roundIndex]
+				?.themes[action.payload.themeIndex]?.questions[action.payload.questionIndex];
+
+			if (question?.params[action.payload.paramName] && 'items' in question.params[action.payload.paramName]) {
+				const param = question.params[action.payload.paramName] as ContentParam;
+				// Find insertion point: count screen boundaries (waitForFinish items)
+				let screenCount = 0;
+				let insertIndex = param.items.length;
+
+				for (let i = 0; i < param.items.length; i += 1) {
+					if (param.items[i].waitForFinish) {
+						screenCount += 1;
+
+						if (screenCount === action.payload.afterScreenIndex + 1) {
+							insertIndex = i + 1;
+							break;
+						}
+					}
+				}
+
+				// If previous last item doesn't have waitForFinish, set it
+				if (insertIndex > 0 && !param.items[insertIndex - 1].waitForFinish) {
+					param.items[insertIndex - 1].waitForFinish = true;
+				}
+
+				// Insert a new text content item for the new screen
+				const newItem: ContentItem = {
+					type: 'text',
+					value: '',
+					isRef: false,
+					placement: 'screen',
+					waitForFinish: true,
+				};
+
+				param.items.splice(insertIndex, 0, newItem);
+			}
+		},
+		removeContentScreen: (state, action: {
+			payload: {
+				roundIndex: number;
+				themeIndex: number;
+				questionIndex: number;
+				paramName: string;
+				screenIndex: number;
+			}
+		}) => {
+			const question = state.pack?.rounds[action.payload.roundIndex]
+				?.themes[action.payload.themeIndex]?.questions[action.payload.questionIndex];
+
+			if (question?.params[action.payload.paramName] && 'items' in question.params[action.payload.paramName]) {
+				const param = question.params[action.payload.paramName] as ContentParam;
+
+				// Find the start and end indices of items belonging to the target screen
+				let screenCount = 0;
+				let screenStart = 0;
+				let screenEnd = -1;
+
+				for (let i = 0; i < param.items.length; i += 1) {
+					if (param.items[i].waitForFinish) {
+						if (screenCount === action.payload.screenIndex) {
+							screenEnd = i;
+							break;
+						}
+
+						screenCount += 1;
+						screenStart = i + 1;
+					}
+				}
+
+				// If we didn't find a waitForFinish for the last screen
+				if (screenEnd === -1 && screenCount === action.payload.screenIndex) {
+					screenEnd = param.items.length - 1;
+				}
+
+				if (screenEnd >= screenStart) {
+					param.items.splice(screenStart, screenEnd - screenStart + 1);
+				}
+			}
+		},
+		addScreenContentItem: (state, action: {
+			payload: {
+				roundIndex: number;
+				themeIndex: number;
+				questionIndex: number;
+				paramName: string;
+				screenIndex: number;
+			}
+		}) => {
+			const question = state.pack?.rounds[action.payload.roundIndex]
+				?.themes[action.payload.themeIndex]?.questions[action.payload.questionIndex];
+
+			if (question?.params[action.payload.paramName] && 'items' in question.params[action.payload.paramName]) {
+				const param = question.params[action.payload.paramName] as ContentParam;
+				// Find the last item index of the target screen
+				let screenCount = 0;
+				let insertIndex = param.items.length;
+
+				for (let i = 0; i < param.items.length; i += 1) {
+					if (param.items[i].waitForFinish) {
+						if (screenCount === action.payload.screenIndex) {
+							insertIndex = i;
+							// Remove waitForFinish from this item since a new item will follow
+							param.items[i].waitForFinish = false;
+							break;
+						}
+
+						screenCount += 1;
+					}
+				}
+
+				const newItem: ContentItem = {
+					type: 'text',
+					value: '',
+					isRef: false,
+					placement: 'screen',
+					waitForFinish: true,
+				};
+
+				param.items.splice(insertIndex + 1, 0, newItem);
+			}
+		},
+		removeScreenContentItem: (state, action: {
+			payload: {
+				roundIndex: number;
+				themeIndex: number;
+				questionIndex: number;
+				paramName: string;
+				itemIndex: number;
+			}
+		}) => {
+			const question = state.pack?.rounds[action.payload.roundIndex]
+				?.themes[action.payload.themeIndex]?.questions[action.payload.questionIndex];
+
+			if (question?.params[action.payload.paramName] && 'items' in question.params[action.payload.paramName]) {
+				const param = question.params[action.payload.paramName] as ContentParam;
+				const idx = action.payload.itemIndex;
+
+				if (idx >= 0 && idx < param.items.length && param.items.length > 1) {
+					const removedItem = param.items[idx];
+
+					// If the removed item had waitForFinish, transfer it to the previous item in the same screen
+					if (removedItem.waitForFinish && idx > 0 && !param.items[idx - 1].waitForFinish) {
+						param.items[idx - 1].waitForFinish = true;
+					}
+
+					param.items.splice(idx, 1);
+				}
+			}
+		},
+		addAnswerOption: (state, action: {
+			payload: {
+				roundIndex: number;
+				themeIndex: number;
+				questionIndex: number;
+			}
+		}) => {
+			const question = state.pack?.rounds[action.payload.roundIndex]
+				?.themes[action.payload.themeIndex]?.questions[action.payload.questionIndex];
+
+			if (question) {
+				if (!question.params.answerOptions) {
+					question.params.answerOptions = {};
+				}
+
+				// Find the next available key (A, B, C, ...)
+				const existingKeys = Object.keys(question.params.answerOptions);
+				let nextKey = 'A';
+
+				for (let i = 0; i < 26; i += 1) {
+					const candidate = String.fromCharCode(65 + i);
+
+					if (!existingKeys.includes(candidate)) {
+						nextKey = candidate;
+						break;
+					}
+				}
+
+				question.params.answerOptions[nextKey] = {
+					items: [{ type: 'text', value: '', isRef: false, placement: 'screen' }]
+				};
+			}
+		},
+		removeAnswerOption: (state, action: {
+			payload: {
+				roundIndex: number;
+				themeIndex: number;
+				questionIndex: number;
+				key: string;
+			}
+		}) => {
+			const question = state.pack?.rounds[action.payload.roundIndex]
+				?.themes[action.payload.themeIndex]?.questions[action.payload.questionIndex];
+
+			if (question?.params.answerOptions) {
+				delete question.params.answerOptions[action.payload.key];
+
+				if (Object.keys(question.params.answerOptions).length === 0) {
+					delete question.params.answerOptions;
+				}
+			}
+		},
+		updateAnswerOptionValue: (state, action: {
+			payload: {
+				roundIndex: number;
+				themeIndex: number;
+				questionIndex: number;
+				key: string;
+				value: string;
+			}
+		}) => {
+			const question = state.pack?.rounds[action.payload.roundIndex]
+				?.themes[action.payload.themeIndex]?.questions[action.payload.questionIndex];
+
+			if (question?.params.answerOptions?.[action.payload.key]) {
+				const option = question.params.answerOptions[action.payload.key];
+
+				if (option.items.length > 0) {
+					option.items[0].value = action.payload.value;
+				}
+			}
+		},
 		togglePackageStats: (state) => {
 			state.showPackageStats = !state.showPackageStats;
 		},
@@ -624,6 +861,7 @@ export const siquesterSlice = createSlice({
 			state.themeIndex = undefined;
 			state.questionIndex = undefined;
 			state.isPackageSelected = false;
+			state.isNewPackage = false;
 			state.packageStats = undefined;
 			state.packageTopLevelStats = undefined;
 			state.showPackageStats = false;
@@ -635,6 +873,7 @@ export const siquesterSlice = createSlice({
 			state.themeIndex = undefined;
 			state.questionIndex = undefined;
 			state.isPackageSelected = false;
+			state.isNewPackage = true;
 			state.packageStats = undefined;
 			state.packageTopLevelStats = undefined;
 			state.showPackageStats = false;
@@ -679,6 +918,13 @@ export const {
 	addInfoItem,
 	removeInfoItem,
 	updateContentItem,
+	addContentScreen,
+	removeContentScreen,
+	addScreenContentItem,
+	removeScreenContentItem,
+	addAnswerOption,
+	removeAnswerOption,
+	updateAnswerOptionValue,
 	setCurrentItem,
 	togglePackageStats,
 } = siquesterSlice.actions;

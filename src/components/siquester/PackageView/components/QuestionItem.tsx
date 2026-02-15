@@ -17,7 +17,10 @@ import {
 	updateInfoProperty,
 	addInfoItem,
 	removeInfoItem,
-	removeQuestion
+	removeQuestion,
+	addAnswerOption,
+	removeAnswerOption,
+	updateAnswerOptionValue,
 } from '../../../../state/siquesterSlice';
 import CollectionEditor from '../../CollectionEditor/CollectionEditor';
 import MediaItem from '../../MediaItem/MediaItem';
@@ -522,8 +525,8 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ item, isEditMode }) => {
 								? <>
 									<label htmlFor='answerType' className='header'>{localization.answerType}</label>
 									{isEditMode ? (
-										<select 
-											id='answerType' 
+										<select
+											id='answerType'
 											className='packageView__question__answerType'
 											value={question.params.answerType || 'text'}
 											onChange={(e) => handleQuestionParamChange('answerType', e.target.value)}
@@ -538,11 +541,11 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ item, isEditMode }) => {
 								</>
 							: null}
 
-							{answerOptions
+							{answerOptions || (isEditMode && (question.params.answerType === 'select'))
 								? <>
 									<label htmlFor='name' className='header'>{localization.answerOptions}</label>
 
-									{Object.keys(answerOptions).map((key, ii) => {
+									{answerOptions ? Object.keys(answerOptions).map((key, ii) => {
 										const option = answerOptions[key] as ContentParam;
 										const [firstItem] = option.items || [];
 
@@ -554,7 +557,42 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ item, isEditMode }) => {
 														aria-label='content'
 														className='packageView__answer__option'
 														value=""
-														readOnly={!isEditMode} />
+														readOnly={!isEditMode}
+														onChange={(e) => {
+															if (isEditMode &&
+																indices.roundIndex !== undefined &&
+																indices.themeIndex !== undefined &&
+																indices.questionIndex !== undefined) {
+																dispatch(updateAnswerOptionValue({
+																	roundIndex: indices.roundIndex,
+																	themeIndex: indices.themeIndex,
+																	questionIndex: indices.questionIndex,
+																	key,
+																	value: e.target.value,
+																}));
+															}
+														}}
+													/>
+													{isEditMode ? (
+														<button
+															type='button'
+															className='packageView__answer__option__remove'
+															onClick={() => {
+																if (indices.roundIndex !== undefined &&
+																	indices.themeIndex !== undefined &&
+																	indices.questionIndex !== undefined) {
+																	dispatch(removeAnswerOption({
+																		roundIndex: indices.roundIndex,
+																		themeIndex: indices.themeIndex,
+																		questionIndex: indices.questionIndex,
+																		key,
+																	}));
+																}
+															}}
+															title={localization.removeOption}
+															aria-label={localization.removeOption}
+														>✕</button>
+													) : null}
 												</div>
 											);
 										}
@@ -580,7 +618,22 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ item, isEditMode }) => {
 															key={ii}
 															className='packageView__answer__option'
 															value={firstItem.value}
-															readOnly={!isEditMode} />
+															readOnly={!isEditMode}
+															onChange={(e) => {
+																if (isEditMode &&
+																	indices.roundIndex !== undefined &&
+																	indices.themeIndex !== undefined &&
+																	indices.questionIndex !== undefined) {
+																	dispatch(updateAnswerOptionValue({
+																		roundIndex: indices.roundIndex,
+																		themeIndex: indices.themeIndex,
+																		questionIndex: indices.questionIndex,
+																		key,
+																		value: e.target.value,
+																	}));
+																}
+															}}
+														/>
 													);
 											}
 										};
@@ -589,9 +642,49 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ item, isEditMode }) => {
 											<div key={key} className='packageView__answer__option__host'>
 												<div className='packageView__answer__option__label'>{key}</div>
 												{renderAnswerOptionContent()}
+												{isEditMode ? (
+													<button
+														type='button'
+														className='packageView__answer__option__remove'
+														onClick={() => {
+															if (indices.roundIndex !== undefined &&
+																indices.themeIndex !== undefined &&
+																indices.questionIndex !== undefined) {
+																dispatch(removeAnswerOption({
+																	roundIndex: indices.roundIndex,
+																	themeIndex: indices.themeIndex,
+																	questionIndex: indices.questionIndex,
+																	key,
+																}));
+															}
+														}}
+														title={localization.removeOption}
+														aria-label={localization.removeOption}
+													>✕</button>
+												) : null}
 											</div>
 										);
-									})}
+									}) : null}
+
+									{isEditMode ? (
+										<button
+											type='button'
+											className='packageView__answer__option__add'
+											onClick={() => {
+												if (indices.roundIndex !== undefined &&
+													indices.themeIndex !== undefined &&
+													indices.questionIndex !== undefined) {
+													dispatch(addAnswerOption({
+														roundIndex: indices.roundIndex,
+														themeIndex: indices.themeIndex,
+														questionIndex: indices.questionIndex,
+													}));
+												}
+											}}
+											title={localization.addOption}
+											aria-label={localization.addOption}
+										>+</button>
+									) : null}
 								</>
 							: null}
 

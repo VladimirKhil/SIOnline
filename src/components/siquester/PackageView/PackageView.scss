@@ -561,10 +561,12 @@
 				display: flex;
 				flex-direction: row;
 				flex: 50px 0 0;
+				align-items: center;
 			}
 
 			.packageView__question__screen {
-				width: 50px;
+				min-width: 50px;
+				height: 40px;
 				display: flex;
 				justify-content: center;
 				align-items: center;
@@ -572,11 +574,55 @@
 				background-color: #000000;
 				margin: 5px 5px 5px 0;
 				cursor: pointer;
+				position: relative;
+				gap: 4px;
+				padding: 0 4px;
 
 				&.selected {
 					background-color: white;
 					color: black;
 					cursor: default;
+				}
+			}
+
+			.packageView__question__screen__add {
+				width: 32px;
+				height: 32px;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				background-color: #2e7d32;
+				color: white;
+				border: none;
+				border-radius: 4px;
+				margin: 5px 5px 5px 0;
+				cursor: pointer;
+				font-size: 18px;
+				font-weight: bold;
+
+				&:hover {
+					background-color: #1b5e20;
+				}
+			}
+
+			.packageView__question__screen__remove {
+				width: 20px;
+				height: 20px;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				background-color: #c62828;
+				color: white;
+				border: none;
+				border-radius: 50%;
+				cursor: pointer;
+				font-size: 12px;
+				line-height: 1;
+				padding: 0;
+				flex-shrink: 0;
+
+				&:hover {
+					background-color: #b71c1c;
 				}
 			}
 
@@ -600,6 +646,8 @@
 				width: 100%;
 				display: flex;
 				flex-direction: row;
+				align-items: center;
+				gap: 5px;
 			}
 
 			.packageView__answer__option__label {
@@ -615,6 +663,46 @@
 
 			.packageView__answer__option {
 				flex: 1;
+			}
+
+			.packageView__answer__option__remove {
+				width: 28px;
+				height: 28px;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				background-color: #c62828;
+				color: white;
+				border: none;
+				border-radius: 4px;
+				cursor: pointer;
+				font-size: 16px;
+				font-weight: bold;
+				flex-shrink: 0;
+
+				&:hover {
+					background-color: #b71c1c;
+				}
+			}
+
+			.packageView__answer__option__add {
+				width: 32px;
+				height: 32px;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				background-color: #2e7d32;
+				color: white;
+				border: none;
+				border-radius: 4px;
+				cursor: pointer;
+				font-size: 18px;
+				font-weight: bold;
+				margin-top: 5px;
+
+				&:hover {
+					background-color: #1b5e20;
+				}
 			}
 
 			.packageView__question__content__editable {

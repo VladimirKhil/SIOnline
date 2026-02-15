@@ -5,7 +5,13 @@ import AutoSizedText from '../../common/AutoSizedText/AutoSizedText';
 import localization from '../../../model/resources/localization';
 import Constants from '../../../model/enums/Constants';
 import { useDispatch } from 'react-redux';
-import { updateContentItem } from '../../../state/siquesterSlice';
+import {
+	updateContentItem,
+	addContentScreen,
+	removeContentScreen,
+	addScreenContentItem,
+	removeScreenContentItem,
+} from '../../../state/siquesterSlice';
 
 import './ScreensView.scss';
 
@@ -66,9 +72,14 @@ const ScreensView: React.FC<ScreensViewProps> = ({
 }) => {
 	const dispatch = useDispatch();
 	const [screenIndex, setScreenIndex] = React.useState(0);
+	const contentRef = React.useRef(content);
 
 	React.useEffect(() => {
-		setScreenIndex(0);
+		if (content.items.length !== contentRef.current.items.length) {
+			setScreenIndex(0);
+		}
+
+		contentRef.current = content;
 	}, [content]);
 
 	const screens: Screen[] = [];
@@ -231,6 +242,100 @@ const ScreensView: React.FC<ScreensViewProps> = ({
 		}
 	}
 
+	const canAddScreen = isEditMode &&
+		typeof roundIndex === 'number' &&
+		typeof themeIndex === 'number' &&
+		typeof questionIndex === 'number' &&
+		paramName;
+
+	const canRemoveScreen = canAddScreen && screens.length > 1;
+
+	// Count total content items in the current screen
+	const screenContentCount = screen
+		? screen.groups.reduce((sum, g) => sum + g.content.length, 0) +
+			(screen.background ? 1 : 0) +
+			(screen.replic ? 1 : 0)
+		: 0;
+
+	const handleRemoveContentItem = (itemIndex: number) => {
+		if (canAddScreen) {
+			dispatch(removeScreenContentItem({
+				roundIndex: roundIndex as number,
+				themeIndex: themeIndex as number,
+				questionIndex: questionIndex as number,
+				paramName: paramName as string,
+				itemIndex,
+			}));
+		}
+	};
+
+	const handleDurationChange = (itemIndex: number, seconds: string) => {
+		if (isEditMode &&
+			typeof roundIndex === 'number' &&
+			typeof themeIndex === 'number' &&
+			typeof questionIndex === 'number' &&
+			paramName) {
+			const numVal = parseInt(seconds, 10);
+			const timeStr = !seconds || isNaN(numVal) || numVal <= 0
+				? ''
+				: `0:0:${numVal}`;
+			dispatch(updateContentItem({
+				roundIndex,
+				themeIndex,
+				questionIndex,
+				paramName,
+				itemIndex,
+				property: 'duration',
+				value: timeStr,
+			}));
+		}
+	};
+
+	const handleAddScreen = () => {
+		if (canAddScreen) {
+			dispatch(addContentScreen({
+				roundIndex: roundIndex as number,
+				themeIndex: themeIndex as number,
+				questionIndex: questionIndex as number,
+				paramName: paramName as string,
+				afterScreenIndex: screenIndex,
+			}));
+			setScreenIndex(screenIndex + 1);
+		}
+	};
+
+	const handleRemoveScreen = (si: number) => {
+		if (canRemoveScreen) {
+			dispatch(removeContentScreen({
+				roundIndex: roundIndex as number,
+				themeIndex: themeIndex as number,
+				questionIndex: questionIndex as number,
+				paramName: paramName as string,
+				screenIndex: si,
+			}));
+
+			if (si >= screens.length - 1) {
+				setScreenIndex(Math.max(0, si - 1));
+			} else if (si < screenIndex) {
+				setScreenIndex(screenIndex - 1);
+			} else if (si === screenIndex && si === screens.length - 1) {
+				setScreenIndex(Math.max(0, si - 1));
+			}
+		}
+	};
+
+	const handleAddContentItem = () => {
+		if (canAddScreen) {
+			dispatch(addScreenContentItem({
+				roundIndex: roundIndex as number,
+				themeIndex: themeIndex as number,
+				questionIndex: questionIndex as number,
+				paramName: paramName as string,
+				screenIndex,
+			}));
+		}
+	};
+
 	return (
 		<>
 			{(screens.length > 1 || isEditMode) ? <div className='packageView__question__screens'>
@@ -240,13 +345,32 @@ const ScreensView: React.FC<ScreensViewProps> = ({
 						key={si}
 						onClick={() => setScreenIndex(si)}>
 						{si + 1}
+						{canRemoveScreen ? (
+							<button
+								type='button'
+								className='packageView__question__screen__remove'
+								onClick={(e) => { e.stopPropagation(); handleRemoveScreen(si); }}
+								title={localization.removeScreen}
+								aria-label={localization.removeScreen}
+							>✕</button>
+						) : null}
 					</div>
 				))}
+
+				{canAddScreen ? (
+					<button
+						type='button'
+						className='packageView__question__screen__add'
+						onClick={handleAddScreen}
+						title={localization.addScreen}
+						aria-label={localization.addScreen}
+					>+</button>
+				) : null}
 			</div> : null}
 
 			{screen
 				? <>
-					{screen.duration ? <div className='packageView__question__duration'>
+					{!isEditMode && screen.duration ? <div className='packageView__question__duration'>
 						<div className='packageView__question__duration__item'>
 							<label htmlFor='duration' className='header'>{localization.screenDuration}</label>
 							<input id='duration' type='text' value={screen.duration} readOnly />
@@ -259,25 +383,100 @@ const ScreensView: React.FC<ScreensViewProps> = ({
 							{screen.groups.map((screenGroup, gi) => 
 								screenGroup.content.map((contentItem, ci) => {
 									const globalIndex = content.items.findIndex(item => item === contentItem);
+									const durationSeconds = contentItem.duration
+										? timeStringToSeconds(contentItem.duration)
+										: undefined;
+									const hasDuration = durationSeconds !== undefined
+										&& durationSeconds > 0;
 									return (
 										<div className='packageView__question__content__list__item' key={`${gi}-${ci}`}>
+											<div className='screensView__content__item__controls'>
+												<label className='screensView__duration__label'>
+													<input
+														type='checkbox'
+														checked={hasDuration}
+														onChange={(e) => {
+															if (e.target.checked) {
+																handleDurationChange(globalIndex, '1');
+															} else {
+																handleDurationChange(globalIndex, '');
+															}
+														}}
+													/>
+													{localization.duration}
+													{hasDuration ? (
+														<input
+															type='number'
+															className='screensView__duration__input'
+															min={1}
+															value={durationSeconds}
+															aria-label={localization.duration}
+															onChange={(e) => handleDurationChange(globalIndex, e.target.value)}
+														/>
+													) : null}
+												</label>
+												{screenContentCount > 1 ? (
+													<button
+														type='button'
+														className='screensView__content__item__remove'
+														onClick={() => handleRemoveContentItem(globalIndex)}
+														title={localization.removeContentItem}
+														aria-label={localization.removeContentItem}
+													>✕</button>
+												) : null}
+											</div>
 											{getContentItem(contentItem, globalIndex)}
 										</div>
 									);
 								})
 							)}
-							{screen.background && (
-								<div className='packageView__question__content__list__item'>
-									<label className='header'>Background</label>
-									{getContentItem(screen.background, findContentItemIndex(screen.background))}
-								</div>
-							)}
-							{screen.replic && (
-								<div className='packageView__question__content__list__item'>
-									<label className='header'>Replic</label>
-									{getContentItem(screen.replic, findContentItemIndex(screen.replic))}
-								</div>
-							)}
+							{screen.background && (() => {
+								const bg = screen.background;
+								return (
+									<div className='packageView__question__content__list__item'>
+										<div className='screensView__content__item__controls'>
+											<label className='header'>Background</label>
+											{screenContentCount > 1 ? (
+												<button
+													type='button'
+													className='screensView__content__item__remove'
+													onClick={() => handleRemoveContentItem(findContentItemIndex(bg))}
+													title={localization.removeContentItem}
+													aria-label={localization.removeContentItem}
+												>✕</button>
+											) : null}
+										</div>
+										{getContentItem(bg, findContentItemIndex(bg))}
+									</div>
+								);
+							})()}
+							{screen.replic && (() => {
+								const rep = screen.replic;
+								return (
+									<div className='packageView__question__content__list__item'>
+										<div className='screensView__content__item__controls'>
+											<label className='header'>Replic</label>
+											{screenContentCount > 1 ? (
+												<button
+													type='button'
+													className='screensView__content__item__remove'
+													onClick={() => handleRemoveContentItem(findContentItemIndex(rep))}
+													title={localization.removeContentItem}
+													aria-label={localization.removeContentItem}
+												>✕</button>
+											) : null}
+										</div>
+										{getContentItem(rep, findContentItemIndex(rep))}
+									</div>
+								);
+							})()}
+							<button
+								type='button'
+								className='packageView__question__content__add'
+								onClick={handleAddContentItem}
+								title={localization.addContentItem}
+								aria-label={localization.addContentItem}
+							>+</button>
 						</div>
 					) : (
 						// Original grid layout for view mode
