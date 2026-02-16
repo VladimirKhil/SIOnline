@@ -62,6 +62,8 @@ export interface QuestionParams {
 	selectionMode?: SelectionMode;
 	answer?: ContentParam;
 	answerType?: string;
+	answerDeviation?: string;
+	answerDuration?: string;
 	answerOptions?: AnswerOptions;
 	[key: string]: any;
 }

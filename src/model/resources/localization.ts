@@ -44,6 +44,7 @@ const localization = new LocalizedStrings({
 		answerChecking: 'Answer check',
 		answerOptions: 'Answer options',
 		answerType: 'Answer type',
+		answerTypePoint: 'Point on image',
 		answerTypeSelect: 'Select from options',
 		anyonePlay: 'Play with random opponents',
 		apellateAnswer: 'Appellate answer',
@@ -338,6 +339,7 @@ All game functionality is available for free—donations do not affect gameplay 
 		noRisk: 'no risk',
 		noRiskQuestion: 'No risk question',
 		answerDeviation: 'Answer deviation',
+		answerDuration: 'Answering duration',
 		notSet: 'Not set',
 		noWarranty: `The game is distributed free of charge.
 		The author does not guarantee the correct operation of the game in arbitrary conditions
@@ -695,6 +697,7 @@ Package authors are responsible for package content. The package will be automat
 		answerChecking: 'Проверка ответа',
 		answerOptions: 'Варианты ответа',
 		answerType: 'Тип ответа',
+		answerTypePoint: 'Точка на изображении',
 		answerTypeSelect: 'Выбор из вариантов',
 		anyonePlay: 'Игра со случайными соперниками',
 		apellateAnswer: 'Апеллировать свой ответ',
@@ -989,6 +992,7 @@ Package authors are responsible for package content. The package will be automat
 		noRisk: 'без риска',
 		noRiskQuestion: 'Вопрос без риска',
 		answerDeviation: 'Допустимое отклонение',
+		answerDuration: 'Время на ответ',
 		notSet: 'Не задана',
 		noWarranty: `Игра распространяется бесплатно. Автор не гарантирует корректность работы игры в произвольных условиях
 	и не несёт ответственности за любые последствия от использования игры.`,
@@ -1350,6 +1354,7 @@ Package authors are responsible for package content. The package will be automat
 		answerChecking: 'Provera odgovora',
 		answerOptions: 'Opcije odgovora',
 		answerType: 'Tip odgovora',
+		answerTypePoint: 'Tačka na slici',
 		answerTypeSelect: 'Izbor iz opcija',
 		anyonePlay: 'Igra sa slučajnim protivnicima',
 		apellateAnswer: 'Žaliti se na odgovor',
@@ -1643,6 +1648,7 @@ Package authors are responsible for package content. The package will be automat
 		noRisk: 'bez rizika',
 		noRiskQuestion: 'Pitanje bez rizika',
 		answerDeviation: 'Odstupanje odgovora',
+		answerDuration: 'Vreme za odgovor',
 		notSet: 'Nije zadato',
 		noWarranty: `Igra se distribuira besplatno. Autor ne garantuje pravilno funkcionisanje igre u proizvolјnim uslovima
 		i nije odgovoran za bilo koje posledice od korišćenja igre.`,

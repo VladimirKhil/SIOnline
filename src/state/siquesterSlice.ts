@@ -233,6 +233,12 @@ export const siquesterSlice = createSlice({
 					action.payload.value !== 'select') {
 					delete question.params.answerOptions;
 				}
+
+				// Clear answer deviation when switching away from number/point
+				if (action.payload.param === 'answerType' &&
+					action.payload.value !== 'number' && action.payload.value !== 'point') {
+					delete question.params.answerDeviation;
+				}
 			}
 		},
 		updateQuestionRightAnswer: (state, action: { 
@@ -822,10 +828,43 @@ export const siquesterSlice = createSlice({
 				?.themes[action.payload.themeIndex]?.questions[action.payload.questionIndex];
 
 			if (question?.params.answerOptions) {
-				delete question.params.answerOptions[action.payload.key];
+				const { answerOptions } = question.params;
+				const removedKey = action.payload.key;
+				delete answerOptions[removedKey];
 
-				if (Object.keys(question.params.answerOptions).length === 0) {
+				const remainingKeys = Object.keys(answerOptions);
+
+				if (remainingKeys.length === 0) {
 					delete question.params.answerOptions;
+				} else {
+					// Rebuild options with sequential labels (A, B, C, ...)
+					const oldToNewKeyMap: Record<string, string> = {};
+					const values = remainingKeys.sort().map((oldKey, i) => {
+						const newKey = String.fromCharCode(65 + i);
+						oldToNewKeyMap[oldKey] = newKey;
+						return answerOptions[oldKey];
+					});
+
+					// Clear all existing keys and reassign with new sequential labels
+					for (const key of remainingKeys) {
+						delete answerOptions[key];
+					}
+
+					values.forEach((value, i) => {
+						const newKey = String.fromCharCode(65 + i);
+						answerOptions[newKey] = value;
+					});
+
+					// Update right answer references to match new keys
+					if (question.right?.answer) {
+						for (let i = 0; i < question.right.answer.length; i += 1) {
+							const mapped = oldToNewKeyMap[question.right.answer[i]];
+
+							if (mapped !== undefined) {
+								question.right.answer[i] = mapped;
+							}
+						}
+					}
 				}
 			}
 		},

@@ -109,6 +109,7 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ item, isEditMode }) => {
 			case 'text': return localization.text;
 			case 'select': return localization.answerTypeSelect;
 			case 'number': return localization.number;
+			case 'point': return localization.answerTypePoint;
 			default: return answerType;
 		}
 	}
@@ -534,6 +535,7 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ item, isEditMode }) => {
 											<option value='text'>{localization.text}</option>
 											<option value='select'>{localization.answerTypeSelect}</option>
 											<option value='number'>{localization.number}</option>
+											<option value='point'>{localization.answerTypePoint}</option>
 										</select>
 									) : (
 										<input id='answerType' type='text' value={getAnswerType(question.params.answerType || 'text')} readOnly />
@@ -688,6 +690,37 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ item, isEditMode }) => {
 								</>
 							: null}
 
+			{isEditMode && (
+				<label className='header packageView__question__checkboxLabel'>
+					<input
+						type='checkbox'
+						checked={!!question.params.answerDuration}
+						onChange={(e) => {
+							if (e.target.checked) {
+								handleQuestionParamChange('answerDuration', '30');
+							} else {
+								handleQuestionParamChange('answerDuration', '');
+							}
+						}}
+					/>
+					{localization.answerDuration}
+				</label>
+			)}
+			{!isEditMode && question.params.answerDuration ? (
+				<label className='header'>{localization.answerDuration}</label>
+			) : null}
+			{question.params.answerDuration ? (
+				<input
+					type='number'
+					min={1}
+					max={120}
+					value={question.params.answerDuration}
+					aria-label={localization.answerDuration}
+					readOnly={!isEditMode}
+					onChange={(e) => handleQuestionParamChange('answerDuration', e.target.value)}
+				/>
+			) : null}
+
 			{answerOptions && isEditMode && question.right.answer.length === 1 ? (
 				<>
 					<label htmlFor='name' className='header'>{localization.rightAnswers}</label>
@@ -703,6 +736,7 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ item, isEditMode }) => {
 					</select>
 				</>
 			) : (
+				<>
 				<CollectionEditor
 					label={localization.rightAnswers}
 					items={question.right.answer}
@@ -715,7 +749,27 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ item, isEditMode }) => {
 					placeholder={localization.enterAnswer}
 					preventDeleteLast={true}
 				/>
-			)}							{(question.wrong && question.wrong.answer.length > 0) || isEditMode ? (
+				</>
+			)}
+
+			{(question.params.answerType === 'number' ||
+				question.params.answerType === 'point')
+				? <>
+					<label htmlFor='answerDeviation' className='header'>
+						{localization.answerDeviation}
+					</label>
+					<input
+						id='answerDeviation'
+						type='number'
+						step='any'
+						value={question.params.answerDeviation ?? ''}
+						readOnly={!isEditMode}
+						onChange={(e) => handleQuestionParamChange('answerDeviation', e.target.value)}
+					/>
+				</>
+			: null}
+
+			{(question.wrong && question.wrong.answer.length > 0) || isEditMode ? (
 								<CollectionEditor
 									label={localization.wrongAnswers}
 									items={question.wrong?.answer || []}

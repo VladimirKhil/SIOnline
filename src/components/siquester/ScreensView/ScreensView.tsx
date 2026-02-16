@@ -409,6 +409,7 @@ const ScreensView: React.FC<ScreensViewProps> = ({
 															type='number'
 															className='screensView__duration__input'
 															min={1}
+															max={120}
 															value={durationSeconds}
 															aria-label={localization.duration}
 															onChange={(e) => handleDurationChange(globalIndex, e.target.value)}

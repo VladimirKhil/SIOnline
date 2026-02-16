@@ -18,6 +18,7 @@ const mapDispatchToProps = { showLogo };
 
 export class TableGameThemes extends React.Component<TableGameThemesProps> {
 	private tableGameThemesRef: React.RefObject<HTMLUListElement>;
+
 	private timerRef: number | null = null;
 
 	constructor(props: TableGameThemesProps) {
@@ -28,11 +29,12 @@ export class TableGameThemes extends React.Component<TableGameThemesProps> {
 
 	componentDidMount() {
 		const list = this.tableGameThemesRef.current;
+
 		if (!list) {
 			return;
 		}
 
-		const animationTime = (Math.max(3, this.props.gameThemes.length) * 15 / 18);
+		const animationTime = Math.max(3, this.props.gameThemes.length) + 1;
 
 		list.style.transitionDuration = `${animationTime}s`;
 		list.style.top = `-${list.clientHeight}px`;

@@ -341,6 +341,12 @@
 				margin-top: 10px;
 			}
 
+			.packageView__question__checkboxLabel {
+				display: flex;
+				align-items: center;
+				gap: 6px;
+			}
+
 			.info__content {
 				overflow-y: auto;
 				display: flex;

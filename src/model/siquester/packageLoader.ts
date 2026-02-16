@@ -523,6 +523,16 @@ function parseQuestionParams(questionElement: Element): QuestionParams {
 				break;
 			}
 
+			case 'answerDeviation': {
+				params.answerDeviation = paramElement.textContent || undefined;
+				break;
+			}
+
+			case 'answerDuration': {
+				params.answerDuration = paramElement.textContent || undefined;
+				break;
+			}
+
 			case 'answerOptions': {
 				params.answerOptions = {};
 				getDirectChildrenByTagName(paramElement, 'param').forEach(option => {

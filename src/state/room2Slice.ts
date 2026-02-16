@@ -273,6 +273,7 @@ export const sendAnswer = createAsyncThunk(
 		if (answerLock) {
 			window.clearTimeout(answerLock);
 			answerLock = null;
+			isAnswerVersionThrottled = false;
 		}
 	},
 );

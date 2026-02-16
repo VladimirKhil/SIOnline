@@ -251,6 +251,22 @@ function serializeQuestion(xmlDoc: Document, question: Question): Element {
 			}
 		}
 
+		// Add answer deviation
+		if (question.params.answerDeviation) {
+			const paramElement = xmlDoc.createElement('param');
+			paramElement.setAttribute('name', 'answerDeviation');
+			paramElement.textContent = question.params.answerDeviation;
+			paramsElement.appendChild(paramElement);
+		}
+
+		// Add answer duration
+		if (question.params.answerDuration) {
+			const paramElement = xmlDoc.createElement('param');
+			paramElement.setAttribute('name', 'answerDuration');
+			paramElement.textContent = question.params.answerDuration;
+			paramsElement.appendChild(paramElement);
+		}
+
 		// Add answer content
 		if (question.params.answer) {
 			const paramElement = xmlDoc.createElement('param');
@@ -261,7 +277,11 @@ function serializeQuestion(xmlDoc: Document, question: Question): Element {
 		}
 
 		// Add unknown parameters
-		const knownParams = new Set(['question', 'theme', 'price', 'selectionMode', 'answer', 'answerType', 'answerOptions']);
+		const knownParams = new Set([
+			'question', 'theme', 'price', 'selectionMode',
+			'answer', 'answerType', 'answerDeviation',
+			'answerDuration', 'answerOptions',
+		]);
 		Object.keys(question.params).forEach(paramName => {
 			if (!knownParams.has(paramName)) {
 				const paramValue = question.params[paramName];
