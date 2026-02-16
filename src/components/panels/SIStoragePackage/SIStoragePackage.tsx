@@ -1,7 +1,6 @@
 import React from 'react';
 import Package from 'sistorage-client/dist/models/Package';
 import localization from '../../../model/resources/localization';
-import FlyoutButton from '../../common/FlyoutButton/FlyoutButton';
 import SIStorageInfo from '../../../client/contracts/SIStorageInfo';
 
 import './SIStoragePackage.scss';
@@ -38,6 +37,8 @@ const getContentName = (contentKey: string) => {
 };
 
 const SIStoragePackage: React.FC<SIStoragePackageProps> = (props: SIStoragePackageProps) => {
+	const [isExpanded, setIsExpanded] = React.useState(false);
+
 	const {
 		authorIds,
 		name,
@@ -58,91 +59,135 @@ const SIStoragePackage: React.FC<SIStoragePackageProps> = (props: SIStoragePacka
 	} = props.package;
 
 	const publisher = publisherId ? props.publishers[publisherId] : '';
-	const logo = logoUri ? (logoUri.startsWith('http') ? logoUri : props.storage.uri + logoUri) : defaultLogo;
-	const content = contentUri ?? directContentUri;
 
-	return <li className='storagePackage'>
+	let logo = defaultLogo;
+
+	if (logoUri) {
+		logo = logoUri.startsWith('http') ? logoUri : props.storage.uri + logoUri;
+	}
+	const content = contentUri ?? directContentUri;
+	const hasDetails = !props.storage.limitedApi && (questionCount || contentTypeStatistic || rounds);
+
+	   // Make the whole card clickable except the details button
+	   const handleCardClick = (e: React.MouseEvent) => {
+		   // Don't trigger select if clicking the details toggle
+		   if ((e.target as HTMLElement).closest('.detailsToggle')) return;
+		   if (content) props.onSelect(id, name ?? '', content, props.storage.limitedApi === true);
+	   };
+
+	   return <li
+		   className={`storagePackage${isExpanded ? ' expanded' : ''}`}
+		   tabIndex={content ? 0 : -1}
+		   style={content ? { cursor: 'pointer' } : undefined}
+		   onClick={handleCardClick}
+		   onKeyDown={content ? (e) => { if (e.key === 'Enter' || e.key === ' ') handleCardClick(e as any); } : undefined}
+	   >
 		<header>
-			{props.storage.packageProperties.includes('logo') ? <img src={logo} alt='logo' className='storagePackageLogo' /> : null}
+			{props.storage.packageProperties.includes('logo')
+				? <img src={logo} alt='logo' className='storagePackageLogo' />
+				: null}
 
 			<div className='storagePackageInfo'>
 				<div className="storagePackageName" title={name}>{name}</div>
 
-				<div className="breakable">
-					{authorIds?.map(a => <div key={a} className='packageItemValue'>{props.authors[a]}</div>)}
+				<div className="packageAuthors">
+					{authorIds?.map(a => <span key={a} className='packageAuthorTag'>{props.authors[a]}</span>)}
 				</div>
 			</div>
 		</header>
 
-		<main>
+		<div className='packageMeta'>
 			{tagIds && tagIds.length > 0
-				? <div>
-					<span className='packageItemHeader'>{`${localization.packageSubject}: `}</span>
-					<span>{tagIds?.map(t => <div key={t} className='packageItemValue'>{props.tags[t]}</div>)}</span>
+				? <div className='metaRow'>
+					<span className='metaLabel'>{localization.packageSubject}:</span>
+				<span className='metaValue'>{tagIds?.map(t => (<span key={t} className='metaTag'>{props.tags[t]}</span>))}</span>
 				</div>
 				: null}
 
 			{publisher && publisher.length > 0
-				? <div>
-					<span className='packageItemHeader'>{`${localization.packagePublisher}: `}</span>
-					<span>{publisher}</span>
+				? <div className='metaRow'>
+					<span className='metaLabel'>{localization.packagePublisher}:</span>
+					<span className='metaValue'>{publisher}</span>
 				</div>
 				: null}
 
 			{restrictionIds && restrictionIds.length > 0
-				? <div>
-					<span className='packageItemHeader'>{`${localization.packageRestriction}: `}</span>
-
-					<span className="breakable">
-						{restrictionIds?.map(r => <div key={r} className='packageItemValue'>
-							{props.restrictions[r]?.value}
-						</div>)}
+				? <div className='metaRow'>
+					<span className='metaLabel'>{localization.packageRestriction}:</span>
+					<span className='metaValue'>
+						{restrictionIds?.map(r => (<span key={r} className='metaTag restriction'>{props.restrictions[r]?.value}</span>))}
 					</span>
 				</div>
 				: null}
+		</div>
 
-			<div>{createDate ? new Date(createDate).toLocaleDateString(props.culture) : ''}</div>
-			{size ? <div title={localization.size}>{Math.round(size / 1024 / 1024 * 100) / 100} MB</div> : null}
-			{difficulty ? <div title={localization.packageDifficulty}>🎓{difficulty}</div> : null}
-			{props.storage.limitedApi ? null : <div title={localization.downloadCount}>⬇️{downloadCount}</div>}
-		</main>
+		<div className='packageBadges'>
+			{createDate
+				? <span className='badge' title={localization.packagePublishedDate}>
+					📅 {new Date(createDate).toLocaleDateString(props.culture)}
+				</span>
+				: null}
 
-		<div className="selectButton">
-			{!props.storage.limitedApi && (questionCount || contentTypeStatistic || rounds)
-				? <FlyoutButton className='info-button standard' flyout={
-					<div className='package-info'>
-						<div>
-							<span className='packageItemHeader'>{`${localization.questionCount}: `}</span>
-							<span>{questionCount}</span>
-						</div>
+			{size
+				? <span className='badge' title={localization.size}>
+					📦 {Math.round(size / 1024 / 1024 * 100) / 100} MB
+				</span>
+				: null}
 
-						{contentTypeStatistic ? (<div>
-							<span className='packageItemHeader'>{`${localization.content}: `}</span>
+			{difficulty
+				? <span className='badge' title={localization.packageDifficulty}>
+					🎓 {difficulty}
+				</span>
+				: null}
 
-							<span>{Object.keys(contentTypeStatistic).map(
-								key => `${getContentName(key)} (${contentTypeStatistic[key]})`).join(', ')}
-							</span>
-						</div>) : null}
+			{questionCount
+				? <span className='badge' title={localization.questionCount}>
+					❓ {questionCount}
+				</span>
+				: null}
 
-						<span className='packageItemHeader'>{`${localization.roundsAndThemes}: `}</span>
+			{!props.storage.limitedApi
+				? <span className='badge' title={localization.downloadCount}>
+					⬇ {downloadCount}
+				</span>
+				: null}
+		</div>
 
-						<ul className='rounds'>{rounds?.map((r, i) => <li key={i} className='roundInfo'>
-								<span className='roundName'>{r.name}</span>: {r.themeNames.join(', ')}
+		{hasDetails
+			? <div className={`packageDetails${isExpanded ? ' open' : ''}`}>
+				<button
+					type='button'
+					className='detailsToggle'
+					onClick={() => setIsExpanded(!isExpanded)}
+				>
+					<span className='detailsToggleText'>{localization.info}</span>
+					<span className={`detailsArrow${isExpanded ? ' up' : ''}`}>▾</span>
+				</button>
+
+				{isExpanded && <div className='detailsContent'>
+					{contentTypeStatistic ? <div className='detailsRow'>
+						<span className='metaLabel'>{localization.content}:</span>
+						<span className='contentTags'>
+						{Object.keys(contentTypeStatistic).map(key => (<span key={key} className='contentTag'>
+							{getContentName(key)} ({contentTypeStatistic[key]})
+						</span>))}
+						</span>
+					</div> : null}
+
+					{rounds && rounds.length > 0 ? <div className='roundsSection'>
+						<span className='metaLabel'>{localization.roundsAndThemes}:</span>
+						<ul className='roundsList'>
+							{rounds.map((r, i) => <li key={i} className='roundItem'>
+								<span className='roundName'>{r.name}</span>
+								<span className='roundThemes'>{r.themeNames.join(', ')}</span>
 							</li>)}
 						</ul>
-					</div>
-				}>
-					{localization.info}
-				</FlyoutButton>
+					</div> : null}
+				</div>}
+			</div>
 			: null}
 
-			{content ? <button
-				type="button"
-				className='standard'
-				onClick={() => props.onSelect(id, name ?? '', content, props.storage.limitedApi === true)}>
-				{localization.librarySelect}
-			</button> : null}
-		</div>
+		   {/* No select button, selection is by clicking the card */}
 	</li>;
 };
 

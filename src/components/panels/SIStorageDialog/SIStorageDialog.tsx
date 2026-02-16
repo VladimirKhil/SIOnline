@@ -264,6 +264,16 @@ const SIStorageDialog: React.FC<SIStorageDialogProps> = (props) => {
 
 	return (
 		<Dialog className="siStorageDialog" title={storage.name} onClose={props.onClose}>
+			{storage.limitedApi ? null : <div className='search'>
+				<input
+					aria-label='text filter'
+					className="textFilter"
+					type="text"
+					value={filters.searchText}
+					placeholder={localization.search}
+					onChange={e => onTextChanged(e.target.value)} />
+			</div>}
+
 			<div className='storage__header'>
 				{!clearUrls && storage.uri
 					? <button
@@ -278,15 +288,6 @@ const SIStorageDialog: React.FC<SIStorageDialogProps> = (props) => {
 			</div>
 
 			<div className="container">
-				{storage.limitedApi ? null : <div className='search'>
-					<input
-						aria-label='text filter'
-						className="textFilter"
-						type="text"
-						value={filters.searchText}
-						placeholder={localization.search}
-						onChange={e => onTextChanged(e.target.value)} />
-				</div>}
 
 				<div className="filters">
 					{storage.facets.includes('tags')

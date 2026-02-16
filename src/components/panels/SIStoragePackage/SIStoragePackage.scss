@@ -1,88 +1,306 @@
-.siStorageDialog li {
-	padding: 10px 10px 60px 10px;
-	background-color: #181B64;
-	color: white;
-	margin: 3px;
-	width: calc(100% - 6px);
-	position: relative;
-	border-radius: 10px;
-
-	@media screen and (min-width: 800px) {
-		width: 300px;
-	}
-}
+/* ===== Package Card Grid ===== */
 
 .siStorageDialog ul {
 	list-style-type: none;
 	padding: 0;
 	margin: 0 0 10px 0;
-	display: flex;
-	flex-wrap: wrap;
-	font-size: 18px;
-}
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: 12px;
+	font-size: 16px;
 
-.storagePackage {
-	header {
-		padding-left: 0;
-		display: flex;
-		align-items: center;
+	@media screen and (min-width: 700px) {
+		grid-template-columns: repeat(2, 1fr);
 	}
 
-	main {
-		margin-top: 10px;
+	@media screen and (min-width: 1100px) {
+		grid-template-columns: repeat(3, 1fr);
+	}
+
+	@media screen and (min-width: 1500px) {
+		grid-template-columns: repeat(4, 1fr);
+	}
+}
+
+/* ===== Package Card ===== */
+
+.siStorageDialog li {
+       padding: 0;
+       background: linear-gradient(145deg, rgba(24, 27, 100, 0.95), rgba(10, 14, 70, 0.9));
+       color: white;
+       width: auto;
+       position: relative;
+       border-radius: 12px;
+       border: 1px solid rgba(52, 125, 255, 0.2);
+       transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+
+       &:hover, &:focus-visible {
+	       transform: translateY(-2px);
+	       box-shadow: 0 6px 20px rgba(0, 20, 120, 0.4);
+	       border-color: rgba(52, 125, 255, 0.5);
+	       outline: none;
+       }
+
+       &.blocked {
+	       padding: 16px;
+	       background: rgba(100, 20, 20, 0.8);
+	       display: flex;
+	       align-items: center;
+	       justify-content: center;
+	       border-color: rgba(200, 50, 50, 0.4);
+	       cursor: default;
+       }
+}
+
+/* ===== Card Header ===== */
+
+.storagePackage {
+	display: flex;
+	flex-direction: column;
+
+	header {
+		padding: 12px 12px 6px 12px;
+		display: flex;
+		align-items: flex-start;
+		gap: 10px;
 	}
 }
 
 .storagePackageLogo {
-	margin-right: 10px;
-    margin-bottom: 10px;
-    max-width: 150px;
-    max-height: 150px;
+	width: 48px;
+	height: 48px;
+	object-fit: cover;
+	border-radius: 8px;
+	flex-shrink: 0;
+	background: rgba(255, 255, 255, 0.05);
 }
 
 .storagePackageInfo {
 	overflow: hidden;
+	flex: 1;
+	min-width: 0;
 }
 
 .siStorageDialog .storagePackageName {
-	font-weight: bold;
-	font-size: 22px;
-	vertical-align: top;
-	margin-top: 5px;
+	font-weight: 700;
+	font-size: 15px;
+	line-height: 1.3;
 	overflow: hidden;
 	text-overflow: ellipsis;
-	white-space: wrap;
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
+	margin-bottom: 2px;
 }
 
-.siStorageDialog .breakable {
-	word-wrap: break-word;
+/* ===== Author Tags ===== */
+
+.packageAuthors {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 4px;
 }
 
-.siStorageDialog .selectButton {
-	bottom: 10px;
-	right: 10px;
-	position: absolute;
-	font-size: 18px;
+.packageAuthorTag {
+	display: inline-block;
+	font-size: 13px;
+	color: rgba(255, 255, 255, 0.7);
+}
 
-	button {
-		padding: 5px 20px;
+/* ===== Package Metadata ===== */
+
+.packageMeta {
+	padding: 0 12px;
+	font-size: 13px;
+}
+
+.metaRow {
+	display: flex;
+	align-items: baseline;
+	gap: 6px;
+	margin-bottom: 4px;
+	flex-wrap: wrap;
+}
+
+.metaLabel {
+	font-weight: 500;
+	color: rgba(255, 255, 255, 0.6);
+	font-size: 13px;
+	white-space: nowrap;
+}
+
+.metaValue {
+	color: rgba(255, 255, 255, 0.9);
+	word-break: break-word;
+}
+
+.metaTag {
+	display: inline-block;
+	background: rgba(52, 125, 255, 0.15);
+	border: 1px solid rgba(52, 125, 255, 0.25);
+	border-radius: 4px;
+	padding: 1px 8px;
+	font-size: 13px;
+	margin: 1px 2px;
+	color: rgba(200, 220, 255, 0.9);
+
+	&.restriction {
+		background: rgba(255, 165, 0, 0.15);
+		border-color: rgba(255, 165, 0, 0.3);
+		color: rgba(255, 210, 130, 0.9);
 	}
 }
 
-.package-info {
-	color: white;
-	padding: 10px;
+/* ===== Badges ===== */
+
+.packageBadges {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 4px;
+	padding: 6px 12px;
 }
 
-.info-button {
-	margin-right: 5px;
+.badge {
+	display: inline-flex;
+	align-items: center;
+	gap: 3px;
+	font-size: 11px;
+	background: rgba(255, 255, 255, 0.07);
+	border-radius: 5px;
+	padding: 2px 6px;
+	color: rgba(255, 255, 255, 0.75);
+	white-space: nowrap;
 }
 
-.package-info, .flyoutButton_flyout .package-info li {
-	font-size: 18px;
+/* ===== Expandable Details ===== */
+
+.packageDetails {
+	border-top: 1px solid rgba(52, 125, 255, 0.15);
+	margin: 0 12px;
 }
 
-.flyoutButton_flyout .package-info li:hover {
-	background-color: initial;
-	cursor: initial;
+.detailsToggle {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 6px;
+	width: 100%;
+	padding: 8px 0;
+	background: transparent;
+	border: none;
+	color: rgba(150, 190, 255, 0.9);
+	cursor: pointer;
+	font-size: 13px;
+	font-weight: 500;
+	transition: color 0.2s ease;
+	letter-spacing: 0.3px;
+
+	&:hover {
+		color: #7db4ff;
+		background: transparent;
+	}
+}
+
+.detailsArrow {
+	display: inline-block;
+	transition: transform 0.25s ease;
+	font-size: 14px;
+
+	&.up {
+		transform: rotate(180deg);
+	}
+}
+
+.detailsContent {
+	padding: 4px 0 12px 0;
+	font-size: 14px;
+	animation: fadeSlideIn 0.2s ease;
+}
+
+@keyframes fadeSlideIn {
+	from {
+		opacity: 0;
+		transform: translateY(-6px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+.detailsRow {
+	margin-bottom: 6px;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 4px;
+	align-items: baseline;
+}
+
+.contentTags {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 4px;
+}
+
+.contentTag {
+	display: inline-block;
+	background: rgba(52, 125, 255, 0.12);
+	border-radius: 4px;
+	padding: 2px 8px;
+	font-size: 12px;
+	color: rgba(200, 220, 255, 0.85);
+}
+
+.roundsSection {
+	margin-top: 6px;
+}
+
+.roundsList {
+	list-style-type: disc !important;
+	margin: 4px 0 0 20px !important;
+	padding: 0 !important;
+	font-size: 13px;
+}
+
+.roundItem {
+	padding: 2px 0 !important;
+	width: auto !important;
+	background: transparent !important;
+	border: none !important;
+	border-radius: 0 !important;
+	color: rgba(255, 255, 255, 0.8);
+
+	&:hover {
+		transform: none !important;
+		box-shadow: none !important;
+	}
+}
+
+.roundName {
+	font-weight: 600;
+	color: rgba(200, 220, 255, 0.95);
+}
+
+.roundThemes {
+	margin-left: 4px;
+	color: rgba(255, 255, 255, 0.65);
+}
+
+/* ===== Card Actions ===== */
+
+.packageActions {
+	padding: 8px 12px 12px 12px;
+	display: flex;
+	justify-content: flex-end;
+	gap: 8px;
+	margin-top: auto;
+}
+
+.selectBtn {
+	padding: 6px 20px !important;
+	font-size: 13px;
+	border-radius: 6px;
+	font-weight: 600;
+	letter-spacing: 0.3px;
+	transition: all 0.15s ease;
 }
