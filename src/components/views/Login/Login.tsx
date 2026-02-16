@@ -104,6 +104,7 @@ export function Login(props: LoginProps) {
 
 				<div className='loginBody'>
 					{loginState.inProgress ? <ProgressBar isIndeterminate /> : null}
+					<p className='app-tagline'>{localization.appTagline}</p>
 					<AvatarView disabled={loginState.inProgress} />
 					<SexView disabled={loginState.inProgress} />
 

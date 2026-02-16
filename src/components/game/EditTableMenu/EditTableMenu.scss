@@ -4,9 +4,35 @@
 	right: 0;
 }
 
+.flyoutButton_flyout .editTableMenuList {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
 .flyoutButton_flyout .editTableMenuList li {
 	font-size: 12px;
 	padding: 10px 20px;
+	display: grid;
+	grid-template-columns: 24px 1fr;
+	align-items: center;
+	gap: 8px;
+}
+
+.editTableMenuList .menuIconWrap {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.editTableMenuList .menuIcon {
+	display: block;
+	width: 18px;
+	height: 18px;
+}
+
+.editTableMenuFlyout {
+	overflow: visible;
 }
 
 .replacementListContainer {
@@ -27,6 +53,8 @@
 	grid-template-columns: repeat(2, 1fr);
 	gap: 5px;
 	padding: 10px;
+	max-height: 250px;
+	overflow-y: auto;
 }
 
 .replacementItem {
@@ -49,6 +77,13 @@
 	.flyoutButton_flyout .editTableMenuList li {
 		font-size: 26px;
 		padding: 13px 40px;
+		grid-template-columns: 40px 1fr;
+		gap: 16px;
+	}
+
+	.editTableMenuList .menuIcon {
+		width: 32px;
+		height: 32px;
 	}
 
 	.replacementListHeader {

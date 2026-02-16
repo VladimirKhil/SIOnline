@@ -96,9 +96,56 @@ const EditTableMenu: React.FC<EditTableMenuProps> = (props) => {
 			flyout={
 				<div className="editTableMenuFlyout">
 					<ul className="editTableMenuList">
-						{canFree ? <li onClick={onFreeTable}>{localization.freeTable}</li> : null}
-						{canDelete ? <li onClick={onDeleteTable}>{localization.deleteTable}</li> : null}
-						<li onClick={onChangeTableType}>{isBot ? localization.changeToHuman : localization.changeToBot}</li>
+						{canFree ? <li onClick={onFreeTable}>
+							<span className="menuIconWrap">
+								<svg className="menuIcon" viewBox="0 0 24 24" fill="none"
+									stroke="currentColor" strokeWidth="2"
+									strokeLinecap="round" strokeLinejoin="round">
+									<path d="M15 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+									<circle cx="8.5" cy="7" r="4" />
+									<line x1="19" y1="5" x2="19" y2="13" />
+									<polyline points="16 8 19 5 22 8" />
+								</svg>
+							</span>
+							{localization.freeTable}
+						</li> : null}
+						{canDelete ? <li onClick={onDeleteTable}>
+							<span className="menuIconWrap">
+								<svg className="menuIcon" viewBox="0 0 24 24" fill="none"
+									stroke="currentColor" strokeWidth="2"
+									strokeLinecap="round" strokeLinejoin="round">
+									<polyline points="3 6 5 6 21 6" />
+									<path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+									<path d="M10 11v6" />
+									<path d="M14 11v6" />
+									<path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+								</svg>
+							</span>
+							{localization.deleteTable}
+						</li> : null}
+						<li onClick={onChangeTableType}>
+							<span className="menuIconWrap">
+								{isBot ? (
+									<svg className="menuIcon" viewBox="0 0 24 24" fill="none"
+										stroke="currentColor" strokeWidth="2"
+										strokeLinecap="round" strokeLinejoin="round">
+										<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+										<circle cx="12" cy="7" r="4" />
+									</svg>
+								) : (
+									<svg className="menuIcon" viewBox="0 0 24 24" fill="none"
+										stroke="currentColor" strokeWidth="2"
+										strokeLinecap="round" strokeLinejoin="round">
+										<rect x="4" y="4" width="16" height="16" rx="2" />
+										<circle cx="9" cy="10" r="1.5" fill="currentColor" />
+										<circle cx="15" cy="10" r="1.5" fill="currentColor" />
+										<path d="M8 15h8" />
+										<line x1="12" y1="1" x2="12" y2="4" />
+									</svg>
+								)}
+							</span>
+							{isBot ? localization.changeToHuman : localization.changeToBot}
+						</li>
 					</ul>
 					{replacementList.length > 0 && (
 						<div className="replacementListContainer">

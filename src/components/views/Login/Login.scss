@@ -132,6 +132,14 @@
     overflow: hidden;
 }
 
+.app-tagline {
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 14px;
+    margin: 0 0 8px 0;
+    letter-spacing: 0.3px;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+}
+
 .loginBody .avatarArea {
     height: 200px;
     width: 200px;
