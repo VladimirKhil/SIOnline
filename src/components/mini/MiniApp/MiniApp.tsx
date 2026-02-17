@@ -2,7 +2,7 @@ import React from 'react';
 import Path from '../../../model/enums/Path';
 import State from '../../../state/State';
 import JoinRoom from '../../views/JoinRoom/JoinRoom';
-import TableContextView from '../../game/TableContextView/TableContextView';
+import TableContextView from '../../tableContext/TableContextView/TableContextView';
 import { connect } from 'react-redux';
 import { useAppSelector } from '../../../state/hooks';
 import ErrorView from '../../views/Error/ErrorView';

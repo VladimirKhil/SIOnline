@@ -188,7 +188,7 @@
 
 @media screen and (min-width: 1100px) and (min-height: 600px) {
     .playersPanel {
-        flex: 0.45 0 0 !important;
+        flex: 0.4 0 0 !important;
     }
 
     .playersPanel .avatarMale, .playersPanel .avatarFemale {
@@ -266,6 +266,10 @@
 }
 
 @media screen and (min-width: 1600px) and (min-height: 600px) {
+    .playersPanel {
+        flex: 0.35 0 0 !important;
+    }
+
     .gamePlayers li {
         height: calc(100% - 10px);
         margin: 5px 3px !important;

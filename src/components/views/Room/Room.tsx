@@ -19,7 +19,7 @@ import ManageGameView from '../../game/ManageGameView/ManageGameView';
 import Constants from '../../../model/enums/Constants';
 import GameMetadataView from '../../game/GameMetadataView/GameMetadataView';
 import BannedView from '../../game/BannedView/BannedView';
-import TableContextView from '../../game/TableContextView/TableContextView';
+import TableContextView from '../../tableContext/TableContextView/TableContextView';
 import ChatInput from '../../game/ChatInput/ChatInput';
 import { userErrorChanged } from '../../../state/commonSlice';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';

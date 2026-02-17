@@ -1,5 +1,6 @@
 .tableContextView, .emptyContext {
 	height: 45px;
+	margin-top: 3px;
 }
 
 @media screen and (min-width: 1600px) {

@@ -1,7 +1,7 @@
 /* eslint-disable react/no-array-index-key */
 import * as React from 'react';
 import AnswerValidationBody from '../../gameTable/AnswerValidationBody/AnswerValidationBody';
-import AnswerValidationButtons from '../AnswerValidationButtons/AnswerValidationButtons';
+import AnswerValidationButtons from '../../tableContext/AnswerValidationButtons/AnswerValidationButtons';
 
 import './AnswerValidation.scss';
 
