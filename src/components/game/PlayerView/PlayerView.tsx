@@ -136,8 +136,9 @@ export function PlayerView(props: PlayerViewProps): JSX.Element {
 
 	const displayedStake = player.stake > 0
 		? player.stake.toString()
-		: player.stake === Constants.HIDDEN_STAKE ? '######' : null;
+		: (player.stake === Constants.HIDDEN_STAKE ? '######' : null);
 
+	// Restore avatar background image style if avatar is present
 	const avatarStyle: React.CSSProperties = avatar
 		? { backgroundImage: `url("${avatar}")` }
 		: {};
@@ -193,17 +194,27 @@ export function PlayerView(props: PlayerViewProps): JSX.Element {
 		>
 			<div className="stakeHost">
 				<div className="stake">{displayedStake ?? '\u200b'}</div>
-				<div className='answer'>{player.answer}</div>
 			</div>
 
 			<div className={buildPlayerClasses()}>
 				{props.showVideoAvatars && avatarVideo
-					? <div className='playerAvatar'><iframe title='Video avatar' src={avatarVideo} /></div>
-					: <div
-						className={`playerAvatar ${avatarClass}`}
-						style={avatarStyle}
-						title={`${player.name} ${player.sum}`}
-					/>}
+					? (
+						<div className='playerAvatar'><iframe title='Video avatar' src={avatarVideo} /></div>
+					) : (
+						<div
+							className={`playerAvatar ${avatarClass}`}
+							style={avatarStyle}
+							title={`${player.name} ${player.sum}`}
+						>
+							{player.answer && (
+								<div className="playerAnswerOverlay">
+									<AutoSizedText maxFontSize={32} className="playerAnswerOverlayText" title="Player's answer">
+										{player.answer}
+									</AutoSizedText>
+								</div>
+							)}
+						</div>
+					)}
 
 				<div className="playerInfo">
 					<div className="name" title={player.name}>
@@ -252,9 +263,9 @@ export function PlayerView(props: PlayerViewProps): JSX.Element {
 
 			{player.isDeciding ? (
 				<ProgressBar
-					value={1 - props.decisionTimer.value / props.decisionTimer.maximum}
+					value={1 - (props.decisionTimer.value / props.decisionTimer.maximum)}
 					valueChangeDuration={isRunning(props.decisionTimer)
-						? (props.decisionTimer.maximum - props.decisionTimer.value) / 10 : 0}
+						? ((props.decisionTimer.maximum - props.decisionTimer.value) / 10) : 0}
 				/>
 			) : null}
 

@@ -148,6 +148,7 @@ import {
 	answerTypeChanged,
 	showLeftSeconds,
 	setReview,
+	setPlayerAnswer,
 } from '../state/room2Slice';
 
 import PersonInfo from '../model/PersonInfo';
@@ -946,8 +947,7 @@ export default class ClientController implements IClientController {
 			}
 		}
 
-		// this.appDispatch(setPlayerAnswer({ index: playerIndex, answer })); // TODO: think about providing unified answering experience
-		this.appDispatch(playerReplicChanged({ playerIndex, replic: answer }));
+		this.appDispatch(setPlayerAnswer({ index: playerIndex, answer }));
 	}
 
 	onPlayerAppellating(playerName: string) {

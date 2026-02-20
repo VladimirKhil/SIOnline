@@ -7,7 +7,7 @@ import StackedContent from '../StackedContent/StackedContent';
 
 import './TableLogo.css';
 
-import logoImg from '../../../../assets/images/logo.png';
+import logoImg from '../../../../assets/images/logo_table.png';
 
 export default function TableLogo() {
 	const logo: ContentGroup[] = [{
