@@ -192,11 +192,22 @@ export function PlayerView(props: PlayerViewProps): JSX.Element {
 			className="gamePlayer"
 			onClick={(e) => player.canBeSelected ? onPlayerClicked(e) : null}
 		>
-			<div className="stakeHost">
-				<div className="stake">{displayedStake ?? '\u200b'}</div>
-			</div>
-
 			<div className={buildPlayerClasses()}>
+				<div className="playerCard__top">
+					{player.isDeciding ? (
+						<ProgressBar
+							value={1 - (props.decisionTimer.value / props.decisionTimer.maximum)}
+							valueChangeDuration={isRunning(props.decisionTimer)
+								? ((props.decisionTimer.maximum - props.decisionTimer.value) / 10) : 0}
+						/>
+					) : null}
+					<EditTableMenu isPlayerScope={true} account={props.account} tableIndex={index} />
+				</div>
+
+				<div className="stakeHost">
+					<div className="stake">{displayedStake ?? '\u200b'}</div>
+				</div>
+
 				{props.showVideoAvatars && avatarVideo
 					? (
 						<div className='playerAvatar'><iframe title='Video avatar' src={avatarVideo} /></div>
@@ -248,7 +259,52 @@ export function PlayerView(props: PlayerViewProps): JSX.Element {
 					</div>
 				</div>
 
-				<EditTableMenu isPlayerScope={true} account={props.account} tableIndex={index} />
+				<div className='marksArea'>
+					{player.isReady && !stage.isGameStarted ? (
+						<span
+							className='readyMark'
+							role="img"
+							aria-label="checkmark"
+							title={sex === Sex.Female ? localization.readyFemale : localization.readyMale}
+						>
+							<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+								<path d="M5 13L9 17L19 7" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+							</svg>
+						</span>
+					) : null}
+					{player.isChooser ? (
+						<div className='chooserMark' title={localization.chooserMark}>
+							<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+								<path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" fill="currentColor" />
+							</svg>
+						</div>
+					) : null}
+
+					{player.mediaLoaded ? (
+						<div className='mediaLoadedMark' title={localization.mediaLoadedMark}>
+							<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+								<path d="M3 14L8 19L21 6" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+							</svg>
+						</div>
+					) : null}
+
+					{player.isAppellating ? (
+						<span
+							className='appellationMark'
+							title={localization.appellationMark}
+						>
+							!
+						</span>
+					) : null}
+				</div>
+
+				{player.mediaPreloadProgress > 0 && player.mediaPreloadProgress <= 100 ? (
+					<div className='preload__progress'>
+						<div className="preload__bar" style={{ width: `${player.mediaPreloadProgress}%` }} title={localization.mediaPreloadProgress} />
+						<span className="preload__text">{localization.loading}: {player.mediaPreloadProgress}%</span>
+					</div>
+				) : null}
+
 			</div>
 
 			{player.replic && player.replic.length > 0 ? (
@@ -260,51 +316,6 @@ export function PlayerView(props: PlayerViewProps): JSX.Element {
 					<div className='replicLink' />
 				</div>
 			) : null}
-
-			{player.isDeciding ? (
-				<ProgressBar
-					value={1 - (props.decisionTimer.value / props.decisionTimer.maximum)}
-					valueChangeDuration={isRunning(props.decisionTimer)
-						? ((props.decisionTimer.maximum - props.decisionTimer.value) / 10) : 0}
-				/>
-			) : null}
-
-			<div className='marksArea'>
-				{player.isReady && !stage.isGameStarted ? (
-					<span
-						className='readyMark'
-						role="img"
-						aria-label="checkmark"
-						title={sex === Sex.Female ? localization.readyFemale : localization.readyMale}
-					>
-						✔️
-					</span>
-				) : null}
-				{player.isChooser ? (
-					<div className='chooserMark' title={localization.chooserMark} />
-				) : null}
-
-				{player.mediaLoaded ? (
-					<div className='mediaLoadedMark' title={localization.mediaLoadedMark} />
-				) : null}
-
-				{player.isAppellating ? (
-					<span
-						className='appellationMark'
-						role="img"
-						aria-label="exclamation"
-						title={localization.appellationMark}
-					>
-						❗
-					</span>
-				) : null}
-			</div>
-
-			<div className='preload__progress'>
-				{player.mediaPreloadProgress > 0 && player.mediaPreloadProgress <= 100
-					? <div title={localization.mediaPreloadProgress}>{localization.loading}: {player.mediaPreloadProgress}%</div>
-					: null}
-			</div>
 		</li>
 	);
 }

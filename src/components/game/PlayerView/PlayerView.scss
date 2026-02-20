@@ -44,6 +44,7 @@
 		opacity: 0;
 		transform: scale(0.95);
 	}
+
 	to {
 		opacity: 1;
 		transform: scale(1);
@@ -53,15 +54,44 @@
 .gamePlayer {
 	.preload__progress {
 		position: absolute;
-		bottom: 2px;
-		left: 5px;
-		color: lightgreen;
-		font-size: 14px;
-		text-shadow: 1px 1px 2px black;
+		top: 5px;
+		left: 50%;
+		transform: translateX(-50%);
+		width: 80%;
+		z-index: 5;
+		height: 16px;
+		background: rgba(0, 0, 0, 0.4);
+		border-radius: 10px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		overflow: hidden;
+	}
+
+	.preload__bar {
+		position: absolute;
+		top: 0;
+		left: 0;
+		bottom: 0;
+		background: linear-gradient(90deg, rgba(76, 175, 80, 0.8), rgba(46, 125, 50, 0.8));
+		border-radius: 10px;
+		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+		transition: width 0.3s ease;
+	}
+
+	.preload__text {
+		position: relative;
+		z-index: 10;
+		color: white;
+		font-size: 10px;
+		font-weight: bold;
+		text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+		white-space: nowrap;
 	}
 }
 
-.playerInfo .name, .playerInfo .sum {
+.playerInfo .name,
+.playerInfo .sum {
 	position: relative;
 	display: block;
 	margin: 0 1px;
@@ -76,15 +106,15 @@
 }
 
 .stakeHost {
-	flex: 0 0 10px;
+	flex: 0 0 20px;
 	color: white;
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	font-size: 18px;
+	font-size: 16px;
 
 	@media screen and (min-width: 800px) {
-		flex: 0 0 45px;
+		flex: 0 0 25px;
 	}
 }
 
@@ -95,7 +125,8 @@
 	overflow: hidden;
 }
 
-.playerInfo .sum, .stakeHost {
+.playerInfo .sum,
+.stakeHost {
 	text-align: center;
 	overflow: hidden;
 	white-space: nowrap;
@@ -131,8 +162,13 @@
 }
 
 @keyframes replicfadein {
-    from { opacity: 0; }
-    to   { opacity: 1; }
+	from {
+		opacity: 0;
+	}
+
+	to {
+		opacity: 1;
+	}
 }
 
 .gamePlayer .playerReplicText {
@@ -156,119 +192,171 @@
 }
 
 .playerAvatar {
-    height: 100%;
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-    overflow: hidden;
-    min-width: 10px;
-    flex: 0.3;
-    position: relative;
+	height: 100%;
+	background-size: contain;
+	background-repeat: no-repeat;
+	background-position: center;
+	overflow: hidden;
+	min-width: 10px;
+	flex: 0.3;
+	position: relative;
 }
 
 .playerAvatar iframe {
-    position: absolute;
-    top: 0;
-    width: 100%;
-    height: 100%;
+	position: absolute;
+	top: 0;
+	width: 100%;
+	height: 100%;
 }
 
 .gamePlayer {
-    background-color: transparent;
-    transition: background-color 1s, opacity 1s;
+	background-color: transparent;
+	transition: background-color 1s, opacity 1s;
 }
 
 .playerCard {
 	position: relative;
+	border-radius: 10px;
+	background: linear-gradient(135deg, rgba(20, 24, 62, 0.4), rgba(5, 6, 31, 0.6));
+	border: 1px solid rgba(255, 255, 255, 0.15);
+	-webkit-backdrop-filter: blur(8px);
+	backdrop-filter: blur(8px);
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+	height: 100%;
+	width: 100%;
+	transition: background 0.3s, border-color 0.3s, transform 0.2s;
+}
+
+.playerCard__top {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 24px;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	z-index: 10;
+}
+
+.playerCard__top .progress {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	height: 4px;
+	background: rgba(255, 255, 255, 0.1);
+	border-radius: 10px 10px 0 0;
+	padding: 0;
+	margin: 0;
+}
+
+.playerCard__top .progress-bar {
+	height: 100%;
+	background: linear-gradient(90deg, #ff8c00, #ff4500);
+	border-radius: 10px 10px 0 0;
+	transition: width 0.1s linear;
 }
 
 .gamePlayers .playerCard.state_press {
-    background: v.$table-cell-active-background-color;
+	background: linear-gradient(135deg, rgba(0, 229, 255, 0.5), rgba(0, 184, 212, 0.7)) !important;
+	border-color: rgba(0, 229, 255, 0.8) !important;
+	box-shadow: 0 0 15px rgba(0, 229, 255, 0.4);
 }
 
+
 .gamePlayers .playerCard.state_lost {
-    background: v.$active-button-background;
+	background: linear-gradient(135deg, rgba(255, 152, 0, 0.6), rgba(245, 124, 0, 0.8)) !important;
+	border-color: rgba(255, 152, 0, 0.5) !important;
 }
 
 .gamePlayers .playerCard.state_right {
-    background: v.$accept-button-background;
+	background: linear-gradient(135deg, rgba(76, 175, 80, 0.5), rgba(46, 125, 50, 0.7)) !important;
 }
 
 .gamePlayers .playerCard.state_wrong {
-    background: v.$reject-button-background;
+	background: linear-gradient(135deg, rgba(244, 67, 54, 0.5), rgba(198, 40, 40, 0.7)) !important;
 }
 
 .gamePlayers .playerCard.state_hasanswered {
-    background-color: darkviolet;
+	background: linear-gradient(135deg, rgba(156, 39, 176, 0.5), rgba(123, 31, 162, 0.7)) !important;
 }
 
 .gamePlayers .playerCard.state_pass {
-    background-color: v.$person-background-pass;
+	background: linear-gradient(135deg, rgba(96, 125, 139, 0.5), rgba(69, 90, 100, 0.7)) !important;
 }
 
 .gamePlayers .playerCard.out_of_game {
-    opacity: 0.5;
+	opacity: 0.5;
 }
 
 .gamePlayers .playerCard.selectable {
-    background: v.$highlighted-text-color;
+	background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1));
+	border-color: white;
 }
 
 .gamePlayers .playerCard.selectable:hover {
-	background: v.$active-button-background !important;
+	background: linear-gradient(135deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.2)) !important;
 	cursor: pointer;
 }
 
 .playerInfo .numericTextBox {
-    font-size: smaller;
+	font-size: smaller;
 	width: 100%;
 }
 
 .marksArea {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    display: flex;
-    flex-direction: row;
+	position: absolute;
+	bottom: 5px;
+	right: 5px;
+	display: flex;
+	flex-direction: row;
+	gap: 4px;
+	z-index: 5;
+}
+
+.marksArea>div,
+.marksArea>span {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 18px;
+	height: 18px;
+	border-radius: 50%;
+	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+	color: white;
+}
+
+.marksArea svg {
+	width: 10px;
+	height: 10px;
 }
 
 .readyMark {
-    font-size: 15px;
+	background: linear-gradient(135deg, #4caf50, #2e7d32);
+	border: 1px solid rgba(76, 175, 80, 0.5);
 }
 
 .chooserMark {
-    width: 15px;
-    height: 15px;
-    background-color: rgba(0, 0, 0, 0.3);
-    background-image: url(../../../../assets/images/active_player.png);
-    background-repeat: no-repeat;
-    background-position: 50% 50%;
-    background-size: contain;
-    background-origin: content-box;
-    padding: 2px;
+	background: linear-gradient(135deg, #2196f3, #1565c0);
+	border: 1px solid rgba(33, 150, 243, 0.5);
+	color: white;
 }
 
 .mediaLoadedMark {
-    width: 20px;
-    height: 20px;
-    background: green;
-    border-width: 1px 1px 0 0;
-    border-color: lightgray;
-    border-style: solid;
+	background: linear-gradient(135deg, #ff9800, #f57c00);
+	border: 1px solid rgba(255, 152, 0, 0.5);
 }
 
 .appellationMark {
-    font-size: 16px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 24px;
-    height: 24px;
-    background: linear-gradient(135deg, rgba(255, 107, 107, 0.7), rgba(255, 68, 68, 0.7));
-    border-radius: 4px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    padding: 2px;
+	background: linear-gradient(135deg, rgba(255, 107, 107, 0.9), rgba(255, 68, 68, 0.9));
+	border: 1px solid rgba(255, 255, 255, 0.2);
+	font-weight: bold;
+	font-size: 13px;
+	border-radius: 4px !important;
 }
 
 .playerInfo .staticSum {
@@ -287,22 +375,12 @@
 
 @media screen and (min-width: 1100px) and (min-height: 600px) {
 	.stakeHost {
-		flex: 0 0 45px;
+		flex: 0 0 28px;
 		color: white;
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		font-size: 18px;
-	}
-
-	.gamePlayer .progress {
-		top: 40px;
-		height: 7px;
-		border-radius: 5px;
-	}
-
-	.gamePlayer .progress .progress-bar {
-		height: 7px;
+		font-size: 16px;
 	}
 
 	.playerInfo .sum {
