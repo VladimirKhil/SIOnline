@@ -59,7 +59,8 @@
     color: v.$me-color;
 }
 
-.showmanAvatar, .showmanName {
+.showmanAvatar,
+.showmanName {
     width: 120px;
 }
 
@@ -78,6 +79,8 @@
         border: 1px solid #222084;
         border-radius: 10px;
         margin: 5px;
+        -webkit-backdrop-filter: blur(8px);
+        backdrop-filter: blur(8px);
     }
 
     .showmanName {

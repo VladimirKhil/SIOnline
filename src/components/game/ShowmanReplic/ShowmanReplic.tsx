@@ -5,7 +5,7 @@ import State from '../../../state/State';
 import { connect } from 'react-redux';
 import { useAppSelector } from '../../../state/hooks';
 
-import './ShowmanReplic.css';
+import './ShowmanReplic.scss';
 
 interface ShowmanReplicProps {
 	windowWidth: number;
@@ -24,9 +24,15 @@ export function ShowmanReplic(props: ShowmanReplicProps): JSX.Element {
 	const isScreenWide = props.windowWidth >= Constants.WIDE_WINDOW_WIDTH;
 
 	return (
-		<AutoSizedText className={`showmanReplic replic ${replic || !isScreenWide ? '' : 'hidden'}`} maxFontSize={32}>
-			{replic || ''}
-		</AutoSizedText>
+		<div className={`showmanReplic replic ${replic || !isScreenWide ? '' : 'hidden'}`}>
+			<AutoSizedText
+				key={replic}
+				className="showmanReplicText"
+				maxFontSize={32}
+			>
+				{replic || ''}
+			</AutoSizedText>
+		</div>
 	);
 }
 
