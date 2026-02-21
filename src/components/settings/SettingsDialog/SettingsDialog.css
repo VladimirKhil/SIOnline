@@ -6,8 +6,8 @@
 }
 
 .settingsDialogBody {
-	padding: 15px 0 0 15px;
-	font-size: 20px;
+    padding: 15px 0 0 15px;
+    font-size: 20px;
     height: calc(100% - 59px);
     display: flex;
     flex-direction: column;
@@ -21,7 +21,7 @@
 .settingsBody {
     overflow-y: auto;
     scrollbar-width: thin;
-	padding: 0 15px 15px 0;
+    padding: 0 15px 15px 0;
 }
 
 .settingsDialogBody input[type=checkbox] {
@@ -29,7 +29,7 @@
 }
 
 .settingsDialogBody label {
-	margin-left: 10px;
+    margin-left: 10px;
     vertical-align: text-bottom;
     cursor: pointer;
 }
@@ -55,14 +55,18 @@
     margin-top: 20px;
 }
 
-.settingItem > input[type="range"] {
-   width: 200px;
+.settingItem>input[type="range"] {
+    width: 200px;
 }
 
 #settingsDialog .hint {
     margin-top: 5px;
     font-size: 15px;
     display: block;
+}
+
+#settingsDialog .warning {
+    color: #FF5A5A;
 }
 
 #settingsDialog .reset {
@@ -72,15 +76,15 @@
 }
 
 #settingsDialog .rangeEditor {
-	vertical-align: middle;
-	margin-right: 10px;
-	width: 200px;
+    vertical-align: middle;
+    margin-right: 10px;
+    width: 200px;
 }
 
 #settingsDialog .valueEditor {
-	vertical-align: middle;
-	margin-right: 5px;
-	font-size: 20px;
+    vertical-align: middle;
+    margin-right: 5px;
+    font-size: 20px;
 }
 
 .avatarLoadHelper {

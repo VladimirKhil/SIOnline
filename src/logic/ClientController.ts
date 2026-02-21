@@ -27,7 +27,8 @@ import PlayerStatistics from '../model/PlayerStatistics';
 import IClientController from './IClientController';
 import ChatMessage from '../model/ChatMessage';
 
-import { answerOptions,
+import {
+	answerOptions,
 	appendPartialText,
 	blinkQuestion,
 	blinkTheme,
@@ -70,7 +71,8 @@ import { answerOptions,
 	clearRoundThemes,
 	setAnswerDeviation,
 	addPointMarker,
-	overlayPoints } from '../state/tableSlice';
+	overlayPoints
+} from '../state/tableSlice';
 
 import {
 	ContextView,
@@ -218,7 +220,7 @@ export default class ClientController implements IClientController {
 		private getState: () => State,
 		private dataContext: DataContext,
 		private loadStart: Date | null = null,
-	) {}
+	) { }
 
 	addSimpleMessage(message: string) {
 		this.appDispatch(addToChat({
@@ -271,7 +273,7 @@ export default class ClientController implements IClientController {
 		const externalUris: string[] = [];
 		const state = this.getState();
 
-		for	(let i = 0; i < content.length; i += 1) {
+		for (let i = 0; i < content.length; i += 1) {
 			const { type, value } = content[i];
 
 			switch (type) {
@@ -356,13 +358,13 @@ export default class ClientController implements IClientController {
 		}
 
 		// Set external media warning
-		if (externalUris.length > 0) {
+		if (externalUris.length > 0 && !state.settings.loadExternalMedia) {
 			this.appDispatch(setExternalMediaWarning(externalUris));
 		}
 
 		this.appDispatch(showContent(groups));
 
-		if (runContentLoadTimer && externalUris.length === 0) {
+		if (runContentLoadTimer && (externalUris.length === 0 || state.settings.loadExternalMedia)) {
 			this.appDispatch(startLoadTimer());
 			this.loadStart = new Date();
 		}
@@ -1082,7 +1084,7 @@ export default class ClientController implements IClientController {
 				break;
 
 			case 'manual':
-				default:
+			default:
 				this.addSimpleMessage(localization.roundEndedManual);
 				break;
 		}
@@ -1154,7 +1156,7 @@ export default class ClientController implements IClientController {
 			this.appDispatch(clearRoundThemes());
 
 			if (stage === GameStage.Round) {
-				for	(let i = 0; i < state.room2.persons.players.length; i++) {
+				for (let i = 0; i < state.room2.persons.players.length; i++) {
 					this.appDispatch(playerInGameChanged({ playerIndex: i, inGame: true }));
 				}
 			}
@@ -1216,7 +1218,7 @@ export default class ClientController implements IClientController {
 		answer: string,
 		message: string,
 		rightAnswers:
-		string[],
+			string[],
 		wrongAnswers: string[],
 		showExtraRightButtons: boolean,
 	) {
@@ -1287,7 +1289,7 @@ export default class ClientController implements IClientController {
 					const uri = this.preprocessServerUri(backgroundContent.value);
 
 					// Check if background audio is external
-					if (this.isExternalUri(uri)) {
+					if (this.isExternalUri(uri) && !this.getState().settings.loadExternalMedia) {
 						this.appDispatch(appendExternalMediaWarning(uri));
 					}
 
@@ -1908,7 +1910,7 @@ export default class ClientController implements IClientController {
 				? playerChanged({ index, name: replacer, isReady: false })
 				: showmanChanged({ name: replacer, isReady: false }));
 
-				this.appDispatch(personRemoved(person.name));
+			this.appDispatch(personRemoved(person.name));
 
 			const newAccount: Account = {
 				name: replacer,

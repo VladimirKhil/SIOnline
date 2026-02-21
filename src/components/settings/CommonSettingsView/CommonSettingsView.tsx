@@ -3,7 +3,8 @@ import localization from '../../../model/resources/localization';
 import LanguageView from '../../panels/LanguageView/LanguageView';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 
-import { setAppSound,
+import {
+	setAppSound,
 	setAttachContentToTable,
 	setFloatingControls,
 	setFullScreen,
@@ -12,7 +13,10 @@ import { setAppSound,
 	setSound,
 	setSoundVolume,
 	setUseProxy,
-	setWriteGameLog } from '../../../state/settingsSlice';
+	setWriteGameLog,
+	setLoadExternalMedia
+} from '../../../state/settingsSlice';
+import { setExternalMediaWarning } from '../../../state/tableSlice';
 
 export function CommonSettingsView(): JSX.Element {
 	const settings = useAppSelector(state => state.settings);
@@ -48,7 +52,7 @@ export function CommonSettingsView(): JSX.Element {
 
 					<label htmlFor="fullScreen">{localization.fullScreen}</label>
 				</div>
-			: null}
+				: null}
 
 			<div className="settingItem">
 				<input
@@ -140,6 +144,24 @@ export function CommonSettingsView(): JSX.Element {
 					<label htmlFor="writeGameLog">{localization.writeGameLog}</label>
 				</div>
 				: null}
+
+			<div className="settingItem">
+				<input
+					id="loadExternalMedia"
+					type="checkbox"
+					checked={settings.loadExternalMedia}
+					onChange={() => {
+						const newValue = !settings.loadExternalMedia;
+						appDispatch(setLoadExternalMedia(newValue));
+						if (newValue) {
+							appDispatch(setExternalMediaWarning([]));
+						}
+					}}
+				/>
+
+				<label htmlFor="loadExternalMedia">{localization.loadExternalMedia}</label>
+				<div className="hint warning">{localization.loadExternalMediaHint}</div>
+			</div>
 		</div>
 	);
 }
