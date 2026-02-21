@@ -17,7 +17,7 @@ const mapStateToProps = (state: State) => ({
 });
 
 function getCompactView(hint: string | null): React.ReactNode {
-	return <AutoSizedText className='singleAnswer' maxFontSize={50} title={localization.rightAnswer}>
+	return <AutoSizedText className={`singleAnswer ${hint ? 'hasHint' : ''}`} maxFontSize={50} title={localization.rightAnswer}>
 		{hint}
 	</AutoSizedText>;
 }
@@ -27,8 +27,8 @@ export function ValidationArea(props: ValidationAreaProps): JSX.Element {
 
 	return <div className="validationArea">
 		{validation.queue.length > 0
-		? <AnswerValidation />
-		: getCompactView(props.hint)}
+			? <AnswerValidation />
+			: getCompactView(props.hint)}
 	</div>;
 }
 

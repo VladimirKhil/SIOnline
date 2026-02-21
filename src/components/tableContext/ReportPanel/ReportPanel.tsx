@@ -1,37 +1,18 @@
 import * as React from 'react';
-import { connect } from 'react-redux';
-import State from '../../../state/State';
 import localization from '../../../model/resources/localization';
-import { useAppDispatch, useAppSelector } from '../../../state/hooks';
-import { DialogView, showDialog } from '../../../state/room2Slice';
+import { useAppSelector } from '../../../state/hooks';
 
 import './ReportPanel.css';
 
-interface ReportPanelProps {
-	isConnected: boolean;
-}
-
-const mapStateToProps = (state: State) => ({
-	isConnected: state.common.isSIHostConnected,
-});
-
-export function ReportPanel(props: ReportPanelProps): JSX.Element | null {
-	const appDispatch = useAppDispatch();
+export default function ReportPanel(): JSX.Element | null {
 	const packageUri = useAppSelector(state => state.room2.playState.packageUri);
-	const enabledClass = props.isConnected ? '' : 'disabled';
-
-	const handleReviewPackage = () => {
-		if (packageUri) {
-			window.open(packageUri, '_blank');
-		}
-	};
 
 	return (
-		<div className={`reportPanel${packageUri ? ' two-buttons' : ''}`}>
+		<div className="reportPanel">
 			<button
 				type="button"
-				className={`report_button standard ${enabledClass}`}
-				onClick={() => appDispatch(showDialog(DialogView.Report))}
+				className="report_button standard"
+				onClick={() => window.open('https://steamcommunity.com/app/3553500/reviews/', '_blank')}
 			>
 				<span>{`⭐ ${localization.rateGame}`}</span>
 			</button>
@@ -40,7 +21,7 @@ export function ReportPanel(props: ReportPanelProps): JSX.Element | null {
 				<button
 					type="button"
 					className="report_button standard"
-					onClick={handleReviewPackage}
+					onClick={() => window.open(packageUri, '_blank')}
 				>
 					<span>{`📦 ${localization.reviewPackage}`}</span>
 				</button>
@@ -48,5 +29,3 @@ export function ReportPanel(props: ReportPanelProps): JSX.Element | null {
 		</div>
 	);
 }
-
-export default connect(mapStateToProps)(ReportPanel);

@@ -263,10 +263,9 @@
 
 .gamePlayers .playerCard.state_press {
 	background: linear-gradient(135deg, rgba(0, 229, 255, 0.5), rgba(0, 184, 212, 0.7)) !important;
-	border-color: rgba(0, 229, 255, 0.8) !important;
+	border-width: 0 !important;
 	box-shadow: 0 0 15px rgba(0, 229, 255, 0.4);
 }
-
 
 .gamePlayers .playerCard.state_lost {
 	background: linear-gradient(135deg, rgba(255, 152, 0, 0.6), rgba(245, 124, 0, 0.8)) !important;

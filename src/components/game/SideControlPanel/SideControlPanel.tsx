@@ -10,13 +10,15 @@ import { isHost } from '../../../utils/StateHelpers';
 import isWellFormedUri from '../../../utils/isWellFormedUri';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 
-import { addTable,
+import {
+	addTable,
 	DecisionType,
 	selectPlayers,
 	setAreSumsEditable,
 	setChatVisibility,
 	setDecisionType,
-	setIsEditingTables } from '../../../state/room2Slice';
+	setIsEditingTables
+} from '../../../state/room2Slice';
 
 import { showProfile, showSettings } from '../../../state/uiSlice';
 import Constants from '../../../model/enums/Constants';
@@ -115,7 +117,7 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 
 	const canStart = !isGameStarted && props.isHost;
 
-	const onGiveTurn = () =>{
+	const onGiveTurn = () => {
 		props.onGiveTurn();
 		appDispatch(selectPlayers([]));
 		appDispatch(setDecisionType(DecisionType.SelectChooser));
@@ -163,20 +165,22 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 
 									{props.isHost
 										? <>
-							{canAddTable ? <li onClick={() => appDispatch(addTable())}>{localization.addTable}</li> : null}
+											{canAddTable ? <li onClick={() => appDispatch(addTable())}>{localization.addTable}</li> : null}
 
-							{isGameStarted
-								? <li onClick={() => appDispatch(setIsEditingTables(!isEditingTables))}>
-									{localization.editTables}
-								</li>
-								: null}
-						</>
-						: null}									<li onClick={() => props.onShowBanned()}>{localization.bannedList}</li>
+											{isGameStarted
+												? <li onClick={() => appDispatch(setIsEditingTables(!isEditingTables))}>
+													{localization.editTables}
+												</li>
+												: null}
+										</>
+										: null}
+
+									<li onClick={() => props.onShowBanned()}>{localization.bannedList}</li>
 									<li onClick={() => props.onShowGameInfo()}>{localization.gameInfo}</li>
 
 									{role === Role.Showman ? (
 										<li className={enabledClass} onClick={onGiveTurn}>{localization.giveTurn}</li>
-										) : null}
+									) : null}
 
 									{voiceChatUri && isWellFormedUri(voiceChatUri) ? (
 										<li title={voiceChatUri} onClick={() => window.open(voiceChatUri, '_blank')}>{localization.voiceChat}</li>
@@ -194,27 +198,29 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 						</FlyoutButton>
 					</div>
 
-				<button
-					type="button"
-					className={`standard imageButton showChat ${chatIsVisible ? 'active' : ''}`}
-					onClick={() => appDispatch(setChatVisibility(!chatIsVisible))}
-					style={chatButtonStyle}
-					title={localization.showChat}
-				>
-					<span>💬</span>
-				</button>
-
-				{canPause ? (
 					<button
 						type="button"
-						className={`pauseButton standard imageButton ${isGamePaused ? 'active' : ''}`}
-						title={pauseTitle}
-						disabled={!props.isConnected || !isGameStarted}
-						onClick={() => appDispatch(pauseGame())}
+						className={`standard imageButton showChat ${chatIsVisible ? 'active' : ''}`}
+						onClick={() => appDispatch(setChatVisibility(!chatIsVisible))}
+						style={chatButtonStyle}
+						title={localization.showChat}
 					>
-						<img alt='pause' src={pauseImg} />
+						<span>💬</span>
 					</button>
-				) : null}					{props.isHost ? (
+
+					{canPause ? (
+						<button
+							type="button"
+							className={`pauseButton standard imageButton ${isGamePaused ? 'active' : ''}`}
+							title={pauseTitle}
+							disabled={!props.isConnected || !isGameStarted}
+							onClick={() => appDispatch(pauseGame())}
+						>
+							<img alt='pause' src={pauseImg} />
+						</button>
+					) : null}
+
+					{props.isHost ? (
 						<button
 							type="button"
 							className={`nextButton standard imageButton ${canStart ? 'startButton' : ''}`}

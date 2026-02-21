@@ -53,7 +53,7 @@ export const initialState: AppSettings = {
 	oral: false,
 	oralPlayersActions: true,
 	falseStart: true,
-	hintShowman: false,
+	hintShowman: true,
 	partialText: false,
 	partialImages: false,
 	allowEveryoneToPlayHiddenStakes: true,

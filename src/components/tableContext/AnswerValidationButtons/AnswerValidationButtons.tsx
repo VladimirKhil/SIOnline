@@ -40,16 +40,7 @@ export default function AnswerValidationButtons(): JSX.Element {
 
 	return (
 		<div className='answerValidationButtons'>
-			{validation.showExtraRightButtons ? <div className='buttonsPanel'>
-				<button
-					type='button'
-					className='standard cancelAnswer'
-					title={localization.cancelAnswer}
-					onClick={() => onReject(0)}
-				>
-					−0
-				</button>
-			</div> : null}
+
 
 			<div className="buttonsPanel">
 				<div className='buttonsArea'>
@@ -79,6 +70,19 @@ export default function AnswerValidationButtons(): JSX.Element {
 						</button>
 					</>) : null}
 				</div>
+
+				{validation.showExtraRightButtons ? (
+					<div className='buttonsArea passArea'>
+						<button
+							type='button'
+							className='standard cancelAnswer validationButton'
+							title={localization.cancelAnswer}
+							onClick={() => onReject(0)}
+						>
+							{localization.pass}
+						</button>
+					</div>
+				) : null}
 
 				<div className='buttonsArea'>
 					<button

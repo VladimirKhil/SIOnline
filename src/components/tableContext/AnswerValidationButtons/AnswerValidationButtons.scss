@@ -2,15 +2,20 @@
 
 .answerValidationButtons .buttonsPanel {
     flex: 0 0 45px;
+    margin-bottom: 1px;
 }
 
 .answerValidationButtons .buttonsPanel .buttonsArea {
     position: relative;
-    margin: 0 2px;
+    margin: 0 1px;
+}
+
+.answerValidationButtons .buttonsPanel .buttonsArea.passArea {
+    flex: 0.3;
 }
 
 .answerValidationButtons .validationButton {
-    width: calc(100% - 4px);
+    width: 100%;
     height: 100%;
 }
 
@@ -33,9 +38,9 @@
 .answerValidationButtons .extraButton {
     position: absolute;
     font-family: 'Arial';
-    font-size: 14px;
+    font-size: 12px;
     background-color: transparent;
-    width: 45px;
+    width: 35px;
     height: 100%;
 }
 
@@ -54,7 +59,6 @@
 .answerValidationButtons .cancelAnswer {
     color: white;
     background: v.$cancel-button-background;
-    margin: 1px 2px;
 }
 
 .answerValidationButtons .cancelAnswer:hover {

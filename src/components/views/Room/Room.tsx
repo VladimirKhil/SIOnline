@@ -25,7 +25,6 @@ import { userErrorChanged } from '../../../state/commonSlice';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 import { DecisionType, DialogView, rejectAnswer, setChatVisibility } from '../../../state/room2Slice';
 import ComplainDialog from '../../panels/ComplainDialog/ComplainDialog';
-import ReportDialog from '../../panels/ReportDialog/ReportDialog';
 import GameState from '../../game/GameState/GameState';
 import Role from '../../../model/Role';
 import Link from '../../common/Link/Link';
@@ -48,17 +47,13 @@ interface RoomProps {
 	clearDecisions: () => void;
 }
 
-function getDialog(dialogView: DialogView) : JSX.Element | null {
+function getDialog(dialogView: DialogView): JSX.Element | null {
 	switch (dialogView) {
 		case DialogView.None:
 			return null;
 
 		case DialogView.Complain:
 			return <ComplainDialog />;
-
-		case DialogView.Report:
-			return <ReportDialog />;
-
 		default:
 			return null;
 	}
@@ -89,7 +84,7 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	},
 });
 
-export function Room(props: RoomProps) : JSX.Element {
+export function Room(props: RoomProps): JSX.Element {
 	const appDispatch = useAppDispatch();
 
 	// Combine selectors to minimize selector calls

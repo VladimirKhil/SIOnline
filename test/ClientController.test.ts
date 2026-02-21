@@ -27,7 +27,7 @@ describe('ClientController - Game Initialization Flow', () => {
 	beforeEach(() => {
 		// Initialize state
 		state = JSON.parse(JSON.stringify(initialState));
-state.settings.appSound = true; // Enable sounds for testing
+		state.settings.appSound = true; // Enable sounds for testing
 		state.room2.name = 'TestUser';
 		state.settings.appSound = true; // Enable sounds for testing
 		state.room2.persons.players = [
@@ -278,7 +278,7 @@ describe('ClientController - Round Flow', () => {
 
 	beforeEach(() => {
 		state = JSON.parse(JSON.stringify(initialState));
-state.settings.appSound = true; // Enable sounds for testing
+		state.settings.appSound = true; // Enable sounds for testing
 		state.room2.persons.players = [
 			{
 				name: 'Player1',
@@ -420,7 +420,7 @@ describe('ClientController - Question Flow', () => {
 
 	beforeEach(() => {
 		state = JSON.parse(JSON.stringify(initialState));
-state.settings.appSound = true; // Enable sounds for testing
+		state.settings.appSound = true; // Enable sounds for testing
 		state.room2.persons.players = [
 			{
 				name: 'Player1',
@@ -623,7 +623,7 @@ describe('ClientController - Answer Phase Flow', () => {
 
 	beforeEach(() => {
 		state = JSON.parse(JSON.stringify(initialState));
-state.settings.appSound = true; // Enable sounds for testing
+		state.settings.appSound = true; // Enable sounds for testing
 		state.room2.persons.players = [
 			{
 				name: 'Player1',
@@ -735,7 +735,7 @@ state.settings.appSound = true; // Enable sounds for testing
 
 			expect(mockAppDispatch).toHaveBeenCalled();
 			const actions = dispatchedActions.map(a => a.type);
-			expect(actions).toContain('room2/playerReplicChanged');
+			expect(actions).toContain('room2/setPlayerAnswer');
 		});
 	});
 
@@ -785,7 +785,7 @@ describe('ClientController - Answer Result Flow', () => {
 
 	beforeEach(() => {
 		state = JSON.parse(JSON.stringify(initialState));
-state.settings.appSound = true; // Enable sounds for testing
+		state.settings.appSound = true; // Enable sounds for testing
 		state.room2.persons.players = [
 			{
 				name: 'Player1',
@@ -943,7 +943,7 @@ describe('ClientController - Timer Operations', () => {
 
 	beforeEach(() => {
 		state = JSON.parse(JSON.stringify(initialState));
-state.settings.appSound = true; // Enable sounds for testing
+		state.settings.appSound = true; // Enable sounds for testing
 		state.room2.persons.players = [
 			{
 				name: 'Player1',
@@ -1108,7 +1108,7 @@ describe('ClientController - Game End Flow', () => {
 
 	beforeEach(() => {
 		state = JSON.parse(JSON.stringify(initialState));
-state.settings.appSound = true; // Enable sounds for testing
+		state.settings.appSound = true; // Enable sounds for testing
 		state.room2.persons.players = [
 			{
 				name: 'Player1',
@@ -1253,7 +1253,7 @@ describe('ClientController - Miscellaneous Operations', () => {
 
 	beforeEach(() => {
 		state = JSON.parse(JSON.stringify(initialState));
-state.settings.appSound = true; // Enable sounds for testing
+		state.settings.appSound = true; // Enable sounds for testing
 		state.room2.persons.players = [
 			{
 				name: 'Player1',
