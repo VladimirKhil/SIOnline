@@ -67,12 +67,15 @@ export default React.forwardRef<HTMLDivElement, ScoreEditorProps>(function Score
 		<div ref={ref} className="scoreEditor">
 			<div className="scoreControls">
 				<button
-					type='button'
+					type="button"
 					className="scoreButton decreaseButton"
 					onClick={handleDecrease}
 					disabled={changeValue <= 0}
+					title="Decrease"
 				>
-					-
+					<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="16" height="16">
+						<path d="M5 12H19" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+					</svg>
 				</button>
 
 				<div ref={changeValueContainerRef} className="changeValueContainer">
@@ -87,12 +90,15 @@ export default React.forwardRef<HTMLDivElement, ScoreEditorProps>(function Score
 				</div>
 
 				<button
-					type='button'
+					type="button"
 					className="scoreButton increaseButton"
 					onClick={handleIncrease}
 					disabled={changeValue >= 100000}
+					title="Increase"
 				>
-					+
+					<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="16" height="16">
+						<path d="M12 5V19M5 12H19" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+					</svg>
 				</button>
 			</div>
 		</div>

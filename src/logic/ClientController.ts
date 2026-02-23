@@ -1017,6 +1017,24 @@ export default class ClientController implements IClientController {
 		this.appDispatch(showText(comments));
 	}
 
+	onQuestionPriceRange(minPrice: number, maxPrice: number | null, step: number | null) {
+		let cost = localization.price + ': ';
+
+		if (maxPrice == null) {
+			if (minPrice === 0) {
+				cost += localization.minMaxInRound;
+			} else {
+				cost += minPrice.toString();
+			}
+		} else if (step == null) {
+			cost += `${minPrice} ${localization.or} ${maxPrice}`;
+		} else {
+			cost += `${localization.from} ${minPrice} ${localization.to} ${maxPrice} ${localization.withStep} ${step}`;
+		}
+
+		this.appDispatch(showmanReplicChanged(cost));
+	}
+
 	onQuestionSources(sources: string[]) {
 		this.appDispatch(addToChat({
 			sender: localization.questionSources,
@@ -1081,6 +1099,7 @@ export default class ClientController implements IClientController {
 
 			case 'timeout':
 				this.addSimpleMessage(localization.roundEndedTimeout);
+				this.playGameSound(GameSound.ROUND_TIMEOUT);
 				break;
 
 			case 'manual':
@@ -1129,7 +1148,15 @@ export default class ClientController implements IClientController {
 		if (text) {
 			const textVariants = text.split(';');
 			const variantIndex = messageIndex % textVariants.length;
-			const selectedVariant = stringFormat(textVariants[variantIndex], ...args);
+			let selectedVariant = stringFormat(textVariants[variantIndex], ...args);
+
+			if (messageCode.toString() === 'RightAnswer' && args.length > 2) {
+				const base = args[2];
+				const multiplier = parseFloat(args[3]);
+				const multiplierText = multiplier > 1 ? ` * ${multiplier}!` : '';
+				selectedVariant += ` (${base}${multiplierText})`;
+			}
+
 			this.appDispatch(showmanReplicChanged(selectedVariant));
 		}
 	}
@@ -1198,10 +1225,6 @@ export default class ClientController implements IClientController {
 		if (stage === GameStage.After) {
 			this.appDispatch(showLogo());
 		}
-	}
-
-	onTimeout() {
-		this.playGameSound(GameSound.ROUND_TIMEOUT);
 	}
 
 	onTimerUserPause(timerIndex: number, timerArgument: number) {

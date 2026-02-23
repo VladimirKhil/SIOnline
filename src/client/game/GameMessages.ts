@@ -151,6 +151,9 @@ const enum GameMessages {
 	/** Question has ended. */
 	QuestionEnd = 'QUESTION_END',
 
+	/** Question possible price range. */
+	QuestionPriceRange = 'QUESTION_PRICE_RANGE',
+
 	/** Sources of the question (if any). */
 	QuestionSources = 'QUESTION_SOURCES',
 
@@ -218,8 +221,6 @@ const enum GameMessages {
 	ThemeComments = 'THEME_COMMENTS',
 
 	ThemeInfo = 'THEME_INFO',
-
-	Timeout = 'TIMEOUT',
 
 	Timer = 'TIMER',
 

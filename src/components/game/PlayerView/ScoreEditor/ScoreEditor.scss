@@ -1,47 +1,61 @@
+@use '../../../../scss/variables' as v;
+
 .scoreEditor {
 	position: absolute;
-	top: 2px;
-	bottom: 0;
-	left: 0;
-	right: 0;
-	background: rgba(0, 0, 0, 0.9);
+	top: -5px;
+	bottom: -5px;
+	left: -5px;
+	right: -5px;
+	background: rgba(10, 15, 45, 0.94);
+	border: 2px solid #FF8C00; // Bright orange for high contrast
 	border-radius: 8px;
 	z-index: 100;
+	-webkit-backdrop-filter: blur(20px);
+	backdrop-filter: blur(20px);
+	box-shadow: 0 0 20px rgba(255, 140, 0, 0.3), 0 8px 32px rgba(0, 0, 0, 0.6);
+	animation: scoreEditorAppear 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+	overflow: hidden;
 
 	.scoreControls {
 		display: flex;
 		align-items: center;
 		justify-content: stretch;
-		gap: 8px;
+		gap: 6px;
 		height: 100%;
+		padding: 4px;
+		box-sizing: border-box;
 
 		.scoreButton {
-			background: #444;
-			color: white;
-			border: 1px solid #666;
+			background: rgba(255, 255, 255, 0.15);
+			color: #FF8C00;
+			border: 1px solid rgba(255, 255, 255, 0.25);
 			border-radius: 4px;
 			width: 32px;
-			font-size: 14px;
+			font-size: 16px;
 			font-weight: bold;
 			cursor: pointer;
 			display: flex;
 			align-items: center;
 			justify-content: center;
-			transition: background-color 0.2s;
+			transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
 			padding: 0;
 			height: 100%;
 
 			&:hover:not(:disabled) {
-				background: #555;
+				background: rgba(255, 255, 255, 0.25);
+				border-color: #FF8C00;
+				color: white;
 			}
 
 			&:active:not(:disabled) {
-				background: #333;
+				background: rgba(255, 255, 255, 0.05);
+				transform: scale(0.95);
 			}
 
 			&:disabled {
-				background: #222;
-				color: #666;
+				background: rgba(0, 0, 0, 0.2);
+				color: rgba(255, 255, 255, 0.2);
+				border-color: transparent;
 				cursor: not-allowed;
 			}
 		}
@@ -50,17 +64,45 @@
 			flex: 1;
 			height: 100%;
 
-			input {
+			.numericTextBox {
 				text-align: center;
-				font-size: 13px;
-				padding: 4px 8px;
-				background: #333;
+				font-size: 14px;
+				font-weight: bold;
+				padding: 4px;
+				background: rgba(0, 0, 0, 0.4);
 				color: white;
-				border: 1px solid #666;
+				border: 1px solid #FF8C00;
 				border-radius: 4px;
 				width: 100%;
 				height: 100%;
+				box-sizing: border-box;
+				transition: border-color 0.2s, background-color 0.2s, box-shadow 0.2s;
+
+				&:focus {
+					border-color: #FFA500;
+					background-color: rgba(0, 0, 0, 0.6);
+					box-shadow: 0 0 8px rgba(255, 140, 0, 0.4);
+					outline: none;
+				}
+
+				&::-webkit-inner-spin-button,
+				&::-webkit-outer-spin-button {
+					-webkit-appearance: none;
+					margin: 0;
+				}
 			}
 		}
+	}
+}
+
+@keyframes scoreEditorAppear {
+	from {
+		opacity: 0;
+		transform: scale(0.96) translateY(4px);
+	}
+
+	to {
+		opacity: 1;
+		transform: scale(1) translateY(0);
 	}
 }
