@@ -746,6 +746,16 @@ const viewerHandler = (
 			controller.onQuestionEnd();
 			break;
 
+		case GameMessages.QuestionPriceRange:
+			if (args.length > 1) {
+				const minPrice = parseInt(args[1], 10);
+				const maxPrice = args.length > 2 ? parseInt(args[2], 10) : null;
+				const step = args.length > 3 ? parseInt(args[3], 10) : null;
+				controller.onQuestionPriceRange(minPrice, maxPrice, step);
+			}
+
+			break;
+
 		case GameMessages.QuestionSources:
 			if (args.length < 2) {
 				break;
@@ -963,10 +973,6 @@ const viewerHandler = (
 			});
 
 			controller.onTable(newRoundInfo);
-			break;
-
-		case GameMessages.Timeout:
-			controller.onTimeout();
 			break;
 
 		case GameMessages.Timer:
