@@ -1994,7 +1994,7 @@ Autori paketa odgovorni su za sadržaj paketa. Paket će biti automatski obrisan
 	},
   uz: {
     about: [
-      'SIGame — bu intellektual viktorina bo‘lib, har kim o‘z bilimini va tezligini sinab ko‘rishi hamda raqiblar bilan bellashishi mumkin.\'
+      'SIGame — bu intellektual viktorina bo‘lib, har kim o‘z bilimini va tezligini sinab ko‘rishi hamda raqiblar bilan bellashishi mumkin.'
                 `O‘yin qoidalari juda oddiy: o‘yindagi barcha savollar mavzularga bo‘lingan va har bir savolning o‘z qiymati bor.
         Har bir o‘yinchining shaxsiy hisobi bo‘lib, o‘yin boshida u 0 ga teng bo‘ladi.
         Savol o‘qib eshittirilgach, ekranda javob berish mumkinligini bildiruvchi ramka paydo bo‘ladi.
@@ -2325,7 +2325,7 @@ Har bir savoldan so‘ng navbat keyingi o‘yinchiga o‘tadi.`,
     nofalsestart: 'falstartsiz',
     nominal: 'Nominal',
     noPackages: 'Paketlar topilmadi',
-    noPackagesSteam: 'Obuna bo‘lingan paketlar topilmadi. O‘ynash uchun Workshop\'ga o‘ting va paketlarga obuna bo‘ling',
+    noPackagesSteam: 'Obuna bo‘lingan paketlar topilmadi. O‘ynash uchun Workshop’ga o‘ting va paketlarga obuna bo‘ling',
     notReadyFemale: 'Men o‘yinga tayyormasman',
     notReadyMale: 'Men o‘yinga tayyormasman',
     noRisk: 'xatarsiz',
