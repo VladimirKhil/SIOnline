@@ -62,14 +62,27 @@ const connectToSIGameServerAsync = async (
 		return true;
 	}
 
-	const { useProxy } = state.settings;
-	const runtimeUri = useProxy && dataContext.proxyUri ? dataContext.proxyUri : dataContext.serverUri;
+	const { useProxy2 } = state.settings;
+	const useProxy = useProxy2 && !!dataContext.proxyUri;
+	const runtimeUri = useProxy ? dataContext.proxyUri! : dataContext.serverUri;
 	const listener = new GameServerListener(appDispatch);
 
 	try {
 		await gameServerClient.connect(runtimeUri, listener);
 		return true;
 	} catch (error: unknown) {
+		if (useProxy) {
+			console.log('Cannot connect to SIGame Server via proxy, falling back to original: ' + getErrorMessage(error));
+
+			try {
+				await gameServerClient.connect(dataContext.serverUri, listener);
+				return true;
+			} catch (fallbackError) {
+				console.log('Cannot connect to SIGame Server even without proxy: ' + getErrorMessage(fallbackError));
+				return false;
+			}
+		}
+
 		console.log('Cannot connect to SIGame Server: ' + getErrorMessage(error));
 		return false;
 	}

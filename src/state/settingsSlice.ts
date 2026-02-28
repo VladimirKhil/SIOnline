@@ -27,7 +27,7 @@ export interface SettingsState {
 	showVideoAvatars: boolean;
 	theme: ThemeSettings;
 	writeGameLog: boolean;
-	useProxy: boolean;
+	useProxy2: boolean;
 	loadExternalMedia: boolean;
 	customSounds: Record<string, string | null>;
 }
@@ -61,7 +61,7 @@ const initialState: SettingsState = {
 		},
 	},
 	writeGameLog: false,
-	useProxy: false,
+	useProxy2: true,
 	loadExternalMedia: false,
 	customSounds: {},
 };
@@ -196,8 +196,8 @@ export const settingsSlice = createSlice({
 		setWriteGameLog: (state: SettingsState, action: PayloadAction<boolean>) => {
 			state.writeGameLog = action.payload;
 		},
-		setUseProxy: (state: SettingsState, action: PayloadAction<boolean>) => {
-			state.useProxy = action.payload;
+		setUseProxy2: (state: SettingsState, action: PayloadAction<boolean>) => {
+			state.useProxy2 = action.payload;
 		},
 		setLoadExternalMedia: (state: SettingsState, action: PayloadAction<boolean>) => {
 			state.loadExternalMedia = action.payload;
@@ -255,7 +255,7 @@ export const {
 	setTableBackgroundColor,
 	setTableFontFamily,
 	setWriteGameLog,
-	setUseProxy,
+	setUseProxy2,
 	setLoadExternalMedia,
 	setCustomSound,
 	resetSettings,

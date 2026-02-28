@@ -31,13 +31,15 @@ import BrowserHost from './host/BrowserHost';
 import YandexHost from './host/YandexHost';
 import IHost, { FullScreenMode } from './host/IHost';
 import SIHostClient from './client/SIHostClient';
-import { setFullScreen,
+import {
+	setFullScreen,
 	setGameButtonKey,
 	setNextButtonKey,
 	setNoButtonKey,
 	setPassButtonKey,
 	setPauseButtonKey,
-	setYesButtonKey } from './state/settingsSlice';
+	setYesButtonKey
+} from './state/settingsSlice';
 import { commonErrorChanged, setFontsReady } from './state/commonSlice';
 import { saveStateToStorage } from './state/StateHelpers';
 import { INavigationState, setFullScreenSupported, settingKeyChanged, windowSizeChanged } from './state/uiSlice';
@@ -55,8 +57,8 @@ declare const firebaseConfig: FirebaseOptions | undefined;
 
 declare global {
 	interface Window {
-        __TAURI_INTERNALS__: any;
-    }
+		__TAURI_INTERNALS__: any;
+	}
 }
 
 export let app: FirebaseApp | null = null;
@@ -271,7 +273,7 @@ function getInitialView(historyState: INavigationState): INavigationState {
 	const { search } = window.location;
 
 	if (search.startsWith('?_') && search.length > 3) {
-		const [,,siHostKey] = search;
+		const [, , siHostKey] = search;
 		const gameId = parseInt(search.substring(3), 10);
 
 		if (siHostKey) {

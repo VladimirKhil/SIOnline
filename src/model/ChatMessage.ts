@@ -4,4 +4,6 @@ export default interface ChatMessage {
 	sender: string;
 	text: string;
 	level: MessageLevel;
+	type?: string;
+	payload?: any;
 }

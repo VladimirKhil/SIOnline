@@ -606,8 +606,9 @@ const viewerHandler = (
 			{
 				const isRight = args[1] === '+';
 				const index = parseInt(args[2], 10);
+				const sum = args.length > 3 ? parseInt(args[3], 10) : undefined;
 
-				controller.onPerson(index, isRight);
+				controller.onPerson(index, isRight, sum);
 			}
 			break;
 
@@ -1348,18 +1349,18 @@ const processSystemMessage = (
 	controller: ClientController,
 	message: Message,
 ) => (_dispatch: any, getState: () => State) => {
-		const state = getState();
-		const { role } = state.room2;
-		const args = message.Text.split('\n');
+	const state = getState();
+	const { role } = state.room2;
+	const args = message.Text.split('\n');
 
-		viewerHandler(controller, state, args);
+	viewerHandler(controller, state, args);
 
-		if (role === Role.Player) {
-			playerHandler(controller, args);
-		} else if (role === Role.Showman) {
-			showmanHandler(controller, args);
-		}
-	};
+	if (role === Role.Player) {
+		playerHandler(controller, args);
+	} else if (role === Role.Showman) {
+		showmanHandler(controller, args);
+	}
+};
 
 export default function messageProcessor(controller: ClientController, dispatch: Dispatch<AnyAction>, message: Message) {
 	if (message.IsSystem) {

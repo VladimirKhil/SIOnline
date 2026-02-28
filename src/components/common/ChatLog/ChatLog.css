@@ -22,7 +22,7 @@
 }
 
 .mentioned {
-    background: rgba(255,255,255,0.15);
+    background: rgba(255, 255, 255, 0.15);
 }
 
 .chatItem:not(:first-child) {
@@ -41,11 +41,45 @@
     color: yellow;
 }
 
-.chatBody, .system {
-	white-space: pre-wrap;
+.chatBody,
+.system {
+    white-space: pre-wrap;
     overflow-wrap: anywhere;
 }
 
 .chatBody span {
     display: inline;
+}
+
+.chatEvent {
+    margin: 8px 0;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    border: 1px solid transparent;
+    text-align: center;
+}
+
+.chatEvent.system {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.1);
+    color: #ccc;
+}
+
+.chatEvent.pointsEarned {
+    background: rgba(76, 175, 80, 0.1);
+    border-color: rgba(76, 175, 80, 0.3);
+    color: #81c784;
+}
+
+.chatEvent.pointsLost {
+    background: rgba(244, 67, 54, 0.1);
+    border-color: rgba(244, 67, 54, 0.3);
+    color: #e57373;
+}
+
+.chatEvent.warning {
+    background: rgba(255, 152, 0, 0.1);
+    border-color: rgba(255, 152, 0, 0.3);
+    color: #ffb74d;
 }

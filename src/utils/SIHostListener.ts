@@ -18,7 +18,7 @@ export default class SIHostListener implements ISIHostListener {
 		private controller: ClientController,
 		private dispatch: Dispatch<AnyAction>,
 		private appDispatch: AppDispatch
-	) {}
+	) { }
 
 	onReceive(message: Message): void {
 		messageProcessor(this.controller, this.dispatch, message);
@@ -51,7 +51,7 @@ export default class SIHostListener implements ISIHostListener {
 			reason: localization.connectionReconnected
 		}));
 
-		this.appDispatch(addToChat({ sender: '', text: localization.connectionReconnected, level: MessageLevel.Information }));
+		this.controller.addSimpleMessage(localization.connectionReconnected, 'system');
 		this.appDispatch(initRoom());
 	}
 

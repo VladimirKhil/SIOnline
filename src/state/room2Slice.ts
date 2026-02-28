@@ -638,7 +638,8 @@ export const room2Slice = createSlice({
 			message: string,
 			rightAnswers: string[],
 			wrongAnswers: string[],
-			showExtraRightButtons: boolean }>) {
+			showExtraRightButtons: boolean
+		}>) {
 			state.validation.header = action.payload.header;
 			state.validation.message = action.payload.message;
 			state.validation.rightAnswers = action.payload.rightAnswers;
@@ -794,9 +795,10 @@ export const room2Slice = createSlice({
 				sender: '',
 				text: action.payload,
 				level: MessageLevel.Warning,
+				type: 'system',
 			});
 		},
-		setJoinMode	: (state: Room2State, action: PayloadAction<JoinMode>) => {
+		setJoinMode: (state: Room2State, action: PayloadAction<JoinMode>) => {
 			state.joinMode = action.payload;
 		},
 		setAreSumsEditable: (state: Room2State, action: PayloadAction<boolean>) => {
@@ -862,8 +864,8 @@ export const room2Slice = createSlice({
 				...timer,
 				state: timer.state === TimerStates.Paused ||
 					(!action.payload.runByUser && !timer.isPausedByUser)
-						? TimerStates.Running
-						: timer.state,
+					? TimerStates.Running
+					: timer.state,
 				isPausedByUser: action.payload.runByUser ? false : timer.isPausedByUser,
 				isPausedBySystem: !action.payload.runByUser ? false : timer.isPausedBySystem
 			});

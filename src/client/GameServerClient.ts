@@ -21,7 +21,7 @@ export default class GameServerClient implements IGameServerClient {
 	/**
 	 * Initializes a new instance of {@link GameServerClient}.
 	 */
-	constructor(private serverUri: string) {}
+	constructor(private serverUri: string) { }
 
 	isConnected(): boolean {
 		return this.connection?.state === signalR.HubConnectionState.Connected;

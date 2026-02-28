@@ -125,21 +125,21 @@ const onAvatarSelectedLocal: ActionCreator<ThunkAction<void, State, DataContext,
 
 const sendAvatar: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 	() => async (_dispatch: Dispatch<AnyAction>, getState: () => State, dataContext: DataContext) => {
-	const { avatar } = getState().user;
+		const { avatar } = getState().user;
 
-	if (avatar) {
-		await dataContext.game.sendAvatar(avatar);
-	}
-};
+		if (avatar) {
+			await dataContext.game.sendAvatar(avatar);
+		}
+	};
 
 const reloadComputerAccounts: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 	(appDispatch: AppDispatch) => async (_dispatch: Dispatch<Action>, getState: () => State, dataContext: DataContext) => {
-	const state = getState();
-	const requestCulture = getFullCulture(state);
+		const state = getState();
+		const requestCulture = getFullCulture(state);
 
-	const computerAccounts = await dataContext.gameClient.getComputerAccountsAsync(requestCulture);
-	appDispatch(computerAccountsChanged(computerAccounts));
-};
+		const computerAccounts = await dataContext.gameClient.getComputerAccountsAsync(requestCulture);
+		appDispatch(computerAccountsChanged(computerAccounts));
+	};
 
 function createStorageClientFromInfo(storageInfo: SIStorageInfo): SIStorageClient {
 	return new SIStorageClient({
@@ -188,17 +188,28 @@ const connectToSIHostAsync = async (
 	dataContext: DataContext
 ): Promise<ISIHostClient> => {
 	const state = getState();
-	const { useProxy } = state.settings;
+	const { useProxy2 } = state.settings;
 
 	// Use proxy if enabled and proxy URI is available
-	const effectiveUri = useProxy && dataContext.proxyUri && siHostUri === dataContext.serverUri ? dataContext.proxyUri : siHostUri;
+	const useProxy = useProxy2 && !!dataContext.proxyUri && siHostUri === dataContext.serverUri;
+	const effectiveUri = useProxy ? dataContext.proxyUri! : siHostUri;
 	const uriChecked = effectiveUri.endsWith('/') ? effectiveUri : effectiveUri + '/';
 
 	const controller = new ClientController(dispatch, appDispatch, getState, dataContext);
 	const listener = new SIHostListener(controller, dispatch, appDispatch);
 
 	const siHostClient = new SIHostClient();
-	await siHostClient.connectAsync(uriChecked, listener);
+	try {
+		await siHostClient.connectAsync(uriChecked, listener);
+	} catch (e) {
+		if (useProxy) {
+			console.log('Cannot connect to SIHost via proxy, falling back to original: ' + getErrorMessage(e));
+			const fallbackUri = siHostUri.endsWith('/') ? siHostUri : siHostUri + '/';
+			await siHostClient.connectAsync(fallbackUri, listener);
+		} else {
+			throw e;
+		}
+	}
 
 	dataContext.game = new GameClient(siHostClient);
 

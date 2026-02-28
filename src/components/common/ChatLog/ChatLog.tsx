@@ -68,23 +68,33 @@ export default class ChatLog extends React.Component<ChatLogProps> {
 				className={`chatLog ${this.props.className}`}
 				onScroll={this.onScroll}
 			>
-				{this.props.messages.map((message, index) => message.sender
-					? <div
+				{this.props.messages.map((message, index) => {
+					if (message.type) {
+						return (
+							<div key={index} className={`chatEvent ${message.type}`}>
+								{message.text}
+							</div>
+						);
+					}
+
+					return message.sender
+						? <div
 							key={index} className={`chatItem ${userMessageSpanClass(message, this.props.user)}`}
 						>
-						<div
-							className='nickname'
-							onClick={() => this.props.onNicknameClick(message.sender)}>
-							{message.sender}
-						</div>
+							<div
+								className='nickname'
+								onClick={() => this.props.onNicknameClick(message.sender)}>
+								{message.sender}
+							</div>
 
-						<div className='chatBody'>
-							{message.text.split(' ').map((word, wordIndex) => word === `@${this.props.user}`
-								? <strong key={wordIndex} className={'mentionedNickname'}>{`${word} `}</strong>
-								: <span key={wordIndex}>{word} </span>)}
+							<div className='chatBody'>
+								{message.text.split(' ').map((word, wordIndex) => word === `@${this.props.user}`
+									? <strong key={wordIndex} className={'mentionedNickname'}>{`${word} `}</strong>
+									: <span key={wordIndex}>{word} </span>)}
+							</div>
 						</div>
-					</div>
-					: <span key={index} className={MessageLevel[message.level].toLowerCase()}>{message.text}</span>)}
+						: <span key={index} className={MessageLevel[message.level].toLowerCase()}>{message.text}</span>;
+				})}
 			</div>
 		);
 	}

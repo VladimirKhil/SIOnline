@@ -222,12 +222,21 @@ export default class ClientController implements IClientController {
 		private loadStart: Date | null = null,
 	) { }
 
-	addSimpleMessage(message: string) {
+	addSimpleMessage(message: string, type = 'system') {
 		this.appDispatch(addToChat({
 			sender: '',
 			text: message,
 			level: MessageLevel.System,
+			type,
 		}));
+	}
+
+	addEvent(message: string, type = 'system') {
+		this.addSimpleMessage(message, type);
+
+		if (this.getState().settings.writeGameLog) {
+			this.appDispatch(addGameLog(message));
+		}
 	}
 
 	preprocessServerUri(uri: string) {
@@ -500,7 +509,7 @@ export default class ClientController implements IClientController {
 
 		this.appDispatch(stopAudio()); // To erase previous ROOM_ENTRY sound (hacky way. Is there an alternative?)
 		this.playGameSound(GameSound.ROOM_ENTRY);
-		this.addSimpleMessage(stringFormat(localization.connected, account.name));
+		this.addEvent(stringFormat(localization.connected, account.name));
 	}
 
 	onContentHint(hint: string) {
@@ -516,7 +525,7 @@ export default class ClientController implements IClientController {
 
 	onDisconnected(name: string) {
 		this.appDispatch(personRemoved(name));
-		this.addSimpleMessage(stringFormat(localization.disconnected, name));
+		this.addEvent(stringFormat(localization.disconnected, name));
 
 		const state = this.getState();
 
@@ -535,11 +544,11 @@ export default class ClientController implements IClientController {
 	onGameClosed() {
 		this.appDispatch(showText(localization.gameClosed));
 		this.appDispatch(userWarnChanged(localization.gameClosed));
-		this.addSimpleMessage(localization.gameClosed);
+		this.addEvent(localization.gameClosed);
 	}
 
 	onGameError() {
-		this.addSimpleMessage(localization.gameError);
+		this.addEvent(localization.gameError);
 	}
 
 	onGameThemes(gameThemes: string[]) {
@@ -618,11 +627,7 @@ export default class ClientController implements IClientController {
 		this.appDispatch(setHostName(hostName));
 
 		if (hostName && changeSource) {
-			this.appDispatch(addToChat({
-				sender: '',
-				text: stringFormat(localization.hostNameChanged, changeSource, hostName),
-				level: MessageLevel.System,
-			}));
+			this.addEvent(stringFormat(localization.hostNameChanged, changeSource, hostName));
 		}
 	}
 
@@ -665,12 +670,7 @@ export default class ClientController implements IClientController {
 					);
 
 					this.appDispatch(userInfoChanged(message));
-
-					this.appDispatch(addToChat({
-						sender: '',
-						text: message,
-						level: MessageLevel.System,
-					}));
+					this.addSimpleMessage(message);
 				}
 				break;
 			}
@@ -686,12 +686,7 @@ export default class ClientController implements IClientController {
 					);
 
 					this.appDispatch(userInfoChanged(message));
-
-					this.appDispatch(addToChat({
-						sender: '',
-						text: message,
-						level: MessageLevel.System,
-					}));
+					this.addSimpleMessage(message);
 				}
 				break;
 			}
@@ -707,12 +702,7 @@ export default class ClientController implements IClientController {
 					);
 
 					this.appDispatch(userInfoChanged(message));
-
-					this.appDispatch(addToChat({
-						sender: '',
-						text: message,
-						level: MessageLevel.System,
-					}));
+					this.addSimpleMessage(message);
 				}
 				break;
 			}
@@ -728,12 +718,7 @@ export default class ClientController implements IClientController {
 					);
 
 					this.appDispatch(userInfoChanged(message));
-
-					this.appDispatch(addToChat({
-						sender: '',
-						text: message,
-						level: MessageLevel.System,
-					}));
+					this.addSimpleMessage(message);
 				}
 				break;
 			}
@@ -749,12 +734,7 @@ export default class ClientController implements IClientController {
 					);
 
 					this.appDispatch(userInfoChanged(message));
-
-					this.appDispatch(addToChat({
-						sender: '',
-						text: message,
-						level: MessageLevel.System,
-					}));
+					this.addSimpleMessage(message);
 				}
 				break;
 			}
@@ -770,12 +750,7 @@ export default class ClientController implements IClientController {
 					);
 
 					this.appDispatch(userInfoChanged(message));
-
-					this.appDispatch(addToChat({
-						sender: '',
-						text: message,
-						level: MessageLevel.System,
-					}));
+					this.addSimpleMessage(message);
 				}
 				break;
 			}
@@ -792,11 +767,7 @@ export default class ClientController implements IClientController {
 
 					this.appDispatch(userInfoChanged(message));
 
-					this.appDispatch(addToChat({
-						sender: '',
-						text: message,
-						level: MessageLevel.System,
-					}));
+					this.addSimpleMessage(message);
 				}
 				break;
 			}
@@ -812,12 +783,7 @@ export default class ClientController implements IClientController {
 					);
 
 					this.appDispatch(userInfoChanged(message));
-
-					this.appDispatch(addToChat({
-						sender: '',
-						text: message,
-						level: MessageLevel.System,
-					}));
+					this.addSimpleMessage(message);
 				}
 				break;
 			}
@@ -833,12 +799,7 @@ export default class ClientController implements IClientController {
 					);
 
 					this.appDispatch(userInfoChanged(message));
-
-					this.appDispatch(addToChat({
-						sender: '',
-						text: message,
-						level: MessageLevel.System,
-					}));
+					this.addSimpleMessage(message);
 				}
 				break;
 			}
@@ -854,12 +815,7 @@ export default class ClientController implements IClientController {
 					);
 
 					this.appDispatch(userInfoChanged(message));
-
-					this.appDispatch(addToChat({
-						sender: '',
-						text: message,
-						level: MessageLevel.System,
-					}));
+					this.addSimpleMessage(message);
 				}
 				break;
 			}
@@ -906,19 +862,11 @@ export default class ClientController implements IClientController {
 	}
 
 	onPackageDate(packageDate: string) {
-		this.appDispatch(addToChat({
-			sender: localization.packageDate,
-			text: packageDate,
-			level: MessageLevel.System,
-		}));
+		this.addSimpleMessage(`${localization.packageDate}: ${packageDate}`);
 	}
 
 	onPackageSources(sources: string[]) {
-		this.appDispatch(addToChat({
-			sender: localization.packageSources,
-			text: sources.join(', '),
-			level: MessageLevel.System,
-		}));
+		this.addSimpleMessage(`${localization.packageSources}: ${sources.join(', ')}`);
 	}
 
 	onPass(playerIndex: number) {
@@ -977,10 +925,10 @@ export default class ClientController implements IClientController {
 			return;
 		}
 
-		const showmanName = state.room2.persons.showman.name;
-
 		this.appDispatch(playerSumChanged({ index: playerIndex, value: newScore }));
-		this.addSimpleMessage(stringFormat(localization.playerScoreChanged, showmanName, player.name, oldScore.toString(), newScore.toString()));
+
+		const showmanName = state.room2.persons.showman.name;
+		this.addEvent(stringFormat(localization.playerScoreChanged, showmanName, player.name, oldScore.toString(), newScore.toString()));
 	}
 
 	onPlayerState(state: PlayerStates, playerIndicies: number[]) {
@@ -1005,11 +953,7 @@ export default class ClientController implements IClientController {
 	}
 
 	onQuestionAuthors(authors: string[]) {
-		this.appDispatch(addToChat({
-			sender: localization.questionAuthors,
-			text: authors.join(', '),
-			level: MessageLevel.System,
-		}));
+		this.addSimpleMessage(`${localization.questionAuthors}: ${authors.join(', ')}`);
 	}
 
 	onQuestionComments(comments: string) {
@@ -1036,11 +980,7 @@ export default class ClientController implements IClientController {
 	}
 
 	onQuestionSources(sources: string[]) {
-		this.appDispatch(addToChat({
-			sender: localization.questionSources,
-			text: sources.join(', '),
-			level: MessageLevel.System,
-		}));
+		this.addSimpleMessage(`${localization.questionSources}: ${sources.join(', ')}`);
 	}
 
 	onReady(personName: string, isReady: boolean): void {
@@ -1069,11 +1009,7 @@ export default class ClientController implements IClientController {
 	}
 
 	onRoundAuthors(authors: string[]) {
-		this.appDispatch(addToChat({
-			sender: localization.roundAuthors,
-			text: authors.join(', '),
-			level: MessageLevel.System,
-		}));
+		this.addSimpleMessage(`${localization.roundAuthors}: ${authors.join(', ')}`);
 	}
 
 	onRoundComments(comments: string) {
@@ -1114,11 +1050,7 @@ export default class ClientController implements IClientController {
 	}
 
 	onRoundSources(sources: string[]) {
-		this.appDispatch(addToChat({
-			sender: localization.roundSources,
-			text: sources.join(', '),
-			level: MessageLevel.System,
-		}));
+		this.addSimpleMessage(`${localization.roundSources}: ${sources.join(', ')}`);
 	}
 
 	onRoundThemes(roundThemesNames: string[], playMode: ThemesPlayMode) {
@@ -1541,19 +1473,11 @@ export default class ClientController implements IClientController {
 		this.appDispatch(showObject({ header: animate ? '' : localization.theme, text: themeName, hint: comments, large: false, animate }));
 
 		if (authors.length > 0) {
-			this.appDispatch(addToChat({
-				sender: localization.themeAuthors,
-				text: authors.join(', '),
-				level: MessageLevel.System,
-			}));
+			this.addSimpleMessage(`${localization.themeAuthors}: ${authors.join(', ')}`);
 		}
 
 		if (sources.length > 0) {
-			this.appDispatch(addToChat({
-				sender: localization.themeSources,
-				text: sources.join(', '),
-				level: MessageLevel.System,
-			}));
+			this.addSimpleMessage(`${localization.themeSources}: ${sources.join(', ')}`);
 		}
 
 		if (this.getState().settings.writeGameLog) {
@@ -1773,11 +1697,7 @@ export default class ClientController implements IClientController {
 					? stringFormat(localization.questionRestored, state.room2.persons.showman.name, themeInfo.name, price.toString())
 					: stringFormat(localization.questionRemoved, state.room2.persons.showman.name, themeInfo.name, existingPrice.toString());
 
-				this.appDispatch(addToChat({
-					sender: '',
-					text: message,
-					level: MessageLevel.System
-				}));
+				this.addSimpleMessage(message);
 			}
 		}
 	}
@@ -1804,7 +1724,7 @@ export default class ClientController implements IClientController {
 			return;
 		}
 
-		this.addSimpleMessage(stringFormat(localization.addedNewSlot, hostName));
+		this.addEvent(stringFormat(localization.addedNewSlot, hostName));
 	}
 
 	deletePlayerTable(index: number) {
@@ -1826,7 +1746,7 @@ export default class ClientController implements IClientController {
 			return;
 		}
 
-		this.addSimpleMessage(stringFormat(localization.deletedSlot, hostName, (index + 1).toString()));
+		this.addEvent(stringFormat(localization.deletedSlot, hostName, (index + 1).toString()));
 	}
 
 	onPause(isPaused: boolean, currentTime: number[]) {
@@ -1915,7 +1835,7 @@ export default class ClientController implements IClientController {
 			return;
 		}
 
-		this.addSimpleMessage(stringFormat(
+		this.addEvent(stringFormat(
 			localization.changedSlotType,
 			hostName,
 			account.name,
@@ -1943,6 +1863,13 @@ export default class ClientController implements IClientController {
 			};
 
 			this.appDispatch(personAdded(newAccount));
+
+			const { hostName } = state.room2.persons;
+
+			if (hostName) {
+				this.addEvent(stringFormat(localization.replacedSlot, hostName, account.name, replacer));
+			}
+
 			return;
 		}
 
@@ -1996,7 +1923,7 @@ export default class ClientController implements IClientController {
 			return;
 		}
 
-		this.addSimpleMessage(stringFormat(localization.replacedSlot, hostName, account.name, replacer));
+		this.addEvent(stringFormat(localization.replacedSlot, hostName, account.name, replacer));
 	}
 
 	onTableFree(personType: string, index: number) {
@@ -2019,7 +1946,7 @@ export default class ClientController implements IClientController {
 			return;
 		}
 
-		this.addSimpleMessage(stringFormat(localization.freedSlot, hostName, account.name));
+		this.addEvent(stringFormat(localization.freedSlot, hostName, account.name));
 	}
 
 	onSetChooser(chooserIndex: number, setActive: boolean, manually: boolean) {
@@ -2043,11 +1970,7 @@ export default class ClientController implements IClientController {
 		}
 
 		if (manually) {
-			this.appDispatch(addToChat({
-				sender: '',
-				text: stringFormat(localization.setChooser, state.room2.persons.showman.name, player.name),
-				level: MessageLevel.System,
-			}));
+			this.addEvent(stringFormat(localization.setChooser, state.room2.persons.showman.name, player.name));
 		}
 	}
 
@@ -2059,11 +1982,30 @@ export default class ClientController implements IClientController {
 		this.appDispatch(sumsChanged(sums));
 	}
 
-	onPerson(playerIndex: number, isRight: boolean) {
+	onPerson(playerIndex: number, isRight: boolean, sum?: number) {
 		const state = this.getState();
 
 		if (playerIndex > -1 && playerIndex < state.room2.persons.players.length) {
+			const player = state.room2.persons.players[playerIndex];
+
 			this.appDispatch(playerStateChanged({ index: playerIndex, state: isRight ? PlayerStates.Right : PlayerStates.Wrong }));
+
+			if (sum) {
+				this.appDispatch(playerSumChanged({ index: playerIndex, value: sum }));
+
+				const text = `${player.name}: ${isRight ? '+' : '-'}${sum}`;
+				this.appDispatch(addToChat({
+					sender: '',
+					text,
+					level: MessageLevel.System,
+					type: isRight ? 'pointsEarned' : 'pointsLost',
+					payload: sum,
+				}));
+
+				if (state.settings.writeGameLog) {
+					this.appDispatch(addGameLog(text));
+				}
+			}
 
 			const rightApplause = state.room.stage.currentPrice >= 2000
 				? GameSound.APPLAUSE_BIG
