@@ -29,10 +29,10 @@ const PackageItem: React.FC<PackageItemProps> = ({ item, isEditMode }) => {
 	const currentPack = item;
 	const indices = findItemIndices(pack || null, item);
 
-	function getInfo(infoOwner: InfoOwner, isEditable = false, itemIndices?: { 
-		roundIndex?: number; 
-		themeIndex?: number; 
-		questionIndex?: number; 
+	function getInfo(infoOwner: InfoOwner, isEditable = false, itemIndices?: {
+		roundIndex?: number;
+		themeIndex?: number;
+		questionIndex?: number;
 	}): React.ReactNode {
 		const getTargetType = (): 'package' | 'round' | 'theme' | 'question' => {
 			if (typeof itemIndices?.questionIndex === 'number') return 'question';
@@ -225,11 +225,11 @@ const PackageItem: React.FC<PackageItemProps> = ({ item, isEditMode }) => {
 					: null}
 
 				<label htmlFor='date' className='header'>{localization.date}</label>
-				<input 
-					id='date' 
-					type='text' 
-					className='packageView__package__info__date' 
-					value={currentPack.date} 
+				<input
+					id='date'
+					type='text'
+					className='packageView__package__info__date'
+					value={currentPack.date}
 					readOnly={!isEditMode}
 					onChange={(e) => isEditMode && dispatch(updatePackageProperty({ property: 'date', value: e.target.value }))}
 				/>
@@ -246,6 +246,7 @@ const PackageItem: React.FC<PackageItemProps> = ({ item, isEditMode }) => {
 						<option value='en-US'>{localization.languageEn}</option>
 						<option value='ru-RU'>{localization.languageRu}</option>
 						<option value='sr-RS'>{localization.languageSr}</option>
+						<option value='uz-UZ'>{localization.languageUz}</option>
 					</select>
 				) : (
 					<input

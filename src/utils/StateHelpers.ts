@@ -18,6 +18,8 @@ export function getFullCulture(state: State): string {
 			return 'ru-RU';
 		case 'sr':
 			return 'sr-RS';
+		case 'uz':
+			return 'uz-UZ';
 		default:
 			return 'en-US';
 	}

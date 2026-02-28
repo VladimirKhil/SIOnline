@@ -152,7 +152,13 @@ async function loadHostInfoAsync(appDispatch: AppDispatch, dataContext: DataCont
 	// eslint-disable-next-line no-param-reassign
 	dataContext.contentUris = hostInfo.contentPublicBaseUrls;
 
-	const { contentInfos, storageInfos } = hostInfo;
+	const { contentInfos } = hostInfo;
+	let { storageInfos } = hostInfo;
+
+	if (storageInfos && storageInfos.length === 0 && culture !== 'en-US') {
+		const englishHostInfo = await dataContext.gameClient.getGameHostInfoAsync('en-US');
+		storageInfos = englishHostInfo.storageInfos;
+	}
 
 	if (contentInfos && contentInfos.length > 0) {
 		dataContext.contentClients = contentInfos.map(info => new SIContentClient({

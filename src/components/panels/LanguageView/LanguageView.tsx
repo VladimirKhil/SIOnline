@@ -33,6 +33,10 @@ export default function LanguageView(props: LanguageViewProps): JSX.Element {
 				value: 'sr',
 				name: 'SR',
 				tooltip: localization.languageSr
+			}, {
+				value: 'uz',
+				name: 'UZ',
+				tooltip: localization.languageUz
 			}]}
 			value={culture}
 			disabled={props.disabled}
