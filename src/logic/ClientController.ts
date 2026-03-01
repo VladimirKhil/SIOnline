@@ -755,7 +755,7 @@ export default class ClientController implements IClientController {
 				break;
 			}
 
-			case 'PartialImageTime': {
+			case 'PartialImage': {
 				this.appDispatch(setSettingPartialImageTime(parseInt(value, 10)));
 
 				if (reason.length > 0) {
@@ -788,7 +788,7 @@ export default class ClientController implements IClientController {
 				break;
 			}
 
-			case 'TimeForBlockingButton': {
+			case 'ButtonBlocking': {
 				this.appDispatch(setSettingTimeForBlockingButton(parseInt(value, 10)));
 
 				if (reason.length > 0) {

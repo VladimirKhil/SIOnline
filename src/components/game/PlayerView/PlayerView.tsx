@@ -29,7 +29,6 @@ interface PlayerViewProps {
 	avatarVideo?: string;
 	index: number;
 	isSelectionEnabled: boolean;
-	decisionTimer: TimerInfo;
 	showVideoAvatars: boolean;
 	windowWidth: number;
 	windowHeight: number;
@@ -43,7 +42,6 @@ interface PlayerViewProps {
 
 const mapStateToProps = (state: State) => ({
 	isSelectionEnabled: state.room.selection.isEnabled,
-	decisionTimer: state.room2.timers.decision,
 	showVideoAvatars: state.settings.showVideoAvatars,
 	windowWidth: state.ui.windowWidth,
 	windowHeight: state.ui.windowHeight,
@@ -57,10 +55,8 @@ export function PlayerView(props: PlayerViewProps): JSX.Element {
 	const [isScoreEditorVisible, setIsScoreEditorVisible] = React.useState(false);
 	const { player, isMe, sex, avatar, avatarClass, avatarVideo, index } = props;
 
-	const { areSumsEditable, stage } = useAppSelector(state => ({
-		areSumsEditable: state.room2.areSumsEditable,
-		stage: state.room2.stage,
-	}));
+	const areSumsEditable = useAppSelector(state => state.room2.areSumsEditable);
+	const isGameStarted = useAppSelector(state => state.room2.stage.isGameStarted);
 
 	const appDispatch = useAppDispatch();
 
@@ -195,11 +191,7 @@ export function PlayerView(props: PlayerViewProps): JSX.Element {
 			<div className={buildPlayerClasses()}>
 				<div className="playerCard__top">
 					{player.isDeciding ? (
-						<ProgressBar
-							value={1 - (props.decisionTimer.value / props.decisionTimer.maximum)}
-							valueChangeDuration={isRunning(props.decisionTimer)
-								? ((props.decisionTimer.maximum - props.decisionTimer.value) / 10) : 0}
-						/>
+						<PlayerDecisionProgress />
 					) : null}
 					<EditTableMenu isPlayerScope={true} account={props.account} tableIndex={index} />
 				</div>
@@ -260,7 +252,7 @@ export function PlayerView(props: PlayerViewProps): JSX.Element {
 				</div>
 
 				<div className='marksArea'>
-					{player.isReady && !stage.isGameStarted ? (
+					{player.isReady && !isGameStarted ? (
 						<span
 							className='readyMark'
 							role="img"
@@ -317,6 +309,22 @@ export function PlayerView(props: PlayerViewProps): JSX.Element {
 				</div>
 			) : null}
 		</li>
+	);
+}
+
+function PlayerDecisionProgress(): JSX.Element | null {
+	const decisionTimer = useAppSelector(state => state.room2.timers.decision);
+
+	if (!decisionTimer || decisionTimer.maximum === 0) {
+		return null;
+	}
+
+	return (
+		<ProgressBar
+			value={1 - (decisionTimer.value / decisionTimer.maximum)}
+			valueChangeDuration={isRunning(decisionTimer)
+				? ((decisionTimer.maximum - decisionTimer.value) / 10) : 0}
+		/>
 	);
 }
 
