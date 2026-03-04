@@ -117,6 +117,7 @@ export interface Room2State {
 	};
 
 	lastReplic: ChatMessage | null;
+	replicIndex: number;
 
 	isEditTableEnabled: boolean;
 	isGameButtonEnabled: boolean;
@@ -221,6 +222,7 @@ const initialState: Room2State = {
 	},
 
 	lastReplic: null,
+	replicIndex: -1,
 
 	isEditTableEnabled: false,
 	isGameButtonEnabled: true,
@@ -434,6 +436,7 @@ export const room2Slice = createSlice({
 		},
 		showmanReplicChanged: (state: Room2State, action: PayloadAction<string>) => {
 			state.persons.showman.replic = action.payload;
+			state.replicIndex = -1;
 
 			state.persons.players.forEach(p => {
 				p.replic = null;
@@ -441,17 +444,32 @@ export const room2Slice = createSlice({
 		},
 		playerReplicChanged: (state: Room2State, action: PayloadAction<{ playerIndex: number, replic: string }>) => {
 			state.persons.showman.replic = null;
+			state.replicIndex = action.payload.playerIndex;
 
 			state.persons.players.forEach((p, i) => {
 				p.replic = i === action.payload.playerIndex ? action.payload.replic : null;
 			});
 		},
+		replicIndexChanged: (state: Room2State, action: PayloadAction<number>) => {
+			if (action.payload < 0 || action.payload >= state.persons.players.length) {
+				state.replicIndex = -1;
+				return;
+			}
+
+			state.replicIndex = action.payload;
+		},
 		infoChanged: (state: Room2State, action: PayloadAction<{ all: Persons, showman: PersonInfo, players: PlayerInfo[] }>) => {
 			state.persons.all = action.payload.all;
 			state.persons.showman = action.payload.showman;
 			state.persons.players = action.payload.players;
+
+			if (state.replicIndex >= state.persons.players.length) {
+				state.replicIndex = -1;
+			}
 		},
 		playersStateCleared: (state: Room2State) => {
+			state.replicIndex = -1;
+
 			state.persons.players.forEach(p => {
 				p.state = PlayerStates.None;
 				p.stake = 0;
@@ -517,12 +535,14 @@ export const room2Slice = createSlice({
 		},
 		playerDeleted: (state: Room2State, action: PayloadAction<number>) => {
 			state.persons.players.splice(action.payload, 1);
+			state.replicIndex = -1;
 		},
 		playersSwap: (state: Room2State, action: PayloadAction<{ index1: number, index2: number }>) => {
 			const { players } = state.persons;
 			const temp = players[action.payload.index1];
 			players[action.payload.index1] = players[action.payload.index2];
 			players[action.payload.index2] = temp;
+			state.replicIndex = -1;
 		},
 		setPlayerApellating: (state: Room2State, action: PayloadAction<{ index: number, isAppellating: boolean }>) => {
 			state.persons.players[action.payload.index].isAppellating = action.payload.isAppellating;
@@ -962,6 +982,7 @@ export const room2Slice = createSlice({
 		builder.addCase(playerSelected.fulfilled, (state) => {
 			state.persons.players.forEach(p => p.canBeSelected = false);
 			state.persons.showman.replic = null;
+			state.replicIndex = -1;
 			state.stage.decisionType = DecisionType.None;
 		});
 
@@ -1172,6 +1193,7 @@ export const {
 	setReview,
 	showmanReplicChanged,
 	playerReplicChanged,
+	replicIndexChanged,
 	infoChanged,
 	playersStateCleared,
 	playerRoundStateCleared,

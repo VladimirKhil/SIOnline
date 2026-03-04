@@ -16,12 +16,14 @@ const mapStateToProps = (state: State) => ({
 });
 
 export function ShowmanReplic(props: ShowmanReplicProps): JSX.Element {
-	const { persons } = useAppSelector(state => ({
+	const { persons, replicIndex } = useAppSelector(state => ({
 		persons: state.room2.persons,
+		replicIndex: state.room2.replicIndex,
 	}));
 
-	const { replic } = persons.showman;
 	const isScreenWide = props.windowWidth >= Constants.WIDE_WINDOW_WIDTH;
+	const hasActivePlayerReplic = !isScreenWide && replicIndex > -1 && replicIndex < persons.players.length;
+	const replic = hasActivePlayerReplic ? persons.players[replicIndex].answer : persons.showman.replic;
 
 	return (
 		<div className={`showmanReplic replic ${replic || !isScreenWide ? '' : 'hidden'}`}>

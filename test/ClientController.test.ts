@@ -736,6 +736,18 @@ describe('ClientController - Answer Phase Flow', () => {
 			expect(mockAppDispatch).toHaveBeenCalled();
 			const actions = dispatchedActions.map(a => a.type);
 			expect(actions).toContain('room2/setPlayerAnswer');
+			expect(actions).toContain('room2/replicIndexChanged');
+		});
+	});
+
+	describe('onAnswers', () => {
+		it('should not update player replic on batched answers', () => {
+			controller.onAnswers(['first', 'second']);
+
+			expect(mockAppDispatch).toHaveBeenCalled();
+			const actions = dispatchedActions.map(a => a.type);
+			expect(actions).toContain('room2/playersAnswersChanged');
+			expect(actions).not.toContain('room2/replicIndexChanged');
 		});
 	});
 

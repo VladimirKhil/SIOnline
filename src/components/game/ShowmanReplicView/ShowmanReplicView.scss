@@ -10,6 +10,20 @@
     align-items: stretch !important;
 }
 
+.showmanArea.playerReplicMode {
+    background: v.$person-background;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+}
+
+.showmanArea.playerReplicMode .showmanReplic {
+    border: none;
+    background: transparent;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+}
+
 .showmanArea.highlighted .showmanReplic {
     background: v.$active-button-background;
 }

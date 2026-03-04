@@ -150,6 +150,7 @@ import {
 	showLeftSeconds,
 	setReview,
 	setPlayerAnswer,
+	replicIndexChanged,
 } from '../state/room2Slice';
 
 import PersonInfo from '../model/PersonInfo';
@@ -897,6 +898,7 @@ export default class ClientController implements IClientController {
 		}
 
 		this.appDispatch(setPlayerAnswer({ index: playerIndex, answer }));
+		this.appDispatch(replicIndexChanged(playerIndex));
 	}
 
 	onPlayerAppellating(playerName: string) {

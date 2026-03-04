@@ -213,7 +213,7 @@ export function PlayerView(props: PlayerViewProps): JSX.Element {
 								<div className="playerAnswerOverlay">
 									<AutoSizedText
 										maxFontSize={32}
-										minFontSize={10}
+										minFontSize={3}
 										className="playerAnswerOverlayText"
 									>
 										{player.answer}
