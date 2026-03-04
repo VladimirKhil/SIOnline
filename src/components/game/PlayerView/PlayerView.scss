@@ -219,6 +219,8 @@
 	border-radius: 10px;
 	background: linear-gradient(135deg, rgba(20, 24, 62, 0.4), rgba(5, 6, 31, 0.6));
 	border: 1px solid rgba(255, 255, 255, 0.15);
+	background-clip: padding-box;
+	isolation: isolate;
 	-webkit-backdrop-filter: blur(8px);
 	backdrop-filter: blur(8px);
 	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
@@ -262,8 +264,9 @@
 }
 
 .gamePlayers .playerCard.state_press {
-	background: linear-gradient(135deg, rgba(0, 229, 255, 0.5), rgba(0, 184, 212, 0.7)) !important;
-	box-shadow: 0 0 15px rgba(0, 229, 255, 0.4);
+	background: v.$table-cell-active-background-color !important;
+	border-color: rgba(236, 232, 164, 0.8) !important;
+	box-shadow: inset 0 0 0 1px rgba(236, 232, 164, 0.45);
 }
 
 .gamePlayers .playerCard.state_lost {
@@ -369,6 +372,20 @@
 
 .playerInfo .sum {
 	font-size: 15px;
+}
+
+@media screen and (max-width: 1100px) {
+	.marksArea {
+		top: 5px;
+		bottom: auto;
+		left: 5px;
+		right: auto;
+	}
+
+	.playerAvatar .playerAnswerOverlayText {
+		padding: 6px 8px;
+		margin: 2px;
+	}
 }
 
 @media screen and (min-width: 1100px) and (min-height: 600px) {

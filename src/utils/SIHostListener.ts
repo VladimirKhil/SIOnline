@@ -1,7 +1,7 @@
 import { AnyAction, Dispatch } from 'redux';
 import Message from '../client/contracts/Message';
 import ISIHostListener from '../client/ISIHostListener';
-import { addOperationErrorMessage, addToChat, setKicked } from '../state/room2Slice';
+import { addOperationErrorMessage, setKicked } from '../state/room2Slice';
 import { AppDispatch } from '../state/store';
 import getErrorMessage from './ErrorHelpers';
 import ClientController from '../logic/ClientController';
@@ -11,7 +11,6 @@ import { onGamePersonsChanged } from '../state/online2Slice';
 import localization from '../model/resources/localization';
 import { isSIHostConnectedChanged, userErrorChanged } from '../state/commonSlice';
 import { initRoom } from '../state/serverActions';
-import MessageLevel from '../model/enums/MessageLevel';
 
 export default class SIHostListener implements ISIHostListener {
 	constructor(

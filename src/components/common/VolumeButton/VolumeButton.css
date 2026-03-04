@@ -19,10 +19,45 @@
 	transition: opacity 0.2s;
 }
 
+.volumeControlWrapper {
+	display: flex;
+	align-items: center;
+}
+
 .volumeButtonControl:hover {
 	opacity: 1;
 }
 
 .volumeButtonControl:active {
 	cursor: grabbing;
+}
+
+@media (max-width: 768px) {
+	.volumeContainer {
+		position: relative;
+	}
+
+	.volumeControlWrapper {
+		display: none;
+		position: absolute;
+		right: calc(100% + 4px);
+		top: 50%;
+		transform: translateY(-50%);
+		padding: 6px 8px;
+		background: rgba(0, 0, 0, 0.75);
+		border-radius: 6px;
+		z-index: 10;
+	}
+
+	.volumeContainer:hover .volumeControlWrapper,
+	.volumeIcon:hover + .volumeControlWrapper,
+	.volumeControlWrapper.visible,
+	.volumeControlWrapper:hover,
+	.volumeContainer:focus-within .volumeControlWrapper {
+		display: flex;
+	}
+
+	.volumeButtonControl {
+		opacity: 1;
+	}
 }

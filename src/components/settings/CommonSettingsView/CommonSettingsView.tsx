@@ -13,6 +13,7 @@ import {
 	setSound,
 	setSoundVolume,
 	setUseProxy2,
+	setLogPointsEvent,
 	setWriteGameLog,
 	setLoadExternalMedia
 } from '../../../state/settingsSlice';
@@ -144,6 +145,17 @@ export function CommonSettingsView(): JSX.Element {
 					<label htmlFor="writeGameLog">{localization.writeGameLog}</label>
 				</div>
 				: null}
+
+			<div className="settingItem">
+				<input
+					id="logPointsEvent"
+					type="checkbox"
+					checked={settings.logPointsEvent}
+					onChange={() => appDispatch(setLogPointsEvent(!settings.logPointsEvent))}
+				/>
+
+				<label htmlFor="logPointsEvent">{localization.logPointsEvent}</label>
+			</div>
 
 			<div className="settingItem">
 				<input

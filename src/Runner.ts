@@ -23,7 +23,6 @@ import { newGame } from './state/online2Slice';
 import { randomBytes } from 'crypto';
 import { selectAnswerOption, selectQuestion, selectTheme } from './state/serverActions';
 import ContentType from './model/enums/ContentType';
-import ServerInfo from './client/contracts/ServerInfo';
 import { DecisionType, playerSelected, pressGameButton, sendAllIn, sendAnswer, sendPass, sendStake } from './state/room2Slice';
 import TableMode from './model/enums/TableMode';
 import StakeModes from './client/game/StakeModes';

@@ -211,7 +211,11 @@ export function PlayerView(props: PlayerViewProps): JSX.Element {
 						>
 							{player.answer && (
 								<div className="playerAnswerOverlay">
-									<AutoSizedText maxFontSize={32} className="playerAnswerOverlayText" title="Player's answer">
+									<AutoSizedText
+										maxFontSize={32}
+										minFontSize={10}
+										className="playerAnswerOverlayText"
+									>
 										{player.answer}
 									</AutoSizedText>
 								</div>

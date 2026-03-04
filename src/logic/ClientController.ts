@@ -97,7 +97,6 @@ import {
 	playerLostStatesDropped,
 	playerMediaLoaded,
 	playerMediaPreloaded,
-	playerReplicChanged,
 	playerRoundStateCleared,
 	playerStateChanged,
 	playerStatesChanged,
@@ -1994,13 +1993,16 @@ export default class ClientController implements IClientController {
 				this.appDispatch(playerSumChanged({ index: playerIndex, value: sum }));
 
 				const text = `${player.name}: ${isRight ? '+' : '-'}${sum}`;
-				this.appDispatch(addToChat({
-					sender: '',
-					text,
-					level: MessageLevel.System,
-					type: isRight ? 'pointsEarned' : 'pointsLost',
-					payload: sum,
-				}));
+
+				if (state.settings.logPointsEvent) {
+					this.appDispatch(addToChat({
+						sender: '',
+						text,
+						level: MessageLevel.System,
+						type: isRight ? 'pointsEarned' : 'pointsLost',
+						payload: sum,
+					}));
+				}
 
 				if (state.settings.writeGameLog) {
 					this.appDispatch(addGameLog(text));

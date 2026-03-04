@@ -145,6 +145,7 @@ function setState(state: State, savedState: SavedState | null, c: Config, isDesk
 					backgroundImageKey: theme?.room?.backgroundImageKey || null,
 				},
 			},
+			logPointsEvent: savedState.settings.logPointsEvent ?? true,
 			gameButtonKey: savedState.settings.gameButtonKey || Constants.KEY_SPACE,
 		} : state.settings,
 	};
