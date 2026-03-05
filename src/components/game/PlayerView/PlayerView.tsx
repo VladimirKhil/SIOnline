@@ -8,7 +8,6 @@ import localization from '../../../model/resources/localization';
 import Sex from '../../../model/enums/Sex';
 import Constants from '../../../model/enums/Constants';
 import { isRunning } from '../../../utils/TimerInfoHelpers';
-import TimerInfo from '../../../model/TimerInfo';
 import State from '../../../state/State';
 import { connect } from 'react-redux';
 import EditTableMenu from '../EditTableMenu/EditTableMenu';
