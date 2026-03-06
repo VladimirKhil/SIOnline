@@ -264,39 +264,39 @@
 }
 
 .gamePlayers .playerCard.state_press {
-	background: linear-gradient(135deg, rgba(236, 232, 164, 0.5), rgba(182, 170, 67, 0.7)) !important;
-	border-color: rgba(236, 232, 164, 1) !important;
+	background: linear-gradient(135deg, rgba(236, 232, 164, 0.75), rgba(182, 170, 67, 0.95)) !important;
+	border-color: rgba(236, 232, 164, 0.95) !important;
 	box-shadow: 0 0 10px rgba(236, 232, 164, 0.8), inset 0 0 0 1px rgba(236, 232, 164, 0.6);
 }
 
 .gamePlayers .playerCard.state_lost {
-	background: linear-gradient(135deg, rgba(255, 152, 0, 0.35), rgba(245, 124, 0, 0.5)) !important;
-	border-color: rgba(255, 152, 0, 0.9) !important;
-	box-shadow: 0 0 10px rgba(255, 152, 0, 0.7);
+	background: linear-gradient(135deg, rgba(255, 152, 0, 0.75), rgba(245, 124, 0, 0.95)) !important;
+	border-color: rgba(255, 152, 0, 0.95) !important;
+	box-shadow: 0 0 8px rgba(255, 152, 0, 0.6);
 }
 
 .gamePlayers .playerCard.state_right {
-	background: linear-gradient(135deg, rgba(76, 175, 80, 0.35), rgba(46, 125, 50, 0.5)) !important;
-	border-color: rgba(76, 175, 80, 0.9) !important;
-	box-shadow: 0 0 10px rgba(76, 175, 80, 0.7);
+	background: linear-gradient(135deg, rgba(76, 175, 80, 0.75), rgba(46, 125, 50, 0.95)) !important;
+	border-color: rgba(76, 175, 80, 0.95) !important;
+	box-shadow: 0 0 8px rgba(76, 175, 80, 0.6);
 }
 
 .gamePlayers .playerCard.state_wrong {
-	background: linear-gradient(135deg, rgba(244, 67, 54, 0.35), rgba(198, 40, 40, 0.5)) !important;
-	border-color: rgba(244, 67, 54, 0.9) !important;
-	box-shadow: 0 0 10px rgba(244, 67, 54, 0.7);
+	background: linear-gradient(135deg, rgba(244, 67, 54, 0.75), rgba(198, 40, 40, 0.95)) !important;
+	border-color: rgba(244, 67, 54, 0.95) !important;
+	box-shadow: 0 0 8px rgba(244, 67, 54, 0.6);
 }
 
 .gamePlayers .playerCard.state_hasanswered {
-	background: linear-gradient(135deg, rgba(156, 39, 176, 0.35), rgba(123, 31, 162, 0.5)) !important;
-	border-color: rgba(156, 39, 176, 0.9) !important;
-	box-shadow: 0 0 10px rgba(156, 39, 176, 0.7);
+	background: linear-gradient(135deg, rgba(156, 39, 176, 0.75), rgba(123, 31, 162, 0.95)) !important;
+	border-color: rgba(156, 39, 176, 0.95) !important;
+	box-shadow: 0 0 8px rgba(156, 39, 176, 0.6);
 }
 
 .gamePlayers .playerCard.state_pass {
-	background: linear-gradient(135deg, rgba(96, 125, 139, 0.35), rgba(69, 90, 100, 0.5)) !important;
-	border-color: rgba(96, 125, 139, 0.9) !important;
-	box-shadow: 0 0 10px rgba(96, 125, 139, 0.7);
+	background: linear-gradient(135deg, rgba(96, 125, 139, 0.75), rgba(69, 90, 100, 0.95)) !important;
+	border-color: rgba(96, 125, 139, 0.95) !important;
+	box-shadow: 0 0 8px rgba(96, 125, 139, 0.6);
 }
 
 .gamePlayers .playerCard.out_of_game {
