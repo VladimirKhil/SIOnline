@@ -27,16 +27,18 @@ export function CommonSettingsView(): JSX.Element {
 
 	return (
 		<div>
-			<div className="settingItem">
-				<input
-					id="useProxy"
-					type="checkbox"
-					checked={settings.useProxy2}
-					onChange={() => appDispatch(setUseProxy2(!settings.useProxy2))}
-				/>
-				<label htmlFor="useProxy">{localization.useProxy}</label>
-				<div className="hint">{localization.useProxyHint}</div>
-			</div>
+			{common.proxyAvailable ? (
+				<div className="settingItem">
+					<input
+						id="useProxy"
+						type="checkbox"
+						checked={settings.useProxy2}
+						onChange={() => appDispatch(setUseProxy2(!settings.useProxy2))}
+					/>
+					<label htmlFor="useProxy">{localization.useProxy}</label>
+					<div className="hint">{localization.useProxyHint}</div>
+				</div>
+			) : null}
 
 			<p className="header">{localization.language}</p>
 
