@@ -278,7 +278,7 @@ export function PlayerView(props: PlayerViewProps): JSX.Element {
 					{player.mediaLoaded ? (
 						<div className='mediaLoadedMark' title={localization.mediaLoadedMark}>
 							<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-								<path d="M3 14L8 19L21 6" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+								<path d="M6 4L20 12L6 20V4Z" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
 							</svg>
 						</div>
 					) : null}
