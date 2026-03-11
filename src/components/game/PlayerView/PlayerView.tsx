@@ -182,6 +182,18 @@ export function PlayerView(props: PlayerViewProps): JSX.Element {
 		moveReplic();
 	}, [props.windowHeight, props.windowWidth]);
 
+	const answerOverlay = player.answer ? (
+		<div className="playerAnswerOverlay">
+			<AutoSizedText
+				maxFontSize={32}
+				minFontSize={3}
+				className="playerAnswerOverlayText"
+			>
+				{player.answer}
+			</AutoSizedText>
+		</div>
+	) : null;
+
 	return (
 		<li
 			className="gamePlayer"
@@ -201,24 +213,17 @@ export function PlayerView(props: PlayerViewProps): JSX.Element {
 
 				{props.showVideoAvatars && avatarVideo
 					? (
-						<div className='playerAvatar'><iframe title='Video avatar' src={avatarVideo} /></div>
+						<div className='playerAvatar'>
+							<iframe title='Video avatar' src={avatarVideo} />
+							{answerOverlay}
+						</div>
 					) : (
 						<div
 							className={`playerAvatar ${avatarClass}`}
 							style={avatarStyle}
 							title={`${player.name} ${player.sum}`}
 						>
-							{player.answer && (
-								<div className="playerAnswerOverlay">
-									<AutoSizedText
-										maxFontSize={32}
-										minFontSize={3}
-										className="playerAnswerOverlayText"
-									>
-										{player.answer}
-									</AutoSizedText>
-								</div>
-							)}
+							{answerOverlay}
 						</div>
 					)}
 
