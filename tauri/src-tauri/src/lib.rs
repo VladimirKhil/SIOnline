@@ -13,6 +13,10 @@ use std::io::prelude::*;
 use std::path::Path;
 #[cfg(feature = "steam_client")]
 use steamworks::{AppIDs, AppId, Client, PublishedFileId, UGCType, UserList, UserListOrder};
+#[cfg(feature = "steam_client")]
+use base64::{Engine as _, engine::general_purpose};
+#[cfg(feature = "steam_client")]
+use std::io::Cursor;
 use tauri::Manager;
 #[cfg(feature = "steam_client")]
 use tauri_plugin_dialog::{DialogExt, MessageDialogButtons};
@@ -32,6 +36,41 @@ struct WorkshopItem {
     tags: Vec<String>,
     score: f32,
     preview_url: Option<String>,
+}
+
+#[cfg(feature = "steam_client")]
+#[derive(Serialize)]
+struct SteamUserInfo {
+    name: String,
+    avatar: Option<String>,
+}
+
+#[cfg(feature = "steam_client")]
+#[tauri::command]
+fn get_steam_user_info(client_state: tauri::State<Client>) -> Result<SteamUserInfo, String> {
+    let friends = client_state.friends();
+    let name = friends.name();
+    
+    let steam_id = client_state.user().steam_id();
+    let me = friends.get_friend(steam_id);
+    let avatar_data = me.large_avatar();
+    
+    let mut avatar_base64 = None;
+    
+    if let Some(data) = avatar_data {
+        if let Some(img) = image::RgbaImage::from_raw(184, 184, data) {
+            let mut cursor = Cursor::new(Vec::new());
+            if let Ok(_) = img.write_to(&mut cursor, image::ImageFormat::Png) {
+                let buffer = cursor.into_inner();
+                avatar_base64 = Some(general_purpose::STANDARD.encode(buffer));
+            }
+        }
+    }
+
+    Ok(SteamUserInfo {
+        name,
+        avatar: avatar_base64,
+    })
 }
 
 #[cfg(feature = "steam_client")]
@@ -590,7 +629,8 @@ pub fn run() {
             get_workshop_subscribed_items,
             get_workshop_file_url,
             upload_workshop_package,
-            append_text_file
+            append_text_file,
+            get_steam_user_info
         ]);
     }
 

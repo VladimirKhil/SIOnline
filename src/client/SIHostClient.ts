@@ -6,6 +6,14 @@ import ISIHostListener from './ISIHostListener';
 import GameInfo from './contracts/GameInfo';
 import JoinGameRequest from './contracts/JoinGameRequest';
 import JoinGameResponse from './contracts/JoinGameResponse';
+import JoinGameErrorType from './contracts/JoinGameErrorType';
+
+export class ReconnectError extends Error {
+	constructor(public errorType: JoinGameErrorType, public originalMessage?: string) {
+		super(originalMessage ? `${errorType}: ${originalMessage}` : errorType);
+		this.name = 'ReconnectError';
+	}
+}
 
 export default class SIHostClient implements ISIHostClient, IClientBase {
 	private isDisconnecting = false;
@@ -24,7 +32,13 @@ export default class SIHostClient implements ISIHostClient, IClientBase {
 
 		const connectionBuilder = new signalR.HubConnectionBuilder()
 			.withAutomaticReconnect({
-				nextRetryDelayInMilliseconds: (retryContext: signalR.RetryContext) => 1000 * (retryContext.previousRetryCount + 1)
+				nextRetryDelayInMilliseconds: (retryContext: signalR.RetryContext) => {
+					if (this.completed || this.isDisconnecting) {
+						return null;
+					}
+
+					return Math.min(1000 * (retryContext.previousRetryCount + 1), 5000);
+				}
 			})
 			.withUrl(serverUri + 'sihost')
 			.withHubProtocol(new signalRMsgPack.MessagePackHubProtocol());
@@ -65,13 +79,27 @@ export default class SIHostClient implements ISIHostClient, IClientBase {
 
 			listener.onClose(e);
 
-			if (e) {
+			const delay = (ms: number) => new Promise(resolve => { setTimeout(resolve, ms); });
+			let retryCount = 0;
+
+			while (!this.completed && !this.isDisconnecting) {
 				try {
+					await delay(Math.min(1000 * retryCount, 5000));
+
+					if (this.completed || this.isDisconnecting) {
+						break;
+					}
+
 					await this.connection?.start();
 					await this.reconnectAsync();
 					listener.onReconnected();
+					break;
 				} catch (error) {
-					// empty
+					if (error instanceof ReconnectError && error.errorType === JoinGameErrorType.GameNotFound) {
+						break;
+					}
+
+					retryCount += 1;
 				}
 			}
 		});
@@ -167,7 +195,7 @@ export default class SIHostClient implements ISIHostClient, IClientBase {
 			const result = await this.joinGameAsync(this.joinInfo);
 
 			if (!result.IsSuccess) {
-				throw new Error(`Reconnection failed: ${result.ErrorType} ${result.Message ?? ''}`);
+				throw new ReconnectError(result.ErrorType, result.Message ?? '');
 			}
 		}
 	}

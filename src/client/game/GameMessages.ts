@@ -49,6 +49,9 @@ const enum GameMessages {
 	/** Table content. */
 	Content = 'CONTENT',
 
+	/** Table content. */
+	Content2 = 'CONTENT2',
+
 	/** Appends content to existing table content. */
 	ContentAppend = 'CONTENT_APPEND',
 

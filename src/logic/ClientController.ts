@@ -169,6 +169,7 @@ import JoinMode from '../client/game/JoinMode';
 import getBestRowColumnCount from '../utils/stackedContentHelper';
 import { preloadRoundContent } from './contentPreloader';
 import StakeTypes from '../model/enums/StakeTypes';
+import clearUrls from '../utils/clearUrls';
 
 // Non-idempotent initialization of group properties
 function initGroup(group: ContentGroup) {
@@ -387,6 +388,12 @@ export default class ClientController implements IClientController {
 	}
 
 	onAds(ads: string) {
+		const state = this.getState();
+
+		if (state.common.clearUrls) {
+			ads = clearUrls(ads);
+		}
+
 		this.appDispatch(showText(ads));
 	}
 
@@ -1386,6 +1393,10 @@ export default class ClientController implements IClientController {
 	onReplic(personCode: string, text: string) {
 		const state = this.getState();
 
+		if (state.common.clearUrls) {
+			text = clearUrls(text);
+		}
+
 		if (state.settings.writeGameLog) {
 			if (personCode === 's' || (personCode.startsWith('p') && personCode.length > 1)) {
 				const name = personCode === 's'
@@ -1730,8 +1741,14 @@ export default class ClientController implements IClientController {
 
 	deletePlayerTable(index: number) {
 		const state = this.getState();
-		const player = state.room2.persons.players[index];
-		const person = state.room2.persons.all[player.name];
+		const { persons } = state.room2;
+
+		if (index < 0 || index >= persons.players.length) {
+			return;
+		}
+
+		const player = persons.players[index];
+		const person = persons.all[player.name];
 
 		this.appDispatch(playerDeleted(index));
 

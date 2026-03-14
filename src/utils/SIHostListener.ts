@@ -11,6 +11,8 @@ import { onGamePersonsChanged } from '../state/online2Slice';
 import localization from '../model/resources/localization';
 import { isSIHostConnectedChanged, userErrorChanged } from '../state/commonSlice';
 import { initRoom } from '../state/serverActions';
+import { ReconnectError } from '../client/SIHostClient';
+import { getJoinErrorMessage } from './GameErrorsHelper';
 
 export default class SIHostListener implements ISIHostListener {
 	constructor(
@@ -32,7 +34,13 @@ export default class SIHostListener implements ISIHostListener {
 	}
 
 	onError(e: unknown): void {
-		this.appDispatch(addOperationErrorMessage(getErrorMessage(e)));
+		if (e instanceof ReconnectError) {
+			const errorTypeName = getJoinErrorMessage(e.errorType);
+			const fullMessage = errorTypeName ? `${errorTypeName} ${e.originalMessage ?? ''}` : (e.originalMessage ?? '');
+			this.appDispatch(addOperationErrorMessage(`${localization.reconnectionFailed}: ${fullMessage}`));
+		} else {
+			this.appDispatch(addOperationErrorMessage(getErrorMessage(e)));
+		}
 	}
 
 	onReconnecting(error?: Error): void {
@@ -42,6 +50,8 @@ export default class SIHostListener implements ISIHostListener {
 			isConnected: false,
 			reason: `${localization.connectionReconnecting}${errorMessage}`
 		}));
+
+		this.controller.addSimpleMessage(`${localization.connectionReconnecting}${errorMessage}`, 'system');
 	}
 
 	onReconnected(): void {

@@ -38,6 +38,7 @@ import {
 	computerAccountsChanged,
 	serverInfoChanged,
 	userErrorChanged,
+	isSIHostConnectedChanged,
 } from '../state/commonSlice';
 
 import { changeAvatar, changeLogin } from '../state/userSlice';
@@ -207,11 +208,13 @@ const connectToSIHostAsync = async (
 	const siHostClient = new SIHostClient();
 	try {
 		await siHostClient.connectAsync(uriChecked, listener);
+		appDispatch(isSIHostConnectedChanged({ isConnected: true, reason: '' }));
 	} catch (e) {
 		if (useProxy) {
 			console.log('Cannot connect to SIHost via proxy, falling back to original: ' + getErrorMessage(e));
 			const fallbackUri = siHostUri.endsWith('/') ? siHostUri : siHostUri + '/';
 			await siHostClient.connectAsync(fallbackUri, listener);
+			appDispatch(isSIHostConnectedChanged({ isConnected: true, reason: '' }));
 		} else {
 			throw e;
 		}

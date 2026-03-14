@@ -1,4 +1,4 @@
-﻿import LocalizedStrings from 'localized-strings';
+import LocalizedStrings from 'localized-strings';
 
 // First language is used as the default when browser language is different from provided languages
 
@@ -99,6 +99,7 @@ const localization = new LocalizedStrings({
 		connectionClosed: 'Server connection lost!',
 		connectionReconnecting: 'Connection lost, trying to reconnect…',
 		connectionReconnected: 'Connection restored!',
+		reconnectionFailed: 'Reconnection failed',
 		contactUri: 'Authors contact',
 		content: 'Content',
 		cookiesConfirm: 'Accept cookies',
@@ -761,6 +762,7 @@ Package authors are responsible for package content. The package will be automat
 		connectionClosed: 'Соединение с сервером разорвано!',
 		connectionReconnecting: 'Соединение потеряно, пытаемся переподключиться…',
 		connectionReconnected: 'Соединение восстановлено!',
+		reconnectionFailed: 'Ошибка переподключения',
 		contactUri: 'Контакты авторов',
 		content: 'Контент',
 		cookiesConfirm: 'Принять',
@@ -1427,6 +1429,7 @@ Package authors are responsible for package content. The package will be automat
 		connectionClosed: 'Veza sa serverom je prekinuta!',
 		connectionReconnecting: 'Veza je izgubljena, pokušavamo ponovno povezivanje…',
 		connectionReconnected: 'Veza je obnovljena!',
+		reconnectionFailed: 'Ponovno povezivanje nije uspelo',
 		contactUri: 'Kontakt autora',
 		content: 'Sadržaj',
 		cookiesConfirm: 'Prihvatiti',
@@ -2093,6 +2096,7 @@ Autori paketa odgovorni su za sadržaj paketa. Paket će biti automatski obrisan
 		connectionClosed: 'Server bilan aloqa uzildi!',
 		connectionReconnecting: 'Aloqa uzildi, qayta ulanishga urinilmoqda…',
 		connectionReconnected: 'Aloqa tiklandi!',
+		reconnectionFailed: 'Qayta ulanish xatosi',
 		contactUri: 'Mualliflar bilan bog‘lanish',
 		content: 'Kontent',
 		cookiesConfirm: 'Qabul qilish',

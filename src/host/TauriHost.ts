@@ -1,17 +1,23 @@
 import SIStorageClient from 'sistorage-client';
-import { setClearUrls,
+import {
+	setClearUrls,
 	setClipboardSupported,
 	setExitSupported,
 	setHostManagedUrls,
 	setIsDesktop,
 	setLogSupported,
-	setSteamLinkSupported } from '../state/commonSlice';
+	setSteamLinkSupported
+} from '../state/commonSlice';
 import { getCookie, setCookie } from '../utils/CookieHelpers';
 import IHost, { FullScreenMode, UploadCallbacks } from './IHost';
 import { Store } from 'redux';
 import SIStorageInfo from '../client/contracts/SIStorageInfo';
 import SteamWorkshopStorageClient from './SteamWorkshopStorageClient';
 import localization from '../model/resources/localization';
+import { changeLogin } from '../state/userSlice';
+import { setAvatarKey } from '../state/settingsSlice';
+import Constants from '../model/enums/Constants';
+import State from '../state/State';
 
 const ACCEPT_LICENSE_KEY = 'ACCEPT_LICENSE';
 
@@ -87,8 +93,8 @@ export default class TauriHost implements IHost {
 			globalThis.fetch = async (input: RequestInfo | URL, init?: RequestInit): Promise<Response> => {
 				if (typeof input === 'string' &&
 					(input.startsWith('http://ipc.localhost/') ||
-					input.startsWith('http://sigame.localhost/') ||
-					!input.startsWith('http'))) { // Pass through requests to localhost
+						input.startsWith('http://sigame.localhost/') ||
+						!input.startsWith('http'))) { // Pass through requests to localhost
 					return originalFetch(input, init);
 				}
 
@@ -115,6 +121,23 @@ export default class TauriHost implements IHost {
 		if (isSteam) {
 			store.dispatch(setHostManagedUrls(true));
 			store.dispatch(setSteamLinkSupported(false)); // No need to navigate to Steam from here
+
+			if (this.app && this.app.core) {
+				this.app.core.invoke('get_steam_user_info', {}).then((userInfo: { name: string, avatar: string | null }) => {
+					const state = store.getState() as State;
+
+					if (userInfo.name && !state.user.login) {
+						store.dispatch(changeLogin(userInfo.name));
+					}
+
+					if (userInfo.avatar && !localStorage.getItem(Constants.AVATAR_KEY)) {
+						localStorage.setItem(Constants.AVATAR_KEY, userInfo.avatar);
+						store.dispatch(setAvatarKey(Math.random().toString()));
+					}
+				}).catch((error: any) => {
+					console.error('Failed to get Steam user info:', error);
+				});
+			}
 		} else {
 			store.dispatch(setClearUrls(true));
 		}
@@ -207,7 +230,7 @@ export default class TauriHost implements IHost {
 
 	getStorage(): { storageClient?: SIStorageClient; storageInfo?: SIStorageInfo; } {
 		if (!isSteam) {
-			return { };
+			return {};
 		}
 
 		const storageClient = new SteamWorkshopStorageClient({
@@ -275,7 +298,7 @@ export default class TauriHost implements IHost {
 		}
 	}
 
-	exitApp() : void {
+	exitApp(): void {
 		if (this.app && this.app.process) {
 			this.app.process.exit(0);
 		} else {

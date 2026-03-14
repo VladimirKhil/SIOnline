@@ -19,7 +19,6 @@ import LayoutMode from '../model/enums/LayoutMode';
 import ClientController from './ClientController';
 import ContentInfo from '../model/ContentInfo';
 import ItemState from '../model/enums/ItemState';
-import clearUrls from '../utils/clearUrls';
 import ThemesPlayMode from '../model/enums/ThemesPlayMode';
 import StakeTypes from '../model/enums/StakeTypes';
 
@@ -132,13 +131,7 @@ const viewerHandler = (
 				break;
 			}
 
-			let ads = args[1];
-
-			if (state.common.clearUrls) {
-				ads = clearUrls(ads);
-			}
-
-			controller.onAds(ads);
+			controller.onAds(args[1]);
 			break;
 
 		case GameMessages.AnswerDeviation:
@@ -787,10 +780,6 @@ const viewerHandler = (
 				}
 
 				text += args[i];
-			}
-
-			if (state.common.clearUrls) {
-				text = clearUrls(text);
 			}
 
 			controller.onReplic(personCode, text);
