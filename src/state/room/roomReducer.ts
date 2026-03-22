@@ -152,12 +152,6 @@ const roomReducer: Reducer<RoomState> = (state: RoomState = initialState, anyAct
 				hint: action.hint
 			};
 
-		case RoomActionTypes.ButtonBlockingTimeChanged:
-			return {
-				...state,
-				buttonBlockingTimeSeconds: action.buttonBlockingTime
-			};
-
 		case RoomActionTypes.GameMetadataChanged:
 			return {
 				...state,

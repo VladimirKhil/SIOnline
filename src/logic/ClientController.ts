@@ -113,7 +113,6 @@ import {
 	setDecisionType,
 	setIsGameStarted,
 	setIsPaused,
-	setReport,
 	setRoomRole,
 	incrementQuestionCounter,
 	resetQuestionCounter,
@@ -474,10 +473,6 @@ export default class ClientController implements IClientController {
 
 	onBannedList(bannedList: Record<string, string>) {
 		this.dispatch(roomActionCreators.bannedListChanged(bannedList));
-	}
-
-	onButtonBlockingTimeChanged(blockingTime: number) {
-		this.dispatch(roomActionCreators.buttonBlockingTimeChanged(blockingTime));
 	}
 
 	onCancel() {
@@ -872,6 +867,10 @@ export default class ClientController implements IClientController {
 		this.addSimpleMessage(`${localization.packageDate}: ${packageDate}`);
 	}
 
+	onPackageRestrictions(restrictions: string) {
+		this.addSimpleMessage(`${localization.packageRestrictions}: ${restrictions}`);
+	}
+
 	onPackageSources(sources: string[]) {
 		this.addSimpleMessage(`${localization.packageSources}: ${sources.join(', ')}`);
 	}
@@ -1010,10 +1009,6 @@ export default class ClientController implements IClientController {
 
 	onResumeMedia() {
 		this.appDispatch(resumeMedia());
-	}
-
-	onReport(report: string) {
-		this.appDispatch(setReport(report));
 	}
 
 	onRoundAuthors(authors: string[]) {
@@ -1967,7 +1962,7 @@ export default class ClientController implements IClientController {
 		this.addEvent(stringFormat(localization.freedSlot, hostName, account.name));
 	}
 
-	onSetChooser(chooserIndex: number, setActive: boolean, manually: boolean) {
+	onSetChooser(chooserIndex: number, setActive: boolean, manually: boolean, announce: boolean) {
 		this.appDispatch(chooserChanged(chooserIndex));
 
 		const state = this.getState();
@@ -1989,6 +1984,10 @@ export default class ClientController implements IClientController {
 
 		if (manually) {
 			this.addEvent(stringFormat(localization.setChooser, state.room2.persons.showman.name, player.name));
+		}
+
+		if (announce) {
+			this.addEvent(stringFormat(localization.playsQuestion, player.name));
 		}
 	}
 
@@ -2038,6 +2037,7 @@ export default class ClientController implements IClientController {
 
 	onFinalThink() {
 		this.playGameSound(GameSound.FINAL_THINK, true);
+		this.appDispatch(showmanReplicChanged(localization.thinkEveryone));
 	}
 
 	onUserError(errorCode: ErrorCode, args: string[]) {

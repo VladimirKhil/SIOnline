@@ -33,8 +33,6 @@ const enum GameMessages {
 	/** Person has been banned. */
 	BannedList = 'BANNEDLIST',
 
-	ButtonBlockingTime = 'BUTTON_BLOCKING_TIME',
-
 	Cancel = 'CANCEL',
 
 	/** Question selection. */
@@ -109,6 +107,8 @@ const enum GameMessages {
 
 	PackageDate = 'PACKAGE_DATE',
 
+	PackageRestrictions = 'PACKAGE_RESTRICTIONS',
+
 	PackageSources = 'PACKAGE_SOURCES',
 
 	Pass = 'PASS',
@@ -160,13 +160,9 @@ const enum GameMessages {
 	/** Sources of the question (if any). */
 	QuestionSources = 'QUESTION_SOURCES',
 
-	ReadingSpeed = 'READINGSPEED',
-
 	Ready = 'READY',
 
 	Replic = 'REPLIC',
-
-	Report = 'REPORT',
 
 	Resume = 'RESUME',
 

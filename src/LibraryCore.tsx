@@ -22,39 +22,39 @@ import { loadState } from './state/SavedState';
 import { setFontsReady } from './state/commonSlice';
 
 declare global {
-    interface Window {
-        chrome: {
-            webview: WebView;
-        };
-    }
+	interface Window {
+		chrome: {
+			webview: WebView;
+		};
+	}
 }
 
 interface WebViewEventListenerObject {
-    handleEvent(object: Event & { data?: any }): void;
+	handleEvent(object: Event & { data?: any }): void;
 }
 
 interface WebViewEventListener {
-    (evt: Event & { data?: any }): void;
+	(evt: Event & { data?: any }): void;
 }
 
 type WebViewEventListenerOrEventListenerObject = WebViewEventListener | WebViewEventListenerObject;
 
 interface WebView extends EventTarget {
-    /**
-     * The standard EventTarget.addEventListener method. Use it to subscribe to the message event
-     * or sharedbufferreceived event. The message event receives messages posted from the WebView2
-     * host via CoreWebView2.PostWebMessageAsJson or CoreWebView2.PostWebMessageAsString. The
-     * sharedbufferreceived event receives shared buffers posted from the WebView2 host via
-     * CoreWebView2.PostSharedBufferToScript.
-     * See CoreWebView2.PostWebMessageAsJson( Win32/C++, .NET, WinRT).
-     * @param type The name of the event to subscribe to. Valid values are message, and sharedbufferreceived.
-     * @param listener The callback to invoke when the event is raised.
-     * @param options Options to control how the event is handled.
-     */
-    addEventListener(
-        type: string,
-        listener: WebViewEventListenerOrEventListenerObject,
-        options?: boolean | AddEventListenerOptions): void;
+	/**
+	 * The standard EventTarget.addEventListener method. Use it to subscribe to the message event
+	 * or sharedbufferreceived event. The message event receives messages posted from the WebView2
+	 * host via CoreWebView2.PostWebMessageAsJson or CoreWebView2.PostWebMessageAsString. The
+	 * sharedbufferreceived event receives shared buffers posted from the WebView2 host via
+	 * CoreWebView2.PostSharedBufferToScript.
+	 * See CoreWebView2.PostWebMessageAsJson( Win32/C++, .NET, WinRT).
+	 * @param type The name of the event to subscribe to. Valid values are message, and sharedbufferreceived.
+	 * @param listener The callback to invoke when the event is raised.
+	 * @param options Options to control how the event is handled.
+	 */
+	addEventListener(
+		type: string,
+		listener: WebViewEventListenerOrEventListenerObject,
+		options?: boolean | AddEventListenerOptions): void;
 }
 
 function processMessage(controller: ClientController, payload: any, appDispatch: AppDispatch) {
@@ -192,7 +192,7 @@ function processMessage(controller: ClientController, payload: any, appDispatch:
 			break;
 
 		case 'setChooser':
-			controller.onSetChooser(payload.chooserIndex, payload.setAnswerer, true);
+			controller.onSetChooser(payload.chooserIndex, payload.setAnswerer, true, false);
 			break;
 
 		case 'setAttachContentToTable':
@@ -358,10 +358,10 @@ export default function runCore(game?: IGameClient): Store<State, AnyAction> {
 	});
 
 	// Listen for subsequent font loads
-    document.fonts.addEventListener('loadingdone', () => {
-        store.dispatch(setFontsReady(false));
-        window.setTimeout(() => store.dispatch(setFontsReady(true)), 100);
-    });
+	document.fonts.addEventListener('loadingdone', () => {
+		store.dispatch(setFontsReady(false));
+		window.setTimeout(() => store.dispatch(setFontsReady(true)), 100);
+	});
 
 	return store;
 }

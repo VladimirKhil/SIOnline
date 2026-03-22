@@ -69,7 +69,6 @@ export interface Room2State {
 	role: Role;
 
 	playState: {
-		report: string;
 		packageUri: string | null;
 	};
 
@@ -149,7 +148,6 @@ const initialState: Room2State = {
 	role: Role.Player,
 
 	playState: {
-		report: '',
 		packageUri: null,
 	},
 
@@ -424,13 +422,7 @@ export const room2Slice = createSlice({
 		setContext: (state: Room2State, action: PayloadAction<ContextView>) => {
 			state.contextView = action.payload;
 		},
-		setReport: (state: Room2State, action: PayloadAction<string>) => {
-			state.playState.report = action.payload;
-			state.playState.packageUri = null;
-			state.stage.decisionType = DecisionType.Review;
-		},
 		setReview: (state: Room2State, action: PayloadAction<string | null>) => {
-			state.playState.report = '';
 			state.playState.packageUri = action.payload;
 			state.stage.decisionType = DecisionType.Review;
 		},
@@ -1189,7 +1181,6 @@ export const exitGame = createAsyncThunk(
 export const {
 	showDialog,
 	setContext,
-	setReport,
 	setReview,
 	showmanReplicChanged,
 	playerReplicChanged,

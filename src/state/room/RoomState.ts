@@ -30,7 +30,6 @@ export default interface RoomState {
 	manageGameVisible: boolean;
 	avatarViewVivible: boolean;
 	hint: string | null;
-	buttonBlockingTimeSeconds: number;
 
 	metadata: {
 		gameName: string | null;
@@ -77,7 +76,6 @@ export const initialState: RoomState = {
 	manageGameVisible: false,
 	avatarViewVivible: false,
 	hint: null,
-	buttonBlockingTimeSeconds: 3,
 
 	metadata: {
 		gameName: null,

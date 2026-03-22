@@ -197,14 +197,6 @@ const viewerHandler = (
 			controller.onBannedList(bannedList);
 			break;
 
-		case GameMessages.ButtonBlockingTime:
-			if (args.length === 1) {
-				break;
-			}
-
-			controller.onButtonBlockingTimeChanged(parseInt(args[1], 10));
-			break;
-
 		case GameMessages.Choice:
 			{
 				if (args.length < 3) {
@@ -861,7 +853,8 @@ const viewerHandler = (
 			const chooserIndex = parseInt(args[1], 10);
 			const setActive = args.length > 2 && args[2] === '+';
 			const manually = args.length > 3 && args[3] === '+';
-			controller.onSetChooser(chooserIndex, setActive, manually);
+			const announce = args.length > 3 && args[3] === 'ANNOUNCE';
+			controller.onSetChooser(chooserIndex, setActive, manually, announce);
 			break;
 
 		case GameMessages.SetJoinMode:
@@ -1161,15 +1154,6 @@ const playerHandler = (controller: ClientController, args: string[]) => {
 
 		case GameMessages.Choose:
 			controller.onChoose();
-			break;
-
-		case GameMessages.Report:
-			if (args.length < 2) {
-				return;
-			}
-
-			const report = args[1].replaceAll('\r', '\n');
-			controller.onReport(report);
 			break;
 
 		case GameMessages.Validation2:

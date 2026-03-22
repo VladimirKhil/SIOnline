@@ -9,9 +9,9 @@ const onPass: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () 
 	_dispatch: Dispatch<RunActions.KnownRoomAction>,
 	_getState: () => State,
 	dataContext: DataContext
-	) => {
-		await dataContext.game.pass();
-	};
+) => {
+	await dataContext.game.pass();
+};
 
 const giveTurn: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (dispatch: Dispatch<RunActions.KnownRoomAction>) => {
 	dispatch(selectionEnabled());
@@ -81,7 +81,7 @@ const apellate: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (
 	_dispatch: Dispatch<any>,
 	_getState: () => State,
 	dataContext: DataContext
-	) => {
+) => {
 	await dataContext.game.apellate(true);
 };
 
@@ -89,7 +89,7 @@ const disagree: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (
 	_dispatch: Dispatch<any>,
 	_getState: () => State,
 	dataContext: DataContext
-	) => {
+) => {
 	await dataContext.game.apellate(false);
 };
 
@@ -118,9 +118,9 @@ const changePlayerSum: ActionCreator<ThunkAction<void, State, DataContext, Actio
 	_dispatch: Dispatch<any>,
 	_getState: () => State,
 	dataContext: DataContext
-	) => {
-	await dataContext.game.setPlayerScore(playerIndex, sum);
-};
+) => {
+		await dataContext.game.setPlayerScore(playerIndex, sum);
+	};
 
 const hintChanged: ActionCreator<RunActions.HintChangedAction> = (hint: string | null) => ({
 	type: RunActions.RoomActionTypes.HintChanged, hint
@@ -157,10 +157,6 @@ const navigateToRound: ActionCreator<ThunkAction<void, State, DataContext, Actio
 ) => {
 	await dataContext.game.moveToRound(roundIndex);
 };
-
-const buttonBlockingTimeChanged: ActionCreator<RunActions.ButtonBlockingChangedAction> = (buttonBlockingTime: number) => ({
-	type: RunActions.RoomActionTypes.ButtonBlockingTimeChanged, buttonBlockingTime
-});
 
 const gameMetadataChanged: ActionCreator<RunActions.GameMetadataChangedAction> = (
 	gameName: string,
@@ -237,7 +233,6 @@ const roomActionCreators = {
 	moveNext,
 	navigateToRound,
 	ready,
-	buttonBlockingTimeChanged,
 	gameMetadataChanged,
 	bannedListChanged,
 	banned,
