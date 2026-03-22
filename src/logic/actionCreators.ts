@@ -353,15 +353,19 @@ const initStage1CheckLicenseAsync = async (
 	getState: () => State,
 	dataContext: DataContext
 ) => {
-	await connectToServerAsync(appDispatch, getState, dataContext);
-	const licenseAccepted = dataContext.host.isLicenseAccepted();
+	try {
+		await connectToServerAsync(appDispatch, getState, dataContext);
+		const licenseAccepted = dataContext.host.isLicenseAccepted();
 
-	if (!licenseAccepted) {
-		appDispatch(navigate({ navigation: { path: Path.AcceptLicense, callbackState: view }, saveState: true }));
-		return;
+		if (!licenseAccepted) {
+			appDispatch(navigate({ navigation: { path: Path.AcceptLicense, callbackState: view }, saveState: true }));
+			return;
+		}
+
+		await initStage2CompleteInitializaionAsync(view, dispatch, appDispatch, getState, dataContext);
+	} catch (e) {
+		appDispatch(commonErrorChanged(getErrorMessage(e)));
 	}
-
-	await initStage2CompleteInitializaionAsync(view, dispatch, appDispatch, getState, dataContext);
 };
 
 const initStageSkipLoginLicenseAsync: ActionCreator<ThunkAction<void, State, DataContext, Action>> =

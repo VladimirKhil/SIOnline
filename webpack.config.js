@@ -1,4 +1,5 @@
 const path = require('path');
+const webpack = require('webpack');
 const HtmlWebPackPlugin = require("html-webpack-plugin");
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const WorkboxPlugin = require('workbox-webpack-plugin');
@@ -101,6 +102,9 @@ module.exports = (env, argv) => {
 			}
 		},
 		plugins: [
+			new webpack.DefinePlugin({
+				'IS_STEAM_BUILD': JSON.stringify(env.isSteam === 'true' || env.isSteam === true)
+			}),
 			new CleanWebpackPlugin(),
 			new HtmlWebPackPlugin({
 				template: "./src/index-template.html",

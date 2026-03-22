@@ -3,25 +3,15 @@ import {
 	setClearUrls,
 	setClipboardSupported,
 	setExitSupported,
-	setHostManagedUrls,
 	setIsDesktop,
-	setLogSupported,
-	setSteamLinkSupported
+	setLogSupported
 } from '../state/commonSlice';
 import { getCookie, setCookie } from '../utils/CookieHelpers';
 import IHost, { FullScreenMode, UploadCallbacks } from './IHost';
 import { Store } from 'redux';
 import SIStorageInfo from '../client/contracts/SIStorageInfo';
-import SteamWorkshopStorageClient from './SteamWorkshopStorageClient';
-import localization from '../model/resources/localization';
-import { changeLogin } from '../state/userSlice';
-import { setAvatarKey } from '../state/settingsSlice';
-import Constants from '../model/enums/Constants';
-import State from '../state/State';
 
 const ACCEPT_LICENSE_KEY = 'ACCEPT_LICENSE';
-
-const isSteam = false; // TODO: STEAM_CLIENT: true
 
 /** Payload for upload progress events from Rust */
 export interface UploadProgressPayload {
@@ -73,7 +63,7 @@ interface TauriAPI {
 }
 
 export default class TauriHost implements IHost {
-	private app = window.__TAURI__;
+	protected app = window.__TAURI__;
 
 	private licenseAccepted = false;
 
@@ -118,29 +108,7 @@ export default class TauriHost implements IHost {
 		store.dispatch(setIsDesktop(true));
 		console.log('Loaded from Tauri');
 
-		if (isSteam) {
-			store.dispatch(setHostManagedUrls(true));
-			store.dispatch(setSteamLinkSupported(false)); // No need to navigate to Steam from here
-
-			if (this.app && this.app.core) {
-				this.app.core.invoke('get_steam_user_info', {}).then((userInfo: { name: string, avatar: string | null }) => {
-					const state = store.getState() as State;
-
-					if (userInfo.name && !state.user.login) {
-						store.dispatch(changeLogin(userInfo.name));
-					}
-
-					if (userInfo.avatar && !localStorage.getItem(Constants.AVATAR_KEY)) {
-						localStorage.setItem(Constants.AVATAR_KEY, userInfo.avatar);
-						store.dispatch(setAvatarKey(Math.random().toString()));
-					}
-				}).catch((error: any) => {
-					console.error('Failed to get Steam user info:', error);
-				});
-			}
-		} else {
-			store.dispatch(setClearUrls(true));
-		}
+		store.dispatch(setClearUrls(true));
 
 		if (!this.clipboardSupported) {
 			store.dispatch(setClipboardSupported(false));
@@ -188,17 +156,7 @@ export default class TauriHost implements IHost {
 	}
 
 	async setFullScreen(fullScreen: boolean): Promise<boolean> {
-		if (this.app && this.app.webviewWindow &&
-			isSteam) { // Temporary condition for old Tauri-based clients
-			try {
-				await this.app.webviewWindow.getCurrentWebviewWindow().setFullscreen(fullScreen);
-			} catch (e) {
-				alert(e);
-			}
-		} else {
-			window.parent.postMessage({ type: 'fullscreen', payload: fullScreen }, '*');
-		}
-
+		window.parent.postMessage({ type: 'fullscreen', payload: fullScreen }, '*');
 		return true;
 	}
 
@@ -229,29 +187,7 @@ export default class TauriHost implements IHost {
 	}
 
 	getStorage(): { storageClient?: SIStorageClient; storageInfo?: SIStorageInfo; } {
-		if (!isSteam) {
-			return {};
-		}
-
-		const storageClient = new SteamWorkshopStorageClient({
-			serviceUri: 'steam://app',
-		});
-
-		const storageInfo: SIStorageInfo = {
-			name: localization.steamWorkshop,
-			uri: 'https://steamcommunity.com/app/3553500/workshop',
-			id: 'SteamWorkshop',
-			serviceUri: '',
-			randomPackagesSupported: false,
-			identifiersSupported: true,
-			maximumPageSize: 20,
-			packageProperties: [],
-			facets: [],
-			limitedApi: true,
-			emptyMessage: localization.noPackagesSteam,
-		};
-
-		return { storageClient, storageInfo };
+		return {};
 	}
 
 	async getPackageData(id: string): Promise<[File, string] | null> {
@@ -363,17 +299,11 @@ export default class TauriHost implements IHost {
 	}
 
 	getPackageSource(packageId?: string): string | undefined {
-		if (isSteam) {
-			return packageId
-				? `https://steamcommunity.com/sharedfiles/filedetails/?id=${packageId}`
-				: 'https://steamcommunity.com';
-		}
-
 		return 'https://www.sibrowser.ru'; // Using this source for statistics for now
 	}
 
 	getFallbackPackageSource(): string | undefined {
-		return isSteam ? 'https://www.sibrowser.ru' : undefined;
+		return undefined;
 	}
 
 	/**

@@ -1,4 +1,4 @@
-﻿import * as React from 'react';
+import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { Action, AnyAction, applyMiddleware, createStore, Store } from 'redux';
 import { Provider } from 'react-redux';
@@ -45,6 +45,7 @@ import { saveStateToStorage } from './state/StateHelpers';
 import { INavigationState, setFullScreenSupported, settingKeyChanged, windowSizeChanged } from './state/uiSlice';
 import { navigate } from './utils/Navigator';
 import TauriHost from './host/TauriHost';
+import SteamTauriHost from './host/SteamTauriHost';
 import { approveAnswerDefault, pressGameButton, rejectAnswerDefault } from './state/room2Slice';
 import { pauseGame } from './state/serverActions';
 import getServerInfo from './client/GameServerLocator';
@@ -54,6 +55,7 @@ import './scss/style.scss';
 
 declare const config: Config | undefined;
 declare const firebaseConfig: FirebaseOptions | undefined;
+declare const IS_STEAM_BUILD: boolean | undefined;
 
 declare global {
 	interface Window {
@@ -242,7 +244,7 @@ function subscribeToExternalEvents(store: Store<State, any>, stateManager: IHost
 	});
 
 	window.addEventListener('unhandledrejection', (e: PromiseRejectionEvent) => {
-		store.dispatch(commonErrorChanged(`${e.reason.message}: ${e.reason.stack}`));
+		store.dispatch(commonErrorChanged(getErrorMessage(e.reason)));
 		return false;
 	});
 
@@ -422,6 +424,7 @@ async function run(host: IHost) {
 
 const urlParams = new URLSearchParams(window.location.hash.substring(1));
 const origin = urlParams.get('origin');
+const isSteam = (typeof IS_STEAM_BUILD !== 'undefined' && IS_STEAM_BUILD) || urlParams.get('isSteam') === 'true';
 
 if (origin === OriginYandex) {
 	config.askForConsent = false;
@@ -442,10 +445,10 @@ function getHost(originValue: string | null): IHost {
 			return new YandexHost();
 
 		case OriginTauri:
-			return new TauriHost(false);
+			return isSteam ? new SteamTauriHost(false) : new TauriHost(false);
 
 		default:
-			return window.__TAURI_INTERNALS__ ? new TauriHost(true) : new BrowserHost();
+			return window.__TAURI_INTERNALS__ ? (isSteam ? new SteamTauriHost(true) : new TauriHost(true)) : new BrowserHost();
 	}
 }
 
