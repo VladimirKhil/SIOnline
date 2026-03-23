@@ -399,7 +399,7 @@ describe('ClientController - Round Flow', () => {
 
 	describe('onSetChooser', () => {
 		it('should set player as chooser', () => {
-			controller.onSetChooser(0, true, false);
+			controller.onSetChooser(0, true, false, false);
 
 			expect(mockAppDispatch).toHaveBeenCalled();
 			const actions = dispatchedActions.map(a => a.type);

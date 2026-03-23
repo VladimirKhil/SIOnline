@@ -574,6 +574,14 @@ const viewerHandler = (
 			controller.onPackageDate(args[1]);
 			break;
 
+		case GameMessages.PackageRestrictions:
+			if (args.length < 2) {
+				break;
+			}
+
+			controller.onPackageRestrictions(args[1]);
+			break;
+
 		case GameMessages.PackageSources:
 			if (args.length < 2) {
 				break;

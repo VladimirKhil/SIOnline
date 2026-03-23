@@ -91,6 +91,13 @@ See README.md for Steam-specific build configuration.
 - `webpack.config.js` - Webpack configuration
 - `tsconfig.json` - TypeScript configuration
 
+## Definition of Done
+
+A task is considered complete when the following conditions are met:
+1. **Build passes**: The project must build without errors using `npm run build-dev`.
+2. **Tests pass**: All unit tests must pass. Run `npm run test` to verify.
+3. **Linting passes**: No ESLint errors are introduced. Run `npm run lint` to verify.
+
 ## Notes for AI Agents
 
 1. When modifying Redux state, update the corresponding slice in `src/state/`
