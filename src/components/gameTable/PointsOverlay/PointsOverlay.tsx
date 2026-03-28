@@ -70,18 +70,13 @@ function getNormalizedImagePoint(
 interface PointShape {
 	cx: number;
 	cy: number;
-	rx: number;
-	ry: number;
 }
 
 interface MarkerShape {
 	cx: number;
 	cy: number;
-	rx: number;
-	ry: number;
 	color: string;
 	label?: string;
-	isArea?: boolean;
 }
 
 export default function PointsOverlay(): JSX.Element {
@@ -91,7 +86,6 @@ export default function PointsOverlay(): JSX.Element {
 	const appDispatch = useAppDispatch();
 
 	const isConnected = useAppSelector(state => state.common.isSIHostConnected);
-	const deviation = useAppSelector(state => state.table.answerDeviation);
 	const pointMarkers = useAppSelector(state => state.table.pointMarkers);
 	const decisionType = useAppSelector(state => state.room2.stage.decisionType);
 
@@ -157,7 +151,7 @@ export default function PointsOverlay(): JSX.Element {
 		};
 	}, []);
 
-	// Computes SVG coordinates for a point and its deviation ellipse radii
+	// Computes SVG coordinates for a point
 	const computePointShape = React.useCallback((point: { x: number; y: number }): PointShape | null => {
 		const overlay = overlayRef.current;
 
@@ -192,11 +186,8 @@ export default function PointsOverlay(): JSX.Element {
 		const cx = imgOffsetX + bounds.x + (point.x * bounds.width);
 		const cy = imgOffsetY + bounds.y + (point.y * bounds.height);
 
-		const rx = deviation * bounds.width;
-		const ry = deviation * bounds.height;
-
-		return { cx, cy, rx, ry };
-	}, [deviation]);
+		return { cx, cy };
+	}, []);
 
 	const computeMarkerShape = React.useCallback((marker: PointMarker): MarkerShape | null => {
 		const overlay = overlayRef.current;
@@ -232,11 +223,8 @@ export default function PointsOverlay(): JSX.Element {
 		const cx = imgOffsetX + bounds.x + (marker.x * bounds.width);
 		const cy = imgOffsetY + bounds.y + (marker.y * bounds.height);
 
-		const rx = marker.isArea ? deviation * bounds.width : 0;
-		const ry = marker.isArea ? deviation * bounds.height : 0;
-
-		return { cx, cy, rx, ry, color: marker.color, label: marker.label, isArea: marker.isArea };
-	}, [deviation]);
+		return { cx, cy, color: marker.color, label: marker.label };
+	}, []);
 
 	const [svgSize, setSvgSize] = React.useState<{ width: number, height: number }>({ width: 0, height: 0 });
 
@@ -283,62 +271,36 @@ export default function PointsOverlay(): JSX.Element {
 					{/* Marker points from other players and right answer */}
 					{markerShapes.map((shape, i) => (
 						<g key={i}>
-							{shape.isArea ? (
-								<ellipse
-									cx={shape.cx}
-									cy={shape.cy}
-									rx={shape.rx}
-									ry={shape.ry}
-									fill={shape.color}
-									stroke="none"
-								/>
-							) : (
-								<>
-									<circle
-										cx={shape.cx}
-										cy={shape.cy}
-										r="7"
-										fill={shape.color}
-										stroke="rgba(0, 0, 0, 0.5)"
-										strokeWidth="1.5"
-									/>
+							<circle
+								cx={shape.cx}
+								cy={shape.cy}
+								r="7"
+								fill={shape.color}
+								stroke="rgba(0, 0, 0, 0.5)"
+								strokeWidth="1.5"
+							/>
 
-									{shape.label ? (
-										<text
-											x={shape.cx}
-											y={shape.cy - 12}
-											className='pointsOverlay__label'
-										>
-											{shape.label}
-										</text>
-									) : null}
-								</>
-							)}
+							{shape.label ? (
+								<text
+									x={shape.cx}
+									y={shape.cy - 12}
+									className='pointsOverlay__label'
+								>
+									{shape.label}
+								</text>
+							) : null}
 						</g>
 					))}
 
 					{/* Hover preview for interactive mode */}
 					{hoverShape ? (
-						<>
-							{deviation > 0 ? (
-								<ellipse
-									cx={hoverShape.cx}
-									cy={hoverShape.cy}
-									rx={hoverShape.rx}
-									ry={hoverShape.ry}
-									fill="rgba(255, 124, 30, 0.3)"
-									stroke="none"
-								/>
-							) : null}
-
-							<circle
-								cx={hoverShape.cx}
-								cy={hoverShape.cy}
-								r="5"
-								fill="rgba(255, 140, 50, 0.8)"
-								stroke="none"
-							/>
-						</>
+						<circle
+							cx={hoverShape.cx}
+							cy={hoverShape.cy}
+							r="5"
+							fill="rgba(255, 140, 50, 0.8)"
+							stroke="none"
+						/>
 					) : null}
 
 				</svg>

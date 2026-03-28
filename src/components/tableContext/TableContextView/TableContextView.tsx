@@ -45,7 +45,7 @@ function renderBody(
 	role: Role,
 	decisionType: DecisionType,
 	layoutMode: LayoutMode,
-) : JSX.Element | null {
+): JSX.Element | null {
 	switch (decisionType) {
 		case DecisionType.Answer:
 			if (layoutMode === LayoutMode.OverlayPoints) {
@@ -91,12 +91,8 @@ function renderBody(
 
 	const defaultView = role === Role.Showman ? <div className='emptyContext' /> : null;
 
-	if (props.isAfterQuestion && role === Role.Player) {
-		return <ReactionPanel />;
-	}
-
 	if (role === Role.Player) {
-		return <PlayerButtonsPanel />;
+		return props.isAfterQuestion ? <ReactionPanel /> : <PlayerButtonsPanel />;
 	}
 
 	if (props.hint && windowWidth < 800) {
