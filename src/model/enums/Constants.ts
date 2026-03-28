@@ -1,4 +1,4 @@
-﻿export default {
+export default {
 	KEY_ENTER: 13,
 	KEY_ENTER_NEW: 'Enter',
 	KEY_CTRL: 'Control',
@@ -24,5 +24,6 @@
 
 	LARGE_CONTENT_WEIGHT: 5,
 
-	RANDOM_PACKAGE: '@{random}'
+	RANDOM_PACKAGE: '@{random}',
+	LICENSE_TEXT_KEY: 'serverLicense'
 };

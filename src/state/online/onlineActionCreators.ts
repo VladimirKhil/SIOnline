@@ -490,8 +490,12 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 		}
 
 		if (state.common.computerAccounts === null) {
-			appDispatch(userErrorChanged(localization.computerAccountsMissing));
-			return;
+			await actionCreators.ensureServerInfoLoadedAsync(appDispatch, getState, dataContext);
+
+			if (getState().common.computerAccounts === null) {
+				appDispatch(userErrorChanged(localization.computerAccountsMissing));
+				return;
+			}
 		}
 
 		appDispatch(gameCreationStart());
@@ -535,7 +539,7 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 				isSingleGame,
 				showman,
 				viewers,
-				state.common.computerAccounts,
+				state.common.computerAccounts!,
 			);
 
 			const packageInfo = await getPackageInfoAsync(state, game, dataContext, dispatch);

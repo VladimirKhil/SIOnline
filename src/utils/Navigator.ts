@@ -13,6 +13,7 @@ import onlineActionCreators from '../state/online/onlineActionCreators';
 import Role from '../model/Role';
 import DemoGameClient from './DemoGameClient';
 import ClientController from '../logic/ClientController';
+import { ensureServerInfoLoadedAsync } from '../logic/ServerInitializer';
 import State from '../state/State';
 import { showText } from '../state/tableSlice';
 import { exitGame } from '../state/room2Slice';
@@ -64,13 +65,18 @@ const connectToSIGameServerAsync = async (
 
 	const { useProxy2 } = state.settings;
 	const useProxy = useProxy2 && !!dataContext.proxyUri;
-	const runtimeUri = useProxy ? dataContext.proxyUri! : dataContext.serverUri;
-	const listener = new GameServerListener(appDispatch);
 
 	try {
+		await ensureServerInfoLoadedAsync(appDispatch, () => state as any, dataContext);
+
+		const runtimeUri = useProxy ? dataContext.proxyUri! : dataContext.serverUri;
+		const listener = new GameServerListener(appDispatch);
+
 		await gameServerClient.connect(runtimeUri, listener);
 		return true;
 	} catch (error: unknown) {
+		const listener = new GameServerListener(appDispatch);
+
 		if (useProxy) {
 			console.log('Cannot connect to SIGame Server via proxy, falling back to original: ' + getErrorMessage(error));
 

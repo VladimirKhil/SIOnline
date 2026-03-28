@@ -48,7 +48,6 @@ import TauriHost from './host/TauriHost';
 import SteamTauriHost from './host/SteamTauriHost';
 import { approveAnswerDefault, pressGameButton, rejectAnswerDefault } from './state/room2Slice';
 import { pauseGame } from './state/serverActions';
-import getServerInfo from './client/GameServerLocator';
 
 import './utils/polyfills';
 import './scss/style.scss';
@@ -153,13 +152,13 @@ function setState(state: State, savedState: SavedState | null, c: Config, isDesk
 	};
 }
 
-function subscribeToExternalEvents(store: Store<State, any>, stateManager: IHost) {
+function subscribeToExternalEvents(store: Store<State, any>, host: IHost) {
 	// TODO use ResizeObserver for body element instead of this as app could be hosted inside iframe
 	// and window dimensions will be irrelevant
 	window.onresize = () => {
 		store.dispatch(windowSizeChanged({ width: window.innerWidth, height: window.innerHeight }));
 
-		const fullScreenMode = stateManager.detectFullScreen();
+		const fullScreenMode = host.detectFullScreen();
 
 		if (fullScreenMode === FullScreenMode.Yes) {
 			store.dispatch(setFullScreen(true));
@@ -322,26 +321,14 @@ async function run(host: IHost) {
 		let { serverUri } = config;
 		let proxyUri: string | undefined;
 
-		if (!serverUri) {
-			const { serverDiscoveryUri } = config;
-
-			if (!serverDiscoveryUri) {
-				throw new Error('Server uri is undefined');
-			}
-
-			const { uri, proxyUri: serverProxyUri } = await getServerInfo(serverDiscoveryUri);
-			serverUri = uri;
-			proxyUri = serverProxyUri;
-		}
-
 		const savedState = loadState();
 		const state = setState(initialState, savedState, config, host.isDesktop());
 
-		const gameClient = new GameServerClient(serverUri);
+		const gameClient = new GameServerClient(serverUri || '');
 
 		const dataContext: DataContext = {
 			config,
-			serverUri,
+			serverUri: serverUri || '',
 			proxyUri,
 			gameClient,
 			game: new GameClient(new SIHostClient()),

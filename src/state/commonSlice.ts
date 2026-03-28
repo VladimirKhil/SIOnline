@@ -154,6 +154,9 @@ export const commonSlice = createSlice({
 		setProxyAvailable: (state: CommonState, action: PayloadAction<boolean>) => {
 			state.proxyAvailable = action.payload;
 		},
+		serverLicenseChanged: (state: CommonState, action: PayloadAction<string | null>) => {
+			state.serverLicense = action.payload;
+		},
 	}
 });
 
@@ -209,6 +212,7 @@ export const {
 	setHostManagedUrls,
 	setLogSupported,
 	setProxyAvailable,
+	serverLicenseChanged,
 } = commonSlice.actions;
 
 export default commonSlice.reducer;

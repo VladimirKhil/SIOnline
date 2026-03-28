@@ -12,6 +12,8 @@ import IGameServerListener from './IGameServerListener';
 export default interface IGameServerClient {
 	isConnected(): boolean;
 
+	setServerUri(uri: string): void;
+
 	connect(runtimeUri: string, listener: IGameServerListener): Promise<void>;
 
 	disconnect(): Promise<void>;

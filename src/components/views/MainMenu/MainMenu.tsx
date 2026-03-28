@@ -9,6 +9,8 @@ import UserOptions from '../../panels/UserOptions/UserOptions';
 import { navigate } from '../../../utils/Navigator';
 import { exitApp } from '../../../state/globalActions';
 import Link from '../../common/Link/Link';
+import Constants from '../../../model/enums/Constants';
+import { serverLicenseChanged } from '../../../state/commonSlice';
 
 import './MainMenu.scss';
 import twitchImg from '../../../../assets/images/twitch_logo.png';
@@ -31,6 +33,15 @@ export default function MainMenu(): JSX.Element {
 			return stopAudioPlay;
 		}
 	}, []);
+
+	React.useEffect(() => {
+		if (!common.serverLicense && typeof localStorage !== 'undefined') {
+			const savedLicense = localStorage.getItem(Constants.LICENSE_TEXT_KEY);
+			if (savedLicense) {
+				appDispatch(serverLicenseChanged(savedLicense));
+			}
+		}
+	}, [common.serverLicense]);
 
 	// setTimeout() is to forcibly load window.history before navigating
 	const onJoinByPin = () => setTimeout(() => appDispatch(navigate({ navigation: { path: Path.JoinByPin }, saveState: true })), 0);
@@ -101,9 +112,7 @@ export default function MainMenu(): JSX.Element {
 			<header>
 				<h1 className='mainHeader'>
 					<div className='left'>
-						<span className="serverName" title={localization.server}>{common.serverName || localization.appUser}</span>
-
-						<button
+						{common.serverLicense ? <button
 							type='button'
 							className='serverLicense'
 							title={localization.serverLicense}
@@ -113,7 +122,7 @@ export default function MainMenu(): JSX.Element {
 								<circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" />
 								<path d="M12 7V7.01M12 11V17" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
 							</svg>
-						</button>
+						</button> : null}
 
 						<button
 							type='button'

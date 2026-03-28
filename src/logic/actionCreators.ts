@@ -8,12 +8,11 @@ import localization from '../model/resources/localization';
 
 import Constants from '../model/enums/Constants';
 
-import GameServerClient from '../client/GameServerClient';
 import getErrorMessage from '../utils/ErrorHelpers';
 import { getFullCulture } from '../utils/StateHelpers';
 import GameClient from '../client/game/GameClient';
 
-import SIContentClient, { SIContentServiceError } from 'sicontent-client';
+import { SIContentServiceError } from 'sicontent-client';
 import SIStorageClient from 'sistorage-client';
 import ClientController from './ClientController';
 import Path from '../model/enums/Path';
@@ -36,7 +35,6 @@ import {
 	avatarLoadStart,
 	commonErrorChanged,
 	computerAccountsChanged,
-	serverInfoChanged,
 	userErrorChanged,
 	isSIHostConnectedChanged,
 } from '../state/commonSlice';
@@ -45,10 +43,9 @@ import { changeAvatar, changeLogin } from '../state/userSlice';
 import { saveStateToStorage } from '../state/StateHelpers';
 import { INavigationState } from '../state/uiSlice';
 import { navigate } from '../utils/Navigator';
-import registerApp from '../utils/registerApp';
-import { setStorages } from '../state/siPackagesSlice';
 import SIStorageInfo from '../client/contracts/SIStorageInfo';
 import SIHostListener from '../utils/SIHostListener';
+import { ensureServerInfoLoadedAsync } from './ServerInitializer';
 
 async function uploadAvatarAsync(appDispatch: AppDispatch, dataContext: DataContext) {
 	if (typeof localStorage === 'undefined') {
@@ -148,45 +145,6 @@ function createStorageClientFromInfo(storageInfo: SIStorageInfo): SIStorageClien
 	});
 }
 
-async function loadHostInfoAsync(appDispatch: AppDispatch, dataContext: DataContext, culture: string) {
-	const hostInfo = await dataContext.gameClient.getGameHostInfoAsync(culture);
-	// eslint-disable-next-line no-param-reassign
-	dataContext.contentUris = hostInfo.contentPublicBaseUrls;
-
-	const { contentInfos } = hostInfo;
-	let { storageInfos } = hostInfo;
-
-	if (storageInfos && storageInfos.length === 0 && culture !== 'en-US') {
-		const englishHostInfo = await dataContext.gameClient.getGameHostInfoAsync('en-US');
-		storageInfos = englishHostInfo.storageInfos;
-	}
-
-	if (contentInfos && contentInfos.length > 0) {
-		dataContext.contentClients = contentInfos.map(info => new SIContentClient({
-			serviceUri: info.serviceUri,
-		}));
-	} else {
-		throw new Error('No SIContent service found');
-	}
-
-	dataContext.storageClients = storageInfos.map(createStorageClientFromInfo);
-	const { storageClient, storageInfo } = dataContext.host.getStorage();
-
-	if (storageClient && storageInfo) {
-		dataContext.storageClients.push(storageClient);
-		storageInfos.push(storageInfo);
-	}
-
-	appDispatch(setStorages(storageInfos));
-
-	appDispatch(serverInfoChanged({
-		serverName: hostInfo.name,
-		serverLicense: hostInfo.license,
-		maxPackageSizeMb: hostInfo.maxPackageSizeMb,
-		siHosts: hostInfo.siHosts,
-	}));
-}
-
 const connectToSIHostAsync = async (
 	siHostUri: string,
 	dispatch: Dispatch<Action>,
@@ -279,10 +237,6 @@ const initStage3NavigateAsync = async (
 		}
 	}
 
-	if (view.path === Path.Root || view.path === Path.Menu) {
-		await registerApp(dataContext.config.appRegistryServiceUri);
-	}
-
 	if (view.path === Path.SIQuesterPackage && !getState().siquester.zip) {
 		appDispatch(navigate({ navigation: { path: Path.SIQuester }, saveState: true }));
 		return;
@@ -296,17 +250,7 @@ const connectToServerAsync = async (
 	getState: () => State,
 	dataContext: DataContext
 ) => {
-	const state = getState();
-
-	const requestCulture = getFullCulture(state);
-
-	const computerAccounts = await dataContext.gameClient.getComputerAccountsAsync(requestCulture);
-	appDispatch(computerAccountsChanged(computerAccounts));
-
-	await loadHostInfoAsync(appDispatch, dataContext, requestCulture);
-	await uploadAvatarAsync(appDispatch, dataContext);
-
-	dataContext.host.onReady();
+	await ensureServerInfoLoadedAsync(appDispatch, getState, dataContext);
 };
 
 const initStage2CompleteInitializaionAsync = async (
@@ -404,7 +348,7 @@ const initStage0: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 			return;
 		}
 
-		await initStage1CheckLicenseAsync(initialView, dispatch, appDispatch, getState, dataContext);
+		await initStage2CompleteInitializaionAsync(initialView, dispatch, appDispatch, getState, dataContext);
 	};
 
 const login: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
@@ -439,6 +383,7 @@ const actionCreators = {
 	login,
 	connectToSIHostAsync,
 	acceptLicense,
+	ensureServerInfoLoadedAsync,
 };
 
 export default actionCreators;
