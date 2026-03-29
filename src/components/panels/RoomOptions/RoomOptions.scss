@@ -22,26 +22,58 @@
 }
 
 .block.forPackage {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
     height: 250px;
 
 	@media screen and (min-width: 800px) {
+		flex-direction: row;
+		align-items: center;
 		height: 108px;
+	}
+
+	.blockName {
+		flex: initial;
+		margin-bottom: 15px;
+
+		@media screen and (min-width: 800px) {
+			flex: 0 0 170px;
+			margin-bottom: initial;
+		}
 	}
 
 	.blockValue {
 		flex-direction: column;
+		align-items: center;
+		height: 100%;
+		width: 100%;
 
 		@media screen and (min-width: 800px) {
 			flex-direction: row;
+			width: auto;
 		}
 
 		.packageName {
+			display: flex;
+			justify-content: center;
+			align-items: center;
 			text-align: center;
-			font-size: 10px;
-			word-break: break-all;
+			font-size: 18px;
+			word-break: break-word;
+			white-space: initial;
+			height: auto;
+			width: 100%;
+			margin: 15px 0 0 0;
+			line-height: 1.2;
 
 			@media screen and (min-width: 800px) {
+				justify-content: flex-start;
+				text-align: left;
 				font-size: initial;
+				word-break: initial;
+				width: auto;
+				margin: 3px 0 0 5px;
 			}
 		}
 	}

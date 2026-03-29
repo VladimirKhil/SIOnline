@@ -143,6 +143,8 @@ export const navigate = createAsyncThunk(
 
 		switch (nav.path) {
 			case Path.Lobby:
+			case Path.NewRoom:
+			case Path.JoinByPin:
 				const connectionResult = await connectToSIGameServerAsync(
 					(thunkAPI.extra as DataContext).gameClient,
 					thunkAPI.dispatch as AppDispatch,
@@ -154,7 +156,9 @@ export const navigate = createAsyncThunk(
 					thunkAPI.dispatch(userErrorChanged(localization.cannotConnectToServer));
 				}
 
-				thunkAPI.dispatch(loadLobby());
+				if (nav.path === Path.Lobby) {
+					thunkAPI.dispatch(loadLobby());
+				}
 				break;
 
 			case Path.Demo:

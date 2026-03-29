@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import Dialog from '../../common/Dialog/Dialog';
 import localization from '../../../model/resources/localization';
 import State from '../../../state/State';
 import CompareMode from 'sistorage-client/dist/models/CompareMode';
@@ -16,6 +15,8 @@ import SIStoragePackage from '../SIStoragePackage/SIStoragePackage';
 import getVisiblePageNumbers from '../../../utils/getVisiblePageNumbers';
 import { trimLength } from '../../../utils/StringHelpers';
 import { djb2Hash } from '../../../utils/djb2Hash';
+import exitImg from '../../../../assets/images/exit.png';
+import UserOptions from '../../panels/UserOptions/UserOptions';
 
 import { receiveAuthors,
 	receiveFilters,
@@ -72,6 +73,7 @@ const SIStorageDialog: React.FC<SIStorageDialogProps> = (props) => {
 	});
 
 	const [pageIndex, setPageIndex] = React.useState(0);
+	const [isFiltersVisible, setIsFiltersVisible] = React.useState(false);
 
 	const appDispatch = useAppDispatch();
 
@@ -263,185 +265,222 @@ const SIStorageDialog: React.FC<SIStorageDialogProps> = (props) => {
 	const pages = getVisiblePageNumbers(pageIndex, pageCount);
 
 	return (
-		<Dialog className="siStorageDialog" title={storage.name} onClose={props.onClose}>
-			{storage.limitedApi ? null : <div className='search'>
-				<input
-					aria-label='text filter'
-					className="textFilter"
-					type="text"
-					value={filters.searchText}
-					placeholder={localization.search}
-					onChange={e => onTextChanged(e.target.value)} />
-			</div>}
+		<div className="siStorageDialog">
+			<header className='main'>
+				<div className='mainHeader'>
+					<div className='left'>
+						<button
+							type='button'
+							className='standard imageButton welcomeExit'
+							onClick={props.onClose}
+							title={localization.exit}>
+							<img src={exitImg} alt='Exit' />
+						</button>
+					</div>
+
+					<div className='caption'>
+						<div className='storageName'>{storage.name}</div>
+					</div>
+
+					<div className='right'>
+						{storage.limitedApi ? null : (
+							<div className='search'>
+								<input
+									aria-label='text filter'
+									className="textFilter"
+									type="text"
+									value={filters.searchText}
+									placeholder={localization.search}
+									onChange={e => onTextChanged(e.target.value)} />
+							</div>
+						)}
+
+						<UserOptions />
+					</div>
+				</div>
+			</header>
 
 			<div className='storage__header'>
-				{!clearUrls && storage.uri
-					? <button
+				{!clearUrls && storage.uri ? (
+					<button
 						type='button'
 						className='standard storage__open'
 						onClick={() => window.open(storage.uri, '_blank')}>
 							{localization.openLibrary}
-						</button>
-					: null}
+					</button>
+				) : null}
 
 				<div className='disclaimer'>{localization.siStorageDisclaimer}</div>
 			</div>
 
 			<div className="container">
+				<button
+					type="button"
+					className={`standard filterToggleButton ${isFiltersVisible ? 'active' : ''}`}
+					onClick={() => setIsFiltersVisible(!isFiltersVisible)}
+				>
+					{localization.filter} {isFiltersVisible ? '▲' : '▼'}
+				</button>
 
-				<div className="filters">
-					{storage.facets.includes('tags')
-						? <div className="filter">
-							<div className="selectorName">{localization.packageSubject}</div>
+				{isFiltersVisible && (
+					<div className="filters">
+						{storage.facets.includes('tags') ? (
+							<div className="filter">
+								<div className="selectorName">{localization.packageSubject}</div>
 
-							<select aria-label='tag filter' className="selector" value={tagId} onChange={e => onTagIdChanged(e.target.value)}>
-								<option key={undefined} value={undefined}>
-									{localization.librarySearchAll}
-								</option>
-
-								<option key={-1} value={-1}>
-									{localization.librarySearchNotSet}
-								</option>
-
-								{sortRecord(siPackages.tags).filter(({ value }) => !siPackages.filter.tags
-									.includes(djb2Hash(value).toString()))
-									.map(({ id, value }) => (
-									<option key={id} value={id}>
-										{trimLength(value, 100)}
+								<select aria-label='tag filter' className="selector" value={tagId} onChange={e => onTagIdChanged(e.target.value)}>
+									<option key={undefined} value={undefined}>
+										{localization.librarySearchAll}
 									</option>
-								))}
-							</select>
-						</div>
-						: null}
 
-					{storage.facets.includes('difficulty')
-						? <div className="filter">
-							<div className="selectorName">{localization.packageDifficulty}</div>
+									<option key={-1} value={-1}>
+										{localization.librarySearchNotSet}
+									</option>
 
-							<div className="selectorsGroup">
-								<select
-									aria-label='difficulty relation filter'
-									className="selectorDifRel"
-									value={filters.difficulty?.compareMode}
-									onChange={e => onDifficultyCompareModeChanged(e.target.value)}
-								>
-									<option value={CompareMode.GreaterThan | CompareMode.EqualTo}>{localization.librarySearchMoreOrEqual}</option>
-									<option value={CompareMode.LessThan | CompareMode.EqualTo}>{localization.librarySearchLessOrEqual}</option>
-								</select>
-
-								<select
-									aria-label='difficulty value filter'
-									className="selectorDif"
-									value={filters.difficulty?.value}
-									onChange={e => onDifficultyValueChanged(e.target.value)}
-								>
-									{Array.from({ length: 10 })
-										.map((_, i) => i + 1)
-										.map((el) => (
-											<option key={el} value={el}>
-												{el}
-											</option>
-										))}
+									{sortRecord(siPackages.tags).filter(({ value }) => !siPackages.filter.tags
+										.includes(djb2Hash(value).toString()))
+										.map(({ id, value }) => (
+										<option key={id} value={id}>
+											{trimLength(value, 100)}
+										</option>
+									))}
 								</select>
 							</div>
-						</div>
-						: null}
+						) : null}
 
-					{storage.facets.includes('publishers')
-						? <div className="filter">
-							<div className="selectorName">{localization.packagePublisher}</div>
+						{storage.facets.includes('difficulty') ? (
+							<div className="filter">
+								<div className="selectorName">{localization.packageDifficulty}</div>
 
-							<select
-								aria-label='publisher filter'
-								className="selector"
-								value={filters.publisherId}
-								onChange={e => onPublisherIdChanged(e.target.value)}
-							>
-								<option key={undefined} value={undefined}>
-									{localization.librarySearchAll}
-								</option>
+								<div className="selectorsGroup">
+									<select
+										aria-label='difficulty relation filter'
+										className="selectorDifRel"
+										value={filters.difficulty?.compareMode}
+										onChange={e => onDifficultyCompareModeChanged(e.target.value)}
+									>
+										<option value={CompareMode.GreaterThan | CompareMode.EqualTo}>{localization.librarySearchMoreOrEqual}</option>
+										<option value={CompareMode.LessThan | CompareMode.EqualTo}>{localization.librarySearchLessOrEqual}</option>
+									</select>
 
-								<option key={-1} value={-1}>
-									{localization.librarySearchNotSet}
-								</option>
+									<select
+										aria-label='difficulty value filter'
+										className="selectorDif"
+										value={filters.difficulty?.value}
+										onChange={e => onDifficultyValueChanged(e.target.value)}
+									>
+										{Array.from({ length: 10 })
+											.map((_, i) => i + 1)
+											.map((el) => (
+												<option key={el} value={el}>
+													{el}
+												</option>
+											))}
+									</select>
+								</div>
+							</div>
+						) : null}
 
-								{sortRecord(siPackages.publishers).map(({ id, value }) => (
-									<option key={id} value={id}>
-										{value}
+						{storage.facets.includes('publishers') ? (
+							<div className="filter">
+								<div className="selectorName">{localization.packagePublisher}</div>
+
+								<select
+									aria-label='publisher filter'
+									className="selector"
+									value={filters.publisherId}
+									onChange={e => onPublisherIdChanged(e.target.value)}
+								>
+									<option key={undefined} value={undefined}>
+										{localization.librarySearchAll}
 									</option>
-								))}
-							</select>
-						</div>
-						: null}
 
-					{storage.facets.includes('authors')
-						? <div className="filter">
-							<div className="selectorName">{localization.packageAuthor}</div>
-
-							<select
-								aria-label='author filter'
-								className="selector"
-								value={filters.authorId}
-								onChange={e => onAuthorIdChanged(e.target.value)}
-							>
-								<option key={undefined} value={undefined}>
-									{localization.librarySearchAll}
-								</option>
-
-								{sortRecord(siPackages.authors).map(({ id, value }) => (
-									<option key={id} value={id}>
-										{value}
+									<option key={-1} value={-1}>
+										{localization.librarySearchNotSet}
 									</option>
-								))}
-							</select>
-						</div>
-						: null}
 
-					{clearUrls || !storage.facets.includes('restrictions') ? null : <div className="filter">
-						<div className="selectorName">{localization.packageRestriction}</div>
+									{sortRecord(siPackages.publishers).map(({ id, value }) => (
+										<option key={id} value={id}>
+											{value}
+										</option>
+									))}
+								</select>
+							</div>
+						) : null}
 
-						<select
-							aria-label='restriction filter'
-							className="selector"
-							value={restrictionId}
-							onChange={e => onRestrictionIdChanged(e.target.value)}>
-							<option key={undefined} value={undefined}>{localization.librarySearchAll}</option>
-							<option key={-1} value={-1}>{localization.librarySearchNotSet}</option>
+						{storage.facets.includes('authors') ? (
+							<div className="filter">
+								<div className="selectorName">{localization.packageAuthor}</div>
 
-							{keys(siPackages.restrictions).map((id) => (
-								<option key={id} value={id}>
-									{siPackages.restrictions[id].value}
-								</option>
-							))}
-						</select>
-					</div>}
+								<select
+									aria-label='author filter'
+									className="selector"
+									value={filters.authorId}
+									onChange={e => onAuthorIdChanged(e.target.value)}
+								>
+									<option key={undefined} value={undefined}>
+										{localization.librarySearchAll}
+									</option>
 
-					{storage.limitedApi ? null : <div className="filter">
-						<div className="selectorName">{localization.sort}</div>
+									{sortRecord(siPackages.authors).map(({ id, value }) => (
+										<option key={id} value={id}>
+											{value}
+										</option>
+									))}
+								</select>
+							</div>
+						) : null}
 
-						<div className="selectorsGroup">
-							<select
-								aria-label='sort mode'
-								className="selectorSortMode"
-								value={selectionParameters.sortMode}
-								onChange={e => onSortModeChanged(e.target.value)}
-							>
-								<option value={PackageSortMode.Name}>{localization.name}</option>
-								<option value={PackageSortMode.CreatedDate}>{localization.packagePublishedDate}</option>
-							</select>
+						{clearUrls || !storage.facets.includes('restrictions') ? null : (
+							<div className="filter">
+								<div className="selectorName">{localization.packageRestriction}</div>
 
-							<select
-								aria-label='sort direction'
-								className="selectorSortDir"
-								value={selectionParameters.sortDirection}
-								onChange={e => onSortDirectionChanged(e.target.value)}
-							>
-								<option value={PackageSortDirection.Descending}>{localization.descending}</option>
-								<option value={PackageSortDirection.Ascending}>{localization.ascending}</option>
-							</select>
-						</div>
-					</div>}
-				</div>
+								<select
+									aria-label='restriction filter'
+									className="selector"
+									value={restrictionId}
+									onChange={e => onRestrictionIdChanged(e.target.value)}>
+									<option key={undefined} value={undefined}>{localization.librarySearchAll}</option>
+									<option key={-1} value={-1}>{localization.librarySearchNotSet}</option>
+
+									{keys(siPackages.restrictions).map((id) => (
+										<option key={id} value={id}>
+											{siPackages.restrictions[id].value}
+										</option>
+									))}
+								</select>
+							</div>
+						)}
+
+						{storage.limitedApi ? null : (
+							<div className="filter">
+								<div className="selectorName">{localization.sort}</div>
+
+								<div className="selectorsGroup">
+									<select
+										aria-label='sort mode'
+										className="selectorSortMode"
+										value={selectionParameters.sortMode}
+										onChange={e => onSortModeChanged(e.target.value)}
+									>
+										<option value={PackageSortMode.Name}>{localization.name}</option>
+										<option value={PackageSortMode.CreatedDate}>{localization.packagePublishedDate}</option>
+									</select>
+
+									<select
+										aria-label='sort direction'
+										className="selectorSortDir"
+										value={selectionParameters.sortDirection}
+										onChange={e => onSortDirectionChanged(e.target.value)}
+									>
+										<option value={PackageSortDirection.Descending}>{localization.descending}</option>
+										<option value={PackageSortDirection.Ascending}>{localization.ascending}</option>
+									</select>
+								</div>
+							</div>
+						)}
+					</div>
+				)}
 
 				<div className='packagesHeader'>
 					<h2>{`${localization.packages} (${siPackages.packages.total})`}</h2>
@@ -449,8 +488,8 @@ const SIStorageDialog: React.FC<SIStorageDialogProps> = (props) => {
 					{siPackages.isLoading && <span className='loading'>{localization.loading}…</span>}
 				</div>
 
-				{pages.length > 0
-					? <div className='pagination'>
+				{pages.length > 0 ? (
+					<div className='pagination'>
 						<span className='header'>{localization.page}:</span>
 
 						{pages.map((i, index) => (
@@ -464,7 +503,7 @@ const SIStorageDialog: React.FC<SIStorageDialogProps> = (props) => {
 								</div>
 						))}
 					</div>
-					: null}
+				) : null}
 
 				{siPackages.packages.packages.length === 0
 					? <div className='noResults'>{storage.emptyMessage ?? localization.noPackages}</div>
@@ -484,7 +523,7 @@ const SIStorageDialog: React.FC<SIStorageDialogProps> = (props) => {
 								onSelect={props.onSelect} />)}
 					</ul>}
 			</div>
-		</Dialog>
+		</div>
 	);
 };
 

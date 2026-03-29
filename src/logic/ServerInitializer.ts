@@ -83,11 +83,15 @@ async function loadHostInfoAsync(appDispatch: AppDispatch, dataContext: DataCont
 	dataContext.contentUris = hostInfo.contentPublicBaseUrls;
 
 	const { contentInfos } = hostInfo;
-	let { storageInfos } = hostInfo;
+	let storageInfos = hostInfo.storageInfos || [];
 
-	if (storageInfos && storageInfos.length === 0 && culture !== 'en-US') {
-		const englishHostInfo = await dataContext.gameClient.getGameHostInfoAsync('en-US');
-		storageInfos = englishHostInfo.storageInfos;
+	if (storageInfos.length === 0 && culture !== 'en-US') {
+		try {
+			const englishHostInfo = await dataContext.gameClient.getGameHostInfoAsync('en-US');
+			storageInfos = englishHostInfo.storageInfos || [];
+		} catch (e) {
+			console.warn('Failed to fetch English host info for storages', e);
+		}
 	}
 
 	if (contentInfos && contentInfos.length > 0) {
@@ -98,15 +102,7 @@ async function loadHostInfoAsync(appDispatch: AppDispatch, dataContext: DataCont
 		throw new Error('No SIContent service found');
 	}
 
-	dataContext.storageClients = storageInfos.map(createStorageClientFromInfo);
-	const { storageClient, storageInfo } = dataContext.host.getStorage();
-
-	if (storageClient && storageInfo) {
-		dataContext.storageClients.push(storageClient);
-		storageInfos.push(storageInfo);
-	}
-
-	appDispatch(setStorages(storageInfos));
+	initializeStorages(appDispatch, dataContext, storageInfos);
 
 	appDispatch(serverInfoChanged({
 		serverName: hostInfo.name,
@@ -122,12 +118,31 @@ async function loadHostInfoAsync(appDispatch: AppDispatch, dataContext: DataCont
 	}
 }
 
+function initializeStorages(appDispatch: AppDispatch, dataContext: DataContext, serverStorageInfos: SIStorageInfo[]) {
+	const storageInfos = [...serverStorageInfos];
+	const storageClients = storageInfos.map(createStorageClientFromInfo);
+
+	const hostStorage = dataContext.host.getStorage();
+
+	if (hostStorage && hostStorage.storageClient && hostStorage.storageInfo) {
+		storageClients.push(hostStorage.storageClient);
+		storageInfos.push(hostStorage.storageInfo);
+	}
+
+	dataContext.storageClients = storageClients;
+	appDispatch(setStorages(storageInfos));
+}
+
 export async function ensureServerInfoLoadedAsync(
 	appDispatch: AppDispatch,
 	getState: () => State,
 	dataContext: DataContext
 ) {
 	const state = getState();
+
+	if (!dataContext.storageClients || dataContext.storageClients.length === 0) {
+		initializeStorages(appDispatch, dataContext, []);
+	}
 
 	if (!dataContext.serverUri) {
 		const { serverDiscoveryUri } = dataContext.config;
@@ -140,21 +155,22 @@ export async function ensureServerInfoLoadedAsync(
 				dataContext.gameClient.setServerUri(uri);
 			} catch (error) {
 				console.error('Failed to fetch server info: ' + getErrorMessage(error));
-				return;
 			}
-		} else {
-			return;
 		}
 	}
 
 	if (dataContext.serverUri) {
 		const requestCulture = getFullCulture(state);
 
-		await loadHostInfoAsync(appDispatch, dataContext, requestCulture);
-		await uploadAvatarAsync(appDispatch, dataContext);
+		try {
+			await loadHostInfoAsync(appDispatch, dataContext, requestCulture);
+			await uploadAvatarAsync(appDispatch, dataContext);
 
-		await registerApp(dataContext.config.appRegistryServiceUri);
+			await registerApp(dataContext.config.appRegistryServiceUri);
 
-		dataContext.host.onReady();
+			dataContext.host.onReady();
+		} catch (error) {
+			console.error('Failed to load host info: ' + getErrorMessage(error));
+		}
 	}
 }
