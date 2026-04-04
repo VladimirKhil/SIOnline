@@ -11,6 +11,7 @@ import { exitApp } from '../../../state/globalActions';
 import Link from '../../common/Link/Link';
 import Constants from '../../../model/enums/Constants';
 import { serverLicenseChanged } from '../../../state/commonSlice';
+import ProgressDialog from '../../panels/ProgressDialog/ProgressDialog';
 
 import './MainMenu.scss';
 import twitchImg from '../../../../assets/images/twitch_logo.png';
@@ -24,6 +25,7 @@ export default function MainMenu(): JSX.Element {
 	const appDispatch = useAppDispatch();
 	const common = useAppSelector(state => state.common);
 	const settings = useAppSelector(state => state.settings);
+	const joinGameProgress = useAppSelector(state => state.online2.joinGameProgress);
 
 	const stopAudioPlay = () => { appDispatch(stopAudio()); };
 
@@ -189,6 +191,12 @@ export default function MainMenu(): JSX.Element {
 					</div>
 				</Dialog>)
 				: null}
+
+			{joinGameProgress ? (
+				<ProgressDialog
+					title={localization.connectingToServer}
+					isIndeterminate={true} />
+			) : null}
 		</section>
 	);
 }

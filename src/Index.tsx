@@ -99,7 +99,10 @@ function setState(state: State, savedState: SavedState | null, c: Config, isDesk
 		},
 		user: {
 			...state.user,
-			login: savedState.login
+			login: savedState.login,
+			avatar: typeof localStorage !== 'undefined'
+				? (localStorage.getItem(Constants.AVATAR_KEY) ? `data:image/png;base64, ${localStorage.getItem(Constants.AVATAR_KEY)}` : null)
+				: null,
 		},
 		game: savedState.game ? {
 			...state.game,

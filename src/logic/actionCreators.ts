@@ -106,6 +106,7 @@ const onAvatarSelectedLocal: ActionCreator<ThunkAction<void, State, DataContext,
 			localStorage.setItem(Constants.AVATAR_KEY, base64);
 			localStorage.setItem(Constants.AVATAR_NAME_KEY, avatar.name);
 
+			appDispatch(changeAvatar(`data:image/png;base64, ${base64}`));
 			appDispatch(setAvatarKey(key));
 			await uploadAvatarAsync(appDispatch, dataContext);
 
@@ -184,6 +185,12 @@ const initStage3NavigateAsync = async (
 	if (view.path === Path.Room) {
 		if (view.gameId && view.role && view.hostUri) {
 			// TODO: merge with onlineActionCreators.joinGame()
+			const licenseAccepted = dataContext.host.isLicenseAccepted();
+			if (!licenseAccepted) {
+				appDispatch(navigate({ navigation: { path: Path.AcceptLicense, callbackState: view }, saveState: true }));
+				return;
+			}
+
 			const siHostClient = await connectToSIHostAsync(view.hostUri, dispatch, appDispatch, getState, dataContext);
 
 			const state = getState();
@@ -273,35 +280,12 @@ const initStage2CompleteInitializaionAsync = async (
 	await initStage3NavigateAsync(initialView, dispatch, appDispatch, getState, dataContext);
 };
 
-const initStage1CheckLicenseAsync = async (
-	view: INavigationState,
-	dispatch: Dispatch<Action>,
-	appDispatch: AppDispatch,
-	getState: () => State,
-	dataContext: DataContext
-) => {
-	try {
-		await connectToServerAsync(appDispatch, getState, dataContext);
-		const licenseAccepted = dataContext.host.isLicenseAccepted();
-
-		if (!licenseAccepted) {
-			appDispatch(navigate({ navigation: { path: Path.AcceptLicense, callbackState: view }, saveState: true }));
-			return;
-		}
-
-		await initStage2CompleteInitializaionAsync(view, dispatch, appDispatch, getState, dataContext);
-	} catch (e) {
-		appDispatch(commonErrorChanged(getErrorMessage(e)));
-	}
-};
-
 const initStageSkipLoginLicenseAsync: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 	(view: INavigationState, appDispatch: AppDispatch) => async (
 		dispatch: Dispatch<Action>,
 		getState: () => State,
 		dataContext: DataContext
 	) => {
-		await connectToServerAsync(appDispatch, getState, dataContext);
 		await initStage2CompleteInitializaionAsync(view, dispatch, appDispatch, getState, dataContext);
 	};
 
@@ -341,7 +325,7 @@ const login: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 		saveStateToStorage(state);
 		appDispatch(changeLogin(state.user.login.trim())); // Normalize login
 
-		await initStage1CheckLicenseAsync(state.ui.navigation.callbackState ?? { path: Path.Root }, dispatch, appDispatch, getState, dataContext);
+		await initStage2CompleteInitializaionAsync(state.ui.navigation.callbackState ?? { path: Path.Root }, dispatch, appDispatch, getState, dataContext);
 	};
 
 const acceptLicense: ActionCreator<ThunkAction<void, State, DataContext, Action>> =

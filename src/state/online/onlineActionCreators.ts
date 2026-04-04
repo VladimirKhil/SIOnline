@@ -163,6 +163,23 @@ const joinGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 	appDispatch(joinGameStarted());
 
 	try {
+		const licenseAccepted = dataContext.host.isLicenseAccepted();
+
+		if (!licenseAccepted) {
+			const navigation: INavigationState = {
+				path: Path.Room,
+				hostUri: hostUri,
+				gameId: gameId,
+				role: role,
+				sex: (getState() as State).settings.sex,
+				password: (getState() as State).online2.password,
+				isAutomatic: isAutomatic,
+			};
+
+			appDispatch(navigate({ navigation: { path: Path.AcceptLicense, callbackState: navigation }, saveState: true }));
+			return;
+		}
+
 		const siHostClient = await actionCreators.connectToSIHostAsync(hostUri, dispatch, appDispatch, getState, dataContext);
 
 		const state = getState();

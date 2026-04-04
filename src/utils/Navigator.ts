@@ -1,7 +1,7 @@
 import IGameServerClient from '../client/IGameServerClient';
 import DataContext from '../model/DataContext';
 import Path from '../model/enums/Path';
-import { loadLobby } from '../state/online2Slice';
+import { joinGameFinished, joinGameStarted, loadLobby } from '../state/online2Slice';
 import { AppDispatch, RootState } from '../state/store';
 import { INavigationState, navigateCore } from '../state/uiSlice';
 import { createAsyncThunk } from '@reduxjs/toolkit';
@@ -66,6 +66,8 @@ const connectToSIGameServerAsync = async (
 	const { useProxy2 } = state.settings;
 	const useProxy = useProxy2 && !!dataContext.proxyUri;
 
+	appDispatch(joinGameStarted());
+
 	try {
 		await ensureServerInfoLoadedAsync(appDispatch, () => state as any, dataContext);
 
@@ -73,6 +75,7 @@ const connectToSIGameServerAsync = async (
 		const listener = new GameServerListener(appDispatch);
 
 		await gameServerClient.connect(runtimeUri, listener);
+		appDispatch(joinGameFinished());
 		return true;
 	} catch (error: unknown) {
 		const listener = new GameServerListener(appDispatch);
@@ -82,14 +85,17 @@ const connectToSIGameServerAsync = async (
 
 			try {
 				await gameServerClient.connect(dataContext.serverUri, listener);
+				appDispatch(joinGameFinished());
 				return true;
 			} catch (fallbackError) {
 				console.log('Cannot connect to SIGame Server even without proxy: ' + getErrorMessage(fallbackError));
+				appDispatch(joinGameFinished());
 				return false;
 			}
 		}
 
 		console.log('Cannot connect to SIGame Server: ' + getErrorMessage(error));
+		appDispatch(joinGameFinished());
 		return false;
 	}
 };
@@ -108,16 +114,7 @@ export const navigate = createAsyncThunk(
 		const { navigation } = arg;
 		const state = thunkAPI.getState() as RootState;
 
-		if (arg.saveState) {
-			saveNavigationState(
-				arg.navigation,
-				thunkAPI.extra as DataContext,
-				state.common.siHosts,
-				arg.replaceState ?? false);
-		}
-
 		let nav: INavigationState;
-
 		const previousPath = state.ui.navigation.path;
 
 		if (navigation.path === Path.Room) {
@@ -126,7 +123,19 @@ export const navigate = createAsyncThunk(
 			nav = navigation;
 		}
 
-		thunkAPI.dispatch(navigateCore(nav));
+		const isDeferred = nav.path === Path.Lobby || nav.path === Path.NewRoom || nav.path === Path.JoinByPin;
+
+		if (!isDeferred) {
+			if (arg.saveState) {
+				saveNavigationState(
+					arg.navigation,
+					thunkAPI.extra as DataContext,
+					state.common.siHosts,
+					arg.replaceState ?? false);
+			}
+
+			thunkAPI.dispatch(navigateCore(nav));
+		}
 
 		switch (previousPath) {
 			case Path.Lobby:
@@ -153,7 +162,25 @@ export const navigate = createAsyncThunk(
 				);
 
 				if (!connectionResult) {
-					thunkAPI.dispatch(userErrorChanged(localization.cannotConnectToServer));
+					thunkAPI.dispatch(userErrorChanged(`${localization.failedToFetch}. ${localization.useProxyOnErrors}`));
+					return;
+				}
+
+				if (!(thunkAPI.extra as DataContext).host.isLicenseAccepted()) {
+					thunkAPI.dispatch(navigateCore({ path: Path.AcceptLicense, callbackState: nav }));
+					return;
+				}
+
+				if (isDeferred) {
+					if (arg.saveState) {
+						saveNavigationState(
+							arg.navigation,
+							thunkAPI.extra as DataContext,
+							state.common.siHosts,
+							arg.replaceState ?? false);
+					}
+
+					thunkAPI.dispatch(navigateCore(nav));
 				}
 
 				if (nav.path === Path.Lobby) {
