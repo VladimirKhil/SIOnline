@@ -180,10 +180,6 @@ export default class DemoGameClient implements IGameClient {
 		throw new Error('Method not implemented.');
 	}
 
-	mediaPreloaded(): Promise<boolean> {
-		throw new Error('Method not implemented.');
-	}
-
 	async moveable(): Promise<boolean> {
 		return true;
 	}
@@ -256,16 +252,12 @@ export default class DemoGameClient implements IGameClient {
 		return true;
 	}
 
-	async sendAvatar(avatarUri: string): Promise<boolean> {
-		return true;
-	}
-
 	sendGameReport(reportText: string): Promise<boolean> {
 		throw new Error('Method not implemented.');
 	}
 
-	sendImageAvatar(avatarUri: string): Promise<boolean> {
-		throw new Error('Method not implemented.');
+	async sendImageAvatar(avatarUri: string): Promise<boolean> {
+		return true;
 	}
 
 	sendVideoAvatar(avatarUri: string): Promise<boolean> {

@@ -36,8 +36,6 @@ const enum Messages {
 	/** Notifies that media has been successfully loaded. */
 	MediaLoaded = 'MEDIALOADED',
 
-	MediaPreloaded = 'MEDIA_PRELOADED',
-
 	/** Notifies about media preload progress. */
 	MediaPreloadProgress = 'MEDIA_PRELOAD_PROGRESS',
 
@@ -48,8 +46,6 @@ const enum Messages {
 	Pass = 'PASS',
 
 	Pause = 'PAUSE',
-
-	Picture = 'PICTURE',
 
 	Pin = 'PIN',
 

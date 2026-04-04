@@ -1,5 +1,5 @@
 import { AppDispatch } from '../state/store';
-import { mediaPreloaded, mediaPreloadProgress } from '../state/serverActions';
+import { mediaPreloadProgress } from '../state/serverActions';
 import getErrorMessage from '../utils/ErrorHelpers';
 
 const BASE_DELAY = 500; // Base delay between requests
@@ -170,6 +170,4 @@ export async function preloadRoundContent(
 	if (lastNotifiedProgressTens < 100) {
 		appDispatch(mediaPreloadProgress(100));
 	}
-
-	appDispatch(mediaPreloaded());
 }

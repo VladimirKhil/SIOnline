@@ -265,10 +265,16 @@ export default class ClientController implements IClientController {
 	}
 
 	private playGameSound(sound: GameSound, loop = false): void {
-		const isSoundEnabled = this.getState().settings.appSound;
+		const state = this.getState();
 
-		if (!isSoundEnabled) {
+		if (!state.settings.appSound) {
 			return;
+		}
+
+		const { audio } = state.common;
+
+		if (audio === sound) {
+			this.appDispatch(stopAudio());
 		}
 
 		this.appDispatch(playAudio({ audio: sound, loop }));
@@ -594,7 +600,6 @@ export default class ClientController implements IClientController {
 
 	onInfo(all: Persons, showman: PersonInfo, players: PlayerInfo[]) {
 		this.appDispatch(infoChanged({ all, showman, players }));
-		this.dispatch(actionCreators.sendAvatar() as any);
 	}
 
 	onJoinModeChanged(joinMode: JoinMode, inform: boolean) {
@@ -1611,7 +1616,6 @@ export default class ClientController implements IClientController {
 			return;
 		}
 
-		this.appDispatch(stopAudio()); // To erase previous FINAL_DELETE sound (hacky way. Is there an alternative?)
 		this.playGameSound(GameSound.FINAL_DELETE);
 		this.appDispatch(blinkTheme(themeIndex));
 
@@ -1625,6 +1629,19 @@ export default class ClientController implements IClientController {
 
 	onRightAnswerCore(rightAnswer: string) {
 		this.appDispatch(setAnswerView(this.getState().table.layoutMode === LayoutMode.Simple ? rightAnswer : ''));
+
+		if (this.getState().table.layoutMode === LayoutMode.OverlayPoints) {
+			const parts = rightAnswer.split(',');
+
+			if (parts.length >= 2) {
+				const x = parseFloat(parts[0]);
+				const y = parseFloat(parts[1]);
+
+				if (!isNaN(x) && !isNaN(y)) {
+					this.appDispatch(addPointMarker({ x, y, color: 'rgba(0, 200, 0, 0.7)', isArea: true }));
+				}
+			}
+		}
 	}
 
 	onRightAnswerStart(rightAnswer: string) {
@@ -1633,35 +1650,14 @@ export default class ClientController implements IClientController {
 	}
 
 	onRightAnswer(answer: string) {
-		if (this.getState().table.layoutMode === LayoutMode.OverlayPoints) {
-			const parts = answer.split(',');
-
-			if (parts.length >= 2) {
-				const x = parseFloat(parts[0]);
-				const y = parseFloat(parts[1]);
-
-				if (!isNaN(x) && !isNaN(y)) {
-					this.appDispatch(addPointMarker({ x, y, color: 'rgba(0, 200, 0, 0.35)', isArea: true }));
-					this.appDispatch(captionChanged(localization.rightAnswer));
-
-					this.dispatch(roomActionCreators.afterQuestionStateChanged(true));
-					this.dispatch(roomActionCreators.hintChanged(null));
-
-					if (this.getState().settings.writeGameLog) {
-						this.appDispatch(addGameLog(`${localization.rightAnswer}: ${answer}`));
-					}
-
-					return;
-				}
-			}
-		}
-
 		this.onRightAnswerCore(answer);
 
-		if (this.getState().table.layoutMode === LayoutMode.Simple) {
+		const { layoutMode } = this.getState().table;
+
+		if (layoutMode === LayoutMode.Simple) {
 			this.appDispatch(captionChanged(localization.rightAnswer));
 			this.appDispatch(showText(answer));
-		} else {
+		} else if (layoutMode === LayoutMode.AnswerOptions) {
 			this.appDispatch(rightOption(answer));
 		}
 

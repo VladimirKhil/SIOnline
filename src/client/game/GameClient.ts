@@ -68,10 +68,6 @@ export default class GameClient implements IGameClient {
 		return this.gameServerClient.msgAsync(Messages.MediaLoaded);
 	}
 
-	mediaPreloaded(): Promise<boolean> {
-		return this.gameServerClient.msgAsync(Messages.MediaPreloaded);
-	}
-
 	mediaPreloadProgress(progress: number): Promise<boolean> {
 		return this.gameServerClient.msgAsync(Messages.MediaPreloadProgress, progress);
 	}
@@ -134,10 +130,6 @@ export default class GameClient implements IGameClient {
 
 	sendAnswerVersion(answerVersion: string): Promise<boolean> {
 		return this.gameServerClient.msgAsync(Messages.AnswerVersion, answerVersion);
-	}
-
-	sendAvatar(avatarUri: string): Promise<boolean> {
-		return this.gameServerClient.msgAsync(Messages.Picture, avatarUri);
 	}
 
 	sendGameReport(reportText: string): Promise<boolean> {

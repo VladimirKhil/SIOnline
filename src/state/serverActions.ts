@@ -9,14 +9,14 @@ export const initRoom = createAsyncThunk(
 	'server/initRoom',
 	async (arg: void, thunkAPI) => {
 		const dataContext = thunkAPI.extra as DataContext;
+		const state = thunkAPI.getState() as State;
 		await dataContext.game.info();
 		await dataContext.game.moveable();
-	}
-);
 
-export const mediaPreloaded = createAsyncThunk(
-	'server/mediaPreloaded',
-	async (_, thunkAPI) => (thunkAPI.extra as DataContext).game.mediaPreloaded(),
+		if (state.user.avatar) {
+			await dataContext.game.sendImageAvatar(state.user.avatar);
+		}
+	}
 );
 
 export const mediaPreloadProgress = createAsyncThunk(
@@ -174,7 +174,7 @@ export const onMediaLoaded = createAsyncThunk(
 
 export const onMediaEnded = createAsyncThunk(
 	'server/onMediaEnded',
-	async (arg: { contentType: string, contentValue: string }, thunkAPI) =>{
+	async (arg: { contentType: string, contentValue: string }, thunkAPI) => {
 		const dataContext = thunkAPI.extra as DataContext;
 		await dataContext.game.onMediaCompleted(arg.contentType, arg.contentValue);
 	}

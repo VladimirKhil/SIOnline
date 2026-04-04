@@ -13,7 +13,6 @@ import { getFullCulture } from '../utils/StateHelpers';
 import GameClient from '../client/game/GameClient';
 
 import { SIContentServiceError } from 'sicontent-client';
-import SIStorageClient from 'sistorage-client';
 import ClientController from './ClientController';
 import Path from '../model/enums/Path';
 import Sex from '../model/enums/Sex';
@@ -43,7 +42,6 @@ import { changeAvatar, changeLogin } from '../state/userSlice';
 import { saveStateToStorage } from '../state/StateHelpers';
 import { INavigationState } from '../state/uiSlice';
 import { navigate } from '../utils/Navigator';
-import SIStorageInfo from '../client/contracts/SIStorageInfo';
 import SIHostListener from '../utils/SIHostListener';
 import { ensureServerInfoLoadedAsync } from './ServerInitializer';
 
@@ -121,15 +119,6 @@ const onAvatarSelectedLocal: ActionCreator<ThunkAction<void, State, DataContext,
 		}
 	};
 
-const sendAvatar: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
-	() => async (_dispatch: Dispatch<AnyAction>, getState: () => State, dataContext: DataContext) => {
-		const { avatar } = getState().user;
-
-		if (avatar) {
-			await dataContext.game.sendAvatar(avatar);
-		}
-	};
-
 const reloadComputerAccounts: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 	(appDispatch: AppDispatch) => async (_dispatch: Dispatch<Action>, getState: () => State, dataContext: DataContext) => {
 		const state = getState();
@@ -138,12 +127,6 @@ const reloadComputerAccounts: ActionCreator<ThunkAction<void, State, DataContext
 		const computerAccounts = await dataContext.gameClient.getComputerAccountsAsync(requestCulture);
 		appDispatch(computerAccountsChanged(computerAccounts));
 	};
-
-function createStorageClientFromInfo(storageInfo: SIStorageInfo): SIStorageClient {
-	return new SIStorageClient({
-		serviceUri: storageInfo.serviceUri,
-	});
-}
 
 const connectToSIHostAsync = async (
 	siHostUri: string,
@@ -379,7 +362,6 @@ const actionCreators = {
 	initStageSkipLoginLicenseAsync,
 	reloadComputerAccounts,
 	onAvatarSelectedLocal,
-	sendAvatar,
 	login,
 	connectToSIHostAsync,
 	acceptLicense,

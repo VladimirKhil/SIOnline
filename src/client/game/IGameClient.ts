@@ -29,8 +29,6 @@ export default interface IGameClient {
 	/** Notifies that the client has loaded the media. */
 	mediaLoaded(): Promise<boolean>;
 
-	mediaPreloaded(): Promise<boolean>;
-
 	/** Notifies about media preload progress. */
 	mediaPreloadProgress(progress: number): Promise<boolean>;
 
@@ -64,8 +62,6 @@ export default interface IGameClient {
 
 	/** Sends answer version. */
 	sendAnswerVersion(answerVersion: string): Promise<boolean>;
-
-	sendAvatar(avatarUri: string): Promise<boolean>;
 
 	sendGameReport(reportText: string): Promise<boolean>;
 
