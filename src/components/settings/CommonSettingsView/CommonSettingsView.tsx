@@ -26,8 +26,6 @@ export function CommonSettingsView(): JSX.Element {
 
 	return (
 		<div>
-
-
 			<p className="header">{localization.language}</p>
 
 			<LanguageView disabled={false} />

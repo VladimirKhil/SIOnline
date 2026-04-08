@@ -4,7 +4,7 @@ version = 4
 
 [[package]]
 name = "SIGame"
-version = "8.10.7"
+version = "8.10.8"
 dependencies = [
  "base64 0.22.1",
  "futures",
