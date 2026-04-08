@@ -201,9 +201,7 @@ export const settingsSlice = createSlice({
 		setLogPointsEvent: (state: SettingsState, action: PayloadAction<boolean>) => {
 			state.logPointsEvent = action.payload;
 		},
-		setUseProxy2: (state: SettingsState, action: PayloadAction<boolean>) => {
-			state.useProxy2 = action.payload;
-		},
+
 		setLoadExternalMedia: (state: SettingsState, action: PayloadAction<boolean>) => {
 			state.loadExternalMedia = action.payload;
 		},
@@ -261,7 +259,6 @@ export const {
 	setTableFontFamily,
 	setWriteGameLog,
 	setLogPointsEvent,
-	setUseProxy2,
 	setLoadExternalMedia,
 	setCustomSound,
 	resetSettings,

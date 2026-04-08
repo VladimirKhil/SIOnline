@@ -115,6 +115,7 @@ function setState(state: State, savedState: SavedState | null, c: Config, isDesk
 		settings: savedState.settings ? {
 			...state.settings,
 			...savedState.settings,
+			useProxy2: true,
 			appSettings: {
 				falseStart: appSettings.falseStart ?? true,
 				hintShowman: appSettings.hintShowman ?? false,
