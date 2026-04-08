@@ -1,4 +1,4 @@
-﻿import { Action, Dispatch, ActionCreator, AnyAction } from 'redux';
+import { Action, Dispatch, ActionCreator, AnyAction } from 'redux';
 import { ThunkAction } from 'redux-thunk';
 import State from '../state/State';
 import DataContext from '../model/DataContext';
@@ -106,7 +106,6 @@ const onAvatarSelectedLocal: ActionCreator<ThunkAction<void, State, DataContext,
 			localStorage.setItem(Constants.AVATAR_KEY, base64);
 			localStorage.setItem(Constants.AVATAR_NAME_KEY, avatar.name);
 
-			appDispatch(changeAvatar(`data:image/png;base64, ${base64}`));
 			appDispatch(setAvatarKey(key));
 			await uploadAvatarAsync(appDispatch, dataContext);
 
@@ -147,7 +146,7 @@ const connectToSIHostAsync = async (
 	const controller = new ClientController(dispatch, appDispatch, getState, dataContext);
 	const listener = new SIHostListener(controller, dispatch, appDispatch);
 
-	const siHostClient = new SIHostClient();
+	let siHostClient = new SIHostClient();
 	try {
 		await siHostClient.connectAsync(uriChecked, listener);
 		appDispatch(isSIHostConnectedChanged({ isConnected: true, reason: '' }));
@@ -155,6 +154,9 @@ const connectToSIHostAsync = async (
 		if (useProxy) {
 			console.log('Cannot connect to SIHost via proxy, falling back to original: ' + getErrorMessage(e));
 			const fallbackUri = siHostUri.endsWith('/') ? siHostUri : siHostUri + '/';
+			await siHostClient.disconnectAsync(); // ensure old loops are dead
+
+			siHostClient = new SIHostClient();
 			await siHostClient.connectAsync(fallbackUri, listener);
 			appDispatch(isSIHostConnectedChanged({ isConnected: true, reason: '' }));
 		} else {

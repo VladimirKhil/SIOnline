@@ -20,6 +20,7 @@ interface ShowmanReplicViewProps {
 	all: Persons;
 	decisionTimer: TimerInfo;
 	avatar: string | null;
+	avatarKey: string | null;
 	showVideoAvatars: boolean;
 }
 
@@ -27,6 +28,7 @@ const mapStateToProps = (state: State) => ({
 	all: state.room2.persons.all,
 	decisionTimer: state.room2.timers.decision,
 	avatar: state.user.avatar,
+	avatarKey: state.settings.avatarKey,
 	showVideoAvatars: state.settings.showVideoAvatars,
 });
 
@@ -50,8 +52,18 @@ export function ShowmanReplicView(props: ShowmanReplicViewProps): JSX.Element {
 	const shownName = activePlayer?.name ?? showmanName;
 	const account = props.all[shownName];
 	const isMe = account?.name === name;
+	const avatar = React.useMemo(() => {
+		let currentAvatar = isMe && props.avatar ? props.avatar : account?.avatar;
 
-	const avatar = isMe && props.avatar ? props.avatar : account?.avatar;
+		if (isMe && !currentAvatar && typeof localStorage !== 'undefined') {
+			const localAvatar = localStorage.getItem(Constants.AVATAR_KEY);
+			if (localAvatar) {
+				currentAvatar = `data:image/png;base64, ${localAvatar}`;
+			}
+		}
+
+		return currentAvatar;
+	}, [isMe, props.avatar, account?.avatar, props.avatarKey]);
 
 	const avatarStyle : React.CSSProperties = avatar
 		? { backgroundImage: `url("${avatar}")` }

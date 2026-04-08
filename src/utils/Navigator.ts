@@ -56,20 +56,20 @@ function saveNavigationState(navigation: INavigationState, dataContext: DataCont
 const connectToSIGameServerAsync = async (
 	gameServerClient: IGameServerClient,
 	appDispatch: AppDispatch,
-	state: RootState,
+	getState: () => RootState,
 	dataContext: DataContext
 ): Promise<boolean> => {
 	if (gameServerClient.isConnected()) {
 		return true;
 	}
 
-	const { useProxy2 } = state.settings;
-	const useProxy = useProxy2 && !!dataContext.proxyUri;
-
 	appDispatch(joinGameStarted());
 
 	try {
-		await ensureServerInfoLoadedAsync(appDispatch, () => state as any, dataContext);
+		await ensureServerInfoLoadedAsync(appDispatch, () => getState() as any, dataContext);
+
+		const { useProxy2 } = getState().settings;
+		const useProxy = useProxy2 && !!dataContext.proxyUri;
 
 		const runtimeUri = useProxy ? dataContext.proxyUri! : dataContext.serverUri;
 		const listener = new GameServerListener(appDispatch);
@@ -80,10 +80,14 @@ const connectToSIGameServerAsync = async (
 	} catch (error: unknown) {
 		const listener = new GameServerListener(appDispatch);
 
+		const { useProxy2 } = getState().settings;
+		const useProxy = useProxy2 && !!dataContext.proxyUri;
+
 		if (useProxy) {
 			console.log('Cannot connect to SIGame Server via proxy, falling back to original: ' + getErrorMessage(error));
 
 			try {
+				await gameServerClient.disconnect(); // Ensure old connection loops are killed
 				await gameServerClient.connect(dataContext.serverUri, listener);
 				appDispatch(joinGameFinished());
 				return true;
@@ -139,6 +143,8 @@ export const navigate = createAsyncThunk(
 
 		switch (previousPath) {
 			case Path.Lobby:
+			case Path.NewRoom:
+			case Path.JoinByPin:
 				await disconnectFromGameServerAsync((thunkAPI.extra as DataContext).gameClient, thunkAPI.dispatch as AppDispatch);
 				break;
 
@@ -157,7 +163,7 @@ export const navigate = createAsyncThunk(
 				const connectionResult = await connectToSIGameServerAsync(
 					(thunkAPI.extra as DataContext).gameClient,
 					thunkAPI.dispatch as AppDispatch,
-					thunkAPI.getState() as RootState,
+					thunkAPI.getState as any,
 					thunkAPI.extra as DataContext,
 				);
 

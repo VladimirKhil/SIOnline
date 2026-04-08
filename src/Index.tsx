@@ -100,9 +100,6 @@ function setState(state: State, savedState: SavedState | null, c: Config, isDesk
 		user: {
 			...state.user,
 			login: savedState.login,
-			avatar: typeof localStorage !== 'undefined'
-				? (localStorage.getItem(Constants.AVATAR_KEY) ? `data:image/png;base64, ${localStorage.getItem(Constants.AVATAR_KEY)}` : null)
-				: null,
 		},
 		game: savedState.game ? {
 			...state.game,
@@ -323,7 +320,6 @@ async function run(host: IHost) {
 		}
 
 		let { serverUri } = config;
-		let proxyUri: string | undefined;
 
 		const savedState = loadState();
 		const state = setState(initialState, savedState, config, host.isDesktop());
@@ -333,7 +329,7 @@ async function run(host: IHost) {
 		const dataContext: DataContext = {
 			config,
 			serverUri: serverUri || '',
-			proxyUri,
+			proxyUri: undefined,
 			gameClient,
 			game: new GameClient(new SIHostClient()),
 			contentUris: null,
@@ -347,9 +343,6 @@ async function run(host: IHost) {
 			state,
 			applyMiddleware(reduxThunk.withExtraArgument(dataContext))
 		);
-
-		// Set proxy availability based on whether proxy URI is provided
-		store.dispatch(setProxyAvailable(!!proxyUri));
 
 		let currentSettings = state.settings;
 

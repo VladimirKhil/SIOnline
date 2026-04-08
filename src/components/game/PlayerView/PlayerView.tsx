@@ -24,6 +24,7 @@ interface PlayerViewProps {
 	isMe: boolean;
 	sex?: Sex;
 	avatar: string | null;
+	avatarKey: string | null;
 	avatarClass: string | null;
 	avatarVideo?: string;
 	index: number;
@@ -52,7 +53,7 @@ export function PlayerView(props: PlayerViewProps): JSX.Element {
 	const scoreEditorRef = React.useRef<HTMLDivElement>(null);
 	const sumFieldRef = React.useRef<HTMLDivElement>(null);
 	const [isScoreEditorVisible, setIsScoreEditorVisible] = React.useState(false);
-	const { player, isMe, sex, avatar, avatarClass, avatarVideo, index } = props;
+	const { player, account, isMe, sex, avatar, avatarClass, avatarVideo, index } = props;
 
 	const areSumsEditable = useAppSelector(state => state.room2.areSumsEditable);
 	const isGameStarted = useAppSelector(state => state.room2.stage.isGameStarted);
@@ -133,9 +134,22 @@ export function PlayerView(props: PlayerViewProps): JSX.Element {
 		? player.stake.toString()
 		: (player.stake === Constants.HIDDEN_STAKE ? '######' : null);
 
+	const effectiveAvatar = React.useMemo(() => {
+		let currentAvatar = isMe && avatar ? avatar : account?.avatar;
+
+		if (isMe && !currentAvatar && typeof localStorage !== 'undefined') {
+			const localAvatar = localStorage.getItem(Constants.AVATAR_KEY);
+			if (localAvatar) {
+				currentAvatar = `data:image/png;base64, ${localAvatar}`;
+			}
+		}
+
+		return currentAvatar;
+	}, [isMe, avatar, account?.avatar, props.avatarKey]);
+
 	// Restore avatar background image style if avatar is present
-	const avatarStyle: React.CSSProperties = avatar
-		? { backgroundImage: `url("${avatar}")` }
+	const avatarStyle: React.CSSProperties = effectiveAvatar
+		? { backgroundImage: `url("${effectiveAvatar}")` }
 		: {};
 
 	const moveReplic = (): void => {

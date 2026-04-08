@@ -5,7 +5,7 @@ import State from '../state/State';
 import { AppDispatch } from '../state/store';
 import { getFullCulture } from '../utils/StateHelpers';
 import SIStorageInfo from '../client/contracts/SIStorageInfo';
-import { computerAccountsChanged, serverInfoChanged, avatarLoadEnd, avatarLoadStart, userErrorChanged, avatarLoadError } from '../state/commonSlice';
+import { computerAccountsChanged, serverInfoChanged, avatarLoadEnd, avatarLoadStart, userErrorChanged, avatarLoadError, setProxyAvailable } from '../state/commonSlice';
 import { setStorages } from '../state/siPackagesSlice';
 import Constants from '../model/enums/Constants';
 import registerApp from '../utils/registerApp';
@@ -168,6 +168,8 @@ export async function ensureServerInfoLoadedAsync(
 ) {
 	const state = getState();
 
+	// Pre-initialize storages with an empty list to ensure that host-provided storages 
+	// (like Steam Workshop) are available even before server info is loaded or in offline mode.
 	if (!dataContext.storageClients || dataContext.storageClients.length === 0) {
 		await initializeStoragesAsync(appDispatch, dataContext, []);
 	}
@@ -181,6 +183,7 @@ export async function ensureServerInfoLoadedAsync(
 				dataContext.serverUri = uri;
 				dataContext.proxyUri = serverProxyUri;
 				dataContext.gameClient.setServerUri(uri);
+				appDispatch(setProxyAvailable(!!serverProxyUri));
 			} catch (error) {
 				console.error('Failed to fetch server info: ' + getErrorMessage(error));
 			}

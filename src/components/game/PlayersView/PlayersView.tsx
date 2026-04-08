@@ -16,6 +16,7 @@ interface PlayersViewProps {
 	players: PlayerInfo[];
 	all: Persons;
 	avatar: string | null;
+	avatarKey: string | null;
 	isVisible: boolean;
 
 	onSumChanged: (playerIndex: number, sum: number) => void;
@@ -25,6 +26,7 @@ const mapStateToProps = (state: State) => ({
 	players: state.room2.persons.players,
 	all: state.room2.persons.all,
 	avatar: state.user.avatar,
+	avatarKey: state.settings.avatarKey,
 	isVisible: state.ui.showPlayers,
 });
 
@@ -49,6 +51,7 @@ const PlayersView: React.FC<PlayersViewProps> = (props) => {
 		const account = props.all[player.name];
 		const isMe = player.name === name;
 		const avatar = isMe && props.avatar ? props.avatar : account?.avatar;
+
 		const avatarClass = getAvatarClass(account);
 
 		return <PlayerView
@@ -58,6 +61,7 @@ const PlayersView: React.FC<PlayersViewProps> = (props) => {
 			account={account}
 			isMe={isMe}
 			avatar={avatar}
+			avatarKey={props.avatarKey}
 			sex={account?.sex}
 			avatarVideo={account?.avatarVideo}
 			avatarClass={avatarClass}

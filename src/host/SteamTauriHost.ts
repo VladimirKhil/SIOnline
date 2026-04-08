@@ -27,7 +27,10 @@ export default class SteamTauriHost extends TauriHost {
 
 				if (userInfo.avatar && !localStorage.getItem(Constants.AVATAR_KEY)) {
 					localStorage.setItem(Constants.AVATAR_KEY, userInfo.avatar);
+					localStorage.setItem(Constants.AVATAR_NAME_KEY, 'steam_avatar.png');
 					store.dispatch(setAvatarKey(Math.random().toString()));
+				} else if (localStorage.getItem(Constants.AVATAR_KEY) && !localStorage.getItem(Constants.AVATAR_NAME_KEY)) {
+					localStorage.setItem(Constants.AVATAR_NAME_KEY, 'steam_avatar.png');
 				}
 			}).catch((error: any) => {
 				console.error('Failed to get Steam user info:', error);
