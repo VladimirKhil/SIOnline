@@ -36,12 +36,11 @@ export default function JoinRoom(props: JoinRoomProps): JSX.Element | null {
 	}
 
 	return <div className='joinRoomHost'>
-		<div className='logo' />
-
 		<Dialog
-			className="joinRoom"
+			className="joinRoom animated"
 			title={`${localization.gameJoin}: ${selectedGame.GameName}`}
 			onClose={navigateToLogin}>
+			<div className='logo' />
 			<GameInfoView canJoinAsViewer={props.canJoinAsViewer} isConnected={common.isSIHostConnected} game={selectedGame} showGameName={false} />
 		</Dialog>
 	</div>;

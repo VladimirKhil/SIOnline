@@ -156,11 +156,12 @@ function getServerRole(role: Role) {
 
 const joinGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 	(hostUri: string, gameId: number, userName: string, role: Role, pin: number | null, appDispatch: AppDispatch, isAutomatic: boolean) => async (
-	dispatch: Dispatch<any>,
-	getState: () => State,
-	dataContext: DataContext
-) => {
-	appDispatch(joinGameStarted());
+		dispatch: Dispatch<any>,
+		getState: () => State,
+		dataContext: DataContext,
+	) => {
+		await actionCreators.ensureServerInfoLoadedAsync(appDispatch, getState, dataContext);
+		appDispatch(joinGameStarted());
 
 	try {
 		const licenseAccepted = dataContext.host.isLicenseAccepted();

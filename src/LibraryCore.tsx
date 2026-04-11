@@ -187,6 +187,10 @@ function processMessage(controller: ClientController, payload: any, appDispatch:
 			controller.onRightAnswerStart(payload.answer);
 			break;
 
+		case 'roundEnd':
+			controller.onRoundEnd(payload.reason);
+			break;
+
 		case 'roundThemes':
 			controller.onRoundThemes(payload.themes, payload.playMode);
 			break;

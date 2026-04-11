@@ -254,8 +254,12 @@ const initStage2CompleteInitializaionAsync = async (
 ) => {
 	let { hostUri } = initialView;
 
-	if (initialView.path == Path.JoinRoom && initialView.gameId && initialView.siHostKey) {
-		hostUri = getState().common.siHosts[initialView.siHostKey];
+	if (initialView.path === Path.JoinRoom || initialView.path === Path.Room) {
+		await ensureServerInfoLoadedAsync(appDispatch, getState, dataContext);
+
+		if (initialView.path == Path.JoinRoom && initialView.gameId && initialView.siHostKey) {
+			hostUri = getState().common.siHosts[initialView.siHostKey];
+		}
 	}
 
 	if (initialView.path == Path.JoinRoom && initialView.gameId && hostUri) {
