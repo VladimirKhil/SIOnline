@@ -14,6 +14,7 @@ interface RoundTableProps {
 	isSelectable: boolean;
 	activeThemeIndex: number;
 	actionQuestionIndex: number;
+	isHexagonal: boolean;
 }
 
 const mapStateToProps = (state: State) => ({
@@ -21,6 +22,7 @@ const mapStateToProps = (state: State) => ({
 	isSelectable: state.table.isSelectable,
 	activeThemeIndex: state.table.activeThemeIndex,
 	actionQuestionIndex: state.table.actionQuestionIndex,
+	isHexagonal: state.settings.theme.table.isHexagonal || false,
 });
 
 export function RoundTable(props: RoundTableProps) {
@@ -47,7 +49,7 @@ export function RoundTable(props: RoundTableProps) {
 	};
 
 	return (
-		<div className={`roundTable ${props.isSelectable ? 'selectable' : ''}`}>
+		<div className={`roundTable ${props.isSelectable ? 'selectable' : ''} ${props.isHexagonal ? 'hexagonal' : ''}`}>
 			{props.roundInfo.map((themeInfo, themeIndex) => {
 				const className = themeIndex % 2 === 0 ? 'right' : 'left';
 				const hasQuestions = themeInfo.questions.some(q => q > -1);
@@ -58,6 +60,8 @@ export function RoundTable(props: RoundTableProps) {
 							{hasQuestions ? themeInfo.name : ''}
 						</AutoSizedText>
 					</div>
+
+					{props.isHexagonal && themeIndex % 2 === 1 ? <div className="hexSpacer" /> : null}
 
 					{themeInfo.questions.map((question, questionIndex) => {
 						const isActive = question > -1;
@@ -80,6 +84,8 @@ export function RoundTable(props: RoundTableProps) {
 							</div>
 						);
 					})}
+
+					{props.isHexagonal && themeIndex % 2 === 0 ? <div className="hexSpacer" /> : null}
 				</div>);
 			})}
 		</div>

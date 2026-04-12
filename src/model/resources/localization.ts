@@ -186,6 +186,7 @@ All game functionality is available for free—donations do not affect gameplay 
 		errorObsoleteVersion: 'Your game version is outdated. Update the game',
 		errorPackageNotFound: 'Cannot create the game because the question package was not found!',
 		errorServerNotReady: 'Server is not ready to start a game',
+		hexagonalRoundTable: 'Hexagonal question table',
 		errorServerUnderMaintainance: `Server is under maintenance! Please reconnect after a while.
 		We apologize for any inconvenience.`,
 		errorTolerant: 'right to make a mistake',
@@ -1345,6 +1346,7 @@ Package authors are responsible for package content. The package will be automat
 		wrongAnswer: 'Неправильный ответ',
 		wrongAnswers: 'Неправильные ответы',
 		wrongGameSettings: 'Неверные настройки игры!',
+		hexagonalRoundTable: 'Шестиугольное табло вопросов',
 		yes: 'Да',
 		youAreKicked: 'Вас выгнали из игры!',
 		yourName: 'Ваше имя',
@@ -1539,6 +1541,7 @@ Package authors are responsible for package content. The package will be automat
 		errorObsoleteVersion: 'Vaša verzija igre je zastarela. Ažurirajte igru',
 		errorPackageNotFound: 'Nije moguće kreirati igru na serveru jer paket igre nije pronađen!',
 		errorServerNotReady: 'Server nije spreman da počne igru',
+		hexagonalRoundTable: 'Heksagonalna tabla sa pitanjima',
 		errorServerUnderMaintainance: `Održavanje servera u toku! Molimo povežite se nakon nekog vremena.
 		Izvinjavam se zbog uzrokovane neprijatnosti.`,
 		errorTolerant: 'pravo na grešku',
@@ -2218,6 +2221,7 @@ va qo‘shimcha imkoniyatlarni ochish uchun ishlatilmaydi. Qo‘llab-quvvatlagan
 		errorObsoleteVersion: 'o‘yin versiyangiz eskirgan. o‘yinni yangilang',
 		errorPackageNotFound: 'o‘yin paketi topilmagani uchun o‘yin yaratib bo‘lmadi!',
 		errorServerNotReady: 'Server o‘yinni boshlashga tayyor emas',
+		hexagonalRoundTable: 'Oltiburchakli savollar jadvali',
 		errorServerUnderMaintainance: `Serverda texnik xizmat ko‘rsatilmoqda! Iltimos, birozdan so‘ng qayta ulaning.
 Keltirilgan noqulayliklar uchun uzr so‘raymiz.`,
 		errorTolerant: 'xato qilish huquqi',

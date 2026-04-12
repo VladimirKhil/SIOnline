@@ -56,6 +56,7 @@ const initialState: SettingsState = {
 			textColor: '#FFFFFF',
 			backgroundColor: '#0A0E30',
 			fontFamily: undefined, // Default font family will be used
+			isHexagonal: false,
 		},
 		room: {
 			backgroundImageKey: null,
@@ -195,6 +196,9 @@ export const settingsSlice = createSlice({
 		setTableFontFamily: (state: SettingsState, action: PayloadAction<string>) => {
 			state.theme.table.fontFamily = action.payload.length > 0 ? action.payload : undefined;
 		},
+		setIsHexagonal: (state: SettingsState, action: PayloadAction<boolean>) => {
+			state.theme.table.isHexagonal = action.payload;
+		},
 		setWriteGameLog: (state: SettingsState, action: PayloadAction<boolean>) => {
 			state.writeGameLog = action.payload;
 		},
@@ -257,6 +261,7 @@ export const {
 	setTableTextColor,
 	setTableBackgroundColor,
 	setTableFontFamily,
+	setIsHexagonal,
 	setWriteGameLog,
 	setLogPointsEvent,
 	setLoadExternalMedia,

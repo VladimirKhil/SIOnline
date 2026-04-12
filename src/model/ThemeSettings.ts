@@ -3,6 +3,7 @@ export default interface ThemeSettings {
 		textColor?: string;
 		backgroundColor?: string;
 		fontFamily?: string;
+		isHexagonal?: boolean;
 	},
 	room: {
 		backgroundImageKey: string | null;

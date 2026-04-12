@@ -1,7 +1,7 @@
 import * as React from 'react';
 import localization from '../../../model/resources/localization';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
-import { setStudiaBackgroundImageKey, setTableBackgroundColor, setTableTextColor, setTableFontFamily } from '../../../state/settingsSlice';
+import { setStudiaBackgroundImageKey, setTableBackgroundColor, setTableTextColor, setTableFontFamily, setIsHexagonal } from '../../../state/settingsSlice';
 import { userErrorChanged } from '../../../state/commonSlice';
 import { selectStudiaBackground } from '../../../state/globalActions';
 import Constants from '../../../model/enums/Constants';
@@ -105,6 +105,16 @@ const ThemeSettingsView: React.FC = () => {
 					))}
 				</select>
 			</div>
+
+			{/* <div className='settingItem'>
+				<input
+					id='isHexagonal'
+					type='checkbox'
+					checked={theme.table.isHexagonal || false}
+					onChange={e => appDispatch(setIsHexagonal(e.target.checked))} />
+
+				<label htmlFor='isHexagonal'>{localization.hexagonalRoundTable}</label>
+			</div> */}
 
 			<h2>{localization.room}</h2>
 
