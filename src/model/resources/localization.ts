@@ -155,7 +155,7 @@ const localization = new LocalizedStrings({
 		replic_HiddenStakesMade: 'All stakes are submitted. Attention, question!',
 		replic_PlayerAnswers: 'Let\'s read players answers;Time to find out what players answered',
 		replic_PriceMultiplication: 'Question price is multiplied by {0}',
-		replic_Theme: 'Theme',
+		replic_Theme: 'Theme: {0}',
 		replic_WrongAnswer: 'Oh come on!;Wrong!;Alas, this is not true!;No, you are wrong;Unfortunately, you made a mistake;You gave a wrong answer!;Incorrect;No;No, you made a mistake;Oh no!;Your answer is incorrect',
 		siStorageDisclaimer: `Attention! This section contains materials of third-party authors.
 	Authors of packages in the library are responsible for the content of the packages, their accuracy and compliance with the law`,
@@ -1141,7 +1141,7 @@ Package authors are responsible for package content. The package will be automat
 		replic_SelectQuestion: `{0}, выбирайте вопрос!;{0}, прошу вас!;{0}, выбирайте!;
 {0}, сделайте выбор!;{0}, вы выбираете;{0}, вы выбираете следующий вопрос`,
 		replic_ShowmanGreeting: 'Здравствуйте, здравствуйте, добрый день, это «SIGame»!',
-		replic_Theme: 'Тема',
+		replic_Theme: 'Тема: {0}',
 		replic_UnsupportedQuestion: 'Этот вопрос должен разыгрываться вручную. Игра продолжится спустя небольшое время',
 		replic_WrongAnswer: 'Да что вы!;Неправильно!;Увы, это не так!;Нет, вы не правы;К сожалению, вы ошиблись;Вы дали неверный ответ!;Неверно;Нет;Нет, вы ошиблись;Нет, вы не правы;Да нет!;Ваш ответ неверен',
 		requestedAppellation: '{0} запросил(а) апелляцию',
@@ -1507,7 +1507,7 @@ Package authors are responsible for package content. The package will be automat
 		replic_HiddenStakesMade: 'Svi ulozi su uplaćeni. Pažnja, pitanje!',
 		replic_PlayerAnswers: 'Hajde da pročitamo odgovore igrača;Vreme je da saznamo šta su igrači odgovorili',
 		replic_PriceMultiplication: 'Cena pitanja je pomnožena sa {0}',
-		replic_Theme: 'Tema',
+		replic_Theme: 'Tema: {0}',
 		replic_WrongAnswer: 'Ma dajte!;Pogrešno!;Nažalost, ovo nije tačno!;Ne, grešite;Nažalost, pogrešili ste;Dali ste pogrešan odgovor!;Netačno;Ne;Ne, pogrešili ste;O ne!;Vaš odgovor je pogrešan',
 		siStorageDisclaimer: `Pažnja! U ovom odeljku se nalaze materijali spoljašnjih autora.
 		Autori paketa u biblioteci odgovorni su za sadržaj paketa, njihovu tačnost i usklađenost sa zakonom`,
@@ -2186,7 +2186,7 @@ Taqdimotni boshlash uchun "Tayyor" tugmasini (yashil belgini) bosing.`,
 		replic_HiddenStakesMade: 'Barcha garovlar tikilgan. Diqqat, savol!',
 		replic_PlayerAnswers: 'Keling, o\'yinchilar javoblarini o\'qiymiz;O\'yinchilar nima javob berganini bilish vaqti keldi',
 		replic_PriceMultiplication: 'Savol narxi {0} ga ko\'paytiriladi',
-		replic_Theme: 'Mavzu',
+		replic_Theme: 'Mavzu: {0}',
 		replic_WrongAnswer: 'Yo\'g\'e!;Noto\'g\'ri!;Afsuski, bu to\'g\'ri emas!;Yo\'q, adashdingiz;Afsuski, xato qildingiz;Siz noto\'g\'ri javob berdingiz!;Xato;Yo\'q;Yo\'q, xato qildingiz;Obbo!;Javobingiz noto\'g\'ri',
 		siStorageDisclaimer: `Diqqat! Ushbu bo‘limda boshqa mualliflarning materiallari taqdim etilgan.
 Kutubxonadagi paketlar mualliflari ularning mazmuni, ishonchliligi va qonunchilikka muvofiqligi uchun javobgardir.`,

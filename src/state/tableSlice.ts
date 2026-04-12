@@ -210,6 +210,12 @@ export const tableSlice = createSlice({
 			state.content = action.payload;
 			state.isMediaStopped = false;
 			state.mode = TableMode.Content;
+
+			if (state.content.length !== 1 ||
+				state.content[0].content.length !== 1 ||
+				state.content[0].content[0].type !== ContentType.Image) {
+				state.pointMarkers = [];
+			}
 		},
 		switchToContent: (state: TableState) => {
 			state.mode = TableMode.Content;
