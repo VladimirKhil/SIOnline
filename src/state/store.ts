@@ -1,6 +1,9 @@
+import { AnyAction, Reducer } from 'redux';
 import { configureStore } from '@reduxjs/toolkit';
 import userReducer from './userSlice';
 import loginReducer from './loginSlice';
+import roomReducer from './room/roomReducer';
+import RoomState from './room/RoomState';
 import uiReducer from './uiSlice';
 import online2Reducer from './online2Slice';
 import gameReducer from './gameSlice';
@@ -44,6 +47,7 @@ const store = configureStore({
 	reducer: {
 		user: userReducer,
 		login: loginReducer,
+		room: roomReducer as Reducer<RoomState, AnyAction>,
 		ui: uiReducer,
 		online2: online2Reducer,
 		game: gameReducer,

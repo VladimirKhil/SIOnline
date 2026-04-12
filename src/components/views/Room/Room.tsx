@@ -1,4 +1,4 @@
-﻿import * as React from 'react';
+import * as React from 'react';
 import { connect } from 'react-redux';
 import { Action, Dispatch } from 'redux';
 import State from '../../../state/State';
@@ -106,6 +106,9 @@ export function Room(props: RoomProps): JSX.Element {
 		validationHeader,
 		role,
 		dialogView,
+		deepMode,
+		hostName,
+		myName,
 	} = useAppSelector((state) => ({
 		kicked: state.room2.kicked,
 		chatIsVisible: state.room2.chat.isVisible,
@@ -114,6 +117,9 @@ export function Room(props: RoomProps): JSX.Element {
 		validationHeader: state.room2.validation.header,
 		role: state.room2.role,
 		dialogView: state.room2.dialogView,
+		deepMode: state.room.deepMode,
+		hostName: state.room2.persons.hostName,
+		myName: state.room2.name,
 	}));
 
 	React.useEffect(() => {
@@ -130,6 +136,8 @@ export function Room(props: RoomProps): JSX.Element {
 		props.clearDecisions();
 	};
 
+	const isHost = myName === hostName;
+
 	let img: JSX.Element | null = null;
 
 	if (backgroundImageKey) {
@@ -141,11 +149,11 @@ export function Room(props: RoomProps): JSX.Element {
 	}
 
 	return (
-		<section className="gameMain">
+		<section className={`gameMain ${deepMode ? 'deepMode' : ''}`}>
 			{img}
-			<div className="game__tableArea">
-				<div className={`gameMainView ${isScreenWide ? 'reversed' : ''}`}>
-					<PlayersView />
+			<div className={`game__tableArea ${deepMode && isScreenWide && !isHost ? 'noSidePanel' : ''}`}>
+				<div className={`gameMainView ${isScreenWide && !deepMode ? 'reversed' : ''}`}>
+					{!deepMode && <PlayersView />}
 
 					<div className="showmanTableArea">
 						<div className="showmanProgressArea">
@@ -198,10 +206,12 @@ export function Room(props: RoomProps): JSX.Element {
 				</div>
 			</div>
 
-			<div className={`game__mainArea ${floatingControls && isScreenWide ? 'floatable' : ''}`}>
-				{isScreenWide ? <GameChatView /> : null}
-				<SideControlPanel />
-			</div>
+			{(!deepMode || isHost || !isScreenWide) && (
+				<div className={`game__mainArea ${floatingControls && isScreenWide ? 'floatable' : ''} ${deepMode ? 'deepMode' : ''}`}>
+					{isScreenWide ? <GameChatView /> : null}
+					<SideControlPanel />
+				</div>
+			)}
 
 			{/* TODO: Switch to a single enum here */}
 

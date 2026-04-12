@@ -2,6 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import State from '../../../state/State';
 import { DecisionType } from '../../../state/room2Slice';
+import Role from '../../../model/Role';
 import ShowmanReplic from '../ShowmanReplic/ShowmanReplic';
 import ProgressBar from '../../common/ProgressBar/ProgressBar';
 import TimerInfo from '../../../model/TimerInfo';
@@ -33,7 +34,7 @@ const mapStateToProps = (state: State) => ({
 });
 
 export function ShowmanReplicView(props: ShowmanReplicViewProps): JSX.Element {
-	const { name, showmanName, isReady, isDeciding, isGameStarted, decisionType, replicIndex, players, windowWidth } = useAppSelector(state => ({
+	const { name, showmanName, isReady, isDeciding, isGameStarted, decisionType, replicIndex, players, windowWidth, deepMode, role } = useAppSelector(state => ({
 		name: state.room2.name,
 		showmanName: state.room2.persons.showman.name,
 		isReady: state.room2.persons.showman.isReady,
@@ -43,6 +44,8 @@ export function ShowmanReplicView(props: ShowmanReplicViewProps): JSX.Element {
 		replicIndex: state.room2.replicIndex,
 		players: state.room2.persons.players,
 		windowWidth: state.ui.windowWidth,
+		deepMode: state.room.deepMode,
+		role: state.room2.role,
 	}));
 
 	const isScreenWide = windowWidth >= Constants.WIDE_WINDOW_WIDTH;
@@ -75,31 +78,51 @@ export function ShowmanReplicView(props: ShowmanReplicViewProps): JSX.Element {
 		display: 'flex'
 	};
 
+	const me = players.find(p => p.name === name);
 	const meClass = isMe ? 'me' : '';
 	const playerReplicModeClass = activePlayer ? 'playerReplicMode' : '';
 
 	return (
 		<div className={`showmanArea ${decisionType !== DecisionType.None ? 'highlighted' : ''} ${playerReplicModeClass}`}>
 			<div className="showmanInfo" style={showmanInfoStyle}>
-				{props.showVideoAvatars && account?.avatarVideo
-					? <div className='showmanAvatar'><iframe title='Video avatar' src={account?.avatarVideo} /></div>
-					: <div className={`showmanAvatar ${avatarClass}`} style={avatarStyle} />}
+				{!deepMode ? (
+					<>
+						{props.showVideoAvatars && account?.avatarVideo
+							? <div className='showmanAvatar'><iframe title='Video avatar' src={account?.avatarVideo} /></div>
+							: <div className={`showmanAvatar ${avatarClass}`} style={avatarStyle} />}
 
-				<div className="showmanName">
-					{isReady && !isGameStarted ? (
-						<span
-							role="img"
-							aria-label="checkmark"
-							title={account?.sex === Sex.Female ? localization.readyFemale : localization.readyMale}
-						>
-							✔️
-						</span>
-					) : null}
+						<div className="showmanName">
+							{isReady && !isGameStarted ? (
+								<span
+									role="img"
+									aria-label="checkmark"
+									title={account?.sex === Sex.Female ? localization.readyFemale : localization.readyMale}
+								>
+									✔️
+								</span>
+							) : null}
 
-					<span className={meClass}>{account?.name ?? shownName}</span>
-				</div>
+							<span className={meClass}>{account?.name ?? shownName}</span>
+						</div>
 
-				{activePlayer ? null : <EditTableMenu isPlayerScope={false} account={account} tableIndex={0} />}
+						{activePlayer ? null : <EditTableMenu isPlayerScope={false} account={account} tableIndex={0} />}
+					</>
+				) : (
+					role === Role.Player ? (
+						<div className="playerMainInfo">
+							<div className="playerMainInfo_item">
+								<div className="playerMainInfo_title">{localization.yourScore}</div>
+								<div className="playerMainInfo_value" title={localization.score}>{me?.sum ?? 0}</div>
+							</div>
+							{me?.stake ? (
+								<div className="playerMainInfo_item">
+									<div className="playerMainInfo_title">{localization.stake}</div>
+									<div className="playerMainInfo_value" title={localization.stake}>{me?.stake}</div>
+								</div>
+							) : null}
+						</div>
+					) : null
+				)}
 			</div>
 
 			<ShowmanReplic />

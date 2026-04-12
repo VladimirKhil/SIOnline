@@ -504,6 +504,8 @@ Package authors are responsible for package content. The package will be automat
 		scoreEarned: 'Score earned',
 		scoreFactor: 'Price factor',
 		scoreLost: 'Score lost',
+		stake: 'Stake',
+		noStake: 'No stake',
 		screenDuration: 'Duration (s)',
 		search: 'Search',
 		searchGames: 'Rooms search',
@@ -682,7 +684,8 @@ Package authors are responsible for package content. The package will be automat
 		enterSource: 'Enter source',
 		enterTag: 'Enter tag',
 		enterTextContent: 'Enter text content...',
-		enterWrongAnswer: 'Enter wrong answer'
+		enterWrongAnswer: 'Enter wrong answer',
+		yourScore: 'Your score'
 	},
 	ru: {
 		about: [
@@ -1357,7 +1360,8 @@ Package authors are responsible for package content. The package will be automat
 		enterSource: 'Введите источник',
 		enterTag: 'Введите тег',
 		enterTextContent: 'Введите текст...',
-		enterWrongAnswer: 'Введите неправильный ответ'
+		enterWrongAnswer: 'Введите неверный ответ',
+		yourScore: 'Ваш счёт'
 	},
 	sr: {
 		about: [

@@ -124,3 +124,33 @@
         padding-top: 10px;
     }
 }
+
+.playerMainInfo {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    color: white;
+    font-weight: bold;
+    text-shadow: 1px 1px 2px black;
+}
+
+.playerMainInfo_item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0 15px;
+}
+
+.playerMainInfo_title {
+    font-size: 14px;
+    opacity: 0.8;
+    text-transform: uppercase;
+    margin-bottom: 8px; /* Increased space */
+}
+
+.playerMainInfo_value {
+    color: v.$me-color; /* Use the same color as current player name */
+    font-size: 32px;
+}

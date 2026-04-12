@@ -26,6 +26,11 @@
     overflow: hidden;
 }
 
+/* Non-host in deep mode on wide screens: expand table to fill full width */
+.game__tableArea.noSidePanel {
+    flex: 1 0 100%;
+}
+
 .showmanProgressArea {
     flex: 0 0 90px;
     display: flex;
@@ -189,6 +194,10 @@
 
     .game__mainArea {
         flex: 0.95 0 0;
+    }
+
+    .gameMain.deepMode .tableArea {
+        padding-bottom: 20px;
     }
 }
 

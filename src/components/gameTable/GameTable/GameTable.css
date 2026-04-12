@@ -6,8 +6,8 @@
     flex-direction: column;
     overflow: hidden;
     position: relative;
-	font-family: Standard;
-	font-weight: 500;
+    font-family: Standard;
+    font-weight: 500;
 }
 
 .tableCaption {
@@ -25,7 +25,8 @@
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.caption__left, .caption__right {
+.caption__left,
+.caption__right {
     width: 52px;
 }
 
@@ -64,13 +65,13 @@
 }
 
 #table .pauseLogo {
-	position: absolute;
-	left: 0;
-	right: 0;
-	top: 0;
-	bottom: 0;
-	background: rgba(0, 0, 0, 0.5);
-	text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
     animation: overlayFadeIn 0.3s ease-out;
 }
 
@@ -78,6 +79,7 @@
     from {
         opacity: 0;
     }
+
     to {
         opacity: 1;
     }
@@ -107,6 +109,7 @@
         opacity: 0;
         transform: translateY(20px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -114,75 +117,78 @@
 }
 
 #table .pauseLogo.warning {
-	color: darkgray;
-	background-color: #000066;
+    color: darkgray;
+    background-color: #000066;
 }
 
-    #table .centerBlock {
-        text-align: center;
-        display: flex;
-        justify-content: center;
-        align-items: center;
+#table .centerBlock {
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#table .answerBlock {
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    flex-grow: 1;
+    margin-top: 40px;
+    margin-bottom: 40px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+    -webkit-backdrop-filter: blur(5px);
+    backdrop-filter: blur(5px);
+}
+
+#table .tableText {
+    height: 100%;
+    width: 100%;
+    font-size: 36px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+    white-space: pre-line;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+}
+
+#table .tableText.fadeIn {
+    animation: fadeIn 0.2s ease-in forwards;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
     }
 
-    #table .answerBlock {
-        text-align: center;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        position: relative;
-        flex-grow: 1;
-        margin-top: 40px;
-        margin-bottom: 40px;
-        background: rgba(0, 0, 0, 0.3);
-        border-radius: 8px;
-        -webkit-backdrop-filter: blur(5px);
-        backdrop-filter: blur(5px);
+    to {
+        opacity: 1;
     }
+}
 
-    #table .tableText {
-        height: 100%;
-        width: 100%;
-        font-size: 36px;
-        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
-        white-space: pre-line;
-        display: flex;
-        align-items: center;
-        overflow: hidden;
-    }
+.mainContent .tableText {
+    padding: 5px;
+}
 
-    #table .tableText.fadeIn {
-        animation: fadeIn 0.2s ease-in forwards;
-    }
-
-    @keyframes fadeIn {
-        from {
-          opacity: 0;
-        }
-        to {
-          opacity: 1;
-        }
-    }
-
-    .mainContent .tableText {
-        padding: 5px;
-    }
-
-    #table .tableTextCenter {
-        text-align: center;
-        justify-content: center;
-    }
+#table .tableTextCenter {
+    text-align: center;
+    justify-content: center;
+}
 
 @keyframes blink {
     0% {
         background: transparent;
         box-shadow: 0 0 0 rgba(255, 255, 255, 0);
     }
+
     50% {
         background: rgba(255, 255, 255, 0.4);
         box-shadow: 0 0 30px rgba(255, 255, 255, 0.5);
         transform: scale(1.02);
     }
+
     100% {
         background: rgba(255, 255, 255, 0.3);
         box-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
@@ -227,13 +233,13 @@
     height: 15px;
     box-shadow: none;
     -webkit-mask-image: linear-gradient(to right,
-        rgba(0, 0, 0, 1) 0%,
-        rgba(0, 0, 0, 1) 80%,
-        rgba(0, 0, 0, 0.5) 100%);
+            rgba(0, 0, 0, 1) 0%,
+            rgba(0, 0, 0, 1) 80%,
+            rgba(0, 0, 0, 0.5) 100%);
     mask-image: linear-gradient(to right,
-        rgba(0, 0, 0, 1) 0%,
-        rgba(0, 0, 0, 1) 80%,
-        rgba(0, 0, 0, 0.5) 100%);
+            rgba(0, 0, 0, 1) 0%,
+            rgba(0, 0, 0, 1) 80%,
+            rgba(0, 0, 0, 0.5) 100%);
 }
 
 .answerValidationInTable {
@@ -250,6 +256,7 @@
         opacity: 0;
         transform: translateY(20px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -270,7 +277,8 @@
         margin-top: 35px;
     }
 
-    .caption__left, .caption__right {
+    .caption__left,
+    .caption__right {
         width: 152px;
     }
 }

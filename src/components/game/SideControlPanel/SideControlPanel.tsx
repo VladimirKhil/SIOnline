@@ -83,7 +83,19 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 
 export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 	const appDispatch = useAppDispatch();
-	const { chatIsActive, chatIsVisible, isGamePaused, isGameStarted, isEditingTables, role, roundsNames, areSumsEditable, lastReplic, playersCount } = useAppSelector(state => ({
+	const {
+		chatIsActive,
+		chatIsVisible,
+		isGamePaused,
+		isGameStarted,
+		isEditingTables,
+		role,
+		roundsNames,
+		areSumsEditable,
+		lastReplic,
+		playersCount,
+		deepMode
+	} = useAppSelector(state => ({
 		chatIsActive: state.room2.chat.isActive,
 		chatIsVisible: state.room2.chat.isVisible,
 		isGamePaused: state.room2.stage.isGamePaused,
@@ -94,6 +106,7 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 		areSumsEditable: state.room2.areSumsEditable,
 		lastReplic: state.room2.lastReplic,
 		playersCount: state.room2.persons.players.length,
+		deepMode: state.room.deepMode,
 	}));
 
 	const ui = useAppSelector(state => state.ui);
@@ -132,83 +145,89 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 		appDispatch(navigate({ navigation: { path: ui.navigation.returnToLobby ? Path.Lobby : Path.Menu }, saveState: true }));
 	};
 
+	const isScreenWide = ui.windowWidth >= Constants.WIDE_WINDOW_WIDTH;
+
 	return (
 		<div className="game__utilsArea">
 			<div className="gameMessageHost">
 				<div className='sidecontrol_buttons'>
-					<div className="gameMenuHost" style={gameMenuHostStyle}>
-						<FlyoutButton
-							className="gameMenuButton imageButton"
-							title={localization.menu}
-							flyout={(
-								<ul className="gameMenu">
-									{role === Role.Showman
-										? (
-											<>
-												<li
-													className={`${enabledClass} ${areSumsEditable ? 'active' : ''}`}
-													onClick={() => appDispatch(setAreSumsEditable(!areSumsEditable))}
-												>
-													{localization.changeSums}
-												</li>
+					{!deepMode && (
+						<div className="gameMenuHost" style={gameMenuHostStyle}>
+							<FlyoutButton
+								className="gameMenuButton imageButton"
+								title={localization.menu}
+								flyout={(
+									<ul className="gameMenu">
+										{role === Role.Showman
+											? (
+												<>
+													<li
+														className={`${enabledClass} ${areSumsEditable ? 'active' : ''}`}
+														onClick={() => appDispatch(setAreSumsEditable(!areSumsEditable))}
+													>
+														{localization.changeSums}
+													</li>
 
-												<li
-													className={enabledManagementClass}
-													title={localization.gameManageHint}
-													onClick={() => props.showGameManageDialog()}>
-													{localization.game}
-												</li>
+													<li
+														className={enabledManagementClass}
+														title={localization.gameManageHint}
+														onClick={() => props.showGameManageDialog()}>
+														{localization.game}
+													</li>
+												</>
+											) : null}
+
+										<li onClick={() => props.onShowPersons()}>{localization.members}</li>
+
+										{props.isHost
+											? <>
+												{canAddTable ? <li onClick={() => appDispatch(addTable())}>{localization.addTable}</li> : null}
+
+												{isGameStarted
+													? <li onClick={() => appDispatch(setIsEditingTables(!isEditingTables))}>
+														{localization.editTables}
+													</li>
+													: null}
 											</>
+											: null}
+
+										<li onClick={() => props.onShowBanned()}>{localization.bannedList}</li>
+										<li onClick={() => props.onShowGameInfo()}>{localization.gameInfo}</li>
+
+										{role === Role.Showman ? (
+											<li className={enabledClass} onClick={onGiveTurn}>{localization.giveTurn}</li>
 										) : null}
 
-									<li onClick={() => props.onShowPersons()}>{localization.members}</li>
+										{voiceChatUri && isWellFormedUri(voiceChatUri) ? (
+											<li title={voiceChatUri} onClick={() => window.open(voiceChatUri, '_blank')}>{localization.voiceChat}</li>
+										) : null}
 
-									{props.isHost
-										? <>
-											{canAddTable ? <li onClick={() => appDispatch(addTable())}>{localization.addTable}</li> : null}
+										<li onClick={() => appDispatch(showSettings(true))}>{localization.settings}</li>
+										<li onClick={() => appDispatch(showProfile(true))}>{localization.profile}</li>
+									</ul>
+								)}
+								theme={FlyoutTheme.Dark}
+								alignWidth
+								verticalOrientation={FlyoutVerticalOrientation.Top}
+							>
+								<span>…</span>
+							</FlyoutButton>
+						</div>
+					)}
 
-											{isGameStarted
-												? <li onClick={() => appDispatch(setIsEditingTables(!isEditingTables))}>
-													{localization.editTables}
-												</li>
-												: null}
-										</>
-										: null}
-
-									<li onClick={() => props.onShowBanned()}>{localization.bannedList}</li>
-									<li onClick={() => props.onShowGameInfo()}>{localization.gameInfo}</li>
-
-									{role === Role.Showman ? (
-										<li className={enabledClass} onClick={onGiveTurn}>{localization.giveTurn}</li>
-									) : null}
-
-									{voiceChatUri && isWellFormedUri(voiceChatUri) ? (
-										<li title={voiceChatUri} onClick={() => window.open(voiceChatUri, '_blank')}>{localization.voiceChat}</li>
-									) : null}
-
-									<li onClick={() => appDispatch(showSettings(true))}>{localization.settings}</li>
-									<li onClick={() => appDispatch(showProfile(true))}>{localization.profile}</li>
-								</ul>
-							)}
-							theme={FlyoutTheme.Dark}
-							alignWidth
-							verticalOrientation={FlyoutVerticalOrientation.Top}
+					{!deepMode && (
+						<button
+							type="button"
+							className={`standard imageButton showChat ${chatIsVisible ? 'active' : ''}`}
+							onClick={() => appDispatch(setChatVisibility(!chatIsVisible))}
+							style={chatButtonStyle}
+							title={localization.showChat}
 						>
-							<span>…</span>
-						</FlyoutButton>
-					</div>
+							<span>💬</span>
+						</button>
+					)}
 
-					<button
-						type="button"
-						className={`standard imageButton showChat ${chatIsVisible ? 'active' : ''}`}
-						onClick={() => appDispatch(setChatVisibility(!chatIsVisible))}
-						style={chatButtonStyle}
-						title={localization.showChat}
-					>
-						<span>💬</span>
-					</button>
-
-					{canPause ? (
+					{canPause && (!deepMode || props.isHost) ? (
 						<button
 							type="button"
 							className={`pauseButton standard imageButton ${isGamePaused ? 'active' : ''}`}
@@ -228,31 +247,42 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 							onClick={canStart ? props.onStart : moveNext}>
 							{canStart ? <span role="img" aria-label="arrow right">▶</span> : <img alt='Next' src={nextImg} />}
 						</button>
-					) : null}
+					) : (!deepMode && (
+						<button
+							type="button"
+							className="nextButton standard imageButton"
+							title={localization.next}
+							disabled
+						>
+							<img alt='Next' src={nextImg} />
+						</button>
+					))}
 
-					<FlyoutButton
-						className="exit standard imageButton"
-						title={localization.exit}
-						flyout={(
-							<div id="exitMenu" className="exitMenu">
-								<div id="exitMenuPopup" className="gameMenuPopup">
-									<p>{localization.exitConfirmation}</p>
-									<ul>
-										<li
-											onClick={onExit}>
-											{localization.exitFromGame}
-										</li>
-									</ul>
+					{(!deepMode || props.isHost || !isScreenWide) && (
+						<FlyoutButton
+							className="exit standard imageButton"
+							title={localization.exit}
+							flyout={(
+								<div id="exitMenu" className="exitMenu">
+									<div id="exitMenuPopup" className="gameMenuPopup">
+										<p>{localization.exitConfirmation}</p>
+										<ul>
+											<li
+												onClick={onExit}>
+												{localization.exitFromGame}
+											</li>
+										</ul>
+									</div>
 								</div>
-							</div>
-						)}
-						theme={FlyoutTheme.Dark}
-						alignWidth
-						verticalOrientation={FlyoutVerticalOrientation.Top}
-						horizontalOrientation={FlyoutHorizontalOrientation.Left}
-					>
-						<img alt='exit' src={exitImg} />
-					</FlyoutButton>
+							)}
+							theme={FlyoutTheme.Dark}
+							alignWidth
+							verticalOrientation={FlyoutVerticalOrientation.Top}
+							horizontalOrientation={FlyoutHorizontalOrientation.Left}
+						>
+							<img alt='exit' src={exitImg} />
+						</FlyoutButton>
+					)}
 				</div>
 			</div>
 
