@@ -13,7 +13,7 @@ import PlayerStatistics from '../model/PlayerStatistics';
 export interface PointMarker {
 	x: number;
 	y: number;
-	color: string;
+	mode: 'player' | 'right-answer';
 	label?: string;
 	isArea?: boolean;
 }

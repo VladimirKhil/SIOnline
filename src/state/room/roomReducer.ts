@@ -91,7 +91,6 @@ const roomReducer: Reducer<RoomState> = (state: RoomState = initialState, anyAct
 					...state.stage,
 					isAfterQuestion: action.isAfterQuestion,
 				},
-				hint: action.isAfterQuestion ? null : state.hint,
 			};
 
 		case RoomActionTypes.CurrentPriceChanged:
@@ -144,12 +143,6 @@ const roomReducer: Reducer<RoomState> = (state: RoomState = initialState, anyAct
 				selection: {
 					isEnabled: true,
 				},
-			};
-
-		case RoomActionTypes.HintChanged:
-			return {
-				...state,
-				hint: action.hint
 			};
 
 		case RoomActionTypes.GameMetadataChanged:

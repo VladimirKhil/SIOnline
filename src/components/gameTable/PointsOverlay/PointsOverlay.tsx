@@ -75,8 +75,9 @@ interface PointShape {
 interface MarkerShape {
 	cx: number;
 	cy: number;
-	color: string;
+	mode: PointMarker['mode'];
 	label?: string;
+	isArea?: boolean;
 }
 
 export default function PointsOverlay(): JSX.Element {
@@ -223,7 +224,7 @@ export default function PointsOverlay(): JSX.Element {
 		const cx = imgOffsetX + bounds.x + (marker.x * bounds.width);
 		const cy = imgOffsetY + bounds.y + (marker.y * bounds.height);
 
-		return { cx, cy, color: marker.color, label: marker.label };
+		return { cx, cy, mode: marker.mode, label: marker.label, isArea: marker.isArea };
 	}, []);
 
 	const [svgSize, setSvgSize] = React.useState<{ width: number, height: number }>({ width: 0, height: 0 });
@@ -275,9 +276,7 @@ export default function PointsOverlay(): JSX.Element {
 								cx={shape.cx}
 								cy={shape.cy}
 								r="7"
-								fill={shape.color}
-								stroke="rgba(0, 0, 0, 0.5)"
-								strokeWidth="1.5"
+								className={`pointsOverlay__marker pointsOverlay__marker--${shape.mode}${shape.isArea ? ' pointsOverlay__marker--area' : ''}`}
 							/>
 
 							{shape.label ? (

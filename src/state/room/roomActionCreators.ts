@@ -122,10 +122,6 @@ const changePlayerSum: ActionCreator<ThunkAction<void, State, DataContext, Actio
 		await dataContext.game.setPlayerScore(playerIndex, sum);
 	};
 
-const hintChanged: ActionCreator<RunActions.HintChangedAction> = (hint: string | null) => ({
-	type: RunActions.RoomActionTypes.HintChanged, hint
-});
-
 const startGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
 	_dispatch: Dispatch<RunActions.KnownRoomAction>,
 	_getState: () => State,
@@ -228,7 +224,6 @@ const roomActionCreators = {
 	stakeChanged,
 	selectionEnabled,
 	changePlayerSum,
-	hintChanged,
 	startGame,
 	moveNext,
 	navigateToRound,

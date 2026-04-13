@@ -7,7 +7,6 @@ import ReactionPanel from '../ReactionPanel/ReactionPanel';
 import AnswerInput from '../AnswerInput/AnswerInput';
 import PlayerButtonsPanel from '../PlayerButtonsPanel/PlayerButtonsPanel';
 import ReadyButton from '../ReadyButton/ReadyButton';
-import GameHint from '../GameHint/GameHint';
 import { useAppSelector } from '../../../state/hooks';
 import { ContextView } from '../../../state/room2Slice';
 import ReportPanel from '../ReportPanel/ReportPanel';
@@ -25,14 +24,12 @@ interface TableContextViewProps {
 	areStakesVisible: boolean;
 	isAfterQuestion: boolean;
 	isAutomatic: boolean;
-	hint: string | null;
 }
 
 const mapStateToProps = (state: State) => ({
 	areStakesVisible: state.room.stakes.areVisible,
 	isAfterQuestion: state.room.stage.isAfterQuestion,
 	isAutomatic: state.game.isAutomatic,
-	hint: state.room.hint,
 });
 
 function renderBody(
@@ -93,10 +90,6 @@ function renderBody(
 
 	if (role === Role.Player) {
 		return props.isAfterQuestion ? <ReactionPanel /> : <PlayerButtonsPanel />;
-	}
-
-	if (props.hint && windowWidth < 800) {
-		return <GameHint />;
 	}
 
 	if (isGamePaused && role === Role.Showman && tableMode === TableMode.RoundTable) {

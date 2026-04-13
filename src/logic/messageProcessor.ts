@@ -1196,14 +1196,14 @@ const showmanHandler = (controller: ClientController, args: string[]) => {
 			controller.onCancel();
 			break;
 
-		case GameMessages.Hint:
-			if (args.length > 1) {
-				controller.onHint(args[1]);
-			}
-			break;
-
 		case GameMessages.QuestionAnswers:
 			onQuestionAnswers(controller, args);
+			break;
+
+		case GameMessages.ShowmanComments:
+			if (args.length > 1) {
+				controller.onShowmanComments(unescapeNewLines(args[1]));
+			}
 			break;
 
 		case GameMessages.Validation2:

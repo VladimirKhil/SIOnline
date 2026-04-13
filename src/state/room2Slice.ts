@@ -95,6 +95,8 @@ export interface Room2State {
 	answer: string;
 	answerType: string;
 
+	hiddenComments: string;
+
 	validation: {
 		header: string;
 		message: string;
@@ -198,6 +200,8 @@ const initialState: Room2State = {
 
 	answer: '',
 	answerType: '',
+
+	hiddenComments: '',
 
 	validation: {
 		header: '',
@@ -939,6 +943,15 @@ export const room2Slice = createSlice({
 					break;
 			}
 		},
+		setHiddenComments(state: Room2State, action: PayloadAction<string>) {
+			state.hiddenComments = action.payload;
+		},
+		endAskingState(state: Room2State) {
+			state.validation.queue = [];
+			state.validation.rightAnswers = [];
+			state.validation.wrongAnswers = [];
+			// TODO: add more if needed
+		},
 	},
 	extraReducers: (builder) => {
 		builder.addCase(sendAnswer.fulfilled, (state) => {
@@ -1271,6 +1284,8 @@ export const {
 	resumeTimer,
 	stopTimer,
 	timerMaximumChanged,
+	setHiddenComments,
+	endAskingState,
 } = room2Slice.actions;
 
 export default room2Slice.reducer;

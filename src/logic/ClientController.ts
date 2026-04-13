@@ -71,6 +71,7 @@ import {
 	clearRoundThemes,
 	setAnswerDeviation,
 	addPointMarker,
+	PointMarker,
 	overlayPoints
 } from '../state/tableSlice';
 
@@ -150,12 +151,13 @@ import {
 	setReview,
 	setPlayerAnswer,
 	replicIndexChanged,
+	endAskingState,
+	setHiddenComments,
 } from '../state/room2Slice';
 
 import PersonInfo from '../model/PersonInfo';
 import Persons from '../model/Persons';
 import PlayerInfo from '../model/PlayerInfo';
-import actionCreators from './actionCreators';
 import StakeModes from '../client/game/StakeModes';
 import { playAudio, stopAudio, userInfoChanged, userWarnChanged } from '../state/commonSlice';
 import { getUserError } from '../utils/ErrorHelpers';
@@ -406,7 +408,34 @@ export default class ClientController implements IClientController {
 		this.appDispatch(setAnswerDeviation(deviation));
 	}
 
+	private tryAddPointMarker(answer: string, mode: PointMarker['mode'], label?: string, isArea?: boolean): boolean {
+		const parts = answer.split(',');
+
+		if (parts.length >= 2) {
+			const x = parseFloat(parts[0]);
+			const y = parseFloat(parts[1]);
+
+			if (!isNaN(x) && !isNaN(y)) {
+				this.appDispatch(addPointMarker({ x, y, mode, label, isArea }));
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	onAnswers(answers: string[]) {
+		if (this.getState().table.layoutMode === LayoutMode.OverlayPoints) {
+			const { players } = this.getState().room2.persons;
+
+			answers.forEach((answer, playerIndex) => {
+				const label = players[playerIndex]?.name;
+				this.tryAddPointMarker(answer, 'player', label);
+			});
+
+			return;
+		}
+
 		this.appDispatch(playersAnswersChanged(answers));
 	}
 
@@ -626,8 +655,8 @@ export default class ClientController implements IClientController {
 		this.dispatch(roomActionCreators.gameMetadataChanged(gameName, packageName, contactUri, voiceChatUri));
 	}
 
-	onHint(hint: string) {
-		this.dispatch(roomActionCreators.hintChanged(hint));
+	onShowmanComments(comments: string) {
+		this.appDispatch(setHiddenComments(comments));
 	}
 
 	onHostNameChanged(hostName: string | null, changeSource: string | null) {
@@ -891,20 +920,10 @@ export default class ClientController implements IClientController {
 
 	onPlayerAnswer(playerIndex: number, answer: string) {
 		if (this.getState().table.layoutMode === LayoutMode.OverlayPoints) {
-			const parts = answer.split(',');
+			const label = this.getState().room2.persons.players[playerIndex]?.name;
 
-			if (parts.length >= 2) {
-				const x = parseFloat(parts[0]);
-				const y = parseFloat(parts[1]);
-
-				if (!isNaN(x) && !isNaN(y)) {
-					const state = this.getState();
-					const player = state.room2.persons.players[playerIndex];
-					const label = player ? player.name : undefined;
-
-					this.appDispatch(addPointMarker({ x, y, color: '#FF9030', label }));
-					return;
-				}
+			if (this.tryAddPointMarker(answer, 'player', label)) {
+				return;
 			}
 		}
 
@@ -1151,8 +1170,7 @@ export default class ClientController implements IClientController {
 		this.appDispatch(canPressChanged(false));
 		this.appDispatch(setContext(ContextView.None));
 		this.appDispatch(clearAudio());
-
-		this.dispatch(roomActionCreators.hintChanged(null));
+		this.appDispatch(endAskingState());
 	}
 
 	onStageInfo(stage: string, _stageName: string, stageIndex: number) {
@@ -1631,16 +1649,7 @@ export default class ClientController implements IClientController {
 		this.appDispatch(setAnswerView(this.getState().table.layoutMode === LayoutMode.Simple ? rightAnswer : ''));
 
 		if (this.getState().table.layoutMode === LayoutMode.OverlayPoints) {
-			const parts = rightAnswer.split(',');
-
-			if (parts.length >= 2) {
-				const x = parseFloat(parts[0]);
-				const y = parseFloat(parts[1]);
-
-				if (!isNaN(x) && !isNaN(y)) {
-					this.appDispatch(addPointMarker({ x, y, color: 'rgba(0, 200, 0, 0.7)', isArea: true }));
-				}
-			}
+			this.tryAddPointMarker(rightAnswer, 'right-answer', undefined, true);
 		}
 	}
 
@@ -1662,7 +1671,7 @@ export default class ClientController implements IClientController {
 		}
 
 		this.dispatch(roomActionCreators.afterQuestionStateChanged(true));
-		this.dispatch(roomActionCreators.hintChanged(null));
+		this.appDispatch(endAskingState());
 
 		if (this.getState().settings.writeGameLog) {
 			this.appDispatch(addGameLog(`${localization.rightAnswer}: ${answer}`));

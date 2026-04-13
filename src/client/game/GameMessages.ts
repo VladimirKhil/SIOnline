@@ -76,8 +76,6 @@ const enum GameMessages {
 
 	GameThemes = 'GAMETHEMES',
 
-	Hint = 'HINT',
-
 	HostName = 'HOSTNAME',
 
 	Info = 'INFO2',
@@ -193,6 +191,9 @@ const enum GameMessages {
 
 	/** Sets game join mode. */
 	SetJoinMode = 'SETJOINMODE',
+
+	/** Defines comments for showman (hidden comments). */
+	ShowmanComments = 'SHOWMAN_COMMENTS',
 
 	/** Defines localizable showman replic. */
 	ShowmanReplic = 'SHOWMAN_REPLIC',

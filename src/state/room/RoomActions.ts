@@ -18,7 +18,6 @@ export const enum RoomActionTypes {
 	SetStakes = 'SET_STAKES',
 	StakeChanged = 'STAKE_CHANGED',
 	SelectionEnabled = 'SELECTION_ENABLED',
-	HintChanged = 'HINT_CHANGED',
 	ChooserChanged = 'CHOOSER_CHANGED',
 	PlayerInGameChanged = 'PLAYER_IN_GAME_CHANGED',
 	GameMetadataChanged = 'GAME_METADATA_CHANGED',
@@ -57,7 +56,6 @@ export type SetStakesAction = {
 
 export type StakeChangedAction = { type: RoomActionTypes.StakeChanged, stake: number };
 export type SelectionEnabledAction = { type: RoomActionTypes.SelectionEnabled };
-export type HintChangedAction = { type: RoomActionTypes.HintChanged, hint: string | null };
 
 export type GameMetadataChangedAction = {
 	type: RoomActionTypes.GameMetadataChanged,
@@ -92,7 +90,6 @@ export type KnownRoomAction =
 	| SetStakesAction
 	| StakeChangedAction
 	| SelectionEnabledAction
-	| HintChangedAction
 	| GameMetadataChangedAction
 	| BannedListChangedAction
 	| BannedAction
