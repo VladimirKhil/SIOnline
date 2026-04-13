@@ -1,6 +1,7 @@
 import GameInfo from './contracts/GameInfo';
 import JoinGameRequest from './contracts/JoinGameRequest';
 import JoinGameResponse from './contracts/JoinGameResponse';
+import ServerRole from './contracts/ServerRole';
 
 export default interface ISIHostClient {
 	/** Tries to get existing game info. */
@@ -33,4 +34,12 @@ export default interface ISIHostClient {
 
 	/** Reconnects to server after re-establishing connection. */
 	reconnectAsync(): Promise<any>;
+
+	/** Updates cached join role used for reconnect attempts. */
+	updateJoinRole(role: ServerRole): void;
+
+	/** Leaves running game. */
+	leaveGameAsync(): Promise<any>;
+
+	disconnectAsync(): Promise<void>;
 }

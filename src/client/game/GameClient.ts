@@ -1,14 +1,19 @@
 import IGameClient from './IGameClient';
-import IClientBase from '../IClientBase';
 import Messages from './Messages';
 import JoinMode from './JoinMode';
+import ServerRole from '../contracts/ServerRole';
+import ISIHostClient from '../ISIHostClient';
 
 export default class GameClient implements IGameClient {
 	/**
 	 * Initializes a new instance of {@link GameClient}.
 	 * @param gameServerClient Underlying SIGameServer client.
 	 */
-	constructor(private gameServerClient: IClientBase) { }
+	constructor(private gameServerClient: ISIHostClient) { }
+
+	updateJoinRole(role: ServerRole): void {
+		this.gameServerClient.updateJoinRole(role);
+	}
 
 	addTable(): Promise<boolean> {
 		return this.gameServerClient.msgAsync(Messages.Config, 'ADDTABLE');

@@ -1,12 +1,12 @@
 import * as signalR from '@microsoft/signalr';
 import * as signalRMsgPack from '@microsoft/signalr-protocol-msgpack';
-import IClientBase from './IClientBase';
 import ISIHostClient from './ISIHostClient';
 import ISIHostListener from './ISIHostListener';
 import GameInfo from './contracts/GameInfo';
 import JoinGameRequest from './contracts/JoinGameRequest';
 import JoinGameResponse from './contracts/JoinGameResponse';
 import JoinGameErrorType from './contracts/JoinGameErrorType';
+import ServerRole from './contracts/ServerRole';
 
 export class ReconnectError extends Error {
 	constructor(public errorType: JoinGameErrorType, public originalMessage?: string) {
@@ -15,7 +15,7 @@ export class ReconnectError extends Error {
 	}
 }
 
-export default class SIHostClient implements ISIHostClient, IClientBase {
+export default class SIHostClient implements ISIHostClient {
 	private isDisconnecting = false;
 
 	private joinInfo: JoinGameRequest | null = null;
@@ -144,10 +144,21 @@ export default class SIHostClient implements ISIHostClient, IClientBase {
 		const result = await this.connection.invoke<JoinGameResponse>('JoinGame', joinGameRequest);
 
 		if (result.IsSuccess) {
-			this.joinInfo = joinGameRequest;
+			this.joinInfo = { ...joinGameRequest };
 		}
 
 		return result;
+	}
+
+	updateJoinRole(role: ServerRole): void {
+		if (!this.joinInfo) {
+			return;
+		}
+
+		this.joinInfo = {
+			...this.joinInfo,
+			Role: role,
+		};
 	}
 
 	async sendMessageToServerAsync(message: string): Promise<boolean> {

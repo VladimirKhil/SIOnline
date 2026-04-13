@@ -18,6 +18,7 @@ import Account from '../model/Account';
 import localization from '../model/resources/localization';
 import ThemesPlayMode from '../model/enums/ThemesPlayMode';
 import TableMode from '../model/enums/TableMode';
+import Path from '../model/enums/Path';
 import Role from '../model/Role';
 import Sex from '../model/enums/Sex';
 import RoundRules from '../model/enums/RoundRules';
@@ -161,8 +162,9 @@ import PlayerInfo from '../model/PlayerInfo';
 import StakeModes from '../client/game/StakeModes';
 import { playAudio, stopAudio, userInfoChanged, userWarnChanged } from '../state/commonSlice';
 import { getUserError } from '../utils/ErrorHelpers';
-import { playersVisibilityChanged, setQrCode } from '../state/uiSlice';
+import { INavigationState, navigateCore, playersVisibilityChanged, setQrCode } from '../state/uiSlice';
 import ErrorCode from '../client/contracts/ErrorCode';
+import ServerRole from '../client/contracts/ServerRole';
 import { setAttachContentToTable } from '../state/settingsSlice';
 import { addGameLog, appendGameLog, copyToClipboard } from '../state/globalActions';
 import stringFormat from '../utils/StringHelpers';
@@ -215,6 +217,14 @@ function getAskSelectHint(reason: string): string {
 	}
 }
 
+function getServerRole(role: Role): ServerRole {
+	if (role === Role.Viewer) {
+		return ServerRole.Viewer;
+	}
+
+	return role === Role.Player ? ServerRole.Player : ServerRole.Showman;
+}
+
 export default class ClientController implements IClientController {
 	constructor(
 		private dispatch: Dispatch<AnyAction>,
@@ -264,6 +274,52 @@ export default class ClientController implements IClientController {
 
 		// Check if URI starts with any of the allowed content URIs
 		return !this.dataContext.contentUris.some(contentUri => uri.startsWith(contentUri));
+	}
+
+	private updateRoomNavigationRole(state: State, role: Role): void {
+		if (state.ui.navigation.path !== Path.Room) {
+			return;
+		}
+
+		const navigation: INavigationState = {
+			...state.ui.navigation,
+			role,
+		};
+
+		this.appDispatch(navigateCore(navigation));
+
+		let url: string | null = null;
+
+		if (this.dataContext.config.rewriteUrl) {
+			if (navigation.gameId) {
+				let gameLink = null;
+
+				for (const [key, value] of Object.entries(state.common.siHosts)) {
+					if (value === navigation.hostUri) {
+						gameLink = '_' + key + navigation.gameId;
+						break;
+					}
+				}
+
+				if (!gameLink) {
+					gameLink = `gameId=${navigation.gameId}&host=${encodeURIComponent(navigation.hostUri ?? '')}`;
+				}
+
+				url = `${this.dataContext.config.rootUri}?${gameLink}`;
+			} else {
+				url = this.dataContext.config.rootUri ?? null;
+			}
+		}
+
+		this.dataContext.host.saveNavigationState(navigation, url, true);
+	}
+
+	private setCurrentRoomRole(role: Role): void {
+		const state = this.getState();
+
+		this.appDispatch(setRoomRole(role));
+		this.updateRoomNavigationRole(state, role);
+		this.dataContext.game.updateJoinRole(getServerRole(role));
 	}
 
 	private playGameSound(sound: GameSound, loop = false): void {
@@ -1755,7 +1811,7 @@ export default class ClientController implements IClientController {
 		if (person && !person.isHuman) {
 			this.appDispatch(personRemoved(person.name));
 		} else if (player.name === state.room2.name) {
-			this.appDispatch(setRoomRole(Role.Viewer));
+			this.setCurrentRoomRole(Role.Viewer);
 		}
 
 		const { hostName } = this.getState().room2.persons;
@@ -1844,7 +1900,7 @@ export default class ClientController implements IClientController {
 		}
 
 		if (person && person.name === state.room2.name) {
-			this.appDispatch(setRoomRole(Role.Viewer));
+			this.setCurrentRoomRole(Role.Viewer);
 		}
 
 		const { hostName } = state.room2.persons;
@@ -1857,7 +1913,8 @@ export default class ClientController implements IClientController {
 			localization.changedSlotType,
 			hostName,
 			account.name,
-			isHuman ? localization.human : localization.computer));
+			isHuman ? localization.human : localization.computer
+		));
 	}
 
 	onTableSet(role: string, index: number, replacer: string, replacerSex: Sex) {
@@ -1896,9 +1953,9 @@ export default class ClientController implements IClientController {
 			this.appDispatch(playerChanged({ index, name: replacer, isHuman: true, isReady: state.room2.persons.showman.isReady }));
 
 			if (account.name === state.room2.name) {
-				this.appDispatch(setRoomRole(Role.Showman));
+				this.setCurrentRoomRole(Role.Showman);
 			} else if (replacer === state.room2.name) {
-				this.appDispatch(setRoomRole(Role.Player));
+				this.setCurrentRoomRole(Role.Player);
 			}
 
 			return;
@@ -1915,9 +1972,9 @@ export default class ClientController implements IClientController {
 					this.appDispatch(showmanChanged({ name: replacer, isReady }));
 
 					if (state.room2.persons.showman.name === state.room2.name) {
-						this.appDispatch(setRoomRole(Role.Player));
+						this.setCurrentRoomRole(Role.Player);
 					} else if (replacer === state.room2.name) {
-						this.appDispatch(setRoomRole(Role.Showman));
+						this.setCurrentRoomRole(Role.Showman);
 					}
 				}
 
@@ -1930,9 +1987,9 @@ export default class ClientController implements IClientController {
 			: showmanChanged({ name: replacer, isReady: false }));
 
 		if (account.name === state.room2.name) {
-			this.appDispatch(setRoomRole(Role.Viewer));
+			this.setCurrentRoomRole(Role.Viewer);
 		} else if (replacer === state.room2.name) {
-			this.appDispatch(setRoomRole(isPlayer ? Role.Player : Role.Showman));
+			this.setCurrentRoomRole(isPlayer ? Role.Player : Role.Showman);
 		}
 
 		const { hostName } = state.room2.persons;
@@ -1955,7 +2012,7 @@ export default class ClientController implements IClientController {
 		const account = isPlayer ? state.room2.persons.players[index] : state.room2.persons.showman;
 
 		if (account.name === state.room2.name) {
-			this.appDispatch(setRoomRole(Role.Viewer));
+			this.setCurrentRoomRole(Role.Viewer);
 		}
 
 		const { hostName } = state.room2.persons;

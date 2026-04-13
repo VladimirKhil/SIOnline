@@ -1,7 +1,7 @@
 import GameStage from '../client/contracts/GameStage';
+import ServerRole from '../client/contracts/ServerRole';
 import IGameClient from '../client/game/IGameClient';
 import JoinMode from '../client/game/JoinMode';
-import IClientBase from '../client/IClientBase';
 import ClientController from '../logic/ClientController';
 import PlayerStates from '../model/enums/PlayerStates';
 import Sex from '../model/enums/Sex';
@@ -33,6 +33,10 @@ export default class DemoGameClient implements IGameClient {
 		private controller: ClientController,
 		private getState: () => State,
 	) { }
+
+	updateJoinRole(role: ServerRole): void {
+		void role;
+	}
 
 	addTable(): Promise<boolean> {
 		throw new Error('Method not implemented.');

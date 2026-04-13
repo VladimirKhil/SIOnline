@@ -14,6 +14,10 @@ import ContentInfo from '../src/model/ContentInfo';
 import JoinMode from '../src/client/game/JoinMode';
 import StakeModes from '../src/client/game/StakeModes';
 import ItemState from '../src/model/enums/ItemState';
+import ServerRole from '../src/client/contracts/ServerRole';
+import Path from '../src/model/enums/Path';
+import Role from '../src/model/Role';
+import { loadState } from '../src/state/SavedState';
 
 describe('ClientController - Game Initialization Flow', () => {
 	let controller: ClientController;
@@ -1260,10 +1264,30 @@ describe('ClientController - Miscellaneous Operations', () => {
 	let mockAppDispatch: AppDispatch;
 	let mockGetState: () => State;
 	let mockDataContext: DataContext;
+	let mockGameClient: { updateJoinRole: jest.Mock };
+	let mockHost: { saveNavigationState: jest.Mock };
+	let storage: Record<string, string>;
 	let state: State;
 	let dispatchedActions: AnyAction[];
 
 	beforeEach(() => {
+		storage = {};
+		Object.defineProperty(globalThis, 'localStorage', {
+			value: {
+				getItem: (key: string) => storage[key] ?? null,
+				setItem: (key: string, value: string) => {
+					storage[key] = value;
+				},
+				clear: () => {
+					storage = {};
+				},
+				removeItem: (key: string) => {
+					delete storage[key];
+				},
+			},
+			configurable: true,
+		});
+
 		state = JSON.parse(JSON.stringify(initialState));
 		state.settings.appSound = true; // Enable sounds for testing
 		state.room2.persons.players = [
@@ -1306,10 +1330,23 @@ describe('ClientController - Miscellaneous Operations', () => {
 		}) as unknown as AppDispatch;
 
 		mockGetState = jest.fn(() => state);
+		mockGameClient = {
+			updateJoinRole: jest.fn(),
+		};
+		mockHost = {
+			saveNavigationState: jest.fn(),
+		};
+		localStorage.clear();
 
 		mockDataContext = {
+			config: {
+				rewriteUrl: true,
+				rootUri: 'http://localhost/',
+			} as any,
 			serverUri: 'http://localhost:5000',
 			contentUris: ['http://localhost:5000'],
+			game: mockGameClient as any,
+			host: mockHost as any,
 		} as DataContext;
 
 		controller = new ClientController(
@@ -1318,6 +1355,119 @@ describe('ClientController - Miscellaneous Operations', () => {
 			mockGetState,
 			mockDataContext
 		);
+	});
+
+	describe('role sync for reconnect', () => {
+		it('updates cached join role when current user takes a player slot', () => {
+			state.room2.name = 'TestUser';
+			state.room2.persons.showman = {
+				name: 'TestUser',
+				isReady: false,
+				replic: null,
+				isDeciding: false,
+				isHuman: true,
+			};
+			state.room2.persons.players = [
+				{
+					name: 'Player1',
+					isReady: false,
+					sum: 0,
+					stake: 0,
+					state: PlayerStates.None,
+					canBeSelected: false,
+					replic: null,
+					isDeciding: false,
+					isHuman: true,
+					isChooser: false,
+					inGame: true,
+					mediaLoaded: false,
+					mediaPreloaded: false,
+					mediaPreloadProgress: 0,
+					answer: '',
+					isAppellating: false,
+				},
+			];
+
+			controller.onTableSet('player', 0, 'TestUser', Sex.Male);
+
+			expect(mockGameClient.updateJoinRole).toHaveBeenCalledWith(ServerRole.Player);
+		});
+
+		it('updates cached join role when current user loses a slot', () => {
+			state.room2.name = 'TestUser';
+			state.room2.persons.players = [
+				{
+					name: 'TestUser',
+					isReady: false,
+					sum: 0,
+					stake: 0,
+					state: PlayerStates.None,
+					canBeSelected: false,
+					replic: null,
+					isDeciding: false,
+					isHuman: true,
+					isChooser: false,
+					inGame: true,
+					mediaLoaded: false,
+					mediaPreloaded: false,
+					mediaPreloadProgress: 0,
+					answer: '',
+					isAppellating: false,
+				},
+			];
+
+			controller.onTableFree('player', 0);
+
+			expect(mockGameClient.updateJoinRole).toHaveBeenCalledWith(ServerRole.Viewer);
+		});
+
+		it('persists updated role for page refresh inside room navigation', () => {
+			state.room2.name = 'TestUser';
+			state.ui.navigation = {
+				path: Path.Room,
+				gameId: 10,
+				hostUri: 'http://localhost:5000/',
+				role: Role.Player,
+			};
+			state.common.siHosts = {};
+			state.game.role = Role.Player;
+			state.room2.persons.players = [
+				{
+					name: 'TestUser',
+					isReady: false,
+					sum: 0,
+					stake: 0,
+					state: PlayerStates.None,
+					canBeSelected: false,
+					replic: null,
+					isDeciding: false,
+					isHuman: true,
+					isChooser: false,
+					inGame: true,
+					mediaLoaded: false,
+					mediaPreloaded: false,
+					mediaPreloadProgress: 0,
+					answer: '',
+					isAppellating: false,
+				},
+			];
+
+			controller.onTableFree('player', 0);
+
+			expect(dispatchedActions).toEqual(expect.arrayContaining([
+				expect.objectContaining({ type: 'game/setRole', payload: Role.Viewer }),
+				expect.objectContaining({
+					type: 'ui/navigateCore',
+					payload: expect.objectContaining({ path: Path.Room, role: Role.Viewer }),
+				}),
+			]));
+			expect(mockHost.saveNavigationState).toHaveBeenCalledWith(
+				expect.objectContaining({ path: Path.Room, role: Role.Viewer }),
+				'http://localhost/?gameId=10&host=http%3A%2F%2Flocalhost%3A5000%2F',
+				true,
+			);
+			expect(loadState()?.game.role).toBe(Role.Viewer);
+		});
 	});
 
 	describe('onReady', () => {

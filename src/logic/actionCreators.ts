@@ -185,7 +185,7 @@ const initStage3NavigateAsync = async (
 	dataContext: DataContext,
 ) => {
 	if (view.path === Path.Room) {
-		if (view.gameId && view.role && view.hostUri) {
+		if (view.gameId && view.role !== undefined && view.hostUri) {
 			// TODO: merge with onlineActionCreators.joinGame()
 			const licenseAccepted = dataContext.host.isLicenseAccepted();
 			if (!licenseAccepted) {

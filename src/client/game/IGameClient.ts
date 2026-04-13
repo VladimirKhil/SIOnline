@@ -1,8 +1,11 @@
 import JoinMode from './JoinMode';
+import ServerRole from '../contracts/ServerRole';
 
 /** Defines a high level game client built over IGameServerClient layer. */
 export default interface IGameClient {
 	addTable(): Promise<boolean>;
+
+	updateJoinRole(role: ServerRole): void;
 
 	apellate(forRightAnswer: boolean): Promise<boolean>;
 
