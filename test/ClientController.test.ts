@@ -17,7 +17,6 @@ import ItemState from '../src/model/enums/ItemState';
 import ServerRole from '../src/client/contracts/ServerRole';
 import Path from '../src/model/enums/Path';
 import Role from '../src/model/Role';
-import { loadState } from '../src/state/SavedState';
 
 describe('ClientController - Game Initialization Flow', () => {
 	let controller: ClientController;
@@ -1421,7 +1420,7 @@ describe('ClientController - Miscellaneous Operations', () => {
 			expect(mockGameClient.updateJoinRole).toHaveBeenCalledWith(ServerRole.Viewer);
 		});
 
-		it('persists updated role for page refresh inside room navigation', () => {
+		it('updates room navigation role after freeing the current player slot', () => {
 			state.room2.name = 'TestUser';
 			state.ui.navigation = {
 				path: Path.Room,
@@ -1455,7 +1454,7 @@ describe('ClientController - Miscellaneous Operations', () => {
 			controller.onTableFree('player', 0);
 
 			expect(dispatchedActions).toEqual(expect.arrayContaining([
-				expect.objectContaining({ type: 'game/setRole', payload: Role.Viewer }),
+				expect.objectContaining({ type: 'room2/setRoomRole', payload: Role.Viewer }),
 				expect.objectContaining({
 					type: 'ui/navigateCore',
 					payload: expect.objectContaining({ path: Path.Room, role: Role.Viewer }),
@@ -1466,7 +1465,7 @@ describe('ClientController - Miscellaneous Operations', () => {
 				'http://localhost/?gameId=10&host=http%3A%2F%2Flocalhost%3A5000%2F',
 				true,
 			);
-			expect(loadState()?.game.role).toBe(Role.Viewer);
+			expect(mockGameClient.updateJoinRole).toHaveBeenCalledWith(ServerRole.Viewer);
 		});
 	});
 
