@@ -1,60 +1,33 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { Dispatch, Action } from 'redux';
 import State from '../../../state/State';
 import PersonsView from '../PersonsView/PersonsView';
 import GameLogView from '../GameLogView/GameLogView';
 import ChatMode from '../../../model/enums/ChatMode';
 import UsersMode from '../../../model/enums/UsersMode';
-import roomActionCreators from '../../../state/room/roomActionCreators';
 import localization from '../../../model/resources/localization';
 import ChatInput from '../ChatInput/ChatInput';
 import Role from '../../../model/Role';
-import { isHost } from '../../../utils/StateHelpers';
 import GameMetadataView from '../GameMetadataView/GameMetadataView';
 import BannedView from '../BannedView/BannedView';
 import isWellFormedUri from '../../../utils/isWellFormedUri';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 
-import { addTable,
-	DecisionType,
-	selectPlayers,
-	setAreSumsEditable,
-	setChatMode,
-	setDecisionType,
-	setIsEditingTables,
-	setUsersMode } from '../../../state/room2Slice';
+import { setChatMode, setUsersMode } from '../../../state/room2Slice';
 
-import UserOptions from '../../panels/UserOptions/UserOptions';
 import TabControl from '../../common/TabControl/TabControl';
 import ValidationArea from '../ValidationArea/ValidationArea';
-import Constants from '../../../model/enums/Constants';
 import Link from '../../common/Link/Link';
+import UserOptions from '../../panels/UserOptions/UserOptions';
 
 import './GameChatView.css';
-import sumsImg from '../../../../assets/images/sums.png';
-import activePlayerImg from '../../../../assets/images/active_player.png';
 
 interface GameChatViewProps {
-	isConnected: boolean;
-	personsCount: number;
-	isHost: boolean;
 	voiceChatUri: string | null;
-
-	onGiveTurn: () => void;
 }
 
 const mapStateToProps = (state: State) => ({
-	isConnected: state.common.isSIHostConnected,
-	personsCount: Object.values(state.room2.persons.all).length,
-	isHost: isHost(state),
 	voiceChatUri: state.room.metadata.voiceChatUri,
-});
-
-const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
-	onGiveTurn: () => {
-		dispatch(roomActionCreators.giveTurn() as unknown as Action);
-	},
 });
 
 function getSideArea(props: GameChatViewProps, chatMode: ChatMode, usersMode: UsersMode): React.ReactNode {
@@ -106,73 +79,10 @@ function getSideArea(props: GameChatViewProps, chatMode: ChatMode, usersMode: Us
 export function GameChatView(props: GameChatViewProps): JSX.Element {
 	const appDispatch = useAppDispatch();
 
-	const { persons, stage, chat, role, areSumsEditable } = useAppSelector(state => ({
-		persons: state.room2.persons,
-		stage: state.room2.stage,
+	const { chat, role } = useAppSelector(state => ({
 		chat: state.room2.chat,
 		role: state.room2.role,
-		areSumsEditable: state.room2.areSumsEditable
 	}));
-
-	const canAddTable = persons.players.length < Constants.MAX_PLAYER_COUNT;
-
-	const onGiveTurn = () =>{
-		props.onGiveTurn();
-		appDispatch(selectPlayers([]));
-		appDispatch(setDecisionType(DecisionType.SelectChooser));
-	};
-
-	const hostUI = props.isHost
-		? <>
-			<button
-				type="button"
-				className='sumsButton standard imageButton wide commandButton bottomButton'
-				onClick={() => appDispatch(addTable())}
-				disabled={!props.isConnected || !canAddTable}
-				title={localization.addTable}
-			>
-				<svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-					<path
-						d="M9 2C6.79 2 5 3.79 5 6C5 8.21 6.79 10 9 10C11.21 10 13 8.21 13 6C13 3.79 11.21 2 9 2Z"
-						stroke="white"
-						strokeWidth="2"
-						fill="none"
-					/>
-					<path
-						d="M2 22V20C2 16.69 4.69 14 8 14H10C13.31 14 16 16.69 16 20V22"
-						stroke="white"
-						strokeWidth="2"
-						fill="none"
-					/>
-					<path d="M20 3L20 9M17 6L23 6" stroke="white" strokeWidth="2.5" strokeLinecap="round"/>
-				</svg>
-			</button>
-
-			<button
-				type="button"
-				className={`sumsButton standard imageButton wide commandButton bottomButton ${stage.isEditingTables ? 'active' : ''}`}
-				onClick={() => appDispatch(setIsEditingTables(!stage.isEditingTables))}
-				disabled={!props.isConnected || !stage.isGameStarted}
-				title={localization.editTables}
-			>
-				<svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-					<path
-						d="M8 2C5.79 2 4 3.79 4 6C4 8.21 5.79 10 8 10C10.21 10 12 8.21 12 6C12 3.79 10.21 2 8 2Z"
-						stroke="white"
-						strokeWidth="2"
-						fill="none"
-					/>
-					<path
-						d="M1 22V20C1 16.69 3.69 14 7 14H9C12.31 14 15 16.69 15 20V22"
-						stroke="white"
-						strokeWidth="2"
-						fill="none"
-					/>
-					<path d="M21 0L23 2L17 8L15 8L15 6Z" stroke="white" strokeWidth="1" fill="white"/>
-				</svg>
-			</button>
-		</>
-		: null;
 
 	return (
 		<div id="gameLogHost" className='gameSideView'>
@@ -185,7 +95,16 @@ export function GameChatView(props: GameChatViewProps): JSX.Element {
 							onClick={() => appDispatch(setChatMode(ChatMode.Chat))}
 							title={localization.chat}>
 							<svg width="22" height="20" viewBox="0 0 22 20" fill="none">
-								<path d="M11.0193 0C4.93282 0 0.00107629 4.15625 0.00107629 9.28571C0.00107629 11.5013 0.920078 13.5259 2.45333 15.1205C1.91527 17.3692 0.117297 19.3737 0.0957744 19.396C-0.00107594 19.4964 -0.0279788 19.652 0.0312075 19.7859C0.0850907 19.9196 0.204367 20 0.344262 20C3.19597 20 5.2987 18.5821 6.39633 17.7058C7.79959 18.2545 9.36641 18.5714 11.0193 18.5714C17.1058 18.5714 22 14.4138 22 9.28571C22 4.15759 17.1058 0 11.0193 0Z" fill="white"/>
+								<path
+									d={
+										'M11.0193 0C4.93282 0 0.00107629 4.15625 0.00107629 9.28571C0.00107629 11.5013 ' +
+										'0.920078 13.5259 2.45333 15.1205C1.91527 17.3692 0.117297 19.3737 0.0957744 19.396C' +
+										'-0.00107594 19.4964 -0.0279788 19.652 0.0312075 19.7859C0.0850907 19.9196 0.204367 20 ' +
+										'0.344262 20C3.19597 20 5.2987 18.5821 6.39633 17.7058C7.79959 18.2545 9.36641 18.5714 ' +
+										'11.0193 18.5714C17.1058 18.5714 22 14.4138 22 9.28571C22 4.15759 17.1058 0 11.0193 0Z'
+									}
+									fill="white"
+								/>
 							</svg>
 						</button>
 
@@ -195,7 +114,24 @@ export function GameChatView(props: GameChatViewProps): JSX.Element {
 							onClick={() => appDispatch(setChatMode(ChatMode.Users))}
 							title={localization.members}>
 							<svg width="24" height="18" viewBox="0 0 24 18" fill="none">
-								<path fillRule="evenodd" clipRule="evenodd" d="M10.5 18C10.5 18 9 18 9 16.5C9 15 10.5 10.5 16.5 10.5C22.5 10.5 24 15 24 16.5C24 18 22.5 18 22.5 18H10.5ZM16.5 9C17.6935 9 18.8381 8.52589 19.682 7.68198C20.5259 6.83807 21 5.69347 21 4.5C21 3.30653 20.5259 2.16193 19.682 1.31802C18.8381 0.474106 17.6935 0 16.5 0C15.3065 0 14.1619 0.474106 13.318 1.31802C12.4741 2.16193 12 3.30653 12 4.5C12 5.69347 12.4741 6.83807 13.318 7.68198C14.1619 8.52589 15.3065 9 16.5 9ZM7.824 18C7.60163 17.5317 7.49073 17.0183 7.5 16.5C7.5 14.4675 8.52 12.375 10.404 10.92C9.46364 10.6302 8.48392 10.4885 7.5 10.5C1.5 10.5 0 15 0 16.5C0 18 1.5 18 1.5 18H7.824ZM9.40165 7.90165C8.69839 8.60491 7.74456 9 6.75 9C5.75544 9 4.80161 8.60491 4.09835 7.90165C3.39509 7.19839 3 6.24456 3 5.25C3 4.25544 3.39509 3.30161 4.09835 2.59835C4.80161 1.89509 5.75544 1.5 6.75 1.5C7.74456 1.5 8.69839 1.89509 9.40165 2.59835C10.1049 3.30161 10.5 4.25544 10.5 5.25C10.5 6.24456 10.1049 7.19839 9.40165 7.90165Z" fill="white"/>
+								<path
+									fillRule="evenodd"
+									clipRule="evenodd"
+									d={
+										'M10.5 18C10.5 18 9 18 9 16.5C9 15 10.5 10.5 16.5 10.5C22.5 10.5 24 15 24 16.5C24 18 ' +
+										'22.5 18 22.5 18H10.5ZM16.5 9C17.6935 9 18.8381 8.52589 19.682 7.68198C20.5259 6.83807 21 ' +
+										'5.69347 21 4.5C21 3.30653 20.5259 2.16193 19.682 1.31802C18.8381 0.474106 17.6935 0 ' +
+										'16.5 0C15.3065 0 14.1619 0.474106 13.318 1.31802C12.4741 2.16193 12 3.30653 12 4.5C12 ' +
+										'5.69347 12.4741 6.83807 13.318 7.68198C14.1619 8.52589 15.3065 9 16.5 9ZM7.824 18C7.60163 ' +
+										'17.5317 7.49073 17.0183 7.5 16.5C7.5 14.4675 8.52 12.375 10.404 10.92C9.46364 10.6302 ' +
+										'8.48392 10.4885 7.5 10.5C1.5 10.5 0 15 0 16.5C0 18 1.5 18 1.5 18H7.824ZM9.40165 7.90165C' +
+										'8.69839 8.60491 7.74456 9 6.75 9C5.75544 9 4.80161 8.60491 4.09835 7.90165C3.39509 ' +
+										'7.19839 3 6.24456 3 5.25C3 4.25544 3.39509 3.30161 4.09835 2.59835C4.80161 1.89509 ' +
+										'5.75544 1.5 6.75 1.5C7.74456 1.5 8.69839 1.89509 9.40165 2.59835C10.1049 3.30161 10.5 ' +
+										'4.25544 10.5 5.25C10.5 6.24456 10.1049 7.19839 9.40165 7.90165Z'
+									}
+									fill="white"
+								/>
 							</svg>
 						</button>
 
@@ -226,36 +162,9 @@ export function GameChatView(props: GameChatViewProps): JSX.Element {
 				{getSideArea(props, chat.mode, chat.usersMode)}
 			</div>
 
-			{role === Role.Showman ? (
-				<>
-					<ValidationArea />
-
-					<div className="sideButtonHost">
-						{hostUI}
-
-						<button
-							type="button"
-							className='sumsButton standard imageButton wide commandButton bottomButton'
-							disabled={!props.isConnected}
-							onClick={onGiveTurn}
-							title={localization.giveTurn}
-						>
-							<img alt='Active player' src={activePlayerImg} />
-						</button>
-
-						<button
-							type="button"
-							className={`sumsButton standard imageButton wide commandButton bottomButton ${areSumsEditable ? 'active' : ''}`}
-							disabled={!props.isConnected}
-							onClick={() => appDispatch(setAreSumsEditable(!areSumsEditable))}
-							title={localization.changeSums}
-						>
-							<img src={sumsImg} />
-						</button>
-					</div>
-				</>) : <div className="sideButtonHost">{hostUI}</div>}
+			{role === Role.Showman ? <ValidationArea /> : null}
 		</div>
 	);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(GameChatView);
+export default connect(mapStateToProps)(GameChatView);

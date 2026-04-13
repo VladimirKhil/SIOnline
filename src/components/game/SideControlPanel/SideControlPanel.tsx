@@ -20,7 +20,6 @@ import {
 	setIsEditingTables
 } from '../../../state/room2Slice';
 
-import { showProfile, showSettings } from '../../../state/uiSlice';
 import Constants from '../../../model/enums/Constants';
 import { pauseGame } from '../../../state/serverActions';
 
@@ -28,6 +27,8 @@ import './SideControlPanel.css';
 import nextImg from '../../../../assets/images/next.png';
 import pauseImg from '../../../../assets/images/pause.png';
 import exitImg from '../../../../assets/images/exit.png';
+import sumsImg from '../../../../assets/images/sums.png';
+import activePlayerImg from '../../../../assets/images/active_player.png';
 import { navigate } from '../../../utils/Navigator';
 import Path from '../../../model/enums/Path';
 
@@ -111,14 +112,6 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 
 	const ui = useAppSelector(state => state.ui);
 
-	const chatButtonStyle: React.CSSProperties = chatIsActive ? {
-		backgroundColor: 'lightyellow'
-	} : {};
-
-	const gameMenuHostStyle: React.CSSProperties = {
-		flex: '1 0 0'
-	};
-
 	const pauseTitle = isGamePaused ? localization.resume : localization.pause;
 	const canPause = props.isHost || role === Role.Showman;
 
@@ -129,6 +122,7 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 	const canAddTable = playersCount < Constants.MAX_PLAYER_COUNT;
 
 	const canStart = !isGameStarted && props.isHost;
+	const canEditTables = props.isConnected && isGameStarted;
 
 	const onGiveTurn = () => {
 		props.onGiveTurn();
@@ -146,13 +140,14 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 	};
 
 	const isScreenWide = ui.windowWidth >= Constants.WIDE_WINDOW_WIDTH;
+	const validVoiceChatUri = voiceChatUri !== null && isWellFormedUri(voiceChatUri) ? voiceChatUri : null;
 
 	return (
 		<div className="game__utilsArea">
 			<div className="gameMessageHost">
 				<div className='sidecontrol_buttons'>
 					{!deepMode && (
-						<div className="gameMenuHost" style={gameMenuHostStyle}>
+						<div className="gameMenuHost">
 							<FlyoutButton
 								className="gameMenuButton imageButton"
 								title={localization.menu}
@@ -194,16 +189,13 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 										<li onClick={() => props.onShowBanned()}>{localization.bannedList}</li>
 										<li onClick={() => props.onShowGameInfo()}>{localization.gameInfo}</li>
 
-										{role === Role.Showman ? (
-											<li className={enabledClass} onClick={onGiveTurn}>{localization.giveTurn}</li>
+										{validVoiceChatUri ? (
+											<li
+												title={validVoiceChatUri}
+												onClick={() => window.open(validVoiceChatUri, '_blank')}>
+												{localization.voiceChat}
+											</li>
 										) : null}
-
-										{voiceChatUri && isWellFormedUri(voiceChatUri) ? (
-											<li title={voiceChatUri} onClick={() => window.open(voiceChatUri, '_blank')}>{localization.voiceChat}</li>
-										) : null}
-
-										<li onClick={() => appDispatch(showSettings(true))}>{localization.settings}</li>
-										<li onClick={() => appDispatch(showProfile(true))}>{localization.profile}</li>
 									</ul>
 								)}
 								theme={FlyoutTheme.Dark}
@@ -218,19 +210,104 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 					{!deepMode && (
 						<button
 							type="button"
-							className={`standard imageButton showChat ${chatIsVisible ? 'active' : ''}`}
+							className={`standard imageButton showChat ${chatIsVisible ? 'active' : ''} ${chatIsActive ? 'chat-active' : ''}`}
 							onClick={() => appDispatch(setChatVisibility(!chatIsVisible))}
-							style={chatButtonStyle}
 							title={localization.showChat}
 						>
 							<span>💬</span>
 						</button>
 					)}
 
+					{props.isHost ? (
+						<button
+							type="button"
+							className="sidecontrol_button addTableButton standard imageButton"
+							disabled={!props.isConnected || !canAddTable}
+							onClick={() => appDispatch(addTable())}
+							title={localization.addTable}
+						>
+							<svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+								<path
+									d={
+										'M9 2C6.79 2 5 3.79 5 6C5 8.21 6.79 10 9 10C11.21 10 13 8.21 13 6' +
+										'C13 3.79 11.21 2 9 2Z'
+									}
+									stroke="currentColor"
+									strokeWidth="2"
+									fill="none"
+								/>
+								<path
+									d={
+										'M2 22V20C2 16.69 4.69 14 8 14H10C13.31 14 16 16.69 16 20V22'
+									}
+									stroke="currentColor"
+									strokeWidth="2"
+									fill="none"
+								/>
+								<path d="M20 3L20 9M17 6L23 6" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
+							</svg>
+						</button>
+					) : null}
+
+					{props.isHost ? (
+						<button
+							type="button"
+							className={`sidecontrol_button editTablesButton standard imageButton ${isEditingTables ? 'active' : ''}`}
+							disabled={!canEditTables}
+							onClick={() => appDispatch(setIsEditingTables(!isEditingTables))}
+							title={localization.editTables}
+						>
+							<svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+								<path
+									d={
+										'M8 2C5.79 2 4 3.79 4 6C4 8.21 5.79 10 8 10C10.21 10 12 8.21 12 6' +
+										'C12 3.79 10.21 2 8 2Z'
+									}
+									stroke="currentColor"
+									strokeWidth="2"
+									fill="none"
+								/>
+								<path
+									d={
+										'M1 22V20C1 16.69 3.69 14 7 14H9C12.31 14 15 16.69 15 20V22'
+									}
+									stroke="currentColor"
+									strokeWidth="2"
+									fill="none"
+								/>
+								<path d="M21 0L23 2L17 8L15 8L15 6Z" stroke="currentColor" strokeWidth="1" fill="currentColor" />
+							</svg>
+						</button>
+					) : null}
+
+					{role === Role.Showman ? (
+						<button
+							type="button"
+							className="sidecontrol_button giveTurnButton standard imageButton"
+							disabled={!props.isConnected}
+							onClick={onGiveTurn}
+							title={localization.giveTurn}
+						>
+							<img alt='Active player' src={activePlayerImg} />
+						</button>
+					) : null}
+
+					{role === Role.Showman ? (
+						<button
+							type="button"
+							className={`sidecontrol_button standard imageButton ${areSumsEditable ? 'active' : ''}`}
+							disabled={!props.isConnected}
+							onClick={() => appDispatch(setAreSumsEditable(!areSumsEditable))}
+							title={localization.changeSums}
+						>
+							<img alt='sums' src={sumsImg} />
+						</button>
+					) : null}
+
 					{canPause && (!deepMode || props.isHost) ? (
 						<button
 							type="button"
-							className={`pauseButton standard imageButton ${isGamePaused ? 'active' : ''}`}
+							className={`sidecontrol_button pauseButton standard imageButton ${isGamePaused ? 'active' : ''}`}
 							title={pauseTitle}
 							disabled={!props.isConnected || !isGameStarted}
 							onClick={() => appDispatch(pauseGame())}
@@ -242,7 +319,7 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 					{props.isHost ? (
 						<button
 							type="button"
-							className={`nextButton standard imageButton ${canStart ? 'startButton' : ''}`}
+							className={`sidecontrol_button nextButton standard imageButton ${canStart ? 'startButton' : ''}`}
 							title={canStart ? localization.startGameHint : localization.next}
 							onClick={canStart ? props.onStart : moveNext}>
 							{canStart ? <span role="img" aria-label="arrow right">▶</span> : <img alt='Next' src={nextImg} />}
@@ -250,7 +327,7 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 					) : (!deepMode && (
 						<button
 							type="button"
-							className="nextButton standard imageButton"
+							className="sidecontrol_button nextButton standard imageButton"
 							title={localization.next}
 							disabled
 						>
@@ -258,9 +335,9 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 						</button>
 					))}
 
-					{(!deepMode || props.isHost || !isScreenWide) && (
+					{(!deepMode || !isScreenWide) && (
 						<FlyoutButton
-							className="exit standard imageButton"
+							className="exit sidecontrol_button standard imageButton"
 							title={localization.exit}
 							flyout={(
 								<div id="exitMenu" className="exitMenu">
@@ -283,6 +360,7 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 							<img alt='exit' src={exitImg} />
 						</FlyoutButton>
 					)}
+
 				</div>
 			</div>
 
