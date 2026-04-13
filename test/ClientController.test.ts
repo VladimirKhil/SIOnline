@@ -756,7 +756,7 @@ describe('ClientController - Answer Phase Flow', () => {
 
 	describe('onAskValidate', () => {
 		it('should request answer validation', () => {
-			controller.onAskValidate(0, 'Player answer');
+			controller.onAskValidate(0, 'Player answer', false);
 
 			expect(mockAppDispatch).toHaveBeenCalled();
 			const actions = dispatchedActions.map(a => a.type);
