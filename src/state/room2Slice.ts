@@ -665,7 +665,7 @@ export const room2Slice = createSlice({
 			state.validation.newVersion = false;
 			state.stage.decisionType = DecisionType.Validation;
 		},
-		askValidation(state: Room2State, action: PayloadAction<{ playerIndex: number, answer: string }>) {
+		askValidation(state: Room2State, action: PayloadAction<{ playerIndex: number, answer: string, showExtraRightButtons: boolean }>) {
 			if (action.payload.playerIndex === -1 || action.payload.playerIndex >= state.persons.players.length) {
 				return;
 			}
@@ -674,7 +674,7 @@ export const room2Slice = createSlice({
 			state.validation.queue.push({ name: player.name, answer: action.payload.answer });
 			state.validation.header = localization.answerChecking;
 			state.validation.message = '';
-			state.validation.showExtraRightButtons = false;
+			state.validation.showExtraRightButtons = action.payload.showExtraRightButtons;
 			state.validation.newVersion = true;
 			state.stage.decisionType = DecisionType.Validation;
 		},

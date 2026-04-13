@@ -530,8 +530,8 @@ export default class ClientController implements IClientController {
 		this.appDispatch(setDecisionType(DecisionType.Stake));
 	}
 
-	onAskValidate(playerIndex: number, answer: string) {
-		this.appDispatch(askValidation({ playerIndex, answer }));
+	onAskValidate(playerIndex: number, answer: string, showExtraRightButtons: boolean) {
+		this.appDispatch(askValidation({ playerIndex, answer, showExtraRightButtons }));
 	}
 
 	onAutomaticGameTimer(leftSeconds: number) {
@@ -1254,8 +1254,7 @@ export default class ClientController implements IClientController {
 		name: string,
 		answer: string,
 		message: string,
-		rightAnswers:
-			string[],
+		rightAnswers: string[],
 		wrongAnswers: string[],
 		showExtraRightButtons: boolean,
 	) {
@@ -1358,7 +1357,11 @@ export default class ClientController implements IClientController {
 	}
 
 	onThemeComments(themeComments: string) {
-		this.appDispatch(prependTextChanged(themeComments));
+		if (this.getState().settings.attachContentToTable) {
+			this.appDispatch(prependTextChanged(themeComments));
+		} else {
+			this.appDispatch(showmanReplicChanged(themeComments));
+		}
 	}
 
 	onContentAppend(placement: string, layoutId: string, contentType: string, contentValue: string) {

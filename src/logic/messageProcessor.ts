@@ -1189,7 +1189,7 @@ const showmanHandler = (controller: ClientController, args: string[]) => {
 				return;
 			}
 
-			controller.onAskValidate(parseInt(args[1], 10), args[2]);
+			controller.onAskValidate(parseInt(args[1], 10), args[2], args.length > 3 ? args[3] === '+' : false);
 			break;
 
 		case GameMessages.Cancel:

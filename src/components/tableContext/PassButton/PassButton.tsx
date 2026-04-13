@@ -19,8 +19,12 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 });
 
 export function PassButton(props: PassButtonProps): JSX.Element {
-	const isConnected = useAppSelector(state => state.common.isSIHostConnected);
-	const { name, persons } = useAppSelector((state) => state.room2);
+	const { name, persons, isConnected } = useAppSelector((state) => ({
+		name: state.room2.name,
+		persons: state.room2.persons,
+		isConnected: state.common.isSIHostConnected,
+	}));
+
 	const me = persons.players.find(p => p.name === name);
 	const canPass = me && (me.state === PlayerStates.None || me.state === PlayerStates.Lost);
 
