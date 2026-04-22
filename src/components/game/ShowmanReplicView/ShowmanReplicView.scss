@@ -25,7 +25,7 @@
 }
 
 .showmanArea.highlighted .showmanReplic {
-    background: v.$active-button-background;
+    border: 2px solid #e26f1d;
 }
 
 .showmanInfo {
@@ -147,10 +147,12 @@
     font-size: 14px;
     opacity: 0.8;
     text-transform: uppercase;
-    margin-bottom: 8px; /* Increased space */
+    margin-bottom: 8px;
+    /* Increased space */
 }
 
 .playerMainInfo_value {
-    color: v.$me-color; /* Use the same color as current player name */
+    color: v.$me-color;
+    /* Use the same color as current player name */
     font-size: 32px;
 }

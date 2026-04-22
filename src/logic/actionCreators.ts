@@ -237,14 +237,6 @@ const initStage3NavigateAsync = async (
 	appDispatch(navigate({ navigation: view, saveState: true, replaceState: true }));
 };
 
-const connectToServerAsync = async (
-	appDispatch: AppDispatch,
-	getState: () => State,
-	dataContext: DataContext
-) => {
-	await ensureServerInfoLoadedAsync(appDispatch, getState, dataContext);
-};
-
 const initStage2CompleteInitializaionAsync = async (
 	initialView: INavigationState,
 	dispatch: Dispatch<Action>,
@@ -355,7 +347,6 @@ const actionCreators = {
 	login,
 	connectToSIHostAsync,
 	acceptLicense,
-	ensureServerInfoLoadedAsync,
 };
 
 export default actionCreators;

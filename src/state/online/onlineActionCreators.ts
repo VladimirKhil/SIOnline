@@ -51,7 +51,8 @@ import { saveStateToStorage } from '../StateHelpers';
 import { INavigationState } from '../uiSlice';
 import { navigate } from '../../utils/Navigator';
 import { UnknownAction } from '@reduxjs/toolkit';
-import { downloadPackageFinished,
+import {
+	downloadPackageFinished,
 	downloadPackageStarted,
 	gameCreationEnd,
 	gameCreationStart,
@@ -61,9 +62,11 @@ import { downloadPackageFinished,
 	passwordChanged,
 	uploadPackageFinished,
 	uploadPackageProgress,
-	uploadPackageStarted } from '../online2Slice';
+	uploadPackageStarted
+} from '../online2Slice';
 import WellKnownSIStorageServiceErrorCode from 'sistorage-client/dist/models/WellKnownSIStorageServiceErrorCode';
 import { initRoom } from '../serverActions';
+import { ensureServerInfoLoadedAsync } from '../../logic/ServerInitializer';
 
 async function uploadPackageAsync2(
 	contentClient: SIContentClient,
@@ -160,86 +163,86 @@ const joinGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 		getState: () => State,
 		dataContext: DataContext,
 	) => {
-		await actionCreators.ensureServerInfoLoadedAsync(appDispatch, getState, dataContext);
+		await ensureServerInfoLoadedAsync(appDispatch, getState, dataContext);
 		appDispatch(joinGameStarted());
 
-	try {
-		const licenseAccepted = dataContext.host.isLicenseAccepted();
+		try {
+			const licenseAccepted = dataContext.host.isLicenseAccepted();
 
-		if (!licenseAccepted) {
+			if (!licenseAccepted) {
+				const navigation: INavigationState = {
+					path: Path.Room,
+					hostUri: hostUri,
+					gameId: gameId,
+					role: role,
+					sex: (getState() as State).settings.sex,
+					password: (getState() as State).online2.password,
+					isAutomatic: isAutomatic,
+				};
+
+				appDispatch(navigate({ navigation: { path: Path.AcceptLicense, callbackState: navigation }, saveState: true }));
+				return;
+			}
+
+			const siHostClient = await actionCreators.connectToSIHostAsync(hostUri, dispatch, appDispatch, getState, dataContext);
+
+			const state = getState();
+			const serverRole = getServerRole(role);
+
+			const result = await siHostClient.joinGameAsync({
+				GameId: gameId,
+				UserName: userName,
+				Role: serverRole,
+				Sex: state.settings.sex === Sex.Male ? ServerSex.Male : ServerSex.Female,
+				Password: state.online2.password,
+				Pin: pin,
+			});
+
+			if (!result.IsSuccess) {
+				appDispatch(userErrorChanged(
+					`${localization.joinError}: ${GameErrorsHelper.getJoinErrorMessage(result.ErrorType)} ${result.Message ?? ''}`));
+
+				return;
+			}
+
+			await initGameAsync(dispatch, appDispatch, dataContext.game, gameId, userName, role, isAutomatic);
+			saveStateToStorage(getState()); // use state that could be changed by initGameAsync
+
 			const navigation: INavigationState = {
 				path: Path.Room,
 				hostUri: hostUri,
 				gameId: gameId,
 				role: role,
-				sex: (getState() as State).settings.sex,
-				password: (getState() as State).online2.password,
-				isAutomatic: isAutomatic,
+				sex: state.settings.sex,
+				password: state.online2.password,
+				isAutomatic: false,
 			};
 
-			appDispatch(navigate({ navigation: { path: Path.AcceptLicense, callbackState: navigation }, saveState: true }));
-			return;
+			appDispatch(navigate({ navigation, saveState: true }));
+		} catch (error) {
+			appDispatch(userErrorChanged(getErrorMessage(error)));
+		} finally {
+			appDispatch(joinGameFinished());
+			appDispatch(newGameCancel());
 		}
-
-		const siHostClient = await actionCreators.connectToSIHostAsync(hostUri, dispatch, appDispatch, getState, dataContext);
-
-		const state = getState();
-		const serverRole = getServerRole(role);
-
-		const result = await siHostClient.joinGameAsync({
-			GameId: gameId,
-			UserName: userName,
-			Role: serverRole,
-			Sex: state.settings.sex === Sex.Male ? ServerSex.Male : ServerSex.Female,
-			Password: state.online2.password,
-			Pin: pin,
-		});
-
-		if (!result.IsSuccess) {
-			appDispatch(userErrorChanged(
-				`${localization.joinError}: ${GameErrorsHelper.getJoinErrorMessage(result.ErrorType)} ${result.Message ?? ''}`));
-
-			return;
-		}
-
-		await initGameAsync(dispatch, appDispatch, dataContext.game, gameId, userName, role, isAutomatic);
-		saveStateToStorage(getState()); // use state that could be changed by initGameAsync
-
-		const navigation: INavigationState = {
-			path: Path.Room,
-			hostUri: hostUri,
-			gameId: gameId,
-			role: role,
-			sex: state.settings.sex,
-			password: state.online2.password,
-			isAutomatic: false,
-		};
-
-		appDispatch(navigate({ navigation, saveState: true }));
-	} catch (error) {
-		appDispatch(userErrorChanged(getErrorMessage(error)));
-	} finally {
-		appDispatch(joinGameFinished());
-		appDispatch(newGameCancel());
-	}
-};
+	};
 
 const joinByPin: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
-(pin: number, userName: string, role: Role, appDispatch: AppDispatch) => async (
-	_dispatch: Dispatch<any>,
-	_getState: () => State,
-	dataContext: DataContext,
-) => {
-	// TODO: Display get game PIN progress
-	const gameInfo = await dataContext.gameClient.getGameByPinAsync(pin);
+	(pin: number, userName: string, role: Role, appDispatch: AppDispatch) => async (
+		_dispatch: Dispatch<any>,
+		_getState: () => State,
+		dataContext: DataContext,
+	) => {
+		// TODO: Display get game PIN progress
+		const gameInfo = await dataContext.gameClient.getGameByPinAsync(pin);
 
-	if (!gameInfo) {
-		appDispatch(userErrorChanged(localization.gameNotFound));
-		return;
-	}
+		if (!gameInfo) {
+			appDispatch(userErrorChanged(localization.gameNotFound));
+			return;
+		}
 
-	appDispatch(joinGame(gameInfo.hostUri, gameInfo.gameId, userName, role, pin, appDispatch, false) as unknown as UnknownAction);
-};
+		appDispatch(joinGame(gameInfo.hostUri, gameInfo.gameId, userName, role, pin, appDispatch, false) as unknown as UnknownAction);
+	};
 
 function createGameSettings(
 	playersCount: number,
@@ -508,7 +511,7 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 		}
 
 		if (state.common.computerAccounts === null) {
-			await actionCreators.ensureServerInfoLoadedAsync(appDispatch, getState, dataContext);
+			await ensureServerInfoLoadedAsync(appDispatch, getState, dataContext);
 
 			if (getState().common.computerAccounts === null) {
 				appDispatch(userErrorChanged(localization.computerAccountsMissing));

@@ -1,5 +1,13 @@
 .validationArea {
-	background-color: #0A0E30;
+	background: linear-gradient(135deg, rgba(20, 24, 62, 0.4), rgba(5, 6, 31, 0.6));
+	border: 1px solid rgba(255, 255, 255, 0.15);
+	background-clip: padding-box;
+	isolation: isolate;
+	-webkit-backdrop-filter: blur(8px);
+	backdrop-filter: blur(8px);
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+	border-radius: 10px;
+	margin: 4px;
 	color: white;
 	flex: 1;
 	display: flex;

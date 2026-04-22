@@ -1,17 +1,16 @@
 @use '../../../scss/variables' as v;
 
 input.disconnected {
-	color: gray;
+    color: gray;
 }
 
 .roomChatBodyHost {
-	position: relative;
-	display: flex;
-	flex: 0 0 45px;
-    background: #000451;
+    position: relative;
+    display: flex;
+    flex: 0 0 45px;
 
     .roomChatInput {
-	    position: relative;
+        position: relative;
         flex: 1;
         padding: 5px;
         display: flex;
@@ -31,9 +30,9 @@ input.disconnected {
     height: 45px;
     top: 0;
     color: white;
-	background: #05061F;
-	border: 1px solid #222084;
-	border-radius: 10px;
+    background: #05061F;
+    border: 1px solid #222084;
+    border-radius: 10px;
     font-size: 16px;
     padding-left: 10px;
     padding-right: 47px;
@@ -42,12 +41,12 @@ input.disconnected {
 }
 
 .gameInputBox::placeholder {
-	color: lightgray;
+    color: lightgray;
 }
 
 @media screen and (min-width: 800px) {
-	.roomChatBodyHost {
-		flex: initial;
-		width: calc(100% - 5px);
-	}
+    .roomChatBodyHost {
+        flex: initial;
+        width: calc(100% - 5px);
+    }
 }

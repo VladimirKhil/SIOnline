@@ -92,8 +92,9 @@ export function PersonsView(props: PersonsViewProps): JSX.Element {
 				<span className='joinModeTitle'>{localization.joinMode}</span>
 
 				<select
+					className='joinModeSelector'
 					title={localization.joinMode}
-					value = {joinMode}
+					value={joinMode}
 					onChange={onJoinModeChanged}
 					disabled={!isConnected || !props.isHost}>
 					<option value={JoinMode.AnyRole}>{localization.joinModeAnyRole}</option>

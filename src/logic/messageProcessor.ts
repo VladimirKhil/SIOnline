@@ -605,26 +605,6 @@ const viewerHandler = (
 			}
 			break;
 
-		case GameMessages.PersonApellated:
-			{
-				const playerIndex = parseInt(args[1], 10);
-
-				if (playerIndex > -1) {
-					controller.onSinglePlayerStateChanged(playerIndex, PlayerStates.HasAnswered);
-				}
-			}
-			break;
-
-		case GameMessages.PersonFinalAnswer:
-			{
-				const playerIndex = parseInt(args[1], 10);
-
-				if (playerIndex > -1) {
-					controller.onSinglePlayerStateChanged(playerIndex, PlayerStates.HasAnswered);
-				}
-			}
-			break;
-
 		case GameMessages.PersonFinalStake:
 			{
 				const playerIndex = parseInt(args[1], 10);

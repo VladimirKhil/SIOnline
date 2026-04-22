@@ -115,10 +115,6 @@ const enum GameMessages {
 
 	Person = 'PERSON',
 
-	PersonApellated = 'PERSONAPELLATED',
-
-	PersonFinalAnswer = 'PERSONFINALANSWER',
-
 	PersonFinalStake = 'PERSONFINALSTAKE',
 
 	PersonStake = 'PERSONSTAKE',
@@ -203,9 +199,6 @@ const enum GameMessages {
 	Stage = 'STAGE',
 
 	StageInfo = 'STAGE_INFO',
-
-	/** Stake info. */
-	Stake2 = 'STAKE2',
 
 	Stop = 'STOP',
 

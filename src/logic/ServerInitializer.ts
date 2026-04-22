@@ -161,7 +161,21 @@ async function initializeStoragesAsync(appDispatch: AppDispatch, dataContext: Da
 	appDispatch(setStorages(storageInfos));
 }
 
-export async function ensureServerInfoLoadedAsync(
+let serverInfoPromise: Promise<void> | null = null;
+
+export function ensureServerInfoLoadedAsync(
+	appDispatch: AppDispatch,
+	getState: () => State,
+	dataContext: DataContext
+): Promise<void> {
+	if (!serverInfoPromise) {
+		serverInfoPromise = loadServerInfoAsync(appDispatch, getState, dataContext);
+	}
+
+	return serverInfoPromise;
+}
+
+async function loadServerInfoAsync(
 	appDispatch: AppDispatch,
 	getState: () => State,
 	dataContext: DataContext
@@ -174,19 +188,17 @@ export async function ensureServerInfoLoadedAsync(
 		await initializeStoragesAsync(appDispatch, dataContext, []);
 	}
 
-	if (!dataContext.serverUri) {
-		const { serverDiscoveryUri } = dataContext.config;
+	const { serverDiscoveryUri } = dataContext.config;
 
-		if (serverDiscoveryUri) {
-			try {
-				const { uri, proxyUri: serverProxyUri } = await getServerInfo(serverDiscoveryUri);
-				dataContext.serverUri = uri;
-				dataContext.proxyUri = serverProxyUri;
-				dataContext.gameClient.setServerUri(uri);
-				appDispatch(setProxyAvailable(!!serverProxyUri));
-			} catch (error) {
-				console.error('Failed to fetch server info: ' + getErrorMessage(error));
-			}
+	if (serverDiscoveryUri) {
+		try {
+			const { uri, proxyUri: serverProxyUri } = await getServerInfo(serverDiscoveryUri);
+			dataContext.serverUri = uri;
+			dataContext.proxyUri = serverProxyUri;
+			dataContext.gameClient.setServerUri(uri);
+			appDispatch(setProxyAvailable(!!serverProxyUri));
+		} catch (error) {
+			console.error('Failed to fetch server info: ' + getErrorMessage(error));
 		}
 	}
 

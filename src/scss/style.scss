@@ -1,4 +1,4 @@
-﻿@use 'variables' as v;
+@use 'variables' as v;
 
 @font-face {
     font-family: Standard;
@@ -29,10 +29,13 @@
     font-style: normal;
 }
 
-html,body { height:100%; }
+html,
+body {
+    height: 100%;
+}
 
 body {
-	background: radial-gradient(91.6% 91.6% at 50% 4.05%, #1322AB 0%, #11174E 100%);
+    background: radial-gradient(91.6% 91.6% at 50% 4.05%, #1322AB 0%, #11174E 100%);
     background: url('../../assets/images/main_background.jpg') no-repeat center center fixed;
     background-size: cover;
     color: black;
@@ -47,14 +50,15 @@ body {
     user-select: none;
     scrollbar-width: thin;
     scrollbar-color: #a8acfd transparent;
-	font-family: Standard;
+    font-family: Standard;
 }
 
 #reactHost {
     height: 100%;
 }
 
-select, input {
+select,
+input {
     font-family: Standard;
 }
 
@@ -72,21 +76,21 @@ select, input {
 }
 
 dl {
-  margin-top: 0;
-  margin-bottom: 0;
+    margin-top: 0;
+    margin-bottom: 0;
 }
 
 dt,
 dd {
-  line-height: 1.428571429;
+    line-height: 1.428571429;
 }
 
 dt {
-  font-weight: bold;
+    font-weight: bold;
 }
 
 dd {
-  margin-left: 0;
+    margin-left: 0;
 }
 
 /* Set width on the form input elements since they're 100% wide by default */
@@ -101,11 +105,15 @@ textarea {
     resize: none;
 }
 
-input:focus, textarea:focus, button:focus {
+input:focus,
+textarea:focus,
+button:focus {
     outline: none;
 }
 
-input[type='password'], input[type='search'], input[type='text'] {
+input[type='password'],
+input[type='search'],
+input[type='text'] {
     background: #d9e3f9;
     border-width: 1px;
 }
@@ -119,9 +127,9 @@ h1 {
 *,
 *:before,
 *:after {
-  -webkit-box-sizing: border-box;
-     -moz-box-sizing: border-box;
-          box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 ul {
@@ -149,7 +157,8 @@ ul {
     background: linear-gradient(0deg, #a8acfd 0%, #d2e1ff 50%, #a8acfd 100%);
 }
 
-.avatarMale, .avatarFemale {
+.avatarMale,
+.avatarFemale {
     background-repeat: no-repeat;
     background-position: 50% 50%;
     background-size: contain;
@@ -196,18 +205,18 @@ ul {
     margin-top: -5px;
 }
 
-    .sexLogin input {
-        margin-left: 22px;
-        margin-right: 5px;
-        vertical-align: middle;
-    }
+.sexLogin input {
+    margin-left: 22px;
+    margin-right: 5px;
+    vertical-align: middle;
+}
 
-    .sexLogin label {
-        font-size: 14px;
-        font-weight: normal;
-        margin-top: 2px;
-        margin-bottom: 0;
-    }
+.sexLogin label {
+    font-size: 14px;
+    font-weight: normal;
+    margin-top: 2px;
+    margin-bottom: 0;
+}
 
 .gamesblock header {
     height: 35pt;
@@ -225,19 +234,20 @@ button {
     transition: all 1s;
 }
 
-button.standard, .sidePanel {
+button.standard,
+.sidePanel {
     background: linear-gradient(180deg, #255ADC 14.29%, #0A3FA4 100%);
 }
 
 button.standard {
-	border-radius: 4px;
+    border-radius: 4px;
 }
 
 button.standard.imageButton {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	background-color: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent;
 }
 
 button.standard.imageButton.active {
@@ -245,23 +255,26 @@ button.standard.imageButton.active {
 }
 
 button.standard.imageButton img {
-	object-fit: contain;
+    object-fit: contain;
 }
 
 button.standard.imageButton:disabled img {
-	opacity: 0.5;
+    opacity: 0.5;
 }
 
-button:hover, button.standard:hover {
+button:hover,
+button.standard:hover {
     background: linear-gradient(180deg, #2860ef 14.29%, rgb(39, 108, 237) 100%);
 }
 
-button:active, button.standard:active {
+button:active,
+button.standard:active {
     background: #FFFFFF;
     transition: initial;
 }
 
-button:disabled, button.standard:disabled {
+button:disabled,
+button.standard:disabled {
     color: darkgray;
     border-color: darkgray;
     background: transparent;
@@ -269,12 +282,12 @@ button:disabled, button.standard:disabled {
 }
 
 button.mainAction {
-	background: linear-gradient(360deg, #b87566 0%, #ffb179 100%);
-	border-radius: 4px;
+    background: linear-gradient(360deg, #b87566 0%, #ffb179 100%);
+    border-radius: 4px;
 }
 
 button.mainAction.active {
-	background: v.$active-button-background;
+    background: v.$active-button-background;
 }
 
 button.mainAction:not(:disabled):hover {
@@ -321,11 +334,11 @@ button.mainAction:not(:disabled):active {
     overflow: hidden;
 }
 
-    .cannotConnect span {
-        line-height: normal;
-        display: block;
-        margin: 0 3px;
-    }
+.cannotConnect span {
+    line-height: normal;
+    display: block;
+    margin: 0 3px;
+}
 
 .tabHeader h1 {
     display: inline-flex;
@@ -351,23 +364,28 @@ h1.activeTab {
     background-color: #98B9FF;
 }
 
-    .tabHeader h1:hover {
-        color: #FFFFFF99;
-        background-color: white;
-    }
+.tabHeader h1:hover {
+    color: #FFFFFF99;
+    background-color: white;
+}
 
 .chat span {
     display: block;
     word-wrap: break-word;
 }
 
-#gamesList, #game {
+#gamesList,
+#game {
     position: absolute;
     height: 100%;
     width: 100%;
 }
 
-#rules, #started, #showman, #players, #viewers {
+#rules,
+#started,
+#showman,
+#players,
+#viewers {
     min-height: 20px;
 }
 
@@ -387,24 +405,36 @@ h1.activeTab {
     flex: 1 0 0;
     display: flex;
     overflow: hidden;
+    border-radius: 10px;
+    background: linear-gradient(135deg, rgba(20, 24, 62, 0.4), rgba(5, 6, 31, 0.6));
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    background-clip: padding-box;
+    isolation: isolate;
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    margin: 4px;
 }
 
 .game__chat {
     display: flex;
     flex-direction: column;
     flex: 1 0 0;
-    background-color: #000451;
     color: white;
     overflow: hidden;
     overflow-wrap: break-word;
 }
 
-showman, player, viewer {
+showman,
+player,
+viewer {
     font-weight: bold;
     margin-right: 5px;
 }
 
-showman::after, player::after, viewer::after {
+showman::after,
+player::after,
+viewer::after {
     content: ": "
 }
 
@@ -417,7 +447,8 @@ showman::after, player::after, viewer::after {
     width: 100%;
 }
 
-video, audio {
+video,
+audio {
     margin: 10px 0;
     width: calc(100% - 20px);
 }
@@ -434,10 +465,11 @@ video, audio {
     width: 100%;
 }
 
-    .buttonsPanel button, .buttonsPanel div {
-        flex: 1 0 0;
-        font-size: 16px;
-    }
+.buttonsPanel button,
+.buttonsPanel div {
+    flex: 1 0 0;
+    font-size: 16px;
+}
 
 @keyframes spinner {
     from {
@@ -515,8 +547,8 @@ video, audio {
 }
 
 a.simpleLink {
-	text-decoration: none;
-	color: white;
+    text-decoration: none;
+    color: white;
 }
 
 @media screen and (min-width: 800px) {

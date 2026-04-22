@@ -36,7 +36,8 @@
     transition: background-color 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
 }
 
-#gameMenuButton, .gameMenuButton {
+#gameMenuButton,
+.gameMenuButton {
     font-size: 22px;
     line-height: 22px;
     margin: 0;
@@ -80,7 +81,8 @@
     margin: 6px;
 }
 
-#exit, .exit {
+#exit,
+.exit {
     margin: 0;
     border-width: 1px;
     width: auto;
@@ -105,7 +107,8 @@
     height: 24px;
 }
 
-.nextButton img, .exit img,
+.nextButton img,
+.exit img,
 .sidecontrol_button img {
     margin: 0;
 }
@@ -115,18 +118,19 @@
     border-radius: 10px;
 }
 
-.gameMenu, .exitMenu {
+.gameMenu,
+.exitMenu {
     bottom: 45px;
     width: 100%;
     min-width: 120px;
 }
 
-    .exitMenu p {
-        margin: 15px 20px;
-        text-align: center;
-        font-size: 15px;
-        color: white;
-    }
+.exitMenu p {
+    margin: 15px 20px;
+    text-align: center;
+    font-size: 15px;
+    color: white;
+}
 
 .exitMenu ul {
     line-height: 40px;
@@ -136,7 +140,8 @@ ul.gameMenuButton {
     line-height: 30px;
 }
 
-ul.gameMenu, .exitMenu ul {
+ul.gameMenu,
+.exitMenu ul {
     padding: 5px 0 5px 0;
 }
 
@@ -144,7 +149,8 @@ ul.gameMenu, .exitMenu ul {
     padding: 10px 20px !important;
 }
 
-.gameMenu li, .exitMenu li {
+.gameMenu li,
+.exitMenu li {
     text-align: center;
 }
 
@@ -152,9 +158,10 @@ ul.gameMenu, .exitMenu ul {
     background-color: lightyellow;
 }
 
-.gameMenu li.disabled, .exitMenu li.disabled {
-	color: gray;
-	pointer-events: none;
+.gameMenu li.disabled,
+.exitMenu li.disabled {
+    color: gray;
+    pointer-events: none;
 }
 
 #exitMenuPopup {
@@ -168,7 +175,7 @@ ul.gameMenu, .exitMenu ul {
 .game__utilsArea {
     display: flex;
     flex-direction: row;
-    flex: 0 0 45px;
+    flex: 0 0 46px;
     position: relative;
     background-color: rgba(0, 0, 0, 0.04);
     overflow: hidden;
@@ -203,9 +210,9 @@ ul.gameMenu, .exitMenu ul {
     font-size: 25px;
 }
 
-    .stakeButtons button {
-        flex: 1 0 0;
-    }
+.stakeButtons button {
+    flex: 1 0 0;
+}
 
 .showChat {
     font-size: 20px;
@@ -232,8 +239,9 @@ ul.gameMenu, .exitMenu ul {
 }
 
 @media screen and (max-width: 799px) {
+
     .addTableButton,
-	.giveTurnButton,
+    .giveTurnButton,
     .editTablesButton {
         display: none !important;
     }
@@ -255,6 +263,7 @@ ul.gameMenu, .exitMenu ul {
 }
 
 @media screen and (min-width: 1100px) {
+
     .gameMenuHost,
     .showChat {
         display: none !important;
@@ -272,7 +281,8 @@ ul.gameMenu, .exitMenu ul {
         display: none;
     }
 
-    #gameMenuButton, .gameMenuButton {
+    #gameMenuButton,
+    .gameMenuButton {
         font-size: 26px;
         line-height: 26px;
     }

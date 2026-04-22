@@ -9,22 +9,22 @@
 	padding: 5px 0;
 }
 
-	.personItem.me {
-		font-weight: bold;
-	}
+.personItem.me {
+	font-weight: bold;
+}
 
-	.personItem .personNameWrapper {
-		display: inline-flex;
-		justify-content: center;
-		align-items: center;
-		overflow: hidden;
-	}
+.personItem .personNameWrapper {
+	display: inline-flex;
+	justify-content: center;
+	align-items: center;
+	overflow: hidden;
+}
 
-	.personItem .personName {
-		overflow: hidden;
-		text-overflow: ellipsis;
-		white-space: nowrap;
-	}
+.personItem .personName {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
 
 .personItem_avatar {
 	width: 40px;
@@ -50,10 +50,11 @@
 	text-align: center;
 	color: white;
 	text-shadow: 1px 1px black;
-	font-size: 19px;
+	font-size: 14px;
 }
 
 .joinMode select {
+	flex: 1 0 0;
 	padding: 5px;
 	margin: 0 10px;
 }

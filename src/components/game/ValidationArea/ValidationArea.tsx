@@ -16,7 +16,7 @@ export default function ValidationArea(): JSX.Element {
 	const validation = useAppSelector(state => state.room2.validation);
 	const hiddenComments = useAppSelector(state => state.room2.hiddenComments);
 	const rightAnswer = validation.rightAnswers.length > 0 ? validation.rightAnswers[validation.rightAnswers.length - 1] : null;
-	const hint = `${rightAnswer ? localization.rightAnswer : ''}${hiddenComments ? ` (${hiddenComments})` : ''}`;
+	const hint = `${rightAnswer ? rightAnswer : ''}${hiddenComments ? ` (${hiddenComments})` : ''}`;
 
 	return <div className="validationArea">
 		{validation.queue.length > 0

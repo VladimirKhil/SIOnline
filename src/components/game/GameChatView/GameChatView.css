@@ -9,7 +9,7 @@
 
 .usersHeader {
 	position: relative;
-	background-color: #5A95E2;
+	background-color: rgba(0, 0, 0, 0.3);
 	color: white;
 	font-size: 14px;
 }
@@ -32,6 +32,34 @@
 	flex-direction: column;
 	flex: 1 0 0;
 	overflow: hidden;
+}
+
+.game__persons .sidePanel {
+	background: transparent;
+}
+
+.game__persons .sidePanel button.standard {
+	flex: 1 1 0;
+	padding: 0;
+	height: 45px;
+	width: auto;
+	min-width: 0;
+	border-radius: 0;
+	border: 0;
+	background: transparent;
+	color: #FFFFFF;
+	transition: background-color 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+	font-size: 14px;
+}
+
+.game__persons .sidePanel button.standard:hover:enabled {
+	background: rgba(255, 255, 255, 0.22);
+	box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+}
+
+.game__persons .sidePanel button.standard:active:enabled {
+	background: rgba(255, 255, 255, 0.38);
+	box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2);
 }
 
 .tabBody {
@@ -78,12 +106,12 @@
 	flex-direction: row;
 }
 
-.gameSideView h1 .right > button {
+.gameSideView h1 .right>button {
 	width: 45px;
 	height: 45px;
 }
 
-.gameSideView h1 .right > button.activeTab {
+.gameSideView h1 .right>button.activeTab {
 	background: #98B9FF;
 }
 

@@ -331,7 +331,7 @@ export default class ClientController implements IClientController {
 
 		const { audio } = state.common;
 
-		if (audio === sound) {
+		if (audio === sound && !loop) {
 			this.appDispatch(stopAudio());
 		}
 

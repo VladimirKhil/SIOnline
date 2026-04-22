@@ -3,6 +3,8 @@
     overflow-x: hidden;
     -webkit-user-select: text;
     user-select: text;
+    caret-color: transparent;
+    outline: none;
     scrollbar-width: thin;
 }
 
