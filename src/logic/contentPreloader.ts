@@ -4,6 +4,17 @@ import getErrorMessage from '../utils/ErrorHelpers';
 
 const BASE_DELAY = 500; // Base delay between requests
 const MAX_RETRIES = 3;
+const preloadedAudioData = new Map<string, ArrayBuffer>();
+
+export function getPreloadedAudioData(contentUri: string): ArrayBuffer | undefined {
+	const data = preloadedAudioData.get(contentUri);
+
+	return data?.slice(0);
+}
+
+export function clearPreloadedRoundContent(): void {
+	preloadedAudioData.clear();
+}
 
 /**
  * Helper function to preload a single file with retry logic using actual DOM elements
@@ -22,9 +33,35 @@ function preloadFile(contentUri: string, addSimpleMessage: (message: string) => 
 			(element as HTMLVideoElement).preload = 'auto';
 			(element as HTMLVideoElement).crossOrigin = 'anonymous';
 		} else if (isAudio) {
-			element = document.createElement('audio');
-			(element as HTMLAudioElement).preload = 'auto';
-			(element as HTMLAudioElement).crossOrigin = 'anonymous';
+			fetch(contentUri)
+				.then(response => {
+					if (!response.ok) {
+						throw new Error(`HTTP error! status: ${response.status}`);
+					}
+
+					return response.arrayBuffer();
+				})
+				.then(arrayBuffer => {
+					preloadedAudioData.set(contentUri, arrayBuffer);
+					resolve();
+				})
+				.catch(error => {
+					if (retryCount < MAX_RETRIES) {
+						const retryDelay = Math.min(BASE_DELAY * Math.pow(2, retryCount), 5000);
+						console.log(`Retrying preload of ${contentUri} (attempt ${retryCount + 1}/${MAX_RETRIES}) after ${retryDelay}ms`);
+
+						setTimeout(() => {
+							preloadFile(contentUri, addSimpleMessage, retryCount + 1).then(resolve).catch(reject);
+						}, retryDelay);
+					} else {
+						const errorMessage = `Failed to load audio: ${contentUri}`;
+						console.warn(`Failed to preload ${contentUri} after ${MAX_RETRIES} attempts: ${error}`);
+						addSimpleMessage('Content preload error: ' + errorMessage);
+						resolve();
+					}
+				});
+
+			return;
 		} else if (isHtml) {
 			// For HTML content, use fetch to load and cache it
 			fetch(contentUri)
@@ -133,6 +170,8 @@ export async function preloadRoundContent(
 			appDispatch(mediaPreloadProgress(progressPercent));
 		}
 	};
+
+	clearPreloadedRoundContent();
 
 	// Helper function to delay between requests
 	const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));

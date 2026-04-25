@@ -97,7 +97,8 @@ export function createDefaultPackage(options?: NewPackageOptions): Package {
 								type: 'text',
 								value: '',
 								isRef: false,
-								placement: ContentPlacements.Screen
+								placement: ContentPlacements.Screen,
+								waitForFinish: true,
 							}]
 						}
 					},

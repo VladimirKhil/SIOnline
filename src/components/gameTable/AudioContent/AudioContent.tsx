@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { useEffect, useRef } from 'react';
+import { getPreloadedAudioData } from '../../../logic/contentPreloader';
 import getErrorMessage from '../../../utils/ErrorHelpers';
 import localization from '../../../model/resources/localization';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
@@ -93,9 +94,26 @@ const AudioContent: React.FC<AudioContentProps> = ({
 		audioSourceRef.current.start(0, pauseTimeRef.current);
 	};
 
+	const loadFromArrayBuffer = async (arrayBuffer: ArrayBuffer) => {
+		audioBufferRef.current = await audioContext.decodeAudioData(arrayBuffer);
+
+		appDispatch(onMediaLoaded());
+
+		pauseTimeRef.current = 0;
+		play();
+		completedRef.current = false;
+	};
+
 	const load = async () => {
 		try {
 			console.log(`Loading audio: ${audio}`);
+			const preloadedAudioData = getPreloadedAudioData(audio);
+
+			if (preloadedAudioData) {
+				await loadFromArrayBuffer(preloadedAudioData);
+				return;
+			}
+
 			const response = await fetch(audio);
 
 			if (!response.ok) {
@@ -104,13 +122,7 @@ const AudioContent: React.FC<AudioContentProps> = ({
 			}
 
 			const arrayBuffer = await response.arrayBuffer();
-			audioBufferRef.current = await audioContext.decodeAudioData(arrayBuffer);
-
-			appDispatch(onMediaLoaded());
-
-			pauseTimeRef.current = 0;
-			play();
-			completedRef.current = false;
+			await loadFromArrayBuffer(arrayBuffer);
 		} catch (e) {
 			operationError(getErrorMessage(e));
 		}

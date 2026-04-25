@@ -1,12 +1,16 @@
 import React from 'react';
-import { ContentItem, ContentParam } from '../../../model/siquester/package';
+import { ContentItem, ContentParam, ContentType } from '../../../model/siquester/package';
 import MediaItem from '../MediaItem/MediaItem';
 import AutoSizedText from '../../common/AutoSizedText/AutoSizedText';
 import localization from '../../../model/resources/localization';
 import Constants from '../../../model/enums/Constants';
 import { useDispatch } from 'react-redux';
+import getExtension from '../../../utils/FileHelper';
+import { userErrorChanged } from '../../../state/commonSlice';
 import {
 	updateContentItem,
+	setContentItemType,
+	setContentItemMedia,
 	addContentScreen,
 	removeContentScreen,
 	addScreenContentItem,
@@ -32,9 +36,100 @@ interface ContentGroup {
 
 interface Screen {
 	duration?: number;
+	items: ContentItem[];
 	groups: ContentGroup[];
 	background?: ContentItem;
 	replic?: ContentItem;
+}
+
+type MediaContentType = Exclude<ContentType, 'text'>;
+type ContentMode = ContentType | 'replic';
+
+const contentTypeOptions: ReadonlyArray<{ type: ContentMode; label: string }> = [
+	{ type: 'text', label: localization.text },
+	{ type: 'replic', label: localization.replic },
+	{ type: 'image', label: localization.images },
+	{ type: 'audio', label: localization.audio },
+	{ type: 'video', label: localization.video },
+	{ type: 'html', label: localization.html },
+];
+
+const fileAcceptByType: Record<MediaContentType, string> = {
+	image: '.jpg,.jpe,.jpeg,.png,.gif,.webp,.avif',
+	audio: '.mp3,.opus',
+	video: '.mp4',
+	html: '.html',
+};
+
+const maxFileSizeMbByType: Record<MediaContentType, number> = {
+	image: 1,
+	audio: 5,
+	video: 10,
+	html: 1,
+};
+
+const allowedExtensionsByType: Record<MediaContentType, string[]> = {
+	image: ['.jpg', '.jpe', '.jpeg', '.png', '.gif', '.webp', '.avif'],
+	audio: ['.mp3', '.opus'],
+	video: ['.mp4'],
+	html: ['.html'],
+};
+
+function getContentTypeLabel(type: ContentMode): string {
+	switch (type) {
+		case 'text':
+			return localization.text;
+		case 'replic':
+			return localization.replic;
+		case 'image':
+			return localization.images;
+		case 'audio':
+			return localization.audio;
+		case 'video':
+			return localization.video;
+		case 'html':
+			return localization.html;
+		default:
+			return type;
+	}
+}
+
+function getContentTypeIcon(type: ContentMode): React.ReactNode {
+	const commonProps = {
+		viewBox: '0 0 20 20',
+		fill: 'none',
+		stroke: 'currentColor',
+		strokeWidth: 1.7,
+		strokeLinecap: 'round' as const,
+		strokeLinejoin: 'round' as const,
+		className: 'screensView__content__type__icon',
+		'aria-hidden': true,
+	};
+
+	switch (type) {
+		case 'text':
+			return <svg {...commonProps}><path d='M4 5.5h12' /><path d='M10 5.5v9' /><path d='M7 14.5h6' /></svg>;
+		case 'replic':
+			return <svg {...commonProps}><path d='M5 6.5h10a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H9l-3.5 2v-2H5a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2Z' /></svg>;
+		case 'image':
+			return <svg {...commonProps}>
+				<rect x='3' y='4' width='14' height='12' rx='2' />
+				<circle cx='8' cy='8' r='1.5' />
+				<path d='M5 13l3-3 2.5 2.5 2-2 2.5 2.5' />
+			</svg>;
+		case 'audio':
+			return <svg {...commonProps}>
+				<path d='M6.5 12.5H4V7.5h2.5L10 5v10l-3.5-2.5z' />
+				<path d='M12.5 8a3 3 0 010 4' />
+				<path d='M14.5 6a5.5 5.5 0 010 8' />
+			</svg>;
+		case 'video':
+			return <svg {...commonProps}><rect x='3' y='4.5' width='14' height='11' rx='2' /><path d='M8 8l5 2.5L8 13z' /></svg>;
+		case 'html':
+			return <svg {...commonProps}><path d='M8 6L4.5 10 8 14' /><path d='M12 6l3.5 4-3.5 4' /><path d='M11 4.5L9 15.5' /></svg>;
+		default:
+			return null;
+	}
 }
 
 function timeStringToSeconds(time: string): number {
@@ -47,7 +142,7 @@ function initGroup(group: ContentGroup) {
 	let bestColumnCount = group.content.length / bestRowCount;
 	let bestItemSize = Math.min(9.0 / bestRowCount, 16.0 / bestColumnCount);
 
-	for	(let rowCount = 2; rowCount < group.content.length; rowCount++) {
+	for (let rowCount = 2; rowCount < group.content.length; rowCount += 1) {
 		const columnCount = Math.ceil(group.content.length / rowCount);
 		const itemSize = Math.min(9.0 / rowCount, 16.0 / columnCount);
 
@@ -73,6 +168,13 @@ const ScreensView: React.FC<ScreensViewProps> = ({
 	const dispatch = useDispatch();
 	const [screenIndex, setScreenIndex] = React.useState(0);
 	const contentRef = React.useRef(content);
+	const pendingFileTargetRef = React.useRef<{ itemIndex: number; type: MediaContentType } | null>(null);
+	const fileInputRefs = React.useRef<Record<MediaContentType, HTMLInputElement | null>>({
+		image: null,
+		audio: null,
+		video: null,
+		html: null,
+	});
 
 	React.useEffect(() => {
 		if (content.items.length !== contentRef.current.items.length) {
@@ -90,8 +192,9 @@ const ScreensView: React.FC<ScreensViewProps> = ({
 	let backgroundDuration = 0;
 	let replicDuration = 0;
 	let duration = 0;
+	let screenStartIndex = 0;
 
-	for (let i = 0; i < content.items.length; i++) {
+	for (let i = 0; i < content.items.length; i += 1) {
 		const contentItem = content.items[i];
 		const contentDuration = contentItem.duration ? timeStringToSeconds(contentItem.duration) : 0;
 
@@ -108,17 +211,21 @@ const ScreensView: React.FC<ScreensViewProps> = ({
 
 			default: // TODO: unify with ClientController.onScreenContent() in the future
 				switch (contentItem.type) {
-					case 'text':
+					case 'text': {
 						if (group) {
 							groups.push(group);
 							initGroup(group);
 							group = undefined;
 						}
 
-						const textWeight = Math.min(Constants.LARGE_CONTENT_WEIGHT, Math.max(1, contentItem.value.length / 80));
+						const textWeight = Math.min(
+							Constants.LARGE_CONTENT_WEIGHT,
+							Math.max(1, contentItem.value.length / 80),
+						);
 						const textGroup : ContentGroup = { content: [contentItem], weight: textWeight, columnCount: 1 };
 						groups.push(textGroup);
 						break;
+					}
 
 					default:
 						if (!group) {
@@ -140,7 +247,10 @@ const ScreensView: React.FC<ScreensViewProps> = ({
 				group = undefined;
 			}
 
-			const screen: Screen = { groups: [...groups] };
+			const screen: Screen = {
+				items: content.items.slice(screenStartIndex, i + 1),
+				groups: [...groups],
+			};
 
 			if (background) {
 				screen.background = background;
@@ -163,11 +273,21 @@ const ScreensView: React.FC<ScreensViewProps> = ({
 
 			screens.push(screen);
 			groups.length = 0;
+			screenStartIndex = i + 1;
 		}
 	}
 
+	if (group) {
+		groups.push(group);
+		initGroup(group);
+		group = undefined;
+	}
+
 	if (groups.length > 0 || background || replic) {
-		const screen: Screen = { groups: [...groups] };
+		const screen: Screen = {
+			items: content.items.slice(screenStartIndex, content.items.length),
+			groups: [...groups],
+		};
 
 		if (background) {
 			screen.background = background;
@@ -221,6 +341,8 @@ const ScreensView: React.FC<ScreensViewProps> = ({
 			return value;
 		};
 
+		const mediaKey = `${contentItem.type}:${contentItem.value}:${contentItem.isRef ? 'ref' : 'url'}`;
+
 		switch (contentItem.type) {
 			case 'text':
 				return isEditMode ? (
@@ -234,10 +356,34 @@ const ScreensView: React.FC<ScreensViewProps> = ({
 				) : (
 					<AutoSizedText maxFontSize={20}>{contentItem.value}</AutoSizedText>
 				);
-			case 'image': return <MediaItem src={getMediaSrc(contentItem.value, contentItem.isRef)} type='image' isRef={contentItem.isRef} />;
-			case 'audio': return <MediaItem src={getMediaSrc(contentItem.value, contentItem.isRef)} type='audio' isRef={contentItem.isRef} />;
-			case 'video': return <MediaItem src={getMediaSrc(contentItem.value, contentItem.isRef)} type='video' isRef={contentItem.isRef} />;
-			case 'html': return <MediaItem src={getMediaSrc(contentItem.value, contentItem.isRef)} type='html' isRef={contentItem.isRef} />;
+			case 'image':
+				return <MediaItem
+					key={mediaKey}
+					src={getMediaSrc(contentItem.value, contentItem.isRef)}
+					type='image'
+					isRef={contentItem.isRef}
+				/>;
+			case 'audio':
+				return <MediaItem
+					key={mediaKey}
+					src={getMediaSrc(contentItem.value, contentItem.isRef)}
+					type='audio'
+					isRef={contentItem.isRef}
+				/>;
+			case 'video':
+				return <MediaItem
+					key={mediaKey}
+					src={getMediaSrc(contentItem.value, contentItem.isRef)}
+					type='video'
+					isRef={contentItem.isRef}
+				/>;
+			case 'html':
+				return <MediaItem
+					key={mediaKey}
+					src={getMediaSrc(contentItem.value, contentItem.isRef)}
+					type='html'
+					isRef={contentItem.isRef}
+				/>;
 			default: return null;
 		}
 	}
@@ -251,11 +397,15 @@ const ScreensView: React.FC<ScreensViewProps> = ({
 	const canRemoveScreen = canAddScreen && screens.length > 1;
 
 	// Count total content items in the current screen
-	const screenContentCount = screen
-		? screen.groups.reduce((sum, g) => sum + g.content.length, 0) +
-			(screen.background ? 1 : 0) +
-			(screen.replic ? 1 : 0)
-		: 0;
+	const screenContentCount = screen ? screen.items.length : 0;
+
+	const isContentModeSelected = (contentItem: ContentItem, mode: ContentMode): boolean => {
+		if (mode === 'replic') {
+			return contentItem.placement === 'replic' && contentItem.type === 'text';
+		}
+
+		return contentItem.placement !== 'replic' && contentItem.type === mode;
+	};
 
 	const handleRemoveContentItem = (itemIndex: number) => {
 		if (canAddScreen) {
@@ -336,8 +486,194 @@ const ScreensView: React.FC<ScreensViewProps> = ({
 		}
 	};
 
+	const handleTextTypeSelected = (contentItem: ContentItem, itemIndex: number) => {
+		if (!canAddScreen) {
+			return;
+		}
+
+		if (contentItem.type !== 'text') {
+			dispatch(setContentItemType({
+				roundIndex: roundIndex as number,
+				themeIndex: themeIndex as number,
+				questionIndex: questionIndex as number,
+				paramName: paramName as string,
+				itemIndex,
+				type: 'text',
+			}));
+		}
+
+		if (contentItem.placement === 'replic') {
+			dispatch(updateContentItem({
+				roundIndex: roundIndex as number,
+				themeIndex: themeIndex as number,
+				questionIndex: questionIndex as number,
+				paramName: paramName as string,
+				itemIndex,
+				property: 'placement',
+				value: 'screen',
+			}));
+		}
+	};
+
+	const handleReplicTypeSelected = (contentItem: ContentItem, itemIndex: number) => {
+		if (!canAddScreen) {
+			return;
+		}
+
+		if (contentItem.type !== 'text') {
+			dispatch(setContentItemType({
+				roundIndex: roundIndex as number,
+				themeIndex: themeIndex as number,
+				questionIndex: questionIndex as number,
+				paramName: paramName as string,
+				itemIndex,
+				type: 'text',
+			}));
+		}
+
+		if (contentItem.placement !== 'replic') {
+			dispatch(updateContentItem({
+				roundIndex: roundIndex as number,
+				themeIndex: themeIndex as number,
+				questionIndex: questionIndex as number,
+				paramName: paramName as string,
+				itemIndex,
+				property: 'placement',
+				value: 'replic',
+			}));
+		}
+	};
+
+	const readMediaFile = async (file: File, type: MediaContentType): Promise<string> => {
+		if (type === 'html') {
+			return file.text();
+		}
+
+		return new Promise<string>((resolve, reject) => {
+			const reader = new FileReader();
+			reader.onload = () => {
+				if (typeof reader.result !== 'string') {
+					reject(new Error('Unexpected file reader result'));
+					return;
+				}
+
+				const [, base64Data = ''] = reader.result.split(',');
+				resolve(base64Data);
+			};
+			reader.onerror = () => reject(reader.error ?? new Error('Failed to read file'));
+			reader.readAsDataURL(file);
+		});
+	};
+
+	const handleMediaTypeSelected = (contentItem: ContentItem, itemIndex: number, type: MediaContentType) => {
+		if (!canAddScreen) {
+			return;
+		}
+
+		if (contentItem.placement === 'replic') {
+			dispatch(updateContentItem({
+				roundIndex: roundIndex as number,
+				themeIndex: themeIndex as number,
+				questionIndex: questionIndex as number,
+				paramName: paramName as string,
+				itemIndex,
+				property: 'placement',
+				value: 'screen',
+			}));
+		}
+
+		pendingFileTargetRef.current = { itemIndex, type };
+		fileInputRefs.current[type]?.click();
+	};
+
+	const handleContentFileChange = async (type: MediaContentType, event: React.ChangeEvent<HTMLInputElement>) => {
+		const file = event.target.files?.[0];
+		const target = pendingFileTargetRef.current;
+		event.target.value = '';
+		pendingFileTargetRef.current = null;
+
+		if (!file || !target || target.type !== type || !canAddScreen) {
+			return;
+		}
+
+		const maxFileSizeMb = maxFileSizeMbByType[type];
+
+		if (file.size > maxFileSizeMb * 1024 * 1024) {
+			dispatch(userErrorChanged(`${localization.fileIsTooBig} (${maxFileSizeMb} MB)`));
+			return;
+		}
+
+		const extension = getExtension(file.name);
+		const normalizedExtension = extension ? `.${extension.toLowerCase()}` : '';
+
+		if (!allowedExtensionsByType[type].includes(normalizedExtension)) {
+			dispatch(userErrorChanged(`${localization.unsupportedMediaType}: ${normalizedExtension || file.name}`));
+			return;
+		}
+
+		const fileData = await readMediaFile(file, type);
+
+		dispatch(setContentItemMedia({
+			roundIndex: roundIndex as number,
+			themeIndex: themeIndex as number,
+			questionIndex: questionIndex as number,
+			paramName: paramName as string,
+			itemIndex: target.itemIndex,
+			type,
+			fileName: file.name,
+			fileData,
+		}));
+	};
+
+	const renderContentTypeButtons = (contentItem: ContentItem, itemIndex: number) => (
+		<div className='screensView__content__type__buttons' role='group' aria-label={localization.content}>
+			{contentTypeOptions.map(({ type }) => (
+				<button
+					key={`${itemIndex}-${type}`}
+					type='button'
+					className={`screensView__content__type__button ${isContentModeSelected(contentItem, type) ? 'selected' : ''}`}
+					onClick={() => {
+						if (type === 'text') {
+							handleTextTypeSelected(contentItem, itemIndex);
+							return;
+						}
+
+						if (type === 'replic') {
+							handleReplicTypeSelected(contentItem, itemIndex);
+							return;
+						}
+
+						handleMediaTypeSelected(contentItem, itemIndex, type);
+					}}
+					title={getContentTypeLabel(type)}
+					aria-label={getContentTypeLabel(type)}
+				>
+					{getContentTypeIcon(type)}
+				</button>
+			))}
+		</div>
+	);
+
 	return (
 		<>
+			{isEditMode ? (
+				<>
+					{(['image', 'audio', 'video', 'html'] as MediaContentType[]).map(type => (
+						<input
+							key={type}
+							type='file'
+							accept={fileAcceptByType[type]}
+							aria-label={getContentTypeLabel(type)}
+							title={getContentTypeLabel(type)}
+							className='screensView__content__type__fileInput'
+							ref={(element) => { fileInputRefs.current[type] = element; }}
+							onChange={(event) => {
+								void handleContentFileChange(type, event);
+							}}
+						/>
+					))}
+				</>
+			) : null}
 			{(screens.length > 1 || isEditMode) ? <div className='packageView__question__screens'>
 				{screens.map((_, si) => (
 					<div
@@ -380,97 +716,56 @@ const ScreensView: React.FC<ScreensViewProps> = ({
 					{isEditMode ? (
 						// Simple vertical list view in edit mode
 						<div className='packageView__question__content__list'>
-							{screen.groups.map((screenGroup, gi) => 
-								screenGroup.content.map((contentItem, ci) => {
-									const globalIndex = content.items.findIndex(item => item === contentItem);
-									const durationSeconds = contentItem.duration
-										? timeStringToSeconds(contentItem.duration)
-										: undefined;
-									const hasDuration = durationSeconds !== undefined
-										&& durationSeconds > 0;
-									return (
-										<div className='packageView__question__content__list__item' key={`${gi}-${ci}`}>
-											<div className='screensView__content__item__controls'>
-												<label className='screensView__duration__label'>
+							{screen.items.map((contentItem, itemOrder) => {
+								const globalIndex = content.items.findIndex(item => item === contentItem);
+								const durationSeconds = contentItem.duration
+									? timeStringToSeconds(contentItem.duration)
+									: undefined;
+								const hasDuration = durationSeconds !== undefined && durationSeconds > 0;
+
+								return (
+									<div className='packageView__question__content__list__item' key={`${globalIndex}-${itemOrder}`}>
+										<div className='screensView__content__item__controls'>
+											<label className='screensView__duration__label'>
+												<input
+													type='checkbox'
+													checked={hasDuration}
+													onChange={(e) => {
+														if (e.target.checked) {
+															handleDurationChange(globalIndex, '1');
+														} else {
+															handleDurationChange(globalIndex, '');
+														}
+													}}
+												/>
+												{localization.duration}
+												{hasDuration ? (
 													<input
-														type='checkbox'
-														checked={hasDuration}
-														onChange={(e) => {
-															if (e.target.checked) {
-																handleDurationChange(globalIndex, '1');
-															} else {
-																handleDurationChange(globalIndex, '');
-															}
-														}}
+														type='number'
+														className='screensView__duration__input'
+														min={1}
+														max={120}
+														value={durationSeconds}
+														aria-label={localization.duration}
+														onChange={(e) => handleDurationChange(globalIndex, e.target.value)}
 													/>
-													{localization.duration}
-													{hasDuration ? (
-														<input
-															type='number'
-															className='screensView__duration__input'
-															min={1}
-															max={120}
-															value={durationSeconds}
-															aria-label={localization.duration}
-															onChange={(e) => handleDurationChange(globalIndex, e.target.value)}
-														/>
-													) : null}
-												</label>
-												{screenContentCount > 1 ? (
-													<button
-														type='button'
-														className='screensView__content__item__remove'
-														onClick={() => handleRemoveContentItem(globalIndex)}
-														title={localization.removeContentItem}
-														aria-label={localization.removeContentItem}
-													>✕</button>
 												) : null}
-											</div>
-											{getContentItem(contentItem, globalIndex)}
-										</div>
-									);
-								})
-							)}
-							{screen.background && (() => {
-								const bg = screen.background;
-								return (
-									<div className='packageView__question__content__list__item'>
-										<div className='screensView__content__item__controls'>
-											<label className='header'>Background</label>
+											</label>
+											{renderContentTypeButtons(contentItem, globalIndex)}
 											{screenContentCount > 1 ? (
 												<button
 													type='button'
 													className='screensView__content__item__remove'
-													onClick={() => handleRemoveContentItem(findContentItemIndex(bg))}
+													onClick={() => handleRemoveContentItem(globalIndex)}
 													title={localization.removeContentItem}
 													aria-label={localization.removeContentItem}
 												>✕</button>
 											) : null}
 										</div>
-										{getContentItem(bg, findContentItemIndex(bg))}
+										{getContentItem(contentItem, globalIndex)}
 									</div>
 								);
-							})()}
-							{screen.replic && (() => {
-								const rep = screen.replic;
-								return (
-									<div className='packageView__question__content__list__item'>
-										<div className='screensView__content__item__controls'>
-											<label className='header'>Replic</label>
-											{screenContentCount > 1 ? (
-												<button
-													type='button'
-													className='screensView__content__item__remove'
-													onClick={() => handleRemoveContentItem(findContentItemIndex(rep))}
-													title={localization.removeContentItem}
-													aria-label={localization.removeContentItem}
-												>✕</button>
-											) : null}
-										</div>
-										{getContentItem(rep, findContentItemIndex(rep))}
-									</div>
-								);
-							})()}
+							})}
 							<button
 								type='button'
 								className='packageView__question__content__add'

@@ -83,6 +83,7 @@ const MediaItem: React.FC<MediaItemProps> = ({ src, type, isRef }) => {
 		const data = file.file(sourceFolder + '/' + src);
 
 		if (!data) {
+			setItem(undefined);
 			return;
 		}
 
@@ -109,6 +110,7 @@ const MediaItem: React.FC<MediaItemProps> = ({ src, type, isRef }) => {
 
 	React.useEffect(() => {
 		const isMounted = { current: true };
+		setItem(undefined);
 
 		if (zip && isRef) {
 			loadItem(zip, isMounted);
@@ -132,22 +134,24 @@ const MediaItem: React.FC<MediaItemProps> = ({ src, type, isRef }) => {
 			case 'video':
 				return <video src={source} controls className='packageView__question__content__item' />;
 
-		case 'html':
-			return isRef
-				? <iframe
-					srcDoc={source}
-					title='HTML content'
-					className='packageView__question__content__item'
-					sandbox='allow-scripts allow-same-origin'
-					scrolling='no'
-				/>
-				: <iframe
-					src={source}
-					title='HTML content'
-					className='packageView__question__content__item'
-					sandbox='allow-scripts allow-same-origin'
-					scrolling='no'
-				/>;			default:
+			case 'html':
+				return isRef
+					? <iframe
+						srcDoc={source}
+						title='HTML content'
+						className='packageView__question__content__item'
+						sandbox='allow-scripts allow-same-origin'
+						scrolling='no'
+					/>
+					: <iframe
+						src={source}
+						title='HTML content'
+						className='packageView__question__content__item'
+						sandbox='allow-scripts allow-same-origin'
+						scrolling='no'
+					/>;
+
+			default:
 				return null;
 		}
 	}

@@ -4,7 +4,7 @@ import SIStatisticsClient from 'sistatistics-client';
 import QuestionStats from 'sistatistics-client/dist/models/QuestionStats';
 import PackageTopLevelStats from 'sistatistics-client/dist/models/PackageTopLevelStats';
 import localization from '../model/resources/localization';
-import { Package, Round, Theme, Question, ContentParam, ContentItem } from '../model/siquester/package';
+import { Package, Round, Theme, Question, ContentParam, ContentItem, ContentType } from '../model/siquester/package';
 import { navigate } from '../utils/Navigator';
 import Path from '../model/enums/Path';
 import DataContext from '../model/DataContext';
@@ -29,6 +29,84 @@ export interface SIQuesterState {
 }
 
 const initialState: SIQuesterState = {};
+
+function getMediaFolderName(type: ContentType): string | undefined {
+	switch (type) {
+		case 'image':
+			return 'Images';
+		case 'audio':
+			return 'Audio';
+		case 'video':
+			return 'Video';
+		case 'html':
+			return 'Html';
+		default:
+			return undefined;
+	}
+}
+
+function isMediaReferenceItem(item: ContentItem): item is ContentItem & { type: Exclude<ContentType, 'text'> } {
+	return item.isRef && item.type !== 'text' && item.value.length > 0;
+}
+
+function containsMediaReference(
+	value: unknown,
+	targetType: Exclude<ContentType, 'text'>,
+	targetValue: string,
+	excludedItem?: ContentItem,
+): boolean {
+	if (!value || typeof value !== 'object') {
+		return false;
+	}
+
+	if (Array.isArray(value)) {
+		return value.some(item => containsMediaReference(item, targetType, targetValue, excludedItem));
+	}
+
+	if ('type' in value && 'value' in value && 'isRef' in value) {
+		const contentItem = value as ContentItem;
+		return contentItem !== excludedItem &&
+			contentItem.isRef &&
+			contentItem.type === targetType &&
+			contentItem.value === targetValue;
+	}
+
+	return Object.values(value).some(item => containsMediaReference(item, targetType, targetValue, excludedItem));
+}
+
+function packageContainsMediaReference(
+	pack: Package | undefined,
+	targetType: Exclude<ContentType, 'text'>,
+	targetValue: string,
+	excludedItem?: ContentItem,
+): boolean {
+	if (!pack) {
+		return false;
+	}
+
+	const questionContainsReference = (question: Question) => containsMediaReference(question.params, targetType, targetValue, excludedItem);
+
+	return pack.rounds.some(round => round.themes.some(theme => theme.questions.some(questionContainsReference)));
+}
+
+function removeOrphanedMediaFile(state: SIQuesterState, item: ContentItem, excludedItem?: ContentItem): boolean {
+	if (!state.zip || !isMediaReferenceItem(item)) {
+		return false;
+	}
+
+	if (packageContainsMediaReference(state.pack, item.type, item.value, excludedItem)) {
+		return false;
+	}
+
+	const folderName = getMediaFolderName(item.type);
+
+	if (!folderName) {
+		return false;
+	}
+
+	state.zip.remove(`${folderName}/${encodeURIComponent(item.value)}`);
+	return true;
+}
 
 export const openFile = createAsyncThunk(
 	'siquester/openFile',
@@ -612,6 +690,81 @@ export const siquesterSlice = createSlice({
 				}
 			}
 		},
+		setContentItemType: (state, action: {
+			payload: {
+				roundIndex: number;
+				themeIndex: number;
+				questionIndex: number;
+				paramName: string;
+				itemIndex: number;
+				type: ContentType;
+			}
+		}) => {
+			const question = state.pack?.rounds[action.payload.roundIndex]
+				?.themes[action.payload.themeIndex]?.questions[action.payload.questionIndex];
+
+			if (question?.params[action.payload.paramName] && 'items' in question.params[action.payload.paramName]) {
+				const param = question.params[action.payload.paramName] as ContentParam;
+				const item = param.items[action.payload.itemIndex];
+
+				if (!item) {
+					return;
+				}
+
+				removeOrphanedMediaFile(state, item, item);
+
+				item.type = action.payload.type;
+
+				if (action.payload.type === 'text') {
+					item.value = '';
+					item.isRef = false;
+				}
+			}
+		},
+		setContentItemMedia: (state, action: {
+			payload: {
+				roundIndex: number;
+				themeIndex: number;
+				questionIndex: number;
+				paramName: string;
+				itemIndex: number;
+				type: Exclude<ContentType, 'text'>;
+				fileName: string;
+				fileData: string;
+			}
+		}) => {
+			const question = state.pack?.rounds[action.payload.roundIndex]
+				?.themes[action.payload.themeIndex]?.questions[action.payload.questionIndex];
+
+			if (question?.params[action.payload.paramName] && 'items' in question.params[action.payload.paramName]) {
+				const param = question.params[action.payload.paramName] as ContentParam;
+				const item = param.items[action.payload.itemIndex];
+
+				if (!item) {
+					return;
+				}
+
+				removeOrphanedMediaFile(state, item, item);
+				const targetFolder = getMediaFolderName(action.payload.type);
+
+				if (!targetFolder) {
+					return;
+				}
+				const encodedFileName = encodeURIComponent(action.payload.fileName);
+
+				if (state.zip) {
+					if (action.payload.type === 'html') {
+						state.zip.file(`${targetFolder}/${encodedFileName}`, action.payload.fileData);
+					} else {
+						state.zip.file(`${targetFolder}/${encodedFileName}`, action.payload.fileData, { base64: true });
+					}
+				}
+
+				item.type = action.payload.type;
+				item.value = action.payload.fileName;
+				item.isRef = true;
+			}
+		},
 		setCurrentItem: (state, action: {
 			payload: {
 				roundIndex?: number;
@@ -773,6 +926,7 @@ export const siquesterSlice = createSlice({
 
 				if (idx >= 0 && idx < param.items.length && param.items.length > 1) {
 					const removedItem = param.items[idx];
+					removeOrphanedMediaFile(state, removedItem, removedItem);
 
 					// If the removed item had waitForFinish, transfer it to the previous item in the same screen
 					if (removedItem.waitForFinish && idx > 0 && !param.items[idx - 1].waitForFinish) {
@@ -957,6 +1111,8 @@ export const {
 	addInfoItem,
 	removeInfoItem,
 	updateContentItem,
+	setContentItemType,
+	setContentItemMedia,
 	addContentScreen,
 	removeContentScreen,
 	addScreenContentItem,
