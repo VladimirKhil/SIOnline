@@ -202,6 +202,7 @@ const joinGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 				appDispatch(userErrorChanged(
 					`${localization.joinError}: ${GameErrorsHelper.getJoinErrorMessage(result.ErrorType)} ${result.Message ?? ''}`));
 
+				await dataContext.game.leaveGame();
 				return;
 			}
 

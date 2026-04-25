@@ -135,6 +135,7 @@ const connectToSIHostAsync = async (
 	getState: () => State,
 	dataContext: DataContext
 ): Promise<ISIHostClient> => {
+	await dataContext.game.leaveGame();
 	const state = getState();
 	const { useProxy2 } = state.settings;
 
@@ -210,6 +211,7 @@ const initStage3NavigateAsync = async (
 			if (!result.IsSuccess) {
 				const userError = `${localization.joinError}: ${getJoinErrorMessage(result.ErrorType)} ${result.Message ?? ''}`;
 				appDispatch(userErrorChanged(userError));
+				await dataContext.game.leaveGame();
 				appDispatch(navigate({ navigation: { path: Path.Root }, saveState: true }));
 				return;
 			}

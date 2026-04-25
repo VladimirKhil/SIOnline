@@ -175,8 +175,8 @@ import StakeTypes from '../model/enums/StakeTypes';
 import clearUrls from '../utils/clearUrls';
 
 // Non-idempotent initialization of group properties
-function initGroup(group: ContentGroup) {
-	const { rowCount, columnCount } = getBestRowColumnCount(group.content.length);
+function initGroup(group: ContentGroup, aspectRatio: number) {
+	const { rowCount, columnCount } = getBestRowColumnCount(group.content.length, aspectRatio);
 
 	group.columnCount = columnCount;
 	group.weight *= rowCount;
@@ -353,7 +353,9 @@ export default class ClientController implements IClientController {
 				case 'text': {
 					if (group) {
 						groups.push(group);
-						initGroup(group);
+						const uiState = this.getState().ui;
+						const aspectRatio = uiState.tableWidth / uiState.tableHeight;
+						initGroup(group, aspectRatio);
 						group = null;
 					}
 
@@ -427,7 +429,9 @@ export default class ClientController implements IClientController {
 
 		if (group) {
 			groups.push(group);
-			initGroup(group);
+			const uiState = this.getState().ui;
+			const aspectRatio = uiState.tableWidth / uiState.tableHeight;
+			initGroup(group, aspectRatio);
 		}
 
 		// Set external media warning
@@ -1432,7 +1436,9 @@ export default class ClientController implements IClientController {
 		}
 
 		// Calculate options weight based on row count using getBestRowColumnCount
-		const { rowCount, columnCount } = getBestRowColumnCount(options.length);
+		const uiState = this.getState().ui;
+		const aspectRatio = uiState.tableWidth / uiState.tableHeight;
+		const { rowCount, columnCount } = getBestRowColumnCount(options.length, aspectRatio);
 
 		// Options weight is proportional to row count (like ContentGroup.weight)
 		// Use larger weight if options contain at least one image

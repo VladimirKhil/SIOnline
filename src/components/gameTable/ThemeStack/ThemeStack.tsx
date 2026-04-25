@@ -11,11 +11,13 @@ import './ThemeStack.scss';
 export default function ThemeStack() {
 	const prevProps = React.useRef<{ isSelectable: boolean; roundInfo: any[]; activeThemeIndex: number }>();
 
-	const { isSelectable, roundInfo, activeThemeIndex } = useAppSelector(
+	const { isSelectable, roundInfo, activeThemeIndex, tableWidth, tableHeight } = useAppSelector(
         (rootState: RootState) => ({
             isSelectable: rootState.table.isSelectable,
             roundInfo: rootState.table.roundInfo,
-            activeThemeIndex: rootState.table.activeThemeIndex
+            activeThemeIndex: rootState.table.activeThemeIndex,
+            tableWidth: rootState.ui.tableWidth,
+            tableHeight: rootState.ui.tableHeight,
         }),
         shallowEqual
     );
@@ -53,7 +55,7 @@ export default function ThemeStack() {
 		);
 	};
 
-	const { columnCount } = getBestRowColumnCount(roundInfo.length);
+	const { columnCount } = getBestRowColumnCount(roundInfo.length, tableWidth / tableHeight);
 
 	return (
 		<div

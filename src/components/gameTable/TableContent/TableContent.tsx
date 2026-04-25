@@ -11,6 +11,8 @@ import Constants from '../../../model/enums/Constants';
 import StackedContent from '../StackedContent/StackedContent';
 import ExternalMediaWarning from '../ExternalMediaWarning/ExternalMediaWarning';
 import { useAudioContext } from '../../../contexts/AudioContextProvider';
+import { tableSizeChanged } from '../../../state/uiSlice';
+import { useDispatch } from 'react-redux';
 
 import './TableContent.scss';
 
@@ -82,7 +84,33 @@ function getLayout(
 
 const TableContentComponent: React.FC<TableContentProps> = (props) => {
 	const { audioContext, canPlayAudio } = useAudioContext();
+	const dispatch = useDispatch();
+	const tableRef = React.useRef<HTMLDivElement>(null);
 	const isPhoneMode = props.windowWidth < 800;
+
+	React.useEffect(() => {
+		if (!tableRef.current) {
+			return;
+		}
+
+		const observer = new ResizeObserver((entries) => {
+			if (entries.length === 0) {
+				return;
+			}
+
+			const entry = entries[0];
+			dispatch(tableSizeChanged({
+				width: entry.contentRect.width,
+				height: entry.contentRect.height
+			}));
+		});
+
+		observer.observe(tableRef.current);
+
+		return () => {
+			observer.disconnect();
+		};
+	}, [dispatch]);
 
 	const getAudioContent = (): React.ReactNode => props.audio.length > 0
 		? (<div className='centerBlock'><span className="clef rotate">&amp;</span></div>)
@@ -136,7 +164,7 @@ const TableContentComponent: React.FC<TableContentProps> = (props) => {
 
 	return (
 		<TableBorder>
-			<div className='table-content'>
+			<div className='table-content' ref={tableRef}>
 				{getLayout(props.layoutMode, mainContent, props.useStackedAnswerLayout, isPhoneMode, props.contentWeight, props.optionsWeight)}
 
 				<AudioContent audioContext={audioContext} autoPlayEnabled={canPlayAudio} />

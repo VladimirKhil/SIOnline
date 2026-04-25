@@ -32,6 +32,8 @@ export interface UIState {
 	showPlayers: boolean;
 	qrCode: string | null;
 	isFullScreenSupported: boolean;
+	tableWidth: number;
+	tableHeight: number;
 }
 
 const initialState: UIState = {
@@ -48,6 +50,8 @@ const initialState: UIState = {
 	showPlayers: true,
 	qrCode: null,
 	isFullScreenSupported: true,
+	tableWidth: 1024,
+	tableHeight: 576,
 };
 
 export const uiSlice = createSlice({
@@ -86,6 +90,10 @@ export const uiSlice = createSlice({
 		setFullScreenSupported: (state: UIState, action: PayloadAction<boolean>) => {
 			state.isFullScreenSupported = action.payload;
 		},
+		tableSizeChanged: (state: UIState, action: PayloadAction<{ width: number, height: number }>) => {
+			state.tableWidth = action.payload.width;
+			state.tableHeight = action.payload.height;
+		},
 	}
 });
 
@@ -100,6 +108,7 @@ export const {
 	playersVisibilityChanged,
 	setQrCode,
 	setFullScreenSupported,
+	tableSizeChanged,
 } = uiSlice.actions;
 
 export default uiSlice.reducer;
