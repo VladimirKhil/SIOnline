@@ -28,7 +28,7 @@ export default class NumericTextBox extends React.Component<NumericTextBoxProps,
 	}
 
 	componentDidUpdate(prevProps: NumericTextBoxProps): void {
-		if (prevProps.value !== this.props.value) {
+		if (prevProps.value !== this.props.value && !(Number.isNaN(prevProps.value) && Number.isNaN(this.props.value))) {
 			this.setState(() => ({
 				value: this.props.value.toString()
 			}));
@@ -52,8 +52,10 @@ export default class NumericTextBox extends React.Component<NumericTextBoxProps,
 
 	onBlur = (): void => {
 		const newValue = parseInt(this.state.value, 10);
-		if (this.props.value !== newValue) {
+		if (!Number.isNaN(newValue) && this.props.value !== newValue) {
 			this.props.onValueChanged(newValue);
+		} else if (Number.isNaN(newValue)) {
+			this.setState({ value: this.props.value.toString() });
 		}
 
 		if (this.props.onBlur) {
@@ -64,7 +66,7 @@ export default class NumericTextBox extends React.Component<NumericTextBoxProps,
 	onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>): void => {
 		if (e.keyCode === Constants.KEY_ENTER) {
 			const newValue = parseInt(this.state.value, 10);
-			if (this.props.value !== newValue) {
+			if (!Number.isNaN(newValue) && this.props.value !== newValue) {
 				this.props.onValueChanged(newValue);
 			} else {
 				this.props.onCancel();
