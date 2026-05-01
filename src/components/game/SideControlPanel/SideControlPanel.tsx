@@ -107,7 +107,7 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 		areSumsEditable: state.room2.areSumsEditable,
 		lastReplic: state.room2.lastReplic,
 		playersCount: state.room2.persons.players.length,
-		deepMode: state.room.deepMode,
+		deepMode: state.room2.deepMode,
 	}));
 
 	const ui = useAppSelector(state => state.ui);

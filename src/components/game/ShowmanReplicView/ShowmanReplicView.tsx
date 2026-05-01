@@ -44,7 +44,7 @@ export function ShowmanReplicView(props: ShowmanReplicViewProps): JSX.Element {
 		replicIndex: state.room2.replicIndex,
 		players: state.room2.persons.players,
 		windowWidth: state.ui.windowWidth,
-		deepMode: state.room.deepMode,
+		deepMode: state.room2.deepMode,
 		role: state.room2.role,
 	}));
 
@@ -68,7 +68,7 @@ export function ShowmanReplicView(props: ShowmanReplicViewProps): JSX.Element {
 		return currentAvatar;
 	}, [isMe, props.avatar, account?.avatar, props.avatarKey]);
 
-	const avatarStyle : React.CSSProperties = avatar
+	const avatarStyle: React.CSSProperties = avatar
 		? { backgroundImage: `url("${avatar}")` }
 		: {};
 

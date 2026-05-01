@@ -296,10 +296,6 @@ function processMessage(controller: ClientController, payload: any, appDispatch:
 			controller.onToggle(payload.themeIndex, payload.questionIndex, payload.price);
 			break;
 
-		case 'wrongTry':
-			controller.onWrongTry(payload.playerIndex);
-			break;
-
 		default:
 			break;
 	}

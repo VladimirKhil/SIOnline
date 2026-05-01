@@ -29,7 +29,6 @@ export default interface RoomState {
 	gameInfoVisible: boolean;
 	manageGameVisible: boolean;
 	avatarViewVivible: boolean;
-	deepMode: boolean;
 
 	metadata: {
 		gameName: string | null;
@@ -75,7 +74,6 @@ export const initialState: RoomState = {
 	gameInfoVisible: false,
 	manageGameVisible: false,
 	avatarViewVivible: false,
-	deepMode: false,
 
 	metadata: {
 		gameName: null,

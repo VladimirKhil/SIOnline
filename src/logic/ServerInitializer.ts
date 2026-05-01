@@ -121,33 +121,6 @@ async function loadHostInfoAsync(appDispatch: AppDispatch, dataContext: DataCont
 async function initializeStoragesAsync(appDispatch: AppDispatch, dataContext: DataContext, serverStorageInfos: SIStorageInfo[]) {
 	const storageInfos = [...serverStorageInfos];
 
-	for (let i = 0; i < storageInfos.length; i++) {
-		if (storageInfos[i].serviceUri === 'https://vladimirkhil.com/sistorage/') {
-			const proxyUri = 'https://server2.vladimirkhil.com/sistorage/';
-			try {
-				let signal: AbortSignal | undefined;
-				let timeoutId: any;
-
-				if (typeof AbortController !== 'undefined') {
-					const controller = new AbortController();
-					signal = controller.signal;
-					timeoutId = setTimeout(() => controller.abort(), 3000);
-				}
-
-				const response = await fetch(`${proxyUri}api/v1/packages?count=1`, { signal });
-				if (timeoutId) {
-					clearTimeout(timeoutId);
-				}
-
-				if (response.ok) {
-					storageInfos[i] = { ...storageInfos[i], serviceUri: proxyUri };
-				}
-			} catch (e) {
-				// Fallback to original uri
-			}
-		}
-	}
-
 	const storageClients = storageInfos.map(createStorageClientFromInfo);
 
 	const hostStorage = dataContext.host.getStorage();

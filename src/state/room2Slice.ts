@@ -74,6 +74,7 @@ export interface Room2State {
 
 	dialogView: DialogView;
 	contextView: ContextView;
+	deepMode: boolean;
 
 	stage: {
 		isGameStarted: boolean;
@@ -155,6 +156,7 @@ const initialState: Room2State = {
 
 	dialogView: DialogView.None,
 	contextView: ContextView.None,
+	deepMode: false,
 
 	stage: {
 		isGameStarted: false,
@@ -952,6 +954,9 @@ export const room2Slice = createSlice({
 			state.validation.wrongAnswers = [];
 			// TODO: add more if needed
 		},
+		setDeepMode: (state: Room2State, action: PayloadAction<boolean>) => {
+			state.deepMode = action.payload;
+		},
 	},
 	extraReducers: (builder) => {
 		builder.addCase(sendAnswer.fulfilled, (state) => {
@@ -1185,6 +1190,7 @@ export const exitGame = createAsyncThunk(
 		thunkAPI.dispatch(setIsPaused(false));
 		thunkAPI.dispatch(setIsAppellation(false));
 		thunkAPI.dispatch(setShowMainTimer(false));
+		thunkAPI.dispatch(setDeepMode(false));
 
 		thunkAPI.dispatch(stopAudio());
 		thunkAPI.dispatch(clearGameLog());
@@ -1286,6 +1292,7 @@ export const {
 	timerMaximumChanged,
 	setHiddenComments,
 	endAskingState,
+	setDeepMode,
 } = room2Slice.actions;
 
 export default room2Slice.reducer;

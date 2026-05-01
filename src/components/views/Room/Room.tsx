@@ -117,7 +117,7 @@ export function Room(props: RoomProps): JSX.Element {
 		validationHeader: state.room2.validation.header,
 		role: state.room2.role,
 		dialogView: state.room2.dialogView,
-		deepMode: state.room.deepMode,
+		deepMode: state.room2.deepMode,
 		hostName: state.room2.persons.hostName,
 		myName: state.room2.name,
 	}));

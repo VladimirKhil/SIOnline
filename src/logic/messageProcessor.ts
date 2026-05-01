@@ -158,6 +158,10 @@ const viewerHandler = (
 			controller.onAppellation(args[1] === '+');
 			break;
 
+		case GameMessages.ArenaMode:
+			controller.onArenaMode();
+			break;
+
 		case GameMessages.AtomHint:
 			if (args.length < 2) {
 				break;
@@ -1068,15 +1072,6 @@ const viewerHandler = (
 
 		case GameMessages.Winner:
 			controller.onWinner();
-			break;
-
-		case GameMessages.WrongTry:
-			if (args.length < 2) {
-				break;
-			}
-
-			const playerIndex = parseInt(args[1], 10);
-			controller.onWrongTry(playerIndex);
 			break;
 
 		default:

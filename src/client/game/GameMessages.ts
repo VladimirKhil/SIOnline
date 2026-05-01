@@ -13,6 +13,8 @@ const enum GameMessages {
 
 	Appellation = 'APPELLATION',
 
+	ArenaMode = 'ARENA_MODE',
+
 	AskReview = 'ASK_REVIEW',
 
 	AskSelectPlayer = 'ASK_SELECT_PLAYER',
@@ -231,8 +233,6 @@ const enum GameMessages {
 	Validation2 = 'VALIDATION2',
 
 	Winner = 'WINNER',
-
-	WrongTry = 'WRONGTRY',
 }
 
 export default GameMessages;

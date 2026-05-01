@@ -154,6 +154,7 @@ import {
 	replicIndexChanged,
 	endAskingState,
 	setHiddenComments,
+	setDeepMode,
 } from '../state/room2Slice';
 
 import PersonInfo from '../model/PersonInfo';
@@ -505,6 +506,10 @@ export default class ClientController implements IClientController {
 		if (appellation) {
 			this.appDispatch(isSelectableChanged(false));
 		}
+	}
+
+	onArenaMode() {
+		this.appDispatch(setDeepMode(true));
 	}
 
 	onAskAnswer(answerType: string | null) {
@@ -1282,25 +1287,6 @@ export default class ClientController implements IClientController {
 			for (let i = 0; i < players.length; i++) {
 				const player = players[i];
 				this.appDispatch(addGameLog(`${player.name}: ${player.sum}`));
-			}
-		}
-	}
-
-	onWrongTry(playerIndex: number) {
-		const { players } = this.getState().room2.persons;
-
-		if (playerIndex > -1 && playerIndex < players.length) {
-			const player = players[playerIndex];
-
-			if (player.state === PlayerStates.None) {
-				this.appDispatch(playerStateChanged({ index: playerIndex, state: PlayerStates.Lost }));
-
-				setTimeout(
-					() => {
-						this.appDispatch(playerLostStateDropped(playerIndex));
-					},
-					800
-				);
 			}
 		}
 	}
