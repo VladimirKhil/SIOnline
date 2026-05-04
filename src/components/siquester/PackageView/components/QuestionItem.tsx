@@ -21,6 +21,7 @@ import {
 	addAnswerOption,
 	removeAnswerOption,
 	updateAnswerOptionValue,
+	addComplexAnswer,
 } from '../../../../state/siquesterSlice';
 import CollectionEditor from '../../CollectionEditor/CollectionEditor';
 import MediaItem from '../../MediaItem/MediaItem';
@@ -54,11 +55,11 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ item, isEditMode }) => {
 	const [isCustomMode, setIsCustomMode] = React.useState(isCustomType);
 	const [customTypeValue, setCustomTypeValue] = React.useState(isCustomType ? question.type : '');
 
-	function getSetAnswererSelect(setAnswererSelect: SelectionMode): string {
+	function getSetAnswererSelect(setAnswererSelect: SelectionMode | undefined): string {
 		switch (setAnswererSelect) {
 			case 'any': return localization.setAnswererSelectAny;
 			case 'exceptCurrent': return localization.setAnswererSelectExceptCurrent;
-			default: return setAnswererSelect;
+			default: return setAnswererSelect || '';
 		}
 	}
 
@@ -258,36 +259,36 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ item, isEditMode }) => {
 
 	const handleQuestionChange = (property: 'price' | 'type', value: string | number) => {
 		if (isEditMode && indices.roundIndex !== undefined && indices.themeIndex !== undefined && indices.questionIndex !== undefined) {
-			dispatch(updateQuestionProperty({ 
-				roundIndex: indices.roundIndex, 
-				themeIndex: indices.themeIndex, 
-				questionIndex: indices.questionIndex, 
-				property, 
-				value 
+			dispatch(updateQuestionProperty({
+				roundIndex: indices.roundIndex,
+				themeIndex: indices.themeIndex,
+				questionIndex: indices.questionIndex,
+				property,
+				value
 			}));
 		}
 	};
 
 	const handleQuestionParamChange = (param: string, value: string) => {
 		if (isEditMode && indices.roundIndex !== undefined && indices.themeIndex !== undefined && indices.questionIndex !== undefined) {
-			dispatch(updateQuestionParam({ 
-				roundIndex: indices.roundIndex, 
-				themeIndex: indices.themeIndex, 
-				questionIndex: indices.questionIndex, 
-				param, 
-				value 
+			dispatch(updateQuestionParam({
+				roundIndex: indices.roundIndex,
+				themeIndex: indices.themeIndex,
+				questionIndex: indices.questionIndex,
+				param,
+				value
 			}));
 		}
 	};
 
 	const handleRightAnswerChange = (answerIndex: number, value: string) => {
 		if (isEditMode && indices.roundIndex !== undefined && indices.themeIndex !== undefined && indices.questionIndex !== undefined) {
-			dispatch(updateQuestionRightAnswer({ 
-				roundIndex: indices.roundIndex, 
-				themeIndex: indices.themeIndex, 
-				questionIndex: indices.questionIndex, 
-				answerIndex, 
-				value 
+			dispatch(updateQuestionRightAnswer({
+				roundIndex: indices.roundIndex,
+				themeIndex: indices.themeIndex,
+				questionIndex: indices.questionIndex,
+				answerIndex,
+				value
 			}));
 		}
 	};
@@ -345,6 +346,15 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ item, isEditMode }) => {
 			}));
 		}
 	};
+	const handleAddComplexAnswer = () => {
+		if (isEditMode && indices.roundIndex !== undefined && indices.themeIndex !== undefined && indices.questionIndex !== undefined) {
+			dispatch(addComplexAnswer({
+				roundIndex: indices.roundIndex,
+				themeIndex: indices.themeIndex,
+				questionIndex: indices.questionIndex
+			}));
+		}
+	};
 
 	const handleQuestionTypeChange = (value: string) => {
 		if (value === 'custom') {
@@ -377,7 +387,7 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ item, isEditMode }) => {
 						aria-label={localization.delete}
 					>
 						<svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-							<path d="M6 19C6 20.1 6.9 21 8 21H16C17.1 21 18 20.1 18 19V7H6V19ZM8 9H16V19H8V9ZM15.5 4L14.5 3H9.5L8.5 4H5V6H19V4H15.5Z" fill="currentColor"/>
+							<path d="M6 19C6 20.1 6.9 21 8 21H16C17.1 21 18 20.1 18 19V7H6V19ZM8 9H16V19H8V9ZM15.5 4L14.5 3H9.5L8.5 4H5V6H19V4H15.5Z" fill="currentColor" />
 						</svg>
 					</button>
 				)}
@@ -393,188 +403,243 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ item, isEditMode }) => {
 			<section className='info__content'>
 				{question.price > -1
 					? <>
-					<label htmlFor='price' className='header'>{localization.price}</label>
-					<input
-						id='price'
-						type='number'
-						className='packageView__question__info__price'
-						value={question.price}
-						readOnly={!isEditMode}
-						onChange={(e) => handleQuestionChange('price', parseInt(e.target.value, 10) || 0)}
-					/>
+						<label htmlFor='price' className='header'>{localization.price}</label>
+						<input
+							id='price'
+							type='number'
+							className='packageView__question__info__price'
+							value={question.price}
+							readOnly={!isEditMode}
+							onChange={(e) => handleQuestionChange('price', parseInt(e.target.value, 10) || 0)}
+						/>
 
-					{question.type || isEditMode
-						? <>
-							<label htmlFor='type' className='header'>{localization.type}</label>
+						{question.type || isEditMode
+							? <>
+								<label htmlFor='type' className='header'>{localization.type}</label>
 
-							{isEditMode ? (
-								<>
-									<select
-										id='type'
-										className='packageView__question__type'
-										value={isCustomMode ? 'custom' : (question.type ?? 'default')}
-										onChange={(e) => handleQuestionTypeChange(e.target.value)}
-									>
-										<option value={QuestionTypes.Simple}>{localization.questionTypeSimple}</option>
-										<option value={QuestionTypes.Stake}>{localization.questionTypeStake}</option>
-										<option value={QuestionTypes.NoRisk}>{localization.questionTypeForYourself}</option>
-										<option value={QuestionTypes.Secret}>{localization.questionTypeSecret}</option>
-										<option value={QuestionTypes.SecretPublicPrice}>{localization.questionTypeSecretPublicPrice}</option>
-										<option value={QuestionTypes.SecretNoQuestion}>{localization.questionTypeSecretNoQuestion}</option>
-										<option value={QuestionTypes.ForAll}>{localization.questionTypeForAll}</option>
-										<option value={QuestionTypes.StakeAll}>{localization.questionTypeForAllWithStake}</option>
-										<option value='custom'>{localization.custom}</option>
-										<option value='default'>{localization.default}</option>
-									</select>
-
-									{isCustomMode && (
-										<input
-											type='text'
-											className='packageView__question__customType'
-											placeholder={localization.enterCustomQuestionType}
-											value={customTypeValue}
-											onChange={(e) => handleCustomTypeChange(e.target.value)}
-											style={{ marginTop: '5px' }}
-										/>
-									)}
-								</>
-							) : (
-								<input
-									id='type'
-									type='text'
-									className='packageView__question__type'
-									value={getQuestionTypeName(question.type ?? '')}
-									readOnly
-								/>
-							)}
-						</>
-					: null}
-
-					{question.params.theme
-						? <>
-							<label htmlFor='theme' className='header'>{localization.theme}</label>
-							<input
-								id='theme'
-								type='text'
-								value={question.params.theme}
-								readOnly={!isEditMode}
-								onChange={(e) => handleQuestionParamChange('theme', e.target.value)}
-							/>
-						</>
-					: null}
-
-					{question.params.selectionMode
-						? <>
-							<label htmlFor='selectionMode' className='header'>{localization.selectionMode}</label>
-
-							{isEditMode ? (
-								<select
-									id='selectionMode'
-									value={question.params.selectionMode}
-									onChange={(e) => handleQuestionParamChange('selectionMode', e.target.value)}
-								>
-									<option value='any'>{localization.setAnswererSelectAny}</option>
-									<option value='exceptCurrent'>{localization.setAnswererSelectExceptCurrent}</option>
-								</select>
-							) : (
-								<input
-									id='selectionMode'
-									type='text'
-									value={getSetAnswererSelect(question.params.selectionMode)}
-									readOnly={!isEditMode}
-									onChange={(e) => handleQuestionParamChange('selectionMode', e.target.value)}
-								/>
-							)}
-						</>
-					: null}
-
-					{question.params.price?.numberSet
-						? <>
-							<label htmlFor='price' className='header'>{localization.price}</label>
-							{getNumberSet(question.params.price.numberSet)}
-						</>
-					: null}
-
-					{question.type !== 'secretNoQuestion'
-						? <>
-							<label htmlFor='name' className='header'>{localization.question}</label>
-
-							{question.params.question ? <ScreensView 
-								content={question.params.question} 
-								isEditMode={isEditMode}
-								roundIndex={indices.roundIndex}
-								themeIndex={indices.themeIndex}
-								questionIndex={indices.questionIndex}
-								paramName="question"
-							/> : null}
-
-							{question.params.answer
-								? <>
-									<label htmlFor='name' className='header'>{localization.answer}</label>
-									<ScreensView 
-										content={question.params.answer} 
-										isEditMode={isEditMode}
-										roundIndex={indices.roundIndex}
-										themeIndex={indices.themeIndex}
-										questionIndex={indices.questionIndex}
-										paramName="answer"
-									/>
-								</>
-							: null}
-
-							{question.params.answerType || isEditMode
-								? <>
-									<label htmlFor='answerType' className='header'>{localization.answerType}</label>
-									{isEditMode ? (
+								{isEditMode ? (
+									<>
 										<select
-											id='answerType'
-											className='packageView__question__answerType'
-											value={question.params.answerType || 'text'}
-											onChange={(e) => handleQuestionParamChange('answerType', e.target.value)}
+											id='type'
+											className='packageView__question__type'
+											value={isCustomMode ? 'custom' : (question.type ?? 'default')}
+											onChange={(e) => handleQuestionTypeChange(e.target.value)}
 										>
-											<option value='text'>{localization.text}</option>
-											<option value='select'>{localization.answerTypeSelect}</option>
-											<option value='number'>{localization.number}</option>
-											<option value='point'>{localization.answerTypePoint}</option>
+											<option value={QuestionTypes.Simple}>{localization.questionTypeSimple}</option>
+											<option value={QuestionTypes.Stake}>{localization.questionTypeStake}</option>
+											<option value={QuestionTypes.NoRisk}>{localization.questionTypeForYourself}</option>
+											<option value={QuestionTypes.Secret}>{localization.questionTypeSecret}</option>
+											<option value={QuestionTypes.SecretPublicPrice}>{localization.questionTypeSecretPublicPrice}</option>
+											<option value={QuestionTypes.SecretNoQuestion}>{localization.questionTypeSecretNoQuestion}</option>
+											<option value={QuestionTypes.ForAll}>{localization.questionTypeForAll}</option>
+											<option value={QuestionTypes.StakeAll}>{localization.questionTypeForAllWithStake}</option>
+											<option value='custom'>{localization.custom}</option>
+											<option value='default'>{localization.default}</option>
 										</select>
-									) : (
-										<input id='answerType' type='text' value={getAnswerType(question.params.answerType || 'text')} readOnly />
-									)}
-								</>
+
+										{isCustomMode && (
+											<input
+												type='text'
+												className='packageView__question__customType'
+												placeholder={localization.enterCustomQuestionType}
+												value={customTypeValue}
+												onChange={(e) => handleCustomTypeChange(e.target.value)}
+												style={{ marginTop: '5px' }}
+											/>
+										)}
+									</>
+								) : (
+									<input
+										id='type'
+										type='text'
+										className='packageView__question__type'
+										value={getQuestionTypeName(question.type ?? '')}
+										readOnly
+									/>
+								)}
+							</>
 							: null}
 
-							{answerOptions || (isEditMode && (question.params.answerType === 'select'))
-								? <>
-									<label htmlFor='name' className='header'>{localization.answerOptions}</label>
+						{question.params.theme || (isEditMode && (question.type === QuestionTypes.Secret || question.type === QuestionTypes.SecretPublicPrice))
+							? <>
+								<label htmlFor='theme' className='header'>{localization.theme}</label>
+								<input
+									id='theme'
+									type='text'
+									value={question.params.theme || ''}
+									readOnly={!isEditMode}
+									onChange={(e) => handleQuestionParamChange('theme', e.target.value)}
+								/>
+							</>
+							: null}
 
-									{answerOptions ? Object.keys(answerOptions).map((key, ii) => {
-										const option = answerOptions[key] as ContentParam;
-										const [firstItem] = option.items || [];
+						{question.params.selectionMode || (isEditMode && (question.type === QuestionTypes.Secret || question.type === QuestionTypes.SecretPublicPrice))
+							? <>
+								<label htmlFor='selectionMode' className='header'>{localization.selectionMode}</label>
 
-										if (!firstItem) {
+								{isEditMode ? (
+									<select
+										id='selectionMode'
+										value={question.params.selectionMode || ''}
+										onChange={(e) => handleQuestionParamChange('selectionMode', e.target.value)}
+									>
+										<option value='any'>{localization.setAnswererSelectAny}</option>
+										<option value='exceptCurrent'>{localization.setAnswererSelectExceptCurrent}</option>
+									</select>
+								) : (
+									<input
+										id='selectionMode'
+										type='text'
+										value={getSetAnswererSelect(question.params.selectionMode)}
+										readOnly={!isEditMode}
+										onChange={(e) => handleQuestionParamChange('selectionMode', e.target.value)}
+									/>
+								)}
+							</>
+							: null}
+
+						{question.params.price?.numberSet
+							? <>
+								<label htmlFor='price' className='header'>{localization.price}</label>
+								{getNumberSet(question.params.price.numberSet)}
+							</>
+							: null}
+
+						{question.type !== 'secretNoQuestion'
+							? <>
+								<label htmlFor='name' className='header'>{localization.screens}</label>
+
+								{question.params.question ? <ScreensView
+									content={question.params.question}
+									isEditMode={isEditMode}
+									roundIndex={indices.roundIndex}
+									themeIndex={indices.themeIndex}
+									questionIndex={indices.questionIndex}
+									paramName="question"
+								/> : null}
+
+								{question.params.answerType || isEditMode
+									? <>
+										<label htmlFor='answerType' className='header'>{localization.answerType}</label>
+										{isEditMode ? (
+											<select
+												id='answerType'
+												className='packageView__question__answerType'
+												value={question.params.answerType || 'text'}
+												onChange={(e) => handleQuestionParamChange('answerType', e.target.value)}
+											>
+												<option value='text'>{localization.text}</option>
+												<option value='select'>{localization.answerTypeSelect}</option>
+												<option value='number'>{localization.number}</option>
+												<option value='point'>{localization.answerTypePoint}</option>
+											</select>
+										) : (
+											<input id='answerType' type='text' value={getAnswerType(question.params.answerType || 'text')} readOnly />
+										)}
+									</>
+									: null}
+
+								{answerOptions || (isEditMode && (question.params.answerType === 'select'))
+									? <>
+										<label htmlFor='name' className='header'>{localization.answerOptions}</label>
+
+										{answerOptions ? Object.keys(answerOptions).map((key, ii) => {
+											const option = answerOptions[key] as ContentParam;
+											const [firstItem] = option.items || [];
+
+											if (!firstItem) {
+												return (
+													<div key={key} className='packageView__answer__option__host'>
+														<div className='packageView__answer__option__label'>{key}</div>
+														<input
+															aria-label='content'
+															className='packageView__answer__option'
+															value=""
+															readOnly={!isEditMode}
+															onChange={(e) => {
+																if (isEditMode &&
+																	indices.roundIndex !== undefined &&
+																	indices.themeIndex !== undefined &&
+																	indices.questionIndex !== undefined) {
+																	dispatch(updateAnswerOptionValue({
+																		roundIndex: indices.roundIndex,
+																		themeIndex: indices.themeIndex,
+																		questionIndex: indices.questionIndex,
+																		key,
+																		value: e.target.value,
+																	}));
+																}
+															}}
+														/>
+														{isEditMode ? (
+															<button
+																type='button'
+																className='packageView__answer__option__remove'
+																onClick={() => {
+																	if (indices.roundIndex !== undefined &&
+																		indices.themeIndex !== undefined &&
+																		indices.questionIndex !== undefined) {
+																		dispatch(removeAnswerOption({
+																			roundIndex: indices.roundIndex,
+																			themeIndex: indices.themeIndex,
+																			questionIndex: indices.questionIndex,
+																			key,
+																		}));
+																	}
+																}}
+																title={localization.removeOption}
+																aria-label={localization.removeOption}
+															>✕</button>
+														) : null}
+													</div>
+												);
+											}
+
+											const renderAnswerOptionContent = () => {
+												switch (firstItem.type) {
+													case 'image': {
+														return (
+															<div className='packageView__answer__option__image'>
+																<MediaItem
+																	src={firstItem.value}
+																	type='image'
+																	isRef={firstItem.isRef}
+																/>
+															</div>
+														);
+													}
+
+													default:
+														return (
+															<input
+																aria-label='content'
+																key={ii}
+																className='packageView__answer__option'
+																value={firstItem.value}
+																readOnly={!isEditMode}
+																onChange={(e) => {
+																	if (isEditMode &&
+																		indices.roundIndex !== undefined &&
+																		indices.themeIndex !== undefined &&
+																		indices.questionIndex !== undefined) {
+																		dispatch(updateAnswerOptionValue({
+																			roundIndex: indices.roundIndex,
+																			themeIndex: indices.themeIndex,
+																			questionIndex: indices.questionIndex,
+																			key,
+																			value: e.target.value,
+																		}));
+																	}
+																}}
+															/>
+														);
+												}
+											};
+
 											return (
 												<div key={key} className='packageView__answer__option__host'>
 													<div className='packageView__answer__option__label'>{key}</div>
-													<input
-														aria-label='content'
-														className='packageView__answer__option'
-														value=""
-														readOnly={!isEditMode}
-														onChange={(e) => {
-															if (isEditMode &&
-																indices.roundIndex !== undefined &&
-																indices.themeIndex !== undefined &&
-																indices.questionIndex !== undefined) {
-																dispatch(updateAnswerOptionValue({
-																	roundIndex: indices.roundIndex,
-																	themeIndex: indices.themeIndex,
-																	questionIndex: indices.questionIndex,
-																	key,
-																	value: e.target.value,
-																}));
-															}
-														}}
-													/>
+													{renderAnswerOptionContent()}
 													{isEditMode ? (
 														<button
 															type='button'
@@ -597,197 +662,158 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ item, isEditMode }) => {
 													) : null}
 												</div>
 											);
-										}
+										}) : null}
 
-										const renderAnswerOptionContent = () => {
-											switch (firstItem.type) {
-												case 'image': {
-													return (
-														<div className='packageView__answer__option__image'>
-															<MediaItem
-																src={firstItem.value}
-																type='image'
-																isRef={firstItem.isRef}
-															/>
-														</div>
-													);
-												}
+										{isEditMode ? (
+											<button
+												type='button'
+												className='packageView__answer__option__add'
+												onClick={() => {
+													if (indices.roundIndex !== undefined &&
+														indices.themeIndex !== undefined &&
+														indices.questionIndex !== undefined) {
+														dispatch(addAnswerOption({
+															roundIndex: indices.roundIndex,
+															themeIndex: indices.themeIndex,
+															questionIndex: indices.questionIndex,
+														}));
+													}
+												}}
+												title={localization.addOption}
+												aria-label={localization.addOption}
+											>+</button>
+										) : null}
+									</>
+									: null}
 
-												default:
-													return (
-														<input
-															aria-label='content'
-															key={ii}
-															className='packageView__answer__option'
-															value={firstItem.value}
-															readOnly={!isEditMode}
-															onChange={(e) => {
-																if (isEditMode &&
-																	indices.roundIndex !== undefined &&
-																	indices.themeIndex !== undefined &&
-																	indices.questionIndex !== undefined) {
-																	dispatch(updateAnswerOptionValue({
-																		roundIndex: indices.roundIndex,
-																		themeIndex: indices.themeIndex,
-																		questionIndex: indices.questionIndex,
-																		key,
-																		value: e.target.value,
-																	}));
-																}
-															}}
-														/>
-													);
-											}
-										};
-
-										return (
-											<div key={key} className='packageView__answer__option__host'>
-												<div className='packageView__answer__option__label'>{key}</div>
-												{renderAnswerOptionContent()}
-												{isEditMode ? (
-													<button
-														type='button'
-														className='packageView__answer__option__remove'
-														onClick={() => {
-															if (indices.roundIndex !== undefined &&
-																indices.themeIndex !== undefined &&
-																indices.questionIndex !== undefined) {
-																dispatch(removeAnswerOption({
-																	roundIndex: indices.roundIndex,
-																	themeIndex: indices.themeIndex,
-																	questionIndex: indices.questionIndex,
-																	key,
-																}));
-															}
-														}}
-														title={localization.removeOption}
-														aria-label={localization.removeOption}
-													>✕</button>
-												) : null}
-											</div>
-										);
-									}) : null}
-
-									{isEditMode ? (
-										<button
-											type='button'
-											className='packageView__answer__option__add'
-											onClick={() => {
-												if (indices.roundIndex !== undefined &&
-													indices.themeIndex !== undefined &&
-													indices.questionIndex !== undefined) {
-													dispatch(addAnswerOption({
-														roundIndex: indices.roundIndex,
-														themeIndex: indices.themeIndex,
-														questionIndex: indices.questionIndex,
-													}));
+								{isEditMode && (
+									<label className='header packageView__question__checkboxLabel'>
+										<input
+											type='checkbox'
+											checked={!!question.params.answerDuration}
+											onChange={(e) => {
+												if (e.target.checked) {
+													handleQuestionParamChange('answerDuration', '30');
+												} else {
+													handleQuestionParamChange('answerDuration', '');
 												}
 											}}
-											title={localization.addOption}
-											aria-label={localization.addOption}
-										>+</button>
-									) : null}
-								</>
-							: null}
+										/>
+										{localization.answerDuration}
+									</label>
+								)}
 
-			{isEditMode && (
-				<label className='header packageView__question__checkboxLabel'>
-					<input
-						type='checkbox'
-						checked={!!question.params.answerDuration}
-						onChange={(e) => {
-							if (e.target.checked) {
-								handleQuestionParamChange('answerDuration', '30');
-							} else {
-								handleQuestionParamChange('answerDuration', '');
-							}
-						}}
-					/>
-					{localization.answerDuration}
-				</label>
-			)}
-			{!isEditMode && question.params.answerDuration ? (
-				<label className='header'>{localization.answerDuration}</label>
-			) : null}
-			{question.params.answerDuration ? (
-				<input
-					type='number'
-					min={1}
-					max={120}
-					value={question.params.answerDuration}
-					aria-label={localization.answerDuration}
-					readOnly={!isEditMode}
-					onChange={(e) => handleQuestionParamChange('answerDuration', e.target.value)}
-				/>
-			) : null}
+								{!isEditMode && question.params.answerDuration ? (
+									<label className='header'>{localization.answerDuration}</label>
+								) : null}
 
-			{answerOptions && isEditMode && question.right.answer.length === 1 ? (
-				<>
-					<label htmlFor='name' className='header'>{localization.rightAnswers}</label>
-					<select
-						aria-label='right answer'
-						className='packageView__info__answer'
-						value={question.right.answer[0]}
-						onChange={(e) => handleRightAnswerChange(0, e.target.value)}
-					>
-						{Object.keys(answerOptions).map((key) => (
-							<option key={key} value={key}>{key}</option>
-						))}
-					</select>
-				</>
-			) : (
-				<>
-				<CollectionEditor
-					label={localization.rightAnswers}
-					items={question.right.answer}
-					isEditMode={isEditMode}
-					className='packageView__info__answer'
-					getValue={(answer) => answer}
-					onItemChange={handleRightAnswerChange}
-					onAddItem={handleAddRightAnswer}
-					onRemoveItem={handleRemoveRightAnswer}
-					placeholder={localization.enterAnswer}
-					preventDeleteLast={true}
-				/>
-				</>
-			)}
+								{question.params.answerDuration ? (
+									<input
+										type='number'
+										min={1}
+										max={120}
+										value={question.params.answerDuration}
+										aria-label={localization.answerDuration}
+										readOnly={!isEditMode}
+										onChange={(e) => handleQuestionParamChange('answerDuration', e.target.value)}
+									/>
+								) : null}
 
-			{(question.params.answerType === 'number' ||
-				question.params.answerType === 'point')
-				? <>
-					<label htmlFor='answerDeviation' className='header'>
-						{localization.answerDeviation}
-					</label>
-					<input
-						id='answerDeviation'
-						type='number'
-						step='any'
-						value={question.params.answerDeviation ?? ''}
-						readOnly={!isEditMode}
-						onChange={(e) => handleQuestionParamChange('answerDeviation', e.target.value)}
-					/>
-				</>
-			: null}
+								{question.params.answer
+									? <>
+										<label htmlFor='name' className='header'>{localization.answer}</label>
+										<ScreensView
+											content={question.params.answer}
+											isEditMode={isEditMode}
+											roundIndex={indices.roundIndex}
+											themeIndex={indices.themeIndex}
+											questionIndex={indices.questionIndex}
+											paramName="answer"
+										/>
+									</>
+									: null}
 
-			{(question.wrong && question.wrong.answer.length > 0) || isEditMode ? (
-								<CollectionEditor
-									label={localization.wrongAnswers}
-									items={question.wrong?.answer || []}
-									isEditMode={isEditMode}
-									className='packageView__info__answer'
-									getValue={(answer) => answer}
-									onItemChange={handleWrongAnswerChange}
-									onAddItem={handleAddWrongAnswer}
-									onRemoveItem={handleRemoveWrongAnswer}
-									placeholder={localization.enterWrongAnswer}
-								/>
-							) : null}
-						</>
-						: null
-					}
+								{isEditMode && !question.params.answer ? (
+									<button
+										type='button'
+										className='packageView__answer__add'
+										onClick={handleAddComplexAnswer}
+										title={localization.addComplexAnswer}
+										aria-label={localization.addComplexAnswer}
+									>
+										<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+											<path d="M12 16L1 9L12 2L23 9L12 16ZM12 18.5L2 12.06L1 12.68L12 19.68L23 12.68L22 12.06L12 18.5ZM12 21L2 14.56L1 15.18L12 22.18L23 15.18L22 14.56L12 21Z" fill="currentColor" />
+										</svg>
+									</button>
+								) : null}
+
+								{answerOptions && isEditMode && question.right.answer.length === 1 ? (
+									<>
+										<label htmlFor='name' className='header'>{localization.rightAnswers}</label>
+										<select
+											aria-label='right answer'
+											className='packageView__info__answer'
+											value={question.right.answer[0]}
+											onChange={(e) => handleRightAnswerChange(0, e.target.value)}
+										>
+											{Object.keys(answerOptions).map((key) => (
+												<option key={key} value={key}>{key}</option>
+											))}
+										</select>
+									</>
+								) : (
+									<>
+										<CollectionEditor
+											label={localization.rightAnswers}
+											items={question.right.answer}
+											isEditMode={isEditMode}
+											className='packageView__info__answer'
+											getValue={(answer) => answer}
+											onItemChange={handleRightAnswerChange}
+											onAddItem={handleAddRightAnswer}
+											onRemoveItem={handleRemoveRightAnswer}
+											placeholder={localization.enterAnswer}
+											preventDeleteLast={true}
+										/>
+									</>
+								)}
+
+								{(question.params.answerType === 'number' ||
+									question.params.answerType === 'point')
+									? <>
+										<label htmlFor='answerDeviation' className='header'>
+											{localization.answerDeviation}
+										</label>
+										<input
+											id='answerDeviation'
+											type='number'
+											step='any'
+											value={question.params.answerDeviation ?? ''}
+											readOnly={!isEditMode}
+											onChange={(e) => handleQuestionParamChange('answerDeviation', e.target.value)}
+										/>
+									</>
+									: null}
+
+								{(question.wrong && question.wrong.answer.length > 0) || isEditMode ? (
+									<CollectionEditor
+										label={localization.wrongAnswers}
+										items={question.wrong?.answer || []}
+										isEditMode={isEditMode}
+										className='packageView__info__answer'
+										getValue={(answer) => answer}
+										onItemChange={handleWrongAnswerChange}
+										onAddItem={handleAddWrongAnswer}
+										onRemoveItem={handleRemoveWrongAnswer}
+										placeholder={localization.enterWrongAnswer}
+									/>
+								) : null}
+							</>
+							: null
+						}
 					</>
 					: null
-					}
+				}
 
 				{getInfo(question, isEditMode, indices)}
 			</section>

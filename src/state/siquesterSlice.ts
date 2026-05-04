@@ -864,6 +864,31 @@ export const siquesterSlice = createSlice({
 				if (screenEnd >= screenStart) {
 					param.items.splice(screenStart, screenEnd - screenStart + 1);
 				}
+
+				if (param.items.length === 0) {
+					delete question.params[action.payload.paramName];
+				}
+			}
+		},
+		addComplexAnswer: (state, action: {
+			payload: {
+				roundIndex: number;
+				themeIndex: number;
+				questionIndex: number;
+			}
+		}) => {
+			const question = state.pack?.rounds[action.payload.roundIndex]
+				?.themes[action.payload.themeIndex]?.questions[action.payload.questionIndex];
+
+			if (question) {
+				question.params.answer = {
+					items: [{
+						type: 'text',
+						value: '',
+						isRef: false,
+						placement: 'screen'
+					}]
+				};
 			}
 		},
 		addScreenContentItem: (state, action: {
@@ -1122,6 +1147,7 @@ export const {
 	updateAnswerOptionValue,
 	setCurrentItem,
 	togglePackageStats,
+	addComplexAnswer,
 } = siquesterSlice.actions;
 
 // Selector to get the current item based on the indices

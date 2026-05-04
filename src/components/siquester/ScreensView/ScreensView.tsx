@@ -133,8 +133,8 @@ function getContentTypeIcon(type: ContentMode): React.ReactNode {
 }
 
 function timeStringToSeconds(time: string): number {
-    const [hours, minutes, seconds] = time.split(':').map(Number);
-    return (hours * 3600) + (minutes * 60) + seconds;
+	const [hours, minutes, seconds] = time.split(':').map(Number);
+	return (hours * 3600) + (minutes * 60) + seconds;
 }
 
 function initGroup(group: ContentGroup) {
@@ -157,13 +157,13 @@ function initGroup(group: ContentGroup) {
 	group.weight *= bestRowCount;
 }
 
-const ScreensView: React.FC<ScreensViewProps> = ({ 
-	content, 
-	isEditMode = false, 
-	roundIndex, 
-	themeIndex, 
-	questionIndex, 
-	paramName 
+const ScreensView: React.FC<ScreensViewProps> = ({
+	content,
+	isEditMode = false,
+	roundIndex,
+	themeIndex,
+	questionIndex,
+	paramName
 }) => {
 	const dispatch = useDispatch();
 	const [screenIndex, setScreenIndex] = React.useState(0);
@@ -222,7 +222,7 @@ const ScreensView: React.FC<ScreensViewProps> = ({
 							Constants.LARGE_CONTENT_WEIGHT,
 							Math.max(1, contentItem.value.length / 80),
 						);
-						const textGroup : ContentGroup = { content: [contentItem], weight: textWeight, columnCount: 1 };
+						const textGroup: ContentGroup = { content: [contentItem], weight: textWeight, columnCount: 1 };
 						groups.push(textGroup);
 						break;
 					}
@@ -312,10 +312,10 @@ const ScreensView: React.FC<ScreensViewProps> = ({
 
 	function getContentItem(contentItem: ContentItem, itemIndex: number): React.ReactNode {
 		const handleContentChange = (property: 'value', value: string) => {
-			if (isEditMode && 
-				typeof roundIndex === 'number' && 
-				typeof themeIndex === 'number' && 
-				typeof questionIndex === 'number' && 
+			if (isEditMode &&
+				typeof roundIndex === 'number' &&
+				typeof themeIndex === 'number' &&
+				typeof questionIndex === 'number' &&
 				paramName) {
 				dispatch(updateContentItem({
 					roundIndex,
@@ -394,7 +394,7 @@ const ScreensView: React.FC<ScreensViewProps> = ({
 		typeof questionIndex === 'number' &&
 		paramName;
 
-	const canRemoveScreen = canAddScreen && screens.length > 1;
+	const canRemoveScreen = canAddScreen && (screens.length > 1 || paramName === 'answer');
 
 	// Count total content items in the current screen
 	const screenContentCount = screen ? screen.items.length : 0;
@@ -785,17 +785,17 @@ const ScreensView: React.FC<ScreensViewProps> = ({
 										flex: screenGroup.weight,
 										gridTemplateColumns: `repeat(${screenGroup.columnCount}, 1fr)`
 									}}>
-										{screenGroup.content.map((contentItem, ci) => {
-											const globalIndex = content.items.findIndex(item => item === contentItem);
-											return (
-												<div
-													className='packageView__question__content__item'
-													key={`${gi}-${ci}`}>
-													{getContentItem(contentItem, globalIndex)}
-												</div>
-											);
-										})}
-									</div>)}
+									{screenGroup.content.map((contentItem, ci) => {
+										const globalIndex = content.items.findIndex(item => item === contentItem);
+										return (
+											<div
+												className='packageView__question__content__item'
+												key={`${gi}-${ci}`}>
+												{getContentItem(contentItem, globalIndex)}
+											</div>
+										);
+									})}
+								</div>)}
 							</div> : null}
 
 							{screen.background ? <div className='packageView__question__background'>
