@@ -83,7 +83,7 @@ export function ShowmanReplicView(props: ShowmanReplicViewProps): JSX.Element {
 	const playerReplicModeClass = activePlayer ? 'playerReplicMode' : '';
 
 	return (
-		<div className={`showmanArea ${decisionType !== DecisionType.None ? 'highlighted' : ''} ${playerReplicModeClass}`}>
+		<div className={`showmanArea ${(decisionType !== DecisionType.None && decisionType !== DecisionType.Review) ? 'highlighted' : ''} ${playerReplicModeClass}`}>
 			<div className="showmanInfo" style={showmanInfoStyle}>
 				{!deepMode ? (
 					<>

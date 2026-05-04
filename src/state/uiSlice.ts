@@ -17,6 +17,7 @@ export interface INavigationState {
 	role?: Role;
 	sex?: Sex;
 	password?: string;
+	pin?: number;
 	isAutomatic?: boolean;
 }
 

@@ -72,11 +72,25 @@
 	text-decoration: none;
 }
 
-.voiceChatUrl button {
+.voiceChatUrl button.standard {
 	width: 100%;
 	display: flex;
 	align-items: center;
 	justify-content: center;
+	background: transparent;
+	border-radius: 0;
+	border: 0;
+	transition: background-color 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+}
+
+.voiceChatUrl button.standard:hover {
+	background: rgba(255, 255, 255, 0.22);
+	box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+}
+
+.voiceChatUrl button.standard:active {
+	background: rgba(255, 255, 255, 0.38);
+	box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2);
 }
 
 .bottomButton.standard {

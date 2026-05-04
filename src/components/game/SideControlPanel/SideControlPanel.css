@@ -9,13 +9,18 @@
 }
 
 .sidecontrol_buttons {
-    width: 100%;
+    flex: 1 1 auto;
     margin: 0;
     position: relative;
     display: flex;
     align-items: center;
     justify-content: stretch;
     flex-wrap: nowrap;
+    background: linear-gradient(135deg, rgba(20, 24, 62, 0.4), rgba(5, 6, 31, 0.6));
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 0;
+    overflow: hidden;
 }
 
 .sidecontrol_buttons button.standard,
@@ -175,13 +180,14 @@ ul.gameMenu,
 .game__utilsArea {
     display: flex;
     flex-direction: row;
-    flex: 0 0 46px;
+    flex: 0 0 49px;
     position: relative;
     background-color: rgba(0, 0, 0, 0.04);
     overflow: hidden;
 }
 
 .gameMessageHost {
+    display: flex;
     flex: 1 1 auto;
     margin: 0;
     position: relative;
@@ -271,6 +277,8 @@ ul.gameMenu,
 
     .sidecontrol_buttons {
         width: 100%;
+        margin: 0px 4px 4px;
+        border-radius: 10px;
     }
 
     .gameMessageHost {

@@ -215,6 +215,7 @@ const joinGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 				role: role,
 				sex: state.settings.sex,
 				password: state.online2.password,
+				pin: pin ?? undefined,
 				isAutomatic: false,
 			};
 

@@ -186,107 +186,108 @@ function getServerRole(role: Role) {
 	return role === Role.Player ? ServerRole.Player : ServerRole.Showman;
 }
 
-const initStage3NavigateAsync = async (
-	view: INavigationState,
+const finishInitializationAsync = (
+	targetView: INavigationState,
+) => async (
 	dispatch: Dispatch<Action>,
 	appDispatch: AppDispatch,
 	getState: () => State,
-	dataContext: DataContext,
+	dataContext: DataContext
 ) => {
-	if (view.path === Path.Room) {
-		if (view.gameId && view.role !== undefined && view.hostUri) {
-			// TODO: merge with onlineActionCreators.joinGame()
-			const licenseAccepted = dataContext.host.isLicenseAccepted();
-			if (!licenseAccepted) {
-				appDispatch(navigate({ navigation: { path: Path.AcceptLicense, callbackState: view }, saveState: true }));
-				return;
+		const state = getState();
+		const { login } = state.user;
+
+		// 1. Guard: Login
+		if (login === null || login === '') {
+			appDispatch(navigate({
+				navigation: {
+					path: Path.Login,
+					callbackState: targetView.path === Path.About || targetView.path === Path.JoinByPin ? { path: Path.Menu } : targetView
+				},
+				saveState: true,
+			}));
+			return;
+		}
+
+		// 2. Guard: License
+		const licenseAccepted = dataContext.host.isLicenseAccepted();
+		if (targetView.path === Path.Room && !licenseAccepted) {
+			appDispatch(navigate({ navigation: { path: Path.AcceptLicense, callbackState: targetView }, saveState: true }));
+			return;
+		}
+
+		// 3. Setup: Server Info (for deep links)
+		let { hostUri } = targetView;
+		if (targetView.path === Path.JoinRoom || targetView.path === Path.Room) {
+			await ensureServerInfoLoadedAsync(appDispatch, getState, dataContext);
+
+			if (targetView.path === Path.JoinRoom && targetView.gameId && targetView.siHostKey) {
+				hostUri = (getState() as State).common.siHosts[targetView.siHostKey];
 			}
+		}
 
-			const siHostClient = await connectToSIHostAsync(view.hostUri, dispatch, appDispatch, getState, dataContext);
+		// 4. Execution: Navigation or Joining
+		if (targetView.path === Path.Room) {
+			if (targetView.gameId && targetView.role !== undefined && hostUri) {
+				const siHostClient = await connectToSIHostAsync(hostUri, dispatch, appDispatch, getState, dataContext);
+				const result = await siHostClient.joinGameAsync({
+					GameId: targetView.gameId,
+					UserName: (getState() as State).user.login,
+					Role: getServerRole(targetView.role),
+					Sex: targetView.sex === Sex.Male ? ServerSex.Male : ServerSex.Female,
+					Password: targetView.password ?? '',
+					Pin: targetView.pin ?? null,
+				});
 
-			const state = getState();
-			const serverRole = getServerRole(view.role);
+				if (!result.IsSuccess) {
+					const userError = `${localization.joinError}: ${getJoinErrorMessage(result.ErrorType)} ${result.Message ?? ''}`;
+					appDispatch(userErrorChanged(userError));
+					await dataContext.game.leaveGame();
+					appDispatch(navigate({ navigation: { path: Path.Root }, saveState: true }));
+					return;
+				}
 
-			const result = await siHostClient.joinGameAsync({
-				GameId: view.gameId,
-				UserName: state.user.login,
-				Role: serverRole,
-				Sex: view.sex === Sex.Male ? ServerSex.Male : ServerSex.Female,
-				Password: view.password ?? '',
-				Pin: null,
-			});
-
-			if (!result.IsSuccess) {
-				const userError = `${localization.joinError}: ${getJoinErrorMessage(result.ErrorType)} ${result.Message ?? ''}`;
-				appDispatch(userErrorChanged(userError));
-				await dataContext.game.leaveGame();
+				await onlineActionCreators.initGameAsync(
+					dispatch,
+					appDispatch,
+					dataContext.game,
+					targetView.gameId,
+					(getState() as State).user.login,
+					targetView.role,
+					targetView.isAutomatic ?? false,
+				);
+			} else {
 				appDispatch(navigate({ navigation: { path: Path.Root }, saveState: true }));
 				return;
 			}
+		} else if (targetView.path === Path.JoinRoom && targetView.gameId && hostUri) {
+			try {
+				const siHostClient = await connectToSIHostAsync(hostUri, dispatch, appDispatch, getState, dataContext);
+				const gameInfo = await siHostClient.tryGetGameInfoAsync(targetView.gameId);
 
-			await onlineActionCreators.initGameAsync(
-				dispatch,
-				appDispatch,
-				dataContext.game,
-				view.gameId,
-				state.user.login,
-				view.role,
-				view.isAutomatic ?? false,
-			);
-		} else {
-			appDispatch(navigate({ navigation: { path: Path.Root }, saveState: true }));
+				if (gameInfo) {
+					if (!gameInfo.HostUri) {
+						gameInfo.HostUri = hostUri;
+					}
+
+					appDispatch(selectGame(gameInfo));
+					appDispatch(navigate({ navigation: targetView, saveState: true }));
+					return;
+				} else {
+					appDispatch(commonErrorChanged(`${localization.joinError}: ${localization.gameNotFound}`));
+				}
+			} catch (e) {
+				appDispatch(commonErrorChanged(getErrorMessage(e)));
+			}
+		}
+
+		if (targetView.path === Path.SIQuesterPackage && !(getState() as State).siquester.zip) {
+			appDispatch(navigate({ navigation: { path: Path.SIQuester }, saveState: true }));
 			return;
 		}
-	}
 
-	if (view.path === Path.SIQuesterPackage && !getState().siquester.zip) {
-		appDispatch(navigate({ navigation: { path: Path.SIQuester }, saveState: true }));
-		return;
-	}
-
-	appDispatch(navigate({ navigation: view, saveState: true, replaceState: true }));
-};
-
-const initStage2CompleteInitializaionAsync = async (
-	initialView: INavigationState,
-	dispatch: Dispatch<Action>,
-	appDispatch: AppDispatch,
-	getState: () => State,
-	dataContext: DataContext,
-) => {
-	let { hostUri } = initialView;
-
-	if (initialView.path === Path.JoinRoom || initialView.path === Path.Room) {
-		await ensureServerInfoLoadedAsync(appDispatch, getState, dataContext);
-
-		if (initialView.path == Path.JoinRoom && initialView.gameId && initialView.siHostKey) {
-			hostUri = getState().common.siHosts[initialView.siHostKey];
-		}
-	}
-
-	if (initialView.path == Path.JoinRoom && initialView.gameId && hostUri) {
-		try {
-			const siHostClient = await connectToSIHostAsync(hostUri, dispatch, appDispatch, getState, dataContext);
-			const gameInfo = await siHostClient.tryGetGameInfoAsync(initialView.gameId);
-
-			if (gameInfo) {
-				if (!gameInfo.HostUri) {
-					gameInfo.HostUri = hostUri;
-				}
-
-				appDispatch(selectGame(gameInfo));
-				appDispatch(navigate({ navigation: initialView, saveState: true }));
-				return;
-			} else {
-				appDispatch(commonErrorChanged(`${localization.joinError}: ${localization.gameNotFound}`));
-			}
-		} catch (e) {
-			appDispatch(commonErrorChanged(getErrorMessage(e)));
-		}
-	}
-
-	await initStage3NavigateAsync(initialView, dispatch, appDispatch, getState, dataContext);
-};
+		appDispatch(navigate({ navigation: targetView, saveState: true, replaceState: true }));
+	};
 
 const initStageSkipLoginLicenseAsync: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 	(view: INavigationState, appDispatch: AppDispatch) => async (
@@ -294,7 +295,7 @@ const initStageSkipLoginLicenseAsync: ActionCreator<ThunkAction<void, State, Dat
 		getState: () => State,
 		dataContext: DataContext
 	) => {
-		await initStage2CompleteInitializaionAsync(view, dispatch, appDispatch, getState, dataContext);
+		await finishInitializationAsync(view)(dispatch, appDispatch, getState, dataContext);
 	};
 
 const initStage0: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
@@ -308,22 +309,7 @@ const initStage0: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 			return;
 		}
 
-		const state = getState();
-		const { login } = state.user;
-
-		if (login === null || login === '') {
-			appDispatch(navigate({
-				navigation: {
-					path: Path.Login,
-					callbackState: initialView.path === Path.About || initialView.path === Path.JoinByPin ? { path: Path.Menu } : initialView
-				},
-				saveState: true,
-			}));
-
-			return;
-		}
-
-		await initStage2CompleteInitializaionAsync(initialView, dispatch, appDispatch, getState, dataContext);
+		await finishInitializationAsync(initialView)(dispatch, appDispatch, getState, dataContext);
 	};
 
 const login: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
@@ -333,20 +319,16 @@ const login: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 		saveStateToStorage(state);
 		appDispatch(changeLogin(state.user.login.trim())); // Normalize login
 
-		await initStage2CompleteInitializaionAsync(state.ui.navigation.callbackState ?? { path: Path.Root }, dispatch, appDispatch, getState, dataContext);
+		await finishInitializationAsync(state.ui.navigation.callbackState ?? { path: Path.Root })(dispatch, appDispatch, getState, dataContext);
 	};
 
 const acceptLicense: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 	(appDispatch: AppDispatch) => async (dispatch: Dispatch<any>, getState: () => State, dataContext: DataContext) => {
 		dataContext.host.acceptLicense();
 
-		await initStage2CompleteInitializaionAsync(
-			getState().ui.navigation.callbackState ?? { path: Path.Root },
-			dispatch,
-			appDispatch,
-			getState,
-			dataContext,
-		);
+		await finishInitializationAsync(
+			getState().ui.navigation.callbackState ?? { path: Path.Root }
+		)(dispatch, appDispatch, getState, dataContext);
 	};
 
 const actionCreators = {

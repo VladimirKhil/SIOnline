@@ -324,16 +324,7 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 							onClick={canStart ? props.onStart : moveNext}>
 							{canStart ? <span role="img" aria-label="arrow right">▶</span> : <img alt='Next' src={nextImg} />}
 						</button>
-					) : (!deepMode && (
-						<button
-							type="button"
-							className="sidecontrol_button nextButton standard imageButton"
-							title={localization.next}
-							disabled
-						>
-							<img alt='Next' src={nextImg} />
-						</button>
-					))}
+					) : null}
 
 					{(!deepMode || !isScreenWide) && (
 						<FlyoutButton
