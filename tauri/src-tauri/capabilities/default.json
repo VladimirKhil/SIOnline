@@ -30,6 +30,9 @@
         },
         {
           "url": "https://content.vladimirkhil.com:8080/**"
+        },
+        {
+          "url": "https://server2.vladimirkhil.com:8080/**"
         }
       ]
     },

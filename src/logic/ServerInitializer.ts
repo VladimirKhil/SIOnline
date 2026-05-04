@@ -175,18 +175,12 @@ async function loadServerInfoAsync(
 		}
 	}
 
-	if (dataContext.serverUri) {
-		const requestCulture = getFullCulture(state);
-
-		try {
-			await loadHostInfoAsync(appDispatch, dataContext, requestCulture);
-			await uploadAvatarAsync(appDispatch, dataContext);
-
-			await registerApp(dataContext.config.appRegistryServiceUri);
-
-			dataContext.host.onReady();
-		} catch (error) {
-			console.error('Failed to load host info: ' + getErrorMessage(error));
-		}
+	if (!dataContext.serverUri) {
+		throw new Error('No server URI');
 	}
+
+	const requestCulture = getFullCulture(state);
+
+	await loadHostInfoAsync(appDispatch, dataContext, requestCulture);
+	await uploadAvatarAsync(appDispatch, dataContext);
 }

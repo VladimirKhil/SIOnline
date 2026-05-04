@@ -163,7 +163,6 @@ const joinGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 		getState: () => State,
 		dataContext: DataContext,
 	) => {
-		await ensureServerInfoLoadedAsync(appDispatch, getState, dataContext);
 		appDispatch(joinGameStarted());
 
 		try {
@@ -509,15 +508,6 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 		if (!isSingleGame && state.game.name.length === 0) {
 			appDispatch(userErrorChanged(localization.gameNameMustBeSpecified));
 			return;
-		}
-
-		if (state.common.computerAccounts === null) {
-			await ensureServerInfoLoadedAsync(appDispatch, getState, dataContext);
-
-			if (getState().common.computerAccounts === null) {
-				appDispatch(userErrorChanged(localization.computerAccountsMissing));
-				return;
-			}
 		}
 
 		appDispatch(gameCreationStart());

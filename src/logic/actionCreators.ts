@@ -160,6 +160,14 @@ const connectToSIHostAsync = async (
 			siHostClient = new SIHostClient();
 			await siHostClient.connectAsync(fallbackUri, listener);
 			appDispatch(isSIHostConnectedChanged({ isConnected: true, reason: '' }));
+		} else if (siHostUri === dataContext.proxyUri) {
+			console.log('Cannot connect to SIHost (proxy server), falling back to original: ' + getErrorMessage(e));
+			const fallbackUri = dataContext.serverUri;
+			await siHostClient.disconnectAsync();
+
+			siHostClient = new SIHostClient();
+			await siHostClient.connectAsync(fallbackUri, listener);
+			appDispatch(isSIHostConnectedChanged({ isConnected: true, reason: '' }));
 		} else {
 			throw e;
 		}

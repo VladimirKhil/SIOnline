@@ -123,7 +123,7 @@ export default class GameServerClient implements IGameServerClient {
 		});
 
 		if (!response.ok) {
-			throw new Error(`Error while retrieving computer accounts: ${response.status} ${await response.text()}`);
+			throw new Error(`Error while retrieving host info: ${response.status} ${await response.text()}`);
 		}
 
 		return <HostInfo>(await response.json());

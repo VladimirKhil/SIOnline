@@ -17,6 +17,9 @@ import { ensureServerInfoLoadedAsync } from '../logic/ServerInitializer';
 import State from '../state/State';
 import { showText } from '../state/tableSlice';
 import { exitGame } from '../state/room2Slice';
+import registerApp from './registerApp';
+
+let isInitialized = false;
 
 function saveNavigationState(navigation: INavigationState, dataContext: DataContext, siHosts: Record<string, string>, replaceState: boolean) {
 	if (typeof window === 'undefined') {
@@ -221,6 +224,12 @@ export const navigate = createAsyncThunk(
 
 			default:
 				break;
+		}
+
+		if (!isInitialized) {
+			isInitialized = true;
+			(thunkAPI.extra as DataContext).host.onReady();
+			await registerApp((thunkAPI.extra as DataContext).config.appRegistryServiceUri);
 		}
 	}
 );
