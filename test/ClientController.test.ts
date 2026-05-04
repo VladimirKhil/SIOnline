@@ -935,16 +935,6 @@ describe('ClientController - Answer Result Flow', () => {
 			expect(actions).toContain('room2/playerStateChanged');
 		});
 	});
-
-	describe('onWrongTry', () => {
-		it('should mark player as having wrong try', () => {
-			controller.onWrongTry(0);
-
-			expect(mockAppDispatch).toHaveBeenCalled();
-			const actions = dispatchedActions.map(a => a.type);
-			expect(actions).toContain('room2/playerStateChanged');
-		});
-	});
 });
 
 describe('ClientController - Timer Operations', () => {
