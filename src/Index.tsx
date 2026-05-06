@@ -354,7 +354,10 @@ async function run(host: IHost) {
 				if (newSettings.appSettings.culture !== currentSettings.appSettings.culture) {
 					localization.setLanguage(newSettings.appSettings.culture || localization.getInterfaceLanguage());
 					document.title = localization.appName;
-					store.dispatch(actionCreators.reloadComputerAccounts(store.dispatch) as any);
+
+					if (newState.common.serverName !== null) {
+						store.dispatch(actionCreators.reloadComputerAccounts(store.dispatch) as any);
+					}
 				} else if (newSettings.fullScreen !== currentSettings.fullScreen) {
 					host.setFullScreen(newSettings.fullScreen);
 				}
