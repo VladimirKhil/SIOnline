@@ -58,13 +58,13 @@ jobs:
         docker build . --file Dockerfile --tag ${{ secrets.DOCKER_HUB_REPOSITORY }}:$IMAGE_TAG
         docker push ${{ secrets.DOCKER_HUB_REPOSITORY }}:$IMAGE_TAG
 
-    - name: Configure GitHub Pages
-      uses: actions/configure-pages@v5
+    #- name: Configure GitHub Pages
+    #  uses: actions/configure-pages@v5
 
-    - name: Upload Pages artifact
-      uses: actions/upload-pages-artifact@v3
-      with:
-        path: ./dist
+    #- name: Upload Pages artifact
+    #  uses: actions/upload-pages-artifact@v3
+    #  with:
+    #    path: ./dist
 
-    - name: Deploy to GitHub Pages
-      uses: actions/deploy-pages@v4
+    #- name: Deploy to GitHub Pages
+    #  uses: actions/deploy-pages@v4
