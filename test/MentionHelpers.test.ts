@@ -9,10 +9,11 @@ describe('hasUserMentioned', () => {
 		expect(hasUserMentioned('Hello Bob how are you?', 'Alice')).toBe(false);
 	});
 
-	test('requires non-word character after username', () => {
-		// regex is @name\W so the mention must be followed by a non-word char
+	test('requires non-word character after username (end-of-string does not match)', () => {
+		// The regex @name\W requires a non-word character after the name.
+		// Mentions followed by a space or punctuation match; end-of-string does not.
 		expect(hasUserMentioned('@Alice is here', 'Alice')).toBe(true);
-		// Without trailing non-word character at end of string, no match
+		// End of string: no trailing non-word character, so no match
 		expect(hasUserMentioned('talk to @Alice', 'Alice')).toBe(false);
 	});
 

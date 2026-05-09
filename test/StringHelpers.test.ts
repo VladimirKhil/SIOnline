@@ -35,9 +35,8 @@ describe('trimLength', () => {
 		expect(trimLength('hello', 10)).toBe('hello');
 	});
 
-	test('returns value unchanged when equal to maxLength', () => {
-		// length (5) < maxLength (5) is false, so it trims at maxLength=5 → 4 chars + ellipsis
-		// Actually condition is: value.length < maxLength, so equal triggers trimming
+	test('returns value unchanged when length is strictly less than maxLength', () => {
+		// 'hello'.length (5) < maxLength (6) → returns unchanged
 		expect(trimLength('hello', 6)).toBe('hello');
 	});
 
@@ -45,8 +44,8 @@ describe('trimLength', () => {
 		expect(trimLength('hello world', 6)).toBe('hello…');
 	});
 
-	test('handles exactly at boundary (length === maxLength)', () => {
-		// length 5 < maxLength 5 is false → trims
+	test('trims when value length equals maxLength (condition is strictly less-than)', () => {
+		// 'hello'.length (5) is NOT < maxLength (5) → trims to 4 chars + ellipsis
 		const result = trimLength('hello', 5);
 		expect(result).toBe('hell…');
 	});
