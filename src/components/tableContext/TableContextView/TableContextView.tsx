@@ -17,6 +17,8 @@ import AnswerValidationButtons from '../AnswerValidationButtons/AnswerValidation
 import { DecisionType } from '../../../state/room2Slice';
 import LayoutMode from '../../../model/enums/LayoutMode';
 import localization from '../../../model/resources/localization';
+import Constants from '../../../model/enums/Constants';
+import ValidationArea from '../../game/ValidationArea/ValidationArea';
 
 import './TableContextView.css';
 
@@ -86,7 +88,9 @@ function renderBody(
 		return <StakePanel />;
 	}
 
-	const defaultView = role === Role.Showman ? <div className='emptyContext' /> : null;
+	const defaultView = role === Role.Showman
+		? (windowWidth < Constants.WIDE_WINDOW_WIDTH ? <ValidationArea onlyHint className="inContext" /> : <div className='emptyContext' />)
+		: null;
 
 	if (role === Role.Player) {
 		return props.isAfterQuestion ? <ReactionPanel /> : <PlayerButtonsPanel />;

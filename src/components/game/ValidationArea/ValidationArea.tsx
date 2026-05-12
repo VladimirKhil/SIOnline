@@ -12,15 +12,20 @@ function getCompactView(hint: string | null): React.ReactNode {
 	</AutoSizedText>;
 }
 
-export default function ValidationArea(): JSX.Element {
+interface ValidationAreaProps {
+	onlyHint?: boolean;
+	className?: string;
+}
+
+export default function ValidationArea(props: ValidationAreaProps): JSX.Element {
 	const validation = useAppSelector(state => state.room2.validation);
 	const hiddenComments = useAppSelector(state => state.room2.hiddenComments);
 	const rightAnswer = validation.rightAnswers.length > 0 ? validation.rightAnswers[validation.rightAnswers.length - 1] : null;
 	const hint = `${rightAnswer ? rightAnswer : ''}${hiddenComments ? ` (${hiddenComments})` : ''}`;
 
-	return <div className="validationArea">
-		{validation.queue.length > 0
+	return <div className={`validationArea ${props.className || ''}`}>
+		{validation.queue.length > 0 && !props.onlyHint
 			? <AnswerValidation />
 			: getCompactView(hint)}
 	</div>;
-}
+}

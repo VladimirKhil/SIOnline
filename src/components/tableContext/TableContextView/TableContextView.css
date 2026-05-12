@@ -8,3 +8,12 @@
 		height: 65px;
 	}
 }
+
+.tableContextView .inContext {
+	margin: 0;
+	height: 100%;
+	background: none;
+	border: none;
+	backdrop-filter: none;
+	box-shadow: none;
+}
