@@ -1,4 +1,4 @@
-﻿import * as React from 'react';
+import * as React from 'react';
 import localization from '../../../model/resources/localization';
 import Dialog from '../../common/Dialog/Dialog';
 import Link from '../../common/Link/Link';
@@ -15,7 +15,7 @@ export default function About(): JSX.Element {
 		<Dialog className="helpDialog animated" title={localization.aboutTitle} onClose={() => window.history.back()}>
 			<div className="helpText">
 				<section>
-					{localization.about.map(text => (<p key={text}>{text}</p>))}
+					{localization.about.map((text: string) => (<p key={text}>{text}</p>))}
 				</section>
 
 				{clearUrls ? null
@@ -50,7 +50,7 @@ export default function About(): JSX.Element {
 						<li><Link href="https://github.com/reduxjs/redux/blob/master/LICENSE.md">Redux (MIT)</Link></li>
 						<li><Link href="https://github.com/reduxjs/react-redux/blob/master/LICENSE.md">React-Redux (MIT)</Link></li>
 						<li><Link href="https://github.com/reduxjs/redux-thunk/blob/master/LICENSE.md">Redux-Thunk (MIT)</Link></li>
-						<li><Link href="https://github.com/stefanpenner/es6-promise/blob/master/LICENSE">ES6 Promise (MIT)</Link></li>
+
 						<li><Link href="https://github.com/srijs/rusha/blob/master/LICENSE">Rusha (MIT)</Link></li>
 
 						<li>

@@ -1,6 +1,5 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
-import { useAppSelector } from '../../../../state/hooks';
+import { useAppDispatch, useAppSelector } from '../../../../state/hooks';
 import { NumberSet, ContentParam, Question, InfoOwner, SelectionMode, QuestionTypes } from '../../../../model/siquester/package';
 import localization from '../../../../model/resources/localization';
 import {
@@ -33,7 +32,7 @@ interface QuestionItemProps {
 }
 
 const QuestionItem: React.FC<QuestionItemProps> = ({ item, isEditMode }) => {
-	const dispatch = useDispatch();
+	const dispatch = useAppDispatch();
 	const pack = useAppSelector(state => state.siquester.pack);
 	const question = item;
 	const indices = findItemIndices(pack || null, item);

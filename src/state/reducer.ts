@@ -1,4 +1,4 @@
-﻿import { AnyAction, Reducer } from 'redux';
+import { Reducer, UnknownAction } from 'redux';
 import State, { initialState } from './State';
 import { KnownRoomAction } from './room/RoomActions';
 import roomReducer from './room/roomReducer';
@@ -12,12 +12,12 @@ import commonReducer from './commonSlice';
 import uiReducer from './uiSlice';
 import siPackagesReducer from './siPackagesSlice';
 import gameReducer from './gameSlice';
-import { UnknownAction } from '@reduxjs/toolkit';
+
 import siquesterReducer from './siquesterSlice';
 
 const reducer: Reducer<State> = (
 	state: State = initialState,
-	action: AnyAction
+	action: UnknownAction
 ): State => ({
 	user: userReducer(state.user, action as UnknownAction),
 	login: loginReducer(state.login, action as UnknownAction),

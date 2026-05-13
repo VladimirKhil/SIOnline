@@ -4,7 +4,7 @@ import MediaItem from '../MediaItem/MediaItem';
 import AutoSizedText from '../../common/AutoSizedText/AutoSizedText';
 import localization from '../../../model/resources/localization';
 import Constants from '../../../model/enums/Constants';
-import { useDispatch } from 'react-redux';
+import { useAppDispatch } from '../../../state/hooks';
 import getExtension from '../../../utils/FileHelper';
 import { userErrorChanged } from '../../../state/commonSlice';
 import {
@@ -165,7 +165,7 @@ const ScreensView: React.FC<ScreensViewProps> = ({
 	questionIndex,
 	paramName
 }) => {
-	const dispatch = useDispatch();
+	const dispatch = useAppDispatch();
 	const [screenIndex, setScreenIndex] = React.useState(0);
 	const contentRef = React.useRef(content);
 	const pendingFileTargetRef = React.useRef<{ itemIndex: number; type: MediaContentType } | null>(null);

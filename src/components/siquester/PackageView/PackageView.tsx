@@ -1,6 +1,5 @@
 import React from 'react';
-import { useAppSelector } from '../../../state/hooks';
-import { useDispatch } from 'react-redux';
+import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 import { Package, Question, Round, Theme, RoundTypes } from '../../../model/siquester/package';
 import localization from '../../../model/resources/localization';
 import { navigate } from '../../../utils/Navigator';
@@ -28,7 +27,7 @@ import editImg from '../../../../assets/images/edit.png';
 enum Mode { Rounds, Questions, Media }
 
 const PackageView: React.FC = () => {
-	const appDispatch = useDispatch();
+	const appDispatch = useAppDispatch();
 	const siquester = useAppSelector(state => state.siquester);
 	const { zip, pack, packageStats, packageTopLevelStats, packageStatsLoading, showPackageStats, isNewPackage } = siquester;
 	const currentItem = useAppSelector(selectCurrentItem);

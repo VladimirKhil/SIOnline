@@ -1,8 +1,8 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import { Action, AnyAction, applyMiddleware, createStore, Store } from 'redux';
+import { Action, Store } from 'redux';
+import { configureStore } from '@reduxjs/toolkit';
 import { Provider } from 'react-redux';
-import reduxThunk from 'redux-thunk';
 import App from './components/App/App';
 import State, { initialState } from './state/State';
 import reducer from './state/reducer';
@@ -18,7 +18,6 @@ import { Analytics, getAnalytics } from 'firebase/analytics';
 import { ErrorView } from './components/views/Error/ErrorView';
 import Constants from './model/enums/Constants';
 import getErrorMessage from './utils/ErrorHelpers';
-import { setProxyAvailable } from './state/commonSlice';
 import { AudioContextProvider } from './contexts/AudioContextProvider';
 import enableNoSleep from './utils/NoSleepHelper';
 import getDeviceType from './utils/getDeviceType';
@@ -338,11 +337,17 @@ async function run(host: IHost) {
 			host,
 		};
 
-		const store = createStore<State, AnyAction, {}, {}>(
-			reducer,
-			state,
-			applyMiddleware(reduxThunk.withExtraArgument(dataContext))
-		);
+		const store = configureStore({
+			reducer: reducer as any,
+			preloadedState: state,
+			middleware: (getDefaultMiddleware) => getDefaultMiddleware({
+				thunk: {
+					extraArgument: dataContext
+				},
+				serializableCheck: false,
+				immutableCheck: false
+			})
+		});
 
 		let currentSettings = state.settings;
 

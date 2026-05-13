@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { connect, useDispatch } from 'react-redux';
+import { connect } from 'react-redux';
+import { useAppDispatch } from '../../../state/hooks';
 import localization from '../../../model/resources/localization';
 import { copyToClipboard } from '../../../state/globalActions';
 import { Dispatch } from '@reduxjs/toolkit';
@@ -13,10 +14,10 @@ interface ErrorViewProps {
 // TODO: provide a button to send error to the server
 
 export function ErrorView(props: ErrorViewProps): JSX.Element {
-	let appDispatch : Dispatch<any> | null = null;
+	let appDispatch: Dispatch<any> | null = null;
 
 	try {
-		appDispatch = useDispatch();
+		appDispatch = useAppDispatch();
 	} catch (e) {
 		console.log('useDispatch not initialized');
 	}

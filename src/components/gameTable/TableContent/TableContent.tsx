@@ -12,7 +12,7 @@ import StackedContent from '../StackedContent/StackedContent';
 import ExternalMediaWarning from '../ExternalMediaWarning/ExternalMediaWarning';
 import { useAudioContext } from '../../../contexts/AudioContextProvider';
 import { tableSizeChanged } from '../../../state/uiSlice';
-import { useDispatch } from 'react-redux';
+import { useAppDispatch } from '../../../state/hooks';
 
 import './TableContent.scss';
 
@@ -84,7 +84,7 @@ function getLayout(
 
 const TableContentComponent: React.FC<TableContentProps> = (props) => {
 	const { audioContext, canPlayAudio } = useAudioContext();
-	const dispatch = useDispatch();
+	const dispatch = useAppDispatch();
 	const tableRef = React.useRef<HTMLDivElement>(null);
 	const isPhoneMode = props.windowWidth < 800;
 

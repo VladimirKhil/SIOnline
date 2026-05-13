@@ -1,6 +1,5 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
-import { useAppSelector } from '../../../../state/hooks';
+import { useAppDispatch, useAppSelector } from '../../../../state/hooks';
 import { Theme, InfoOwner } from '../../../../model/siquester/package';
 import localization from '../../../../model/resources/localization';
 import {
@@ -20,7 +19,7 @@ interface ThemeItemProps {
 }
 
 const ThemeItem: React.FC<ThemeItemProps> = ({ item, isEditMode }) => {
-	const dispatch = useDispatch();
+	const dispatch = useAppDispatch();
 	const pack = useAppSelector(state => state.siquester.pack);
 	const theme = item;
 	const indices = findItemIndices(pack || null, item);

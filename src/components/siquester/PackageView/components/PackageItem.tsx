@@ -1,6 +1,5 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
-import { useAppSelector } from '../../../../state/hooks';
+import { useAppDispatch, useAppSelector } from '../../../../state/hooks';
 import { Package, InfoOwner } from '../../../../model/siquester/package';
 import localization from '../../../../model/resources/localization';
 import getLanguage from '../../../../utils/getLanguage';
@@ -24,7 +23,7 @@ interface PackageItemProps {
 }
 
 const PackageItem: React.FC<PackageItemProps> = ({ item, isEditMode }) => {
-	const dispatch = useDispatch();
+	const dispatch = useAppDispatch();
 	const pack = useAppSelector(state => state.siquester.pack);
 	const currentPack = item;
 	const indices = findItemIndices(pack || null, item);

@@ -1,5 +1,4 @@
-﻿import * as React from 'react';
-import { useDispatch } from 'react-redux';
+import * as React from 'react';
 import GamesList from '../../panels/GamesList/GamesList';
 import GameInfoView from '../../panels/GameInfoView/GameInfoView';
 import UsersView from '../../panels/UsersView/UsersView';
@@ -13,7 +12,7 @@ import UserOptions from '../../panels/UserOptions/UserOptions';
 import GamesControlPanel from '../../panels/GamesControlPanel/GamesControlPanel';
 import LobbyBottomPanel from '../../panels/LobbyBottomPanel/LobbyBottomPanel';
 import { navigate } from '../../../utils/Navigator';
-import { useAppSelector } from '../../../state/hooks';
+import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 import { newGameCancel, selectGameById } from '../../../state/online2Slice';
 import ProgressDialog from '../../panels/ProgressDialog/ProgressDialog';
 
@@ -41,7 +40,7 @@ const topMenu = (onExit: () => void) => (
 );
 
 export function Lobby() {
-	const appDispatch = useDispatch();
+	const appDispatch = useAppDispatch();
 
 	const { games,
 		gamesFilter,
@@ -51,15 +50,15 @@ export function Lobby() {
 		gameCreationProgress,
 		joinGameProgress,
 		inProgress } = useAppSelector(state => ({
-		games: state.online2.games,
-		gamesFilter: state.online2.gamesFilter,
-		gamesSearch: state.online2.gamesSearch,
-		selectedGameId: state.online2.selectedGameId,
-		newGameShown: state.online2.newGameShown,
-		gameCreationProgress: state.online2.gameCreationProgress,
-		joinGameProgress: state.online2.joinGameProgress,
-		inProgress: state.online2.inProgress
-	}));
+			games: state.online2.games,
+			gamesFilter: state.online2.gamesFilter,
+			gamesSearch: state.online2.gamesSearch,
+			selectedGameId: state.online2.selectedGameId,
+			newGameShown: state.online2.newGameShown,
+			gameCreationProgress: state.online2.gameCreationProgress,
+			joinGameProgress: state.online2.joinGameProgress,
+			inProgress: state.online2.inProgress
+		}));
 
 	const isConnected = useAppSelector(state => state.common.isConnected);
 

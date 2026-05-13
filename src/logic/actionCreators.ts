@@ -3,7 +3,6 @@ import { ThunkAction } from 'redux-thunk';
 import State from '../state/State';
 import DataContext from '../model/DataContext';
 
-import 'es6-promise/auto';
 import localization from '../model/resources/localization';
 
 import Constants from '../model/enums/Constants';
