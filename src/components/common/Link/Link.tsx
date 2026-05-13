@@ -9,6 +9,7 @@ interface LinkProps {
 	children?: any;
 	title?: string;
 	className?: string;
+	onClick?: () => void;
 }
 
 export default function Link(props: LinkProps): JSX.Element {
@@ -18,6 +19,7 @@ export default function Link(props: LinkProps): JSX.Element {
 
 	if (hostManagedUrls) {
 		const open = () => {
+			props.onClick?.();
 			appDispatch(openLink(props.href));
 		};
 
@@ -30,7 +32,7 @@ export default function Link(props: LinkProps): JSX.Element {
 		return props.children;
 	}
 
-	return <a href={props.href} className={props.className} target={props.target} rel={props.rel} title={props.title}>
+	return <a href={props.href} className={props.className} target={props.target} rel={props.rel} title={props.title} onClick={props.onClick}>
 		{props.children}
 	</a>;
 }

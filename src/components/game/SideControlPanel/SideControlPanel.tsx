@@ -22,6 +22,8 @@ import {
 
 import Constants from '../../../model/enums/Constants';
 import { pauseGame } from '../../../state/serverActions';
+import { analytics } from '../../../Index';
+import { logEvent } from 'firebase/analytics';
 
 import './SideControlPanel.css';
 import nextImg from '../../../../assets/images/next.png';
@@ -139,6 +141,14 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 		appDispatch(navigate({ navigation: { path: ui.navigation.returnToLobby ? Path.Lobby : Path.Menu }, saveState: true }));
 	};
 
+	const onDonateClick = () => {
+		if (analytics) {
+			logEvent(analytics, 'donate_click');
+		}
+
+		window.open('https://vladimirkhil.com/donate', '_blank');
+	};
+
 	const isScreenWide = ui.windowWidth >= Constants.WIDE_WINDOW_WIDTH;
 	const validVoiceChatUri = voiceChatUri !== null && isWellFormedUri(voiceChatUri) ? voiceChatUri : null;
 
@@ -188,6 +198,7 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 
 										<li onClick={() => props.onShowBanned()}>{localization.bannedList}</li>
 										<li onClick={() => props.onShowGameInfo()}>{localization.gameInfo}</li>
+										<li onClick={onDonateClick}>❤ {localization.donateServersHosting}</li>
 
 										{validVoiceChatUri ? (
 											<li

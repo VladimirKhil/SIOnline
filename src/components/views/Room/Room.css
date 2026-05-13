@@ -159,31 +159,53 @@
 
     .donateLink {
         border: none;
-        background: rgba(255, 255, 255, 0.1);
+        background: #f06292;
         border-radius: 6px;
         color: white;
-        padding: 4px 6px;
-        font-size: 11px;
+        padding: 6px 12px;
+        font-size: 13px;
+        font-weight: bold;
         cursor: pointer;
         transition: all 0.3s ease;
         display: flex;
         align-items: center;
         justify-content: center;
-        margin-top: 1px;
+        margin-top: 4px;
         font-family: inherit;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        animation: pulse 60s infinite;
     }
 
     .donateLink a {
         color: white;
         text-decoration: none;
+        display: flex;
+        align-items: center;
     }
 
     .donateLink:hover {
-        background: rgba(255, 255, 255, 0.2);
+        background: #ec407a;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        animation: none;
     }
 
     .donateLink:active {
         transform: scale(0.95);
+    }
+
+    .donateHeart {
+        margin-right: 6px;
+        font-size: 1.2em;
+    }
+
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        2% { transform: scale(1.05); }
+        4% { transform: scale(1); }
+        6% { transform: scale(1.05); }
+        8% { transform: scale(1); }
+        100% { transform: scale(1); }
     }
 
     .showmanProgressArea .round_progress {

@@ -30,6 +30,8 @@ import Role from '../../../model/Role';
 import Link from '../../common/Link/Link';
 import Path from '../../../model/enums/Path';
 import { navigate } from '../../../utils/Navigator';
+import { analytics } from '../../../Index';
+import { logEvent } from 'firebase/analytics';
 
 import './Room.css';
 import closeSvg from '../../../../assets/images/close.svg';
@@ -131,6 +133,18 @@ export function Room(props: RoomProps): JSX.Element {
 
 	const isScreenWide = windowWidth >= Constants.WIDE_WINDOW_WIDTH; // TODO: try to replace with CSS
 
+	React.useEffect(() => {
+		if (analytics && isScreenWide) {
+			logEvent(analytics, 'donate_impression');
+		}
+	}, [isScreenWide]);
+
+	const onDonateClick = () => {
+		if (analytics) {
+			logEvent(analytics, 'donate_click');
+		}
+	};
+
 	const onReject = (factor: number) => {
 		appDispatch(rejectAnswer(factor));
 		props.clearDecisions();
@@ -167,8 +181,9 @@ export function Room(props: RoomProps): JSX.Element {
 										target='_blank'
 										rel='noreferrer noopener'
 										title='https://vladimirkhil.com/donate'
+										onClick={onDonateClick}
 									>
-										{localization.donateServersHosting}
+										<span className="donateHeart">❤</span> {localization.donateServersHosting}
 									</Link>
 								</div>
 							</div>
