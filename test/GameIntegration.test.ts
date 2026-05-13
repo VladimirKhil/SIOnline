@@ -35,7 +35,7 @@ import SIStorageInfo from '../src/client/contracts/SIStorageInfo';
 import GameServerClient from '../src/client/GameServerClient';
 import SIHostClient from '../src/client/SIHostClient';
 import GameClient from '../src/client/game/GameClient';
-import reduxThunk from 'redux-thunk';
+import { withExtraArgument } from 'redux-thunk';
 import actionCreators from '../src/logic/actionCreators';
 import { INavigationState } from '../src/state/uiSlice';
 import Path from '../src/model/enums/Path';
@@ -361,7 +361,7 @@ describe('Game Integration Test', () => {
 					{
 						...initialState,
 					},
-					applyMiddleware(reduxThunk.withExtraArgument(dataContext))
+					applyMiddleware(withExtraArgument(dataContext))
 				);
 
 				oldState = store.getState();

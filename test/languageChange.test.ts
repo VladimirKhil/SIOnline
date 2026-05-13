@@ -5,7 +5,7 @@ import DataContext from '../src/model/DataContext';
 import GameServerClient from '../src/client/GameServerClient';
 import SIHostClient from '../src/client/SIHostClient';
 import GameClient from '../src/client/game/GameClient';
-import reduxThunk from 'redux-thunk';
+import { withExtraArgument } from 'redux-thunk';
 import { languageChanged } from '../src/state/settingsSlice';
 import actionCreators from '../src/logic/actionCreators';
 import { serverInfoChanged } from '../src/state/commonSlice';
@@ -65,7 +65,7 @@ describe('Language change on initial load', () => {
 		store = createStore<State, AnyAction, Record<string, unknown>, Record<string, unknown>>(
 			reducer,
 			{ ...initialState },
-			applyMiddleware(reduxThunk.withExtraArgument(dataContext))
+			applyMiddleware(withExtraArgument(dataContext))
 		);
 	});
 
