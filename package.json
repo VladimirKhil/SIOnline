@@ -30,7 +30,7 @@
     "@reduxjs/toolkit": "^2.2.1",
     "appregistry-client": "1.0.0",
     "emoji-picker-react": "4.19.1",
-    "firebase": "10.14.1",
+    "firebase": "12.13.0",
     "jszip": "^3.10.1",
     "localized-strings": "2.0.3",
     "nosleep.js": "^0.12.0",
