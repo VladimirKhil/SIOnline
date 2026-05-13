@@ -2,6 +2,26 @@
 
 This document describes the full lifecycle of a SIGame session — from creating or joining a game through to the final statistics screen. It spans multiple views and applies to all participants.
 
+## Architecture Data Flow
+
+The real-time game architecture follows a unidirectional data flow loop powered by Redux and SignalR:
+
+```mermaid
+sequenceDiagram
+    participant UI as React Components
+    participant Action as Redux Actions
+    participant SignalR as SignalR Client
+    participant Server as Game Server
+    participant Reducer as Redux Store
+    
+    UI->>Action: User Interaction (e.g. Press Answer)
+    Action->>SignalR: Dispatch Server Call
+    SignalR->>Server: WebSocket Message
+    Server-->>SignalR: Broadcast Game State Update
+    SignalR->>Reducer: Dispatch State Update Action
+    Reducer-->>UI: Re-render UI with new state
+```
+
 ---
 
 ## Roles

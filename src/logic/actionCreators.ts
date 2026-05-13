@@ -127,6 +127,17 @@ const reloadComputerAccounts: ActionCreator<ThunkAction<void, State, DataContext
 		appDispatch(computerAccountsChanged(computerAccounts));
 	};
 
+/**
+ * Establishes a SignalR connection to the SIHost game server.
+ * Handles fallback connection logic (e.g., trying a proxy server if the main one fails).
+ *
+ * @param siHostUri - The URI of the SIHost server to connect to.
+ * @param dispatch - Standard Redux dispatch.
+ * @param appDispatch - Application specific Redux dispatch.
+ * @param getState - Function to retrieve the current state.
+ * @param dataContext - Global data context holding game clients and host info.
+ * @returns A promise that resolves to the connected SIHost client.
+ */
 const connectToSIHostAsync = async (
 	siHostUri: string,
 	dispatch: Dispatch<Action>,
@@ -311,6 +322,11 @@ const initStage0: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 		await finishInitializationAsync(initialView)(dispatch, appDispatch, getState, dataContext);
 	};
 
+/**
+ * Thunk action triggered when a user completes the login step.
+ * Normalizes the user login name, saves the session state to local storage,
+ * and proceeds to the next navigation target via finishInitializationAsync.
+ */
 const login: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 	(appDispatch: AppDispatch) => async (dispatch: Dispatch<Action>, getState: () => State, dataContext: DataContext) => {
 		const state = getState();
@@ -321,6 +337,10 @@ const login: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 		await finishInitializationAsync(state.ui.navigation.callbackState ?? { path: Path.Root })(dispatch, appDispatch, getState, dataContext);
 	};
 
+/**
+ * Thunk action triggered when a user accepts the server's EULA/License agreement.
+ * Records the acceptance in the host environment and resumes navigation.
+ */
 const acceptLicense: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 	(appDispatch: AppDispatch) => async (dispatch: Dispatch<any>, getState: () => State, dataContext: DataContext) => {
 		dataContext.host.acceptLicense();

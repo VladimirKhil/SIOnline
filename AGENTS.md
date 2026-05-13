@@ -106,3 +106,6 @@ A task is considered complete when the following conditions are met:
 4. Run `npm run lint` to check for code style issues
 5. Run `npm run test` to verify changes don't break existing functionality
 6. The project uses SignalR for real-time game communication - client implementations are in `src/client/`
+7. **Barreled Exports:** When adding new components to a grouped directory (e.g., `src/components/game/`), export them via the directory's `index.ts` barrel file to keep consumer imports clean.
+8. **JSDoc Comments:** Always add JSDoc comments to complex Redux Thunks, action creators, and React Component `Props` interfaces. This improves LLM context and developer intellisense. Focus on *why* state changes, not just *how*.
+9. **Architectural Documentation:** When introducing new data flows or major systems, consider updating or adding a `mermaid.js` diagram in the `docs/` folder to visualize the architecture.

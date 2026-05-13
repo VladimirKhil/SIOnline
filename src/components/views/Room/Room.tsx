@@ -4,28 +4,30 @@ import { Action, Dispatch } from 'redux';
 import State from '../../../state/State';
 import PlayersView from '../../game/PlayersView/PlayersView';
 import GameTable from '../../gameTable/GameTable/GameTable';
-import GameChatView from '../../game/GameChatView/GameChatView';
-import SideControlPanel from '../../game/SideControlPanel/SideControlPanel';
-import ShowmanReplicView from '../../game/ShowmanReplicView/ShowmanReplicView';
-import PersonsDialog from '../../game/PersonsDialog/PersonsDialog';
-import GameLogView from '../../game/GameLogView/GameLogView';
-import AnswerValidation from '../../game/AnswerValidation/AnswerValidation';
-import RoundProgress from '../../game/RoundProgress/RoundProgress';
+import {
+	GameChatView,
+	SideControlPanel,
+	ShowmanReplicView,
+	PersonsDialog,
+	GameLogView,
+	AnswerValidation,
+	RoundProgress,
+	PersonsView,
+	ManageGameView,
+	GameMetadataView,
+	BannedView,
+	ChatInput,
+	GameState
+} from '../../game';
 import localization from '../../../model/resources/localization';
 import roomActionCreators from '../../../state/room/roomActionCreators';
-import PersonsView from '../../game/PersonsView/PersonsView';
 import Dialog from '../../common/Dialog/Dialog';
-import ManageGameView from '../../game/ManageGameView/ManageGameView';
 import Constants from '../../../model/enums/Constants';
-import GameMetadataView from '../../game/GameMetadataView/GameMetadataView';
-import BannedView from '../../game/BannedView/BannedView';
 import TableContextView from '../../tableContext/TableContextView/TableContextView';
-import ChatInput from '../../game/ChatInput/ChatInput';
 import { userErrorChanged } from '../../../state/commonSlice';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 import { DecisionType, DialogView, rejectAnswer, setChatVisibility } from '../../../state/room2Slice';
 import ComplainDialog from '../../panels/ComplainDialog/ComplainDialog';
-import GameState from '../../game/GameState/GameState';
 import Role from '../../../model/Role';
 import Link from '../../common/Link/Link';
 import Path from '../../../model/enums/Path';
@@ -36,16 +38,28 @@ import { logEvent } from 'firebase/analytics';
 import './Room.css';
 import closeSvg from '../../../../assets/images/close.svg';
 
+/**
+ * Properties for the main Room component.
+ */
 interface RoomProps {
+	/** Indicates whether the persons (members) dialog is currently visible. */
 	isPersonsDialogVisible: boolean;
+	/** Indicates whether the banned players dialog is currently visible. */
 	isBannedDialogVisible: boolean;
+	/** Indicates whether the game info/metadata dialog is currently visible. */
 	isGameInfoDialogVisible: boolean;
+	/** Indicates whether the manage game dialog is currently visible. */
 	isManageGameDialogVisible: boolean;
 
+	/** Callback triggered when the persons dialog should be closed. */
 	onPersonsDialogClose: () => void;
+	/** Callback triggered when the banned players dialog should be closed. */
 	onBannedDialogClose: () => void;
+	/** Callback triggered when the game info dialog should be closed. */
 	onGameInfoDialogClose: () => void;
+	/** Callback triggered when the manage game dialog should be closed. */
 	onManageGameDialogClose: () => void;
+	/** Clears all pending stage decisions in the room. */
 	clearDecisions: () => void;
 }
 
