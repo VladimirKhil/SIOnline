@@ -102,5 +102,5 @@ export default interface IGameClient {
 	unban(ip: string): Promise<boolean>;
 
 	/** Validates player answer. */
-	validateAnswer(answer: string, isRight: boolean): Promise<boolean>;
+	validateAnswer(answer: string, isRight: boolean, factor: number): Promise<boolean>;
 }

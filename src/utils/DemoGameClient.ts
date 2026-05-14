@@ -316,7 +316,7 @@ export default class DemoGameClient implements IGameClient {
 		throw new Error('Method not implemented.');
 	}
 
-	validateAnswer(answer: string, isRight: boolean): Promise<boolean> {
+	validateAnswer(answer: string, isRight: boolean, factor: number): Promise<boolean> {
 		throw new Error('Method not implemented.');
 	}
 

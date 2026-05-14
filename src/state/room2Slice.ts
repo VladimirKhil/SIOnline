@@ -296,7 +296,7 @@ export const approveAnswerDefault = createAsyncThunk(
 			}
 
 			const [{ answer }] = queue;
-			await dataContext.game.validateAnswer(answer, true);
+			await dataContext.game.validateAnswer(answer, true, 1.0);
 		} else {
 			await dataContext.game.approveAnswer(1.0);
 		}
@@ -315,7 +315,7 @@ export const rejectAnswerDefault = createAsyncThunk(
 			}
 
 			const [{ answer }] = queue;
-			await dataContext.game.validateAnswer(answer, false);
+			await dataContext.game.validateAnswer(answer, false, 1.0);
 		} else {
 			await dataContext.game.rejectAnswer(1.0);
 		}
@@ -329,7 +329,7 @@ export const approveAnswer = createAsyncThunk(
 		const { newVersion } = (thunkAPI.getState() as State).room2.validation;
 
 		if (newVersion) {
-			await dataContext.game.validateAnswer(arg.answer, true);
+			await dataContext.game.validateAnswer(arg.answer, true, arg.factor);
 		} else {
 			await dataContext.game.approveAnswer(arg.factor);
 		}
@@ -343,7 +343,7 @@ export const rejectAnswer = createAsyncThunk(
 		const { newVersion } = (thunkAPI.getState() as State).room2.validation;
 
 		if (newVersion) {
-			await dataContext.game.validateAnswer(arg.answer, false);
+			await dataContext.game.validateAnswer(arg.answer, false, arg.factor);
 		} else {
 			await dataContext.game.rejectAnswer(arg.factor);
 		}
