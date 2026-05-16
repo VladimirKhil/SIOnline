@@ -8,7 +8,6 @@ import SIStorageInfo from '../client/contracts/SIStorageInfo';
 import { computerAccountsChanged, serverInfoChanged, avatarLoadEnd, avatarLoadStart, userErrorChanged, avatarLoadError, setProxyAvailable } from '../state/commonSlice';
 import { setStorages } from '../state/siPackagesSlice';
 import Constants from '../model/enums/Constants';
-import registerApp from '../utils/registerApp';
 import getServerInfo from '../client/GameServerLocator';
 import getErrorMessage from '../utils/ErrorHelpers';
 import { changeAvatar } from '../state/userSlice';

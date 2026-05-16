@@ -1,81 +1,70 @@
-import * as React from 'react';
-import State from '../../../state/State';
-import { connect } from 'react-redux';
+import React, { useState, useEffect, useRef } from 'react';
+import { shallowEqual } from 'react-redux';
+import { useAppSelector } from '../../../state/hooks';
 import fitElement from '../../../utils/fitElement';
 
 import './PartialTextContent.scss';
 
-interface PartialTextContentProps {
-	text: string;
-	visibleLength: number;
-	readingSpeed: number;
-	isGamePaused: boolean;
-}
+export default function PartialTextContent() {
+	const divRef = useRef<HTMLDivElement>(null);
 
-interface PartialTextContentState {
-	visibleLength: number;
-}
+	const { text, totalLength, readingSpeed, isGamePaused } = useAppSelector(state => ({
+		text: state.table.text + state.table.tail,
+		totalLength: state.table.text.length,
+		readingSpeed: state.room2.settings.readingSpeed,
+		isGamePaused: state.room2.stage.isGamePaused,
+	}), shallowEqual);
 
-const mapStateToProps = (state: State) => ({
-	text: state.table.text + state.table.tail,
-	visibleLength: state.table.text.length,
-	readingSpeed: state.room2.settings.readingSpeed,
-	isGamePaused: state.room2.stage.isGamePaused,
-});
+	const [visibleLength, setVisibleLength] = useState(0);
 
-export class PartialTextContent extends React.Component<PartialTextContentProps, PartialTextContentState> {
-	private divRef: React.RefObject<HTMLDivElement>;
-
-	private interval: number | undefined;
-
-	constructor(props: PartialTextContentProps) {
-		super(props);
-		this.divRef = React.createRef<HTMLDivElement>();
-		this.state = { visibleLength: 0 };
-	}
-
-	componentDidMount() {
-		if (this.divRef.current) {
-			fitElement(this.divRef.current, 144);
-			const { fontSize } = window.getComputedStyle(this.divRef.current);
-			this.divRef.current.style.fontSize = (parseFloat(fontSize) * 0.95) + 'px'; // Adjust font size slightly for better fit
+	useEffect(() => {
+		if (divRef.current) {
+			divRef.current.style.fontSize = '';
+			fitElement(divRef.current, 144);
+			const { fontSize } = window.getComputedStyle(divRef.current);
+			divRef.current.style.fontSize = (parseFloat(fontSize) * 0.95) + 'px'; // Adjust font size slightly for better fit
 		}
+	}, [text.length]);
 
-		this.interval = window.setInterval(
+	useEffect(() => {
+		const interval = window.setInterval(
 			() => {
-				if (this.props.isGamePaused || this.state.visibleLength >= this.props.visibleLength) {
+				if (isGamePaused) {
 					return;
 				}
 
-				this.setState(s => ({
-					visibleLength: Math.min(s.visibleLength + (this.props.readingSpeed / 10), this.props.visibleLength)
-				}));
+				setVisibleLength(prev => {
+					if (prev >= totalLength) {
+						return prev;
+					}
+					return Math.min(prev + (readingSpeed / 10), totalLength);
+				});
 			},
 			100
 		);
-	}
 
-	componentWillUnmount() {
-		if (this.interval) {
-			window.clearInterval(this.interval);
+		return () => {
+			window.clearInterval(interval);
+		};
+	}, [isGamePaused, totalLength, readingSpeed]);
+
+	useEffect(() => {
+		if (visibleLength > totalLength) {
+			setVisibleLength(totalLength);
 		}
-	}
+	}, [totalLength, visibleLength]);
 
-	render() {
-		const visibleText = this.props.text.slice(0, this.state.visibleLength);
-		const hiddenText = this.props.text.slice(this.state.visibleLength);
+	const visibleText = text.slice(0, visibleLength);
+	const hiddenText = text.slice(visibleLength);
 
-		return (
-			<div className='textHost'>
-				<div ref={this.divRef} className="tableText nonAligned">
-					<span>
-						<span className="animatablePartialCharacter">{visibleText}</span>
-						<span className="invisible">{hiddenText}</span>
-					</span>
-				</div>
+	return (
+		<div className='textHost'>
+			<div ref={divRef} className="tableText nonAligned">
+				<span>
+					<span className="animatablePartialCharacter">{visibleText}</span>
+					<span className="invisible">{hiddenText}</span>
+				</span>
 			</div>
-		);
-	}
+		</div>
+	);
 }
-
-export default connect(mapStateToProps)(PartialTextContent);

@@ -68,20 +68,22 @@ const SIStoragePackage: React.FC<SIStoragePackageProps> = (props: SIStoragePacka
 	const content = contentUri ?? directContentUri;
 	const hasDetails = !props.storage.limitedApi && (questionCount || contentTypeStatistic || rounds);
 
-	   // Make the whole card clickable except the details button
-	   const handleCardClick = (e: React.MouseEvent) => {
-		   // Don't trigger select if clicking the details toggle
-		   if ((e.target as HTMLElement).closest('.detailsToggle')) return;
-		   if (content) props.onSelect(id, name ?? '', content, props.storage.limitedApi === true);
-	   };
+	// Make the whole card clickable except the details button
+	const handleCardClick = (e: React.MouseEvent) => {
+		// Don't trigger select if clicking the details toggle
+		if ((e.target as HTMLElement).closest('.detailsToggle')) return;
+		if (content) props.onSelect(id, name ?? '', content, props.storage.limitedApi === true);
+	};
 
-	   return <li
-		   className={`storagePackage${isExpanded ? ' expanded' : ''}`}
-		   tabIndex={content ? 0 : -1}
-		   style={content ? { cursor: 'pointer' } : undefined}
-		   onClick={handleCardClick}
-		   onKeyDown={content ? (e) => { if (e.key === 'Enter' || e.key === ' ') handleCardClick(e as any); } : undefined}
-	   >
+	const tags: string[] = (props.package as any).tags ?? tagIds?.map(t => props.tags[t]) ?? [];
+
+	return <li
+		className={`storagePackage${isExpanded ? ' expanded' : ''}`}
+		tabIndex={content ? 0 : -1}
+		style={content ? { cursor: 'pointer' } : undefined}
+		onClick={handleCardClick}
+		onKeyDown={content ? (e) => { if (e.key === 'Enter' || e.key === ' ') handleCardClick(e as any); } : undefined}
+	>
 		<header>
 			{props.storage.packageProperties.includes('logo')
 				? <img src={logo} alt='logo' className='storagePackageLogo' />
@@ -97,10 +99,10 @@ const SIStoragePackage: React.FC<SIStoragePackageProps> = (props: SIStoragePacka
 		</header>
 
 		<div className='packageMeta'>
-			{tagIds && tagIds.length > 0
+			{tags.length > 0
 				? <div className='metaRow'>
 					<span className='metaLabel'>{localization.packageSubject}:</span>
-				<span className='metaValue'>{tagIds?.map(t => (<span key={t} className='metaTag'>{props.tags[t]}</span>))}</span>
+					<span className='metaValue'>{tags.map(t => (<span key={t} className='metaTag'>{t}</span>))}</span>
 				</div>
 				: null}
 
@@ -168,9 +170,9 @@ const SIStoragePackage: React.FC<SIStoragePackageProps> = (props: SIStoragePacka
 					{contentTypeStatistic ? <div className='detailsRow'>
 						<span className='metaLabel'>{localization.content}:</span>
 						<span className='contentTags'>
-						{Object.keys(contentTypeStatistic).map(key => (<span key={key} className='contentTag'>
-							{getContentName(key)} ({contentTypeStatistic[key]})
-						</span>))}
+							{Object.keys(contentTypeStatistic).map(key => (<span key={key} className='contentTag'>
+								{getContentName(key)} ({contentTypeStatistic[key]})
+							</span>))}
 						</span>
 					</div> : null}
 
@@ -179,7 +181,7 @@ const SIStoragePackage: React.FC<SIStoragePackageProps> = (props: SIStoragePacka
 						<ul className='roundsList'>
 							{rounds.map((r, i) => <li key={i} className='roundItem'>
 								<span className='roundName'>{r.name}</span>
-								<span className='roundThemes'>{r.themeNames.join(', ')}</span>
+								<span className='roundThemes'>{(r.themeNames ?? (r as any).themes?.map((t: any) => t?.name ?? '') ?? []).join(', ')}</span>
 							</li>)}
 						</ul>
 					</div> : null}
@@ -187,7 +189,7 @@ const SIStoragePackage: React.FC<SIStoragePackageProps> = (props: SIStoragePacka
 			</div>
 			: null}
 
-		   {/* No select button, selection is by clicking the card */}
+		{/* No select button, selection is by clicking the card */}
 	</li>;
 };
 
