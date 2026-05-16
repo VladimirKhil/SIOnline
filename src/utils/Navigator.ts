@@ -18,6 +18,8 @@ import State from '../state/State';
 import { showText } from '../state/tableSlice';
 import { exitGame } from '../state/room2Slice';
 import registerApp from './registerApp';
+import { analytics } from '../Index';
+import { logEvent } from 'firebase/analytics';
 
 let isInitialized = false;
 
@@ -68,6 +70,10 @@ const connectToSIGameServerAsync = async (
 
 	appDispatch(joinGameStarted());
 
+	if (analytics) {
+		logEvent(analytics, 'connect_game_server_start');
+	}
+
 	try {
 		await ensureServerInfoLoadedAsync(appDispatch, () => getState() as any, dataContext);
 
@@ -79,6 +85,11 @@ const connectToSIGameServerAsync = async (
 
 		await gameServerClient.connect(runtimeUri, listener);
 		appDispatch(joinGameFinished());
+
+		if (analytics) {
+			logEvent(analytics, 'connect_game_server_success', { proxy: useProxy });
+		}
+
 		return true;
 	} catch (error: unknown) {
 		const listener = new GameServerListener(appDispatch);
@@ -93,16 +104,31 @@ const connectToSIGameServerAsync = async (
 				await gameServerClient.disconnect(); // Ensure old connection loops are killed
 				await gameServerClient.connect(dataContext.serverUri, listener);
 				appDispatch(joinGameFinished());
+
+				if (analytics) {
+					logEvent(analytics, 'connect_game_server_success', { proxy: false, fallback: true });
+				}
+
 				return true;
 			} catch (fallbackError) {
 				console.log('Cannot connect to SIGame Server even without proxy: ' + getErrorMessage(fallbackError));
 				appDispatch(joinGameFinished());
+
+				if (analytics) {
+					logEvent(analytics, 'connect_game_server_fail', { fallback: true, error: getErrorMessage(fallbackError) });
+				}
+
 				return false;
 			}
 		}
 
 		console.log('Cannot connect to SIGame Server: ' + getErrorMessage(error));
 		appDispatch(joinGameFinished());
+
+		if (analytics) {
+			logEvent(analytics, 'connect_game_server_fail', { proxy: false, fallback: false, error: getErrorMessage(error) });
+		}
+
 		return false;
 	}
 };

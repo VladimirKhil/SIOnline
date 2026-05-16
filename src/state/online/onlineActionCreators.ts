@@ -66,7 +66,6 @@ import {
 } from '../online2Slice';
 import WellKnownSIStorageServiceErrorCode from 'sistorage-client/dist/models/WellKnownSIStorageServiceErrorCode';
 import { initRoom } from '../serverActions';
-import { ensureServerInfoLoadedAsync } from '../../logic/ServerInitializer';
 
 async function uploadPackageAsync2(
 	contentClient: SIContentClient,
