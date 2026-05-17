@@ -1,6 +1,6 @@
 import { AppDispatch } from '../state/store';
 import { mediaPreloadProgress } from '../state/serverActions';
-import getErrorMessage from '../utils/ErrorHelpers';
+import getErrorMessage, { getHttpErrorDetails } from '../utils/ErrorHelpers';
 
 const BASE_DELAY = 500; // Base delay between requests
 const MAX_RETRIES = 3;
@@ -36,7 +36,7 @@ function preloadFile(contentUri: string, addSimpleMessage: (message: string) => 
 			fetch(contentUri)
 				.then(response => {
 					if (!response.ok) {
-						throw new Error(`HTTP error! status: ${response.status}`);
+						return getHttpErrorDetails(response).then(errorDetails => Promise.reject(new Error(errorDetails)));
 					}
 
 					return response.arrayBuffer();
@@ -54,7 +54,7 @@ function preloadFile(contentUri: string, addSimpleMessage: (message: string) => 
 							preloadFile(contentUri, addSimpleMessage, retryCount + 1).then(resolve).catch(reject);
 						}, retryDelay);
 					} else {
-						const errorMessage = `Failed to load audio: ${contentUri}`;
+						const errorMessage = `Failed to load audio: ${contentUri}. ${getErrorMessage(error)}`;
 						console.warn(`Failed to preload ${contentUri} after ${MAX_RETRIES} attempts: ${error}`);
 						addSimpleMessage('Content preload error: ' + errorMessage);
 						resolve();
@@ -67,7 +67,7 @@ function preloadFile(contentUri: string, addSimpleMessage: (message: string) => 
 			fetch(contentUri)
 				.then(response => {
 					if (!response.ok) {
-						throw new Error(`HTTP error! status: ${response.status}`);
+						return getHttpErrorDetails(response).then(errorDetails => Promise.reject(new Error(errorDetails)));
 					}
 					return response.text();
 				})
@@ -83,7 +83,7 @@ function preloadFile(contentUri: string, addSimpleMessage: (message: string) => 
 							preloadFile(contentUri, addSimpleMessage, retryCount + 1).then(resolve).catch(reject);
 						}, retryDelay);
 					} else {
-						const errorMessage = `Failed to load HTML: ${contentUri}`;
+						const errorMessage = `Failed to load HTML: ${contentUri}. ${getErrorMessage(error)}`;
 						console.warn(`Failed to preload ${contentUri} after ${MAX_RETRIES} attempts: ${error}`);
 						addSimpleMessage('Content preload error: ' + errorMessage);
 						// Don't reject - just log the failure and continue

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useEffect, useRef } from 'react';
 import { getPreloadedAudioData } from '../../../logic/contentPreloader';
-import getErrorMessage from '../../../utils/ErrorHelpers';
+import getErrorMessage, { getHttpErrorDetails } from '../../../utils/ErrorHelpers';
 import localization from '../../../model/resources/localization';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 import { onMediaEnded, onMediaLoaded } from '../../../state/serverActions';
@@ -117,7 +117,7 @@ const AudioContent: React.FC<AudioContentProps> = ({
 			const response = await fetch(audio);
 
 			if (!response.ok) {
-				operationError(`${localization.audioLoadError} ${audio}: ${response.statusText}`);
+				operationError(`${localization.audioLoadError} ${audio}: ${await getHttpErrorDetails(response)}`);
 				return;
 			}
 
