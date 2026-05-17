@@ -38,10 +38,10 @@ export async function getHttpErrorDetails(response: Response): Promise<string> {
 		let bodyMessage = '';
 
 		if (contentType.includes('application/json')) {
-			const body = await response.clone().json() as unknown;
+			const body = await response.json() as unknown;
 			bodyMessage = getHttpErrorBodyMessage(body);
 		} else {
-			const bodyText = (await response.clone().text()).trim();
+			const bodyText = (await response.text()).trim();
 			if (bodyText.length > 0) {
 				try {
 					const parsedBody = JSON.parse(bodyText) as unknown;

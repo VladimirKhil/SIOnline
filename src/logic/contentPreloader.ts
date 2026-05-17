@@ -34,9 +34,9 @@ function preloadFile(contentUri: string, addSimpleMessage: (message: string) => 
 			(element as HTMLVideoElement).crossOrigin = 'anonymous';
 		} else if (isAudio) {
 			fetch(contentUri)
-				.then(response => {
+				.then(async response => {
 					if (!response.ok) {
-						return getHttpErrorDetails(response).then(errorDetails => Promise.reject(new Error(errorDetails)));
+						throw new Error(await getHttpErrorDetails(response));
 					}
 
 					return response.arrayBuffer();
@@ -65,9 +65,9 @@ function preloadFile(contentUri: string, addSimpleMessage: (message: string) => 
 		} else if (isHtml) {
 			// For HTML content, use fetch to load and cache it
 			fetch(contentUri)
-				.then(response => {
+				.then(async response => {
 					if (!response.ok) {
-						return getHttpErrorDetails(response).then(errorDetails => Promise.reject(new Error(errorDetails)));
+						throw new Error(await getHttpErrorDetails(response));
 					}
 					return response.text();
 				})
