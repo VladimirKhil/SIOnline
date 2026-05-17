@@ -1,6 +1,10 @@
 import ErrorCode from '../client/contracts/ErrorCode';
 import localization from '../model/resources/localization';
 
+/**
+ * Extracts a human-readable error message from a response body payload.
+ * Tries common API error keys and returns the first non-empty string value.
+ */
 function getHttpErrorBodyMessage(body: unknown): string {
 	if (typeof body === 'string') {
 		return body;
@@ -21,6 +25,11 @@ function getHttpErrorBodyMessage(body: unknown): string {
 	return '';
 }
 
+/**
+ * Builds HTTP error details from a failed fetch response.
+ * Returns "status statusText" and appends a parsed body message if available.
+ * If body parsing fails, returns status information only.
+ */
 export async function getHttpErrorDetails(response: Response): Promise<string> {
 	const statusInfo = `${response.status}${response.statusText ? ` ${response.statusText}` : ''}`;
 
