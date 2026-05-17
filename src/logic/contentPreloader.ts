@@ -6,6 +6,11 @@ const BASE_DELAY = 500; // Base delay between requests
 const MAX_RETRIES = 3;
 const preloadedAudioData = new Map<string, ArrayBuffer>();
 
+function withErrorCause(baseMessage: string, error: unknown): string {
+	const errorCause = getErrorMessage(error).trim();
+	return errorCause.length > 0 ? `${baseMessage}. ${errorCause}` : baseMessage;
+}
+
 export function getPreloadedAudioData(contentUri: string): ArrayBuffer | undefined {
 	const data = preloadedAudioData.get(contentUri);
 
@@ -54,7 +59,7 @@ function preloadFile(contentUri: string, addSimpleMessage: (message: string) => 
 							preloadFile(contentUri, addSimpleMessage, retryCount + 1).then(resolve).catch(reject);
 						}, retryDelay);
 					} else {
-						const errorMessage = `Failed to load audio: ${contentUri}. ${getErrorMessage(error)}`;
+						const errorMessage = withErrorCause(`Failed to load audio: ${contentUri}`, error);
 						console.warn(`Failed to preload ${contentUri} after ${MAX_RETRIES} attempts: ${error}`);
 						addSimpleMessage('Content preload error: ' + errorMessage);
 						resolve();
@@ -83,7 +88,7 @@ function preloadFile(contentUri: string, addSimpleMessage: (message: string) => 
 							preloadFile(contentUri, addSimpleMessage, retryCount + 1).then(resolve).catch(reject);
 						}, retryDelay);
 					} else {
-						const errorMessage = `Failed to load HTML: ${contentUri}. ${getErrorMessage(error)}`;
+						const errorMessage = withErrorCause(`Failed to load HTML: ${contentUri}`, error);
 						console.warn(`Failed to preload ${contentUri} after ${MAX_RETRIES} attempts: ${error}`);
 						addSimpleMessage('Content preload error: ' + errorMessage);
 						// Don't reject - just log the failure and continue
