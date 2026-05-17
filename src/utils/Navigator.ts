@@ -18,7 +18,7 @@ import State from '../state/State';
 import { showText } from '../state/tableSlice';
 import { exitGame } from '../state/room2Slice';
 import registerApp from './registerApp';
-import { analytics } from '../Index';
+import { analytics } from './Analytics';
 import { logEvent } from 'firebase/analytics';
 
 let isInitialized = false;

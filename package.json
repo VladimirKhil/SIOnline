@@ -94,6 +94,10 @@
   "jest": {
     "preset": "ts-jest",
     "testEnvironment": "node",
+    "moduleNameMapper": {
+      "\\.(css|less|scss|sass)$": "<rootDir>/test/styleMock.js",
+      "\\.(svg|png|jpe?g|gif|webp|mp3|wav|ogg|ttf|eot|woff2?)$": "<rootDir>/test/fileMock.js"
+    },
     "testPathIgnorePatterns": [
       "/node_modules/",
       "/e2e/",

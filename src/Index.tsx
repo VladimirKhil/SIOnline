@@ -47,6 +47,7 @@ import TauriHost from './host/TauriHost';
 import SteamTauriHost from './host/SteamTauriHost';
 import { approveAnswerDefault, pressGameButton, rejectAnswerDefault } from './state/room2Slice';
 import { pauseGame } from './state/serverActions';
+import { setAnalytics } from './utils/Analytics';
 
 import './utils/polyfills';
 import './scss/style.scss';
@@ -313,6 +314,7 @@ async function run(host: IHost) {
 				// Initialize Firebase
 				app = initializeApp(firebaseConfig);
 				analytics = getAnalytics(app);
+				setAnalytics(analytics);
 			}
 		} catch (e) {
 			console.error(e);
