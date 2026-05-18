@@ -5,7 +5,7 @@ import CommonSettingsView from '../CommonSettingsView/CommonSettingsView';
 import ThemeSettingsView from '../ThemeSettingsView/ThemeSettingsView';
 import SoundsSettingsView from '../SoundsSettingsView/SoundsSettingsView';
 import { useAppDispatch } from '../../../state/hooks';
-import { resetSettings } from '../../../state/settingsSlice';
+import { resetCommonSettings, resetKeysSettings, resetThemeSettings, resetSoundsSettings } from '../../../state/settingsSlice';
 import { showSettings } from '../../../state/uiSlice';
 import TabControl from '../../common/TabControl/TabControl';
 import KeysSettingsView from '../KeysSettingsView/KeysSettingsView';
@@ -46,7 +46,22 @@ const SettingsDialog: React.FC = () => {
 	}, []);
 
 	const onReset = () => {
-		appDispatch(resetSettings());
+		switch (view) {
+			case SettingsView.Common:
+				appDispatch(resetCommonSettings());
+				break;
+			case SettingsView.Keys:
+				appDispatch(resetKeysSettings());
+				break;
+			case SettingsView.Theme:
+				appDispatch(resetThemeSettings());
+				break;
+			case SettingsView.Sounds:
+				appDispatch(resetSoundsSettings());
+				break;
+			default:
+				break;
+		}
 	};
 
 	function getTabView(): React.ReactNode {

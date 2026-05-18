@@ -46,25 +46,26 @@
 	}
 }
 
-.welcomeView .logo, .welcomeView .logoMini {
-    max-width: 500px;
+.welcomeView .logo,
+.welcomeView .logoMini {
+	max-width: 500px;
 	width: 80%;
-    background-size: contain;
+	background-size: contain;
 	background-repeat: no-repeat;
 	background-position: center;
-    margin-top: 10px;
+	margin-top: 10px;
 	flex: 80px 0 0;
 }
 
 .welcomeView .logo {
-    background-image: url('../../../../assets/images/logo.png');
+	background-image: url('../../../../assets/images/logo.png');
 }
 
 .welcomeView .logoMini {
-    background-image: url('../../../../assets/images/sigame.png');
+	background-image: url('../../../../assets/images/sigame.png');
 }
 
-.welcomeView > header {
+.welcomeView>header {
 	color: white;
 	text-align: center;
 	background-color: #04071B;
@@ -73,7 +74,7 @@
 	overflow: hidden;
 }
 
-.welcomeView > header h1 {
+.welcomeView>header h1 {
 	font-size: 16px;
 	margin: 0;
 	display: flex;
@@ -114,7 +115,8 @@
 	display: inline-block;
 }
 
-.serverLicense, .about {
+.serverLicense,
+.about {
 	cursor: pointer;
 	display: inline-flex;
 	align-items: center;
@@ -194,6 +196,7 @@
 	from {
 		transform: translate(-100%);
 	}
+
 	to {
 		transform: translate(0);
 	}
@@ -203,6 +206,7 @@
 	from {
 		transform: translate(100%);
 	}
+
 	to {
 		transform: translate(0);
 	}
@@ -220,7 +224,7 @@ button.standard.welcomeRow {
 	&:hover {
 		background: rgba(255, 255, 255, 0.25);
 		border-color: rgba(255, 255, 255, 0.4);
-		box-shadow: 
+		box-shadow:
 			inset 0 0 30px rgba(255, 255, 255, 0.1),
 			0 0 20px rgba(255, 255, 255, 0.2),
 			0 4px 12px rgba(0, 0, 0, 0.4);
@@ -348,10 +352,10 @@ button.standard.welcomeExit {
 }
 
 @media screen and (min-width: 800px) {
-    .welcomeView {
+	.welcomeView {
 		.links {
-        	display: initial;
-    	}
+			display: initial;
+		}
 	}
 }
 
@@ -359,7 +363,7 @@ button.standard.welcomeExit {
 	position: absolute;
 	bottom: 8px;
 	left: 12px;
-	font-size: 11px;
+	font-size: 16px;
 	color: rgba(255, 255, 255, 0.4);
 	pointer-events: none;
 	user-select: none;

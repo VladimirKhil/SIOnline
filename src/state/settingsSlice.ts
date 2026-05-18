@@ -212,6 +212,43 @@ export const settingsSlice = createSlice({
 		setCustomSound: (state: SettingsState, action: PayloadAction<{ soundKey: string, value: string | null }>) => {
 			state.customSounds[action.payload.soundKey] = action.payload.value;
 		},
+		resetCommonSettings: (state: SettingsState) => {
+			state.soundVolume = initialState.soundVolume;
+			state.sound = initialState.sound;
+			state.appSound = initialState.appSound;
+			state.mainMenuSound = initialState.mainMenuSound;
+			state.floatingControls = initialState.floatingControls;
+			state.fullScreen = initialState.fullScreen;
+			state.sex = initialState.sex;
+			state.avatarKey = initialState.avatarKey;
+			state.attachContentToTable = initialState.attachContentToTable;
+			state.showVideoAvatars = initialState.showVideoAvatars;
+			state.writeGameLog = initialState.writeGameLog;
+			state.logPointsEvent = initialState.logPointsEvent;
+			state.useProxy2 = initialState.useProxy2;
+			state.loadExternalMedia = initialState.loadExternalMedia;
+		},
+		resetKeysSettings: (state: SettingsState) => {
+			state.gameButtonKey = initialState.gameButtonKey;
+			state.passButtonKey = initialState.passButtonKey;
+			state.nextButtonKey = initialState.nextButtonKey;
+			state.yesButtonKey = initialState.yesButtonKey;
+			state.noButtonKey = initialState.noButtonKey;
+			state.pauseButtonKey = initialState.pauseButtonKey;
+		},
+		resetThemeSettings: (state: SettingsState) => {
+			state.theme = initialState.theme;
+		},
+		resetSoundsSettings: (state: SettingsState) => {
+			state.customSounds = initialState.customSounds;
+		},
+		resetRulesSettings: (state: SettingsState) => {
+			const { culture, timeSettings } = state.appSettings;
+			state.appSettings = { ...initialAppSettings, culture, timeSettings };
+		},
+		resetTimeSettings: (state: SettingsState) => {
+			state.appSettings.timeSettings = { ...initialAppSettings.timeSettings };
+		},
 		resetSettings: (state: SettingsState) => {
 			const { culture } = state.appSettings;
 			Object.assign(state, initialState, { appSettings: { ...initialAppSettings, culture } });
@@ -266,6 +303,12 @@ export const {
 	setLogPointsEvent,
 	setLoadExternalMedia,
 	setCustomSound,
+	resetCommonSettings,
+	resetKeysSettings,
+	resetThemeSettings,
+	resetSoundsSettings,
+	resetRulesSettings,
+	resetTimeSettings,
 	resetSettings,
 } = settingsSlice.actions;
 

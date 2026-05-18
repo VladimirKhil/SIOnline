@@ -3,7 +3,7 @@ import localization from '../../../model/resources/localization';
 import TimeSettingItem from '../TimeSettingItem/TimeSettingItem';
 import TimeSettings from '../../../model/TimeSettings';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
-import { resetSettings, setTimeSetting } from '../../../state/settingsSlice';
+import { resetTimeSettings, setTimeSetting } from '../../../state/settingsSlice';
 
 import './TimeSettingsView.css';
 
@@ -105,7 +105,7 @@ export default function TimeSettingsView(): JSX.Element {
 				type="button"
 				className="reset standard"
 				title={localization.resetToDefaultsHint}
-				onClick={() => appDispatch(resetSettings())}>
+				onClick={() => appDispatch(resetTimeSettings())}>
 				{localization.resetToDefaults}
 			</button>
 		</div>

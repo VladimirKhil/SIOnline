@@ -4,7 +4,7 @@ import GameType from '../../../model/GameType';
 import ButtonPressMode from '../../../model/ButtonPressMode';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 
-import { resetSettings,
+import { resetRulesSettings,
 	setAllowEveryoneToPlayHiddenStakes,
 	setButtonPressMode,
 	setDisplayAnswerOptionsLabels,
@@ -423,7 +423,7 @@ export default function RulesSettingsView(): JSX.Element {
 				type="button"
 				className="reset standard"
 				title={localization.resetToDefaultsHint}
-				onClick={() => appDispatch(resetSettings())}>
+				onClick={() => appDispatch(resetRulesSettings())}>
 				{localization.resetToDefaults}
 			</button>
 		</div>

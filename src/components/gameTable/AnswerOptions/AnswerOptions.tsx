@@ -8,6 +8,7 @@ import AutoSizedText from '../../common/AutoSizedText/AutoSizedText';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 import { RootState } from '../../../state/store';
 import { selectAnswerOption } from '../../../state/serverActions';
+import AnswerOption from '../../../model/AnswerOption';
 
 import './AnswerOptions.scss';
 
@@ -51,8 +52,12 @@ export default function AnswerOptions({ gridMode = false }: { gridMode?: boolean
 		}
 	}
 
-	function onSelectAnswerOption(label: string): void {
-		appDispatch(selectAnswerOption(label));
+	function onSelectAnswerOption(option: AnswerOption): void {
+		if (!isSelectable || option.state !== ItemState.Normal) {
+			return;
+		}
+
+		appDispatch(selectAnswerOption(option.label));
 	}
 
 	// Use grid layout with calculated row and column count
@@ -66,7 +71,7 @@ export default function AnswerOptions({ gridMode = false }: { gridMode?: boolean
 	return (
 		<div className={`answerOptions ${isSelectable ? 'selectable' : ''}`} style={gridStyle}>
 			{answerOptions.map((o, i) => (
-				<div key={i} className={`answerOption ${getOptionClass(o.state)}`} onClick={() => onSelectAnswerOption(o.label)}>
+				<div key={i} className={`answerOption ${getOptionClass(o.state)}`} onClick={() => onSelectAnswerOption(o)}>
 					{displayAnswerOptionsLabels ? <div className='optionLabel'>
 						<AutoSizedText maxFontSize={50}>{o.label}</AutoSizedText>
 					</div> : null}
