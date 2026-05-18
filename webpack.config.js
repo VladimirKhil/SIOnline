@@ -103,7 +103,8 @@ module.exports = (env, argv) => {
 		},
 		plugins: [
 			new webpack.DefinePlugin({
-				'IS_STEAM_BUILD': JSON.stringify(env.isSteam === 'true' || env.isSteam === true)
+				'IS_STEAM_BUILD': JSON.stringify(env.isSteam === 'true' || env.isSteam === true),
+				'APP_VERSION': JSON.stringify(env.appVersion || 'dev')
 			}),
 			new CleanWebpackPlugin(),
 			new HtmlWebPackPlugin({

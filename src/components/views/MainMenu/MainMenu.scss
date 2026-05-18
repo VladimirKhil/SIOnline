@@ -354,3 +354,13 @@ button.standard.welcomeExit {
     	}
 	}
 }
+
+.appVersion {
+	position: absolute;
+	bottom: 8px;
+	left: 12px;
+	font-size: 11px;
+	color: rgba(255, 255, 255, 0.4);
+	pointer-events: none;
+	user-select: none;
+}

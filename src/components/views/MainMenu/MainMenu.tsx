@@ -197,6 +197,8 @@ export default function MainMenu(): JSX.Element {
 					title={localization.connectingToServer}
 					isIndeterminate={true} />
 			) : null}
+
+			<div className='appVersion'>{APP_VERSION}</div>
 		</section>
 	);
 }
