@@ -1,6 +1,66 @@
 import ErrorCode from '../client/contracts/ErrorCode';
 import localization from '../model/resources/localization';
 
+// Most common API error payload keys ordered by preference.
+const ERROR_MESSAGE_KEYS = ['message', 'error', 'detail', 'title', 'reason'];
+
+/**
+ * Extracts a human-readable error message from a response body payload.
+ * Tries common API error keys and returns the first non-empty string value.
+ */
+function getHttpErrorBodyMessage(body: unknown): string {
+	if (typeof body === 'string') {
+		return body;
+	}
+
+	if (body && typeof body === 'object') {
+		const bodyAsRecord = body as Record<string, unknown>;
+
+		for (const candidate of ERROR_MESSAGE_KEYS) {
+			const candidateValue = bodyAsRecord[candidate];
+			if (typeof candidateValue === 'string' && candidateValue.trim().length > 0) {
+				return candidateValue.trim();
+			}
+		}
+	}
+
+	return '';
+}
+
+/**
+ * Builds HTTP error details from a failed fetch response.
+ * Returns "status statusText" and appends a parsed body message if available.
+ * If body parsing fails, returns status information only.
+ */
+export async function getHttpErrorDetails(response: Response): Promise<string> {
+	const statusInfo = `${response.status}${response.statusText ? ` ${response.statusText}` : ''}`;
+
+	try {
+		const contentType = response.headers.get('content-type')?.toLowerCase() || '';
+		let bodyMessage = '';
+
+		if (contentType.includes('application/json')) {
+			const body = await response.json() as unknown;
+			bodyMessage = getHttpErrorBodyMessage(body);
+		} else {
+			const bodyText = (await response.text()).trim();
+			if (bodyText.length > 0) {
+				try {
+					// Some backends return JSON with an incorrect content-type header.
+					const parsedBody = JSON.parse(bodyText) as unknown;
+					bodyMessage = getHttpErrorBodyMessage(parsedBody);
+				} catch {
+					bodyMessage = bodyText;
+				}
+			}
+		}
+
+		return bodyMessage.length > 0 ? `${statusInfo}: ${bodyMessage}` : statusInfo;
+	} catch {
+		return statusInfo;
+	}
+}
+
 function getLocalizedError(error: Error): string {
 	if (error.message === 'Failed to fetch' || error.message.includes('error sending request')) {
 		return localization.failedToFetch;

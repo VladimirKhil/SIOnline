@@ -1,10 +1,15 @@
 import { AppDispatch } from '../state/store';
 import { mediaPreloadProgress } from '../state/serverActions';
-import getErrorMessage from '../utils/ErrorHelpers';
+import getErrorMessage, { getHttpErrorDetails } from '../utils/ErrorHelpers';
 
 const BASE_DELAY = 500; // Base delay between requests
 const MAX_RETRIES = 3;
 const preloadedAudioData = new Map<string, ArrayBuffer>();
+
+function withErrorCause(baseMessage: string, error: unknown): string {
+	const errorCause = getErrorMessage(error).trim();
+	return errorCause.length > 0 ? `${baseMessage}. ${errorCause}` : baseMessage;
+}
 
 export function getPreloadedAudioData(contentUri: string): ArrayBuffer | undefined {
 	const data = preloadedAudioData.get(contentUri);
@@ -34,9 +39,9 @@ function preloadFile(contentUri: string, addSimpleMessage: (message: string) => 
 			(element as HTMLVideoElement).crossOrigin = 'anonymous';
 		} else if (isAudio) {
 			fetch(contentUri)
-				.then(response => {
+				.then(async response => {
 					if (!response.ok) {
-						throw new Error(`HTTP error! status: ${response.status}`);
+						throw new Error(await getHttpErrorDetails(response));
 					}
 
 					return response.arrayBuffer();
@@ -54,7 +59,7 @@ function preloadFile(contentUri: string, addSimpleMessage: (message: string) => 
 							preloadFile(contentUri, addSimpleMessage, retryCount + 1).then(resolve).catch(reject);
 						}, retryDelay);
 					} else {
-						const errorMessage = `Failed to load audio: ${contentUri}`;
+						const errorMessage = withErrorCause(`Failed to load audio: ${contentUri}`, error);
 						console.warn(`Failed to preload ${contentUri} after ${MAX_RETRIES} attempts: ${error}`);
 						addSimpleMessage('Content preload error: ' + errorMessage);
 						resolve();
@@ -65,9 +70,9 @@ function preloadFile(contentUri: string, addSimpleMessage: (message: string) => 
 		} else if (isHtml) {
 			// For HTML content, use fetch to load and cache it
 			fetch(contentUri)
-				.then(response => {
+				.then(async response => {
 					if (!response.ok) {
-						throw new Error(`HTTP error! status: ${response.status}`);
+						throw new Error(await getHttpErrorDetails(response));
 					}
 					return response.text();
 				})
@@ -83,7 +88,7 @@ function preloadFile(contentUri: string, addSimpleMessage: (message: string) => 
 							preloadFile(contentUri, addSimpleMessage, retryCount + 1).then(resolve).catch(reject);
 						}, retryDelay);
 					} else {
-						const errorMessage = `Failed to load HTML: ${contentUri}`;
+						const errorMessage = withErrorCause(`Failed to load HTML: ${contentUri}`, error);
 						console.warn(`Failed to preload ${contentUri} after ${MAX_RETRIES} attempts: ${error}`);
 						addSimpleMessage('Content preload error: ' + errorMessage);
 						// Don't reject - just log the failure and continue
