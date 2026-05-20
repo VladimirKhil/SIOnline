@@ -8,9 +8,10 @@ import './PartialTextContent.scss';
 export default function PartialTextContent() {
 	const divRef = useRef<HTMLDivElement>(null);
 
-	const { text, totalLength, readingSpeed, isGamePaused } = useAppSelector(state => ({
+	const { text, totalLength, textVersion, readingSpeed, isGamePaused } = useAppSelector(state => ({
 		text: state.table.text + state.table.tail,
 		totalLength: state.table.text.length,
+		textVersion: state.table.textVersion,
 		readingSpeed: state.room2.settings.readingSpeed,
 		isGamePaused: state.room2.stage.isGamePaused,
 	}), shallowEqual);
@@ -35,7 +36,7 @@ export default function PartialTextContent() {
 
 	useEffect(() => {
 		setVisibleLength(0);
-	}, [text]);
+	}, [textVersion]);
 
 	useEffect(() => {
 		totalLengthRef.current = totalLength;
