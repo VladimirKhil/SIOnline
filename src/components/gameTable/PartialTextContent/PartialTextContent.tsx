@@ -16,28 +16,44 @@ export default function PartialTextContent() {
 	}), shallowEqual);
 
 	const [visibleLength, setVisibleLength] = useState(0);
+	const totalLengthRef = useRef(totalLength);
+	const readingSpeedRef = useRef(readingSpeed);
+	const isGamePausedRef = useRef(isGamePaused);
 
 	useEffect(() => {
+		if (totalLength !== 0) {
+			return;
+		}
+
 		if (divRef.current) {
 			divRef.current.style.fontSize = '';
 			fitElement(divRef.current, 144);
 			const { fontSize } = window.getComputedStyle(divRef.current);
 			divRef.current.style.fontSize = (parseFloat(fontSize) * 0.95) + 'px'; // Adjust font size slightly for better fit
 		}
-	}, [text.length]);
+	}, [text, totalLength]);
+
+	useEffect(() => {
+		totalLengthRef.current = totalLength;
+		readingSpeedRef.current = readingSpeed;
+		isGamePausedRef.current = isGamePaused;
+	}, [totalLength, readingSpeed, isGamePaused]);
 
 	useEffect(() => {
 		const interval = window.setInterval(
 			() => {
-				if (isGamePaused) {
+				if (isGamePausedRef.current) {
 					return;
 				}
 
 				setVisibleLength(prev => {
-					if (prev >= totalLength) {
+					const currentTotalLength = totalLengthRef.current;
+
+					if (prev >= currentTotalLength) {
 						return prev;
 					}
-					return Math.min(prev + (readingSpeed / 10), totalLength);
+
+					return Math.min(prev + (readingSpeedRef.current / 10), currentTotalLength);
 				});
 			},
 			100
@@ -46,7 +62,7 @@ export default function PartialTextContent() {
 		return () => {
 			window.clearInterval(interval);
 		};
-	}, [isGamePaused, totalLength, readingSpeed]);
+	}, []);
 
 	useEffect(() => {
 		if (visibleLength > totalLength) {
