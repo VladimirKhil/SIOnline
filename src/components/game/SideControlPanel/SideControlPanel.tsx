@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { connect } from 'react-redux';
+import { connect, shallowEqual } from 'react-redux';
 import { Dispatch, Action } from 'redux';
 import State from '../../../state/State';
 import roomActionCreators from '../../../state/room/roomActionCreators';
@@ -110,7 +110,7 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 		lastReplic: state.room2.lastReplic,
 		playersCount: state.room2.persons.players.length,
 		deepMode: state.room2.deepMode,
-	}));
+	}), shallowEqual);
 
 	const ui = useAppSelector(state => state.ui);
 

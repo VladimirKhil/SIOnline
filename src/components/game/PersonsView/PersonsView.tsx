@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { connect } from 'react-redux';
+import { connect, shallowEqual } from 'react-redux';
 import State from '../../../state/State';
 import localization from '../../../model/resources/localization';
 import { sendJoinMode } from '../../../state/serverActions';
@@ -21,20 +21,21 @@ const mapStateToProps = (state: State) => ({
 });
 
 export function PersonsView(props: PersonsViewProps): JSX.Element {
-	const { personsAll, showmanName, playersNames, joinMode } = useAppSelector(state => ({
+	const { personsAll, showmanName, players: playerAccounts, joinMode } = useAppSelector(state => ({
 		personsAll: state.room2.persons.all,
 		showmanName: state.room2.persons.showman.name,
-		playersNames: state.room2.persons.players.map(p => p.name),
+		players: state.room2.persons.players,
 		joinMode: state.room2.joinMode,
-	}));
+	}), shallowEqual);
 
 	const { isConnected, clipboardSupported } = useAppSelector(state => ({
 		isConnected: state.common.isSIHostConnected,
 		clipboardSupported: state.common.clipboardSupported,
-	}));
+	}), shallowEqual);
 
 	const appDispatch = useAppDispatch();
 
+	const playersNames = React.useMemo(() => playerAccounts.map(p => p.name), [playerAccounts]);
 	const showman = personsAll[showmanName];
 
 	const players = playersNames

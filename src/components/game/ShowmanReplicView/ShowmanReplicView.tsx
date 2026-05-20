@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { connect } from 'react-redux';
+import { connect, shallowEqual } from 'react-redux';
 import State from '../../../state/State';
 import { DecisionType } from '../../../state/room2Slice';
 import Role from '../../../model/Role';
@@ -34,7 +34,19 @@ const mapStateToProps = (state: State) => ({
 });
 
 export function ShowmanReplicView(props: ShowmanReplicViewProps): JSX.Element {
-	const { name, showmanName, isReady, isDeciding, isGameStarted, decisionType, replicIndex, players, windowWidth, deepMode, role } = useAppSelector(state => ({
+	const {
+		name,
+		showmanName,
+		isReady,
+		isDeciding,
+		isGameStarted,
+		decisionType,
+		replicIndex,
+		players,
+		windowWidth,
+		deepMode,
+		role,
+	} = useAppSelector(state => ({
 		name: state.room2.name,
 		showmanName: state.room2.persons.showman.name,
 		isReady: state.room2.persons.showman.isReady,
@@ -46,7 +58,7 @@ export function ShowmanReplicView(props: ShowmanReplicViewProps): JSX.Element {
 		windowWidth: state.ui.windowWidth,
 		deepMode: state.room2.deepMode,
 		role: state.room2.role,
-	}));
+	}), shallowEqual);
 
 	const isScreenWide = windowWidth >= Constants.WIDE_WINDOW_WIDTH;
 	const activePlayer = !isScreenWide && replicIndex > -1 && replicIndex < players.length
@@ -81,9 +93,11 @@ export function ShowmanReplicView(props: ShowmanReplicViewProps): JSX.Element {
 	const me = players.find(p => p.name === name);
 	const meClass = isMe ? 'me' : '';
 	const playerReplicModeClass = activePlayer ? 'playerReplicMode' : '';
+	const isHighlighted = decisionType !== DecisionType.None && decisionType !== DecisionType.Review;
+	const showmanAreaClassName = `showmanArea ${isHighlighted ? 'highlighted' : ''} ${playerReplicModeClass}`;
 
 	return (
-		<div className={`showmanArea ${(decisionType !== DecisionType.None && decisionType !== DecisionType.Review) ? 'highlighted' : ''} ${playerReplicModeClass}`}>
+		<div className={showmanAreaClassName}>
 			<div className="showmanInfo" style={showmanInfoStyle}>
 				{!deepMode ? (
 					<>
