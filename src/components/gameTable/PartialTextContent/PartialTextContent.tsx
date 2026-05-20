@@ -34,6 +34,10 @@ export default function PartialTextContent() {
 	}, [text, totalLength]);
 
 	useEffect(() => {
+		setVisibleLength(0);
+	}, [text]);
+
+	useEffect(() => {
 		totalLengthRef.current = totalLength;
 		readingSpeedRef.current = readingSpeed;
 		isGamePausedRef.current = isGamePaused;
