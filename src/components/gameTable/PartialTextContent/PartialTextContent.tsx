@@ -8,19 +8,17 @@ import './PartialTextContent.scss';
 export default function PartialTextContent() {
 	const divRef = useRef<HTMLDivElement>(null);
 
-	const { text, totalLength, readingSpeed, isGamePaused, isMediaStopped } = useAppSelector(state => ({
+	const { text, totalLength, readingSpeed, isGamePaused } = useAppSelector(state => ({
 		text: state.table.text + state.table.tail,
 		totalLength: state.table.text.length,
 		readingSpeed: state.room2.settings.readingSpeed,
 		isGamePaused: state.room2.stage.isGamePaused,
-		isMediaStopped: state.table.isMediaStopped,
 	}), shallowEqual);
 
 	const [visibleLength, setVisibleLength] = useState(0);
 	const totalLengthRef = useRef(totalLength);
 	const readingSpeedRef = useRef(readingSpeed);
 	const isGamePausedRef = useRef(isGamePaused);
-	const isMediaStoppedRef = useRef(isMediaStopped);
 
 	useEffect(() => {
 		if (totalLength !== 0) {
@@ -39,13 +37,12 @@ export default function PartialTextContent() {
 		totalLengthRef.current = totalLength;
 		readingSpeedRef.current = readingSpeed;
 		isGamePausedRef.current = isGamePaused;
-		isMediaStoppedRef.current = isMediaStopped;
-	}, [totalLength, readingSpeed, isGamePaused, isMediaStopped]);
+	}, [totalLength, readingSpeed, isGamePaused]);
 
 	useEffect(() => {
 		const interval = window.setInterval(
 			() => {
-				if (isGamePausedRef.current || isMediaStoppedRef.current) {
+				if (isGamePausedRef.current) {
 					return;
 				}
 
