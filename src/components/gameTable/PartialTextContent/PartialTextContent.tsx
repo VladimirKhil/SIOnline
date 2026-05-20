@@ -23,13 +23,17 @@ export default function PartialTextContent() {
 	const isMediaStoppedRef = useRef(isMediaStopped);
 
 	useEffect(() => {
+		if (totalLength !== 0) {
+			return;
+		}
+
 		if (divRef.current) {
 			divRef.current.style.fontSize = '';
 			fitElement(divRef.current, 144);
 			const { fontSize } = window.getComputedStyle(divRef.current);
 			divRef.current.style.fontSize = (parseFloat(fontSize) * 0.95) + 'px'; // Adjust font size slightly for better fit
 		}
-	}, [text]);
+	}, [text.length, totalLength]);
 
 	useEffect(() => {
 		totalLengthRef.current = totalLength;
