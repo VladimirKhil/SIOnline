@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { shallowEqual } from 'react-redux';
 import GamesList from '../../panels/GamesList/GamesList';
 import GameInfoView from '../../panels/GameInfoView/GameInfoView';
 import UsersView from '../../panels/UsersView/UsersView';
@@ -58,7 +59,7 @@ export function Lobby() {
 			gameCreationProgress: state.online2.gameCreationProgress,
 			joinGameProgress: state.online2.joinGameProgress,
 			inProgress: state.online2.inProgress
-		}));
+		}), shallowEqual);
 
 	const isConnected = useAppSelector(state => state.common.isConnected);
 

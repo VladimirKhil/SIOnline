@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { connect } from 'react-redux';
+import { connect, shallowEqual } from 'react-redux';
 import { Action, Dispatch } from 'redux';
 import State from '../../../state/State';
 import PlayersView from '../../game/PlayersView/PlayersView';
@@ -107,12 +107,12 @@ export function Room(props: RoomProps): JSX.Element {
 	const { windowWidth, returnToLobby } = useAppSelector((state) => ({
 		windowWidth: state.ui.windowWidth,
 		returnToLobby: state.ui.navigation.returnToLobby,
-	}));
+	}), shallowEqual);
 
 	const { floatingControls, backgroundImageKey } = useAppSelector((state) => ({
 		floatingControls: state.settings.floatingControls,
 		backgroundImageKey: state.settings.theme.room.backgroundImageKey,
-	}));
+	}), shallowEqual);
 
 	const {
 		kicked,
@@ -136,7 +136,7 @@ export function Room(props: RoomProps): JSX.Element {
 		deepMode: state.room2.deepMode,
 		hostName: state.room2.persons.hostName,
 		myName: state.room2.name,
-	}));
+	}), shallowEqual);
 
 	React.useEffect(() => {
 		if (kicked) {
