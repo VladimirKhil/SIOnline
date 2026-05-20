@@ -33,7 +33,7 @@ export default function PartialTextContent() {
 			const { fontSize } = window.getComputedStyle(divRef.current);
 			divRef.current.style.fontSize = (parseFloat(fontSize) * 0.95) + 'px'; // Adjust font size slightly for better fit
 		}
-	}, [text.length, totalLength]);
+	}, [text, totalLength]);
 
 	useEffect(() => {
 		totalLengthRef.current = totalLength;
