@@ -8,9 +8,10 @@ import './PartialTextContent.scss';
 export default function PartialTextContent() {
 	const divRef = useRef<HTMLDivElement>(null);
 
-	const { text, totalLength, readingSpeed, isGamePaused } = useAppSelector(state => ({
+	const { text, totalLength, textVersion, readingSpeed, isGamePaused } = useAppSelector(state => ({
 		text: state.table.text + state.table.tail,
 		totalLength: state.table.text.length,
+		textVersion: state.table.textVersion,
 		readingSpeed: state.room2.settings.readingSpeed,
 		isGamePaused: state.room2.stage.isGamePaused,
 	}), shallowEqual);
@@ -32,6 +33,10 @@ export default function PartialTextContent() {
 			divRef.current.style.fontSize = (parseFloat(fontSize) * 0.95) + 'px'; // Adjust font size slightly for better fit
 		}
 	}, [text, totalLength]);
+
+	useEffect(() => {
+		setVisibleLength(0);
+	}, [textVersion]);
 
 	useEffect(() => {
 		totalLengthRef.current = totalLength;
@@ -63,12 +68,6 @@ export default function PartialTextContent() {
 			window.clearInterval(interval);
 		};
 	}, []);
-
-	useEffect(() => {
-		if (visibleLength > totalLength) {
-			setVisibleLength(totalLength);
-		}
-	}, [totalLength, visibleLength]);
 
 	const visibleText = text.slice(0, visibleLength);
 	const hiddenText = text.slice(visibleLength);

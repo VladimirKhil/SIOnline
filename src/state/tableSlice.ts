@@ -54,6 +54,7 @@ export interface TableState {
 	optionsWeight: number;
 	optionsRowCount: number;
 	optionsColumnCount: number;
+	textVersion: number;
 }
 
 const initialState: TableState = {
@@ -98,6 +99,7 @@ const initialState: TableState = {
 	optionsWeight: 1,
 	optionsRowCount: 1,
 	optionsColumnCount: 1,
+	textVersion: 0,
 };
 
 export const tableSlice = createSlice({
@@ -193,6 +195,7 @@ export const tableSlice = createSlice({
 		showPartialText: (state: TableState, action: PayloadAction<string>) => {
 			state.text = '';
 			state.tail = action.payload;
+			state.textVersion += 1;
 		},
 		appendPartialText: (state: TableState, action: PayloadAction<string>) => {
 			state.text += action.payload;
