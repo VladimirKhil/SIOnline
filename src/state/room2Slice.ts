@@ -681,7 +681,21 @@ export const room2Slice = createSlice({
 			state.stage.decisionType = DecisionType.Validation;
 		},
 		stopValidation(state: Room2State) {
+			state.validation.header = '';
+			state.validation.message = '';
 			state.validation.queue = [];
+			state.validation.showExtraRightButtons = false;
+			state.validation.newVersion = false;
+			state.stage.decisionType = DecisionType.None;
+		},
+		resetValidationState(state: Room2State) {
+			state.validation.header = '';
+			state.validation.message = '';
+			state.validation.rightAnswers = [];
+			state.validation.wrongAnswers = [];
+			state.validation.queue = [];
+			state.validation.showExtraRightButtons = false;
+			state.validation.newVersion = false;
 			state.stage.decisionType = DecisionType.None;
 		},
 		nameChanged(state: Room2State, action: PayloadAction<string>) {
@@ -1242,6 +1256,7 @@ export const {
 	validate,
 	askValidation,
 	stopValidation,
+	resetValidationState,
 	nameChanged,
 	setTheme,
 	answerChanged,
