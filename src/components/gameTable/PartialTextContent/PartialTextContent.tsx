@@ -69,12 +69,6 @@ export default function PartialTextContent() {
 		};
 	}, []);
 
-	useEffect(() => {
-		if (visibleLength > totalLength) {
-			setVisibleLength(totalLength);
-		}
-	}, [totalLength, visibleLength]);
-
 	const visibleText = text.slice(0, visibleLength);
 	const hiddenText = text.slice(visibleLength);
 
