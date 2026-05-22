@@ -1,6 +1,5 @@
 import * as React from 'react';
-import { connect, shallowEqual } from 'react-redux';
-import State from '../../../state/State';
+import { shallowEqual } from 'react-redux';
 import localization from '../../../model/resources/localization';
 import { sendJoinMode } from '../../../state/serverActions';
 import PersonView from '../PersonView/PersonView';
@@ -12,16 +11,9 @@ import inviteLink from '../../../utils/inviteLink';
 
 import './PersonsView.css';
 
-interface PersonsViewProps {
-	isHost: boolean;
-}
-
-const mapStateToProps = (state: State) => ({
-	isHost: isHost(state),
-});
-
-export function PersonsView(props: PersonsViewProps): JSX.Element {
-	const { personsAll, showmanName, players: playerAccounts, joinMode } = useAppSelector(state => ({
+export function PersonsView(): JSX.Element {
+	const { isHostUser, personsAll, showmanName, players: playerAccounts, joinMode } = useAppSelector(state => ({
+		isHostUser: isHost(state),
 		personsAll: state.room2.persons.all,
 		showmanName: state.room2.persons.showman.name,
 		players: state.room2.persons.players,
@@ -61,17 +53,15 @@ export function PersonsView(props: PersonsViewProps): JSX.Element {
 			<div className="personsList">
 				<div className="personsHeader">{localization.showman}</div>
 
-				{showman ? (
-					<ul>
-						<PersonView account={showman} />
-					</ul>
-				) : null}
+				<ul>
+					<PersonView account={showman ?? null} seat={{ isPlayerScope: false, tableIndex: 0 }} />
+				</ul>
 
 				<div className="personsHeader">{localization.players}</div>
 
 				<ul>
 					{players.map((person, index) => (
-						<PersonView key={person ? person.name : index} account={person} />
+						<PersonView key={person ? person.name : index} account={person} seat={{ isPlayerScope: true, tableIndex: index }} />
 					))}
 				</ul>
 
@@ -85,7 +75,7 @@ export function PersonsView(props: PersonsViewProps): JSX.Element {
 			{clipboardSupported
 				? <div className="buttonsPanel inviteLinkHost sidePanel">
 					<button type="button" className='standard' onClick={() => inviteLink(appDispatch)}>{localization.inviteLink}</button>
-					{props.isHost ? <button type='button' className='standard' onClick={getPinCore}>{localization.getPin}</button> : null}
+					{isHostUser ? <button type='button' className='standard' onClick={getPinCore}>{localization.getPin}</button> : null}
 				</div>
 				: null}
 
@@ -97,7 +87,7 @@ export function PersonsView(props: PersonsViewProps): JSX.Element {
 					title={localization.joinMode}
 					value={joinMode}
 					onChange={onJoinModeChanged}
-					disabled={!isConnected || !props.isHost}>
+					disabled={!isConnected || !isHostUser}>
 					<option value={JoinMode.AnyRole}>{localization.joinModeAnyRole}</option>
 					<option value={JoinMode.OnlyViewer}>{localization.joinModeViewer}</option>
 					<option value={JoinMode.Forbidden}>{localization.joinModeForbidden}</option>
@@ -107,4 +97,4 @@ export function PersonsView(props: PersonsViewProps): JSX.Element {
 	);
 }
 
-export default connect(mapStateToProps)(PersonsView);
+export default PersonsView;
