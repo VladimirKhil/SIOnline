@@ -42,6 +42,7 @@ import Path from '../src/model/enums/Path';
 import { navigate } from '../src/utils/Navigator';
 import onlineActionCreators from '../src/state/online/onlineActionCreators';
 import { changeLogin } from '../src/state/userSlice';
+import AuthorizationMode from '../src/client/contracts/AuthorizationMode';
 import { setName, setPackageType, setRole, setPlayersCount, setType, setPassword } from '../src/state/gameSlice';
 import PackageType from '../src/model/enums/PackageType';
 import Role from '../src/model/Role';
@@ -120,6 +121,14 @@ class TestHost implements IHost {
 
 	openLink(): void {
 		// No-op for testing
+	}
+
+	getSupportedAuthModes(): AuthorizationMode[] {
+		return [];
+	}
+
+	async getAuthorizationData(): Promise<null> {
+		return null;
 	}
 
 	getStorage(): { storageClient?: SIStorageClient; storageInfo?: SIStorageInfo; } {
