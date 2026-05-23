@@ -1,14 +1,19 @@
 import { Store } from 'redux';
+import AuthorizationMode from '../client/contracts/AuthorizationMode';
+import Config from '../Config';
 import TauriHost from './TauriHost';
 import SIStorageClient from 'sistorage-client';
 import SIStorageInfo from '../client/contracts/SIStorageInfo';
 import SteamWorkshopStorageClient from './SteamWorkshopStorageClient';
 import localization from '../model/resources/localization';
-import { changeLogin } from '../state/userSlice';
+import { changeAuthName, changeLogin } from '../state/userSlice';
 import { setAvatarKey } from '../state/settingsSlice';
 import Constants from '../model/enums/Constants';
 import State from '../state/State';
 import { setHostManagedUrls, setSteamLinkSupported } from '../state/commonSlice';
+import { AuthorizationData } from './IHost';
+
+const defaultSteamAuthIdentity = 'SIGameServer';
 
 export default class SteamTauriHost extends TauriHost {
 	async initAsync(store: Store): Promise<void> {
@@ -21,8 +26,12 @@ export default class SteamTauriHost extends TauriHost {
 			this.app.core.invoke('get_steam_user_info', {}).then((userInfo: { name: string, avatar: string | null }) => {
 				const state = store.getState() as State;
 
-				if (userInfo.name && !state.user.login) {
-					store.dispatch(changeLogin(userInfo.name));
+				if (userInfo.name) {
+					if (!state.user.login) {
+						store.dispatch(changeLogin(userInfo.name));
+					}
+
+					store.dispatch(changeAuthName(userInfo.name));
 				}
 
 				if (userInfo.avatar && !localStorage.getItem(Constants.AVATAR_KEY)) {
@@ -36,6 +45,31 @@ export default class SteamTauriHost extends TauriHost {
 				console.error('Failed to get Steam user info:', error);
 			});
 		}
+	}
+
+	getSupportedAuthModes(): AuthorizationMode[] {
+		return [AuthorizationMode.Steam];
+	}
+
+	async getAuthorizationData(authorizationMode?: AuthorizationMode): Promise<AuthorizationData | null> {
+		if (authorizationMode !== AuthorizationMode.Steam) {
+			return null;
+		}
+
+		if (!this.app || !this.app.core) {
+			throw new Error('Steam authorization is not available');
+		}
+
+		const identity = defaultSteamAuthIdentity;
+
+		const authTicket = await this.app.core.invoke('get_steam_auth_ticket', {
+			identity,
+		});
+
+		return {
+			AuthorizationMode: AuthorizationMode.Steam,
+			AuthTicket: authTicket,
+		};
 	}
 
 	async setFullScreen(fullScreen: boolean): Promise<boolean> {

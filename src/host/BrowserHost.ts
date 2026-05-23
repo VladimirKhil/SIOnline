@@ -1,6 +1,7 @@
 import { Store } from 'redux';
+import AuthorizationMode from '../client/contracts/AuthorizationMode';
 import { getCookie, setCookie } from '../utils/CookieHelpers';
-import IHost, { FullScreenMode } from './IHost';
+import IHost, { AuthorizationData, FullScreenMode } from './IHost';
 import SIStorageClient from 'sistorage-client';
 import SIStorageInfo from '../client/contracts/SIStorageInfo';
 
@@ -79,6 +80,14 @@ export default class BrowserHost implements IHost {
 	}
 
 	openLink(url: string): void {}
+
+	getSupportedAuthModes(): AuthorizationMode[] {
+		return [];
+	}
+
+	async getAuthorizationData(authorizationMode?: AuthorizationMode): Promise<AuthorizationData | null> {
+		return null;
+	}
 
 	getStorage(): { storageClient?: SIStorageClient; storageInfo?: SIStorageInfo; } {
 		return { };

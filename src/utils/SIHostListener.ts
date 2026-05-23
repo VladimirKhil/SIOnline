@@ -35,8 +35,8 @@ export default class SIHostListener implements ISIHostListener {
 
 	onError(e: unknown): void {
 		if (e instanceof ReconnectError) {
-			const errorTypeName = getJoinErrorMessage(e.errorType);
-			const fullMessage = errorTypeName ? `${errorTypeName} ${e.originalMessage ?? ''}` : (e.originalMessage ?? '');
+			const joinError = getJoinErrorMessage(e.result);
+			const fullMessage = joinError || localization.reconnectionFailed;
 			this.appDispatch(addOperationErrorMessage(`${localization.reconnectionFailed}: ${fullMessage}`));
 		} else {
 			this.appDispatch(addOperationErrorMessage(getErrorMessage(e)));

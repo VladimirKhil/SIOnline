@@ -1,5 +1,5 @@
 import GameCreationResultCode from '../client/contracts/GameCreationResultCode';
-import JoinGameErrorType from '../client/contracts/JoinGameErrorType';
+import JoinGame2Result from '../client/contracts/JoinGame2Result';
 import localization from '../model/resources/localization';
 
 export function getMessage(code: GameCreationResultCode): string {
@@ -45,16 +45,55 @@ export function getMessage(code: GameCreationResultCode): string {
 	}
 }
 
-export function getJoinErrorMessage(error: JoinGameErrorType): string {
+export function getJoinErrorMessage(error: JoinGame2Result): string {
 	switch (error) {
-		case JoinGameErrorType.GameNotFound:
+		case JoinGame2Result.InvalidRole:
+			return localization.joinErrorInvalidRole;
+
+		case JoinGame2Result.GameNotFound:
 			return localization.gameNotFound;
 
-		case JoinGameErrorType.InternalServerError:
+		case JoinGame2Result.InternalServerError:
 			return localization.errorInternalServerError;
 
-		case JoinGameErrorType.Forbidden:
+		case JoinGame2Result.Forbidden:
+			return localization.joinModeForbidden;
+
+		case JoinGame2Result.CommonJoinError:
 			return '';
+
+		case JoinGame2Result.AuthorizationModeNotSupported:
+			return localization.joinErrorAuthorizationModeNotSupported;
+
+		case JoinGame2Result.AuthorizationDataMissing:
+			return localization.joinErrorAuthorizationDataMissing;
+
+		case JoinGame2Result.AuthorizationFailed:
+			return localization.joinErrorAuthorizationFailed;
+
+		case JoinGame2Result.AuthorizationServiceError:
+			return localization.joinErrorAuthorizationServiceError;
+
+		case JoinGame2Result.AuthorizationInvalidUserName:
+			return localization.joinErrorAuthorizationInvalidUserName;
+
+		case JoinGame2Result.ForbiddenRole:
+			return localization.joinErrorForbiddenRole;
+
+		case JoinGame2Result.WrongPassword:
+			return localization.joinErrorWrongPassword;
+
+		case JoinGame2Result.NameIsOccupied:
+			return localization.joinErrorNameIsOccupied;
+
+		case JoinGame2Result.PositionNotFound:
+			return localization.joinErrorPositionNotFound;
+
+		case JoinGame2Result.PlaceIsOccupied:
+			return localization.joinErrorPlaceIsOccupied;
+
+		case JoinGame2Result.FreePlaceNotFound:
+			return localization.joinErrorFreePlaceNotFound;
 
 		default:
 			return '';

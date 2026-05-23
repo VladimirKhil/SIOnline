@@ -1,4 +1,5 @@
 import SIStorageClient from 'sistorage-client';
+import AuthorizationMode from '../client/contracts/AuthorizationMode';
 import {
 	setClearUrls,
 	setClipboardSupported,
@@ -7,7 +8,7 @@ import {
 	setLogSupported
 } from '../state/commonSlice';
 import { getCookie, setCookie } from '../utils/CookieHelpers';
-import IHost, { FullScreenMode, UploadCallbacks } from './IHost';
+import IHost, { AuthorizationData, FullScreenMode, UploadCallbacks } from './IHost';
 import { Store } from 'redux';
 import SIStorageInfo from '../client/contracts/SIStorageInfo';
 
@@ -184,6 +185,14 @@ export default class TauriHost implements IHost {
 		} catch (e) {
 			console.error('Failed to open link:', e);
 		}
+	}
+
+	getSupportedAuthModes(): AuthorizationMode[] {
+		return [];
+	}
+
+	async getAuthorizationData(authorizationMode?: AuthorizationMode): Promise<AuthorizationData | null> {
+		return null;
 	}
 
 	getStorage(): { storageClient?: SIStorageClient; storageInfo?: SIStorageInfo; } {

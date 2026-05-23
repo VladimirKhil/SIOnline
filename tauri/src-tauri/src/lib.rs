@@ -4,6 +4,8 @@ mod content_service;
 #[cfg(feature = "steam_client")]
 use serde::{Deserialize, Serialize};
 #[cfg(feature = "steam_client")]
+use std::fmt::Write as _;
+#[cfg(feature = "steam_client")]
 use std::fs::File;
 use std::fs::OpenOptions;
 #[cfg(feature = "steam_client")]
@@ -12,11 +14,15 @@ use std::io::prelude::*;
 #[cfg(feature = "steam_client")]
 use std::path::Path;
 #[cfg(feature = "steam_client")]
-use steamworks::{AppIDs, AppId, Client, PublishedFileId, UGCType, UserList, UserListOrder};
+use steamworks::{AppIDs, AppId, Client, PublishedFileId, TicketForWebApiResponse, UGCType, UserList, UserListOrder};
 #[cfg(feature = "steam_client")]
 use base64::{Engine as _, engine::general_purpose};
 #[cfg(feature = "steam_client")]
 use std::io::Cursor;
+#[cfg(feature = "steam_client")]
+use std::sync::mpsc;
+#[cfg(feature = "steam_client")]
+use std::time::{Duration, Instant};
 use tauri::Manager;
 #[cfg(feature = "steam_client")]
 use tauri_plugin_dialog::{DialogExt, MessageDialogButtons};
@@ -71,6 +77,64 @@ fn get_steam_user_info(client_state: tauri::State<Client>) -> Result<SteamUserIn
         name,
         avatar: avatar_base64,
     })
+}
+
+#[cfg(feature = "steam_client")]
+#[tauri::command]
+fn get_steam_auth_ticket(client_state: tauri::State<Client>, identity: String) -> Result<String, String> {
+    let identity = identity.trim();
+
+    if identity.is_empty() {
+        return Err("Steam auth identity is required".to_string());
+    }
+
+    let (tx, rx) = mpsc::channel();
+    let callback_handle = client_state.register_callback(move |response: TicketForWebApiResponse| {
+        let _ = tx.send(response);
+    });
+
+    let user = client_state.user();
+    let ticket_handle = user.authentication_session_ticket_for_webapi(identity);
+    let timeout_at = Instant::now() + Duration::from_secs(10);
+
+    let response = loop {
+        let remaining = timeout_at.saturating_duration_since(Instant::now());
+
+        if remaining.is_zero() {
+            drop(callback_handle);
+            return Err(format!("Timed out waiting for Steam Web API ticket for identity '{identity}'"));
+        }
+
+        match rx.recv_timeout(remaining) {
+            Ok(response) if response.ticket_handle == ticket_handle => break response,
+            Ok(_) => continue,
+            Err(mpsc::RecvTimeoutError::Timeout) => {
+                drop(callback_handle);
+                return Err(format!("Timed out waiting for Steam Web API ticket for identity '{identity}'"));
+            }
+            Err(mpsc::RecvTimeoutError::Disconnected) => {
+                drop(callback_handle);
+                return Err("Steam Web API ticket callback channel disconnected".to_string());
+            }
+        }
+    };
+
+    drop(callback_handle);
+
+    response
+        .result
+        .map_err(|error| format!("Steam Web API ticket request failed: {error:?}"))?;
+
+    let ticket_len = usize::try_from(response.ticket_len.max(0))
+        .unwrap_or_default()
+        .min(response.ticket.len());
+    let mut ticket = String::with_capacity(ticket_len * 2);
+
+    for byte in response.ticket.iter().take(ticket_len) {
+        let _ = write!(&mut ticket, "{byte:02x}");
+    }
+
+    Ok(ticket)
 }
 
 #[cfg(feature = "steam_client")]
@@ -577,14 +641,16 @@ pub fn run() {
                 let steam_result = Client::init_app(3553500);
 
                 match steam_result {
-                    Ok((client, single)) => {
+                    Ok(client) => {
+                        let callback_client = client.clone();
+
                         // Store the client in app state for later use
                         app.manage(client);
 
                         // Keep the client alive
                         std::thread::spawn(move || {
                             loop {
-                                single.run_callbacks();
+                                callback_client.run_callbacks();
                                 std::thread::sleep(std::time::Duration::from_millis(100));
                             }
                         });
@@ -630,7 +696,8 @@ pub fn run() {
             get_workshop_file_url,
             upload_workshop_package,
             append_text_file,
-            get_steam_user_info
+            get_steam_user_info,
+            get_steam_auth_ticket
         ]);
     }
 

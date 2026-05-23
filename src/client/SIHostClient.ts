@@ -2,17 +2,22 @@ import * as signalR from '@microsoft/signalr';
 import * as signalRMsgPack from '@microsoft/signalr-protocol-msgpack';
 import ISIHostClient from './ISIHostClient';
 import ISIHostListener from './ISIHostListener';
+import AuthorizationMode from './contracts/AuthorizationMode';
 import GameInfo from './contracts/GameInfo';
+import JoinGame2Result from './contracts/JoinGame2Result';
 import JoinGameRequest from './contracts/JoinGameRequest';
-import JoinGameResponse from './contracts/JoinGameResponse';
-import JoinGameErrorType from './contracts/JoinGameErrorType';
 import ServerRole from './contracts/ServerRole';
 
 export class ReconnectError extends Error {
-	constructor(public errorType: JoinGameErrorType, public originalMessage?: string) {
-		super(originalMessage ? `${errorType}: ${originalMessage}` : errorType);
+	constructor(public result: JoinGame2Result) {
+		super(result);
 		this.name = 'ReconnectError';
 	}
+}
+
+interface AuthorizationData {
+	AuthorizationMode: AuthorizationMode;
+	AuthTicket?: string | null;
 }
 
 export default class SIHostClient implements ISIHostClient {
@@ -26,6 +31,9 @@ export default class SIHostClient implements ISIHostClient {
 	private connection?: signalR.HubConnection;
 
 	private listener?: ISIHostListener;
+
+	constructor(private readonly authorizationProvider?: (authorizationMode?: AuthorizationMode) => Promise<AuthorizationData | null>) {
+	}
 
 	async connectAsync(serverUri: string, listener: ISIHostListener): Promise<void> {
 		this.listener = listener;
@@ -95,7 +103,7 @@ export default class SIHostClient implements ISIHostClient {
 					listener.onReconnected();
 					break;
 				} catch (error) {
-					if (error instanceof ReconnectError && error.errorType === JoinGameErrorType.GameNotFound) {
+					if (error instanceof ReconnectError && error.result === JoinGame2Result.GameNotFound) {
 						break;
 					}
 
@@ -136,18 +144,41 @@ export default class SIHostClient implements ISIHostClient {
 		return info;
 	}
 
-	async joinGameAsync(joinGameRequest: JoinGameRequest): Promise<JoinGameResponse> {
+	async joinGameAsync(joinGameRequest: JoinGameRequest): Promise<JoinGame2Result> {
 		if (!this.connection) {
 			throw new Error('Not connected to server');
 		}
 
-		const result = await this.connection.invoke<JoinGameResponse>('JoinGame', joinGameRequest);
+		let request = joinGameRequest;
 
-		if (result.IsSuccess) {
-			this.joinInfo = { ...joinGameRequest };
+		if (joinGameRequest.AuthorizationMode !== AuthorizationMode.None) {
+			request = await this.enrichJoinRequestAsync(joinGameRequest);
+		}
+
+		const result = await this.connection.invoke<JoinGame2Result>('JoinGame2', request);
+
+		if (result === JoinGame2Result.Success) {
+			this.joinInfo = {
+				...request,
+				AuthTicket: request.AuthorizationMode === AuthorizationMode.Steam ? null : request.AuthTicket ?? null,
+			};
 		}
 
 		return result;
+	}
+
+	private async enrichJoinRequestAsync(joinGameRequest: JoinGameRequest): Promise<JoinGameRequest> {
+		const authData = await this.authorizationProvider?.(joinGameRequest.AuthorizationMode);
+
+		if (!authData) {
+			return joinGameRequest;
+		}
+
+		return {
+			...joinGameRequest,
+			AuthorizationMode: authData.AuthorizationMode,
+			AuthTicket: authData.AuthTicket ?? null,
+		};
 	}
 
 	updateJoinRole(role: ServerRole): void {
@@ -205,8 +236,8 @@ export default class SIHostClient implements ISIHostClient {
 		if (this.joinInfo) {
 			const result = await this.joinGameAsync(this.joinInfo);
 
-			if (!result.IsSuccess) {
-				throw new ReconnectError(result.ErrorType, result.Message ?? '');
+			if (result !== JoinGame2Result.Success) {
+				throw new ReconnectError(result);
 			}
 		}
 	}

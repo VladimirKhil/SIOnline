@@ -2,7 +2,8 @@ import { Action, AnyAction, applyMiddleware, createStore } from 'redux';
 import State, { initialState } from './state/State';
 import reducer from './state/reducer';
 import DataContext from './model/DataContext';
-import IHost, { FullScreenMode } from './host/IHost';
+import AuthorizationMode from './client/contracts/AuthorizationMode';
+import IHost, { AuthorizationData, FullScreenMode } from './host/IHost';
 import SIStorageClient from 'sistorage-client';
 import SIStorageInfo from './client/contracts/SIStorageInfo';
 import GameServerClient from './client/GameServerClient';
@@ -105,6 +106,14 @@ class ManagedHost implements IHost {
 	openLink(): void {
 		// No-op for simulation
 		console.log(`Link opened: ${this.isSimulation}`);
+	}
+
+	getSupportedAuthModes(): AuthorizationMode[] {
+		return [];
+	}
+
+	async getAuthorizationData(authorizationMode?: AuthorizationMode): Promise<AuthorizationData | null> {
+		return null;
 	}
 
 	getStorage(): { storageClient?: SIStorageClient; storageInfo?: SIStorageInfo; } {

@@ -1,5 +1,6 @@
 import { Store } from 'redux';
-import IHost, { FullScreenMode } from './IHost';
+import AuthorizationMode from '../client/contracts/AuthorizationMode';
+import IHost, { AuthorizationData, FullScreenMode } from './IHost';
 import { changeLogin } from '../state/userSlice';
 import { setClearUrls, setMinimalLogo, setRoomLinkEnabled } from '../state/commonSlice';
 import SIStorageClient from 'sistorage-client';
@@ -112,6 +113,14 @@ export default class YandexHost implements IHost {
 	}
 
 	openLink(url: string): void {}
+
+	getSupportedAuthModes(): AuthorizationMode[] {
+		return [];
+	}
+
+	async getAuthorizationData(authorizationMode?: AuthorizationMode): Promise<AuthorizationData | null> {
+		return null;
+	}
 
 	getStorage(): { storageClient?: SIStorageClient; storageInfo?: SIStorageInfo; } {
 		return { };

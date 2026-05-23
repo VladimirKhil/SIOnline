@@ -1,0 +1,12 @@
+{
+	"chat.tools.terminal.autoApprove": {
+		"/^npm\\.cmd run build-steam$/": {
+			"approve": true,
+			"matchCommandLine": true
+		},
+		"/^npm\\.cmd run build-dev$/": {
+			"approve": true,
+			"matchCommandLine": true
+		}
+	}
+}

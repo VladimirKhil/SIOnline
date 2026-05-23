@@ -1,6 +1,6 @@
 import GameInfo from './contracts/GameInfo';
+import JoinGame2Result from './contracts/JoinGame2Result';
 import JoinGameRequest from './contracts/JoinGameRequest';
-import JoinGameResponse from './contracts/JoinGameResponse';
 import ServerRole from './contracts/ServerRole';
 
 export default interface ISIHostClient {
@@ -10,7 +10,7 @@ export default interface ISIHostClient {
 	/**
 	 * Joins an existsing game.
 	 */
-	joinGameAsync(joinGameRequest: JoinGameRequest): Promise<JoinGameResponse>;
+	joinGameAsync(joinGameRequest: JoinGameRequest): Promise<JoinGame2Result>;
 
 	/**
 	 * Sends a message inside game. Method should be awaited.

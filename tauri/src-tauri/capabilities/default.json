@@ -33,6 +33,12 @@
         },
         {
           "url": "https://server2.vladimirkhil.com:8080/**"
+        },
+        {
+          "url": "http://localhost:5000/**"
+        },
+        {
+          "url": "https://localhost:5001/**"
         }
       ]
     },

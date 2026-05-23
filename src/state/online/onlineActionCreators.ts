@@ -4,6 +4,7 @@ import DataContext from '../../model/DataContext';
 import getErrorMessage from '../../utils/ErrorHelpers';
 import localization from '../../model/resources/localization';
 import SIContentClient, { SIContentServiceError } from 'sicontent-client';
+import JoinGame2Result from '../../client/contracts/JoinGame2Result';
 import PackageInfo from '../../client/contracts/PackageInfo';
 import { ThunkAction } from 'redux-thunk';
 import AccountSettings from '../../client/contracts/AccountSettings';
@@ -66,6 +67,7 @@ import {
 } from '../online2Slice';
 import WellKnownSIStorageServiceErrorCode from 'sistorage-client/dist/models/WellKnownSIStorageServiceErrorCode';
 import { initRoom } from '../serverActions';
+import AuthorizationMode from '../../client/contracts/AuthorizationMode';
 
 async function uploadPackageAsync2(
 	contentClient: SIContentClient,
@@ -193,11 +195,12 @@ const joinGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 				Sex: state.settings.sex === Sex.Male ? ServerSex.Male : ServerSex.Female,
 				Password: state.online2.password,
 				Pin: pin,
+				AuthorizationMode: AuthorizationMode.None,
 			});
 
-			if (!result.IsSuccess) {
-				appDispatch(userErrorChanged(
-					`${localization.joinError}: ${GameErrorsHelper.getJoinErrorMessage(result.ErrorType)} ${result.Message ?? ''}`));
+			if (result !== JoinGame2Result.Success) {
+				const joinError = GameErrorsHelper.getJoinErrorMessage(result);
+				appDispatch(userErrorChanged(joinError ? `${localization.joinError}: ${joinError}` : localization.joinError));
 
 				await dataContext.game.leaveGame();
 				return;

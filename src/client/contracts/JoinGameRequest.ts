@@ -1,5 +1,6 @@
 import ServerRole from './ServerRole';
 import ServerSex from './ServerSex';
+import AuthorizationMode from './AuthorizationMode';
 
 /**
  * Contains data required to join a game.
@@ -24,6 +25,16 @@ export default interface JoinGameRequest {
      * User sex.
      */
     Sex: ServerSex;
+
+    /**
+     * Join authorization mode.
+     */
+    AuthorizationMode?: AuthorizationMode;
+
+    /**
+     * Authorization ticket.
+     */
+    AuthTicket?: string | null;
 
     /**
      * Game password.

@@ -1,4 +1,5 @@
 import { Store } from 'redux';
+import AuthorizationMode from '../client/contracts/AuthorizationMode';
 import SIStorageInfo from '../client/contracts/SIStorageInfo';
 import SIStorageClient from 'sistorage-client';
 
@@ -13,6 +14,11 @@ export interface UploadCallbacks {
 	onStartUpload: () => void;
 	onUploadProgress: (progress: number) => void;
 	onFinishUpload: () => void;
+}
+
+export interface AuthorizationData {
+	AuthorizationMode: AuthorizationMode;
+	AuthTicket?: string | null;
 }
 
 export default interface IHost {
@@ -41,6 +47,10 @@ export default interface IHost {
 	copyUriToClipboard(): void;
 
 	openLink(url: string): void;
+
+	getSupportedAuthModes(): AuthorizationMode[];
+
+	getAuthorizationData(authorizationMode?: AuthorizationMode): Promise<AuthorizationData | null>;
 
 	getStorage(): { storageClient?: SIStorageClient; storageInfo?: SIStorageInfo; };
 

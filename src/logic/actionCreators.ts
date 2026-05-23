@@ -19,6 +19,7 @@ import onlineActionCreators from '../state/online/onlineActionCreators';
 import { AppDispatch } from '../state/store';
 import SIHostClient from '../client/SIHostClient';
 import ISIHostClient from '../client/ISIHostClient';
+import JoinGame2Result from '../client/contracts/JoinGame2Result';
 import Role from '../model/Role';
 import ServerRole from '../client/contracts/ServerRole';
 import ServerSex from '../client/contracts/ServerSex';
@@ -43,6 +44,7 @@ import { INavigationState } from '../state/uiSlice';
 import { navigate } from '../utils/Navigator';
 import SIHostListener from '../utils/SIHostListener';
 import { ensureServerInfoLoadedAsync } from './ServerInitializer';
+import AuthorizationMode from '../client/contracts/AuthorizationMode';
 
 async function uploadAvatarAsync(appDispatch: AppDispatch, dataContext: DataContext) {
 	if (typeof localStorage === 'undefined') {
@@ -157,7 +159,7 @@ const connectToSIHostAsync = async (
 	const controller = new ClientController(dispatch, appDispatch, getState, dataContext);
 	const listener = new SIHostListener(controller, dispatch, appDispatch);
 
-	let siHostClient = new SIHostClient();
+	let siHostClient = new SIHostClient((authorizationMode) => dataContext.host.getAuthorizationData(authorizationMode));
 	try {
 		await siHostClient.connectAsync(uriChecked, listener);
 		appDispatch(isSIHostConnectedChanged({ isConnected: true, reason: '' }));
@@ -167,7 +169,7 @@ const connectToSIHostAsync = async (
 			const fallbackUri = siHostUri.endsWith('/') ? siHostUri : siHostUri + '/';
 			await siHostClient.disconnectAsync(); // ensure old loops are dead
 
-			siHostClient = new SIHostClient();
+			siHostClient = new SIHostClient((authorizationMode) => dataContext.host.getAuthorizationData(authorizationMode));
 			await siHostClient.connectAsync(fallbackUri, listener);
 			appDispatch(isSIHostConnectedChanged({ isConnected: true, reason: '' }));
 		} else if (siHostUri === dataContext.proxyUri) {
@@ -175,7 +177,7 @@ const connectToSIHostAsync = async (
 			const fallbackUri = dataContext.serverUri;
 			await siHostClient.disconnectAsync();
 
-			siHostClient = new SIHostClient();
+			siHostClient = new SIHostClient((authorizationMode) => dataContext.host.getAuthorizationData(authorizationMode));
 			await siHostClient.connectAsync(fallbackUri, listener);
 			appDispatch(isSIHostConnectedChanged({ isConnected: true, reason: '' }));
 		} else {
@@ -247,10 +249,12 @@ const finishInitializationAsync = (
 					Sex: targetView.sex === Sex.Male ? ServerSex.Male : ServerSex.Female,
 					Password: targetView.password ?? '',
 					Pin: targetView.pin ?? null,
+					AuthorizationMode: AuthorizationMode.None,
 				});
 
-				if (!result.IsSuccess) {
-					const userError = `${localization.joinError}: ${getJoinErrorMessage(result.ErrorType)} ${result.Message ?? ''}`;
+				if (result !== JoinGame2Result.Success) {
+					const joinError = getJoinErrorMessage(result);
+					const userError = joinError ? `${localization.joinError}: ${joinError}` : localization.joinError;
 					appDispatch(userErrorChanged(userError));
 					await dataContext.game.leaveGame();
 					appDispatch(navigate({ navigation: { path: Path.Root }, saveState: true }));
