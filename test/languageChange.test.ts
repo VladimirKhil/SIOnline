@@ -10,6 +10,7 @@ import { languageChanged } from '../src/state/settingsSlice';
 import actionCreators from '../src/logic/actionCreators';
 import { serverInfoChanged } from '../src/state/commonSlice';
 import IHost, { FullScreenMode } from '../src/host/IHost';
+import AuthorizationMode from '../src/client/contracts/AuthorizationMode';
 import SIStorageClient from 'sistorage-client';
 import SIStorageInfo from '../src/client/contracts/SIStorageInfo';
 
@@ -27,6 +28,8 @@ class TestHost implements IHost {
 	copyToClipboard(): void { }
 	copyUriToClipboard(): void { }
 	openLink(): void { }
+	getSupportedAuthModes(): AuthorizationMode[] { return []; }
+	async getAuthorizationData(): Promise<null> { return null; }
 	getStorage(): { storageClient?: SIStorageClient; storageInfo?: SIStorageInfo; } { return {}; }
 	async getPackageData(): Promise<[File, string] | null> { return null; }
 	exitApp(): void { }
