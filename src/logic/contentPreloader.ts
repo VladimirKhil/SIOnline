@@ -1,14 +1,33 @@
 import { AppDispatch } from '../state/store';
 import { mediaPreloadProgress } from '../state/serverActions';
+import { analytics } from '../utils/Analytics';
 import getErrorMessage, { getHttpErrorDetails } from '../utils/ErrorHelpers';
+import localization from '../model/resources/localization';
+import { logEvent } from 'firebase/analytics';
 
 const BASE_DELAY = 500; // Base delay between requests
 const MAX_RETRIES = 3;
 const preloadedAudioData = new Map<string, ArrayBuffer>();
 
+function reportContentPreloadError(contentUri: string, contentType: string, errorMessage: string): void {
+	if (!analytics) {
+		return;
+	}
+
+	logEvent(analytics, 'content_preload_error', {
+		content_type: contentType,
+		content_name: contentUri.split('/').pop()?.slice(0, 100) ?? contentUri.slice(0, 100),
+		error: errorMessage.slice(0, 100),
+	});
+}
+
 function withErrorCause(baseMessage: string, error: unknown): string {
 	const errorCause = getErrorMessage(error).trim();
 	return errorCause.length > 0 ? `${baseMessage}. ${errorCause}` : baseMessage;
+}
+
+function toContentPreloadErrorMessage(errorMessage: string): string {
+	return `${localization.contentPreloadError}: ${errorMessage}`;
 }
 
 export function getPreloadedAudioData(contentUri: string): ArrayBuffer | undefined {
@@ -61,7 +80,8 @@ function preloadFile(contentUri: string, addSimpleMessage: (message: string) => 
 					} else {
 						const errorMessage = withErrorCause(`Failed to load audio: ${contentUri}`, error);
 						console.warn(`Failed to preload ${contentUri} after ${MAX_RETRIES} attempts: ${error}`);
-						addSimpleMessage('Content preload error: ' + errorMessage);
+						reportContentPreloadError(contentUri, 'audio', errorMessage);
+						addSimpleMessage(toContentPreloadErrorMessage(errorMessage));
 						resolve();
 					}
 				});
@@ -90,7 +110,8 @@ function preloadFile(contentUri: string, addSimpleMessage: (message: string) => 
 					} else {
 						const errorMessage = withErrorCause(`Failed to load HTML: ${contentUri}`, error);
 						console.warn(`Failed to preload ${contentUri} after ${MAX_RETRIES} attempts: ${error}`);
-						addSimpleMessage('Content preload error: ' + errorMessage);
+						reportContentPreloadError(contentUri, 'html', errorMessage);
+						addSimpleMessage(toContentPreloadErrorMessage(errorMessage));
 						// Don't reject - just log the failure and continue
 						resolve();
 					}
@@ -129,7 +150,8 @@ function preloadFile(contentUri: string, addSimpleMessage: (message: string) => 
 			} else {
 				const errorMessage = error instanceof Event ? `Failed to load media: ${contentUri}` : String(error);
 				console.warn(`Failed to preload ${contentUri} after ${MAX_RETRIES} attempts: ${errorMessage}`);
-				addSimpleMessage('Content preload error: ' + errorMessage);
+				reportContentPreloadError(contentUri, isVideo ? 'video' : 'image', errorMessage);
+				addSimpleMessage(toContentPreloadErrorMessage(errorMessage));
 				// Don't reject - just log the failure and continue
 				resolve();
 			}
