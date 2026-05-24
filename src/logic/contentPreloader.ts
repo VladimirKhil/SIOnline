@@ -7,6 +7,7 @@ import { logEvent } from 'firebase/analytics';
 
 const BASE_DELAY = 500; // Base delay between requests
 const MAX_RETRIES = 3;
+const PRELOAD_TIMEOUT_MS = 30000;
 const preloadedAudioData = new Map<string, ArrayBuffer>();
 
 function reportContentPreloadError(contentUri: string, contentType: string, errorMessage: string): void {
@@ -28,6 +29,33 @@ function withErrorCause(baseMessage: string, error: unknown): string {
 
 function toContentPreloadErrorMessage(errorMessage: string): string {
 	return `${localization.contentPreloadError}: ${errorMessage}`;
+}
+
+function createTimeoutError(contentType: string, contentUri: string): Error {
+	return new Error(`${contentType} preload timed out after ${PRELOAD_TIMEOUT_MS}ms: ${contentUri}`);
+}
+
+async function fetchWithTimeout(contentUri: string, contentType: string): Promise<Response> {
+	const abortController = new AbortController();
+	const timeoutId = globalThis.setTimeout(() => abortController.abort(), PRELOAD_TIMEOUT_MS);
+
+	try {
+		const response = await fetch(contentUri, { signal: abortController.signal });
+
+		if (!response.ok) {
+			throw new Error(await getHttpErrorDetails(response));
+		}
+
+		return response;
+	} catch (error) {
+		if (error instanceof Error && error.name === 'AbortError') {
+			throw createTimeoutError(contentType, contentUri);
+		}
+
+		throw error;
+	} finally {
+		globalThis.clearTimeout(timeoutId);
+	}
 }
 
 export function getPreloadedAudioData(contentUri: string): ArrayBuffer | undefined {
@@ -57,14 +85,8 @@ function preloadFile(contentUri: string, addSimpleMessage: (message: string) => 
 			(element as HTMLVideoElement).preload = 'auto';
 			(element as HTMLVideoElement).crossOrigin = 'anonymous';
 		} else if (isAudio) {
-			fetch(contentUri)
-				.then(async response => {
-					if (!response.ok) {
-						throw new Error(await getHttpErrorDetails(response));
-					}
-
-					return response.arrayBuffer();
-				})
+			fetchWithTimeout(contentUri, 'Audio')
+				.then(response => response.arrayBuffer())
 				.then(arrayBuffer => {
 					preloadedAudioData.set(contentUri, arrayBuffer);
 					resolve();
@@ -89,13 +111,8 @@ function preloadFile(contentUri: string, addSimpleMessage: (message: string) => 
 			return;
 		} else if (isHtml) {
 			// For HTML content, use fetch to load and cache it
-			fetch(contentUri)
-				.then(async response => {
-					if (!response.ok) {
-						throw new Error(await getHttpErrorDetails(response));
-					}
-					return response.text();
-				})
+			fetchWithTimeout(contentUri, 'HTML')
+				.then(response => response.text())
 				.then(() => {
 					resolve();
 				})
@@ -122,23 +139,27 @@ function preloadFile(contentUri: string, addSimpleMessage: (message: string) => 
 			element = new Image();
 		}
 
-		const handleSuccess = () => {
-			// Clean up event listeners
+		let timeoutId: ReturnType<typeof setTimeout> | null = null;
+
+		const clearElementHandlers = () => {
 			element.onload = null;
 			element.onerror = null;
 			if ('onloadeddata' in element) {
-				(element as HTMLVideoElement | HTMLAudioElement).onloadeddata = null;
+				(element as HTMLVideoElement).onloadeddata = null;
 			}
+			if (timeoutId !== null) {
+				globalThis.clearTimeout(timeoutId);
+				timeoutId = null;
+			}
+		};
+
+		const handleSuccess = () => {
+			clearElementHandlers();
 			resolve();
 		};
 
 		const handleError = (error: Event | string) => {
-			// Clean up event listeners
-			element.onload = null;
-			element.onerror = null;
-			if ('onloadeddata' in element) {
-				(element as HTMLVideoElement | HTMLAudioElement).onloadeddata = null;
-			}
+			clearElementHandlers();
 
 			if (retryCount < MAX_RETRIES) {
 				const retryDelay = Math.min(BASE_DELAY * Math.pow(2, retryCount), 5000);
@@ -158,12 +179,15 @@ function preloadFile(contentUri: string, addSimpleMessage: (message: string) => 
 		};
 
 		// Set up event listeners
-		if (isVideo || isAudio) {
-			(element as HTMLVideoElement | HTMLAudioElement).onloadeddata = handleSuccess;
+		if (isVideo) {
+			(element as HTMLVideoElement).onloadeddata = handleSuccess;
 		} else {
 			element.onload = handleSuccess;
 		}
 		element.onerror = handleError;
+		timeoutId = globalThis.setTimeout(() => {
+			handleError(createTimeoutError(isVideo ? 'Video' : 'Image', contentUri).message);
+		}, PRELOAD_TIMEOUT_MS);
 
 		// Start loading by setting src
 		element.src = contentUri;
@@ -171,7 +195,8 @@ function preloadFile(contentUri: string, addSimpleMessage: (message: string) => 
 }
 
 /**
- * Preload round content (images, videos, audio, HTML files) with progress tracking
+ * Preload round content (images, videos, audio, HTML files) with progress tracking.
+ * Requests are intentionally sequential to avoid triggering the server rate limiter.
  * @param content Array of content URIs to preload
  * @param preprocessServerUri Function to preprocess server URIs
  * @param isExternalUri Function to check if URI is external (external URIs are skipped)
