@@ -31,6 +31,9 @@ interface QuestionItemProps {
 	isEditMode: boolean;
 }
 
+const defaultQuestionTypeOptionValue = '__default__';
+const customQuestionTypeOptionValue = '__custom__';
+
 const QuestionItem: React.FC<QuestionItemProps> = ({ item, isEditMode }) => {
 	const dispatch = useAppDispatch();
 	const pack = useAppSelector(state => state.siquester.pack);
@@ -64,6 +67,7 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ item, isEditMode }) => {
 
 	function getQuestionTypeName(type: string): string {
 		switch (type) {
+			case QuestionTypes.Default: return localization.defaultQuestionType;
 			case 'simple': return localization.questionTypeSimple;
 			case 'stake': return localization.questionTypeStake;
 			case 'noRisk': return localization.questionTypeForYourself;
@@ -356,9 +360,13 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ item, isEditMode }) => {
 	};
 
 	const handleQuestionTypeChange = (value: string) => {
-		if (value === 'custom') {
+		if (value === customQuestionTypeOptionValue) {
 			setIsCustomMode(true);
 			// Don't change the actual question type yet, wait for custom input
+		} else if (value === defaultQuestionTypeOptionValue) {
+			setIsCustomMode(false);
+			setCustomTypeValue('');
+			handleQuestionChange('type', QuestionTypes.Default);
 		} else {
 			setIsCustomMode(false);
 			setCustomTypeValue('');
@@ -421,9 +429,10 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ item, isEditMode }) => {
 										<select
 											id='type'
 											className='packageView__question__type'
-											value={isCustomMode ? 'custom' : (question.type ?? 'default')}
+											value={isCustomMode ? customQuestionTypeOptionValue : (question.type || defaultQuestionTypeOptionValue)}
 											onChange={(e) => handleQuestionTypeChange(e.target.value)}
 										>
+											<option value={defaultQuestionTypeOptionValue}>{localization.defaultQuestionType}</option>
 											<option value={QuestionTypes.Simple}>{localization.questionTypeSimple}</option>
 											<option value={QuestionTypes.Stake}>{localization.questionTypeStake}</option>
 											<option value={QuestionTypes.NoRisk}>{localization.questionTypeForYourself}</option>
@@ -432,8 +441,7 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ item, isEditMode }) => {
 											<option value={QuestionTypes.SecretNoQuestion}>{localization.questionTypeSecretNoQuestion}</option>
 											<option value={QuestionTypes.ForAll}>{localization.questionTypeForAll}</option>
 											<option value={QuestionTypes.StakeAll}>{localization.questionTypeForAllWithStake}</option>
-											<option value='custom'>{localization.custom}</option>
-											<option value='default'>{localization.default}</option>
+											<option value={customQuestionTypeOptionValue}>{localization.customQuestionType}</option>
 										</select>
 
 										{isCustomMode && (
