@@ -11,6 +11,7 @@ import TimerStates from '../model/enums/TimeStates';
 import PlayerStatistics from '../model/PlayerStatistics';
 
 export interface PointMarker {
+	id: number;
 	x: number;
 	y: number;
 	mode: 'player' | 'right-answer';
@@ -47,6 +48,7 @@ export interface TableState {
 	isAnswer: boolean;
 	answerDeviation: number;
 	pointMarkers: PointMarker[];
+	nextPointMarkerId: number;
 	statistics: PlayerStatistics[];
 	externalMediaUris: string[];
 	useStackedAnswerLayout: boolean;
@@ -92,6 +94,7 @@ const initialState: TableState = {
 	isAnswer: false,
 	answerDeviation: 0,
 	pointMarkers: [],
+	nextPointMarkerId: 0,
 	statistics: [],
 	externalMediaUris: [],
 	useStackedAnswerLayout: false,
@@ -368,8 +371,9 @@ export const tableSlice = createSlice({
 				state.externalMediaUris.push(action.payload);
 			}
 		},
-		addPointMarker: (state, action: PayloadAction<PointMarker>) => {
-			state.pointMarkers.push(action.payload);
+		addPointMarker: (state, action: PayloadAction<Omit<PointMarker, 'id'>>) => {
+			state.pointMarkers.push({ id: state.nextPointMarkerId, ...action.payload });
+			state.nextPointMarkerId += 1;
 		},
 		clearPointMarkers: (state) => {
 			state.pointMarkers = [];

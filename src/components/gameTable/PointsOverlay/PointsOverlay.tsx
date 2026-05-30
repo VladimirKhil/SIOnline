@@ -73,17 +73,31 @@ interface PointShape {
 }
 
 interface MarkerShape {
+	id: number;
 	cx: number;
 	cy: number;
 	mode: PointMarker['mode'];
 	label?: string;
 	isArea?: boolean;
+	className: string;
 }
+
+interface RippleMarker {
+	id: number;
+	marker: PointMarker;
+}
+
+const RIPPLE_DURATION_MS = 1400;
+const RIPPLE_DELAYS = [0, 1, 2] as const;
 
 export default function PointsOverlay(): JSX.Element {
 	const overlayRef = React.useRef<HTMLDivElement>(null);
+	const rippleIdRef = React.useRef(0);
+	const lastAnimatedMarkerIdRef = React.useRef<number | null>(null);
+	const rippleTimeoutIdsRef = React.useRef<number[]>([]);
 	const [selectedPoint, setSelectedPoint] = React.useState<{ x: number, y: number } | null>(null);
 	const [hoverPoint, setHoverPoint] = React.useState<{ x: number, y: number } | null>(null);
+	const [ripples, setRipples] = React.useState<RippleMarker[]>([]);
 	const appDispatch = useAppDispatch();
 
 	const isConnected = useAppSelector(state => state.common.isSIHostConnected);
@@ -224,7 +238,19 @@ export default function PointsOverlay(): JSX.Element {
 		const cx = imgOffsetX + bounds.x + (marker.x * bounds.width);
 		const cy = imgOffsetY + bounds.y + (marker.y * bounds.height);
 
-		return { cx, cy, mode: marker.mode, label: marker.label, isArea: marker.isArea };
+		const className = marker.isArea
+			? `pointsOverlay__marker pointsOverlay__marker--${marker.mode} pointsOverlay__marker--area`
+			: `pointsOverlay__marker pointsOverlay__marker--${marker.mode}`;
+
+		return {
+			id: marker.id,
+			cx,
+			cy,
+			mode: marker.mode,
+			label: marker.label,
+			isArea: marker.isArea,
+			className,
+		};
 	}, []);
 
 	const [svgSize, setSvgSize] = React.useState<{ width: number, height: number }>({ width: 0, height: 0 });
@@ -248,6 +274,45 @@ export default function PointsOverlay(): JSX.Element {
 		return () => observer.disconnect();
 	}, []);
 
+	React.useEffect(() => () => {
+		rippleTimeoutIdsRef.current.forEach(timeoutId => window.clearTimeout(timeoutId));
+		rippleTimeoutIdsRef.current = [];
+	}, []);
+
+	React.useEffect(() => {
+		if (pointMarkers.length === 0) {
+			lastAnimatedMarkerIdRef.current = null;
+			return;
+		}
+
+		const lastAnimatedMarkerId = lastAnimatedMarkerIdRef.current;
+		const nextRipples = lastAnimatedMarkerId === null
+			? pointMarkers
+			: pointMarkers.filter(marker => marker.id > lastAnimatedMarkerId);
+
+		lastAnimatedMarkerIdRef.current = pointMarkers[pointMarkers.length - 1].id;
+
+		if (nextRipples.length === 0) {
+			return;
+		}
+
+		const rippleBatch = nextRipples.map(marker => {
+			const id = rippleIdRef.current;
+			rippleIdRef.current = id + 1;
+
+			return { id, marker };
+		});
+
+		setRipples(current => [...current, ...rippleBatch]);
+
+		const timeoutId = window.setTimeout(() => {
+			rippleTimeoutIdsRef.current = rippleTimeoutIdsRef.current.filter(id => id !== timeoutId);
+			setRipples(current => current.filter(ripple => !rippleBatch.some(batchRipple => batchRipple.id === ripple.id)));
+		}, RIPPLE_DURATION_MS);
+
+		rippleTimeoutIdsRef.current = [...rippleTimeoutIdsRef.current, timeoutId];
+	}, [pointMarkers]);
+
 	const hoverShape = isInteractive && hoverPoint && svgSize.width > 0
 		? computePointShape(hoverPoint)
 		: null;
@@ -255,8 +320,15 @@ export default function PointsOverlay(): JSX.Element {
 	const markerShapes = pointMarkers
 		.map(m => computeMarkerShape(m))
 		.filter((s): s is MarkerShape => s !== null);
+	const rippleShapes = ripples
+		.map(ripple => {
+			const shape = computeMarkerShape(ripple.marker);
 
-	const hasSvgContent = hoverShape || markerShapes.length > 0;
+			return shape ? { id: ripple.id, shape } : null;
+		})
+		.filter((ripple): ripple is { id: number; shape: MarkerShape } => ripple !== null);
+
+	const hasSvgContent = hoverShape || markerShapes.length > 0 || rippleShapes.length > 0;
 
 	return (
 		<div
@@ -270,13 +342,13 @@ export default function PointsOverlay(): JSX.Element {
 			{hasSvgContent && svgSize.width > 0 ? (
 				<svg className='pointsOverlay__svg' width={svgSize.width} height={svgSize.height}>
 					{/* Marker points from other players and right answer */}
-					{markerShapes.map((shape, i) => (
-						<g key={i}>
+					{markerShapes.map(shape => (
+						<g key={shape.id}>
 							<circle
 								cx={shape.cx}
 								cy={shape.cy}
 								r="7"
-								className={`pointsOverlay__marker pointsOverlay__marker--${shape.mode}${shape.isArea ? ' pointsOverlay__marker--area' : ''}`}
+								className={shape.className}
 							/>
 
 							{shape.label ? (
@@ -290,6 +362,43 @@ export default function PointsOverlay(): JSX.Element {
 							) : null}
 						</g>
 					))}
+
+					{rippleShapes.map(({ id, shape }) => {
+						const rippleVariantClassName = shape.mode === 'right-answer'
+							? 'pointsOverlay__rippleCircle--right-answer'
+							: 'pointsOverlay__rippleCircle--player';
+						const rippleAreaClassName = shape.isArea ? ' pointsOverlay__rippleCircle--area' : '';
+						const rippleClassNameBase =
+							`pointsOverlay__rippleCircle ${rippleVariantClassName}${rippleAreaClassName}`;
+
+						return (
+							<g key={id} className='pointsOverlay__ripple'>
+								{shape.mode === 'right-answer' ? (
+									<circle
+										cx={shape.cx}
+										cy={shape.cy}
+										r='8'
+										className='pointsOverlay__rippleFlash pointsOverlay__rippleFlash--right-answer'
+									/>
+								) : null}
+
+								{RIPPLE_DELAYS.map(index => {
+									const rippleClassName =
+										`${rippleClassNameBase} pointsOverlay__rippleCircle--delay-${index}`;
+
+									return (
+										<circle
+											key={index}
+											cx={shape.cx}
+											cy={shape.cy}
+											r='7'
+											className={rippleClassName}
+										/>
+									);
+								})}
+							</g>
+						);
+					})}
 
 					{/* Hover preview for interactive mode */}
 					{hoverShape ? (

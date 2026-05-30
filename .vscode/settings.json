@@ -7,6 +7,7 @@
 		"/^npm\\.cmd run build-dev$/": {
 			"approve": true,
 			"matchCommandLine": true
-		}
+		},
+		"npx eslint": true
 	}
 }

@@ -25,6 +25,65 @@
 	fill: rgba(255, 144, 48, 0.9);
 }
 
+.pointsOverlay__ripple {
+	pointer-events: none;
+}
+
+.pointsOverlay__rippleCircle {
+	--points-overlay-ripple-opacity: 0.78;
+	--points-overlay-ripple-scale: 6;
+	fill: none;
+	stroke-width: 3px;
+	stroke: rgba(255, 190, 120, 0.85);
+	filter: drop-shadow(0 0 4px rgba(255, 160, 70, 0.45));
+	opacity: 0;
+	transform-box: fill-box;
+	transform-origin: center;
+	animation: pointsOverlayRipple 0.9s ease-out forwards;
+}
+
+.pointsOverlay__rippleCircle--delay-0 {
+	animation-delay: 0s;
+}
+
+.pointsOverlay__rippleCircle--delay-1 {
+	animation-delay: 0.16s;
+}
+
+.pointsOverlay__rippleCircle--delay-2 {
+	animation-delay: 0.32s;
+}
+
+.pointsOverlay__rippleFlash {
+	stroke: none;
+	fill: rgba(255, 190, 120, 0.22);
+	opacity: 0;
+	transform-box: fill-box;
+	transform-origin: center;
+	animation: pointsOverlayRippleFlash 0.55s ease-out forwards;
+}
+
+.pointsOverlay__rippleFlash--right-answer {
+	fill: rgba(60, 235, 60, 0.3);
+	filter: drop-shadow(0 0 8px rgba(30, 180, 30, 0.45));
+}
+
+.pointsOverlay__rippleCircle--player {
+	stroke: rgba(255, 190, 120, 0.85);
+}
+
+.pointsOverlay__rippleCircle--area {
+	--points-overlay-ripple-scale: 7.72;
+}
+
+.pointsOverlay__rippleCircle--right-answer {
+	--points-overlay-ripple-opacity: 0.95;
+	--points-overlay-ripple-scale: 8.86;
+	stroke: rgba(64, 235, 64, 0.95);
+	stroke-width: 4px;
+	filter: drop-shadow(0 0 8px rgba(30, 180, 30, 0.7));
+}
+
 .pointsOverlay__marker--player {
 	fill: rgba(255, 144, 48, 0.9);
 }
@@ -47,4 +106,28 @@
 	stroke-linecap: butt;
 	stroke-linejoin: miter;
 	fill: white;
+}
+
+@keyframes pointsOverlayRipple {
+	0% {
+		opacity: var(--points-overlay-ripple-opacity);
+		transform: scale(1);
+	}
+
+	100% {
+		opacity: 0;
+		transform: scale(var(--points-overlay-ripple-scale));
+	}
+}
+
+@keyframes pointsOverlayRippleFlash {
+	0% {
+		opacity: 0.5;
+		transform: scale(1);
+	}
+
+	100% {
+		opacity: 0;
+		transform: scale(3);
+	}
 }
