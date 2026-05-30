@@ -28,6 +28,19 @@
     border: 1px solid #e26f1d;
 }
 
+.showmanArea.highlighted .showmanReplic {
+    --showman-border-width: 1px;
+    --showman-highlight-duration: 2.5s;
+    --showman-highlight-segment: 10;
+    --showman-highlight-stroke-width: 1.5px;
+}
+
+.showmanArea.highlighted .showmanReplicHighlightPath {
+    stroke: rgba(255, 255, 255, 0.55);
+    filter: drop-shadow(0 0 5px rgba(255, 214, 153, 0.95));
+    animation: showmanHighlightBorder var(--showman-highlight-duration) linear infinite;
+}
+
 .showmanInfo {
     position: relative;
     display: none;

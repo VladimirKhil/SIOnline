@@ -22,11 +22,20 @@ export function ShowmanReplic(props: ShowmanReplicProps): JSX.Element {
 	}));
 
 	const isScreenWide = props.windowWidth >= Constants.WIDE_WINDOW_WIDTH;
+	const highlightRadius = isScreenWide ? 10 : 0;
 	const hasActivePlayerReplic = !isScreenWide && replicIndex > -1 && replicIndex < persons.players.length;
 	const replic = hasActivePlayerReplic ? persons.players[replicIndex].answer : persons.showman.replic;
 
 	return (
 		<div className={`showmanReplic replic ${replic || !isScreenWide ? '' : 'hidden'}`}>
+			<svg className="showmanReplicHighlight" aria-hidden="true" focusable="false" preserveAspectRatio="none">
+				<rect
+					className="showmanReplicHighlightPath"
+					pathLength="100"
+					rx={highlightRadius}
+					ry={highlightRadius}
+				/>
+			</svg>
 			<AutoSizedText
 				key={replic}
 				className="showmanReplicText"
