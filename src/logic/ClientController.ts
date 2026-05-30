@@ -655,6 +655,7 @@ export default class ClientController implements IClientController {
 
 	onGameThemes(gameThemes: string[]) {
 		this.appDispatch(showGameThemes(gameThemes));
+		this.appDispatch(showmanReplicChanged(null));
 		this.playGameSound(GameSound.GAME_THEMES);
 
 		if (this.getState().settings.writeGameLog) {
@@ -1541,7 +1542,7 @@ export default class ClientController implements IClientController {
 		if (!animate) {
 			// TODO: looks like all this is handled by endquestion message, so we can remove this
 			this.appDispatch(playersStateCleared());
-			this.appDispatch(showmanReplicChanged(''));
+			this.appDispatch(showmanReplicChanged(null));
 			this.dispatch(roomActionCreators.afterQuestionStateChanged(false));
 			this.appDispatch(canPressChanged(false));
 			this.appDispatch(stopTimer(1));

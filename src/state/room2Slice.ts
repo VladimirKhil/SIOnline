@@ -432,7 +432,7 @@ export const room2Slice = createSlice({
 			state.playState.packageUri = action.payload;
 			state.stage.decisionType = DecisionType.Review;
 		},
-		showmanReplicChanged: (state: Room2State, action: PayloadAction<string>) => {
+		showmanReplicChanged: (state: Room2State, action: PayloadAction<string | null>) => {
 			state.persons.showman.replic = action.payload;
 			state.replicIndex = -1;
 
@@ -440,7 +440,7 @@ export const room2Slice = createSlice({
 				p.replic = null;
 			});
 		},
-		playerReplicChanged: (state: Room2State, action: PayloadAction<{ playerIndex: number, replic: string }>) => {
+		playerReplicChanged: (state: Room2State, action: PayloadAction<{ playerIndex: number, replic: string | null }>) => {
 			state.persons.showman.replic = null;
 			state.replicIndex = action.payload.playerIndex;
 

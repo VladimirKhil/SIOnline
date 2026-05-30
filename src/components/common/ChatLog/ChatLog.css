@@ -8,6 +8,20 @@
     scrollbar-width: thin;
 }
 
+.chatLog > * {
+    animation: chatLogItemFadeIn 1s ease;
+}
+
+@keyframes chatLogItemFadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
 .chatLog span {
     display: block;
     overflow: hidden;
