@@ -76,6 +76,7 @@ const SIStoragePackage: React.FC<SIStoragePackageProps> = (props: SIStoragePacka
 	};
 
 	const tags: string[] = (props.package as any).tags ?? tagIds?.map(t => props.tags[t]) ?? [];
+	const authors: string[] = (props.package as any).authors ?? authorIds?.map(a => props.authors[a]) ?? [];
 
 	return <li
 		className={`storagePackage${isExpanded ? ' expanded' : ''}`}
@@ -85,15 +86,19 @@ const SIStoragePackage: React.FC<SIStoragePackageProps> = (props: SIStoragePacka
 		onKeyDown={content ? (e) => { if (e.key === 'Enter' || e.key === ' ') handleCardClick(e as any); } : undefined}
 	>
 		<header>
-			{props.storage.packageProperties.includes('logo')
-				? <img src={logo} alt='logo' className='storagePackageLogo' />
-				: null}
+			{props.storage.packageProperties.includes('logo') || props.storage.packageProperties.includes('logoUri')
+			? <img
+				src={logo}
+				alt='logo'
+				className={`storagePackageLogo${props.storage.packageProperties.includes('logoUri') && !props.storage.packageProperties.includes('logo') ? ' blurred' : ''}`}
+			/>
+			: null}
 
 			<div className='storagePackageInfo'>
 				<div className="storagePackageName" title={name}>{name}</div>
 
 				<div className="packageAuthors">
-					{authorIds?.map(a => <span key={a} className='packageAuthorTag'>{props.authors[a]}</span>)}
+					{authors.map(a => <span key={a} className='packageAuthorTag'>{a}</span>)}
 				</div>
 			</div>
 		</header>

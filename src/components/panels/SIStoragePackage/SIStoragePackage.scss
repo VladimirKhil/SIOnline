@@ -73,6 +73,11 @@
 	border-radius: 8px;
 	flex-shrink: 0;
 	background: rgba(255, 255, 255, 0.05);
+
+	&.blurred {
+		filter: blur(3px);
+		opacity: 0.7;
+	}
 }
 
 .storagePackageInfo {
