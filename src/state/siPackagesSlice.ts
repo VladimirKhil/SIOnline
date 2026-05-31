@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import PackagesPage from 'sistorage-client/dist/models/PackagesPage';
 import Restriction from 'sistorage-client/dist/models/Restriction';
+import Tag from 'sistorage-client/dist/models/Tag';
 import DataContext from '../model/DataContext';
 import { RootState } from './store';
 import getErrorMessage from '../utils/ErrorHelpers';
@@ -98,7 +99,28 @@ export const receiveTags = createAsyncThunk(
 			return;
 		}
 
-		let tags = await storageClient.facets.getTagsAsync(languageId);
+		let tags: Tag[];
+
+		if (storage.facets.indexOf('tags2') > -1) {
+			const serviceUri = storageClient.options.serviceUri.endsWith('/')
+				? storageClient.options.serviceUri
+				: `${storageClient.options.serviceUri}/`;
+			const url = new URL('api/v2/facets/tags', serviceUri);
+
+			if (languageId !== undefined) {
+				url.searchParams.set('languageId', languageId.toString());
+			}
+
+			const response = await fetch(url.toString());
+
+			if (!response.ok) {
+				throw new Error(`Error while retrieving tags: ${response.status} ${await response.text()}`);
+			}
+
+			tags = <Tag[]>(await response.json());
+		} else {
+			tags = await storageClient.facets.getTagsAsync(languageId);
+		}
 
 		if (!storage.identifiersSupported) {
 			tags = tags.map((tag, index) => ({ ...tag, id: index }));

@@ -21,7 +21,7 @@ export default function ValidationArea(props: ValidationAreaProps): JSX.Element 
 	const validation = useAppSelector(state => state.room2.validation);
 	const hiddenComments = useAppSelector(state => state.room2.hiddenComments);
 	const hintShowman = useAppSelector(state => state.settings.appSettings.hintShowman);
-	const rightAnswer = validation.rightAnswers.length > 0 ? validation.rightAnswers[validation.rightAnswers.length - 1] : null;
+	const rightAnswer = validation.rightAnswers.length > 0 ? validation.rightAnswers[0] : null;
 	const hint = `${rightAnswer && hintShowman ? rightAnswer : ''}${hiddenComments ? ` (${hiddenComments})` : ''}`;
 
 	return <div className={`validationArea ${props.className || ''}`}>
