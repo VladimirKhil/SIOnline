@@ -252,6 +252,14 @@ export default class DemoGameClient implements IGameClient {
 		return true;
 	}
 
+	sendAnswerAsRightByDefault(): Promise<boolean> {
+		throw new Error('Method not implemented.');
+	}
+
+	sendAnswerAsWrongByDefault(): Promise<boolean> {
+		throw new Error('Method not implemented.');
+	}
+
 	async sendAnswerVersion(answerVersion: string): Promise<boolean> {
 		return true;
 	}

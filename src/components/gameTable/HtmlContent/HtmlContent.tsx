@@ -1,6 +1,11 @@
 import * as React from 'react';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
-import { onMediaEnded, onMediaLoaded } from '../../../state/serverActions';
+import {
+	onMediaEnded,
+	onMediaLoaded,
+	sendAnswerAsRightByDefault,
+	sendAnswerAsWrongByDefault,
+} from '../../../state/serverActions';
 
 import './HtmlContent.css';
 
@@ -15,7 +20,7 @@ interface HtmlContentControlMessage {
 
 interface HtmlContentEventMessage {
 	type: 'si:media-event';
-	event: 'completed';
+	event: 'completed' | 'answer-right' | 'answer-wrong';
 }
 
 export function HtmlContent(props: HtmlContentProps) {
@@ -45,16 +50,31 @@ export function HtmlContent(props: HtmlContentProps) {
 				return;
 			}
 
-			if (event.data?.type !== 'si:media-event' || event.data.event !== 'completed') {
+			if (event.data?.type !== 'si:media-event') {
 				return;
 			}
 
-			if (completedRef.current || isMediaStopped || !isVisible) {
-				return;
-			}
+			switch (event.data.event) {
+				case 'completed':
+					if (completedRef.current || isMediaStopped || !isVisible) {
+						return;
+					}
 
-			completedRef.current = true;
-			appDispatch(onMediaEnded({ contentType: 'html', contentValue: uri }));
+					completedRef.current = true;
+					appDispatch(onMediaEnded({ contentType: 'html', contentValue: uri }));
+					return;
+
+				case 'answer-right':
+					appDispatch(sendAnswerAsRightByDefault());
+					return;
+
+				case 'answer-wrong':
+					appDispatch(sendAnswerAsWrongByDefault());
+					return;
+
+				default:
+					return;
+			}
 		};
 
 		window.addEventListener('message', handleMessage);

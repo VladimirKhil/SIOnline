@@ -179,3 +179,19 @@ export const onMediaEnded = createAsyncThunk(
 		await dataContext.game.onMediaCompleted(arg.contentType, arg.contentValue);
 	}
 );
+
+export const sendAnswerAsRightByDefault = createAsyncThunk(
+	'server/sendAnswerAsRightByDefault',
+	async (arg: void, thunkAPI) => {
+		const dataContext = thunkAPI.extra as DataContext;
+		await dataContext.game.sendAnswerAsRightByDefault();
+	}
+);
+
+export const sendAnswerAsWrongByDefault = createAsyncThunk(
+	'server/sendAnswerAsWrongByDefault',
+	async (arg: void, thunkAPI) => {
+		const dataContext = thunkAPI.extra as DataContext;
+		await dataContext.game.sendAnswerAsWrongByDefault();
+	}
+);

@@ -63,6 +63,10 @@ export default interface IGameClient {
 
 	sendAnswer(answer: string): Promise<boolean>;
 
+	sendAnswerAsRightByDefault(): Promise<boolean>;
+
+	sendAnswerAsWrongByDefault(): Promise<boolean>;
+
 	/** Sends answer version. */
 	sendAnswerVersion(answerVersion: string): Promise<boolean>;
 

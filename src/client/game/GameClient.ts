@@ -4,6 +4,9 @@ import JoinMode from './JoinMode';
 import ServerRole from '../contracts/ServerRole';
 import ISIHostClient from '../ISIHostClient';
 
+const ANSWER_RIGHT = 'RIGHT';
+const ANSWER_WRONG = 'WRONG';
+
 export default class GameClient implements IGameClient {
 	/**
 	 * Initializes a new instance of {@link GameClient}.
@@ -131,6 +134,14 @@ export default class GameClient implements IGameClient {
 
 	sendAnswer(answer: string): Promise<boolean> {
 		return this.gameServerClient.msgAsync(Messages.Answer, answer);
+	}
+
+	sendAnswerAsRightByDefault(): Promise<boolean> {
+		return this.gameServerClient.msgAsync(Messages.Answer, ANSWER_RIGHT);
+	}
+
+	sendAnswerAsWrongByDefault(): Promise<boolean> {
+		return this.gameServerClient.msgAsync(Messages.Answer, ANSWER_WRONG);
 	}
 
 	sendAnswerVersion(answerVersion: string): Promise<boolean> {

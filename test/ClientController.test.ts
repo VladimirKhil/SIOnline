@@ -282,6 +282,7 @@ describe('ClientController - Round Flow', () => {
 	beforeEach(() => {
 		state = JSON.parse(JSON.stringify(initialState));
 		state.settings.appSound = true; // Enable sounds for testing
+		state.room2.hiddenComments = 'previous hidden comments';
 		state.room2.persons.players = [
 			{
 				name: 'Player1',
@@ -486,6 +487,7 @@ describe('ClientController - Question Flow', () => {
 			expect(mockAppDispatch).toHaveBeenCalled();
 			const actions = dispatchedActions.map(a => a.type);
 			expect(actions).toContain('room2/playersStateCleared');
+			expect(actions).toContain('room2/setHiddenComments');
 			expect(actions).toContain('table/questionReset');
 			expect(actions).toContain('room2/incrementQuestionCounter');
 			expect(actions).toContain('room2/setTheme');

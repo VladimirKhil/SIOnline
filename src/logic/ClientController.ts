@@ -451,6 +451,7 @@ export default class ClientController implements IClientController {
 	private initQuestion() {
 		this.appDispatch(playersStateCleared());
 		this.dispatch(roomActionCreators.afterQuestionStateChanged(false));
+		this.appDispatch(setHiddenComments(''));
 		this.appDispatch(questionReset());
 		this.appDispatch(incrementQuestionCounter());
 	}
