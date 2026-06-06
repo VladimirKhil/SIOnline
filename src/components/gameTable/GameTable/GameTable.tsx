@@ -91,12 +91,13 @@ export function GameTable(): JSX.Element {
 	const isConnected = useAppSelector((state) => state.common.isSIHostConnected);
 	const { canPlayAudio } = useAudioContext();
 
-	const { mode, caption: tableCaption, contentHint, audio, content } = useAppSelector((state) => ({
+	const { mode, caption: tableCaption, contentHint, audio, content, cooperativeHtmlVolumeSupportIds } = useAppSelector((state) => ({
 		mode: state.table.mode,
 		caption: state.table.caption,
 		contentHint: state.table.contentHint,
 		audio: state.table.audio,
 		content: state.table.content,
+		cooperativeHtmlVolumeSupportIds: state.table.cooperativeHtmlVolumeSupportIds,
 	}));
 
 	const tableTheme = useAppSelector((state) => state.settings.theme.table);
@@ -153,7 +154,9 @@ export function GameTable(): JSX.Element {
 	}
 
 	const showAppelation = isAppellation && !shouldShowAnswerValidationInTable;
-	const hasSound = audio.length > 0 || content.some(g => g.content.some(c => c.type === ContentType.Video || c.type === ContentType.Html));
+	const hasSound = audio.length > 0 ||
+		content.some(g => g.content.some(c => c.type === ContentType.Video)) ||
+		cooperativeHtmlVolumeSupportIds.length > 0;
 
 	return (
 		<div id="table" style={themeProperties}>

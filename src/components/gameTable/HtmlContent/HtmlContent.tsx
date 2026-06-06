@@ -1,6 +1,10 @@
 import * as React from 'react';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 import {
+	registerCooperativeHtmlVolumeSupport,
+	unregisterCooperativeHtmlVolumeSupport,
+} from '../../../state/tableSlice';
+import {
 	onMediaEnded,
 	onMediaLoaded,
 	sendAnswerAsRightByDefault,
@@ -21,13 +25,15 @@ interface HtmlContentControlMessage {
 
 interface HtmlContentEventMessage {
 	type: 'si:media-event';
-	event: 'completed' | 'answer-right' | 'answer-wrong';
+	event: 'completed' | 'answer-right' | 'answer-wrong' | 'supports-set-volume';
 }
 
 export function HtmlContent(props: HtmlContentProps) {
 	const { uri } = props;
 	const frameRef = React.useRef<HTMLIFrameElement>(null);
 	const completedRef = React.useRef(false);
+	const supportRegisteredRef = React.useRef(false);
+	const supportIdRef = React.useRef(`html-volume-support:${Math.random().toString(36).slice(2)}`);
 	const appDispatch = useAppDispatch();
 	const { isMediaStopped, isVisible, soundVolume } = useAppSelector(state => ({
 		isMediaStopped: state.room2.stage.isGamePaused || state.table.isMediaStopped,
@@ -45,7 +51,13 @@ export function HtmlContent(props: HtmlContentProps) {
 
 	React.useEffect(() => {
 		completedRef.current = false;
+		supportRegisteredRef.current = false;
+		appDispatch(unregisterCooperativeHtmlVolumeSupport(supportIdRef.current));
 	}, [uri]);
+
+	React.useEffect(() => () => {
+		appDispatch(unregisterCooperativeHtmlVolumeSupport(supportIdRef.current));
+	}, [appDispatch]);
 
 	React.useEffect(() => {
 		const handleMessage = (event: MessageEvent<HtmlContentEventMessage>) => {
@@ -58,6 +70,15 @@ export function HtmlContent(props: HtmlContentProps) {
 			}
 
 			switch (event.data.event) {
+				case 'supports-set-volume':
+					if (supportRegisteredRef.current) {
+						return;
+					}
+
+					supportRegisteredRef.current = true;
+					appDispatch(registerCooperativeHtmlVolumeSupport(supportIdRef.current));
+					return;
+
 				case 'completed':
 					if (completedRef.current || isMediaStopped || !isVisible) {
 						return;

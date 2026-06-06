@@ -57,6 +57,7 @@ export interface TableState {
 	optionsRowCount: number;
 	optionsColumnCount: number;
 	textVersion: number;
+	cooperativeHtmlVolumeSupportIds: string[];
 }
 
 const initialState: TableState = {
@@ -103,6 +104,7 @@ const initialState: TableState = {
 	optionsRowCount: 1,
 	optionsColumnCount: 1,
 	textVersion: 0,
+	cooperativeHtmlVolumeSupportIds: [],
 };
 
 export const tableSlice = createSlice({
@@ -216,6 +218,7 @@ export const tableSlice = createSlice({
 			state.content = action.payload;
 			state.isMediaStopped = false;
 			state.mode = TableMode.Content;
+			state.cooperativeHtmlVolumeSupportIds = [];
 
 			if (state.content.length !== 1 ||
 				state.content[0].content.length !== 1 ||
@@ -255,6 +258,7 @@ export const tableSlice = createSlice({
 			state.prependText = '';
 			state.appendText = '';
 			state.audio = '';
+			state.cooperativeHtmlVolumeSupportIds = [];
 			state.layoutMode = LayoutMode.Simple;
 			state.isSelectable = false;
 			state.isAnswer = false;
@@ -333,6 +337,7 @@ export const tableSlice = createSlice({
 			// Do not reset content so that it will be preserved in answer options mode
 			if (action.payload.length > 0) {
 				state.content = [];
+				state.cooperativeHtmlVolumeSupportIds = [];
 			}
 
 			state.prependText = '';
@@ -385,6 +390,14 @@ export const tableSlice = createSlice({
 			state.layoutMode = LayoutMode.OverlayPoints;
 			state.answerDeviation = action.payload;
 		},
+		registerCooperativeHtmlVolumeSupport: (state, action: PayloadAction<string>) => {
+			if (!state.cooperativeHtmlVolumeSupportIds.includes(action.payload)) {
+				state.cooperativeHtmlVolumeSupportIds.push(action.payload);
+			}
+		},
+		unregisterCooperativeHtmlVolumeSupport: (state, action: PayloadAction<string>) => {
+			state.cooperativeHtmlVolumeSupportIds = state.cooperativeHtmlVolumeSupportIds.filter(id => id !== action.payload);
+		},
 	}
 });
 
@@ -436,6 +449,8 @@ export const {
 	clearPointMarkers,
 	setAnswerDeviation,
 	overlayPoints,
+	registerCooperativeHtmlVolumeSupport,
+	unregisterCooperativeHtmlVolumeSupport,
 } = tableSlice.actions;
 
 export default tableSlice.reducer;
