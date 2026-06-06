@@ -23,6 +23,12 @@ const mapStateToProps = (state: State) => ({
 export class AutoSizedText extends React.Component<AutoSizedTextProps> {
 	private myRef: React.RefObject<HTMLDivElement>;
 
+	private resizeObserver?: ResizeObserver;
+
+	private resizeFrame: number | null = null;
+
+	private lastResizeSignature = '';
+
 	constructor(props: AutoSizedTextProps) {
 		super(props);
 
@@ -30,20 +36,36 @@ export class AutoSizedText extends React.Component<AutoSizedTextProps> {
 	}
 
 	componentDidMount(): void {
-		this.resizeText();
+		this.scheduleResizeText();
 		window.addEventListener('resize', this.resizeText);
+
+		if (typeof ResizeObserver !== 'undefined' && this.myRef.current) {
+			this.resizeObserver = new ResizeObserver(() => {
+				this.resizeText();
+			});
+
+			this.resizeObserver.observe(this.myRef.current);
+		}
 	}
 
 	componentDidUpdate(prevProps: AutoSizedTextProps): void {
 		if (prevProps.children !== this.props.children ||
 			prevProps.maxFontSize !== this.props.maxFontSize ||
 			prevProps.minFontSize !== this.props.minFontSize ||
-			prevProps.fontsReady !== this.props.fontsReady) {
-			this.resizeText();
+			prevProps.fontsReady !== this.props.fontsReady ||
+			prevProps.className !== this.props.className ||
+			prevProps.style !== this.props.style) {
+			this.scheduleResizeText();
 		}
 	}
 
 	componentWillUnmount(): void {
+		if (this.resizeFrame !== null) {
+			window.cancelAnimationFrame(this.resizeFrame);
+			this.resizeFrame = null;
+		}
+
+		this.resizeObserver?.disconnect();
 		window.removeEventListener('resize', this.resizeText);
 	}
 
@@ -53,10 +75,48 @@ export class AutoSizedText extends React.Component<AutoSizedTextProps> {
 		}
 	}
 
-	resizeText = (): void => {
-		if (this.myRef.current !== null) {
-			fitElement(this.myRef.current, this.props.maxFontSize, this.props.minFontSize ?? 1, this.props.fontsReady);
+	private scheduleResizeText = (): void => {
+		if (this.resizeFrame !== null) {
+			window.cancelAnimationFrame(this.resizeFrame);
 		}
+
+		this.resizeFrame = window.requestAnimationFrame(() => {
+			this.resizeFrame = null;
+			this.resizeText();
+		});
+	};
+
+	private getResizeSignature(): string | null {
+		const element = this.myRef.current;
+		const content = element?.firstElementChild;
+
+		if (!element || !content) {
+			return null;
+		}
+
+		return [
+			content.textContent ?? '',
+			element.clientWidth,
+			element.clientHeight,
+			this.props.maxFontSize,
+			this.props.minFontSize ?? 1,
+			this.props.fontsReady ? 1 : 0,
+		].join('|');
+	}
+
+	resizeText = (): void => {
+		if (this.myRef.current === null) {
+			return;
+		}
+
+		const resizeSignature = this.getResizeSignature();
+
+		if (!resizeSignature || resizeSignature === this.lastResizeSignature) {
+			return;
+		}
+
+		fitElement(this.myRef.current, this.props.maxFontSize, this.props.minFontSize ?? 1, this.props.fontsReady);
+		this.lastResizeSignature = this.getResizeSignature() ?? resizeSignature;
 	};
 
 	render(): JSX.Element {
