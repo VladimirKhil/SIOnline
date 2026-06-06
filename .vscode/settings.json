@@ -8,6 +8,7 @@
 			"approve": true,
 			"matchCommandLine": true
 		},
-		"npx eslint": true
+		"npx eslint": true,
+		"npx tsc": true
 	}
 }

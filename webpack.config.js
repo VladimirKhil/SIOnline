@@ -1,10 +1,39 @@
+const fs = require('fs');
 const path = require('path');
 const webpack = require('webpack');
 const HtmlWebPackPlugin = require("html-webpack-plugin");
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const WorkboxPlugin = require('workbox-webpack-plugin');
 
+const getTauriAppVersion = () => {
+	const tauriConfigPath = path.resolve(__dirname, 'tauri', 'src-tauri', 'tauri.conf.json');
+
+	if (fs.existsSync(tauriConfigPath)) {
+		const tauriConfig = JSON.parse(fs.readFileSync(tauriConfigPath, 'utf8'));
+
+		if (typeof tauriConfig.version === 'string' && tauriConfig.version.length > 0) {
+			return tauriConfig.version;
+		}
+	}
+
+	const cargoTomlPath = path.resolve(__dirname, 'tauri', 'src-tauri', 'Cargo.toml');
+
+	if (fs.existsSync(cargoTomlPath)) {
+		const cargoToml = fs.readFileSync(cargoTomlPath, 'utf8');
+		const versionMatch = cargoToml.match(/^version = "([^"]+)"/m);
+
+		if (versionMatch) {
+			return versionMatch[1];
+		}
+	}
+
+	return undefined;
+};
+
 module.exports = (env, argv) => {
+	const isSteamBuild = env.isSteam === 'true' || env.isSteam === true;
+	const appVersion = env.appVersion || (isSteamBuild ? getTauriAppVersion() : undefined) || 'dev';
+
 	return {
 		entry: env.type === 'library-table' ? {
 			main: './src/LibraryTable.tsx',
@@ -103,8 +132,8 @@ module.exports = (env, argv) => {
 		},
 		plugins: [
 			new webpack.DefinePlugin({
-				'IS_STEAM_BUILD': JSON.stringify(env.isSteam === 'true' || env.isSteam === true),
-				'APP_VERSION': JSON.stringify(env.appVersion || 'dev')
+				'IS_STEAM_BUILD': JSON.stringify(isSteamBuild),
+				'APP_VERSION': JSON.stringify(appVersion)
 			}),
 			new CleanWebpackPlugin(),
 			new HtmlWebPackPlugin({

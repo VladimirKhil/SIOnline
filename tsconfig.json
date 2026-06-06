@@ -8,9 +8,10 @@
     "jsx": "react",
     "skipLibCheck": true,
     "lib": [ "es5", "es2015", "dom", "ES2021.String" ],
+    "rootDir": "src",
     "outDir": "dist",
     "module": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true
   },

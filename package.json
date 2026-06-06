@@ -83,7 +83,7 @@
     "ts-jest": "^28.0.3",
     "ts-loader": "^9.3.0",
     "ts-node": "^10.4.0",
-    "typescript": "^4.7.2",
+    "typescript": "^6.0.3",
     "url-loader": "^4.1.1",
     "val-loader": "^5.0.1",
     "webpack": "^5.94.0",
