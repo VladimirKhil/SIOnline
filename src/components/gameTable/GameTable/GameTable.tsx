@@ -153,7 +153,7 @@ export function GameTable(): JSX.Element {
 	}
 
 	const showAppelation = isAppellation && !shouldShowAnswerValidationInTable;
-	const hasSound = audio.length > 0 || content.some(g => g.content.some(c => c.type === ContentType.Video));
+	const hasSound = audio.length > 0 || content.some(g => g.content.some(c => c.type === ContentType.Video || c.type === ContentType.Html));
 
 	return (
 		<div id="table" style={themeProperties}>

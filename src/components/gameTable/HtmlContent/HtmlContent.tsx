@@ -15,7 +15,8 @@ interface HtmlContentProps {
 
 interface HtmlContentControlMessage {
 	type: 'si:media-control';
-	action: 'play' | 'pause';
+	action: 'play' | 'pause' | 'set-volume';
+	volume?: number;
 }
 
 interface HtmlContentEventMessage {
@@ -28,15 +29,17 @@ export function HtmlContent(props: HtmlContentProps) {
 	const frameRef = React.useRef<HTMLIFrameElement>(null);
 	const completedRef = React.useRef(false);
 	const appDispatch = useAppDispatch();
-	const { isMediaStopped, isVisible } = useAppSelector(state => ({
+	const { isMediaStopped, isVisible, soundVolume } = useAppSelector(state => ({
 		isMediaStopped: state.room2.stage.isGamePaused || state.table.isMediaStopped,
 		isVisible: state.ui.isVisible,
+		soundVolume: state.settings.soundVolume,
 	}));
 
-	const postControlMessage = React.useCallback((action: HtmlContentControlMessage['action']) => {
+	const postControlMessage = React.useCallback((action: HtmlContentControlMessage['action'], volume?: number) => {
 		frameRef.current?.contentWindow?.postMessage({
 			type: 'si:media-control',
 			action,
+			volume,
 		} satisfies HtmlContentControlMessage, '*');
 	}, []);
 
@@ -97,6 +100,10 @@ export function HtmlContent(props: HtmlContentProps) {
 		postControlMessage('play');
 	}, [isMediaStopped, isVisible, postControlMessage]);
 
+	React.useEffect(() => {
+		postControlMessage('set-volume', soundVolume);
+	}, [postControlMessage, soundVolume]);
+
 	// allow-scripts & allow-same-origin combination is safe until we serve parent and iframe content from different origins
 	return <iframe
 		ref={frameRef}
@@ -106,6 +113,7 @@ export function HtmlContent(props: HtmlContentProps) {
 		allow='autoplay'
 		onLoad={() => {
 			appDispatch(onMediaLoaded());
+			postControlMessage('set-volume', soundVolume);
 			postControlMessage(isMediaStopped || !isVisible ? 'pause' : 'play');
 		}}
 		sandbox='allow-scripts allow-same-origin allow-presentation' />;
