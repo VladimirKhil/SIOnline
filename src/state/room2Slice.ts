@@ -131,6 +131,8 @@ export interface Room2State {
 	settings: AppSettings;
 	joinMode: JoinMode;
 	kicked: boolean;
+
+	webCameraUrl: string;
 }
 
 const initialState: Room2State = {
@@ -238,6 +240,8 @@ const initialState: Room2State = {
 	settings: initialAppSettings,
 	joinMode: JoinMode.AnyRole,
 	kicked: false,
+
+	webCameraUrl: '',
 };
 
 export const complain = createAsyncThunk(
@@ -971,6 +975,9 @@ export const room2Slice = createSlice({
 		setDeepMode: (state: Room2State, action: PayloadAction<boolean>) => {
 			state.deepMode = action.payload;
 		},
+		setWebCameraUrl: (state: Room2State, action: PayloadAction<string>) => {
+			state.webCameraUrl = action.payload;
+		},
 	},
 	extraReducers: (builder) => {
 		builder.addCase(sendAnswer.fulfilled, (state) => {
@@ -1155,6 +1162,17 @@ export const updateAnswer = createAsyncThunk(
 	},
 );
 
+export const setWebCamera = createAsyncThunk(
+	'room2/setWebCamera',
+	async (webCameraUrl: string, thunkAPI) => {
+		const dataContext = thunkAPI.extra as DataContext;
+		const state = thunkAPI.getState() as State;
+		thunkAPI.dispatch(room2Slice.actions.setWebCameraUrl(webCameraUrl));
+		thunkAPI.dispatch(personAvatarVideoChanged({ personName: state.room2.name, avatarUri: webCameraUrl }));
+		await dataContext.game.sendVideoAvatar(webCameraUrl);
+	}
+);
+
 export const showLeftSeconds = createAsyncThunk(
 	'room2/showLeftSeconds',
 	async (leftSeconds: number, thunkAPI) => {
@@ -1308,6 +1326,7 @@ export const {
 	setHiddenComments,
 	endAskingState,
 	setDeepMode,
+	setWebCameraUrl,
 } = room2Slice.actions;
 
 export default room2Slice.reducer;

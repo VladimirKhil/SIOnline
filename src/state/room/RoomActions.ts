@@ -26,7 +26,6 @@ export const enum RoomActionTypes {
 	Unbanned = 'UNBANNED',
 	SelectBannedItem = 'SELECT_BANNED_ITEM',
 	PlayerMediaLoaded = 'PLAYER_MEDIA_LOADED',
-	WebCameraUrlChanged = 'WEB_CAMERA_URL_CHANGED',
 	IsQuestionChanged = 'IsQuestionChanged',
 }
 
@@ -69,7 +68,6 @@ export type BannedListChangedAction = { type: RoomActionTypes.BannedListChanged,
 export type BannedAction = { type: RoomActionTypes.Banned, ip: string, name: string };
 export type UnbannedAction = { type: RoomActionTypes.Unbanned, ip: string };
 export type SelectBannedItemAction = { type: RoomActionTypes.SelectBannedItem, ip: string };
-export type WebCameraUrlChangedAction = { type: RoomActionTypes.WebCameraUrlChanged, webCameraUrl: string };
 export type IsQuestionChangedAction = { type: RoomActionTypes.IsQuestionChanged, isQuestion: boolean, questionType: string };
 
 export type KnownRoomAction =
@@ -95,5 +93,4 @@ export type KnownRoomAction =
 	| BannedAction
 	| UnbannedAction
 	| SelectBannedItemAction
-	| WebCameraUrlChangedAction
 	| IsQuestionChangedAction;

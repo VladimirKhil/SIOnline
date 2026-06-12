@@ -41,8 +41,6 @@ export default interface RoomState {
 		entries: Record<string, string>;
 		selectedIp: string | null;
 	};
-
-	webCameraUrl: string;
 }
 
 export const initialState: RoomState = {
@@ -86,6 +84,4 @@ export const initialState: RoomState = {
 		entries: {},
 		selectedIp: null,
 	},
-
-	webCameraUrl: '',
 };

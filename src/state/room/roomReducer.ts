@@ -195,12 +195,6 @@ const roomReducer: Reducer<RoomState> = (state: RoomState = initialState, anyAct
 				},
 			};
 
-		case RoomActionTypes.WebCameraUrlChanged:
-			return {
-				...state,
-				webCameraUrl: action.webCameraUrl,
-			};
-
 		case RoomActionTypes.IsQuestionChanged:
 			return {
 				...state,

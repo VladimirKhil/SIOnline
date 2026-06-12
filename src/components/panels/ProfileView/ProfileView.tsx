@@ -1,10 +1,6 @@
 import * as React from 'react';
-import { connect } from 'react-redux';
-import { Dispatch, Action } from 'redux';
-import State from '../../../state/State';
 import localization from '../../../model/resources/localization';
 import Dialog from '../../common/Dialog/Dialog';
-import roomActionCreators from '../../../state/room/roomActionCreators';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 import { showProfile } from '../../../state/uiSlice';
 import AvatarView from '../AvatarView/AvatarView';
@@ -13,39 +9,22 @@ import SexView from '../SexView/SexView';
 import { changeLogin } from '../../../state/userSlice';
 import { userErrorChanged } from '../../../state/commonSlice';
 import { validateLoginName } from '../../../utils/loginValidation';
+import { setWebCamera } from '../../../state/room2Slice';
 
 import './ProfileView.scss';
 
-interface ProfileViewProps {
-	webCameraUrl: string;
-	clearUrls?: boolean;
-
-	onSetWebCamera: (webCameraUrl: string) => void;
-	onunsetWebCamera: () => void;
-}
-
-const mapStateToProps = (state: State) => ({
-	webCameraUrl: state.room.webCameraUrl,
-	clearUrls: state.common.clearUrls,
-});
-
-const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
-	onSetWebCamera: (webCameraUrl: string) => {
-		dispatch(roomActionCreators.setWebCamera(webCameraUrl) as any as Action);
-	},
-	onunsetWebCamera: () => {
-		dispatch(roomActionCreators.setWebCamera('') as any as Action);
-	},
-});
-
 const layout: React.RefObject<HTMLDivElement> = React.createRef();
 
-export function ProfileView(props: ProfileViewProps): JSX.Element {
+export function ProfileView(): JSX.Element {
 	const appDispatch = useAppDispatch();
-	const [webCameraUrl, setWebCameraUrl] = React.useState(props.webCameraUrl);
-	const [tempLogin, setTempLogin] = React.useState('');
+
+	const webCamera = useAppSelector(state => state.room2.webCameraUrl);
 	const navigation = useAppSelector(state => state.ui.navigation);
 	const login = useAppSelector(state => state.user.login);
+	const clearUrls = useAppSelector(state => state.common.clearUrls);
+
+	const [webCameraUrl, setWebCameraUrl] = React.useState(webCamera || '');
+	const [tempLogin, setTempLogin] = React.useState('');
 
 	const inRoom = 	navigation.path === Path.Room;
 
@@ -139,7 +118,7 @@ export function ProfileView(props: ProfileViewProps): JSX.Element {
 					<label htmlFor='videoUrl'>
 						<span>{localization.webCameraUrl} </span>
 
-						{props.clearUrls
+						{clearUrls
 							? null
 							: <a className='videoSiteUrl' href='https://vdo.ninja' target='_blank' rel='noopener noreferrer'>vdo.ninja</a>}
 					</label>
@@ -151,7 +130,7 @@ export function ProfileView(props: ProfileViewProps): JSX.Element {
 							disabled={!inRoom || webCameraUrl === ''}
 							type='button'
 							className='standard set'
-							onClick={() => props.onSetWebCamera(webCameraUrl)}>
+							onClick={() => appDispatch(setWebCamera(webCameraUrl))}>
 							{localization.set}
 						</button>
 
@@ -159,7 +138,7 @@ export function ProfileView(props: ProfileViewProps): JSX.Element {
 							disabled={!inRoom || webCameraUrl === ''}
 							type='button'
 							className='standard set'
-							onClick={() => { props.onunsetWebCamera(); setWebCameraUrl(''); }}>
+							onClick={() => { appDispatch(setWebCamera('')); }}>
 							{localization.drop}
 						</button>
 					</div>
@@ -169,4 +148,4 @@ export function ProfileView(props: ProfileViewProps): JSX.Element {
 	);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ProfileView);
+export default ProfileView;

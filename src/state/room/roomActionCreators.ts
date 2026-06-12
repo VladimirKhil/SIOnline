@@ -187,19 +187,6 @@ const unban: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (ip:
 	await dataContext.game.unban(ip);
 };
 
-const webCameraUrlChanged: ActionCreator<RunActions.WebCameraUrlChangedAction> = (webCameraUrl: string) => ({
-	type: RunActions.RoomActionTypes.WebCameraUrlChanged, webCameraUrl
-});
-
-const setWebCamera: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (webCameraUrl: string) => async (
-	dispatch: Dispatch<any>,
-	_getState: () => State,
-	dataContext: DataContext
-) => {
-	dispatch(webCameraUrlChanged(webCameraUrl));
-	await dataContext.game.sendVideoAvatar(webCameraUrl);
-};
-
 const roomActionCreators = {
 	onPass,
 	giveTurn,
@@ -234,7 +221,6 @@ const roomActionCreators = {
 	unbanned,
 	selectBannedItem,
 	unban,
-	setWebCamera,
 };
 
 export default roomActionCreators;
