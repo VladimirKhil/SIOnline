@@ -1,0 +1,170 @@
+.pointAnswerDialog {
+	background: linear-gradient(180deg, rgba(15, 22, 34, 0.98), rgba(6, 10, 18, 0.98));
+	color: #f4f7fb;
+	padding: 0px 5px 0px;
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+
+	header {
+		padding-left: 0;
+	}
+
+	.pointAnswerDialog__body {
+		display: flex;
+		flex-direction: column;
+		gap: 16px;
+		flex: 1;
+		min-height: 0;
+		margin-top: 8px;
+	}
+
+	.pointAnswerDialog__summary {
+		display: flex;
+		flex-direction: column;
+		gap: 6px;
+
+		.pointAnswerDialog__summaryLabel {
+			font-size: 13px;
+			font-weight: 700;
+			letter-spacing: 0.04em;
+			text-transform: uppercase;
+			color: rgba(244, 247, 251, 0.78);
+		}
+
+		input {
+			width: 100%;
+			padding: 10px 12px;
+			border: 1px solid rgba(120, 167, 255, 0.35);
+			border-radius: 8px;
+			background: rgba(255, 255, 255, 0.08);
+			color: inherit;
+		}
+	}
+
+	.pointAnswerDialog__workspace {
+		display: flex;
+		flex-direction: column;
+		gap: 16px;
+		flex: 1;
+		min-height: 0;
+	}
+
+	.pointAnswerDialog__imageHost {
+		position: relative;
+		flex: 1;
+		min-height: 0;
+		height: min(62vh, calc(100vh - 300px));
+		padding: 12px;
+		border: 1px solid rgba(120, 167, 255, 0.26);
+		border-radius: 16px;
+		background:
+			radial-gradient(circle at top, rgba(86, 142, 255, 0.16), transparent 46%),
+			linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+		cursor: crosshair;
+		overflow: hidden;
+
+		.packageView__question__content__item {
+			display: block;
+		}
+	}
+
+	.pointAnswerDialog__markerLayer {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		pointer-events: none;
+	}
+
+	.pointAnswerDialog__markerOuter,
+	.pointAnswerDialog__markerInner {
+		transform-box: fill-box;
+		transform-origin: center;
+	}
+
+	.pointAnswerDialog__markerOuter {
+		fill: none;
+		stroke: rgba(255, 180, 43, 0.92);
+		stroke-width: 3px;
+	}
+
+	.pointAnswerDialog__markerInner {
+		fill: #fff8dc;
+		stroke: #131820;
+		stroke-width: 2px;
+	}
+
+	.pointAnswerDialog__hint {
+		font-size: 13px;
+		color: rgba(244, 247, 251, 0.78);
+	}
+
+	.pointAnswerDialog__controls {
+		display: flex;
+		flex-direction: column;
+		gap: 10px;
+		padding: 12px 16px 14px;
+		border: 1px solid rgba(120, 167, 255, 0.24);
+		border-radius: 16px;
+		background: rgba(8, 12, 20, 0.5);
+
+		label {
+			font-size: 13px;
+			font-weight: 700;
+			letter-spacing: 0.04em;
+			text-transform: uppercase;
+			color: rgba(244, 247, 251, 0.78);
+		}
+	}
+
+	.pointAnswerDialog__radiusControls {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) 92px;
+		gap: 12px;
+		align-items: center;
+
+		input[type='number'] {
+			width: 100%;
+			padding: 8px 10px;
+			border: 1px solid rgba(120, 167, 255, 0.35);
+			border-radius: 8px;
+			background: rgba(255, 255, 255, 0.08);
+			color: inherit;
+		}
+
+		input[type='range'] {
+			width: 100%;
+			accent-color: #ffb42b;
+		}
+	}
+
+	.pointAnswerDialog__buttons {
+		display: flex;
+		justify-content: flex-end;
+		gap: 12px;
+		padding-top: 4px;
+		flex-wrap: wrap;
+
+		button:disabled {
+			opacity: 0.5;
+			cursor: not-allowed;
+		}
+	}
+}
+
+@media screen and (max-width: 900px) {
+	.pointAnswerDialog {
+		.pointAnswerDialog__imageHost {
+			height: min(52vh, calc(100vh - 320px));
+		}
+
+		.pointAnswerDialog__buttons {
+			justify-content: stretch;
+
+			button {
+				flex: 1;
+			}
+		}
+	}
+}

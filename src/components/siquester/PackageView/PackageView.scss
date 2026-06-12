@@ -1006,3 +1006,31 @@ h1 {
 		height: 24px;
 	}
 }
+
+.packageView__pointAnswer {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	margin: 5px 0;
+
+	input {
+		flex: 1;
+		min-width: 0;
+	}
+}
+
+.packageView__pointAnswerButton {
+	white-space: nowrap;
+	flex-shrink: 0;
+
+	&:disabled {
+		opacity: 0.55;
+		cursor: not-allowed;
+	}
+}
+
+.packageView__pointAnswerHint {
+	margin-top: 4px;
+	font-size: 13px;
+	color: rgba(255, 255, 255, 0.72);
+}

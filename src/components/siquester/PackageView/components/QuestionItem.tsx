@@ -26,6 +26,7 @@ import {
 import CollectionEditor from '../../CollectionEditor/CollectionEditor';
 import MediaItem from '../../MediaItem/MediaItem';
 import ScreensView from '../../ScreensView/ScreensView';
+import PointAnswerDialog from './PointAnswerDialog';
 
 interface QuestionItemProps {
 	item: Question;
@@ -57,10 +58,15 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ item, isEditMode }) => {
 	const isCustomType = question.type && !predefinedTypes.includes(question.type);
 	const [isCustomMode, setIsCustomMode] = React.useState(isCustomType);
 	const [customTypeValue, setCustomTypeValue] = React.useState(isCustomType ? question.type : '');
+	const [isPointAnswerDialogOpen, setIsPointAnswerDialogOpen] = React.useState(false);
 	const isVoided = question.price === -1;
 	const hasQuestionIndices = typeof indices.roundIndex === 'number' &&
 		typeof indices.themeIndex === 'number' &&
 		typeof indices.questionIndex === 'number';
+	const pointAnswerImage = React.useMemo(
+		() => question.params.question?.items.find(contentItem => contentItem.type === 'image') ?? null,
+		[question.params.question],
+	);
 	const deleteIconPath =
 		'M6 19C6 20.1 6.9 21 8 21H16C17.1 21 18 20.1 18 19V7H6V19Z' +
 		'M8 9H16V19H8V9ZM15.5 4L14.5 3H9.5L8.5 4H5V6H19V4H15.5Z';
@@ -370,6 +376,71 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ item, isEditMode }) => {
 		}
 	};
 
+	const handlePointAnswerApply = (value: string, answerDeviation: string) => {
+		if (question.right.answer.length === 0) {
+			handleAddRightAnswer();
+		}
+
+		handleRightAnswerChange(0, value);
+		handleQuestionParamChange('answerDeviation', answerDeviation);
+		setIsPointAnswerDialogOpen(false);
+	};
+
+	let rightAnswersEditor: React.ReactNode;
+
+	if (question.params.answerType === 'point' && isEditMode) {
+		rightAnswersEditor = <>
+			<label htmlFor='pointAnswer' className='header'>{localization.rightAnswers}</label>
+			<div className='packageView__pointAnswer'>
+				<input
+					id='pointAnswer'
+					type='text'
+					value={question.right.answer[0] || ''}
+					readOnly
+					placeholder={localization.pointAnswerHint}
+				/>
+				<button
+					type='button'
+					className='standard packageView__pointAnswerButton'
+					onClick={() => setIsPointAnswerDialogOpen(true)}
+					disabled={!pointAnswerImage}
+				>
+					{localization.pointAnswerSet}
+				</button>
+			</div>
+			{!pointAnswerImage ? (
+				<div className='packageView__pointAnswerHint'>{localization.pointAnswerNoImage}</div>
+			) : null}
+		</>;
+	} else if (answerOptions && isEditMode && question.right.answer.length === 1) {
+		rightAnswersEditor = <>
+			<label htmlFor='name' className='header'>{localization.rightAnswers}</label>
+			<select
+				aria-label='right answer'
+				className='packageView__info__answer'
+				value={question.right.answer[0]}
+				onChange={(e) => handleRightAnswerChange(0, e.target.value)}
+			>
+				{Object.keys(answerOptions).map((key) => (
+					<option key={key} value={key}>{key}</option>
+				))}
+			</select>
+		</>;
+	} else {
+		rightAnswersEditor = <CollectionEditor
+			label={localization.rightAnswers}
+			items={question.right.answer}
+			isEditMode={isEditMode}
+			className='packageView__info__answer'
+			getValue={(answer) => answer}
+			onItemChange={handleRightAnswerChange}
+			onAddItem={handleAddRightAnswer}
+			onRemoveItem={handleRemoveRightAnswer}
+			placeholder={localization.enterAnswer}
+			preventDeleteLast={true}
+		/>;
+	}
+
 	const handleQuestionTypeChange = (value: string) => {
 		if (value === customQuestionTypeOptionValue) {
 			setIsCustomMode(true);
@@ -422,6 +493,17 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ item, isEditMode }) => {
 
 	return (
 		<div className='info packageView__question__info'>
+			{isPointAnswerDialogOpen && pointAnswerImage ? (
+				<PointAnswerDialog
+					answer={question.right.answer[0]}
+					deviation={question.params.answerDeviation}
+					src={pointAnswerImage.value}
+					isRef={pointAnswerImage.isRef}
+					onApply={handlePointAnswerApply}
+					onClose={() => setIsPointAnswerDialogOpen(false)}
+				/>
+			) : null}
+
 			<header>
 				<div className='main__header'>{localization.question}</div>
 				{isEditMode && hasQuestionIndices && (
@@ -518,7 +600,12 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ item, isEditMode }) => {
 							</>
 							: null}
 
-						{question.params.theme || (isEditMode && (question.type === QuestionTypes.Secret || question.type === QuestionTypes.SecretPublicPrice))
+						{question.params.theme || (
+							isEditMode && (
+								question.type === QuestionTypes.Secret ||
+								question.type === QuestionTypes.SecretPublicPrice
+							)
+						)
 							? <>
 								<label htmlFor='theme' className='header'>{localization.theme}</label>
 								<input
@@ -531,7 +618,12 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ item, isEditMode }) => {
 							</>
 							: null}
 
-						{question.params.selectionMode || (isEditMode && (question.type === QuestionTypes.Secret || question.type === QuestionTypes.SecretPublicPrice))
+						{question.params.selectionMode || (
+							isEditMode && (
+								question.type === QuestionTypes.Secret ||
+								question.type === QuestionTypes.SecretPublicPrice
+							)
+						)
 							? <>
 								<label htmlFor='selectionMode' className='header'>{localization.selectionMode}</label>
 
@@ -800,41 +892,19 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ item, isEditMode }) => {
 										aria-label={localization.addComplexAnswer}
 									>
 										<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-											<path d="M12 16L1 9L12 2L23 9L12 16ZM12 18.5L2 12.06L1 12.68L12 19.68L23 12.68L22 12.06L12 18.5ZM12 21L2 14.56L1 15.18L12 22.18L23 15.18L22 14.56L12 21Z" fill="currentColor" />
+											<path
+												d={
+													'M12 16L1 9L12 2L23 9L12 16Z' +
+													'M12 18.5L2 12.06L1 12.68L12 19.68L23 12.68L22 12.06L12 18.5Z' +
+													'M12 21L2 14.56L1 15.18L12 22.18L23 15.18L22 14.56L12 21Z'
+												}
+												fill="currentColor"
+											/>
 										</svg>
 									</button>
 								) : null}
 
-								{answerOptions && isEditMode && question.right.answer.length === 1 ? (
-									<>
-										<label htmlFor='name' className='header'>{localization.rightAnswers}</label>
-										<select
-											aria-label='right answer'
-											className='packageView__info__answer'
-											value={question.right.answer[0]}
-											onChange={(e) => handleRightAnswerChange(0, e.target.value)}
-										>
-											{Object.keys(answerOptions).map((key) => (
-												<option key={key} value={key}>{key}</option>
-											))}
-										</select>
-									</>
-								) : (
-									<>
-										<CollectionEditor
-											label={localization.rightAnswers}
-											items={question.right.answer}
-											isEditMode={isEditMode}
-											className='packageView__info__answer'
-											getValue={(answer) => answer}
-											onItemChange={handleRightAnswerChange}
-											onAddItem={handleAddRightAnswer}
-											onRemoveItem={handleRemoveRightAnswer}
-											placeholder={localization.enterAnswer}
-											preventDeleteLast={true}
-										/>
-									</>
-								)}
+									{rightAnswersEditor}
 
 								{(question.params.answerType === 'number' ||
 									question.params.answerType === 'point')
