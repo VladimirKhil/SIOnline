@@ -75,6 +75,19 @@
 						cursor: wait;
 					}
 				}
+
+				&:disabled {
+					opacity: 0.4;
+					cursor: not-allowed;
+
+					svg {
+						color: #888888;
+					}
+
+					&:hover {
+						background: transparent;
+					}
+				}
 			}
 		}
 

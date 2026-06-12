@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, createAction } from '@reduxjs/toolkit';
 import JSZip from 'jszip';
 import SIStatisticsClient from 'sistatistics-client';
 import QuestionStats from 'sistatistics-client/dist/models/QuestionStats';
@@ -26,6 +26,24 @@ export interface SIQuesterState {
 	packageTopLevelStats?: PackageTopLevelStats;
 	packageStatsLoading?: boolean;
 	showPackageStats?: boolean;
+	history?: {
+		past: {
+			pack: Package;
+			zipFiles?: Record<string, any>;
+			roundIndex?: number;
+			themeIndex?: number;
+			questionIndex?: number;
+			isPackageSelected?: boolean;
+		}[];
+		future: {
+			pack: Package;
+			zipFiles?: Record<string, any>;
+			roundIndex?: number;
+			themeIndex?: number;
+			questionIndex?: number;
+			isPackageSelected?: boolean;
+		}[];
+	};
 }
 
 const initialState: SIQuesterState = {};
@@ -1250,4 +1268,144 @@ export const findItemIndices = (pack: Package | null, targetItem: Package | Roun
 	return {};
 };
 
-export default siquesterSlice.reducer;
+export const undo = createAction('siquester/undo');
+export const redo = createAction('siquester/redo');
+
+const ignoreActions = new Set([
+	'siquester/setCurrentItem',
+	'siquester/togglePackageStats',
+	'siquester/openFile/pending',
+	'siquester/openFile/fulfilled',
+	'siquester/openFile/rejected',
+	'siquester/createNewPackage/pending',
+	'siquester/createNewPackage/fulfilled',
+	'siquester/createNewPackage/rejected',
+	'siquester/loadPackageStatistics/pending',
+	'siquester/loadPackageStatistics/fulfilled',
+	'siquester/loadPackageStatistics/rejected',
+	'siquester/savePackage/pending',
+	'siquester/savePackage/fulfilled',
+	'siquester/savePackage/rejected',
+	'siquester/undo',
+	'siquester/redo',
+]);
+
+const baseReducer = siquesterSlice.reducer;
+
+const siquesterReducer = (state: SIQuesterState | undefined, action: any): SIQuesterState => {
+	const currentState = state || siquesterSlice.getInitialState();
+
+	if (action.type === 'siquester/undo') {
+		if (!currentState.history || currentState.history.past.length === 0) {
+			return currentState;
+		}
+		const past = [...currentState.history.past];
+		const future = [...currentState.history.future];
+		const prevState = past.pop()!;
+		
+		const currentSnapshot = {
+			pack: currentState.pack!,
+			zipFiles: currentState.zip ? { ...currentState.zip.files } : undefined,
+			roundIndex: currentState.roundIndex,
+			themeIndex: currentState.themeIndex,
+			questionIndex: currentState.questionIndex,
+			isPackageSelected: currentState.isPackageSelected
+		};
+		future.push(currentSnapshot);
+
+		if (currentState.zip && prevState.zipFiles) {
+			(currentState.zip as any).files = prevState.zipFiles;
+		}
+
+		return {
+			...currentState,
+			pack: prevState.pack,
+			roundIndex: prevState.roundIndex,
+			themeIndex: prevState.themeIndex,
+			questionIndex: prevState.questionIndex,
+			isPackageSelected: prevState.isPackageSelected,
+			history: {
+				past,
+				future
+			}
+		};
+	}
+
+	if (action.type === 'siquester/redo') {
+		if (!currentState.history || currentState.history.future.length === 0) {
+			return currentState;
+		}
+		const past = [...currentState.history.past];
+		const future = [...currentState.history.future];
+		const nextState = future.pop()!;
+
+		const currentSnapshot = {
+			pack: currentState.pack!,
+			zipFiles: currentState.zip ? { ...currentState.zip.files } : undefined,
+			roundIndex: currentState.roundIndex,
+			themeIndex: currentState.themeIndex,
+			questionIndex: currentState.questionIndex,
+			isPackageSelected: currentState.isPackageSelected
+		};
+		past.push(currentSnapshot);
+
+		if (currentState.zip && nextState.zipFiles) {
+			(currentState.zip as any).files = nextState.zipFiles;
+		}
+
+		return {
+			...currentState,
+			pack: nextState.pack,
+			roundIndex: nextState.roundIndex,
+			themeIndex: nextState.themeIndex,
+			questionIndex: nextState.questionIndex,
+			isPackageSelected: nextState.isPackageSelected,
+			history: {
+				past,
+				future
+			}
+		};
+	}
+
+	const shouldPushHistory = action.type.startsWith('siquester/') && !ignoreActions.has(action.type) && currentState.pack;
+	
+	let snapshotBefore: any = null;
+	if (shouldPushHistory) {
+		snapshotBefore = {
+			pack: currentState.pack,
+			zipFiles: currentState.zip ? { ...currentState.zip.files } : undefined,
+			roundIndex: currentState.roundIndex,
+			themeIndex: currentState.themeIndex,
+			questionIndex: currentState.questionIndex,
+			isPackageSelected: currentState.isPackageSelected
+		};
+	}
+
+	const nextState = baseReducer(state, action);
+
+	if (action.type === 'siquester/openFile/fulfilled' || action.type === 'siquester/createNewPackage/fulfilled') {
+		return {
+			...nextState,
+			history: { past: [], future: [] }
+		};
+	}
+
+	if (shouldPushHistory && nextState && nextState.pack && nextState.pack !== currentState.pack) {
+		const past = currentState.history ? [...currentState.history.past] : [];
+		past.push(snapshotBefore);
+		if (past.length > 100) {
+			past.shift();
+		}
+		return {
+			...nextState,
+			history: {
+				past,
+				future: []
+			}
+		};
+	}
+
+	return nextState;
+};
+
+export default siquesterReducer;

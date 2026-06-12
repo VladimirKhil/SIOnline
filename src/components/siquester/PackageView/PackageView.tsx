@@ -12,7 +12,9 @@ import {
 	togglePackageStats,
 	addRound,
 	addTheme,
-	addQuestion
+	addQuestion,
+	undo,
+	redo
 } from '../../../state/siquesterSlice';
 import PackageItem from './components/PackageItem';
 import RoundItem from './components/RoundItem';
@@ -29,7 +31,7 @@ enum Mode { Rounds, Questions, Media }
 const PackageView: React.FC = () => {
 	const appDispatch = useAppDispatch();
 	const siquester = useAppSelector(state => state.siquester);
-	const { zip, pack, packageStats, packageTopLevelStats, packageStatsLoading, showPackageStats, isNewPackage } = siquester;
+	const { zip, pack, packageStats, packageTopLevelStats, packageStatsLoading, showPackageStats, isNewPackage, history } = siquester;
 	const currentItem = useAppSelector(selectCurrentItem);
 	const [roundIndex, setRoundIndex] = React.useState(0);
 	const [mode, setMode] = React.useState(Mode.Questions);
@@ -42,6 +44,18 @@ const PackageView: React.FC = () => {
 			setIsEditMode(true);
 		}
 	}, [isNewPackage]);
+
+	React.useEffect(() => {
+		if (siquester.roundIndex !== undefined) {
+			setRoundIndex(siquester.roundIndex);
+		}
+	}, [siquester.roundIndex]);
+
+	const onUndo = () => appDispatch(undo());
+	const onRedo = () => appDispatch(redo());
+
+	const canUndo = !!(history && history.past.length > 0);
+	const canRedo = !!(history && history.future.length > 0);
 
 	const checkScrollable = React.useCallback(() => {
 		if (roundsContainerRef.current) {
@@ -343,6 +357,42 @@ const PackageView: React.FC = () => {
 								fill="none"/>
 							<path d="M17 21V13H7V21" stroke="currentColor" strokeWidth="2" fill="none"/>
 							<path d="M7 3V8H15" stroke="currentColor" strokeWidth="2" fill="none"/>
+						</svg>
+					</button>
+
+					<button
+						type='button'
+						className='standard imageButton'
+						onClick={onUndo}
+						disabled={!canUndo}
+						title={localization.undo}>
+						<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+							<path d="M3 7V13H9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+							<path
+								d="M21 17A9 9 0 0012 8A9 9 0 006 10.3L3 13"
+								stroke="currentColor"
+								strokeWidth="2"
+								strokeLinecap="round"
+								strokeLinejoin="round"
+							/>
+						</svg>
+					</button>
+
+					<button
+						type='button'
+						className='standard imageButton'
+						onClick={onRedo}
+						disabled={!canRedo}
+						title={localization.redo}>
+						<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+							<path d="M21 7V13H15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+							<path
+								d="M3 17A9 9 0 0112 8A9 9 0 0118 10.3L21 13"
+								stroke="currentColor"
+								strokeWidth="2"
+								strokeLinecap="round"
+								strokeLinejoin="round"
+							/>
 						</svg>
 					</button>
 
