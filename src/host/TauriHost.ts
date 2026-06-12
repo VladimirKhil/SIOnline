@@ -4,6 +4,7 @@ import {
 	setClearUrls,
 	setClipboardSupported,
 	setExitSupported,
+	setHostManagedUrls,
 	setIsDesktop,
 	setLogSupported
 } from '../state/commonSlice';
@@ -110,6 +111,7 @@ export default class TauriHost implements IHost {
 		console.log('Loaded from Tauri');
 
 		store.dispatch(setClearUrls(true));
+		store.dispatch(setHostManagedUrls(true));
 
 		if (!this.clipboardSupported) {
 			store.dispatch(setClipboardSupported(false));
@@ -176,12 +178,17 @@ export default class TauriHost implements IHost {
 
 	openLink(url: string) {
 		try {
-			if (!this.app || !this.app.core) {
-				console.warn('Tauri app core is not available, cannot open link:', url);
+			if (this.app?.opener) {
+				this.app.opener.openPath(url);
 				return;
 			}
 
-			this.app.core.invoke('open_url_in_steam_overlay', { url });
+			if (this.app?.core) {
+				this.app.core.invoke('open_url_in_steam_overlay', { url });
+				return;
+			}
+
+			console.warn('Tauri app opener/core is not available, cannot open link:', url);
 		} catch (e) {
 			console.error('Failed to open link:', e);
 		}

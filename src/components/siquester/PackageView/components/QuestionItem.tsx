@@ -17,6 +17,7 @@ import {
 	addInfoItem,
 	removeInfoItem,
 	removeQuestion,
+	resetQuestion,
 	addAnswerOption,
 	removeAnswerOption,
 	updateAnswerOptionValue,
@@ -56,6 +57,16 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ item, isEditMode }) => {
 	const isCustomType = question.type && !predefinedTypes.includes(question.type);
 	const [isCustomMode, setIsCustomMode] = React.useState(isCustomType);
 	const [customTypeValue, setCustomTypeValue] = React.useState(isCustomType ? question.type : '');
+	const isVoided = question.price === -1;
+	const hasQuestionIndices = typeof indices.roundIndex === 'number' &&
+		typeof indices.themeIndex === 'number' &&
+		typeof indices.questionIndex === 'number';
+	const deleteIconPath =
+		'M6 19C6 20.1 6.9 21 8 21H16C17.1 21 18 20.1 18 19V7H6V19Z' +
+		'M8 9H16V19H8V9ZM15.5 4L14.5 3H9.5L8.5 4H5V6H19V4H15.5Z';
+	const voidIconPath = isVoided
+		? 'M12 2C6.48 2 2 6.48 2 12S6.48 22 12 22 22 17.52 22 12 17.52 2 12 2ZM17 13H13V17H11V13H7V11H11V7H13V11H17V13Z'
+		: 'M12 2C6.48 2 2 6.48 2 12S6.48 22 12 22 22 17.52 22 12 17.52 2 12 2ZM17 13H7V11H17V13Z';
 
 	function getSetAnswererSelect(setAnswererSelect: SelectionMode | undefined): string {
 		switch (setAnswererSelect) {
@@ -381,22 +392,63 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ item, isEditMode }) => {
 		}
 	};
 
+	const handleResetQuestion = () => {
+		if (hasQuestionIndices) {
+			const roundIndex = indices.roundIndex as number;
+			const themeIndex = indices.themeIndex as number;
+			const questionIndex = indices.questionIndex as number;
+
+			dispatch(resetQuestion({
+				roundIndex,
+				themeIndex,
+				questionIndex,
+			}));
+		}
+	};
+
+	const handleRemoveQuestion = () => {
+		if (hasQuestionIndices) {
+			const roundIndex = indices.roundIndex as number;
+			const themeIndex = indices.themeIndex as number;
+			const questionIndex = indices.questionIndex as number;
+
+			dispatch(removeQuestion({
+				roundIndex,
+				themeIndex,
+				questionIndex,
+			}));
+		}
+	};
+
 	return (
 		<div className='info packageView__question__info'>
 			<header>
 				<div className='main__header'>{localization.question}</div>
-				{isEditMode && typeof indices.roundIndex === 'number' && typeof indices.themeIndex === 'number' && typeof indices.questionIndex === 'number' && (
-					<button
-						type='button'
-						className='packageView__delete-button'
-						onClick={() => dispatch(removeQuestion({ roundIndex: indices.roundIndex as number, themeIndex: indices.themeIndex as number, questionIndex: indices.questionIndex as number }))}
-						title={localization.delete}
-						aria-label={localization.delete}
-					>
-						<svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-							<path d="M6 19C6 20.1 6.9 21 8 21H16C17.1 21 18 20.1 18 19V7H6V19ZM8 9H16V19H8V9ZM15.5 4L14.5 3H9.5L8.5 4H5V6H19V4H15.5Z" fill="currentColor" />
-						</svg>
-					</button>
+				{isEditMode && hasQuestionIndices && (
+					<>
+						<button
+							type='button'
+							className='packageView__void-button'
+							onClick={handleResetQuestion}
+							title={isVoided ? localization.unvoid : localization.voidQuestion}
+							aria-label={isVoided ? localization.unvoid : localization.voidQuestion}
+						>
+							<svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+								<path d={voidIconPath} fill="currentColor" />
+							</svg>
+						</button>
+						<button
+							type='button'
+							className='packageView__delete-button'
+							onClick={handleRemoveQuestion}
+							title={localization.delete}
+							aria-label={localization.delete}
+						>
+							<svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+								<path d={deleteIconPath} fill="currentColor" />
+							</svg>
+						</button>
+					</>
 				)}
 				<button
 					type='button'
@@ -451,7 +503,6 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ item, isEditMode }) => {
 												placeholder={localization.enterCustomQuestionType}
 												value={customTypeValue}
 												onChange={(e) => handleCustomTypeChange(e.target.value)}
-												style={{ marginTop: '5px' }}
 											/>
 										)}
 									</>

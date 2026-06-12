@@ -33,12 +33,13 @@ const Popup: React.FC<PopupProps> = (props) => {
     // Create a container for the popup
     React.useEffect(() => {
         const newLayout = document.createElement('div');
-        newLayout.style.position = 'absolute';
+        newLayout.style.position = 'fixed';
         newLayout.style.top = '0';
         newLayout.style.left = '0';
         newLayout.style.width = '100%';
         newLayout.style.height = '100%';
         newLayout.style.pointerEvents = 'none';
+        newLayout.style.zIndex = '2147483647';
 
         document.body.appendChild(newLayout);
         setLayout(newLayout);

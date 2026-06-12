@@ -910,6 +910,41 @@ h1 {
 	}
 }
 
+.packageView__void-button {
+	width: 38px;
+	height: 38px;
+	padding: 0;
+	background: #546e7a;
+	color: white;
+	border: none;
+	border-radius: 4px;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: background-color 0.2s;
+	margin-right: 8px;
+	line-height: 1;
+
+	&:hover {
+		background: #37474f;
+	}
+
+	&:focus {
+		outline: none;
+		box-shadow: 0 0 0 2px rgba(84, 110, 122, 0.3);
+	}
+
+	svg {
+		width: 18px;
+		height: 18px;
+	}
+}
+
+.packageView__question__customType {
+	margin-top: 5px;
+}
+
 // Delete button styles
 .packageView__delete-button {
 	width: 38px;

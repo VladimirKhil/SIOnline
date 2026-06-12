@@ -1,7 +1,7 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
   "productName": "SIGame",
-  "version": "8.11.5",
+  "version": "8.11.6",
   "identifier": "com.vladimirkhil.sigame",
   "build": {
     "devUrl": "http://localhost:1420",

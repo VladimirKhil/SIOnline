@@ -4,7 +4,7 @@ import SIStatisticsClient from 'sistatistics-client';
 import QuestionStats from 'sistatistics-client/dist/models/QuestionStats';
 import PackageTopLevelStats from 'sistatistics-client/dist/models/PackageTopLevelStats';
 import localization from '../model/resources/localization';
-import { Package, Round, Theme, Question, ContentParam, ContentItem, ContentType } from '../model/siquester/package';
+import { Package, Round, Theme, Question, ContentParam, ContentItem, ContentType, ContentPlacements } from '../model/siquester/package';
 import { navigate } from '../utils/Navigator';
 import Path from '../model/enums/Path';
 import DataContext from '../model/DataContext';
@@ -29,6 +29,25 @@ export interface SIQuesterState {
 }
 
 const initialState: SIQuesterState = {};
+
+function createDefaultQuestion(price = 0): Question {
+	return {
+		price,
+		params: {
+			question: {
+				items: [{
+					type: 'text',
+					value: '',
+					isRef: false,
+					placement: ContentPlacements.Screen
+				}]
+			}
+		},
+		right: {
+			answer: ['']
+		}
+	};
+}
 
 function getMediaFolderName(type: ContentType): string | undefined {
 	switch (type) {
@@ -462,23 +481,7 @@ export const siquesterSlice = createSlice({
 		}) => {
 			const theme = state.pack?.rounds[action.payload.roundIndex]?.themes[action.payload.themeIndex];
 			if (theme) {
-				const newQuestion: Question = {
-					price: action.payload.price ?? 0,
-					params: {
-						question: {
-							items: [{
-								type: 'text',
-								value: '',
-								isRef: false,
-								placement: 'screen'
-							}]
-						}
-					},
-					right: {
-						answer: ['']
-					}
-				};
-				theme.questions.push(newQuestion);
+				theme.questions.push(createDefaultQuestion(action.payload.price ?? 0));
 			}
 		},
 		removeQuestion: (state, action: { 
@@ -498,6 +501,22 @@ export const siquesterSlice = createSlice({
 					state.questionIndex = undefined;
 				}
 			}
+		},
+		resetQuestion: (state, action: {
+			payload: {
+				roundIndex: number;
+				themeIndex: number;
+				questionIndex: number;
+			}
+		}) => {
+			const theme = state.pack?.rounds[action.payload.roundIndex]?.themes[action.payload.themeIndex];
+			const existingQuestion = theme?.questions[action.payload.questionIndex];
+
+			if (!theme || !existingQuestion) {
+				return;
+			}
+
+			theme.questions[action.payload.questionIndex] = createDefaultQuestion(existingQuestion.price > -1 ? -1 : 0);
 		},
 		updateInfoProperty: (state, action: { 
 			payload: { 
@@ -750,13 +769,15 @@ export const siquesterSlice = createSlice({
 				if (!targetFolder) {
 					return;
 				}
-				const encodedFileName = encodeURIComponent(action.payload.fileName);
+
+				const { fileName } = action.payload;
 
 				if (state.zip) {
 					if (action.payload.type === 'html') {
-						state.zip.file(`${targetFolder}/${encodedFileName}`, action.payload.fileData);
+						state.zip.file(`${targetFolder}/${fileName}`, action.payload.fileData);
 					} else {
-						state.zip.file(`${targetFolder}/${encodedFileName}`, action.payload.fileData, { base64: true });
+						// Decode base64 string before adding to zip
+						state.zip.file(`${targetFolder}/${fileName}`, action.payload.fileData, { base64: true });
 					}
 				}
 
@@ -886,7 +907,8 @@ export const siquesterSlice = createSlice({
 						type: 'text',
 						value: '',
 						isRef: false,
-						placement: 'screen'
+						placement: 'screen',
+						waitForFinish: true,
 					}]
 				};
 			}
@@ -1148,6 +1170,7 @@ export const {
 	setCurrentItem,
 	togglePackageStats,
 	addComplexAnswer,
+	resetQuestion,
 } = siquesterSlice.actions;
 
 // Selector to get the current item based on the indices

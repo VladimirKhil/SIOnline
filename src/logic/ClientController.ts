@@ -95,7 +95,6 @@ import {
 	playerChanged,
 	playerDeleted,
 	playerInGameChanged,
-	playerLostStateDropped,
 	playerLostStatesDropped,
 	playerMediaLoaded,
 	playerMediaPreloaded,
@@ -1223,6 +1222,10 @@ export default class ClientController implements IClientController {
 		} else if (stage === GameStage.Begin || stage === GameStage.After) {
 			this.appDispatch(showLogo());
 			this.appDispatch(captionChanged(stage === GameStage.Begin ? localization.gameStarted : localization.gameFinished));
+
+			if (stage === GameStage.After) {
+				this.appDispatch(showmanReplicChanged(localization.goodLuck));
+			}
 		}
 
 		this.appDispatch(playersStateCleared());
@@ -2046,7 +2049,7 @@ export default class ClientController implements IClientController {
 		}
 
 		if (announce) {
-			this.addEvent(stringFormat(localization.playsQuestion, player.name));
+			this.appDispatch(showmanReplicChanged(stringFormat(localization.playsQuestion, player.name)));
 		}
 	}
 
