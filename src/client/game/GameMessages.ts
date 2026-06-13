@@ -47,9 +47,6 @@ const enum GameMessages {
 	Connected = 'CONNECTED',
 
 	/** Table content. */
-	Content = 'CONTENT',
-
-	/** Table content. */
 	Content2 = 'CONTENT2',
 
 	/** Appends content to existing table content. */
@@ -218,6 +215,9 @@ const enum GameMessages {
 	ThemeInfo = 'THEME_INFO',
 
 	Timer = 'TIMER',
+
+	/** Game start timer. */
+	TimerGameStart = 'TIMER_GAME_START',
 
 	/** Toggles (removes or restores a question). */
 	Toggle = 'TOGGLE',

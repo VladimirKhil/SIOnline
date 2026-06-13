@@ -1175,11 +1175,12 @@ export default class ClientController implements IClientController {
 			const variantIndex = messageIndex % textVariants.length;
 			let selectedVariant = stringFormat(textVariants[variantIndex], ...args);
 
-			if (messageCode.toString() === 'RightAnswer' && args.length > 2) {
-				const base = args[2];
-				const multiplier = parseFloat(args[3]);
-				const multiplierText = multiplier > 1 ? ` * ${multiplier}!` : '';
-				selectedVariant += ` (${base}${multiplierText})`;
+			if ((messageCode.toString() === 'RightAnswer' || messageCode.toString() === 'WrongAnswer') && args.length > 1) {
+				const base = args[0];
+				const multiplier = parseFloat(args[1]);
+				const multiplierText = multiplier !== 1 ? ` * ${multiplier}` : '';
+				const sign = messageCode.toString() === 'RightAnswer' ? '+' : '-';
+				selectedVariant += ` (${sign}${base}${multiplierText})`;
 			}
 
 			this.appDispatch(showmanReplicChanged(selectedVariant));
@@ -1336,6 +1337,20 @@ export default class ClientController implements IClientController {
 			default:
 				break;
 		}
+	}
+
+	onContent2(placement: string, layoutId: number, label: string, content: ContentInfo[]) {
+		const state = this.getState();
+
+		if (layoutId !== 0 &&
+			state.table.layoutMode === LayoutMode.AnswerOptions &&
+			layoutId - 1 < state.table.answerOptions.length &&
+			content.length > 0) {
+			this.onAnswerOption(layoutId - 1, label, content[0].type, content[0].value);
+			return;
+		}
+
+		this.onContent(placement, content);
 	}
 
 	onAnswerOption(index: number, label: string, contentType: string, contentValue: string) {

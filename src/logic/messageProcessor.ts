@@ -236,48 +236,33 @@ const viewerHandler = (
 			break;
 		}
 
-		case GameMessages.Content:
+		case GameMessages.Content2:
 			if (args.length < 5) {
 				return;
 			}
 
 			const placement = args[1];
-			const { layoutMode, answerOptions } = state.table;
+			const layoutId = parseInt(args[2], 10);
+			const label = args[3];
+
 			const content: ContentInfo[] = [];
 
-			for (let i = 2; i + 2 < args.length; i++) {
-				const layoutId = parseInt(args[i], 10);
+			for (let i = 4; i + 2 < args.length; i++) {
+				const contentType = args[i];
+				const efffects = args[i + 1]; // reserved for future use
+				const contentValue = args[i + 2];
 
-				if (layoutId === 0) {
-					content.push({
-						type: args[i + 1],
-						value: args[i + 1] === 'text' ? unescapeNewLines(args[i + 2]) : args[i + 2]
-					});
-
-					i += 2;
-				} else if (layoutMode === LayoutMode.AnswerOptions && i + 3 < args.length && layoutId - 1 < answerOptions.length) {
-					const label = args[i + 1];
-					const contentType = args[i + 2];
-					const contentValue = args[i + 3];
-
-					if (contentType === 'text' || contentType === 'image') {
-						controller.onAnswerOption(
-							layoutId - 1,
-							label,
-							contentType,
-							contentValue
-						);
-					}
-
-					i += 3;
-				}
+				content.push({
+					type: contentType,
+					value: contentType === 'text' ? unescapeNewLines(contentValue) : contentValue
+				});
 			}
 
 			if (content.length === 0) {
 				return;
 			}
 
-			controller.onContent(placement, content);
+			controller.onContent2(placement, layoutId, label, content);
 			break;
 
 		case GameMessages.ContentAppend: {
@@ -998,6 +983,13 @@ const viewerHandler = (
 					default:
 						break;
 				}
+			}
+			break;
+
+		case GameMessages.TimerGameStart:
+			if (args.length > 1) {
+				const leftSeconds = parseInt(args[1], 10) / 10;
+				controller.onAutomaticGameTimer(leftSeconds);
 			}
 			break;
 
