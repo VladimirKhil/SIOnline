@@ -35,6 +35,35 @@ function createTimeoutError(contentType: string, contentUri: string): Error {
 	return new Error(`${contentType} preload timed out after ${PRELOAD_TIMEOUT_MS}ms: ${contentUri}`);
 }
 
+function getMediaErrorCode(error: MediaError | null | undefined): number | undefined {
+	return error?.code;
+}
+
+function describePreloadEventError(contentUri: string, error: Event): string {
+	const target = error.currentTarget ?? error.target;
+	const details = [`type=${error.type}`, `uri=${contentUri}`];
+
+	if (target instanceof HTMLImageElement) {
+		details.push(`tag=${target.tagName.toLowerCase()}`);
+		details.push(`src=${target.currentSrc || target.src || contentUri}`);
+	} else if (target instanceof HTMLVideoElement || target instanceof HTMLAudioElement) {
+		details.push(`tag=${target.tagName.toLowerCase()}`);
+		details.push(`src=${target.currentSrc || target.src || contentUri}`);
+		details.push(`networkState=${target.networkState}`);
+		details.push(`readyState=${target.readyState}`);
+
+		const mediaErrorCode = getMediaErrorCode(target.error);
+		if (mediaErrorCode !== undefined) {
+			details.push(`mediaErrorCode=${mediaErrorCode}`);
+		}
+	} else if (target instanceof HTMLIFrameElement) {
+		details.push(`tag=${target.tagName.toLowerCase()}`);
+		details.push(`src=${target.src || contentUri}`);
+	}
+
+	return details.join(', ');
+}
+
 async function fetchWithTimeout(contentUri: string, contentType: string): Promise<Response> {
 	const abortController = new AbortController();
 	const timeoutId = globalThis.setTimeout(() => abortController.abort(), PRELOAD_TIMEOUT_MS);
@@ -169,7 +198,7 @@ function preloadFile(contentUri: string, addSimpleMessage: (message: string) => 
 					preloadFile(contentUri, addSimpleMessage, retryCount + 1).then(resolve).catch(reject);
 				}, retryDelay);
 			} else {
-				const errorMessage = error instanceof Event ? `Failed to load media: ${contentUri}` : String(error);
+				const errorMessage = error instanceof Event ? describePreloadEventError(contentUri, error) : String(error);
 				console.warn(`Failed to preload ${contentUri} after ${MAX_RETRIES} attempts: ${errorMessage}`);
 				reportContentPreloadError(contentUri, isVideo ? 'video' : 'image', errorMessage);
 				addSimpleMessage(toContentPreloadErrorMessage(errorMessage));
