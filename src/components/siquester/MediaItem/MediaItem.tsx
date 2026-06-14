@@ -10,6 +10,10 @@ interface MediaItemProps {
 	isRef: boolean;
 }
 
+function getZipFile(zip: JSZip, folder: string, fileName: string) {
+	return zip.file(`${folder}/${fileName}`) ?? zip.file(`${folder}/${encodeURIComponent(fileName)}`);
+}
+
 const MediaItem: React.FC<MediaItemProps> = ({ src, type, isRef }) => {
 	const siquester = useAppSelector(state => state.siquester);
 	const { zip } = siquester;
@@ -79,8 +83,7 @@ const MediaItem: React.FC<MediaItemProps> = ({ src, type, isRef }) => {
 
 	async function loadItem(file: JSZip, isMounted: React.MutableRefObject<boolean>) {
 		const sourceFolder = getSourceFolderName();
-		// src is already encoded from the ZIP file path, so don't encode again
-		const data = file.file(sourceFolder + '/' + src);
+		const data = getZipFile(file, sourceFolder, src);
 
 		if (!data) {
 			setItem(undefined);

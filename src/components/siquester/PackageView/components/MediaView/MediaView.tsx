@@ -15,6 +15,14 @@ interface MediaFile {
 	path: string;
 }
 
+function decodeMediaFileName(fileName: string): string {
+	try {
+		return decodeURIComponent(fileName);
+	} catch {
+		return fileName;
+	}
+}
+
 type MediaTab = 'images' | 'audio' | 'video' | 'html';
 
 const MediaView: React.FC<MediaViewProps> = ({ zip }) => {
@@ -47,34 +55,34 @@ const MediaView: React.FC<MediaViewProps> = ({ zip }) => {
 				const fileName = relativePath.substring('Images/'.length);
 				if (fileName) {
 					files.images.push({
-						name: decodeURIComponent(fileName),
+						name: decodeMediaFileName(fileName),
 						type: 'image',
-						path: fileName // Keep encoded path for loading
+						path: fileName
 					});
 				}
 			} else if (relativePath.startsWith('Audio/')) {
 				const fileName = relativePath.substring('Audio/'.length);
 				if (fileName) {
 					files.audio.push({
-						name: decodeURIComponent(fileName),
+						name: decodeMediaFileName(fileName),
 						type: 'audio',
-						path: fileName // Keep encoded path for loading
+						path: fileName
 					});
 				}
 			} else if (relativePath.startsWith('Video/')) {
 				const fileName = relativePath.substring('Video/'.length);
 				if (fileName) {
 					files.video.push({
-						name: decodeURIComponent(fileName),
+						name: decodeMediaFileName(fileName),
 						type: 'video',
-						path: fileName // Keep encoded path for loading
+						path: fileName
 					});
 				}
 			} else if (relativePath.startsWith('Html/')) {
 				const fileName = relativePath.substring('Html/'.length);
 				if (fileName) {
 					files.html.push({
-						name: decodeURIComponent(fileName),
+						name: decodeMediaFileName(fileName),
 						type: 'html',
 						path: fileName
 					});

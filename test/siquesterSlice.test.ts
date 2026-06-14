@@ -1,4 +1,4 @@
-import reducer, { addComplexAnswer, resetQuestion, SIQuesterState, undo, redo, updatePackageProperty, updateRoundProperty, addRound } from '../src/state/siquesterSlice';
+import reducer, { addComplexAnswer, resetQuestion, SIQuesterState, undo, redo, updatePackageProperty, updateRoundProperty, addRound, setContentItemMedia } from '../src/state/siquesterSlice';
 import { createDefaultPackage } from '../src/model/siquester/packageGenerator';
 import JSZip from 'jszip';
 
@@ -113,6 +113,55 @@ describe('siquesterSlice', () => {
 			right: {
 				answer: ['']
 			}
+		});
+	});
+
+	test('setContentItemMedia replaces raw-named media files without leaving orphaned entries', () => {
+		const mockZip = new JSZip();
+		mockZip.file('Images/my image.png', 'old content');
+
+		const state: SIQuesterState = {
+			zip: mockZip,
+			pack: createDefaultPackage({
+				packageName: '',
+				authorName: '',
+				roundCount: 1,
+				themeCount: 1,
+				questionCount: 1,
+				includeFinalRound: false,
+				finalThemeCount: 0,
+			}),
+		};
+
+		state.pack!.rounds[0].themes[0].questions[0].params.question = {
+			items: [{
+				type: 'image',
+				value: 'my image.png',
+				isRef: true,
+				placement: 'screen',
+			}],
+		};
+
+		const nextState = reducer(state, setContentItemMedia({
+			roundIndex: 0,
+			themeIndex: 0,
+			questionIndex: 0,
+			paramName: 'question',
+			itemIndex: 0,
+			type: 'image',
+			fileName: 'new image.png',
+			fileData: 'bmV3IGNvbnRlbnQ=',
+		}));
+
+		expect(nextState.zip?.file('Images/my image.png')).toBeNull();
+		expect(nextState.zip?.file('Images/new image.png')).not.toBeNull();
+		expect(nextState.pack?.rounds[0].themes[0].questions[0].params.question).toEqual({
+			items: [{
+				type: 'image',
+				value: 'new image.png',
+				isRef: true,
+				placement: 'screen',
+			}],
 		});
 	});
 

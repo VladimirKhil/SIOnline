@@ -329,12 +329,11 @@ const ScreensView: React.FC<ScreensViewProps> = ({
 			}
 		};
 
-		// For internal refs (when isRef is true), encode the URI to find the correct file in the ZIP package
-		// For external URLs (when isRef is false), use as-is
+		// Internal refs now store the original file name in the package model.
+		// MediaItem resolves both raw and legacy encoded ZIP entries.
 		const getMediaSrc = (value: string, isRef: boolean): string => {
 			if (isRef) {
-				// Internal ZIP reference - encode to match file paths in ZIP
-				return encodeURIComponent(value);
+				return value;
 			}
 
 			// External URL - use as-is
