@@ -12,6 +12,7 @@ import commonReducer from './commonSlice';
 import uiReducer from './uiSlice';
 import siPackagesReducer from './siPackagesSlice';
 import gameReducer from './gameSlice';
+import historyReducer from './historySlice';
 
 import siquesterReducer from './siquesterSlice';
 
@@ -30,6 +31,7 @@ const reducer: Reducer<State> = (
 	ui: uiReducer(state.ui, action as UnknownAction),
 	online2: online2Reducer(state.online2, action as UnknownAction),
 	game: gameReducer(state.game, action as UnknownAction),
+	history: historyReducer(state.history, action as UnknownAction),
 	siquester: siquesterReducer(state.siquester, action as UnknownAction),
 });
 

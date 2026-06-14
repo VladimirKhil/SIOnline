@@ -150,6 +150,11 @@ function setState(state: State, savedState: SavedState | null, c: Config, isDesk
 			logPointsEvent: savedState.settings.logPointsEvent ?? true,
 			gameButtonKey: savedState.settings.gameButtonKey || Constants.KEY_SPACE,
 		} : state.settings,
+		history: savedState.history ? {
+			...state.history,
+			currentGame: savedState.history.currentGame,
+			gameHistory: savedState.history.gameHistory,
+		} : state.history,
 	};
 }
 
@@ -352,12 +357,16 @@ async function run(host: IHost) {
 		});
 
 		let currentSettings = state.settings;
+		let currentHistory = state.history;
 
 		store.subscribe(() => {
 			const newState = store.getState();
 			const newSettings = newState.settings;
+			const newHistory = newState.history;
+			const settingsChanged = newSettings !== currentSettings;
+			const historyChanged = newHistory !== currentHistory;
 
-			if (newSettings !== currentSettings) {
+			if (settingsChanged) {
 				if (newSettings.appSettings.culture !== currentSettings.appSettings.culture) {
 					localization.setLanguage(newSettings.appSettings.culture || localization.getInterfaceLanguage());
 					document.title = localization.appName;
@@ -370,6 +379,13 @@ async function run(host: IHost) {
 				}
 
 				currentSettings = newSettings;
+			}
+
+			if (historyChanged) {
+				currentHistory = newHistory;
+			}
+
+			if (settingsChanged || historyChanged) {
 				saveStateToStorage(newState);
 			}
 		});

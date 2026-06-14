@@ -1,5 +1,6 @@
 ﻿import Role from '../model/Role';
 import GameType from '../model/GameType';
+import GameInfo from '../model/GameInfo';
 import { SettingsState } from './settingsSlice';
 
 const STATE_KEY = 'SIOnline_State';
@@ -16,6 +17,10 @@ export default interface SavedState {
 	};
 
 	settings: SettingsState;
+	history?: {
+		currentGame: GameInfo | null;
+		gameHistory: GameInfo[];
+	};
 }
 
 export function loadState(): SavedState | null {

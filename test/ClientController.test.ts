@@ -1,6 +1,7 @@
 import { AnyAction, Dispatch } from 'redux';
 import ClientController from '../src/logic/ClientController';
 import State, { initialState } from '../src/state/State';
+import reducer from '../src/state/reducer';
 import DataContext from '../src/model/DataContext';
 import { AppDispatch } from '../src/state/store';
 import Account from '../src/model/Account';
@@ -76,11 +77,21 @@ describe('ClientController - Game Initialization Flow', () => {
 		dispatchedActions = [];
 		mockDispatch = jest.fn((action: AnyAction) => {
 			dispatchedActions.push(action);
+
+			if (action && typeof action.type === 'string') {
+				state = reducer(state, action);
+			}
+
 			return action;
 		}) as Dispatch<AnyAction>;
 
 		mockAppDispatch = jest.fn((action: AnyAction) => {
 			dispatchedActions.push(action);
+
+			if (action && typeof action.type === 'string') {
+				state = reducer(state, action);
+			}
+
 			return action;
 		}) as unknown as AppDispatch;
 
@@ -282,10 +293,29 @@ describe('ClientController - Round Flow', () => {
 	beforeEach(() => {
 		state = JSON.parse(JSON.stringify(initialState));
 		state.settings.appSound = true; // Enable sounds for testing
+		state.room2.name = 'TestUser';
 		state.room2.hiddenComments = 'previous hidden comments';
 		state.room2.persons.players = [
 			{
 				name: 'Player1',
+				isReady: false,
+				sum: 0,
+				stake: 0,
+				state: PlayerStates.None,
+				canBeSelected: false,
+				replic: null,
+				isDeciding: false,
+				isHuman: true,
+				isChooser: false,
+				inGame: true,
+				mediaLoaded: false,
+				mediaPreloaded: false,
+				mediaPreloadProgress: 0,
+				answer: '',
+				isAppellating: false,
+			},
+			{
+				name: 'Player2',
 				isReady: false,
 				sum: 0,
 				stake: 0,
@@ -307,11 +337,21 @@ describe('ClientController - Round Flow', () => {
 		dispatchedActions = [];
 		mockDispatch = jest.fn((action: AnyAction) => {
 			dispatchedActions.push(action);
+
+			if (action && typeof action.type === 'string') {
+				state = reducer(state, action);
+			}
+
 			return action;
 		}) as Dispatch<AnyAction>;
 
 		mockAppDispatch = jest.fn((action: AnyAction) => {
 			dispatchedActions.push(action);
+
+			if (action && typeof action.type === 'string') {
+				state = reducer(state, action);
+			}
+
 			return action;
 		}) as unknown as AppDispatch;
 
@@ -344,12 +384,45 @@ describe('ClientController - Round Flow', () => {
 		});
 
 		it('should handle begin stage', () => {
+			state.room2.persons.showman.name = 'Showman1';
+			state.room.metadata.packageName = 'Test Package';
+
 			controller.onStage('Begin', '', 0, '');
 
 			expect(mockAppDispatch).toHaveBeenCalled();
 			const actions = dispatchedActions.map(a => a.type);
 			expect(actions).toContain('table/showLogo');
 			expect(actions).toContain('table/captionChanged');
+			expect(actions).toContain('history/setCurrentGame');
+			expect(state.history.currentGame).toEqual(expect.objectContaining({
+				personName: 'TestUser',
+				showman: 'Showman1',
+				packageName: 'Test Package',
+			}));
+		});
+
+		it('should archive current game with final results when stage switches to After', () => {
+			state.room2.persons.showman.name = 'Showman1';
+			state.room.metadata.packageName = 'Test Package';
+			state.room2.persons.players[0].sum = 300;
+			state.room2.persons.players[1].sum = 100;
+
+			controller.onStage('Begin', '', 0, '');
+			controller.onPackageAuthors(['Author1', 'Author2']);
+			controller.onStage('After', '', 0, '');
+
+			expect(state.history.currentGame).toBeNull();
+			expect(state.history.gameHistory).toHaveLength(1);
+			expect(state.history.gameHistory[0]).toEqual(expect.objectContaining({
+				personName: 'TestUser',
+				showman: 'Showman1',
+				packageName: 'Test Package',
+				packageAuthors: ['Author1', 'Author2'],
+				results: {
+					Player1: 300,
+					Player2: 100,
+				},
+			}));
 		});
 	});
 

@@ -34,5 +34,6 @@ SIOnline is a web-based client for **SIGame** — a trivia/quiz game inspired by
 
 | Document | Description |
 |---|---|
+| [Profile](profile.md) | Global profile overlay: account info, video avatar settings, and local game history |
 | [Gameplay Flow](gameplay.md) | Complete game lifecycle: roles, rounds, questions, answers, scoring |
 | [Settings](settings.md) | Global settings dialog: common, keys, theme, and sound preferences |

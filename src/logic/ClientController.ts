@@ -167,6 +167,14 @@ import ErrorCode from '../client/contracts/ErrorCode';
 import ServerRole from '../client/contracts/ServerRole';
 import { setAttachContentToTable } from '../state/settingsSlice';
 import { addGameLog, appendGameLog, copyToClipboard } from '../state/globalActions';
+import {
+	addCurrentGameToHistory,
+	setCurrentGame,
+	setGameResults,
+	setPackageAuthors,
+	setPackageName,
+	setShowman,
+} from '../state/historySlice';
 import stringFormat from '../utils/StringHelpers';
 import JoinMode from '../client/game/JoinMode';
 import getBestRowColumnCount from '../utils/stackedContentHelper';
@@ -336,6 +344,43 @@ export default class ClientController implements IClientController {
 		}
 
 		this.appDispatch(playAudio({ audio: sound, loop }));
+	}
+
+	private syncCurrentGameContext(state: State): void {
+		if (!this.getState().history.currentGame) {
+			return;
+		}
+
+		const showmanName = state.room2.persons.showman.name;
+
+		if (showmanName) {
+			this.appDispatch(setShowman(showmanName));
+		}
+
+		const { packageName } = state.room.metadata;
+
+		if (packageName) {
+			this.appDispatch(setPackageName(packageName));
+		}
+	}
+
+	private finalizeCurrentGame(state: State): void {
+		if (!state.history.currentGame) {
+			return;
+		}
+
+		this.syncCurrentGameContext(state);
+
+		const results = state.room2.persons.players.reduce<Record<string, number>>((acc, player) => {
+			if (player.name && player.name !== Constants.ANY_NAME) {
+				acc[player.name] = player.sum;
+			}
+
+			return acc;
+		}, {});
+
+		this.appDispatch(setGameResults(results));
+		this.appDispatch(addCurrentGameToHistory());
 	}
 
 	private onScreenContent(content: ContentInfo[]) {
@@ -695,6 +740,10 @@ export default class ClientController implements IClientController {
 
 	onInfo(all: Persons, showman: PersonInfo, players: PlayerInfo[]) {
 		this.appDispatch(infoChanged({ all, showman, players }));
+
+		if (showman.name) {
+			this.appDispatch(setShowman(showman.name));
+		}
 	}
 
 	onJoinModeChanged(joinMode: JoinMode, inform: boolean) {
@@ -719,6 +768,10 @@ export default class ClientController implements IClientController {
 		voiceChatUri: string | null
 	) {
 		this.dispatch(roomActionCreators.gameMetadataChanged(gameName, packageName, contactUri, voiceChatUri));
+
+		if (packageName) {
+			this.appDispatch(setPackageName(packageName));
+		}
 	}
 
 	onShowmanComments(comments: string) {
@@ -933,6 +986,8 @@ export default class ClientController implements IClientController {
 	}
 
 	onPackage(packageName: string, packageLogo: string | null) {
+		this.appDispatch(setPackageName(packageName));
+
 		if (packageLogo) {
 			this.appDispatch(captionChanged(localization.package));
 
@@ -949,6 +1004,8 @@ export default class ClientController implements IClientController {
 	}
 
 	onPackageAuthors(authors: string[]) {
+		this.appDispatch(setPackageAuthors(authors));
+
 		this.appDispatch(showObject({
 			header: '',
 			text: authors.join(', '),
@@ -1224,7 +1281,16 @@ export default class ClientController implements IClientController {
 			this.appDispatch(showLogo());
 			this.appDispatch(captionChanged(stage === GameStage.Begin ? localization.gameStarted : localization.gameFinished));
 
+			if (stage === GameStage.Begin) {
+				if (!state.history.currentGame) {
+					this.appDispatch(setCurrentGame(state.room2.name || state.user.login));
+				}
+
+				this.syncCurrentGameContext(state);
+			}
+
 			if (stage === GameStage.After) {
+				this.finalizeCurrentGame(state);
 				this.appDispatch(showmanReplicChanged(localization.goodLuck));
 			}
 		}

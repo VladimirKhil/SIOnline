@@ -7,6 +7,7 @@ import * as room2 from './room2Slice';
 import * as online2 from './online2Slice';
 import * as common from './commonSlice';
 import * as game from './gameSlice';
+import * as history from './historySlice';
 import * as siPackages from './siPackagesSlice';
 import * as ui from './uiSlice';
 import * as siquester from './siquesterSlice';
@@ -17,6 +18,7 @@ export default interface State {
 	ui: ui.UIState;
 	online2: online2.Online2State;
 	game: game.GameState;
+	history: history.HistoryState;
 	room: RoomState;
 	room2: room2.Room2State;
 	table: table.TableState;
@@ -32,6 +34,7 @@ export const initialState: State = {
 	ui: ui.uiSlice.getInitialState(),
 	online2: online2.online2Slice.getInitialState(),
 	game: game.gameSlice.getInitialState(),
+	history: history.historySlice.getInitialState(),
 	siPackages: siPackages.siPackagesSlice.getInitialState(),
 	room: roomInitialState,
 	room2: room2.room2Slice.getInitialState(),

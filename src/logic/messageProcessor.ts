@@ -15,7 +15,6 @@ import { trimLength } from '../utils/StringHelpers';
 import GameMessages from '../client/game/GameMessages';
 import JoinMode from '../client/game/JoinMode';
 import { parseStakeModesFromString } from '../client/game/StakeModes';
-import LayoutMode from '../model/enums/LayoutMode';
 import ClientController from './ClientController';
 import ContentInfo from '../model/ContentInfo';
 import ItemState from '../model/enums/ItemState';

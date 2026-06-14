@@ -9,6 +9,14 @@
         height: calc(100% - 49px);
     }
 
+    .tabControl {
+        margin: 10px 10px 0;
+    }
+
+    .profile-view__tab {
+        padding-bottom: 10px;
+    }
+
     header {
         height: 49px;
         display: flex;
@@ -44,6 +52,49 @@
         &:disabled {
             background-color: darkgray;
         }
+    }
+
+    .historyList {
+        list-style: none;
+        margin: 10px 15px 20px;
+        padding: 0;
+    }
+
+    .historyList__item {
+        border: 1px solid #347DFF;
+        border-radius: 5px;
+        padding: 10px;
+        margin-bottom: 10px;
+        background: rgba(24, 27, 100, 0.65);
+    }
+
+    .historyList__header {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 6px;
+    }
+
+    .historyList__title {
+        font-weight: 600;
+    }
+
+    .historyList__date {
+        color: #98B9FF;
+        text-align: right;
+    }
+
+    .historyList__meta,
+    .historyList__results,
+    .historyEmpty {
+        margin: 0 15px 10px;
+        font-size: 16px;
+        line-height: 1.4;
+    }
+
+    .historyList__meta,
+    .historyList__results {
+        margin: 6px 0 0;
     }
 }
 

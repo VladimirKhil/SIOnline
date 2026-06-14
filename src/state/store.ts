@@ -19,6 +19,7 @@ import GameClient from '../client/game/GameClient';
 import GameServerClient from '../client/GameServerClient';
 import BrowserHost from '../host/BrowserHost';
 import SIHostClient from '../client/SIHostClient';
+import historySliceReducer from './historySlice';
 
 /* New version of store. Not used yet */
 
@@ -57,6 +58,7 @@ const store = configureStore({
 		settings: settingsReducer,
 		table: tableReducer,
 		siquester: siquesterReducer,
+		history: historySliceReducer,
 	},
 	middleware: (getDefaultMiddleware) => getDefaultMiddleware({
 		thunk: {

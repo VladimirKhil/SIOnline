@@ -1,9 +1,12 @@
 import * as React from 'react';
 import localization from '../../../model/resources/localization';
+import GameInfo from '../../../model/GameInfo';
 import Dialog from '../../common/Dialog/Dialog';
+import TabControl from '../../common/TabControl/TabControl';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 import { showProfile } from '../../../state/uiSlice';
 import AvatarView from '../AvatarView/AvatarView';
+import Constants from '../../../model/enums/Constants';
 import Path from '../../../model/enums/Path';
 import SexView from '../SexView/SexView';
 import { changeLogin } from '../../../state/userSlice';
@@ -14,6 +17,23 @@ import { setWebCamera } from '../../../state/room2Slice';
 import './ProfileView.scss';
 
 const layout: React.RefObject<HTMLDivElement> = React.createRef();
+const AccountTab = 0;
+const HistoryTab = 1;
+
+function formatResults(results: Record<string, number>): string {
+	return Object.entries(results)
+		.sort(([, leftScore], [, rightScore]) => rightScore - leftScore)
+		.map(([playerName, score]) => `${playerName}: ${score}`)
+		.join(', ');
+}
+
+function getGameName(game: GameInfo): string {
+	if (game.packageName === Constants.RANDOM_PACKAGE) {
+		return localization.randomThemes;
+	}
+
+	return game.packageName || localization.gameResults;
+}
 
 export function ProfileView(): JSX.Element {
 	const appDispatch = useAppDispatch();
@@ -22,9 +42,12 @@ export function ProfileView(): JSX.Element {
 	const navigation = useAppSelector(state => state.ui.navigation);
 	const login = useAppSelector(state => state.user.login);
 	const clearUrls = useAppSelector(state => state.common.clearUrls);
+	const culture = useAppSelector(state => state.settings.appSettings.culture) || localization.getLanguage();
+	const gameHistory = useAppSelector(state => state.history.gameHistory);
 
 	const [webCameraUrl, setWebCameraUrl] = React.useState(webCamera || '');
 	const [tempLogin, setTempLogin] = React.useState('');
+	const [activeTab, setActiveTab] = React.useState(AccountTab);
 
 	const inRoom = 	navigation.path === Path.Room;
 
@@ -88,6 +111,8 @@ export function ProfileView(): JSX.Element {
 		setTempLogin(trimmedLogin);
 	};
 
+	const displayedHistory = [...gameHistory].reverse();
+
 	return (
 		<Dialog
 			ref={layout}
@@ -95,54 +120,98 @@ export function ProfileView(): JSX.Element {
 			title={localization.profile}
 			onClose={close}>
 			<div className='profile-view__body'>
-				<h2>{localization.name}</h2>
-				<input
-					aria-label='Name'
-					type='text'
-					className='userName'
-					value={tempLogin}
-					maxLength={30}
-					onChange={onLoginChanged}
-					onBlur={onLoginBlur}
+				<TabControl
+					tabs={[
+						{ id: AccountTab, label: localization.info },
+						{ id: HistoryTab, label: localization.games },
+					]}
+					activeTab={activeTab}
+					onTabClick={setActiveTab}
 				/>
 
-				<h2>{localization.avatar}</h2>
-				<AvatarView disabled={false} />
+				{activeTab === AccountTab ? (
+					<div className='profile-view__tab'>
+						<h2>{localization.name}</h2>
+						<input
+							aria-label='Name'
+							type='text'
+							className='userName'
+							value={tempLogin}
+							maxLength={30}
+							onChange={onLoginChanged}
+							onBlur={onLoginBlur}
+						/>
 
-				<h2>{localization.sex}</h2>
-				<SexView disabled={false} />
+						<h2>{localization.avatar}</h2>
+						<AvatarView disabled={false} />
 
-				<h2>{localization.videoAvatar}</h2>
+						<h2>{localization.sex}</h2>
+						<SexView disabled={false} />
 
-				<div className='option'>
-					<label htmlFor='videoUrl'>
-						<span>{localization.webCameraUrl} </span>
+						<h2>{localization.videoAvatar}</h2>
 
-						{clearUrls
-							? null
-							: <a className='videoSiteUrl' href='https://vdo.ninja' target='_blank' rel='noopener noreferrer'>vdo.ninja</a>}
-					</label>
+						<div className='option'>
+							<label htmlFor='videoUrl'>
+								<span>{localization.webCameraUrl} </span>
 
-					<input id='videoUrl' className='videoUrl' type='text' value={webCameraUrl} disabled={!inRoom} onChange={onCameraChanged} />
+								{clearUrls
+									? null
+									: <a className='videoSiteUrl' href='https://vdo.ninja' target='_blank' rel='noopener noreferrer'>vdo.ninja</a>}
+							</label>
 
-					<div className='buttons'>
-						<button
-							disabled={!inRoom || webCameraUrl === ''}
-							type='button'
-							className='standard set'
-							onClick={() => appDispatch(setWebCamera(webCameraUrl))}>
-							{localization.set}
-						</button>
+							<input
+								id='videoUrl'
+								className='videoUrl'
+								type='text'
+								value={webCameraUrl}
+								disabled={!inRoom}
+								onChange={onCameraChanged}
+							/>
 
-						<button
-							disabled={!inRoom || webCameraUrl === ''}
-							type='button'
-							className='standard set'
-							onClick={() => { appDispatch(setWebCamera('')); }}>
-							{localization.drop}
-						</button>
+							<div className='buttons'>
+								<button
+									disabled={!inRoom || webCameraUrl === ''}
+									type='button'
+									className='standard set'
+									onClick={() => appDispatch(setWebCamera(webCameraUrl))}>
+									{localization.set}
+								</button>
+
+								<button
+									disabled={!inRoom || webCameraUrl === ''}
+									type='button'
+									className='standard set'
+									onClick={() => { appDispatch(setWebCamera('')); }}>
+									{localization.drop}
+								</button>
+							</div>
+						</div>
 					</div>
-				</div>
+				) : (
+					<div className='profile-view__tab'>
+						{displayedHistory.length > 0 ? (
+							<ul className='historyList'>
+								{displayedHistory.map((game, index) => (
+									<li key={`${game.date}-${index}`} className='historyList__item'>
+										<div className='historyList__header'>
+											<span className='historyList__title'>{getGameName(game)}</span>
+											<span className='historyList__date'>{new Date(game.date).toLocaleDateString(culture)}</span>
+										</div>
+										<div className='historyList__meta'>{`${localization.showman}: ${game.showman || '-'}`}</div>
+										{game.packageAuthors.length > 0 ? (
+											<div className='historyList__meta'>
+												{`${localization.packageAuthors}: ${game.packageAuthors.join(', ')}`}
+											</div>
+										) : null}
+										<div className='historyList__results'>{`${localization.results}: ${formatResults(game.results) || '-'}`}</div>
+									</li>
+								))}
+							</ul>
+						) : (
+							<div className='historyEmpty'>{`${localization.games}: 0`}</div>
+						)}
+					</div>
+				)}
 			</div>
 		</Dialog>
 	);
