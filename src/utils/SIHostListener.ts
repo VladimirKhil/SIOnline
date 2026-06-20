@@ -22,6 +22,11 @@ export default class SIHostListener implements ISIHostListener {
 	) { }
 
 	onReceive(message: Message): void {
+		if (message.IsSystem && message.Sender !== '@') {
+			console.error(`Received system message from ${message.Sender}: ${message.Text}`);
+			return;
+		}
+
 		messageProcessor(this.controller, this.dispatch, message);
 	}
 

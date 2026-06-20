@@ -375,6 +375,7 @@ All game functionality is available for free—donations do not affect gameplay 
 		noWarranty: `The game is distributed free of charge.
 		The author does not guarantee the correct operation of the game in arbitrary conditions
 		and is not responsible for any consequences from the game usage.`,
+		noWinner: 'We have no winner today;There is no winner today;Nobody managed to win today',
 		number: 'Number',
 		ofGames: 'games count',
 		openFile: 'Open file',
@@ -664,6 +665,7 @@ Package authors are responsible for package content. The package will be automat
 		viewer: 'Viewer',
 		viewers: 'Viewers',
 		viewMode: 'View mode',
+		winner: '{0}, congratulations, you have won!;{0}, please accept my congratulations!;{0}, victory is yours!',
 		editMode: 'Edit mode',
 		enableEditMode: 'Enable edit mode',
 		editModeDisclaimer: 'Edit mode is experimental. Use at your own risk. Save frequently.',
@@ -1076,6 +1078,7 @@ Package authors are responsible for package content. The package will be automat
 		notSet: 'Не задана',
 		noWarranty: `Игра распространяется бесплатно. Автор не гарантирует корректность работы игры в произвольных условиях
 	и не несёт ответственности за любые последствия от использования игры.`,
+		noWinner: 'Сегодня у нас нет победителя;Сегодня победителя нет;Сегодня никто не смог победить',
 		number: 'Число',
 		ofGames: 'игр',
 		openFile: 'Открыть файл',
@@ -1371,6 +1374,7 @@ Package authors are responsible for package content. The package will be automat
 		viewer: 'Зритель',
 		viewers: 'Зрители',
 		viewMode: 'Режим просмотра',
+		winner: '{0}, поздравляю вас, вы победили!;{0}, примите мои поздравления!;{0}, с победой вас!',
 		editMode: 'Режим редактирования',
 		enableEditMode: 'Включить режим редактирования',
 		editModeDisclaimer: 'Режим редактирования является экспериментальным. Используйте на свой риск. Сохраняйте часто.',
@@ -1794,6 +1798,7 @@ Package authors are responsible for package content. The package will be automat
 		notSet: 'Nije zadato',
 		noWarranty: `Igra se distribuira besplatno. Autor ne garantuje pravilno funkcionisanje igre u proizvolјnim uslovima
 		i nije odgovoran za bilo koje posledice od korišćenja igre.`,
+		noWinner: 'Danas nemamo pobednika;Danas nema pobednika;Danas niko nije uspeo da pobedi',
 		number: 'Broj',
 		ofGames: 'igara',
 		openFile: 'Otvoriti fajl',
@@ -2080,6 +2085,7 @@ Autori paketa odgovorni su za sadržaj paketa. Paket će biti automatski obrisan
 		viewer: 'Gledalac',
 		viewers: 'Gledaoci',
 		viewMode: 'Režim prikaza',
+		winner: '{0}, čestitam, pobedili ste!;{0}, primite moje čestitke!;{0}, pobeda je vaša!',
 		editMode: 'Režim uređivanja',
 		enableEditMode: 'Uključi režim uređivanja',
 		editModeDisclaimer: 'Režim uređivanja je eksperimentalan. Koristite na sopstvenu odgovornost. Čuvajte često.',
@@ -2503,6 +2509,7 @@ Har bir savoldan so‘ng navbat keyingi o‘yinchiga o‘tadi.`,
 		notSet: 'Belgilanmagan',
 		noWarranty: `O‘yin bepul tarqatiladi. Muallif o‘yinning ixtiyoriy sharoitlarda to‘g‘ri ishlashiga kafolat bermaydi
 va undan foydalanishning har qanday oqibatlari uchun javobgarlikni o‘z zimmasiga olmaydi.`,
+		noWinner: 'Bugun bizda g‘olib yo‘q;Bugun g‘olib chiqmadi;Bugun hech kim g‘alaba qozona olmadi',
 		number: 'Raqam',
 		ofGames: 'o‘yin',
 		openFile: 'Faylni ochish',
@@ -2789,6 +2796,7 @@ Paketlar mazmuni uchun ularning mualliflari mas’uldir. O‘yin yakunlangach, p
 		viewer: 'Tomoshabin',
 		viewers: 'Tomoshabinlar',
 		viewMode: 'Ko‘rish rejimi',
+		winner: '{0}, tabriklayman, siz g‘alaba qozondingiz!;{0}, tabriklarimni qabul qiling!;{0}, g‘alaba sizniki!',
 		editMode: 'Tahrirlash rejimi',
 		enableEditMode: 'Tahrirlash rejimini yoqish',
 		editModeDisclaimer: 'Tahrirlash rejimi sinov tarzda ishlayapti. Tavakkal qilsangiz, to‘liq mas’uliyatni zimmangizga olasiz. Tez-tez saqlang.',

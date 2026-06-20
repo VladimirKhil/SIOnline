@@ -104,7 +104,7 @@ const AudioContent: React.FC<AudioContentProps> = ({
 		completedRef.current = false;
 	};
 
-	const load = async () => {
+	const load = async (abortSignal: AbortSignal) => {
 		try {
 			console.log(`Loading audio: ${audio}`);
 			const preloadedAudioData = getPreloadedAudioData(audio);
@@ -114,7 +114,7 @@ const AudioContent: React.FC<AudioContentProps> = ({
 				return;
 			}
 
-			const response = await fetch(audio);
+			const response = await fetch(audio, { signal: abortSignal });
 
 			if (!response.ok) {
 				operationError(`${localization.audioLoadError} ${audio}: ${await getHttpErrorDetails(response)}`);
@@ -122,8 +122,16 @@ const AudioContent: React.FC<AudioContentProps> = ({
 			}
 
 			const arrayBuffer = await response.arrayBuffer();
+
+			if (abortSignal.aborted) {
+				return;
+			}
+
 			await loadFromArrayBuffer(arrayBuffer);
 		} catch (e) {
+			if (e instanceof Error && e.name === 'AbortError') {
+				return;
+			}
 			operationError(getErrorMessage(e));
 		}
 	};
@@ -135,9 +143,14 @@ const AudioContent: React.FC<AudioContentProps> = ({
 		}
 
 		completedRef.current = true; // to avoid calling play in the next effect
-		load();
 
-		return () => stop();
+		const abortController = new AbortController();
+		load(abortController.signal);
+
+		return () => {
+			abortController.abort();
+			stop();
+		};
 	}, [audio]);
 
 	// Handle playback control changes (only when audio stays the same)

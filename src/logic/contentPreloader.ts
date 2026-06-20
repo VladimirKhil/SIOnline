@@ -114,6 +114,11 @@ function preloadFile(contentUri: string, addSimpleMessage: (message: string) => 
 			(element as HTMLVideoElement).preload = 'auto';
 			(element as HTMLVideoElement).crossOrigin = 'anonymous';
 		} else if (isAudio) {
+			if (preloadedAudioData.has(contentUri)) {
+				resolve();
+				return;
+			}
+
 			fetchWithTimeout(contentUri, 'Audio')
 				.then(response => response.arrayBuffer())
 				.then(arrayBuffer => {
@@ -184,11 +189,26 @@ function preloadFile(contentUri: string, addSimpleMessage: (message: string) => 
 
 		const handleSuccess = () => {
 			clearElementHandlers();
+
+			if (element instanceof HTMLVideoElement) {
+				element.src = '';
+				element.load(); // aborts network, releases pipeline
+			} else if (element instanceof HTMLImageElement) {
+				element.src = '';
+			}
+
 			resolve();
 		};
 
 		const handleError = (error: Event | string) => {
 			clearElementHandlers();
+
+			if (element instanceof HTMLVideoElement) {
+				element.src = '';
+				element.load();
+			} else if (element instanceof HTMLImageElement) {
+				element.src = '';
+			}
 
 			if (retryCount < MAX_RETRIES) {
 				const retryDelay = Math.min(BASE_DELAY * Math.pow(2, retryCount), 5000);
@@ -215,6 +235,13 @@ function preloadFile(contentUri: string, addSimpleMessage: (message: string) => 
 		}
 		element.onerror = handleError;
 		timeoutId = globalThis.setTimeout(() => {
+			if (element instanceof HTMLVideoElement) {
+				element.src = '';
+				element.load();
+			} else if (element instanceof HTMLImageElement) {
+				element.src = '';
+			}
+
 			handleError(createTimeoutError(isVideo ? 'Video' : 'Image', contentUri).message);
 		}, PRELOAD_TIMEOUT_MS);
 

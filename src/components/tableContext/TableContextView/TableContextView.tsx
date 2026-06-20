@@ -44,6 +44,7 @@ function renderBody(
 	role: Role,
 	decisionType: DecisionType,
 	layoutMode: LayoutMode,
+	deepMode: boolean,
 ): JSX.Element | null {
 	switch (decisionType) {
 		case DecisionType.Answer:
@@ -80,7 +81,7 @@ function renderBody(
 			break;
 	}
 
-	if (!isGameStarted && !props.isAutomatic && role !== Role.Viewer) {
+	if (!isGameStarted && !props.isAutomatic && role !== Role.Viewer && !deepMode) {
 		return <ReadyButton />;
 	}
 
@@ -107,13 +108,14 @@ export function TableContextView(props: TableContextViewProps): JSX.Element | nu
 	const windowWidth = useAppSelector(rootState => rootState.ui.windowWidth);
 	const tableMode = useAppSelector(rootState => rootState.table.mode);
 
-	const { contextView, isGameStarted, isGamePaused, role, decisionType, layoutMode } = useAppSelector(rootState => ({
+	const { contextView, isGameStarted, isGamePaused, role, decisionType, layoutMode, deepMode } = useAppSelector(rootState => ({
 		contextView: rootState.room2.contextView,
 		isGameStarted: rootState.room2.stage.isGameStarted,
 		isGamePaused: rootState.room2.stage.isGamePaused,
 		role: rootState.room2.role,
 		decisionType: rootState.room2.stage.decisionType,
 		layoutMode: rootState.table.layoutMode,
+		deepMode: rootState.room2.deepMode,
 	}));
 
 	const body = renderBody(
@@ -126,6 +128,7 @@ export function TableContextView(props: TableContextViewProps): JSX.Element | nu
 		role,
 		decisionType,
 		layoutMode,
+		deepMode,
 	);
 
 	return body == null ? null : <div className='tableContextView'>{body}</div>;

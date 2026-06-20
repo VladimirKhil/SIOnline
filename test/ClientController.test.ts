@@ -1301,7 +1301,7 @@ describe('ClientController - Game End Flow', () => {
 		it('should play winner sound', () => {
 			state.settings.writeGameLog = false; // Simplify test
 
-			controller.onWinner();
+			controller.onWinner(-1);
 
 			// playAudio is called if sound is enabled
 			// This is conditional on settings

@@ -87,6 +87,13 @@ export const VideoContent: React.FC<VideoContentProps> = ({
 			isVisible,
 			autoPlayEnabled
 		};
+
+		return () => {
+			if (videoRef.current) {
+				videoRef.current.src = '';
+				videoRef.current.load();
+			}
+		};
 	}, []);
 
 	// Single ComponentDidUpdate equivalent
@@ -151,6 +158,7 @@ export const VideoContent: React.FC<VideoContentProps> = ({
 				ref={videoRef}
 				autoPlay={!isMediaStopped && isVisible}
 				onEnded={onVideoEnded}
+				crossOrigin="anonymous"
 				onLoadedData={() => appDispatch(onMediaLoaded())}>
 				<source src={uri} />
 			</video>

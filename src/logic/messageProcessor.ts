@@ -1062,7 +1062,9 @@ const viewerHandler = (
 			break;
 
 		case GameMessages.Winner:
-			controller.onWinner();
+			if (args.length > 1) {
+				controller.onWinner(parseInt(args[1], 10));
+			}
 			break;
 
 		default:

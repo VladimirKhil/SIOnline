@@ -233,6 +233,19 @@ function getServerRole(role: Role): ServerRole {
 	return role === Role.Player ? ServerRole.Player : ServerRole.Showman;
 }
 
+function getRandomLocalizedVariant(text: string): string {
+	const variants = text
+		.split(';')
+		.map(variant => variant.trim())
+		.filter(Boolean);
+
+	if (variants.length === 0) {
+		return text;
+	}
+
+	return variants[Math.floor(Math.random() * variants.length)];
+}
+
 export default class ClientController implements IClientController {
 	constructor(
 		private dispatch: Dispatch<AnyAction>,
@@ -1347,8 +1360,15 @@ export default class ClientController implements IClientController {
 		this.addSimpleMessage(stringFormat(localization.userUnbanned, name));
 	}
 
-	onWinner() {
+	onWinner(winnerIndex: number) {
 		this.playGameSound(GameSound.APPLAUSE_FINAL);
+
+		if (winnerIndex > -1) {
+			const winner = this.getState().room2.persons.players[winnerIndex].name;
+			this.appDispatch(showmanReplicChanged(stringFormat(getRandomLocalizedVariant(localization.winner), winner)));
+		} else {
+			this.appDispatch(showmanReplicChanged(getRandomLocalizedVariant(localization.noWinner)));
+		}
 
 		if (this.getState().settings.writeGameLog) {
 			this.appDispatch(addGameLog(`${localization.gameFinished}: ${new Date().toLocaleString()}`));
