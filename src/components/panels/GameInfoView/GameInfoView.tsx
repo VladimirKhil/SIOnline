@@ -1,4 +1,4 @@
-﻿import * as React from 'react';
+import * as React from 'react';
 import { connect } from 'react-redux';
 import localization from '../../../model/resources/localization';
 import Role from '../../../model/Role';
@@ -18,37 +18,29 @@ import { passwordChanged } from '../../../state/online2Slice';
 import getLanguage from '../../../utils/getLanguage';
 import { validateLoginName } from '../../../utils/loginValidation';
 import { userErrorChanged } from '../../../state/commonSlice';
+import AuthorizationMode from '../../../client/contracts/AuthorizationMode';
 
 import './GameInfoView.scss';
 import personSvg from '../../../../assets/images/person.svg';
 import personsSvg from '../../../../assets/images/persons.svg';
 import folderSvg from '../../../../assets/images/folder.svg';
 import timerSvg from '../../../../assets/images/timer.svg';
+import steamLogo from '../../../../assets/images/steam_logo.png';
 
 interface GameInfoViewOwnProps {
 	isConnected: boolean;
-	culture: string | null;
-	onJoin: (hostUri: string, gameId: number, name: string, role: Role, appDispatch: AppDispatch) => void;
+	onJoin: (hostUri: string, gameId: number, name: string, role: Role, appDispatch: AppDispatch, authorizationMode: AuthorizationMode) => void;
 }
 
-interface GameInfoViewStateProps {
-	login: string;
-}
-
-interface GameInfoViewProps extends GameInfoViewOwnProps, GameInfoViewStateProps {
+interface GameInfoViewProps extends GameInfoViewOwnProps {
 	game?: GameInfo;
 	showGameName: boolean;
 	canJoinAsViewer: boolean;
 }
 
-const mapStateToProps = (state: State) => ({
-	culture: state.settings.appSettings.culture,
-	login: state.user.login,
-});
-
 const mapDispatchToProps = (dispatch: any) => ({
-	onJoin: (hostUri: string, gameId: number, name: string, role: Role, appDispatch: AppDispatch) => {
-		dispatch(onlineActionCreators.joinGame(hostUri, gameId, name, role, null, appDispatch, false));
+	onJoin: (hostUri: string, gameId: number, name: string, role: Role, appDispatch: AppDispatch, authorizationMode: AuthorizationMode) => {
+		dispatch(onlineActionCreators.joinGame(hostUri, gameId, name, role, null, appDispatch, false, authorizationMode));
 	}
 });
 
@@ -73,7 +65,7 @@ const buildStage = (stage: GameStage, progressCurrent: number, progressTotal: nu
 
 const buildRules = (rulesString: string, isSimple: boolean): string[] => {
 	const rules = parseRulesFromString(rulesString);
-	const result : string[] = [];
+	const result: string[] = [];
 
 	if (isSimple) {
 		result.push(localization.sport.toLowerCase());
@@ -106,13 +98,14 @@ export function GameInfoView(props: GameInfoViewProps): JSX.Element {
 	}
 
 	const appDispatch = useAppDispatch();
-	const { password, joinGameProgress, gameCreationProgress } = useAppSelector(state => ({
-		password: state.online2.password,
-		joinGameProgress: state.online2.joinGameProgress,
-		gameCreationProgress: state.online2.gameCreationProgress,
-	}));
+	const login = useAppSelector(state => state.user.login);
+	const authName = useAppSelector(state => state.user.authName);
+	const password = useAppSelector(state => state.online2.password);
+	const joinGameProgress = useAppSelector(state => state.online2.joinGameProgress);
+	const gameCreationProgress = useAppSelector(state => state.online2.gameCreationProgress);
 
-	const [userName, setUserName] = React.useState(props.login);
+	const [userName, setUserName] = React.useState(login);
+	const [useAuth, setUseAuth] = React.useState(!!authName);
 
 	const language = localization.getLanguage();
 	const createdTime = new Date(props.game.StartTime).toLocaleString(language);
@@ -127,8 +120,8 @@ export function GameInfoView(props: GameInfoViewProps): JSX.Element {
 	};
 
 	let showman = '';
-	const players : string[] = [];
-	const viewers : string[] = [];
+	const players: string[] = [];
+	const viewers: string[] = [];
 
 	const { Persons } = props.game;
 
@@ -178,18 +171,20 @@ export function GameInfoView(props: GameInfoViewProps): JSX.Element {
 	};
 
 	const validateAndJoin = (role: Role) => {
-		const validationError = validateLoginName(userName);
+		const nameToUse = useAuth && authName ? authName : userName;
+		const validationError = validateLoginName(nameToUse);
 
 		if (validationError) {
 			appDispatch(userErrorChanged(validationError));
 			return;
 		}
 
-		props.onJoin(game.HostUri, game.GameID, userName.trim(), role, appDispatch);
+		const authMode = useAuth ? AuthorizationMode.Steam : AuthorizationMode.None;
+		props.onJoin(game.HostUri, game.GameID, nameToUse.trim(), role, appDispatch, authMode);
 	};
 
 	// Check if join buttons should be disabled due to validation
-	const isNameInvalid = () => validateLoginName(userName) !== null;
+	const isNameInvalid = () => validateLoginName(useAuth && authName ? authName : userName) !== null;
 
 	const rules = buildRules(game.Rules, game.Mode === ServerGameType.Simple);
 
@@ -228,26 +223,26 @@ export function GameInfoView(props: GameInfoViewProps): JSX.Element {
 									<span>{game.PackageName == Constants.RANDOM_PACKAGE ? localization.randomThemes : game.PackageName}</span>
 								</dt>
 
-							<div className='info__block rules'>{rules.map(name => <div className='rule' key={name}>{name}</div>)}</div>
-							<div className='language' title={localization.language}>{getLanguage(game.Language)}</div>
+								<div className='info__block rules'>{rules.map(name => <div className='rule' key={name}>{name}</div>)}</div>
+								<div className='language' title={localization.language}>{getLanguage(game.Language)}</div>
 
-							{showman ? (
-								<div className='info__block showman'>
-									<img alt='showman' title={localization.showman} src={personSvg} />
-									<span style={{ marginLeft: '8px' }}>{showman}</span>
+								{showman ? (
+									<div className='info__block showman'>
+										<img alt='showman' title={localization.showman} src={personSvg} />
+										<span style={{ marginLeft: '8px' }}>{showman}</span>
+									</div>
+								) : null}
+
+								<div className='info__block players'>
+									<img alt='players' title={localization.players} src={personsSvg} />
+									<span>{totalPlayers - freePlayers}/{totalPlayers}</span>
+									{players.map((name, i) => <div className='player' key={i}>{name}</div>)}
 								</div>
-							) : null}
 
-							<div className='info__block players'>
-								<img alt='players' title={localization.players} src={personsSvg} />
-								<span>{totalPlayers - freePlayers}/{totalPlayers}</span>
-								{players.map((name, i) => <div className='player' key={i}>{name}</div>)}
-							</div>
-
-							<dt>
-								<img alt='stage' title={localization.status} src={timerSvg} />
-								<span>{buildStage(game.Stage, game.ProgressCurrent, game.ProgressTotal)}</span>
-							</dt>								{duration.length > 0 ? (<>
+								<dt>
+									<img alt='stage' title={localization.status} src={timerSvg} />
+									<span>{buildStage(game.Stage, game.ProgressCurrent, game.ProgressTotal)}</span>
+								</dt>								{duration.length > 0 ? (<>
 									<dt></dt>
 									<dd title={localization.duration}>{duration}</dd>
 								</>) : (<>
@@ -258,15 +253,39 @@ export function GameInfoView(props: GameInfoViewProps): JSX.Element {
 						</div>
 
 						<div className='gameInfoBlocks'>
-							<div className="gameInfoBlock">
-								<span>{localization.name}</span>
+							<div className="gameInfoBlock gameInfoBlock--name">
+								<div className='gameInfoBlock__header'>
+									<span>{localization.name}</span>
+
+									{authName ? (
+										<div className="authTypeSelector">
+											<button
+												type="button"
+												className={`authOption ${useAuth ? 'active' : ''}`}
+												onClick={() => setUseAuth(true)}
+												title="Steam"
+											>
+												<img src={steamLogo} alt="Steam" />
+											</button>
+											<button
+												type="button"
+												className={`authOption ${!useAuth ? 'active' : ''}`}
+												onClick={() => setUseAuth(false)}
+												title={localization.guest}
+											>
+												<img src={personSvg} alt="Guest" />
+											</button>
+										</div>
+									) : null}
+								</div>
 
 								<input
 									id="name"
 									type="text"
 									aria-label='Name'
-									disabled={joinGameProgress}
-									value={userName}
+									className={`gameInfoBlock__input ${useAuth ? 'nameInput nameInput--auth' : 'nameInput'}`}
+									disabled={joinGameProgress || useAuth}
+									value={useAuth && authName ? authName : userName}
 									onChange={e => setUserName(e.target.value)}
 									onKeyPress={onKeyPress}
 									onBlur={onNameBlur}
@@ -276,12 +295,15 @@ export function GameInfoView(props: GameInfoViewProps): JSX.Element {
 
 							{game.PasswordRequired ? (
 								<div className="gameInfoBlock">
-									<span>{localization.password}</span>
+									<div className='gameInfoBlock__header'>
+										<span>{localization.roomPassword}</span>
+									</div>
 
 									<input
 										type="password"
 										autoComplete='new-password'
 										aria-label='Secret code'
+										className='gameInfoBlock__input'
 										disabled={joinGameProgress}
 										value={password}
 										onChange={e => appDispatch(passwordChanged(e.target.value))}
@@ -348,4 +370,4 @@ export function GameInfoView(props: GameInfoViewProps): JSX.Element {
 	);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(GameInfoView);
+export default connect(null, mapDispatchToProps)(GameInfoView);

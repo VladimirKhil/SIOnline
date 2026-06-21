@@ -158,7 +158,7 @@ function getServerRole(role: Role) {
 }
 
 const joinGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
-	(hostUri: string, gameId: number, userName: string, role: Role, pin: number | null, appDispatch: AppDispatch, isAutomatic: boolean) => async (
+	(hostUri: string, gameId: number, userName: string, role: Role, pin: number | null, appDispatch: AppDispatch, isAutomatic: boolean, authorizationMode: AuthorizationMode = AuthorizationMode.None) => async (
 		dispatch: Dispatch<any>,
 		getState: () => State,
 		dataContext: DataContext,
@@ -195,7 +195,7 @@ const joinGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 				Sex: state.settings.sex === Sex.Male ? ServerSex.Male : ServerSex.Female,
 				Password: state.online2.password,
 				Pin: pin,
-				AuthorizationMode: AuthorizationMode.None,
+				AuthorizationMode: authorizationMode,
 			});
 
 			if (result !== JoinGame2Result.Success) {
@@ -206,18 +206,20 @@ const joinGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 				return;
 			}
 
-			await initGameAsync(dispatch, appDispatch, dataContext.game, gameId, userName, role, isAutomatic);
+			await initGameAsync(dispatch, appDispatch, dataContext.game, gameId, siHostClient.userName ?? userName, role, isAutomatic);
 			saveStateToStorage(getState()); // use state that could be changed by initGameAsync
 
 			const navigation: INavigationState = {
 				path: Path.Room,
 				hostUri: hostUri,
 				gameId: gameId,
+				userName: userName,
 				role: role,
 				sex: state.settings.sex,
 				password: state.online2.password,
 				pin: pin ?? undefined,
 				isAutomatic: false,
+				authorizationMode: authorizationMode,
 			};
 
 			appDispatch(navigate({ navigation, saveState: true }));

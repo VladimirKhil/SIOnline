@@ -3,6 +3,7 @@ import OnlineMode from '../model/enums/OnlineMode';
 import Path from '../model/enums/Path';
 import Role from '../model/Role';
 import Sex from '../model/enums/Sex';
+import AuthorizationMode from '../client/contracts/AuthorizationMode';
 
 export interface INavigationState {
 	path: Path;
@@ -12,6 +13,7 @@ export interface INavigationState {
 	hostUri?: string;
 	siHostKey?: string;
 	gameId?: number;
+	userName?: string;
 	newGameMode?: 'single' | 'multi' | null;
 	callbackState?: INavigationState;
 	role?: Role;
@@ -19,6 +21,7 @@ export interface INavigationState {
 	password?: string;
 	pin?: number;
 	isAutomatic?: boolean;
+	authorizationMode?: AuthorizationMode;
 }
 
 export interface UIState {

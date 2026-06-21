@@ -242,14 +242,15 @@ const finishInitializationAsync = (
 		if (targetView.path === Path.Room) {
 			if (targetView.gameId && targetView.role !== undefined && hostUri) {
 				const siHostClient = await connectToSIHostAsync(hostUri, dispatch, appDispatch, getState, dataContext);
+
 				const result = await siHostClient.joinGameAsync({
 					GameId: targetView.gameId,
-					UserName: (getState() as State).user.login,
+					UserName: targetView.userName ?? (getState() as State).user.login,
 					Role: getServerRole(targetView.role),
 					Sex: targetView.sex === Sex.Male ? ServerSex.Male : ServerSex.Female,
 					Password: targetView.password ?? '',
 					Pin: targetView.pin ?? null,
-					AuthorizationMode: AuthorizationMode.None,
+					AuthorizationMode: targetView.authorizationMode ?? AuthorizationMode.None,
 				});
 
 				if (result !== JoinGame2Result.Success) {

@@ -133,24 +133,132 @@
     display: block;
     width: 100%;
     margin-top: 10px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    padding-left: 40px;
+    padding-right: 40px;
+
+    &.gameInfoBlock--name {
+        flex-wrap: nowrap;
+        text-align: left;
+
+        >span {
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .authTypeSelector {
+            flex-shrink: 0;
+            margin: 0;
+            gap: 4px;
+        }
+
+        .authOption {
+            width: 32px;
+            height: 32px;
+            padding: 4px;
+
+            img {
+                width: 18px;
+                height: 18px;
+            }
+        }
+
+        .nameInput {
+            flex: 1;
+            min-width: 0;
+        }
+    }
+
+    .gameInfoBlock__header {
+        flex: 1;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: end;
+        gap: 2px;
+    }
 }
 
 .gameInfoBlock span {
-    width: 60px;
-    display: inline-block;
+    display: block;
+    margin-right: 10px;
 }
 
-.gameInfoBlock input {
+.authTypeSelector {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 8px;
+    margin: 6px 15px 2px;
+}
+
+.authOption {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border: 2px solid #347DFF44;
+    border-radius: 8px;
+    background: #181B6488;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s, transform 0.15s;
+    padding: 6px;
+
+    img {
+        width: 24px;
+        height: 24px;
+        object-fit: contain;
+        filter: brightness(0.7);
+        transition: filter 0.2s;
+    }
+
+    &:hover {
+        border-color: #347DFF;
+        background: #181B64BB;
+
+        img {
+            filter: brightness(1);
+        }
+    }
+
+    &.active {
+        border-color: #347DFF;
+        background: #2649FF44;
+        transform: scale(1.08);
+
+        img {
+            filter: brightness(1.2);
+        }
+    }
+}
+
+.gameInfoBlock input.gameInfoBlock__input {
+    flex: 1;
     font-size: 20px;
     width: calc(100% - 30px);
     max-width: initial;
     display: block;
     margin: 5px 15px;
     padding: 2px 5px;
-	background: #181B64 !important;
-	color: white;
-	border: 1px solid #347DFF;
-	border-radius: 5px;
+    background: #181B64;
+    color: white;
+    border: 1px solid #347DFF;
+    border-radius: 5px;
+    transition: border-color 0.2s, background 0.2s;
+}
+
+.nameInput--auth {
+    background: transparent !important;
+    border-color: transparent !important;
+    box-shadow: none !important;
+    cursor: default;
+    font-weight: bold;
+    color: white;
+    text-shadow: 0 0 8px rgba(52, 125, 255, 0.6);
 }
 
 .joinGameProgress {
@@ -165,8 +273,13 @@
 }
 
 @keyframes joinfadein {
-    from { background-color: transparent; }
-    to   { background-color: #00000055; }
+    from {
+        background-color: transparent;
+    }
+
+    to {
+        background-color: #00000055;
+    }
 }
 
 .joinGameProgress .progress {
@@ -196,9 +309,9 @@
         right: 295px;
     }
 
-    .gameInfoBlock input {
+    .gameInfoBlock input.gameInfoBlock__input {
         display: inline;
-        width: initial; /* Эффект есть */
+        width: initial;
     }
 
     .actions {

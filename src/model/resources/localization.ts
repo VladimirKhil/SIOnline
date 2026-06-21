@@ -509,6 +509,7 @@ Package authors are responsible for package content. The package will be automat
 		rightAnswers: 'Right answers',
 		role: 'Role',
 		room: 'Room',
+		roomPassword: 'Room password',
 		round: 'Round',
 		screens: 'Screens',
 		roundAuthors: 'Round authors',
@@ -716,7 +717,8 @@ Package authors are responsible for package content. The package will be automat
 		enterTag: 'Enter tag',
 		enterTextContent: 'Enter text content...',
 		enterWrongAnswer: 'Enter wrong answer',
-		yourScore: 'Your score'
+		yourScore: 'Your score',
+		guest: 'Guest'
 	},
 	ru: {
 		about: [
@@ -1221,6 +1223,7 @@ Package authors are responsible for package content. The package will be automat
 		rightAnswers: 'Правильные ответы',
 		role: 'Роль',
 		room: 'Комната',
+		roomPassword: 'Пароль комнаты',
 		round: 'Раунд',
 		screens: 'Экраны',
 		roundAuthors: 'Авторы раунда',
@@ -1425,7 +1428,8 @@ Package authors are responsible for package content. The package will be automat
 		enterTag: 'Введите тег',
 		enterTextContent: 'Введите текст...',
 		enterWrongAnswer: 'Введите неверный ответ',
-		yourScore: 'Ваш счёт'
+		yourScore: 'Ваш счёт',
+		guest: 'Гость'
 	},
 	sr: {
 		about: [
@@ -1932,6 +1936,7 @@ Autori paketa odgovorni su za sadržaj paketa. Paket će biti automatski obrisan
 		rightAnswers: 'Tačni odgovori',
 		role: 'Uloga',
 		room: 'Soba',
+		roomPassword: 'Lozinka sobe',
 		round: 'Runda',
 		screens: 'Ekrani',
 		roundAuthors: 'Autori runde',
@@ -2134,7 +2139,8 @@ Autori paketa odgovorni su za sadržaj paketa. Paket će biti automatski obrisan
 		enterSource: 'Unesite izvor',
 		enterTag: 'Unesite oznaku',
 		enterTextContent: 'Unesite tekst...',
-		enterWrongAnswer: 'Unesite netačan odgovor'
+		enterWrongAnswer: 'Unesite netačan odgovor',
+		guest: 'Gost'
 	},
 	uz: {
 		about: [
@@ -2643,6 +2649,7 @@ Paketlar mazmuni uchun ularning mualliflari mas’uldir. O‘yin yakunlangach, p
 		rightAnswers: 'To‘g‘ri javoblar',
 		role: 'Rol',
 		room: 'Xona',
+		roomPassword: 'Xona paroli',
 		round: 'Raund',
 		screens: 'Ekranlar',
 		roundAuthors: 'Raund mualliflari',
@@ -2846,5 +2853,6 @@ Paketlar mazmuni uchun ularning mualliflari mas’uldir. O‘yin yakunlangach, p
 		enterTag: 'Teg kiriting',
 		enterTextContent: 'Matn kiriting...',
 		enterWrongAnswer: 'Noto‘g‘ri javobni kiriting',
+		guest: 'Mehmon',
 	},
 }); export default localization;

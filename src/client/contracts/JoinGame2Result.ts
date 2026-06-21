@@ -4,6 +4,7 @@
 enum JoinGame2Result {
     Success = 'Success',
     InvalidRole = 'InvalidRole',
+    InvalidUserName = 'InvalidUserName',
     GameNotFound = 'GameNotFound',
     InternalServerError = 'InternalServerError',
     Forbidden = 'Forbidden',

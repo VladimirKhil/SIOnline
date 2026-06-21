@@ -4,6 +4,9 @@ import JoinGameRequest from './contracts/JoinGameRequest';
 import ServerRole from './contracts/ServerRole';
 
 export default interface ISIHostClient {
+	/** Current user name. */
+	userName: string | null;
+
 	/** Tries to get existing game info. */
 	tryGetGameInfoAsync(gameId: number): Promise<GameInfo | null>;
 

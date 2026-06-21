@@ -32,6 +32,8 @@ export default class SIHostClient implements ISIHostClient {
 
 	private listener?: ISIHostListener;
 
+	public userName: string | null = null;
+
 	constructor(private readonly authorizationProvider?: (authorizationMode?: AuthorizationMode) => Promise<AuthorizationData | null>) {
 	}
 
@@ -162,6 +164,8 @@ export default class SIHostClient implements ISIHostClient {
 				...request,
 				AuthTicket: request.AuthorizationMode === AuthorizationMode.Steam ? null : request.AuthTicket ?? null,
 			};
+
+			this.userName = request.AuthorizationMode === AuthorizationMode.Steam ? `Ⓢ${request.UserName}` : request.UserName;
 		}
 
 		return result;
@@ -201,7 +205,7 @@ export default class SIHostClient implements ISIHostClient {
 			await this.connection.invoke('SendMessage', {
 				Text: message,
 				IsSystem: true,
-				Sender: this.joinInfo?.UserName,
+				Sender: this.userName,
 				Receiver: '@'
 			});
 
@@ -227,7 +231,7 @@ export default class SIHostClient implements ISIHostClient {
 		return this.connection.invoke('SendMessage', {
 			Text: message,
 			IsSystem: false,
-			Sender: this.joinInfo?.UserName,
+			Sender: this.userName,
 			Receiver: '*'
 		});
 	}

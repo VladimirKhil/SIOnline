@@ -50,6 +50,9 @@ export function getJoinErrorMessage(error: JoinGame2Result): string {
 		case JoinGame2Result.InvalidRole:
 			return localization.joinErrorInvalidRole;
 
+		case JoinGame2Result.InvalidUserName:
+			return localization.joinErrorInvalidUserName;
+
 		case JoinGame2Result.GameNotFound:
 			return localization.gameNotFound;
 
