@@ -1,0 +1,47 @@
+.authTypeSelector {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 4px;
+}
+
+.authOption {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: 2px solid #347DFF44;
+    border-radius: 8px;
+    background: #181B6488;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s, transform 0.15s;
+    padding: 4px;
+
+    img {
+        width: 18px;
+        height: 18px;
+        object-fit: contain;
+        filter: brightness(0.7);
+        transition: filter 0.2s;
+    }
+
+    &:hover {
+        border-color: #347DFF;
+        background: #181B64BB;
+
+        img {
+            filter: brightness(1);
+        }
+    }
+
+    &.active {
+        border-color: #347DFF;
+        background: #2649FF44;
+        transform: scale(1.08);
+
+        img {
+            filter: brightness(1.2);
+        }
+    }
+}

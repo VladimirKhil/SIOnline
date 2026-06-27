@@ -10,6 +10,9 @@ import { validateLoginName } from '../../../utils/loginValidation';
 import { userErrorChanged } from '../../../state/commonSlice';
 
 import './JoinByPin.scss';
+import AuthModeSelector from '../../panels/AuthModeSelector/AuthModeSelector';
+import NameInput from '../../panels/NameInput/NameInput';
+import AuthorizationMode from '../../../client/contracts/AuthorizationMode';
 
 export default function JoinByPin(): JSX.Element {
 	const [pin, setPin] = React.useState(0);
@@ -18,6 +21,7 @@ export default function JoinByPin(): JSX.Element {
 	const online = useAppSelector(state => state.online2);
 
 	const [userName, setUserName] = React.useState(user.login);
+	const authName = useAppSelector(state => state.user.authName);
 
 	const onJoinByPin = () => {
 		const validationError = validateLoginName(userName);
@@ -27,8 +31,10 @@ export default function JoinByPin(): JSX.Element {
 			return;
 		}
 
+		const authMode = useAuth ? AuthorizationMode.Steam : AuthorizationMode.None;
+
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		appDispatch(onlineActionCreators.joinByPin(pin, userName.trim(), Role.Player, appDispatch) as any);
+		appDispatch(onlineActionCreators.joinByPin(pin, userName.trim(), Role.Player, appDispatch, authMode) as any);
 	};
 
 	const onKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -55,21 +61,30 @@ export default function JoinByPin(): JSX.Element {
 	// Check if join button should be disabled
 	const isJoinDisabled = () => online.joinGameProgress || validateLoginName(userName) !== null;
 
+	const [useAuth, setUseAuth] = React.useState(!!authName);
+
 	return <Dialog className='enterPin' title={localization.joinByPin} onClose={() => window.history.back()}>
 		<div className='enterPinBody'>
 			<div className="pinBlock">
 				<span className='field-header'>{localization.name}</span>
 
-				<input
-					id="name"
-					type="text"
-					aria-label='Name'
-					value={userName}
-					onChange={e => setUserName(e.target.value)}
-					onKeyPress={onKeyPress}
-					onBlur={onNameBlur}
-					maxLength={30}
-				/>
+				<div className='authInputContainer'>
+					{authName ? <AuthModeSelector
+						useAuth={useAuth}
+						setUseAuth={setUseAuth}
+					/> : null}
+
+					<NameInput
+						className="name"
+						userName={userName}
+						setName={setUserName}
+						onNameBlur={onNameBlur}
+						onKeyDown={onKeyPress}
+						useAuth={useAuth}
+						authName={authName}
+						joinGameProgress={online.joinGameProgress}
+					/>
+				</div>
 			</div>
 
 			<div className="pinBlock">

@@ -25,7 +25,8 @@ import personSvg from '../../../../assets/images/person.svg';
 import personsSvg from '../../../../assets/images/persons.svg';
 import folderSvg from '../../../../assets/images/folder.svg';
 import timerSvg from '../../../../assets/images/timer.svg';
-import steamLogo from '../../../../assets/images/steam_logo.png';
+import AuthModeSelector from '../AuthModeSelector/AuthModeSelector';
+import NameInput from '../NameInput/NameInput';
 
 interface GameInfoViewOwnProps {
 	isConnected: boolean;
@@ -256,40 +257,18 @@ export function GameInfoView(props: GameInfoViewProps): JSX.Element {
 							<div className="gameInfoBlock gameInfoBlock--name">
 								<div className='gameInfoBlock__header'>
 									<span>{localization.name}</span>
-
-									{authName ? (
-										<div className="authTypeSelector">
-											<button
-												type="button"
-												className={`authOption ${useAuth ? 'active' : ''}`}
-												onClick={() => setUseAuth(true)}
-												title="Steam"
-											>
-												<img src={steamLogo} alt="Steam" />
-											</button>
-											<button
-												type="button"
-												className={`authOption ${!useAuth ? 'active' : ''}`}
-												onClick={() => setUseAuth(false)}
-												title={localization.guest}
-											>
-												<img src={personSvg} alt="Guest" />
-											</button>
-										</div>
-									) : null}
+									{authName ? <AuthModeSelector useAuth={useAuth} setUseAuth={setUseAuth} /> : null}
 								</div>
 
-								<input
-									id="name"
-									type="text"
-									aria-label='Name'
-									className={`gameInfoBlock__input ${useAuth ? 'nameInput nameInput--auth' : 'nameInput'}`}
-									disabled={joinGameProgress || useAuth}
-									value={useAuth && authName ? authName : userName}
-									onChange={e => setUserName(e.target.value)}
-									onKeyPress={onKeyPress}
-									onBlur={onNameBlur}
-									maxLength={30}
+								<NameInput
+									useAuth={useAuth}
+									joinGameProgress={joinGameProgress}
+									authName={authName}
+									userName={userName}
+									onKeyDown={onKeyPress}
+									onNameBlur={onNameBlur}
+									setName={setUserName}
+									className='gameInfoBlock__input'
 								/>
 							</div>
 

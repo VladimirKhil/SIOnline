@@ -232,7 +232,7 @@ const joinGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 	};
 
 const joinByPin: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
-	(pin: number, userName: string, role: Role, appDispatch: AppDispatch) => async (
+	(pin: number, userName: string, role: Role, appDispatch: AppDispatch, authorizationMode: AuthorizationMode) => async (
 		_dispatch: Dispatch<any>,
 		_getState: () => State,
 		dataContext: DataContext,
@@ -245,7 +245,7 @@ const joinByPin: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 			return;
 		}
 
-		appDispatch(joinGame(gameInfo.hostUri, gameInfo.gameId, userName, role, pin, appDispatch, false) as unknown as UnknownAction);
+		appDispatch(joinGame(gameInfo.hostUri, gameInfo.gameId, userName, role, pin, appDispatch, false, authorizationMode) as unknown as UnknownAction);
 	};
 
 function createGameSettings(
