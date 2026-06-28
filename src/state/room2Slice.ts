@@ -768,7 +768,7 @@ export const room2Slice = createSlice({
 		setSettingManaged: (state: Room2State, action: PayloadAction<boolean>) => {
 			state.settings.managed = action.payload;
 		},
-		setSettingUseApellations: (state: Room2State, action: PayloadAction<boolean>) => {
+		setSettingUseAppellations: (state: Room2State, action: PayloadAction<boolean>) => {
 			state.settings.useApellations = action.payload;
 		},
 		setSettingPlayAllQuestionsInFinalRound: (state: Room2State, action: PayloadAction<boolean>) => {
@@ -1296,7 +1296,7 @@ export const {
 	setSettingPartialText,
 	setSettingReadingSpeed,
 	setSettingManaged,
-	setSettingUseApellations,
+	setSettingUseAppellations,
 	setSettingPlayAllQuestionsInFinalRound,
 	setSettingAllowEveryoneToPlayHiddenStakes,
 	setSettingOralPlayersActions,

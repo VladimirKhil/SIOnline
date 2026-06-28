@@ -244,6 +244,11 @@ function subscribeToExternalEvents(store: Store<State, any>, host: IHost) {
 	};
 
 	window.addEventListener('error', (e: ErrorEvent) => {
+		if (e.message.includes('ResizeObserver loop')) {
+			// It is a well-known, benign warning
+			return false;
+		}
+
 		store.dispatch(commonErrorChanged(`${e.type} ${e.message} ${e.filename} ${e.lineno}:${e.colno}`));
 		return false;
 	});

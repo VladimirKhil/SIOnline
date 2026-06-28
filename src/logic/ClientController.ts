@@ -127,7 +127,6 @@ import {
 	setSettingPartialText,
 	setSettingReadingSpeed,
 	setSettingTimeForBlockingButton,
-	setSettingUseApellations,
 	showmanChanged,
 	showmanReplicChanged,
 	stopValidation,
@@ -154,6 +153,7 @@ import {
 	endAskingState,
 	setHiddenComments,
 	setDeepMode,
+	setSettingUseAppellations,
 } from '../state/room2Slice';
 
 import PersonInfo from '../model/PersonInfo';
@@ -934,19 +934,18 @@ export default class ClientController implements IClientController {
 					);
 
 					this.appDispatch(userInfoChanged(message));
-
 					this.addSimpleMessage(message);
 				}
 				break;
 			}
 
-			case 'UseApellations': {
-				const useApellationsEnabled = value.toLowerCase() === 'true';
-				this.appDispatch(setSettingUseApellations(useApellationsEnabled));
+			case 'UseAppellations': {
+				const useAppellationsEnabled = value.toLowerCase() === 'true';
+				this.appDispatch(setSettingUseAppellations(useAppellationsEnabled));
 
 				if (reason.length > 0) {
 					const message = stringFormat(
-						useApellationsEnabled ? localization.useApellationsEnabled : localization.useApellationsDisabled,
+						useAppellationsEnabled ? localization.useAppellationsEnabled : localization.useAppellationsDisabled,
 						reason
 					);
 
