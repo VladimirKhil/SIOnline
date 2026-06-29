@@ -4,6 +4,8 @@ import roomActionCreators from '../../../state/room/roomActionCreators';
 import State from '../../../state/State';
 import { Dispatch, Action } from 'redux';
 import StakeModes from '../../../client/game/StakeModes';
+import { useAppDispatch } from '../../../state/hooks';
+import { sendStake } from '../../../state/room2Slice';
 
 interface StakeSumEditorProps {
 	stake: number;
@@ -14,6 +16,8 @@ interface StakeSumEditorProps {
 	type: 'number' | 'range';
 	className: string;
 	onStakeChanged: (stake: number) => void;
+	isConnected: boolean;
+	clearDecisions: () => void;
 }
 
 const mapStateToProps = (state: State) => ({
@@ -22,15 +26,20 @@ const mapStateToProps = (state: State) => ({
 	maximum: state.room.stakes.maximum,
 	step: state.room.stakes.step,
 	stakeModes: state.room.stakes.stakeModes,
+	isConnected: state.common.isSIHostConnected,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	onStakeChanged: (stake: number) => {
 		dispatch(roomActionCreators.stakeChanged(stake));
-	}
+	},
+	clearDecisions: () => {
+		dispatch(roomActionCreators.clearDecisions());
+	},
 });
 
 export function StakeSumEditor(props: StakeSumEditorProps) {
+	const appDispatch = useAppDispatch();
 	const canSendStake = props.stakeModes & StakeModes.Stake;
 
 	const onStakeChanged = (stake: number) => {
@@ -48,20 +57,36 @@ export function StakeSumEditor(props: StakeSumEditorProps) {
 		}
 	};
 
+	const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+		if (props.type === 'number' && e.key === 'Enter') {
+			if (props.isConnected && canSendStake) {
+				let finalStake = props.stake;
+				if (finalStake < props.minimum) {
+					finalStake = props.minimum;
+					props.onStakeChanged(finalStake);
+				}
+				appDispatch(sendStake(finalStake));
+				props.clearDecisions();
+			}
+		}
+	};
+
 	return (
 		<input
 			aria-label='Stake'
 			type={props.type}
 			className={props.className}
-			disabled={!canSendStake}
+			disabled={!props.isConnected || !canSendStake}
 			min={props.minimum}
 			max={props.maximum}
 			step={props.step}
 			value={props.stake}
 			onChange={e => onStakeChanged(parseInt(e.target.value, 10))}
 			onBlur={e => onBlur(parseInt(e.target.value, 10))}
+			onKeyDown={onKeyDown}
 		/>
 	);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(StakeSumEditor);
+
