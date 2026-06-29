@@ -15,6 +15,7 @@ import Account from '../../../model/Account';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 import ScoreEditor from './ScoreEditor/ScoreEditor';
 import { setAreSumsEditable } from '../../../state/room2Slice';
+import PersonName from './PersonName';
 
 import './PlayerView.scss';
 
@@ -244,7 +245,7 @@ export function PlayerView(props: PlayerViewProps): JSX.Element {
 				<div className="playerInfo">
 					<div className="name" title={player.name}>
 						<AutoSizedText className='nameValue' maxFontSize={48}>
-							{player.name}
+							<PersonName name={player.name} />
 						</AutoSizedText>
 
 						{areSumsEditable ? (

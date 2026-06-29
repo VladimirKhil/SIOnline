@@ -417,3 +417,15 @@
 		font-size: 20px !important;
 	}
 }
+
+.personName {
+	display: inline;
+	white-space: nowrap;
+
+	.steamIcon {
+		height: 18px;
+		width: 18px;
+		margin-right: 4px;
+		object-fit: contain;
+	}
+}
