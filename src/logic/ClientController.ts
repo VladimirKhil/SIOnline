@@ -1268,6 +1268,12 @@ export default class ClientController implements IClientController {
 			}
 
 			this.appDispatch(setIsGameStarted(true));
+
+			if (stage !== GameStage.After) {
+				if (!state.history.currentGame) {
+					this.appDispatch(setCurrentGame(state.room2.name || state.user.login));
+				}
+			}
 		}
 
 		if (stage === GameStage.Round) {
@@ -1327,6 +1333,13 @@ export default class ClientController implements IClientController {
 
 		if (stage !== GameStage.Before) {
 			this.appDispatch(setIsGameStarted(true));
+
+			if (stage !== GameStage.After) {
+				const state = this.getState();
+				if (!state.history.currentGame) {
+					this.appDispatch(setCurrentGame(state.room2.name || state.user.login));
+				}
+			}
 		}
 
 		if (stage === GameStage.After) {
