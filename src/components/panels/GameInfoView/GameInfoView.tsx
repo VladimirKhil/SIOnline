@@ -64,15 +64,30 @@ const buildStage = (stage: GameStage, progressCurrent: number, progressTotal: nu
 	}
 };
 
-const buildRules = (rulesString: string, isSimple: boolean): string[] => {
+const buildMode = (mode: ServerGameType): string => {
+	switch (mode) {
+		case ServerGameType.Classic:
+			return localization.rulesClassic;
+
+		case ServerGameType.Simple:
+			return localization.questionTypeSimple;
+
+		case ServerGameType.Quiz:
+			return localization.quiz;
+
+		case ServerGameType.TurnTaking:
+			return localization.turnTaking;
+
+		default:
+			return localization.rulesClassic;
+	}
+};
+
+const buildRules = (rulesString: string, mode: ServerGameType): string[] => {
 	const rules = parseRulesFromString(rulesString);
 	const result: string[] = [];
 
-	if (isSimple) {
-		result.push(localization.sport.toLowerCase());
-	} else {
-		result.push(localization.tv.toLowerCase());
-	}
+	result.push(buildMode(mode));
 
 	if ((rules & GameRules.FalseStart) === 0) {
 		result.push(localization.nofalsestart);
@@ -187,7 +202,7 @@ export function GameInfoView(props: GameInfoViewProps): JSX.Element {
 	// Check if join buttons should be disabled due to validation
 	const isNameInvalid = () => validateLoginName(useAuth && authName ? authName : userName) !== null;
 
-	const rules = buildRules(game.Rules, game.Mode === ServerGameType.Simple);
+	const rules = buildRules(game.Rules, game.Mode);
 
 	const onKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
 		if (e.key === Constants.KEY_ENTER_NEW) {

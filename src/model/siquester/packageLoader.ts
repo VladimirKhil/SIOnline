@@ -308,13 +308,15 @@ function upgradeV4Question(
 			continue;
 		}
 
+		const isRef = atom.text.startsWith('@');
+
 		const contentItem: ContentItem = {
 			type: getContentType(atom.type),
-			value: atom.text,
+			value: isRef ? atom.text.substring(1) : atom.text,
 			duration: atom.time !== -1 ? formatDuration(atom.time) : undefined,
 			placement: getPlacement(atom.type),
 			waitForFinish: atom.time !== -1,
-			isRef: atom.text.startsWith('@')
+			isRef: isRef
 		};
 
 		if (useMarker) {

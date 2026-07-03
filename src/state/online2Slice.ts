@@ -40,7 +40,7 @@ const initialState: Online2State = {
 	inProgress: false,
 	error: '',
 	games: {},
-	gamesFilter: GamesFilter.NoFilter,
+	gamesFilter: GamesFilter.All,
 	gamesSearch: '',
 	selectedGameId: -1,
 	selectedGame: null,
