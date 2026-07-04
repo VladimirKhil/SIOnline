@@ -13,11 +13,8 @@ import './ChatInput.scss';
 export default function ChatInput() {
 	const inputRef = React.useRef<HTMLInputElement>(null);
 	const appDispatch = useAppDispatch();
-
-	const { name, chat } = useAppSelector(state => ({
-		name: state.room2.name,
-		chat: state.room2.chat
-	}));
+	const name = useAppSelector(state => state.room2.name);
+	const chat = useAppSelector(state => state.room2.chat);
 
 	const isConnected = useAppSelector(state => state.common.isSIHostConnected);
 

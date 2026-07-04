@@ -36,12 +36,10 @@ export function NewGameDialog(props: NewGameDialogProps) {
 	const appDispatch = useAppDispatch();
 	const navigation = useAppSelector(state => state.ui.navigation);
 	const gameName = useAppSelector(state => state.game.name);
-	const { gameCreationProgress, uploadPackageProgress, uploadPackagePercentage, downloadPackageProgress } = useAppSelector(state => ({
-		gameCreationProgress: state.online2.gameCreationProgress,
-		uploadPackageProgress: state.online2.uploadPackageProgress,
-		uploadPackagePercentage: state.online2.uploadPackagePercentage,
-		downloadPackageProgress: state.online2.downloadPackageProgress
-	}));
+	const gameCreationProgress = useAppSelector(state => state.online2.gameCreationProgress);
+	const uploadPackageProgress = useAppSelector(state => state.online2.uploadPackageProgress);
+	const uploadPackagePercentage = useAppSelector(state => state.online2.uploadPackagePercentage);
+	const downloadPackageProgress = useAppSelector(state => state.online2.downloadPackageProgress);
 
 	React.useEffect(() => {
 		if (navigation.packageUri) {

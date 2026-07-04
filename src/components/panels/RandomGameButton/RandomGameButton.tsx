@@ -19,10 +19,8 @@ const mapDispatchToProps = (dispatch: any) => ({
 
 const RandomGameButton: React.FC<RandomGameButtonProps> = (props: RandomGameButtonProps) => {
 	const appDispatch = useAppDispatch();
-	const { gameCreationProgress, joinGameProgress } = useAppSelector(state => ({
-		gameCreationProgress: state.online2.gameCreationProgress,
-		joinGameProgress: state.online2.joinGameProgress
-	}));
+	const gameCreationProgress = useAppSelector(state => state.online2.gameCreationProgress);
+	const joinGameProgress = useAppSelector(state => state.online2.joinGameProgress);
 
 	return <button
 		className='standard randomGameButton'

@@ -1,19 +1,16 @@
 ﻿import * as React from 'react';
 import AutoSizedText from '../../common/AutoSizedText/AutoSizedText';
 import { useAppSelector } from '../../../state/hooks';
-import { RootState } from '../../../state/store';
 
 import './ObjectView.css';
 
 export default function ObjectView() {
-	const { animate, text, header, rotate, largeHeader, hint } = useAppSelector((rootState: RootState) => ({
-		animate: rootState.table.animate,
-		text: rootState.table.text,
-		header: rootState.table.header,
-		rotate: rootState.table.rotate,
-		largeHeader: rootState.table.largeHeader,
-		hint: rootState.table.hint,
-	}));
+	const animate = useAppSelector((state) => state.table.animate);
+	const text = useAppSelector((state) => state.table.text);
+	const header = useAppSelector((state) => state.table.header);
+	const rotate = useAppSelector((state) => state.table.rotate);
+	const largeHeader = useAppSelector((state) => state.table.largeHeader);
+	const hint = useAppSelector((state) => state.table.hint);
 
 	return (
 		<div className={`objectView ${animate ? 'animate' : ''}`} key={text}>

@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { shallowEqual } from 'react-redux';
 import GamesList from '../../panels/GamesList/GamesList';
 import GameInfoView from '../../panels/GameInfoView/GameInfoView';
 import UsersView from '../../panels/UsersView/UsersView';
@@ -42,24 +41,14 @@ const topMenu = (onExit: () => void) => (
 
 export function Lobby() {
 	const appDispatch = useAppDispatch();
-
-	const { games,
-		gamesFilter,
-		gamesSearch,
-		selectedGameId,
-		newGameShown,
-		gameCreationProgress,
-		joinGameProgress,
-		inProgress } = useAppSelector(state => ({
-			games: state.online2.games,
-			gamesFilter: state.online2.gamesFilter,
-			gamesSearch: state.online2.gamesSearch,
-			selectedGameId: state.online2.selectedGameId,
-			newGameShown: state.online2.newGameShown,
-			gameCreationProgress: state.online2.gameCreationProgress,
-			joinGameProgress: state.online2.joinGameProgress,
-			inProgress: state.online2.inProgress
-		}), shallowEqual);
+	const games = useAppSelector(state => state.online2.games);
+	const gamesFilter = useAppSelector(state => state.online2.gamesFilter);
+	const gamesSearch = useAppSelector(state => state.online2.gamesSearch);
+	const selectedGameId = useAppSelector(state => state.online2.selectedGameId);
+	const newGameShown = useAppSelector(state => state.online2.newGameShown);
+	const gameCreationProgress = useAppSelector(state => state.online2.gameCreationProgress);
+	const joinGameProgress = useAppSelector(state => state.online2.joinGameProgress);
+	const inProgress = useAppSelector(state => state.online2.inProgress);
 
 	const isConnected = useAppSelector(state => state.common.isConnected);
 

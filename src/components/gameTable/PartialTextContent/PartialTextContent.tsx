@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { shallowEqual } from 'react-redux';
 import { useAppSelector } from '../../../state/hooks';
 import fitElement from '../../../utils/fitElement';
 
@@ -7,14 +6,11 @@ import './PartialTextContent.scss';
 
 export default function PartialTextContent() {
 	const divRef = useRef<HTMLDivElement>(null);
-
-	const { text, totalLength, textVersion, readingSpeed, isGamePaused } = useAppSelector(state => ({
-		text: state.table.text + state.table.tail,
-		totalLength: state.table.text.length,
-		textVersion: state.table.textVersion,
-		readingSpeed: state.room2.settings.readingSpeed,
-		isGamePaused: state.room2.stage.isGamePaused,
-	}), shallowEqual);
+	const text = useAppSelector(state => state.table.text + state.table.tail);
+	const totalLength = useAppSelector(state => state.table.text.length);
+	const textVersion = useAppSelector(state => state.table.textVersion);
+	const readingSpeed = useAppSelector(state => state.room2.settings.readingSpeed);
+	const isGamePaused = useAppSelector(state => state.room2.stage.isGamePaused);
 
 	const [visibleLength, setVisibleLength] = useState(0);
 	const totalLengthRef = useRef(totalLength);

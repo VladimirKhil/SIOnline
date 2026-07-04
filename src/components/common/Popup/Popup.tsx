@@ -21,10 +21,8 @@ const Popup: React.FC<PopupProps> = (props) => {
         style = {}
     } = props;
 
-    const { windowWidth, windowHeight } = useAppSelector(state => ({
-        windowWidth: state.ui.windowWidth,
-        windowHeight: state.ui.windowHeight
-    }));
+    const windowWidth = useAppSelector(state => state.ui.windowWidth);
+    const windowHeight = useAppSelector(state => state.ui.windowHeight);
 
     // State to track if the layout element has been created
     const [layout, setLayout] = React.useState<HTMLDivElement | null>(null);

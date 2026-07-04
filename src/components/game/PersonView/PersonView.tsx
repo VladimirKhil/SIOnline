@@ -48,14 +48,12 @@ const mapStateToProps = (state: State) => ({
 
 export function PersonView(props: PersonViewProps): JSX.Element {
 	const appDispatch = useAppDispatch();
-	const { computerAccounts, isConnected, name, persons, stage, windowWidth } = useAppSelector(state => ({
-		computerAccounts: state.common.computerAccounts,
-		isConnected: state.common.isSIHostConnected,
-		name: state.room2.name,
-		persons: state.room2.persons,
-		stage: state.room2.stage,
-		windowWidth: state.ui.windowWidth,
-	}));
+	const computerAccounts = useAppSelector(state => state.common.computerAccounts);
+	const isConnected = useAppSelector(state => state.common.isSIHostConnected);
+	const name = useAppSelector(state => state.room2.name);
+	const persons = useAppSelector(state => state.room2.persons);
+	const stage = useAppSelector(state => state.room2.stage);
+	const windowWidth = useAppSelector(state => state.ui.windowWidth);
 	let seatPerson = null;
 
 	if (props.seat) {

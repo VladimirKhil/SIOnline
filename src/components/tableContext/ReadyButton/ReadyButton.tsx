@@ -7,7 +7,6 @@ import roomActionCreators from '../../../state/room/roomActionCreators';
 import Sex from '../../../model/enums/Sex';
 import Role from '../../../model/Role';
 import { useAppSelector } from '../../../state/hooks';
-import { Room2State } from '../../../state/room2Slice';
 
 import './ReadyButton.scss';
 import PersonInfo from '../../../model/PersonInfo';
@@ -56,11 +55,9 @@ function getReadyMessage(props: ReadyButtonProps) {
 }
 
 export function ReadyButton(props: ReadyButtonProps): JSX.Element | null {
-	const { role, persons, name } = useAppSelector(state => ({
-		role: state.room2.role,
-		persons: state.room2.persons,
-		name: state.room2.name,
-	}));
+	const role = useAppSelector(state => state.room2.role);
+	const persons = useAppSelector(state => state.room2.persons);
+	const name = useAppSelector(state => state.room2.name);
 
 	const isReady = getIsReady(role, persons.showman, persons.players, name);
 	const enabledClass = props.isConnected ? '' : 'disabled';

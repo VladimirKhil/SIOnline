@@ -11,10 +11,8 @@ interface NewGameButtonProps {
 
 const NewGameButton: React.FC<NewGameButtonProps> = ({ simple }) => {
 	const appDispatch = useAppDispatch();
-	const { gameCreationProgress, joinGameProgress } = useAppSelector(state => ({
-		gameCreationProgress: state.online2.gameCreationProgress,
-		joinGameProgress: state.online2.joinGameProgress
-	}));
+	const gameCreationProgress = useAppSelector(state => state.online2.gameCreationProgress);
+	const joinGameProgress = useAppSelector(state => state.online2.joinGameProgress);
 
 	return <button
 		className={`newGame standard ${simple ? ' simple' : ''}`}

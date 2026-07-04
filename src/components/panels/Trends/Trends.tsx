@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { shallowEqual } from 'react-redux';
 import localization from '../../../model/resources/localization';
 import Link from '../../common/Link/Link';
 import Constants from '../../../model/enums/Constants';
@@ -53,10 +52,8 @@ function downloadPackage(source: string, packageName: string): void {
 
 export default function Trends(): JSX.Element {
 	const commonClearUrls = useAppSelector(state => state.common.clearUrls);
-	const { packagesStatistics, latestGames } = useAppSelector(state => ({
-		packagesStatistics: state.online2.packagesStatistics,
-		latestGames: state.online2.latestGames
-	}), shallowEqual);
+	const packagesStatistics = useAppSelector(state => state.online2.packagesStatistics);
+	const latestGames = useAppSelector(state => state.online2.latestGames);
 
 	const [trendsMode, setTrendsMode] = React.useState(0);
 

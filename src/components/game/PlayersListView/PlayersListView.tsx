@@ -34,11 +34,8 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 
 export function PlayersListView(props: PlayersListViewProps): JSX.Element {
 	const appDispatch = useAppDispatch();
-
-	const { name, areSumsEditable } = useAppSelector(state => ({
-		name: state.room2.name,
-		areSumsEditable: state.room2.areSumsEditable,
-	}));
+	const name = useAppSelector(state => state.room2.name);
+	const areSumsEditable = useAppSelector(state => state.room2.areSumsEditable);
 
 	const onSumChanged = (index: number, value: number) => {
 		props.onSumChanged(index, value);

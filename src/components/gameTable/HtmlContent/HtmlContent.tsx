@@ -10,6 +10,7 @@ import {
 	sendAnswerAsRightByDefault,
 	sendAnswerAsWrongByDefault,
 } from '../../../state/serverActions';
+import { DecisionType } from '../../../state/room2Slice';
 
 import './HtmlContent.css';
 
@@ -19,7 +20,7 @@ interface HtmlContentProps {
 
 interface HtmlContentControlMessage {
 	type: 'si:media-control';
-	action: 'play' | 'pause' | 'set-volume';
+	action: 'play' | 'pause' | 'set-volume' | 'answer' | 'answer-end';
 	volume?: number;
 }
 
@@ -33,13 +34,13 @@ export function HtmlContent(props: HtmlContentProps) {
 	const frameRef = React.useRef<HTMLIFrameElement>(null);
 	const completedRef = React.useRef(false);
 	const supportRegisteredRef = React.useRef(false);
+	const wasAnsweringRef = React.useRef(false);
 	const supportIdRef = React.useRef(`html-volume-support:${Math.random().toString(36).slice(2)}`);
 	const appDispatch = useAppDispatch();
-	const { isMediaStopped, isVisible, soundVolume } = useAppSelector(state => ({
-		isMediaStopped: state.room2.stage.isGamePaused || state.table.isMediaStopped,
-		isVisible: state.ui.isVisible,
-		soundVolume: state.settings.soundVolume,
-	}));
+	const isMediaStopped = useAppSelector(state => state.room2.stage.isGamePaused || state.table.isMediaStopped);
+	const isVisible = useAppSelector(state => state.ui.isVisible);
+	const soundVolume = useAppSelector(state => state.settings.soundVolume);
+	const shouldAnswer = useAppSelector(state => state.room2.stage.decisionType === DecisionType.Answer);
 
 	const postControlMessage = React.useCallback((action: HtmlContentControlMessage['action'], volume?: number) => {
 		frameRef.current?.contentWindow?.postMessage({
@@ -124,6 +125,16 @@ export function HtmlContent(props: HtmlContentProps) {
 	React.useEffect(() => {
 		postControlMessage('set-volume', soundVolume);
 	}, [postControlMessage, soundVolume]);
+
+	React.useEffect(() => {
+		if (shouldAnswer && !wasAnsweringRef.current) {
+			postControlMessage('answer');
+		} else if (!shouldAnswer && wasAnsweringRef.current) {
+			postControlMessage('answer-end');
+		}
+
+		wasAnsweringRef.current = shouldAnswer;
+	}, [postControlMessage, shouldAnswer]);
 
 	// allow-scripts & allow-same-origin combination is safe until we serve parent and iframe content from different origins
 	return <iframe

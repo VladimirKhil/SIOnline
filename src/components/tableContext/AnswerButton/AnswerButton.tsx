@@ -8,12 +8,9 @@ import './AnswerButton.scss';
 
 export default function AnswerButton() {
 	const isConnected = useAppSelector((state) => state.common.isSIHostConnected);
-
-	const { name, persons, isGameButtonEnabled } = useAppSelector((state) => ({
-		name: state.room2.name,
-		persons: state.room2.persons,
-		isGameButtonEnabled: state.room2.isGameButtonEnabled,
-	}));
+	const name = useAppSelector((state) => state.room2.name);
+	const persons = useAppSelector((state) => state.room2.persons);
+	const isGameButtonEnabled = useAppSelector((state) => state.room2.isGameButtonEnabled);
 
 	const canPress = useAppSelector((state) => state.table.canPress);
 	const appDispatch = useAppDispatch();

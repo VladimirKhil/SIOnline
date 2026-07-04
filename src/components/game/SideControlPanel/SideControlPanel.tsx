@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { connect, shallowEqual } from 'react-redux';
+import { connect } from 'react-redux';
 import { Dispatch, Action } from 'redux';
 import State from '../../../state/State';
 import roomActionCreators from '../../../state/room/roomActionCreators';
@@ -86,31 +86,17 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 
 export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 	const appDispatch = useAppDispatch();
-	const {
-		chatIsActive,
-		chatIsVisible,
-		isGamePaused,
-		isGameStarted,
-		isEditingTables,
-		role,
-		roundsNames,
-		areSumsEditable,
-		lastReplic,
-		playersCount,
-		deepMode
-	} = useAppSelector(state => ({
-		chatIsActive: state.room2.chat.isActive,
-		chatIsVisible: state.room2.chat.isVisible,
-		isGamePaused: state.room2.stage.isGamePaused,
-		isGameStarted: state.room2.stage.isGameStarted,
-		isEditingTables: state.room2.stage.isEditingTables,
-		role: state.room2.role,
-		roundsNames: state.room2.roundsNames,
-		areSumsEditable: state.room2.areSumsEditable,
-		lastReplic: state.room2.lastReplic,
-		playersCount: state.room2.persons.players.length,
-		deepMode: state.room2.deepMode,
-	}), shallowEqual);
+	const chatIsActive = useAppSelector(state => state.room2.chat.isActive);
+	const chatIsVisible = useAppSelector(state => state.room2.chat.isVisible);
+	const isGamePaused = useAppSelector(state => state.room2.stage.isGamePaused);
+	const isGameStarted = useAppSelector(state => state.room2.stage.isGameStarted);
+	const isEditingTables = useAppSelector(state => state.room2.stage.isEditingTables);
+	const role = useAppSelector(state => state.room2.role);
+	const roundsNames = useAppSelector(state => state.room2.roundsNames);
+	const areSumsEditable = useAppSelector(state => state.room2.areSumsEditable);
+	const lastReplic = useAppSelector(state => state.room2.lastReplic);
+	const playersCount = useAppSelector(state => state.room2.persons.players.length);
+	const deepMode = useAppSelector(state => state.room2.deepMode);
 
 	const ui = useAppSelector(state => state.ui);
 

@@ -36,9 +36,7 @@ function getLocalizedStageName(stageName: string): string {
 }
 
 export function RoundProgress(props: RoundProgressProps): JSX.Element {
-	const { roundsNames } = useAppSelector(state => ({
-		roundsNames: state.room2.roundsNames,
-	}));
+	const roundsNames = useAppSelector(state => state.room2.roundsNames);
 
 	const roundName = roundsNames && props.roundIndex > -1 && props.roundIndex < roundsNames.length
 		? roundsNames[props.roundIndex]

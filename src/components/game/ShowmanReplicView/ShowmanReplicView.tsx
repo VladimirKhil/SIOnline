@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { connect, shallowEqual } from 'react-redux';
+import { connect } from 'react-redux';
 import State from '../../../state/State';
 import { DecisionType } from '../../../state/room2Slice';
 import Role from '../../../model/Role';
@@ -34,31 +34,17 @@ const mapStateToProps = (state: State) => ({
 });
 
 export function ShowmanReplicView(props: ShowmanReplicViewProps): JSX.Element {
-	const {
-		name,
-		showmanName,
-		isReady,
-		isDeciding,
-		isGameStarted,
-		decisionType,
-		replicIndex,
-		players,
-		windowWidth,
-		deepMode,
-		role,
-	} = useAppSelector(state => ({
-		name: state.room2.name,
-		showmanName: state.room2.persons.showman.name,
-		isReady: state.room2.persons.showman.isReady,
-		isDeciding: state.room2.persons.showman.isDeciding,
-		isGameStarted: state.room2.stage.isGameStarted,
-		decisionType: state.room2.stage.decisionType,
-		replicIndex: state.room2.replicIndex,
-		players: state.room2.persons.players,
-		windowWidth: state.ui.windowWidth,
-		deepMode: state.room2.deepMode,
-		role: state.room2.role,
-	}), shallowEqual);
+	const name = useAppSelector(state => state.room2.name);
+	const showmanName = useAppSelector(state => state.room2.persons.showman.name);
+	const isReady = useAppSelector(state => state.room2.persons.showman.isReady);
+	const isDeciding = useAppSelector(state => state.room2.persons.showman.isDeciding);
+	const isGameStarted = useAppSelector(state => state.room2.stage.isGameStarted);
+	const decisionType = useAppSelector(state => state.room2.stage.decisionType);
+	const replicIndex = useAppSelector(state => state.room2.replicIndex);
+	const players = useAppSelector(state => state.room2.persons.players);
+	const windowWidth = useAppSelector(state => state.ui.windowWidth);
+	const deepMode = useAppSelector(state => state.room2.deepMode);
+	const role = useAppSelector(state => state.room2.role);
 
 	const isScreenWide = windowWidth >= Constants.WIDE_WINDOW_WIDTH;
 	const activePlayer = !isScreenWide && replicIndex > -1 && replicIndex < players.length

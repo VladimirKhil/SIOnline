@@ -16,10 +16,8 @@ const mapStateToProps = (state: State) => ({
 });
 
 export function ShowmanReplic(props: ShowmanReplicProps): JSX.Element {
-	const { persons, replicIndex } = useAppSelector(state => ({
-		persons: state.room2.persons,
-		replicIndex: state.room2.replicIndex,
-	}));
+	const persons = useAppSelector(state => state.room2.persons);
+	const replicIndex = useAppSelector(state => state.room2.replicIndex);
 
 	const isScreenWide = props.windowWidth >= Constants.WIDE_WINDOW_WIDTH;
 	const highlightRadius = isScreenWide ? 10 : 0;

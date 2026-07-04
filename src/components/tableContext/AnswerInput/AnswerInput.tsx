@@ -8,12 +8,9 @@ import './AnswerInput.scss';
 
 export default function AnswerInput(): JSX.Element | null {
 	const appDispatch = useAppDispatch();
-
-	const { isConnected, answer, answerType } = useAppSelector(state => ({
-		isConnected: state.common.isSIHostConnected,
-		answer: state.room2.answer,
-		answerType: state.room2.answerType,
-	}));
+	const isConnected = useAppSelector(state => state.common.isSIHostConnected);
+	const answer = useAppSelector(state => state.room2.answer);
+	const answerType = useAppSelector(state => state.room2.answerType);
 
 	const onAnswerChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
 		appDispatch(updateAnswer(e.target.value));

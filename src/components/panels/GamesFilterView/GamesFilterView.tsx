@@ -20,9 +20,7 @@ interface FilterGroup {
 }
 
 export default function GamesFilterView() {
-	const { gamesFilter } = useAppSelector(state => ({
-		gamesFilter: state.online2.gamesFilter,
-	}));
+	const gamesFilter = useAppSelector(state => state.online2.gamesFilter);
 
 	const appDispatch = useAppDispatch();
 	const isActive = gamesFilter !== GamesFilter.All;

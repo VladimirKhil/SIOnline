@@ -8,11 +8,9 @@ import './UserOptions.css';
 import Constants from '../../../model/enums/Constants';
 
 const UserOptions: React.FC = () => {
-	const { login, avatar, avatarKey } = useAppSelector(state => ({
-		login: state.user.login,
-		avatar: state.user.avatar,
-		avatarKey: state.settings.avatarKey
-	}));
+	const login = useAppSelector(state => state.user.login);
+	const avatar = useAppSelector(state => state.user.avatar);
+	const avatarKey = useAppSelector(state => state.settings.avatarKey);
 
 	const dispatch = useAppDispatch();
 	const sex = useAppSelector(state => state.settings.sex);

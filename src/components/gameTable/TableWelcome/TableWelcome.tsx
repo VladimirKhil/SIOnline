@@ -20,11 +20,9 @@ const mapStateToProps = (state: State) => ({
 
 const TableWelcome: React.FC<TableWelcomeProps> = (props: TableWelcomeProps) => {
 	const appDispatch = useAppDispatch();
-	const { clipboardSupported, roomLinkEnabled, isSIHostConnected } = useAppSelector(state => ({
-		clipboardSupported: state.common.clipboardSupported,
-		roomLinkEnabled: state.common.roomLinkEnabled,
-		isSIHostConnected: state.common.isSIHostConnected,
-	}));
+	const clipboardSupported = useAppSelector(state => state.common.clipboardSupported);
+	const roomLinkEnabled = useAppSelector(state => state.common.roomLinkEnabled);
+	const isSIHostConnected = useAppSelector(state => state.common.isSIHostConnected);
 
 	const getPinCore = () => {
 		appDispatch(getPin());

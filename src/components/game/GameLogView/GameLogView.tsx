@@ -7,11 +7,9 @@ import { setChatMessage, setChatScrollPosition } from '../../../state/room2Slice
 import './GameLogView.css';
 
 export default function GameLogView() {
-	const { name, chat, chatScrollPosition } = useAppSelector(state => ({
-		name: state.room2.name,
-		chat: state.room2.chat,
-		chatScrollPosition: state.room2.chatScrollPosition
-	}));
+	const name = useAppSelector(state => state.room2.name);
+	const chat = useAppSelector(state => state.room2.chat);
+	const chatScrollPosition = useAppSelector(state => state.room2.chatScrollPosition);
 
 	const appDispatch = useAppDispatch();
 

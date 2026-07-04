@@ -24,13 +24,10 @@ const AudioContent: React.FC<AudioContentProps> = ({
 	const gainNodeRef = useRef<GainNode | null>(null);
 
 	const appDispatch = useAppDispatch();
-
-	const { isVisible, soundVolume, isMediaStopped, audio } = useAppSelector(state => ({
-		isVisible: state.ui.isVisible,
-		soundVolume: state.settings.soundVolume,
-		isMediaStopped: state.room2.stage.isGamePaused || state.table.isMediaStopped,
-		audio: state.table.audio || '',
-	}));
+	const isVisible = useAppSelector(state => state.ui.isVisible);
+	const soundVolume = useAppSelector(state => state.settings.soundVolume);
+	const isMediaStopped = useAppSelector(state => state.room2.stage.isGamePaused || state.table.isMediaStopped);
+	const audio = useAppSelector(state => state.table.audio || '');
 
 	// Initialize gain node
 	useEffect(() => {

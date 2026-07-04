@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { shallowEqual } from 'react-redux';
 import localization from '../../../model/resources/localization';
 import { sendJoinMode } from '../../../state/serverActions';
 import PersonView from '../PersonView/PersonView';
@@ -12,18 +11,13 @@ import inviteLink from '../../../utils/inviteLink';
 import './PersonsView.css';
 
 export function PersonsView(): JSX.Element {
-	const { isHostUser, personsAll, showmanName, players: playerAccounts, joinMode } = useAppSelector(state => ({
-		isHostUser: isHost(state),
-		personsAll: state.room2.persons.all,
-		showmanName: state.room2.persons.showman.name,
-		players: state.room2.persons.players,
-		joinMode: state.room2.joinMode,
-	}), shallowEqual);
-
-	const { isConnected, clipboardSupported } = useAppSelector(state => ({
-		isConnected: state.common.isSIHostConnected,
-		clipboardSupported: state.common.clipboardSupported,
-	}), shallowEqual);
+	const isHostUser = useAppSelector(state => isHost(state));
+	const personsAll = useAppSelector(state => state.room2.persons.all);
+	const showmanName = useAppSelector(state => state.room2.persons.showman.name);
+	const playerAccounts = useAppSelector(state => state.room2.persons.players);
+	const joinMode = useAppSelector(state => state.room2.joinMode);
+	const isConnected = useAppSelector(state => state.common.isSIHostConnected);
+	const clipboardSupported = useAppSelector(state => state.common.clipboardSupported);
 
 	const appDispatch = useAppDispatch();
 

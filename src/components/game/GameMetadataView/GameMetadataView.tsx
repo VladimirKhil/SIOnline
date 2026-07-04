@@ -22,11 +22,9 @@ const mapStateToProps: MapStateToProps<GameMetadataViewProps, unknown, State> = 
 });
 
 export function GameMetadataView(props: GameMetadataViewProps): JSX.Element {
-	const { name, persons, room2Settings } = useAppSelector(state => ({
-		name: state.room2.name,
-		persons: state.room2.persons,
-		room2Settings: state.room2.settings
-	}));
+	const name = useAppSelector(state => state.room2.name);
+	const persons = useAppSelector(state => state.room2.persons);
+	const room2Settings = useAppSelector(state => state.room2.settings);
 
 	const appDispatch = useAppDispatch();
 	const isHost = name === persons.hostName;

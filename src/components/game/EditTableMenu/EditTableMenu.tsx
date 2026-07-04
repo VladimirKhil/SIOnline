@@ -44,11 +44,9 @@ const EditTableMenu: React.FC<EditTableMenuProps> = (props) => {
 	const isConnected = useAppSelector(state => state.common.isSIHostConnected);
 	const computerAccounts = useAppSelector(state => state.common.computerAccounts);
 	const windowWidth = useAppSelector(state => state.ui.windowWidth);
-	const { name, persons, stage } = useAppSelector(state => ({
-		name: state.room2.name,
-		persons: state.room2.persons,
-		stage: state.room2.stage
-	}));
+	const name = useAppSelector(state => state.room2.name);
+	const persons = useAppSelector(state => state.room2.persons);
+	const stage = useAppSelector(state => state.room2.stage);
 	const appDispatch = useAppDispatch();
 	const isHost = name === persons.hostName;
 	const isWide = windowWidth >= Constants.WIDE_WINDOW_WIDTH;

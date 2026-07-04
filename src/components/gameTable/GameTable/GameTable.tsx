@@ -87,46 +87,27 @@ function getCaption(mode: TableMode, caption: string): string {
 }
 
 export function GameTable(): JSX.Element {
-	// Combine related selectors to minimize selector calls while maintaining granular subscriptions
 	const isConnected = useAppSelector((state) => state.common.isSIHostConnected);
 	const { canPlayAudio } = useAudioContext();
-
-	const { mode, caption: tableCaption, contentHint, audio, content, cooperativeHtmlVolumeSupportIds } = useAppSelector((state) => ({
-		mode: state.table.mode,
-		caption: state.table.caption,
-		contentHint: state.table.contentHint,
-		audio: state.table.audio,
-		content: state.table.content,
-		cooperativeHtmlVolumeSupportIds: state.table.cooperativeHtmlVolumeSupportIds,
-	}));
+	const mode = useAppSelector((state) => state.table.mode);
+	const tableCaption = useAppSelector((state) => state.table.caption);
+	const contentHint = useAppSelector((state) => state.table.contentHint);
+	const audio = useAppSelector((state) => state.table.audio);
+	const content = useAppSelector((state) => state.table.content);
+	const cooperativeHtmlVolumeSupportIds = useAppSelector((state) => state.table.cooperativeHtmlVolumeSupportIds);
 
 	const tableTheme = useAppSelector((state) => state.settings.theme.table);
-
-	const {
-		isGamePaused,
-		decisionType,
-		isAppellation,
-		noRiskMode,
-		validationQueue,
-		role,
-		showMainTimer,
-		isEditTableEnabled,
-		decisionTimer,
-		answerDeviation,
-		layoutMode,
-	} = useAppSelector((state) => ({
-		isGamePaused: state.room2.stage.isGamePaused,
-		decisionType: state.room2.stage.decisionType,
-		isAppellation: state.room2.stage.isAppellation,
-		noRiskMode: state.room2.noRiskMode,
-		validationQueue: state.room2.validation.queue,
-		role: state.room2.role,
-		showMainTimer: state.room2.showMainTimer,
-		isEditTableEnabled: state.room2.isEditTableEnabled,
-		decisionTimer: state.room2.timers.decision,
-		answerDeviation: state.table.answerDeviation,
-		layoutMode: state.table.layoutMode,
-	}));
+	const isGamePaused = useAppSelector((state) => state.room2.stage.isGamePaused);
+	const decisionType = useAppSelector((state) => state.room2.stage.decisionType);
+	const isAppellation = useAppSelector((state) => state.room2.stage.isAppellation);
+	const noRiskMode = useAppSelector((state) => state.room2.noRiskMode);
+	const validationQueue = useAppSelector((state) => state.room2.validation.queue);
+	const role = useAppSelector((state) => state.room2.role);
+	const showMainTimer = useAppSelector((state) => state.room2.showMainTimer);
+	const isEditTableEnabled = useAppSelector((state) => state.room2.isEditTableEnabled);
+	const decisionTimer = useAppSelector((state) => state.room2.timers.decision);
+	const answerDeviation = useAppSelector((state) => state.table.answerDeviation);
+	const layoutMode = useAppSelector((state) => state.table.layoutMode);
 
 	const shouldShowAnswerValidationInTable = decisionType === DecisionType.Validation &&
 		validationQueue.length > 0 &&

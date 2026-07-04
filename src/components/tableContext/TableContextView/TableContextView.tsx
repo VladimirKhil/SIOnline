@@ -107,16 +107,13 @@ function renderBody(
 export function TableContextView(props: TableContextViewProps): JSX.Element | null {
 	const windowWidth = useAppSelector(rootState => rootState.ui.windowWidth);
 	const tableMode = useAppSelector(rootState => rootState.table.mode);
-
-	const { contextView, isGameStarted, isGamePaused, role, decisionType, layoutMode, deepMode } = useAppSelector(rootState => ({
-		contextView: rootState.room2.contextView,
-		isGameStarted: rootState.room2.stage.isGameStarted,
-		isGamePaused: rootState.room2.stage.isGamePaused,
-		role: rootState.room2.role,
-		decisionType: rootState.room2.stage.decisionType,
-		layoutMode: rootState.table.layoutMode,
-		deepMode: rootState.room2.deepMode,
-	}));
+	const contextView = useAppSelector(rootState => rootState.room2.contextView);
+	const isGameStarted = useAppSelector(rootState => rootState.room2.stage.isGameStarted);
+	const isGamePaused = useAppSelector(rootState => rootState.room2.stage.isGamePaused);
+	const role = useAppSelector(rootState => rootState.room2.role);
+	const decisionType = useAppSelector(rootState => rootState.room2.stage.decisionType);
+	const layoutMode = useAppSelector(rootState => rootState.table.layoutMode);
+	const deepMode = useAppSelector(rootState => rootState.room2.deepMode);
 
 	const body = renderBody(
 		props,

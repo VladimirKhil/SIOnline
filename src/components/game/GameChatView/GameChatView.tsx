@@ -78,11 +78,8 @@ function getSideArea(props: GameChatViewProps, chatMode: ChatMode, usersMode: Us
 
 export function GameChatView(props: GameChatViewProps): JSX.Element {
 	const appDispatch = useAppDispatch();
-
-	const { chat, role } = useAppSelector(state => ({
-		chat: state.room2.chat,
-		role: state.room2.role,
-	}));
+	const chat = useAppSelector(state => state.room2.chat);
+	const role = useAppSelector(state => state.room2.role);
 
 	return (
 		<div id="gameLogHost" className='gameSideView'>

@@ -33,10 +33,8 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 });
 
 export function ReactionPanel(props: ReactionPanelProps): JSX.Element | null {
-	const { playerCount, useApellations } = useAppSelector(state => ({
-		playerCount: state.room2.persons.players.length,
-		useApellations: state.room2.settings.useApellations,
-	}));
+	const playerCount = useAppSelector(state => state.room2.persons.players.length);
+	const useApellations = useAppSelector(state => state.room2.settings.useApellations);
 	const appDispatch = useAppDispatch();
 	const rightString = props.sex === Sex.Female ? localization.iAmRightFemale : localization.iAmRightMale;
 
