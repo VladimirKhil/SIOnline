@@ -45,6 +45,7 @@ function renderBody(
 	decisionType: DecisionType,
 	layoutMode: LayoutMode,
 	deepMode: boolean,
+	answerType: string,
 ): JSX.Element | null {
 	switch (decisionType) {
 		case DecisionType.Answer:
@@ -52,7 +53,7 @@ function renderBody(
 				return <div className='oral__answer'>{localization.pointAnswerHint}</div>;
 			}
 
-			if (layoutMode === LayoutMode.Simple) {
+			if (layoutMode === LayoutMode.Simple && (answerType === 'text' || answerType === 'number')) {
 				return <AnswerInput />;
 			}
 
@@ -114,6 +115,7 @@ export function TableContextView(props: TableContextViewProps): JSX.Element | nu
 	const decisionType = useAppSelector(rootState => rootState.room2.stage.decisionType);
 	const layoutMode = useAppSelector(rootState => rootState.table.layoutMode);
 	const deepMode = useAppSelector(rootState => rootState.room2.deepMode);
+	const answerType = useAppSelector(rootState => rootState.room2.answerType);
 
 	const body = renderBody(
 		props,
@@ -126,6 +128,7 @@ export function TableContextView(props: TableContextViewProps): JSX.Element | nu
 		decisionType,
 		layoutMode,
 		deepMode,
+		answerType,
 	);
 
 	return body == null ? null : <div className='tableContextView'>{body}</div>;

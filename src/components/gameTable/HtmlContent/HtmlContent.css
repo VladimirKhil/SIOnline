@@ -1,4 +1,41 @@
 .frame {
 	width: 100%;
 	height: 100%;
+	border: 2px solid transparent;
+	border-radius: 4px;
+	background: transparent;
+	transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+@keyframes interactive-pulse {
+	0% {
+		box-shadow:
+			inset 0 0 28px rgba(255, 255, 255, 0.18),
+			0 0 20px rgba(255, 255, 180, 0.55),
+			0 0 36px rgba(255, 240, 120, 0.45);
+	}
+
+	100% {
+		box-shadow:
+			inset 0 0 34px rgba(255, 255, 255, 0.24),
+			0 0 30px rgba(255, 255, 180, 0.8),
+			0 0 54px rgba(255, 240, 120, 0.68);
+	}
+}
+
+.frame.interactive {
+	background:
+		linear-gradient(180deg, rgba(255, 255, 210, 0.2), rgba(255, 255, 160, 0.12));
+	border: 4px solid rgba(255, 245, 150, 0.95);
+	box-shadow:
+		inset 0 0 28px rgba(255, 255, 255, 0.2),
+		0 0 20px rgba(255, 255, 180, 0.55),
+		0 0 36px rgba(255, 240, 120, 0.45);
+	transform: scale(1.005);
+	animation: interactive-pulse 0.85s ease-in-out infinite alternate;
+}
+
+.frame.interactive:focus {
+	outline: 3px solid rgba(255, 255, 255, 0.95);
+	outline-offset: 2px;
 }

@@ -128,6 +128,9 @@ export function HtmlContent(props: HtmlContentProps) {
 
 	React.useEffect(() => {
 		if (shouldAnswer && !wasAnsweringRef.current) {
+			// Try both element and frame window focus so cooperative HTML can receive keyboard input immediately.
+			frameRef.current?.focus();
+			frameRef.current?.contentWindow?.focus();
 			postControlMessage('answer');
 		} else if (!shouldAnswer && wasAnsweringRef.current) {
 			postControlMessage('answer-end');
@@ -140,13 +143,19 @@ export function HtmlContent(props: HtmlContentProps) {
 	return <iframe
 		ref={frameRef}
 		aria-label='HTML content'
-		className='frame'
+		className={`frame ${shouldAnswer ? 'interactive' : ''}`}
+		tabIndex={0}
 		src={uri}
 		allow='autoplay'
 		onLoad={() => {
 			appDispatch(onMediaLoaded());
 			postControlMessage('set-volume', soundVolume);
 			postControlMessage(isMediaStopped || !isVisible ? 'pause' : 'play');
+
+			if (shouldAnswer) {
+				frameRef.current?.focus();
+				frameRef.current?.contentWindow?.focus();
+			}
 		}}
 		sandbox='allow-scripts allow-same-origin allow-presentation' />;
 }
