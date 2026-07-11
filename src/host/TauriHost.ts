@@ -82,16 +82,53 @@ export default class TauriHost implements IHost {
 			const originalFetch = globalThis.fetch.bind(globalThis);
 			const { fetch } = this.app.http;
 
+			const resolveRequestUrl = (input: RequestInfo | URL): URL | null => {
+				if (input instanceof URL) {
+					return input;
+				}
+
+				if (typeof input === 'string') {
+					try {
+						return new URL(input, window.location.href);
+					} catch {
+						return null;
+					}
+				}
+
+				return null;
+			};
+
+			const isBrowserManagedUrl = (input: RequestInfo | URL): boolean => {
+				if (typeof input !== 'string' && !(input instanceof URL)) {
+					return false;
+				}
+
+				const requestUrl = resolveRequestUrl(input);
+				if (!requestUrl) {
+					return false;
+				}
+
+				if (requestUrl.pathname === '/api/v1/auth/steam') {
+					return true;
+				}
+
+				if (!requestUrl.protocol.startsWith('http')) {
+					return true;
+				}
+
+				if (requestUrl.href.startsWith('http://ipc.localhost/') || requestUrl.href.startsWith('http://sigame.localhost/')) {
+					return true;
+				}
+
+				return false;
+			};
+
 			globalThis.fetch = async (input: RequestInfo | URL, init?: RequestInit): Promise<Response> => {
-				if (typeof input === 'string' &&
-					(input.startsWith('http://ipc.localhost/') ||
-						input.startsWith('http://sigame.localhost/') ||
-						!input.startsWith('http'))) { // Pass through requests to localhost
+				if (isBrowserManagedUrl(input)) {
 					return originalFetch(input, init);
 				}
 
-				const response = await fetch(input, init);
-				return response;
+				return fetch(input, init);
 			};
 		}
 

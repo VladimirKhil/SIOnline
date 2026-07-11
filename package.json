@@ -28,6 +28,7 @@
     "@microsoft/signalr": "10.0.0",
     "@microsoft/signalr-protocol-msgpack": "10.0.0",
     "@reduxjs/toolkit": "^2.2.1",
+    "accountservice-client": "^1.0.3",
     "appregistry-client": "1.0.0",
     "emoji-picker-react": "4.19.1",
     "firebase": "12.13.0",
