@@ -10,7 +10,10 @@
 	OralNo = 128,
 	MyLanguage = 256,
 	OtherLanguage = 512,
-	All = 1023,
+	New = 1024,
+	Started = 2048,
+	Finished = 4096,
+	All = 8191,
 }
 
 export default GamesFilter;

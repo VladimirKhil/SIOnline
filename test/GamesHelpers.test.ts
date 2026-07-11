@@ -2,7 +2,6 @@ import { filterGames } from '../src/utils/GamesHelpers';
 import GameInfo from '../src/client/contracts/GameInfo';
 import ServerGameType from '../src/client/contracts/ServerGameType';
 
-const All = 1023;
 const Classic = 1;
 const Simple = 2;
 const Quiz = 4;
@@ -13,9 +12,16 @@ const OralYes = 64;
 const OralNo = 128;
 const MyLanguage = 256;
 const OtherLanguage = 512;
+const New = 1024;
+const Started = 2048;
+const Finished = 4096;
+const AllUpdated = 8191;
 
-// GameStage is a const enum with string values; use string literal to avoid import issues
+// GameStage is a const enum with string values; use string literals to avoid import issues
 const GameStageCreated = 'Created' as any;
+const GameStageStarted = 'Started' as any;
+const GameStageRound = 'Round' as any;
+const GameStageFinished = 'Finished' as any;
 
 function makeGame(overrides: Partial<GameInfo> = {}): GameInfo {
 	return {
@@ -43,11 +49,47 @@ function makeGame(overrides: Partial<GameInfo> = {}): GameInfo {
 describe('filterGames - defaults', () => {
 	test('returns all games when all filters are enabled', () => {
 		const games = [makeGame({ GameID: 1 }), makeGame({ GameID: 2 })];
-		expect(filterGames(games, All, '')).toHaveLength(2);
+		expect(filterGames(games, AllUpdated, '')).toHaveLength(2);
 	});
 
 	test('returns empty array for empty games list', () => {
-		expect(filterGames([], All, '')).toHaveLength(0);
+		expect(filterGames([], AllUpdated, '')).toHaveLength(0);
+	});
+});
+
+describe('filterGames - status filters', () => {
+	test('new filter includes only newly created games', () => {
+		const games = [
+			makeGame({ GameID: 1, Stage: GameStageCreated }),
+			makeGame({ GameID: 2, Stage: GameStageStarted }),
+			makeGame({ GameID: 3, Stage: GameStageFinished }),
+		];
+
+		expect(filterGames(games, New, '')).toHaveLength(1);
+		expect(filterGames(games, New, '')[0].GameID).toBe(1);
+	});
+
+	test('started filter includes started and in-progress games', () => {
+		const games = [
+			makeGame({ GameID: 1, Stage: GameStageCreated }),
+			makeGame({ GameID: 2, Stage: GameStageStarted }),
+			makeGame({ GameID: 3, Stage: GameStageRound }),
+			makeGame({ GameID: 4, Stage: GameStageFinished }),
+		];
+
+		const result = filterGames(games, Started, '');
+		expect(result.map(g => g.GameID).sort()).toEqual([2, 3]);
+	});
+
+	test('finished filter includes only finished games', () => {
+		const games = [
+			makeGame({ GameID: 1, Stage: GameStageCreated }),
+			makeGame({ GameID: 2, Stage: GameStageStarted }),
+			makeGame({ GameID: 3, Stage: GameStageFinished }),
+		];
+
+		expect(filterGames(games, Finished, '')).toHaveLength(1);
+		expect(filterGames(games, Finished, '')[0].GameID).toBe(3);
 	});
 });
 
@@ -156,19 +198,19 @@ describe('filterGames - search filter', () => {
 			makeGame({ GameID: 2, GameName: 'Beta Game' }),
 			makeGame({ GameID: 3, GameName: 'ALPHA SPECIAL' }),
 		];
-		const result = filterGames(games, All, 'alpha');
+		const result = filterGames(games, AllUpdated, 'alpha');
 		expect(result).toHaveLength(2);
 		expect(result.map(g => g.GameID).sort()).toEqual([1, 3]);
 	});
 
 	test('returns all games when search is empty', () => {
 		const games = [makeGame({ GameID: 1 }), makeGame({ GameID: 2 })];
-		expect(filterGames(games, All, '')).toHaveLength(2);
+		expect(filterGames(games, AllUpdated, '')).toHaveLength(2);
 	});
 
 	test('returns no games when search matches nothing', () => {
 		const games = [makeGame({ GameName: 'Alpha' }), makeGame({ GameName: 'Beta' })];
-		expect(filterGames(games, All, 'gamma')).toHaveLength(0);
+		expect(filterGames(games, AllUpdated, 'gamma')).toHaveLength(0);
 	});
 });
 

@@ -63,6 +63,15 @@ export default function GamesFilterView() {
 				{ filter: GamesFilter.OtherLanguage, label: localization.languageFilterOther },
 			],
 		},
+		{
+			title: localization.status,
+			singleColumn: true,
+			options: [
+				{ filter: GamesFilter.New, label: localization.new },
+				{ filter: GamesFilter.Started, label: localization.started },
+				{ filter: GamesFilter.Finished, label: localization.finished },
+			],
+		},
 	];
 
 	return (

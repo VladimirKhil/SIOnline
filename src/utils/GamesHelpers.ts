@@ -3,6 +3,7 @@ import GameInfo from '../client/contracts/GameInfo';
 import ServerGameType from '../client/contracts/ServerGameType';
 import localization from '../model/resources/localization';
 import GameRules, { parseRulesFromString } from '../client/contracts/GameRules';
+import GameStage from '../client/contracts/GameStage';
 
 export function filterGames(games: GameInfo[], filter: GamesFilter, search: string) {
 	const filteredGames: GameInfo[] = [];
@@ -17,10 +18,14 @@ export function filterGames(games: GameInfo[], filter: GamesFilter, search: stri
 	const oralNo = (filter & GamesFilter.OralNo) > 0;
 	const myLanguage = (filter & GamesFilter.MyLanguage) > 0;
 	const otherLanguage = (filter & GamesFilter.OtherLanguage) > 0;
+	const isNew = (filter & GamesFilter.New) > 0;
+	const isStarted = (filter & GamesFilter.Started) > 0;
+	const isFinished = (filter & GamesFilter.Finished) > 0;
 	const hasGameTypeFilter = classic || simple || quiz || turnTaking;
 	const hasPasswordFilter = passwordRequired || noPassword;
 	const hasOralFilter = oralYes || oralNo;
 	const hasLanguageFilter = myLanguage || otherLanguage;
+	const hasStatusFilter = isNew || isStarted || isFinished;
 
 	const normalizedSearch = search.toLocaleLowerCase();
 	const currentLanguage = localization.getLanguage();
@@ -69,14 +74,31 @@ export function filterGames(games: GameInfo[], filter: GamesFilter, search: stri
 		return isMyLanguage ? myLanguage : otherLanguage;
 	};
 
-	for (let j = 0; j < games.length; j++) {
+	const isStatusAllowed = (stage: GameStage) => {
+		if (!hasStatusFilter) {
+			return true;
+		}
+
+		if (stage === GameStage.Created) {
+			return isNew;
+		}
+
+		if (stage === GameStage.Finished) {
+			return isFinished;
+		}
+
+		return isStarted;
+	};
+
+	for (let j = 0; j < games.length; j += 1) {
 		const game = games[j];
 
-		const filteredOk = isGameTypeAllowed(game.Mode)
-			&& (!hasPasswordFilter || (game.PasswordRequired && passwordRequired) || (!game.PasswordRequired && noPassword))
-			&& isOralAllowed(game.Rules)
-			&& isLanguageAllowed(game.Language)
-			&& (normalizedSearch.length === 0 || game.GameName.toLocaleLowerCase().includes(normalizedSearch));
+		const filteredOk = isGameTypeAllowed(game.Mode) &&
+			(!hasPasswordFilter || (game.PasswordRequired && passwordRequired) || (!game.PasswordRequired && noPassword)) &&
+			isOralAllowed(game.Rules) &&
+			isLanguageAllowed(game.Language) &&
+			isStatusAllowed(game.Stage) &&
+			(normalizedSearch.length === 0 || game.GameName.toLocaleLowerCase().includes(normalizedSearch));
 
 		if (filteredOk) {
 			filteredGames.push(games[j]);
