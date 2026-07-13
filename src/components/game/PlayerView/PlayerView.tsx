@@ -313,7 +313,7 @@ export function PlayerView(props: PlayerViewProps): JSX.Element {
 					) : null}
 				</div>
 
-				{player.mediaPreloadProgress > 0 && player.mediaPreloadProgress <= 100 ? (
+				{account && player.mediaPreloadStarted ? (
 					<div className='preload__progress'>
 						<div className="preload__bar" style={{ width: `${player.mediaPreloadProgress}%` }} title={localization.mediaPreloadProgress} />
 						<span className="preload__text">{localization.loading}: {player.mediaPreloadProgress}%</span>

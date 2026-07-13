@@ -629,6 +629,55 @@ export const room2Slice = createSlice({
 					return;
 				}
 			}
+
+			if (state.persons.showman.name === action.payload.playerName) {
+				state.persons.showman.mediaPreloadProgress = action.payload.progress;
+			}
+		},
+		roundContentPreloadStarted(state: Room2State) {
+			// Only occupied seats: an empty seat marked here would show a stuck 0% bar
+			// once a late joiner sits down without going through this round's preload.
+			state.persons.players.forEach(p => {
+				if (state.persons.all[p.name]) {
+					p.mediaPreloadStarted = true;
+					p.mediaPreloadProgress = 0;
+				}
+			});
+
+			if (state.persons.all[state.persons.showman.name]) {
+				state.persons.showman.mediaPreloadStarted = true;
+				state.persons.showman.mediaPreloadProgress = 0;
+			}
+		},
+		hideMediaPreload(state: Room2State, action: PayloadAction<string>) {
+			for (let i = 0; i < state.persons.players.length; i += 1) {
+				if (state.persons.players[i].name === action.payload) {
+					state.persons.players[i].mediaPreloadStarted = false;
+					return;
+				}
+			}
+
+			if (state.persons.showman.name === action.payload) {
+				state.persons.showman.mediaPreloadStarted = false;
+			}
+		},
+		swapShowmanPlayerMediaPreload(state: Room2State, action: PayloadAction<number>) {
+			// The preload bar is stored per seat but belongs to the person; when the showman and a
+			// player swap seats, carry it over so each person keeps their own progress (playersSwap
+			// already does this for player-to-player swaps by swapping whole objects).
+			const player = state.persons.players[action.payload];
+
+			if (!player) {
+				return;
+			}
+
+			const { showman } = state.persons;
+			const startedTemp = showman.mediaPreloadStarted;
+			const progressTemp = showman.mediaPreloadProgress;
+			showman.mediaPreloadStarted = player.mediaPreloadStarted;
+			showman.mediaPreloadProgress = player.mediaPreloadProgress;
+			player.mediaPreloadStarted = startedTemp;
+			player.mediaPreloadProgress = progressTemp ?? 0;
 		},
 		setHostName(state: Room2State, action: PayloadAction<string | null>) {
 			state.persons.hostName = action.payload;
@@ -1066,6 +1115,11 @@ export const pressGameButton = createAsyncThunk(
 
 const timeoutIds: Record<string, NodeJS.Timeout> = {};
 
+// Keep the preload bar visible for 10s after reaching 100%, then hide it.
+const PRELOAD_COMPLETE_HIDE_DELAY = 10000;
+// Safety net: hide a preload bar after a minute without any progress updates.
+const PRELOAD_IDLE_HIDE_DELAY = 60000;
+
 export const showMediaPreloadProgress = createAsyncThunk(
 	'room2/showMediaPreloadProgress',
 	async (arg: { playerName: string, progress: number }, thunkAPI) => {
@@ -1076,12 +1130,24 @@ export const showMediaPreloadProgress = createAsyncThunk(
 
 		thunkAPI.dispatch(room2Slice.actions.setPlayerMediaPreloadProgress(arg));
 
+		const hideDelay = arg.progress >= 100 ? PRELOAD_COMPLETE_HIDE_DELAY : PRELOAD_IDLE_HIDE_DELAY;
+
 		timeoutIds[arg.playerName] = setTimeout(() => {
-			thunkAPI.dispatch(room2Slice.actions.setPlayerMediaPreloadProgress({
-				playerName: arg.playerName,
-				progress: 0,
-			}));
-		}, 10000);
+			delete timeoutIds[arg.playerName];
+			thunkAPI.dispatch(room2Slice.actions.hideMediaPreload(arg.playerName));
+		}, hideDelay);
+	},
+);
+
+export const startRoundContentPreload = createAsyncThunk(
+	'room2/startRoundContentPreload',
+	async (_arg: void, thunkAPI) => {
+		Object.keys(timeoutIds).forEach(name => {
+			clearTimeout(timeoutIds[name]);
+			delete timeoutIds[name];
+		});
+
+		thunkAPI.dispatch(room2Slice.actions.roundContentPreloadStarted());
 	},
 );
 
@@ -1265,6 +1331,7 @@ export const {
 	playerMediaLoaded,
 	playerMediaPreloaded,
 	setPlayerMediaPreloadProgress,
+	swapShowmanPlayerMediaPreload,
 	setHostName,
 	personAdded,
 	personRemoved,

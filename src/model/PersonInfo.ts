@@ -4,4 +4,6 @@ export default interface PersonInfo {
 	replic: string | null;
 	isDeciding: boolean;
 	isHuman: boolean;
+	mediaPreloadProgress?: number;
+	mediaPreloadStarted?: boolean;
 }

@@ -1226,7 +1226,9 @@ function info(controller: ClientController, ...args: string[]) {
 		isReady,
 		replic: null,
 		isDeciding: false,
-		isHuman
+		isHuman,
+		mediaPreloadProgress: 0,
+		mediaPreloadStarted: false
 	};
 
 	if (isConnected) {
