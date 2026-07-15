@@ -1,4 +1,5 @@
 import React from 'react';
+import FullScreenButton from '../FullScreenButton/FullScreenButton';
 import SettingsButton from '../SettingsButton/SettingsButton';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 import { showProfile } from '../../../state/uiSlice';
@@ -36,6 +37,8 @@ const UserOptions: React.FC = () => {
 
 	return (
 		<div className='userOptions'>
+			<FullScreenButton />
+
 			<SettingsButton />
 
 			<button type='button' className='userInfo' title={login} onClick={() => dispatch(showProfile(true))}>
