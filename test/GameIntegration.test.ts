@@ -159,7 +159,7 @@ class TestHost implements IHost {
 		return undefined;
 	}
 
-	getFallbackPackageSource(): string | undefined {
+	getAlternativePackageSource(): string | undefined {
 		return undefined;
 	}
 }

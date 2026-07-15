@@ -37,7 +37,7 @@ class TestHost implements IHost {
 	async addGameLog(): Promise<boolean> { return true; }
 	async openGameLog(): Promise<boolean> { return true; }
 	getPackageSource(): string | undefined { return undefined; }
-	getFallbackPackageSource(): string | undefined { return undefined; }
+	getAlternativePackageSource(): string | undefined { return undefined; }
 }
 
 describe('Language change on initial load', () => {

@@ -130,7 +130,7 @@ export default class SteamTauriHost extends TauriHost {
 			: 'https://steamcommunity.com';
 	}
 
-	getFallbackPackageSource(): string | undefined {
+	getAlternativePackageSource(): string | undefined {
 		return 'https://www.sibrowser.ru';
 	}
 }
