@@ -7,7 +7,6 @@ import {
 	setAppSound,
 	setAttachContentToTable,
 	setFloatingControls,
-	setFullScreen,
 	setMainMenuSound,
 	setShowVideoAvatars,
 	setSound,
@@ -20,7 +19,6 @@ import { setExternalMediaWarning } from '../../../state/tableSlice';
 
 export function CommonSettingsView(): JSX.Element {
 	const settings = useAppSelector(state => state.settings);
-	const ui = useAppSelector(state => state.ui);
 	const common = useAppSelector(state => state.common);
 	const appDispatch = useAppDispatch();
 
@@ -29,19 +27,6 @@ export function CommonSettingsView(): JSX.Element {
 			<p className="header">{localization.language}</p>
 
 			<LanguageView disabled={false} />
-
-			{ui.isFullScreenSupported
-				? <div className="settingItem">
-					<input
-						id="fullScreen"
-						type="checkbox"
-						checked={settings.fullScreen}
-						onChange={() => appDispatch(setFullScreen(!settings.fullScreen))}
-					/>
-
-					<label htmlFor="fullScreen">{localization.fullScreen}</label>
-				</div>
-				: null}
 
 			<div className="settingItem">
 				<input
