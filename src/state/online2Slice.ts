@@ -2,7 +2,8 @@ import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import GameInfo from '../client/contracts/GameInfo';
 import PersonInfo from '../client/contracts/PersonInfo';
 import GamesResponse from 'sistatistics-client/dist/models/GamesResponse';
-import PackagesStatistic from 'sistatistics-client/dist/models/PackagesStatistic';
+import PackageStatistic from 'sistatistics-client/dist/models/PackageStatistic';
+import PackageInfo from 'sistatistics-client/dist/models/PackageInfo';
 import GamesFilter from '../model/enums/GamesFilter';
 import DataContext from '../model/DataContext';
 import IGameServerClient from '../client/IGameServerClient';
@@ -17,6 +18,17 @@ import Slice from '../client/contracts/Slice';
 import clearUrls from '../utils/clearUrls';
 import { filterGames } from '../utils/GamesHelpers';
 
+/** Defines a top package statistic extended with a package link in an alternative package storage. */
+export interface TopPackage extends PackageStatistic {
+	/** Package link in an alternative package storage. */
+	alternativeSource?: string;
+}
+
+/** Defines a top packages statistic. */
+export interface TopPackages {
+	packages: TopPackage[];
+}
+
 export interface Online2State {
 	inProgress: boolean;
 	error: string;
@@ -29,7 +41,7 @@ export interface Online2State {
 	uploadPackageProgress: boolean;
 	uploadPackagePercentage: number;
 	latestGames?: GamesResponse;
-	packagesStatistics?: PackagesStatistic;
+	packagesStatistics?: TopPackages;
 	password: string;
 	newGameShown: boolean;
 	gameCreationProgress: boolean;
@@ -80,6 +92,11 @@ export const loadGames = createAsyncThunk(
 	},
 );
 
+/** Identifies a package across package storages. Package hash is not provided by the statistics service, so name and authors are used. */
+function getPackageKey(info: PackageInfo): string {
+	return `${info.name}\n${info.authors.join(',')}`;
+}
+
 async function loadStatisticsAsync(dispatch: AppDispatch, dataContext: DataContext) {
 	const siStatisticsClient = new SIStatisticsClient({ serviceUri: dataContext.config.siStatisticsServiceUri });
 
@@ -104,13 +121,40 @@ async function loadStatisticsAsync(dispatch: AppDispatch, dataContext: DataConte
 		languageCode: localization.getLanguage()
 	};
 
-	const packagesStatistics = await siStatisticsClient.getLatestTopPackagesAsync({
-		statisticFilter: packagesFilter,
-		packageSource: dataContext.host.getPackageSource(),
-		fallbackSource: dataContext.host.getFallbackPackageSource(),
+	const alternativeSource = dataContext.host.getAlternativePackageSource();
+
+	// The service resolves a single link per package, so an alternative package storage is requested separately.
+	// Alternative links are optional: their loading error must not hide the whole statistics
+	const [packagesStatistics, alternativePackages] = await Promise.all([
+		siStatisticsClient.getLatestTopPackagesAsync({
+			statisticFilter: packagesFilter,
+			packageSource: dataContext.host.getPackageSource(),
+		}),
+		alternativeSource
+			? siStatisticsClient.getLatestTopPackagesAsync({
+				statisticFilter: packagesFilter,
+				packageSource: alternativeSource,
+			}).catch(error => {
+				console.warn('Could not load alternative package sources:', error);
+				return null;
+			})
+			: null,
+	]);
+
+	const alternativeSources = new Map<string, string>();
+
+	alternativePackages?.packages.forEach(p => {
+		if (p.package.source) {
+			alternativeSources.set(getPackageKey(p.package), p.package.source);
+		}
 	});
 
-	dispatch(packagesStatisticsLoaded(packagesStatistics));
+	dispatch(packagesStatisticsLoaded({
+		packages: packagesStatistics.packages.map(p => ({
+			...p,
+			alternativeSource: alternativeSources.get(getPackageKey(p.package)),
+		})),
+	}));
 
 	const latestGames = await siStatisticsClient.getLatestGamesInfoAsync(gamesFilter);
 	dispatch(latestGamesLoaded(latestGames));
@@ -192,7 +236,7 @@ export const online2Slice = createSlice({
 		latestGamesLoaded: (state: Online2State, action: PayloadAction<GamesResponse>) => {
 			state.latestGames = action.payload;
 		},
-		packagesStatisticsLoaded: (state: Online2State, action: PayloadAction<PackagesStatistic>) => {
+		packagesStatisticsLoaded: (state: Online2State, action: PayloadAction<TopPackages>) => {
 			state.packagesStatistics = action.payload;
 		},
 		passwordChanged: (state: Online2State, action: PayloadAction<string>) => {

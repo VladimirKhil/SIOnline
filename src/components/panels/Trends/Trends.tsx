@@ -6,6 +6,7 @@ import clearUrls from '../../../utils/clearUrls';
 import { useAppSelector } from '../../../state/hooks';
 import { trimLength } from '../../../utils/StringHelpers';
 import TabControl from '../../common/TabControl/TabControl';
+import steamLogo from '../../../../assets/images/steam_logo.png';
 
 import './Trends.scss';
 
@@ -27,27 +28,44 @@ function isValidSourceForDownload(source?: string): boolean {
 		(source.startsWith('http://') || source.startsWith('https://'));
 }
 
-function downloadPackage(source: string, packageName: string): void {
-	try {
-		// Create a temporary anchor element to trigger download
-		const link = document.createElement('a');
-		link.href = source;
-
-		// Sanitize the package name for use as filename
-		const sanitizedName = packageName.replace(/[<>:"/\\|?*]/g, '_');
-		link.download = `${sanitizedName}.siq`;
-		link.target = '_blank';
-		link.rel = 'noopener noreferrer';
-
-		// Append to document, click, and remove
-		document.body.appendChild(link);
-		link.click();
-		document.body.removeChild(link);
-	} catch (error) {
-		console.error('Failed to download package:', error);
-		// Fallback: open in new tab
-		window.open(source, '_blank', 'noopener,noreferrer');
+function isSteamSource(source?: string): boolean {
+	if (!source) {
+		return false;
 	}
+
+	try {
+		return new URL(source).hostname === 'steamcommunity.com';
+	} catch {
+		return false;
+	}
+}
+
+function packageLink(source?: string): JSX.Element | null {
+	if (!isValidSourceForDownload(source)) {
+		return null;
+	}
+
+	const steam = isSteamSource(source);
+
+	return <Link
+		href={source || ''}
+		target='_blank'
+		rel='noreferrer noopener'
+		title={steam ? localization.steamWorkshop : localization.download}>
+		<div className='downloadButton'>
+			{steam
+				? <img src={steamLogo} alt='Steam' />
+				: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+					<path
+						d="M12 2V16M12 16L16 12M12 16L8 12M3 20H21"
+						stroke="currentColor"
+						strokeWidth="2"
+						strokeLinecap="round"
+						strokeLinejoin="round"
+					/>
+				</svg>}
+		</div>
+	</Link>;
 }
 
 export default function Trends(): JSX.Element {
@@ -74,25 +92,10 @@ export default function Trends(): JSX.Element {
 										{commonClearUrls ? clearUrls(trimmedPackageName) : trimmedPackageName}</span>
 									</div>
 
-									{isValidSourceForDownload(p.package.source) && (
-										<Link
-											href={p.package.source || ''}
-											target='_blank'
-											rel='noreferrer noopener'
-											title={localization.download}>
-											<div className='downloadButton'>
-												<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-													<path
-														d="M12 2V16M12 16L16 12M12 16L8 12M3 20H21"
-														stroke="currentColor"
-														strokeWidth="2"
-														strokeLinecap="round"
-														strokeLinejoin="round"
-													/>
-												</svg>
-											</div>
-										</Link>
-									)}
+									<div className='packageLinks'>
+										{packageLink(p.package.source)}
+										{packageLink(p.alternativeSource)}
+									</div>
 								</div>
 
 								<div className='property'>
