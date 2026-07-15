@@ -116,6 +116,7 @@ import {
 	setIsPaused,
 	setRoomRole,
 	incrementQuestionCounter,
+	loadPackageStats,
 	resetQuestionCounter,
 	setTheme,
 	setSettingDisplayAnswerOptionsLabels,
@@ -1017,6 +1018,12 @@ export default class ClientController implements IClientController {
 
 	onPackageAuthors(authors: string[]) {
 		this.appDispatch(setPackageAuthors(authors));
+
+		const { packageName } = this.getState().room.metadata;
+
+		if (packageName) {
+			this.appDispatch(loadPackageStats({ name: packageName, authors }));
+		}
 
 		this.appDispatch(showObject({
 			header: '',

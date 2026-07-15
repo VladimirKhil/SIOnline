@@ -36,6 +36,7 @@ import {
 	ContextView,
 	DecisionType,
 	nameChanged,
+	resetPackageStats,
 	resetQuestionCounter,
 	setAreSumsEditable,
 	setContext,
@@ -140,6 +141,7 @@ const initGameAsync = async (
 	dispatch(roomActionCreators.isQuestionChanged(false, ''));
 	appDispatch(setAreSumsEditable(false));
 	appDispatch(resetQuestionCounter());
+	appDispatch(resetPackageStats());
 	appDispatch(setRoundsNames([]));
 
 	appDispatch(initRoom());
