@@ -1030,6 +1030,7 @@ export default class ClientController implements IClientController {
 	onPackageComments(comments: string) {
 		this.appDispatch(captionChanged(localization.packageComments));
 		this.appDispatch(showText(comments));
+		this.addSimpleMessage(`${localization.packageComments}: ${comments}`);
 	}
 
 	onPackageDate(packageDate: string) {
