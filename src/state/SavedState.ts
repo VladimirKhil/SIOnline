@@ -11,6 +11,7 @@ export default interface SavedState {
 	game: {
 		name: string;
 		password: string;
+		voiceChat: string;
 		role: Role;
 		type: GameType;
 		playersCount: number;

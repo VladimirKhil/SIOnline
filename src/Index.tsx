@@ -105,6 +105,7 @@ function setState(state: State, savedState: SavedState | null, c: Config, isDesk
 			...state.game,
 			name: savedState.game.name,
 			password: savedState.game.password,
+			voiceChat: savedState.game.voiceChat ?? '',
 			role: savedState.game.role,
 			type: savedState.game.type,
 			playersCount: savedState.game.playersCount,
