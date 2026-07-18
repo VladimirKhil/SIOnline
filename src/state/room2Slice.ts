@@ -1,4 +1,6 @@
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import SIStatisticsClient from 'sistatistics-client';
+import QuestionStats from 'sistatistics-client/dist/models/QuestionStats';
 import DataContext from '../model/DataContext';
 import PlayerInfo from '../model/PlayerInfo';
 import PersonInfo from '../model/PersonInfo';
@@ -70,6 +72,11 @@ export interface Room2State {
 
 	playState: {
 		packageUri: string | null;
+
+		// Package question statistics keyed by roundIndex:themeIndex:questionIndex
+		packageStats: Record<string, QuestionStats>;
+
+		completedGameCount: number;
 	};
 
 	dialogView: DialogView;
@@ -154,6 +161,8 @@ const initialState: Room2State = {
 
 	playState: {
 		packageUri: null,
+		packageStats: {},
+		completedGameCount: 0,
 	},
 
 	dialogView: DialogView.None,
@@ -419,6 +428,24 @@ export const toggleQuestion = createAsyncThunk(
 	async (arg: { themeIndex: number, questionIndex: number }, thunkAPI) => {
 		const dataContext = thunkAPI.extra as DataContext;
 		await dataContext.game.toggle(arg.themeIndex, arg.questionIndex);
+	},
+);
+
+export const loadPackageStats = createAsyncThunk(
+	'room2/loadPackageStats',
+	async (arg: { name: string, authors: string[] }, thunkAPI) => {
+		const dataContext = thunkAPI.extra as DataContext;
+		const siStatisticsClient = new SIStatisticsClient({ serviceUri: dataContext.config.siStatisticsServiceUri });
+
+		try {
+			return await siStatisticsClient.getPackageStats({ name: arg.name, hash: '', authors: arg.authors });
+		} catch (error: unknown) {
+			// Return empty stats on 404 or other errors
+			return {
+				topLevelStats: { startedGameCount: 0, completedGameCount: 0 },
+				questionStats: {},
+			};
+		}
 	},
 );
 
@@ -741,6 +768,10 @@ export const room2Slice = createSlice({
 		resetQuestionCounter(state: Room2State) {
 			state.stage.questionCounter = 0;
 		},
+		resetPackageStats(state: Room2State) {
+			state.playState.packageStats = {};
+			state.playState.completedGameCount = 0;
+		},
 		setSettingDisplayAnswerOptionsLabels: (state: Room2State, action: PayloadAction<boolean>) => {
 			state.settings.displayAnswerOptionsLabels = action.payload;
 		},
@@ -1017,6 +1048,11 @@ export const room2Slice = createSlice({
 			state.stage.decisionType = DecisionType.None;
 		});
 
+		builder.addCase(loadPackageStats.fulfilled, (state, action) => {
+			state.playState.packageStats = action.payload.questionStats;
+			state.playState.completedGameCount = action.payload.topLevelStats.completedGameCount;
+		});
+
 		builder.addCase(approveAnswerDefault.fulfilled, (state) => {
 			state.validation.queue.shift();
 			state.stage.decisionType = DecisionType.None;
@@ -1287,6 +1323,7 @@ export const {
 	setRoomRole,
 	incrementQuestionCounter,
 	resetQuestionCounter,
+	resetPackageStats,
 	setSettingDisplayAnswerOptionsLabels,
 	setSettingFalseStart,
 	setSettingOral,

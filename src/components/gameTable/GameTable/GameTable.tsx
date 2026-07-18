@@ -10,6 +10,7 @@ import AutoSizedText from '../../common/AutoSizedText/AutoSizedText';
 import localization from '../../../model/resources/localization';
 import ProgressBar from '../../common/ProgressBar/ProgressBar';
 import { isRunning } from '../../../utils/TimerInfoHelpers';
+import { getQuestionStatsPercents, getQuestionStatsPosition } from '../../../utils/QuestionStatsHelpers';
 import TableContent from '../TableContent/TableContent';
 import ObjectView from '../ObjectView/ObjectView';
 import { useAppSelector } from '../../../state/hooks';
@@ -108,6 +109,14 @@ export function GameTable(): JSX.Element {
 	const decisionTimer = useAppSelector((state) => state.room2.timers.decision);
 	const answerDeviation = useAppSelector((state) => state.table.answerDeviation);
 	const layoutMode = useAppSelector((state) => state.table.layoutMode);
+	const isAnswer = useAppSelector((state) => state.table.isAnswer);
+	const activeThemeIndex = useAppSelector((state) => state.table.activeThemeIndex);
+	const actionQuestionIndex = useAppSelector((state) => state.table.actionQuestionIndex);
+	const roundIndex = useAppSelector((state) => state.room.stage.roundIndex);
+	const roundInfo = useAppSelector((state) => state.table.roundInfo);
+	const themeName = useAppSelector((state) => state.room2.theme.name);
+	const packageStats = useAppSelector((state) => state.room2.playState.packageStats);
+	const completedGameCount = useAppSelector((state) => state.room2.playState.completedGameCount);
 
 	const shouldShowAnswerValidationInTable = decisionType === DecisionType.Validation &&
 		validationQueue.length > 0 &&
@@ -116,6 +125,15 @@ export function GameTable(): JSX.Element {
 	const caption = shouldShowAnswerValidationInTable
 		? localization.validateAnswer
 		: getCaption(mode, tableCaption);
+
+	const questionStats = isAnswer || caption === localization.rightAnswer
+		? getQuestionStatsPercents(
+			packageStats,
+			completedGameCount,
+			roundIndex,
+			getQuestionStatsPosition(roundInfo, themeName, activeThemeIndex, actionQuestionIndex),
+		)
+		: null;
 
 	const themeProperties: React.CSSProperties = {};
 	const reversedPropeties: React.CSSProperties = {};
@@ -153,6 +171,12 @@ export function GameTable(): JSX.Element {
 					</div>
 					<div className='tableCaptionContent'>{caption}</div>
 					<div className='caption__right'>
+						{questionStats ? (
+							<div className='questionStats'>
+								<span className='questionStats__tries' title={localization.answerTries}>{questionStats.triesPercent}%</span>
+								<span className='questionStats__right' title={localization.rightAnswers}>{questionStats.rightPercent}%</span>
+							</div>
+						) : null}
 						{hasSound && <VolumeButton canPlayAudio={canPlayAudio} />}
 					</div>
 				</div>
