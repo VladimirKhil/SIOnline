@@ -16,6 +16,21 @@ import { AccountServiceClient } from 'accountservice-client';
 const defaultSteamAuthIdentity = 'SIGameServer';
 
 export default class SteamTauriHost extends TauriHost {
+	override openLink(url: string): void {
+		const isHttpUrl = /^https?:\/\//i.test(url);
+
+		if (isHttpUrl && this.app?.core) {
+			void this.app.core.invoke('open_url_in_steam_overlay', { url })
+				.catch((error) => {
+					console.error('Failed to open link in Steam overlay, falling back to opener:', error);
+					super.openLink(url);
+				});
+			return;
+		}
+
+		super.openLink(url);
+	}
+
 	async initAsync(store: Store): Promise<void> {
 		await super.initAsync(store);
 
@@ -46,19 +61,19 @@ export default class SteamTauriHost extends TauriHost {
 				localStorage.setItem(Constants.AVATAR_NAME_KEY, 'steam_avatar.png');
 			}
 
-			const identity = defaultSteamAuthIdentity;
+			// const identity = defaultSteamAuthIdentity;
 
-			const authTicket = await this.app.core.invoke('get_steam_auth_ticket', {
-				identity,
-			});
+			// const authTicket = await this.app.core.invoke('get_steam_auth_ticket', {
+			// 	identity,
+			// });
 
-			const accountServiceClient = new AccountServiceClient('https://localhost:7039');
+			// const accountServiceClient = new AccountServiceClient('https://localhost:7039');
 
-			const { userId } = await accountServiceClient.loginBySteamAsync({
-				authTicket,
-			});
+			// const { userId } = await accountServiceClient.loginBySteamAsync({
+			// 	authTicket,
+			// });
 
-			console.log('Steam user logged in with userId:', userId);
+			// console.log('Steam user logged in with userId:', userId);
 		} catch (error) {
 			console.error('Failed to get Steam user info:', error);
 		}

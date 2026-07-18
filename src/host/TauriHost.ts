@@ -87,6 +87,14 @@ export default class TauriHost implements IHost {
 					return input;
 				}
 
+				if (input instanceof Request) {
+					try {
+						return new URL(input.url, window.location.href);
+					} catch {
+						return null;
+					}
+				}
+
 				if (typeof input === 'string') {
 					try {
 						return new URL(input, window.location.href);
@@ -99,10 +107,6 @@ export default class TauriHost implements IHost {
 			};
 
 			const isBrowserManagedUrl = (input: RequestInfo | URL): boolean => {
-				if (typeof input !== 'string' && !(input instanceof URL)) {
-					return false;
-				}
-
 				const requestUrl = resolveRequestUrl(input);
 				if (!requestUrl) {
 					return false;
@@ -113,6 +117,10 @@ export default class TauriHost implements IHost {
 				}
 
 				if (!requestUrl.protocol.startsWith('http')) {
+					return true;
+				}
+
+				if (requestUrl.origin === window.location.origin) {
 					return true;
 				}
 
@@ -147,7 +155,6 @@ export default class TauriHost implements IHost {
 		store.dispatch(setIsDesktop(true));
 		console.log('Loaded from Tauri');
 
-		store.dispatch(setClearUrls(true));
 		store.dispatch(setHostManagedUrls(true));
 
 		if (!this.clipboardSupported) {
@@ -216,12 +223,9 @@ export default class TauriHost implements IHost {
 	openLink(url: string) {
 		try {
 			if (this.app?.opener) {
-				this.app.opener.openPath(url);
-				return;
-			}
-
-			if (this.app?.core) {
-				this.app.core.invoke('open_url_in_steam_overlay', { url });
+				void this.app.opener.openPath(url).catch((error) => {
+					console.error('Failed to open link via opener:', error);
+				});
 				return;
 			}
 
