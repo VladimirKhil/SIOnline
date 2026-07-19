@@ -19,6 +19,7 @@ import boostyImg from '../../../../assets/images/boosty_logo.png';
 import patreonImg from '../../../../assets/images/patreon_logo.png';
 import steamImg from '../../../../assets/images/steam_logo.png';
 import simulatorImg from '../../../../assets/images/simulator_logo.png';
+import discordImg from '../../../../assets/images/discord_logo.png';
 
 export default function MainMenu(): JSX.Element {
 	const [showLicense, setShowLicense] = React.useState(false);
@@ -82,6 +83,11 @@ export default function MainMenu(): JSX.Element {
 	const { steamLinkSupported } = common;
 
 	const links = [
+		{
+			href: 'https://discord.gg/jGC4yvBEhZ',
+			imgSrc: discordImg,
+			title: 'Discord',
+		},
 		...(steamLinkSupported ? [{
 			href: 'https://store.steampowered.com/app/3553500/SIGame',
 			imgSrc: steamImg,
