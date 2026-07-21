@@ -106,6 +106,7 @@ import {
 	playersAnswersChanged,
 	playersStateCleared,
 	playersSwap,
+	swapShowmanPlayerMediaPreload,
 	questionAnswersChanged,
 	selectPlayers,
 	setContext,
@@ -136,6 +137,7 @@ import {
 	addToChat,
 	setJoinMode,
 	showMediaPreloadProgress,
+	startRoundContentPreload,
 	setRoundsNames,
 	setShowMainTimer,
 	runTimer,
@@ -1181,6 +1183,8 @@ export default class ClientController implements IClientController {
 	}
 
 	onRoundContent(content: string[]) {
+		this.appDispatch(startRoundContentPreload());
+
 		preloadRoundContent(
 			content,
 			this.preprocessServerUri.bind(this),
@@ -2065,6 +2069,7 @@ export default class ClientController implements IClientController {
 		if (state.room2.persons.showman.name === replacer) { // isPlayer
 			this.appDispatch(showmanChanged({ name: account.name, isHuman: true, isReady: account.isReady }));
 			this.appDispatch(playerChanged({ index, name: replacer, isHuman: true, isReady: state.room2.persons.showman.isReady }));
+			this.appDispatch(swapShowmanPlayerMediaPreload(index));
 
 			if (account.name === state.room2.name) {
 				this.setCurrentRoomRole(Role.Showman);
@@ -2084,6 +2089,7 @@ export default class ClientController implements IClientController {
 
 					this.appDispatch(playerChanged({ index: i, name: account.name, isReady: account.isReady }));
 					this.appDispatch(showmanChanged({ name: replacer, isReady }));
+					this.appDispatch(swapShowmanPlayerMediaPreload(i));
 
 					if (state.room2.persons.showman.name === state.room2.name) {
 						this.setCurrentRoomRole(Role.Player);

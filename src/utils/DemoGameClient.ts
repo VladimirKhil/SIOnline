@@ -104,6 +104,8 @@ export default class DemoGameClient implements IGameClient {
 				isHuman: false,
 				replic: '',
 				isDeciding: false,
+				mediaPreloadProgress: 0,
+				mediaPreloadStarted: false,
 			},
 			[{
 				name: localization.player + ' 1',

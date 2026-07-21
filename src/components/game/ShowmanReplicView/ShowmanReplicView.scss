@@ -72,6 +72,43 @@
     height: 100%;
 }
 
+.showmanAvatar .preload__progress {
+    position: absolute;
+    top: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    z-index: 5;
+    height: 16px;
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.showmanAvatar .preload__bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, rgba(76, 175, 80, 0.8), rgba(46, 125, 50, 0.8));
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    transition: width 0.3s ease;
+}
+
+.showmanAvatar .preload__text {
+    position: relative;
+    z-index: 10;
+    color: white;
+    font-size: 10px;
+    font-weight: bold;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+    white-space: nowrap;
+}
+
 .showmanName {
     overflow: hidden;
     text-overflow: ellipsis;

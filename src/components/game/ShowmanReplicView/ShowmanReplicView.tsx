@@ -45,6 +45,8 @@ export function ShowmanReplicView(props: ShowmanReplicViewProps): JSX.Element {
 	const windowWidth = useAppSelector(state => state.ui.windowWidth);
 	const deepMode = useAppSelector(state => state.room2.deepMode);
 	const role = useAppSelector(state => state.room2.role);
+	const mediaPreloadStarted = useAppSelector(state => state.room2.persons.showman.mediaPreloadStarted);
+	const mediaPreloadProgress = useAppSelector(state => state.room2.persons.showman.mediaPreloadProgress);
 
 	const isScreenWide = windowWidth >= Constants.WIDE_WINDOW_WIDTH;
 	const activePlayer = !isScreenWide && replicIndex > -1 && replicIndex < players.length
@@ -72,6 +74,13 @@ export function ShowmanReplicView(props: ShowmanReplicViewProps): JSX.Element {
 
 	const avatarClass = getAvatarClass(account);
 
+	const showmanPreload = !activePlayer && account && mediaPreloadStarted ? (
+		<div className='preload__progress'>
+			<div className="preload__bar" style={{ width: `${mediaPreloadProgress ?? 0}%` }} title={localization.mediaPreloadProgress} />
+			<span className="preload__text">{localization.loading}: {mediaPreloadProgress ?? 0}%</span>
+		</div>
+	) : null;
+
 	const showmanInfoStyle: React.CSSProperties = isGameStarted && !activePlayer ? {} : {
 		display: 'flex'
 	};
@@ -88,8 +97,8 @@ export function ShowmanReplicView(props: ShowmanReplicViewProps): JSX.Element {
 				{!deepMode ? (
 					<>
 						{props.showVideoAvatars && account?.avatarVideo
-							? <div className='showmanAvatar'><iframe title='Video avatar' src={account?.avatarVideo} /></div>
-							: <div className={`showmanAvatar ${avatarClass}`} style={avatarStyle} />}
+							? <div className='showmanAvatar'><iframe title='Video avatar' src={account?.avatarVideo} />{showmanPreload}</div>
+							: <div className={`showmanAvatar ${avatarClass}`} style={avatarStyle}>{showmanPreload}</div>}
 
 						<div className="showmanName">
 							{isReady && !isGameStarted ? (
