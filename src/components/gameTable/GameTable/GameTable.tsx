@@ -24,6 +24,7 @@ import { useAudioContext } from '../../../contexts/AudioContextProvider';
 import ContentType from '../../../model/enums/ContentType';
 import LayoutMode from '../../../model/enums/LayoutMode';
 import PointsOverlay from '../PointsOverlay/PointsOverlay';
+import CensorButton from '../CensorButton/CensorButton';
 
 import './GameTable.css';
 
@@ -113,6 +114,7 @@ export function GameTable(): JSX.Element {
 	const decisionTimer = useAppSelector((state) => state.room2.timers.decision);
 	const answerDeviation = useAppSelector((state) => state.table.answerDeviation);
 	const layoutMode = useAppSelector((state) => state.table.layoutMode);
+	const isCensored = useAppSelector((state) => state.ui.isCensored);
 
 	const shouldShowAnswerValidationInTable = decisionType === DecisionType.Validation &&
 		validationQueue.length > 0 &&
@@ -144,6 +146,9 @@ export function GameTable(): JSX.Element {
 		content.some(g => g.content.some(c => c.type === ContentType.Video)) ||
 		cooperativeHtmlVolumeSupportIds.length > 0;
 
+	// Only question content holds media, so other table modes are never censored
+	const censored = isCensored && mode === TableMode.Content;
+
 	return (
 		<div id="table" style={themeProperties}>
 			{caption ? (
@@ -156,6 +161,7 @@ export function GameTable(): JSX.Element {
 								</div>
 							: ''}
 					</div>
+					<CensorButton />
 					<div className='tableCaptionContent'>{caption}</div>
 					<div className='caption__right'>
 						{hasSound && <VolumeButton canPlayAudio={canPlayAudio} />}
@@ -163,7 +169,7 @@ export function GameTable(): JSX.Element {
 				</div>
 			) : null}
 
-			<div className="tableContent">
+			<div className={`tableContent ${censored ? 'censored' : ''}`}>
 				{getContent(mode)}
 				{layoutMode === LayoutMode.OverlayPoints ? <PointsOverlay /> : null}
 			</div>
