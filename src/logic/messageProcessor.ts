@@ -942,8 +942,7 @@ const viewerHandler = (
 				&& args[1] === '2'
 				&& args[2] === 'GO'
 				&& args[4] === '-2') {
-				const leftSeconds = parseInt(args[3], 10) / 10;
-				controller.onAutomaticGameTimer(leftSeconds);
+				// TODO: will be removed in the future
 			} else if (args.length > 2) {
 				const timerIndex = parseInt(args[1], 10);
 				const timerCommand = args[2];

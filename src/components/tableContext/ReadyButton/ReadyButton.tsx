@@ -12,6 +12,9 @@ import './ReadyButton.scss';
 import PersonInfo from '../../../model/PersonInfo';
 import PlayerInfo from '../../../model/PlayerInfo';
 
+/**
+ * Props for the ReadyButton component.
+ */
 interface ReadyButtonProps {
 	isConnected: boolean;
 	sex: Sex;
@@ -47,13 +50,16 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 });
 
 function getNotReadyMessage(props: ReadyButtonProps) {
-	return props.sex === Sex.Female ? localization.notReadyFemale : localization.notReadyMale;
+	return props.sex === Sex.Female ? localization.readyToPlayFemale : localization.readyToPlayMale;
 }
 
-function getReadyMessage(props: ReadyButtonProps) {
-	return props.sex === Sex.Female ? localization.readyFemale : localization.readyMale;
+function getReadyMessage() {
+	return localization.cancelReadiness;
 }
 
+/**
+ * Renders the ready status toggle button for room participants.
+ */
 export function ReadyButton(props: ReadyButtonProps): JSX.Element | null {
 	const role = useAppSelector(state => state.room2.role);
 	const persons = useAppSelector(state => state.room2.persons);
@@ -61,21 +67,17 @@ export function ReadyButton(props: ReadyButtonProps): JSX.Element | null {
 
 	const isReady = getIsReady(role, persons.showman, persons.players, name);
 	const enabledClass = props.isConnected ? '' : 'disabled';
-	const label = isReady ? getReadyMessage(props) : getNotReadyMessage(props);
-	const buttonLabel = isReady ? '❌' : '✔️';
+	const label = isReady ? getReadyMessage() : getNotReadyMessage(props);
 
 	return (
-		<div className={`readyButtonHost ${isReady ? 'ready' : 'not-ready'}`}>
-			<div className='readyButtonHost__label'>
-				{label}
-			</div>
-
+		<div className='readyButtonHost'>
 			<button
 				type="button"
-				className={`ready_button ${enabledClass}`}
+				className={`ready_button ${isReady ? 'ready' : 'not-ready'} ${enabledClass}`}
 				onClick={() => props.onReady(!isReady)}
+				disabled={!props.isConnected}
 			>
-				{buttonLabel}
+				{label}
 			</button>
 		</div>
 	);

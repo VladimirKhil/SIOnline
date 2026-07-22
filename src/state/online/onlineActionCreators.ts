@@ -117,12 +117,10 @@ function getRandomValue(): number {
 const initGameAsync = async (
 	dispatch: Dispatch<any>,
 	appDispatch: AppDispatch,
-	gameClient: IGameClient,
 	gameId: number,
 	name: string,
 	role: Role,
 	isAutomatic: boolean,
-	autoReady = true,
 ) => {
 	appDispatch(setGameSet({ id: gameId, isAutomatic }));
 	appDispatch(tableReset());
@@ -143,10 +141,6 @@ const initGameAsync = async (
 	appDispatch(setRoundsNames([]));
 
 	appDispatch(initRoom());
-
-	if (autoReady && (role === Role.Player || role === Role.Showman)) {
-		await gameClient.ready(true);
-	}
 };
 
 function getServerRole(role: Role) {
@@ -206,7 +200,7 @@ const joinGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 				return;
 			}
 
-			await initGameAsync(dispatch, appDispatch, dataContext.game, gameId, siHostClient.userName ?? userName, role, isAutomatic);
+			await initGameAsync(dispatch, appDispatch, gameId, siHostClient.userName ?? userName, role, isAutomatic);
 			saveStateToStorage(getState()); // use state that could be changed by initGameAsync
 
 			const navigation: INavigationState = {

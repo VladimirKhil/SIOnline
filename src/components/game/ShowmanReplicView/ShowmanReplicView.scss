@@ -50,6 +50,68 @@
     padding: 10px 7px 7px 7px;
     justify-content: center;
     background-color: transparent;
+    overflow: hidden;
+}
+
+.showmanInfo .progress {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px 10px 0 0;
+    padding: 0;
+    margin: 0;
+    z-index: 10;
+}
+
+.showmanInfo .progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #ff8c00, #ff4500);
+    border-radius: 10px 10px 0 0;
+    transition: width 0.1s linear;
+}
+
+.showmanInfo .marksArea {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    display: flex;
+    flex-direction: row;
+    gap: 4px;
+    z-index: 5;
+}
+
+.showmanInfo .marksArea>div,
+.showmanInfo .marksArea>span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+    color: white;
+}
+
+.showmanInfo .marksArea svg {
+    width: 10px;
+    height: 10px;
+}
+
+.showmanInfo .readyMark {
+    background: linear-gradient(135deg, #4caf50, #2e7d32);
+    border: 1px solid rgba(76, 175, 80, 0.5);
+}
+
+@media screen and (max-width: 1100px) {
+    .showmanInfo .marksArea {
+        top: 5px;
+        bottom: auto;
+        left: 5px;
+        right: auto;
+    }
 }
 
 .showmanAvatar {

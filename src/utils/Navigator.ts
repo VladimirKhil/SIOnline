@@ -237,11 +237,9 @@ export const navigate = createAsyncThunk(
 				await onlineActionCreators.initGameAsync(
 					thunkAPI.dispatch,
 					thunkAPI.dispatch as AppDispatch,
-					gameClient,
 					-1,
 					state.user.login,
 					Role.Player,
-					false,
 					false,
 				);
 

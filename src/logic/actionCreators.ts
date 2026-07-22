@@ -265,7 +265,6 @@ const finishInitializationAsync = (
 				await onlineActionCreators.initGameAsync(
 					dispatch,
 					appDispatch,
-					dataContext.game,
 					targetView.gameId,
 					(getState() as State).user.login,
 					targetView.role,

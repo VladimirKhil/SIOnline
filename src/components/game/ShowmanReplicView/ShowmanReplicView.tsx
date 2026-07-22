@@ -91,57 +91,79 @@ export function ShowmanReplicView(props: ShowmanReplicViewProps): JSX.Element {
 	const isHighlighted = decisionType !== DecisionType.None && decisionType !== DecisionType.Review;
 	const showmanAreaClassName = `showmanArea ${isHighlighted ? 'highlighted' : ''} ${playerReplicModeClass}`;
 
+	const showmanAvatarContent = props.showVideoAvatars && account?.avatarVideo ? (
+		<div className='showmanAvatar'>
+			<iframe title='Video avatar' src={account?.avatarVideo} />
+			{showmanPreload}
+		</div>
+	) : (
+		<div className={`showmanAvatar ${avatarClass}`} style={avatarStyle}>
+			{showmanPreload}
+		</div>
+	);
+
+	const deepModeContent = role === Role.Player ? (
+		<div className="playerMainInfo">
+			<div className="playerMainInfo_item">
+				<div className="playerMainInfo_title">{localization.yourScore}</div>
+				<div className="playerMainInfo_value" title={localization.score}>{me?.sum ?? 0}</div>
+			</div>
+			{me?.stake ? (
+				<div className="playerMainInfo_item">
+					<div className="playerMainInfo_title">{localization.stake}</div>
+					<div className="playerMainInfo_value" title={localization.stake}>{me?.stake}</div>
+				</div>
+			) : null}
+		</div>
+	) : null;
+
 	return (
 		<div className={showmanAreaClassName}>
 			<div className="showmanInfo" style={showmanInfoStyle}>
+				{isDeciding ? (
+					<ProgressBar
+						value={1 - (props.decisionTimer.value / props.decisionTimer.maximum)}
+						valueChangeDuration={isRunning(props.decisionTimer)
+							? (props.decisionTimer.maximum - props.decisionTimer.value) / 10
+							: 0}
+					/>
+				) : null}
+
 				{!deepMode ? (
 					<>
-						{props.showVideoAvatars && account?.avatarVideo
-							? <div className='showmanAvatar'><iframe title='Video avatar' src={account?.avatarVideo} />{showmanPreload}</div>
-							: <div className={`showmanAvatar ${avatarClass}`} style={avatarStyle}>{showmanPreload}</div>}
+						{showmanAvatarContent}
 
 						<div className="showmanName">
-							{isReady && !isGameStarted ? (
+							<span className={meClass}>{account?.name ?? shownName}</span>
+						</div>
+
+						{isReady && !isGameStarted ? (
+							<div className='marksArea'>
 								<span
+									className='readyMark'
 									role="img"
 									aria-label="checkmark"
 									title={account?.sex === Sex.Female ? localization.readyFemale : localization.readyMale}
 								>
-									✔️
+									<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+										<path
+											d="M5 13L9 17L19 7"
+											stroke="currentColor"
+											strokeWidth="3"
+											strokeLinecap="round"
+											strokeLinejoin="round"
+										/>
+									</svg>
 								</span>
-							) : null}
-
-							<span className={meClass}>{account?.name ?? shownName}</span>
-						</div>
+							</div>
+						) : null}
 
 						{activePlayer ? null : <EditTableMenu isPlayerScope={false} account={account} tableIndex={0} />}
 					</>
-				) : (
-					role === Role.Player ? (
-						<div className="playerMainInfo">
-							<div className="playerMainInfo_item">
-								<div className="playerMainInfo_title">{localization.yourScore}</div>
-								<div className="playerMainInfo_value" title={localization.score}>{me?.sum ?? 0}</div>
-							</div>
-							{me?.stake ? (
-								<div className="playerMainInfo_item">
-									<div className="playerMainInfo_title">{localization.stake}</div>
-									<div className="playerMainInfo_value" title={localization.stake}>{me?.stake}</div>
-								</div>
-							) : null}
-						</div>
-					) : null
-				)}
+				) : deepModeContent}
 			</div>
 
 			<ShowmanReplic />
-
-			{isDeciding ? (
-				<ProgressBar
-					value={1 - (props.decisionTimer.value / props.decisionTimer.maximum)}
-					valueChangeDuration={isRunning(props.decisionTimer) ? (props.decisionTimer.maximum - props.decisionTimer.value) / 10 : 0}
-				/>
-			) : null}
 		</div>
 	);
 }
