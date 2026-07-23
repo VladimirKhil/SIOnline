@@ -1,6 +1,8 @@
 import * as React from 'react';
 import AutoSizedText from '../../common/AutoSizedText/AutoSizedText';
 import { useAppSelector } from '../../../state/hooks';
+import Link from '../../common/Link/Link';
+import searchOnlineUri from '../../../utils/searchOnlineUri';
 
 import '../TableText/TableText.scss';
 
@@ -31,11 +33,22 @@ function getAnimatableContent(text: string, readingSpeed: number) {
 
 export default function TextContent(props: TextContentProps) {
 	const room = useAppSelector((state) => state.room2);
+	const isAnswer = useAppSelector((state) => state.table.isAnswer);
+
+	const content = props.animateReading && room.settings.readingSpeed > 0
+		? getAnimatableContent(props.text, room.settings.readingSpeed)
+		: props.text;
 
 	return (
 		<div className='textHost'>
 			<AutoSizedText className="tableText fadeIn tableTextCenter" maxFontSize={72}>
-				{props.animateReading && room.settings.readingSpeed > 0 ? getAnimatableContent(props.text, room.settings.readingSpeed) : props.text}
+				{isAnswer
+					? (
+						<Link className="clickableAnswer" href={searchOnlineUri(props.text)} target="_blank" rel="noopener noreferrer">
+							{content}
+						</Link>
+					)
+					: content}
 			</AutoSizedText>
 		</div>
 	);
