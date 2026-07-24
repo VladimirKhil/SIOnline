@@ -39,6 +39,12 @@
 	margin-bottom: 5px;
 }
 
+.packageLinks {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+}
+
 .downloadButton {
 	border: none;
 	background: rgba(255, 255, 255, 0.1);
@@ -57,6 +63,12 @@
 	svg {
 		color: white;
 		transition: transform 0.2s ease;
+	}
+
+	img {
+		width: 16px;
+		height: 16px;
+		object-fit: contain;
 	}
 
 	&:hover {

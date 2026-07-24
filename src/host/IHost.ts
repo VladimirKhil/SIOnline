@@ -72,7 +72,8 @@ export default interface IHost {
 
 	getPackageSource(packageId?: string): string | undefined;
 
-	getFallbackPackageSource(): string | undefined;
+	/** Gets an alternative package storage that is queried in addition to the primary one. */
+	getAlternativePackageSource(): string | undefined;
 
 	/**
 	 * Upload a package directly to the content service (bypassing web transfer).

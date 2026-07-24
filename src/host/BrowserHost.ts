@@ -137,7 +137,7 @@ export default class BrowserHost implements IHost {
 		return 'https://www.sibrowser.ru'; // Using this source for statistics for now
 	}
 
-	getFallbackPackageSource(): string | undefined {
-		return undefined;
+	getAlternativePackageSource(): string | undefined {
+		return 'https://steamcommunity.com'; // Packages are also published in Steam Workshop
 	}
 }
