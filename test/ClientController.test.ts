@@ -447,12 +447,8 @@ describe('ClientController - Round Flow', () => {
 
 	describe('onTable', () => {
 		it('should display round table', () => {
-			const table: ThemeInfo[] = [
-				{
-					name: 'Theme1',
-					comment: '',
-					questions: [100, 200, 300],
-				},
+			const table: number[][] = [
+				[100, 200, 300],
 			];
 
 			controller.onTable(table);

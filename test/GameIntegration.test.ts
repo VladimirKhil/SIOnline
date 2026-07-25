@@ -127,6 +127,10 @@ class TestHost implements IHost {
 		return [];
 	}
 
+	getAuthToken(): string | null {
+		return null;
+	}
+
 	async getAuthorizationData(): Promise<null> {
 		return null;
 	}
