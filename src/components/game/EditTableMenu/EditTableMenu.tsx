@@ -6,6 +6,7 @@ import Account from '../../../model/Account';
 import Constants from '../../../model/enums/Constants';
 import { changeTableType, deleteTable, freeTable, setTablePerson } from '../../../state/serverActions';
 import PersonInfo from '../../../model/PersonInfo';
+import { kick, setHost } from '../../../state/room2Slice';
 
 import './EditTableMenu.scss';
 import menuSvg from '../../../../assets/images/menu.svg';
@@ -46,10 +47,12 @@ const EditTableMenu: React.FC<EditTableMenuProps> = (props) => {
 	const windowWidth = useAppSelector(state => state.ui.windowWidth);
 	const name = useAppSelector(state => state.room2.name);
 	const persons = useAppSelector(state => state.room2.persons);
-	const stage = useAppSelector(state => state.room2.stage);
 	const appDispatch = useAppDispatch();
 	const isHost = name === persons.hostName;
 	const isWide = windowWidth >= Constants.WIDE_WINDOW_WIDTH;
+	const personName = props.account?.name ?? '';
+	const isMe = personName === name;
+	const canManagePerson = Boolean(props.account && props.account.isHuman && !isMe);
 	const canFree = props.account && props.account.isHuman;
 	const canDelete = props.isPlayerScope && persons.players.length > Constants.MIN_PLAYER_COUNT;
 	const isBot = props.account && !props.account.isHuman;
@@ -66,7 +69,7 @@ const EditTableMenu: React.FC<EditTableMenuProps> = (props) => {
 		isPlayerSelected
 	);
 
-	if (!isConnected || !isHost || (stage.isGameStarted && !stage.isEditingTables)) {
+	if (!isConnected || !isHost) {
 		return null;
 	}
 
@@ -82,8 +85,8 @@ const EditTableMenu: React.FC<EditTableMenuProps> = (props) => {
 		appDispatch(changeTableType({ isShowman: !props.isPlayerScope, tableIndex: props.tableIndex }));
 	};
 
-	const onSetTable = (name: string) => {
-		appDispatch(setTablePerson({ isShowman: !props.isPlayerScope, tableIndex: props.tableIndex, name }));
+	const onSetTable = (selectedName: string) => {
+		appDispatch(setTablePerson({ isShowman: !props.isPlayerScope, tableIndex: props.tableIndex, name: selectedName }));
 	};
 
 	return (
@@ -94,6 +97,28 @@ const EditTableMenu: React.FC<EditTableMenuProps> = (props) => {
 			flyout={
 				<div className="editTableMenuFlyout">
 					<ul className="editTableMenuList">
+						{canManagePerson ? <li onClick={() => appDispatch(setHost(personName))}>
+							<span className="menuIconWrap">
+								<svg className="menuIcon" viewBox="0 0 24 24" fill="currentColor"
+									stroke="none">
+									<path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
+								</svg>
+							</span>
+							{localization.setHost}
+						</li> : null}
+						{canManagePerson ? <li onClick={() => appDispatch(kick(personName))}>
+							<span className="menuIconWrap">
+								<svg className="menuIcon" viewBox="0 0 24 24" fill="none"
+									stroke="currentColor" strokeWidth="2"
+									strokeLinecap="round" strokeLinejoin="round">
+									<path d="M15 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+									<circle cx="8.5" cy="7" r="4" />
+									<path d="M23 5L17 11" />
+									<path d="M17 5l6 6" />
+								</svg>
+							</span>
+							{localization.kick}
+						</li> : null}
 						{canFree ? <li onClick={onFreeTable}>
 							<span className="menuIconWrap">
 								<svg className="menuIcon" viewBox="0 0 24 24" fill="none"
