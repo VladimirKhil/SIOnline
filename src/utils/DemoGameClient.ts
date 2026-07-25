@@ -10,8 +10,10 @@ import State from '../state/State';
 
 export enum DemoStage {
 	Init,
+	PressNext,
 	About,
 	Question,
+	SimpleQuestion,
 	GiveAnswer,
 	Answer,
 	AnswerValidation,
@@ -27,7 +29,10 @@ export default class DemoGameClient implements IGameClient {
 	shouldClose!: boolean;
 
 	stage: DemoStage = DemoStage.Init;
-	isAnswerCorrect: boolean = true;
+
+	isAnswerCorrect = true;
+
+	isManagedFlow = false;
 
 	constructor(
 		private controller: ClientController,
@@ -162,7 +167,6 @@ export default class DemoGameClient implements IGameClient {
 		);
 
 		this.controller.onHostNameChanged(null, null);
-
 		return true;
 	}
 
@@ -191,7 +195,12 @@ export default class DemoGameClient implements IGameClient {
 	}
 
 	moveNext(): Promise<boolean> {
-		throw new Error('Method not implemented.');
+		if (!this.isManagedFlow || this.stage === DemoStage.Finished) {
+			return Promise.resolve(true);
+		}
+
+		this.nextStage();
+		return Promise.resolve(true);
 	}
 
 	moveToRound(roundIndex: number): Promise<boolean> {
@@ -211,8 +220,13 @@ export default class DemoGameClient implements IGameClient {
 	}
 
 	async pressButton(deltaTime: number): Promise<boolean> {
-		if (this.stage !== DemoStage.GiveAnswer) {
+		if (this.stage !== DemoStage.SimpleQuestion && this.stage !== DemoStage.GiveAnswer) {
 			return true;
+		}
+
+		if (this.stage === DemoStage.SimpleQuestion) {
+			// Skip helper stage and show answer input immediately after button press.
+			this.stage = DemoStage.GiveAnswer;
 		}
 
 		this.nextStage();
@@ -220,6 +234,11 @@ export default class DemoGameClient implements IGameClient {
 	}
 
 	async ready(isReady: boolean): Promise<boolean> {
+		if (!isReady) {
+			return true;
+		}
+
+		this.isManagedFlow = true;
 		this.nextStage();
 		return true;
 	}
@@ -249,7 +268,11 @@ export default class DemoGameClient implements IGameClient {
 			return false;
 		}
 
-		this.isAnswerCorrect = answer.trim().toLocaleLowerCase() === localization.answer.trim().toLocaleLowerCase();
+		const normalizedAnswer = answer.trim().toLocaleLowerCase();
+
+		this.isAnswerCorrect =
+			normalizedAnswer === localization.demoSimpleAnswer.trim().toLocaleLowerCase() ||
+			normalizedAnswer === localization.answer.trim().toLocaleLowerCase();
 		this.nextStage();
 		return true;
 	}
@@ -345,7 +368,9 @@ export default class DemoGameClient implements IGameClient {
 			]
 		);
 
-		window.setTimeout(this.nextStage.bind(this), 1000 * ((text.length / readingSpeed) + 2));
+		if (!this.isManagedFlow) {
+			window.setTimeout(this.nextStage.bind(this), 1000 * ((text.length / readingSpeed) + 2));
+		}
 	}
 
 	nextStage() {
@@ -355,14 +380,22 @@ export default class DemoGameClient implements IGameClient {
 			case DemoStage.Init:
 				break;
 
-			case DemoStage.About:
+			case DemoStage.PressNext:
 				this.controller.onStage(GameStage.Started, '', 0, '');
+				this.displayText(localization.demoManagedHint);
+				break;
 
+			case DemoStage.About:
 				this.displayText(localization.demoAbout);
 				break;
 
 			case DemoStage.Question:
 				this.displayText(localization.demoQuestion);
+				break;
+
+			case DemoStage.SimpleQuestion:
+				this.displayText(localization.demoSimpleQuestion);
+				this.controller.onBeginPressButton();
 				break;
 
 			case DemoStage.GiveAnswer:
@@ -371,7 +404,7 @@ export default class DemoGameClient implements IGameClient {
 
 			case DemoStage.Answer:
 				this.controller.onReplic('s', localization.demoGiveAnswer);
-				this.controller.onAskAnswer(null);
+				this.controller.onAskAnswer('text');
 				this.controller.onEndPressButtonByPlayer(2);
 				break;
 
@@ -404,6 +437,8 @@ export default class DemoGameClient implements IGameClient {
 				break;
 
 			case DemoStage.Finished:
+				this.controller.setDemoButtonHighlights({ leaveRoom: true, ready: false, next: false });
+
 				this.controller.onContent(
 					'screen',
 					[

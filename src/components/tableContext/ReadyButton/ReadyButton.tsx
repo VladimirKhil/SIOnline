@@ -64,6 +64,7 @@ export function ReadyButton(props: ReadyButtonProps): JSX.Element | null {
 	const role = useAppSelector(state => state.room2.role);
 	const persons = useAppSelector(state => state.room2.persons);
 	const name = useAppSelector(state => state.room2.name);
+	const demoButtonHighlights = useAppSelector(state => state.room2.demoButtonHighlights);
 
 	const isReady = getIsReady(role, persons.showman, persons.players, name);
 	const enabledClass = props.isConnected ? '' : 'disabled';
@@ -73,7 +74,7 @@ export function ReadyButton(props: ReadyButtonProps): JSX.Element | null {
 		<div className='readyButtonHost'>
 			<button
 				type="button"
-				className={`ready_button ${isReady ? 'ready' : 'not-ready'} ${enabledClass}`}
+				className={`ready_button ${isReady ? 'ready' : 'not-ready'} ${enabledClass} ${demoButtonHighlights.ready ? 'demoHighlighted' : ''}`}
 				onClick={() => props.onReady(!isReady)}
 				disabled={!props.isConnected}
 			>

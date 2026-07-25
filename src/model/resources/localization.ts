@@ -143,13 +143,15 @@ const localization = new LocalizedStrings({
 	There could also be multiple choice questions where you can select right answer from the list`,
 		demoOtherQuestions: `There could be other types of questions in the game: for example, Question with stake or Question with secret.
 	There would be explanations of these questions rules during the game`,
+		demoSimpleAnswer: 'Paris',
+		demoSimpleQuestion: 'What is the capital of France?',
 		demoQuestion: `This is a demo question. Press the button to answer.
 		If you press the button before the frame appears, it will be a false start and your button will not work for some time.
 		If you press the button but another player beats you, your button will also be blocked.
 		The first player who presses the button will answer the question`,
 		demoWelcome: `Welcome to SIGame!
-	You can always exit demo mode by clicking "Exit" button in the corner of the screen.
-	To start demonstration click "Ready" button (green checkmark)`,
+	You can always exit demo mode by clicking "{0}" button in the corner of the screen.
+	To start demonstration click "{1}" button`,
 		demoWrongAnswer: 'You have given wrong answer! Your score is decreased by the question price',
 		descending: 'descending',
 		disconnected: '{0} disconnected',
@@ -345,6 +347,7 @@ All game functionality is available for free—donations do not affect gameplay 
 		male: 'man',
 		managed: 'Managed game',
 		managedHint: 'The game continues only by pressing the "Next" button',
+		demoManagedHint: 'Demo continues only by pressing the "Next" button',
 		media: 'Media',
 		mediaLoadedMark: 'Media loaded',
 		mediaPreloadProgress: 'Media preload progress',
@@ -853,20 +856,22 @@ Package authors are responsible for package content. The package will be automat
 		demoFalseStarts: 'Если игра ведётся без фальстартов, то рамка (и возможность нажать кнопку) появятся сразу вместе с вопросом',
 		demoFinished: 'Демо-режим завершён. Спасибо! Удачной вам игры!',
 		demoGameRules: 'Отвечая на вопросы, вы зарабатываете очки. В игре побеждает тот, кто наберёт больше очков',
-		demoGiveAnswer: 'Теперь напечатайте ответ на вопрос. Напишите: ОТВЕТ и нажмите кнопку Отправить',
+		demoGiveAnswer: 'Теперь запишите ответ в текстовое поле и нажмите кнопку Отправить',
 		demoOpponents: `Вы можете сыграть с ботами или пригласить друзей.
 		Можно играть на готовых вопросах в игре, использовать вопросы сторонних авторов или написать свои`,
 		demoOtherContent: `В вопросах могут быть изображения, аудио или видео.
 		Могут повстречатьcя вопросы с вариантами ответа, и нужно будет выбрать правильный вариант из них`,
 		demoOtherQuestions: `В игре могут быть и другие вопросы, например, с секретом или со ставкой.
 		Для каждого из спецвопросов будут объяснения в процессе игры`,
-		demoQuestion: `Это демо-вопрос. Нажмите кнопку, чтобы ответить.
+		demoSimpleAnswer: 'Париж',
+		demoSimpleQuestion: 'Назовите столицу Франции',
+		demoQuestion: `На следующем шаге на экране появится вопрос. Нажмите кнопку, чтобы ответить.
 	Если вы нажмёте кнопку раньше, чем появится рамка, это будет фальстарт, и ваша кнопка некоторое время не будет работать.
 	Если вы нажмёте кнопку, но другой игрок опередит вас, то ваша кнопка также будет заблокирована.
 	Первый игрок, который нажмёт кнопку, будет отвечать на вопрос`,
 		demoWelcome: `Добро пожаловать в SIGame!
-	Вы всегда можете выйти из демо-режима по кнопке "Выход" в углу экрана.
-	Для начала демонстрации нажмите кнопку "Готов" (зелёную галочку)`,
+	Вы всегда можете выйти из демо-режима по кнопке "{0}" в углу экрана.
+	Для начала демонстрации нажмите кнопку "{1}"`,
 		demoWrongAnswer: 'Вы дали неправильный ответ! Ваш счёт уменьшен на стоимость вопроса',
 		descending: 'по убыванию',
 		disconnected: '{0} отключился(лась)',
@@ -1058,6 +1063,7 @@ Package authors are responsible for package content. The package will be automat
 		male: 'мужчина',
 		managed: 'Управляемая игра',
 		managedHint: 'Игра продолжается только по нажатию кнопки "Дальше"',
+		demoManagedHint: 'Демонстрация продолжается только по нажатию кнопки "Дальше"',
 		media: 'Медиа',
 		mediaLoadedMark: 'Мультимедиа загружено',
 		mediaPreloadProgress: 'Загрузка медиа-контента',
@@ -1586,13 +1592,15 @@ Package authors are responsible for package content. The package will be automat
 		Mogu se pojaviti pitanja sa opcijama odgovora, gde treba izabrati tačnu opciju`,
 		demoOtherQuestions: `U igri mogu biti i druga pitanja, na primer, sa tajnom ili sa ulogom.
 		Za svaku vrstu specijalnih pitanja biće objašnjenja tokom igre`,
+		demoSimpleAnswer: 'Pariz',
+		demoSimpleQuestion: 'Koji je glavni grad Francuske?',
 		demoQuestion: `Ovo je demo pitanje. Pritisnite dugme da odgovorite.
 		Ako pritisnete dugme pre nego što se pojavi okvir, to će biti lažni početak i vaše dugme neće raditi neko vreme.
 		Ako pritisnete dugme, ali drugi igrač vas pretekne, vaše dugme će takođe biti blokirano.
 		Prvi igrač koji pritisne dugme će odgovarati na pitanje`,
 		demoWelcome: `Dobrodošli u SIGame!
-		Uvek možete izaći iz demo režima pritiskom na dugme "Izaći" u uglu ekrana.
-		Za početak demonstracije pritisnite dugme "Spreman" (zelenoj kućici)`,
+		Uvek možete izaći iz demo režima pritiskom na dugme "{0}" u uglu ekrana.
+		Za početak demonstracije pritisnite dugme "{1}"`,
 		demoWrongAnswer: 'Dali ste pogrešan odgovor! Vaš rezultat je smanjen za cenu pitanja',
 		descending: 'opadajuće',
 		disconnected: '{0} diskonektovan(vna)',
@@ -1789,6 +1797,7 @@ Package authors are responsible for package content. The package will be automat
 		male: 'muškarac',
 		managed: 'Upravljana igra',
 		managedHint: 'Igra se nastavlja samo pritiskom na dugme "Dalje"',
+		demoManagedHint: 'Demonstracija se nastavlja samo pritiskom na dugme "Dalje"',
 		media: 'Mediji',
 		mediaLoadedMark: 'Multimedija učitana',
 		mediaPreloadProgress: 'Učitavanje medija sadržaja',
@@ -2307,13 +2316,15 @@ O‘yindagi tayyor savollar bilan o‘ynash, boshqa mualliflarning savollaridan 
 Javob variantlari berilgan savollar ham uchrashi mumkin, variantlardan to‘g‘risini tanlash kerak bo‘ladi.`,
 		demoOtherQuestions: `O‘yinda yashirin yoki badalli kabi boshqa turdagi savollar ham bo‘lishi mumkin.
 Har bir maxsus savol bo‘yicha o‘yin davomida izoh berib boriladi.`,
+		demoSimpleAnswer: 'Parij',
+		demoSimpleQuestion: 'Fransiyaning poytaxti qaysi shahar?',
 		demoQuestion: `Bu demo-savol. Javob berish uchun tugmani bosing.
 Agar ramka paydo bo‘lishidan oldin tugmani bossangiz, bu falstart hisoblanadi va tugmangiz bir muddat ishlamay qoladi.
 Agar siz tugmani bossangiz-u, lekin boshqa o‘yinchi sizdan chaqqonroq chiqsa, sizning tugmangiz ham bloklanadi.
 Tugmani birinchi bosgan o‘yinchi savolga javob beradi.`,
 		demoWelcome: `SIGame’ga xush kelibsiz!
-Ekran burchagidagi "Chiqish" tugmasi orqali demo rejimdan istalgan vaqtda chiqib ketishingiz mumkin.
-Taqdimotni boshlash uchun "Tayyor" tugmasini (yashil belgini) bosing.`,
+Ekran burchagidagi "{0}" tugmasi orqali demo rejimdan istalgan vaqtda chiqib ketishingiz mumkin.
+Taqdimotni boshlash uchun "{1}" tugmasini bosing.`,
 		demoWrongAnswer: 'Siz noto‘g‘ri javob berdingiz! Hisobingiz savol qiymati miqdorida kamaydi',
 		descending: 'kamayish tartibida',
 		disconnected: '{0} uzildi',
@@ -2510,6 +2521,7 @@ Har bir savoldan so‘ng navbat keyingi o‘yinchiga o‘tadi.`,
 		male: 'erkak',
 		managed: 'Boshqariladigan o‘yin',
 		managedHint: '"Keyingi" tugmasi bosilsagina davom etadi',
+		demoManagedHint: 'Namoyish faqat "Keyingi" tugmasi bosilganda davom etadi',
 		media: 'Media',
 		mediaLoadedMark: 'Media yuklandi',
 		mediaPreloadProgress: 'Mediani oldindan yuklash jarayoni',

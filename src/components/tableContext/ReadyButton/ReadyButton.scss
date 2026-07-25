@@ -64,3 +64,21 @@
 		font-size: 28px;
 	}
 }
+
+@keyframes demoSlowBlink {
+	0%,
+	100% {
+		filter: brightness(1.1);
+		transform: scale(1);
+	}
+
+	50% {
+		filter: brightness(1.38);
+		transform: scale(1.03);
+	}
+}
+
+.ready_button.demoHighlighted {
+	animation: demoSlowBlink 2.2s ease-in-out infinite;
+	will-change: transform;
+}

@@ -16,10 +16,12 @@ import ClientController from '../logic/ClientController';
 import { ensureServerInfoLoadedAsync } from '../logic/ServerInitializer';
 import State from '../state/State';
 import { showText } from '../state/tableSlice';
-import { exitGame } from '../state/room2Slice';
+import { exitGame, setDemoButtonHighlights } from '../state/room2Slice';
 import registerApp from './registerApp';
 import { analytics } from './Analytics';
 import { logEvent } from 'firebase/analytics';
+import stringFormat from './StringHelpers';
+import Sex from '../model/enums/Sex';
 
 let isInitialized = false;
 
@@ -243,7 +245,12 @@ export const navigate = createAsyncThunk(
 					false,
 				);
 
-				thunkAPI.dispatch(showText(localization.demoWelcome));
+				const readyToPlayText = state.settings.sex === Sex.Female
+					? localization.readyToPlayFemale
+					: localization.readyToPlayMale;
+
+				thunkAPI.dispatch(setDemoButtonHighlights({ leaveRoom: true, ready: true, next: false }));
+				thunkAPI.dispatch(showText(stringFormat(localization.demoWelcome, localization.exit, readyToPlayText)));
 				break;
 
 			default:

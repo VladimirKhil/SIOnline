@@ -156,6 +156,7 @@ import {
 	setHiddenComments,
 	setDeepMode,
 	setSettingUseAppellations,
+	setDemoButtonHighlights as setDemoButtonHighlightsAction,
 } from '../state/room2Slice';
 
 import PersonInfo from '../model/PersonInfo';
@@ -1362,6 +1363,10 @@ export default class ClientController implements IClientController {
 
 	onTimerUserResume(timerIndex: number) {
 		this.appDispatch(resumeTimer({ timerIndex, runByUser: true }));
+	}
+
+	setDemoButtonHighlights(highlights: { leaveRoom?: boolean, ready?: boolean, next?: boolean }) {
+		this.appDispatch(setDemoButtonHighlightsAction(highlights));
 	}
 
 	onValidation(

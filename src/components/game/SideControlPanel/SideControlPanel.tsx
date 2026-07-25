@@ -90,15 +90,17 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 	const chatIsVisible = useAppSelector(state => state.room2.chat.isVisible);
 	const isGamePaused = useAppSelector(state => state.room2.stage.isGamePaused);
 	const isGameStarted = useAppSelector(state => state.room2.stage.isGameStarted);
-	const isEditingTables = useAppSelector(state => state.room2.stage.isEditingTables);
+	const canPress = useAppSelector(state => state.table.canPress);
 	const role = useAppSelector(state => state.room2.role);
 	const roundsNames = useAppSelector(state => state.room2.roundsNames);
 	const areSumsEditable = useAppSelector(state => state.room2.areSumsEditable);
 	const lastReplic = useAppSelector(state => state.room2.lastReplic);
 	const playersCount = useAppSelector(state => state.room2.persons.players.length);
 	const deepMode = useAppSelector(state => state.room2.deepMode);
+	const demoButtonHighlights = useAppSelector(state => state.room2.demoButtonHighlights);
 
 	const ui = useAppSelector(state => state.ui);
+	const isDemoMode = ui.navigation.path === Path.Demo;
 
 	const pauseTitle = isGamePaused ? localization.resume : localization.pause;
 	const canPause = props.isHost || role === Role.Showman;
@@ -110,7 +112,6 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 	const canAddTable = playersCount < Constants.MAX_PLAYER_COUNT;
 
 	const canStart = !isGameStarted && props.isHost;
-	const canEditTables = props.isConnected && isGameStarted;
 
 	const onGiveTurn = () => {
 		props.onGiveTurn();
@@ -137,6 +138,17 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 
 	const isScreenWide = ui.windowWidth >= Constants.WIDE_WINDOW_WIDTH;
 	const validVoiceChatUri = voiceChatUri !== null && isWellFormedUri(voiceChatUri) ? voiceChatUri : null;
+	const showDemoNextButton =
+		isDemoMode &&
+		!canPress &&
+		(demoButtonHighlights.next || (isGameStarted && !demoButtonHighlights.leaveRoom));
+	const showNextButton = props.isHost || showDemoNextButton;
+	const isDemoNextHighlighted = isDemoMode && demoButtonHighlights.next;
+	const nextButtonClassName = [
+		'sidecontrol_button nextButton standard imageButton',
+		canStart ? 'startButton' : '',
+		isDemoNextHighlighted ? 'demoHighlighted' : '',
+	].join(' ');
 
 	return (
 		<div className="game__utilsArea">
@@ -276,10 +288,10 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 						</button>
 					) : null}
 
-					{props.isHost ? (
+					{showNextButton ? (
 						<button
 							type="button"
-							className={`sidecontrol_button nextButton standard imageButton ${canStart ? 'startButton' : ''}`}
+							className={nextButtonClassName}
 							title={canStart ? localization.startGameHint : localization.next}
 							onClick={canStart ? props.onStart : moveNext}>
 							{canStart ? <span role="img" aria-label="arrow right">▶</span> : <img alt='Next' src={nextImg} />}
@@ -288,7 +300,7 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 
 					{(!deepMode || !isScreenWide) && (
 						<FlyoutButton
-							className="exit sidecontrol_button standard imageButton"
+							className={`exit sidecontrol_button standard imageButton ${demoButtonHighlights.leaveRoom ? 'demoHighlighted' : ''}`}
 							title={localization.exit}
 							flyout={(
 								<div id="exitMenu" className="exitMenu">

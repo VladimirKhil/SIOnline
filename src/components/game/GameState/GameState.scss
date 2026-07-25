@@ -38,3 +38,25 @@
 	justify-content: center;
 	align-items: center;
 }
+
+@keyframes welcomeExitDemoBlink {
+	0%,
+	100% {
+		background: rgba(255, 255, 255, 0.28);
+		box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.24);
+		filter: brightness(1.05);
+		transform: scale(1);
+	}
+
+	50% {
+		background: rgba(255, 255, 255, 0.82);
+		box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.48), 0 0 14px rgba(255, 255, 255, 0.35);
+		filter: brightness(1.35);
+		transform: scale(1.06);
+	}
+}
+
+.gameState .welcomeExit.demoHighlighted {
+	animation: welcomeExitDemoBlink 2.2s ease-in-out infinite;
+	will-change: transform;
+}

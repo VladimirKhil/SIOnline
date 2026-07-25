@@ -4,6 +4,8 @@ import * as RunActions from './RoomActions';
 import State from '../State';
 import DataContext from '../../model/DataContext';
 import StakeModes from '../../client/game/StakeModes';
+import { setDemoButtonHighlights } from '../room2Slice';
+import Path from '../../model/enums/Path';
 
 const onPass: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
 	_dispatch: Dispatch<RunActions.KnownRoomAction>,
@@ -131,19 +133,29 @@ const startGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> = 
 };
 
 const ready: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (isReady: boolean) => async (
-	_dispatch: Dispatch<RunActions.KnownRoomAction>,
-	_getState: () => State,
+	dispatch: Dispatch<any>,
+	getState: () => State,
 	dataContext: DataContext
 ) => {
 	await dataContext.game.ready(isReady);
+
+	if (isReady && getState().ui.navigation.path === Path.Demo) {
+		dispatch(setDemoButtonHighlights({ leaveRoom: false, ready: false, next: true }));
+	}
 };
 
 const moveNext: ActionCreator<ThunkAction<void, State, DataContext, Action>> = () => async (
-	_dispatch: Dispatch<any>,
-	_getState: () => State,
+	dispatch: Dispatch<any>,
+	getState: () => State,
 	dataContext: DataContext
 ) => {
 	await dataContext.game.moveNext();
+
+	const state = getState();
+
+	if (state.ui.navigation.path === Path.Demo && state.room2.demoButtonHighlights.next) {
+		dispatch(setDemoButtonHighlights({ next: false }));
+	}
 };
 
 const navigateToRound: ActionCreator<ThunkAction<void, State, DataContext, Action>> = (roundIndex: number) => async (

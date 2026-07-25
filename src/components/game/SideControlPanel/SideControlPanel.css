@@ -244,6 +244,51 @@ ul.gameMenu,
     opacity: 0.45;
 }
 
+@keyframes demoSlowBlink {
+    0%,
+    100% {
+        background: rgba(255, 255, 255, 0.28);
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.26);
+        transform: scale(1);
+    }
+
+    50% {
+        background: rgba(255, 255, 255, 0.76);
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.44), 0 0 12px rgba(255, 255, 255, 0.24);
+        color: #ffffff;
+        transform: scale(1.06);
+    }
+}
+
+.sidecontrol_buttons .demoHighlighted {
+    animation: demoSlowBlink 2.2s ease-in-out infinite;
+    will-change: transform;
+}
+
+@keyframes demoNextSlowBlink {
+    0%,
+    100% {
+        background: rgba(255, 255, 255, 0.26);
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.24);
+        transform: scale(1);
+    }
+
+    50% {
+        background: rgba(255, 255, 255, 0.88);
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.52), 0 0 16px rgba(255, 255, 255, 0.35);
+        transform: scale(1.07);
+    }
+}
+
+.sidecontrol_buttons .nextButton.demoHighlighted {
+    animation: demoNextSlowBlink 2.1s ease-in-out infinite !important;
+    will-change: transform;
+}
+
+.sidecontrol_buttons .nextButton.demoHighlighted img {
+    filter: brightness(1.35) drop-shadow(0 0 6px rgba(255, 255, 255, 0.45));
+}
+
 @media screen and (max-width: 799px) {
 
     .addTableButton,

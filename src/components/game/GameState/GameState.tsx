@@ -16,6 +16,7 @@ export default function GameState(): JSX.Element {
 	const appDispatch = useAppDispatch();
 	const role = useAppSelector(state => state.room2.role);
 	const navigation = useAppSelector(state => state.ui.navigation);
+	const demoButtonHighlights = useAppSelector(state => state.room2.demoButtonHighlights);
 
 	const onExit = () => {
 		appDispatch(navigate({ navigation: { path: navigation.returnToLobby ? Path.Lobby : Path.Menu }, saveState: true }));
@@ -27,7 +28,7 @@ export default function GameState(): JSX.Element {
 				<h1>
 					<span className='left'>
 						<FlyoutButton
-							className="standard welcomeExit"
+							className={`standard welcomeExit ${demoButtonHighlights.leaveRoom ? 'demoHighlighted' : ''}`}
 							title={localization.exit}
 							flyout={(
 								<div id="exitMenu" className="exitMenu">

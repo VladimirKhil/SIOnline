@@ -29,6 +29,7 @@ class TestHost implements IHost {
 	copyUriToClipboard(): void { }
 	openLink(): void { }
 	getSupportedAuthModes(): AuthorizationMode[] { return []; }
+	getAuthToken(): string | null { return null; }
 	async getAuthorizationData(): Promise<null> { return null; }
 	getStorage(): { storageClient?: SIStorageClient; storageInfo?: SIStorageInfo; } { return {}; }
 	async getPackageData(): Promise<[File, string] | null> { return null; }

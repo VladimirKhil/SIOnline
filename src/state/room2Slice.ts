@@ -133,6 +133,12 @@ export interface Room2State {
 	kicked: boolean;
 
 	webCameraUrl: string;
+
+	demoButtonHighlights: {
+		leaveRoom: boolean;
+		ready: boolean;
+		next: boolean;
+	};
 }
 
 const initialState: Room2State = {
@@ -242,6 +248,12 @@ const initialState: Room2State = {
 	kicked: false,
 
 	webCameraUrl: '',
+
+	demoButtonHighlights: {
+		leaveRoom: false,
+		ready: false,
+		next: false,
+	},
 };
 
 export const complain = createAsyncThunk(
@@ -1027,6 +1039,19 @@ export const room2Slice = createSlice({
 		setWebCameraUrl: (state: Room2State, action: PayloadAction<string>) => {
 			state.webCameraUrl = action.payload;
 		},
+		setDemoButtonHighlights: (state: Room2State, action: PayloadAction<Partial<Room2State['demoButtonHighlights']>>) => {
+			state.demoButtonHighlights = {
+				...state.demoButtonHighlights,
+				...action.payload,
+			};
+		},
+		resetDemoButtonHighlights: (state: Room2State) => {
+			state.demoButtonHighlights = {
+				leaveRoom: false,
+				ready: false,
+				next: false,
+			};
+		},
 	},
 	extraReducers: (builder) => {
 		builder.addCase(sendAnswer.fulfilled, (state) => {
@@ -1289,6 +1314,7 @@ export const exitGame = createAsyncThunk(
 		thunkAPI.dispatch(setIsAppellation(false));
 		thunkAPI.dispatch(setShowMainTimer(false));
 		thunkAPI.dispatch(setDeepMode(false));
+		thunkAPI.dispatch(room2Slice.actions.resetDemoButtonHighlights());
 
 		thunkAPI.dispatch(stopAudio());
 		thunkAPI.dispatch(clearGameLog());
@@ -1394,6 +1420,8 @@ export const {
 	endAskingState,
 	setDeepMode,
 	setWebCameraUrl,
+	setDemoButtonHighlights,
+	resetDemoButtonHighlights,
 } = room2Slice.actions;
 
 export default room2Slice.reducer;
