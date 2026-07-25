@@ -173,12 +173,6 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 										{props.isHost
 											? <>
 												{canAddTable ? <li onClick={() => appDispatch(addTable())}>{localization.addTable}</li> : null}
-
-												{isGameStarted
-													? <li onClick={() => appDispatch(setIsEditingTables(!isEditingTables))}>
-														{localization.editTables}
-													</li>
-													: null}
 											</>
 											: null}
 
@@ -242,37 +236,6 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 									fill="none"
 								/>
 								<path d="M20 3L20 9M17 6L23 6" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
-							</svg>
-						</button>
-					) : null}
-
-					{props.isHost ? (
-						<button
-							type="button"
-							className={`sidecontrol_button editTablesButton standard imageButton ${isEditingTables ? 'active' : ''}`}
-							disabled={!canEditTables}
-							onClick={() => appDispatch(setIsEditingTables(!isEditingTables))}
-							title={localization.editTables}
-						>
-							<svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-								<path
-									d={
-										'M8 2C5.79 2 4 3.79 4 6C4 8.21 5.79 10 8 10C10.21 10 12 8.21 12 6' +
-										'C12 3.79 10.21 2 8 2Z'
-									}
-									stroke="currentColor"
-									strokeWidth="2"
-									fill="none"
-								/>
-								<path
-									d={
-										'M1 22V20C1 16.69 3.69 14 7 14H9C12.31 14 15 16.69 15 20V22'
-									}
-									stroke="currentColor"
-									strokeWidth="2"
-									fill="none"
-								/>
-								<path d="M21 0L23 2L17 8L15 8L15 6Z" stroke="currentColor" strokeWidth="1" fill="currentColor" />
 							</svg>
 						</button>
 					) : null}

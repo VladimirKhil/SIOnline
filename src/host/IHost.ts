@@ -50,6 +50,8 @@ export default interface IHost {
 
 	getSupportedAuthModes(): AuthorizationMode[];
 
+	getAuthToken(): string | null;
+
 	getAuthorizationData(authorizationMode?: AuthorizationMode): Promise<AuthorizationData | null>;
 
 	getStorage(): { storageClient?: SIStorageClient; storageInfo?: SIStorageInfo; };

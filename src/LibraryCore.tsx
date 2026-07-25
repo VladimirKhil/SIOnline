@@ -20,7 +20,7 @@ import { AppDispatch } from './state/store';
 import { setAppSound, setTableBackgroundColor, setTableTextColor } from './state/settingsSlice';
 import { loadState } from './state/SavedState';
 import { setFontsReady } from './state/commonSlice';
-import messageProcessor from './logic/messageProcessor';
+import MessageProcessor from './logic/messageProcessor';
 
 declare global {
 	interface Window {
@@ -342,6 +342,7 @@ export default function runCore(game?: IGameClient): Store<State, AnyAction> {
 
 	const appDispatch = store.dispatch;
 	const controller = new ClientController(store.dispatch, appDispatch, store.getState, dataContext);
+	const messageProcessor = new MessageProcessor(controller);
 
 	if (window.chrome) {
 		const { webview } = window.chrome;
@@ -353,7 +354,7 @@ export default function runCore(game?: IGameClient): Store<State, AnyAction> {
 				if (payload.type == 'raw') {
 					const { message } = payload;
 
-					messageProcessor(controller, appDispatch, {
+					messageProcessor.processMessage({
 						IsSystem: message.isSystem,
 						Sender: message.sender,
 						Text: message.text,

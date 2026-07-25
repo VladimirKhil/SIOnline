@@ -1,11 +1,10 @@
-import { AnyAction, Dispatch } from 'redux';
 import Message from '../client/contracts/Message';
 import ISIHostListener from '../client/ISIHostListener';
 import { addOperationErrorMessage, setKicked } from '../state/room2Slice';
 import { AppDispatch } from '../state/store';
 import getErrorMessage from './ErrorHelpers';
 import ClientController from '../logic/ClientController';
-import messageProcessor from '../logic/messageProcessor';
+import MessageProcessor from '../logic/messageProcessor';
 import PersonInfo from '../client/contracts/PersonInfo';
 import { onGamePersonsChanged } from '../state/online2Slice';
 import localization from '../model/resources/localization';
@@ -15,11 +14,14 @@ import { ReconnectError } from '../client/SIHostClient';
 import { getJoinErrorMessage } from './GameErrorsHelper';
 
 export default class SIHostListener implements ISIHostListener {
+	messageProcessor: MessageProcessor;
+
 	constructor(
 		private controller: ClientController,
-		private dispatch: Dispatch<AnyAction>,
 		private appDispatch: AppDispatch
-	) { }
+	) {
+		this.messageProcessor = new MessageProcessor(controller);
+	}
 
 	onReceive(message: Message): void {
 		if (message.IsSystem && message.Sender !== '@') {
@@ -27,7 +29,7 @@ export default class SIHostListener implements ISIHostListener {
 			return;
 		}
 
-		messageProcessor(this.controller, this.dispatch, message);
+		this.messageProcessor.processMessage(message);
 	}
 
 	onDisconnect(): void {

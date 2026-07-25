@@ -1,0 +1,1 @@
+npm run tauri build -- --debug --features steam_client

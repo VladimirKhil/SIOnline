@@ -16,6 +16,27 @@ import { AccountServiceClient } from 'accountservice-client';
 const defaultSteamAuthIdentity = 'SIGameServer';
 
 export default class SteamTauriHost extends TauriHost {
+	private readonly accountServiceClient = new AccountServiceClient('https://vladimirkhil.com/account');
+
+	private async loginBySteamAsync(): Promise<{ userId: string; token: string | null }> {
+		if (!this.app || !this.app.core) {
+			throw new Error('Steam authorization is not available');
+		}
+
+		const authTicket = await this.app.core.invoke('get_steam_auth_ticket', {
+			identity: defaultSteamAuthIdentity,
+		});
+
+		const { userId, token } = await this.accountServiceClient.loginBySteamAsync({
+			authTicket,
+		}, true);
+
+		return {
+			userId,
+			token: token ?? this.accountServiceClient.getBearerToken() ?? null,
+		};
+	}
+
 	override openLink(url: string): void {
 		const isHttpUrl = /^https?:\/\//i.test(url);
 
@@ -61,19 +82,9 @@ export default class SteamTauriHost extends TauriHost {
 				localStorage.setItem(Constants.AVATAR_NAME_KEY, 'steam_avatar.png');
 			}
 
-			// const identity = defaultSteamAuthIdentity;
+			const { userId, token } = await this.loginBySteamAsync();
 
-			// const authTicket = await this.app.core.invoke('get_steam_auth_ticket', {
-			// 	identity,
-			// });
-
-			// const accountServiceClient = new AccountServiceClient('https://localhost:7039');
-
-			// const { userId } = await accountServiceClient.loginBySteamAsync({
-			// 	authTicket,
-			// });
-
-			// console.log('Steam user logged in with userId:', userId);
+			console.log('Steam user logged in with userId:', userId, ' token:', token);
 		} catch (error) {
 			console.error('Failed to get Steam user info:', error);
 		}
@@ -81,6 +92,10 @@ export default class SteamTauriHost extends TauriHost {
 
 	getSupportedAuthModes(): AuthorizationMode[] {
 		return [AuthorizationMode.Steam];
+	}
+
+	getAuthToken(): string | null {
+		return this.accountServiceClient.getBearerToken() ?? null;
 	}
 
 	async getAuthorizationData(authorizationMode?: AuthorizationMode): Promise<AuthorizationData | null> {
@@ -92,10 +107,8 @@ export default class SteamTauriHost extends TauriHost {
 			throw new Error('Steam authorization is not available');
 		}
 
-		const identity = defaultSteamAuthIdentity;
-
 		const authTicket = await this.app.core.invoke('get_steam_auth_ticket', {
-			identity,
+			identity: defaultSteamAuthIdentity,
 		});
 
 		return {

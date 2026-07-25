@@ -119,11 +119,7 @@ function onQuestionAnswers(controller: ClientController, args: string[]) {
 	controller.onQuestionAnswers(right, wrong);
 }
 
-const viewerHandler = (
-	controller: ClientController,
-	state: State,
-	args: string[]
-) => {
+const viewerHandler = (controller: ClientController, args: string[]) => {
 	switch (args[0]) {
 		case GameMessages.Ads:
 			if (args.length === 1) {
@@ -892,53 +888,27 @@ const viewerHandler = (
 			break;
 
 		case GameMessages.Table:
-			const { roundInfo } = state.table;
-			const areQuestionsFilled = roundInfo.some(theme => theme.questions.length > 0);
-
-			if (areQuestionsFilled) {
-				break;
-			}
-
 			let index = 1;
-			const newRoundInfo: ThemeInfo[] = [];
-			let maxQuestionsInTheme = 0;
 
-			for (let i = 0; i < roundInfo.length; i++) {
-				if (index === args.length) {
-					break;
-				}
+			const table: number[][] = [];
 
+			while (index < args.length) {
 				const questions: number[] = [];
 
 				while (index < args.length && args[index].length > 0) { // empty argument separates themes
 					questions.push(parseInt(args[index++], 10));
 				}
 
-				maxQuestionsInTheme = Math.max(maxQuestionsInTheme, questions.length);
-
-				const newTheme: ThemeInfo = { name: roundInfo[i].name, comment: roundInfo[i].comment, questions };
-				newRoundInfo.push(newTheme);
-
+				table.push(questions);
 				index++;
 			}
 
-			// Align number of questions in each theme
-			newRoundInfo.forEach((themeInfo) => {
-				const questionsCount = themeInfo.questions.length;
-
-				for (let i = 0; i < maxQuestionsInTheme - questionsCount; i++) {
-					themeInfo.questions.push(-1);
-				}
-			});
-
-			controller.onTable(newRoundInfo);
+			controller.onTable(table);
 			break;
 
 		case GameMessages.Timer:
 			// Special case for automatic game
-			if (!state.room2.stage.isGameStarted
-				&& state.game.isAutomatic
-				&& args.length === 5
+			if (args.length === 5
 				&& args[1] === '2'
 				&& args[2] === 'GO'
 				&& args[4] === '-2') {
@@ -1295,28 +1265,27 @@ function info(controller: ClientController, ...args: string[]) {
 	controller.onInfo(all, showman, players);
 }
 
-const processSystemMessage = (
-	controller: ClientController,
-	message: Message,
-) => (_dispatch: any, getState: () => State) => {
-	const state = getState();
-	const { role } = state.room2;
+function processSystemMessage(controller: ClientController, message: Message) {
+	const role = controller.getRole();
 	const args = message.Text.split('\n');
 
-	viewerHandler(controller, state, args);
+	viewerHandler(controller, args);
 
 	if (role === Role.Player) {
 		playerHandler(controller, args);
 	} else if (role === Role.Showman) {
 		showmanHandler(controller, args);
 	}
-};
+}
 
-export default function messageProcessor(controller: ClientController, dispatch: Dispatch<AnyAction>, message: Message) {
-	if (message.IsSystem) {
-		dispatch((processSystemMessage(controller, message) as object) as AnyAction);
-		return;
+export default class MessageHandler {
+	constructor(private controller: ClientController) { }
+
+	processMessage(message: Message) {
+		if (message.IsSystem) {
+			processSystemMessage(this.controller, message);
+		} else {
+			this.controller.onMessage(message.Sender, message.Text);
+		}
 	}
-
-	controller.onMessage(message.Sender, message.Text);
 }

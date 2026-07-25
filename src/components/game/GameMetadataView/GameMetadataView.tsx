@@ -140,7 +140,7 @@ export function GameMetadataView(props: GameMetadataViewProps): JSX.Element {
 							type="checkbox"
 							checked={room2Settings.useApellations}
 							disabled={!isHost}
-							onChange={(e) => appDispatch(setOption({ name: 'UseApellations', value: e.target.checked.toString() }))}
+							onChange={(e) => appDispatch(setOption({ name: 'UseApellations', value: e.target.checked.toString() }))} // TODO: UseAppellations
 						/>
 					</div>
 

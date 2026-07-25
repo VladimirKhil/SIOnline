@@ -37,8 +37,9 @@ export default class SIHostClient implements ISIHostClient {
 	constructor(private readonly authorizationProvider?: (authorizationMode?: AuthorizationMode) => Promise<AuthorizationData | null>) {
 	}
 
-	async connectAsync(serverUri: string, listener: ISIHostListener): Promise<void> {
+	async connectAsync(serverUri: string, listener: ISIHostListener, authToken?: string): Promise<void> {
 		this.listener = listener;
+		const connectionUrl = serverUri + 'sihost';
 
 		const connectionBuilder = new signalR.HubConnectionBuilder()
 			.withAutomaticReconnect({
@@ -49,9 +50,17 @@ export default class SIHostClient implements ISIHostClient {
 
 					return Math.min(1000 * (retryContext.previousRetryCount + 1), 5000);
 				}
-			})
-			.withUrl(serverUri + 'sihost')
-			.withHubProtocol(new signalRMsgPack.MessagePackHubProtocol());
+			});
+
+		if (authToken) {
+			connectionBuilder.withUrl(connectionUrl, {
+				accessTokenFactory: async () => authToken,
+			});
+		} else {
+			connectionBuilder.withUrl(connectionUrl);
+		}
+
+		connectionBuilder.withHubProtocol(new signalRMsgPack.MessagePackHubProtocol());
 
 		this.connection = connectionBuilder.build();
 

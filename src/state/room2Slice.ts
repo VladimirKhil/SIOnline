@@ -163,7 +163,7 @@ const initialState: Room2State = {
 	stage: {
 		isGameStarted: false,
 		isAppellation: false,
-		isEditingTables: false,
+		isEditingTables: true,
 		isGamePaused: false,
 		decisionType: DecisionType.None,
 		questionCounter: 0,
@@ -638,13 +638,13 @@ export const room2Slice = createSlice({
 			// Only occupied seats: an empty seat marked here would show a stuck 0% bar
 			// once a late joiner sits down without going through this round's preload.
 			state.persons.players.forEach(p => {
-				if (state.persons.all[p.name]) {
+				if (state.persons.all[p.name] && p.isHuman) {
 					p.mediaPreloadStarted = true;
 					p.mediaPreloadProgress = 0;
 				}
 			});
 
-			if (state.persons.all[state.persons.showman.name]) {
+			if (state.persons.all[state.persons.showman.name] && state.persons.showman.isHuman) {
 				state.persons.showman.mediaPreloadStarted = true;
 				state.persons.showman.mediaPreloadProgress = 0;
 			}

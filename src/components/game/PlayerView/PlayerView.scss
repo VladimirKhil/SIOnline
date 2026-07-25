@@ -242,6 +242,11 @@
 	justify-content: space-between;
 	align-items: center;
 	z-index: 10;
+	opacity: 0.5;
+
+	&:hover {
+		opacity: 1;
+	}
 }
 
 .playerCard__top .progress {

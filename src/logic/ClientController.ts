@@ -257,6 +257,10 @@ export default class ClientController implements IClientController {
 		private loadStart: Date | null = null,
 	) { }
 
+	getRole() {
+		return this.getState().room2.role;
+	}
+
 	addSimpleMessage(message: string, type = 'system') {
 		this.appDispatch(addToChat({
 			sender: '',
@@ -1607,8 +1611,29 @@ export default class ClientController implements IClientController {
 		}
 	}
 
-	onTable(table: ThemeInfo[]) {
-		this.appDispatch(setRoundThemes(table));
+	onTable(table: number[][]) {
+		const maxQuestionCount = Math.max(...table.map((questions) => questions.length));
+		const { roundInfo } = this.getState().table;
+		const newRoundInfo: ThemeInfo[] = [];
+
+		for (let i = 0; i < roundInfo.length; i++) {
+			const questions = table[i] ? [...table[i]] : [];
+			const questionCount = questions.length;
+
+			for (let j = 0; j < maxQuestionCount - questionCount; j++) {
+				questions.push(-1);
+			}
+
+			const newTheme: ThemeInfo = {
+				name: roundInfo[i].name,
+				comment: roundInfo[i].comment,
+				questions
+			};
+
+			newRoundInfo.push(newTheme);
+		}
+
+		this.appDispatch(setRoundThemes(newRoundInfo));
 	}
 
 	onShowTable() {

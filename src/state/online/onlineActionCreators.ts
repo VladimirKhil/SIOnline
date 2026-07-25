@@ -177,7 +177,13 @@ const joinGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 				return;
 			}
 
-			const siHostClient = await actionCreators.connectToSIHostAsync(hostUri, dispatch, appDispatch, getState, dataContext);
+			const siHostClient = await actionCreators.connectToSIHostAsync(
+				hostUri,
+				dispatch,
+				appDispatch,
+				getState,
+				dataContext,
+			);
 
 			const state = getState();
 			const serverRole = getServerRole(role);

@@ -21,7 +21,7 @@ import './PlayerView.scss';
 
 interface PlayerViewProps {
 	player: PlayerInfo;
-	account: Account;
+	account: Account | null;
 	isMe: boolean;
 	sex?: Sex;
 	avatar: string | null;
@@ -58,6 +58,9 @@ export function PlayerView(props: PlayerViewProps): JSX.Element {
 
 	const areSumsEditable = useAppSelector(state => state.room2.areSumsEditable);
 	const isGameStarted = useAppSelector(state => state.room2.stage.isGameStarted);
+	const hostName = useAppSelector(state => state.room2.persons.hostName);
+
+	const isHost = account?.name === hostName;
 
 	const appDispatch = useAppDispatch();
 
@@ -275,6 +278,10 @@ export function PlayerView(props: PlayerViewProps): JSX.Element {
 				</div>
 
 				<div className='marksArea'>
+					{isHost ? (
+						<div className="mark" title={localization.host}>⭐</div>
+					) : null}
+
 					{player.isReady && !isGameStarted ? (
 						<span
 							className='readyMark'
@@ -287,6 +294,7 @@ export function PlayerView(props: PlayerViewProps): JSX.Element {
 							</svg>
 						</span>
 					) : null}
+
 					{player.isChooser ? (
 						<div className='chooserMark' title={localization.chooserMark}>
 							<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">

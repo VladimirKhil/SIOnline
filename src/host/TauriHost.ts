@@ -112,10 +112,6 @@ export default class TauriHost implements IHost {
 					return false;
 				}
 
-				if (requestUrl.pathname === '/api/v1/auth/steam') {
-					return true;
-				}
-
 				if (!requestUrl.protocol.startsWith('http')) {
 					return true;
 				}
@@ -237,6 +233,10 @@ export default class TauriHost implements IHost {
 
 	getSupportedAuthModes(): AuthorizationMode[] {
 		return [];
+	}
+
+	getAuthToken(): string | null {
+		return null;
 	}
 
 	async getAuthorizationData(authorizationMode?: AuthorizationMode): Promise<AuthorizationData | null> {

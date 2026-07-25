@@ -145,7 +145,7 @@ const connectToSIHostAsync = async (
 	dispatch: Dispatch<Action>,
 	appDispatch: AppDispatch,
 	getState: () => State,
-	dataContext: DataContext
+	dataContext: DataContext,
 ): Promise<ISIHostClient> => {
 	await dataContext.game.leaveGame();
 	const state = getState();
@@ -153,15 +153,16 @@ const connectToSIHostAsync = async (
 
 	// Use proxy if enabled and proxy URI is available
 	const useProxy = useProxy2 && !!dataContext.proxyUri && siHostUri === dataContext.serverUri;
-	const effectiveUri = useProxy ? dataContext.proxyUri! : siHostUri;
+	const effectiveUri = useProxy ? dataContext.proxyUri || siHostUri : siHostUri;
 	const uriChecked = effectiveUri.endsWith('/') ? effectiveUri : effectiveUri + '/';
 
 	const controller = new ClientController(dispatch, appDispatch, getState, dataContext);
-	const listener = new SIHostListener(controller, dispatch, appDispatch);
+	const listener = new SIHostListener(controller, appDispatch);
 
-	let siHostClient = new SIHostClient((authorizationMode) => dataContext.host.getAuthorizationData(authorizationMode));
+	const authToken = dataContext.host.getAuthToken() ?? undefined;
+	let siHostClient = new SIHostClient((authMode) => dataContext.host.getAuthorizationData(authMode));
 	try {
-		await siHostClient.connectAsync(uriChecked, listener);
+		await siHostClient.connectAsync(uriChecked, listener, authToken);
 		appDispatch(isSIHostConnectedChanged({ isConnected: true, reason: '' }));
 	} catch (e) {
 		if (useProxy) {
@@ -169,16 +170,16 @@ const connectToSIHostAsync = async (
 			const fallbackUri = siHostUri.endsWith('/') ? siHostUri : siHostUri + '/';
 			await siHostClient.disconnectAsync(); // ensure old loops are dead
 
-			siHostClient = new SIHostClient((authorizationMode) => dataContext.host.getAuthorizationData(authorizationMode));
-			await siHostClient.connectAsync(fallbackUri, listener);
+			siHostClient = new SIHostClient((authMode) => dataContext.host.getAuthorizationData(authMode));
+			await siHostClient.connectAsync(fallbackUri, listener, authToken);
 			appDispatch(isSIHostConnectedChanged({ isConnected: true, reason: '' }));
 		} else if (siHostUri === dataContext.proxyUri) {
 			console.log('Cannot connect to SIHost (proxy server), falling back to original: ' + getErrorMessage(e));
 			const fallbackUri = dataContext.serverUri;
 			await siHostClient.disconnectAsync();
 
-			siHostClient = new SIHostClient((authorizationMode) => dataContext.host.getAuthorizationData(authorizationMode));
-			await siHostClient.connectAsync(fallbackUri, listener);
+			siHostClient = new SIHostClient((authMode) => dataContext.host.getAuthorizationData(authMode));
+			await siHostClient.connectAsync(fallbackUri, listener, authToken);
 			appDispatch(isSIHostConnectedChanged({ isConnected: true, reason: '' }));
 		} else {
 			throw e;
@@ -241,7 +242,13 @@ const finishInitializationAsync = (
 		// 4. Execution: Navigation or Joining
 		if (targetView.path === Path.Room) {
 			if (targetView.gameId && targetView.role !== undefined && hostUri) {
-				const siHostClient = await connectToSIHostAsync(hostUri, dispatch, appDispatch, getState, dataContext);
+				const siHostClient = await connectToSIHostAsync(
+					hostUri,
+					dispatch,
+					appDispatch,
+					getState,
+					dataContext,
+				);
 
 				const result = await siHostClient.joinGameAsync({
 					GameId: targetView.gameId,

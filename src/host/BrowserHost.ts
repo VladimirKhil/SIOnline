@@ -85,6 +85,10 @@ export default class BrowserHost implements IHost {
 		return [];
 	}
 
+	getAuthToken(): string | null {
+		return null;
+	}
+
 	async getAuthorizationData(authorizationMode?: AuthorizationMode): Promise<AuthorizationData | null> {
 		return null;
 	}

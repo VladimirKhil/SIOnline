@@ -47,6 +47,9 @@ export function ShowmanReplicView(props: ShowmanReplicViewProps): JSX.Element {
 	const role = useAppSelector(state => state.room2.role);
 	const mediaPreloadStarted = useAppSelector(state => state.room2.persons.showman.mediaPreloadStarted);
 	const mediaPreloadProgress = useAppSelector(state => state.room2.persons.showman.mediaPreloadProgress);
+	const hostName = useAppSelector(state => state.room2.persons.hostName);
+
+	const isHost = showmanName === hostName;
 
 	const isScreenWide = windowWidth >= Constants.WIDE_WINDOW_WIDTH;
 	const activePlayer = !isScreenWide && replicIndex > -1 && replicIndex < players.length
@@ -137,8 +140,12 @@ export function ShowmanReplicView(props: ShowmanReplicViewProps): JSX.Element {
 							<span className={meClass}>{account?.name ?? shownName}</span>
 						</div>
 
-						{isReady && !isGameStarted ? (
-							<div className='marksArea'>
+						<div className='marksArea'>
+							{isHost ? (
+								<div className="mark" title={localization.host}>⭐</div>
+							) : null}
+
+							{isReady && !isGameStarted ? (
 								<span
 									className='readyMark'
 									role="img"
@@ -155,8 +162,8 @@ export function ShowmanReplicView(props: ShowmanReplicViewProps): JSX.Element {
 										/>
 									</svg>
 								</span>
-							</div>
-						) : null}
+							) : null}
+						</div>
 
 						{activePlayer ? null : <EditTableMenu isPlayerScope={false} account={account} tableIndex={0} />}
 					</>
