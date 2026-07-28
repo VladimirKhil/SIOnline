@@ -1,8 +1,7 @@
 import * as React from 'react';
 import AutoSizedText from '../../common/AutoSizedText/AutoSizedText';
 import { useAppSelector } from '../../../state/hooks';
-import Link from '../../common/Link/Link';
-import searchOnlineUri from '../../../utils/searchOnlineUri';
+import ClickableAnswer from '../../common/ClickableAnswer/ClickableAnswer';
 
 import '../TableText/TableText.scss';
 
@@ -57,13 +56,7 @@ export default function TextContent(props: TextContentProps) {
 	return (
 		<div className='textHost'>
 			<AutoSizedText className="tableText fadeIn tableTextCenter" maxFontSize={72}>
-				{isAnswer
-					? (
-						<Link className="clickableAnswer" href={searchOnlineUri(props.text)} target="_blank" rel="noopener noreferrer">
-							{content}
-						</Link>
-					)
-					: content}
+				{isAnswer ? <ClickableAnswer text={props.text}>{content}</ClickableAnswer> : content}
 			</AutoSizedText>
 		</div>
 	);

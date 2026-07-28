@@ -1,0 +1,9 @@
+.clickableAnswer {
+	cursor: pointer;
+	color: inherit;
+	text-decoration: none;
+}
+
+.clickableAnswer:hover {
+	text-decoration: underline;
+}
