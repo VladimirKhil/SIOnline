@@ -18,6 +18,7 @@
 }
 
 .lobby header.main h1 {
+	position: relative;
 	font-size: 16px;
 	margin: 0;
 	display: flex;

@@ -11,6 +11,7 @@ import Path from '../../../model/enums/Path';
 import UserOptions from '../../panels/UserOptions/UserOptions';
 import GamesControlPanel from '../../panels/GamesControlPanel/GamesControlPanel';
 import LobbyBottomPanel from '../../panels/LobbyBottomPanel/LobbyBottomPanel';
+import DiscordButton from '../../panels/DiscordButton/DiscordButton';
 import { navigate } from '../../../utils/Navigator';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 import { newGameCancel, selectGameById } from '../../../state/online2Slice';
@@ -31,6 +32,8 @@ const topMenu = (onExit: () => void) => (
 					<img src={exitImg} alt='Exit' />
 				</button>
 			</span>
+
+			<DiscordButton />
 
 			<div className='right'>
 				<UserOptions />
