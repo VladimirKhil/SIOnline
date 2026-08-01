@@ -1,6 +1,7 @@
 import * as React from 'react';
 import AutoSizedText from '../../common/AutoSizedText/AutoSizedText';
 import { useAppSelector } from '../../../state/hooks';
+import ClickableAnswer from '../../common/ClickableAnswer/ClickableAnswer';
 
 import '../TableText/TableText.scss';
 
@@ -31,6 +32,7 @@ function getAnimatableContent(text: string, readingSpeed: number, animationCycle
 
 export default function TextContent(props: TextContentProps) {
 	const room = useAppSelector((state) => state.room2);
+	const isAnswer = useAppSelector((state) => state.table.isAnswer);
 	const previousTextRef = React.useRef(props.text);
 	const [animationCycle, setAnimationCycle] = React.useState(0);
 
@@ -47,12 +49,14 @@ export default function TextContent(props: TextContentProps) {
 		previousTextRef.current = props.text;
 	}, [props.animateReading, props.text]);
 
+	const content = props.animateReading && room.settings.readingSpeed > 0
+		? getAnimatableContent(props.text, room.settings.readingSpeed, animationCycle)
+		: props.text;
+
 	return (
 		<div className='textHost'>
 			<AutoSizedText className="tableText fadeIn tableTextCenter" maxFontSize={72}>
-				{props.animateReading && room.settings.readingSpeed > 0
-					? getAnimatableContent(props.text, room.settings.readingSpeed, animationCycle)
-					: props.text}
+				{isAnswer ? <ClickableAnswer text={props.text}>{content}</ClickableAnswer> : content}
 			</AutoSizedText>
 		</div>
 	);
