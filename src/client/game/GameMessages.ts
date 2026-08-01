@@ -82,6 +82,8 @@ const enum GameMessages {
 	/** Table layout. */
 	Layout = 'LAYOUT',
 
+	Leaderboard = 'LEADERBOARD',
+
 	/** Notifies that the client has loaded the media. */
 	MediaLoaded = 'MEDIALOADED',
 
@@ -124,6 +126,8 @@ const enum GameMessages {
 	PlayerAnswer = 'PLAYER_ANSWER',
 
 	PlayerAppellating = 'PLAYER_APPELLATING',
+
+	PlayerCount = 'PLAYER_COUNT',
 
 	PlayerScoreChanged = 'PLAYER_SCORE_CHANGED',
 

@@ -461,6 +461,10 @@ const viewerHandler = (controller: ClientController, args: string[]) => {
 			controller.onAnswerOptionsLayout(questionHasScreenContent, answerOptionTypes, useStackedAnswerLayout, contentWeight);
 			break;
 
+		case GameMessages.Leaderboard:
+			// TODO
+			break;
+
 		case GameMessages.MediaLoaded:
 			if (args.length < 2) {
 				break;
@@ -650,6 +654,10 @@ const viewerHandler = (controller: ClientController, args: string[]) => {
 				const playerName = args[1];
 				controller.onPlayerAppellating(playerName);
 			}
+			break;
+
+		case GameMessages.PlayerCount:
+			// TODO
 			break;
 
 		case GameMessages.PlayerScoreChanged:

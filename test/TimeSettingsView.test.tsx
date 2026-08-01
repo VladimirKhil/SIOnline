@@ -37,11 +37,11 @@ describe('TimeSettingsView', () => {
 		}));
 	});
 
-	it('renders the buttons accepting setting after the thinking on question setting', () => {
+	it('renders the choosing final theme setting after choosing question', () => {
 		const markup = renderToStaticMarkup(<TimeSettingsView />);
 
-		expect(markup).toContain(localization.buttonsAccepting);
-		expect(markup).toContain('ms');
-		expect(markup.indexOf(localization.timeForThinkingOnQuestion)).toBeLessThan(markup.indexOf(localization.buttonsAccepting));
+		expect(markup).toContain(localization.timeForChoosingQuestion);
+		expect(markup).toContain(localization.timeForChoosingFinalTheme);
+		expect(markup.indexOf(localization.timeForChoosingQuestion)).toBeLessThan(markup.indexOf(localization.timeForChoosingFinalTheme));
 	});
 });
