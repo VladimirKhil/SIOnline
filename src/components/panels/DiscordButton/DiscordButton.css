@@ -1,0 +1,50 @@
+.discordButton {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px;
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    border-radius: 12px;
+    color: #C9D3FF;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1;
+    white-space: nowrap;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.discordButton:hover {
+    background: #5865F2;
+    border-color: #5865F2;
+    color: #FFFFFF;
+}
+
+.discordButton:active {
+    transform: translate(-50%, -50%) scale(0.95);
+}
+
+.discordButton img {
+    width: 15px;
+    height: 15px;
+    object-fit: contain;
+}
+
+.discordButton span {
+    display: none;
+}
+
+@media screen and (min-width: 800px) {
+    .discordButton {
+        padding: 3px 10px;
+    }
+
+    .discordButton span {
+        display: initial;
+    }
+}
