@@ -2,7 +2,7 @@ import React from 'react';
 import { useAppDispatch, useAppSelector } from '../../../../state/hooks';
 import { Package, InfoOwner } from '../../../../model/siquester/package';
 import localization from '../../../../model/resources/localization';
-import getLanguage from '../../../../utils/getLanguage';
+import { getLanguage } from '../../../../utils/LanguageHelper';
 import {
 	updatePackageProperty,
 	updateTag,
@@ -243,6 +243,7 @@ const PackageItem: React.FC<PackageItemProps> = ({ item, isEditMode }) => {
 						onChange={(e) => dispatch(updatePackageProperty({ property: 'language', value: e.target.value }))}
 					>
 						<option value='en-US'>{localization.languageEn}</option>
+						<option value='es-ES'>{localization.languageEs}</option>
 						<option value='ru-RU'>{localization.languageRu}</option>
 						<option value='sr-RS'>{localization.languageSr}</option>
 						<option value='uz-UZ'>{localization.languageUz}</option>

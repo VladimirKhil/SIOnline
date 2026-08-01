@@ -14,7 +14,7 @@ import Constants from '../../../model/enums/Constants';
 import { AppDispatch } from '../../../state/store';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 import { passwordChanged } from '../../../state/online2Slice';
-import getLanguage from '../../../utils/getLanguage';
+import { getLanguage } from '../../../utils/LanguageHelper';
 import { validateLoginName } from '../../../utils/loginValidation';
 import { userErrorChanged } from '../../../state/commonSlice';
 import AuthorizationMode from '../../../client/contracts/AuthorizationMode';

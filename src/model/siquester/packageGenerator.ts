@@ -1,6 +1,7 @@
 import JSZip from 'jszip';
 import { ContentPlacements, Package, Question, Round, RoundTypes, Theme } from './package';
 import localization from '../resources/localization';
+import { getFullCulureName } from '../../utils/LanguageHelper';
 
 export interface NewPackageOptions {
 	packageName: string;
@@ -28,17 +29,7 @@ function generateId(): string {
 
 function getFullCulture(): string {
 	const culture = localization.getLanguage();
-
-	switch (culture) {
-		case 'ru':
-			return 'ru-RU';
-		case 'sr':
-			return 'sr-RS';
-		case 'uz':
-			return 'uz-UZ';
-		default:
-			return 'en-US';
-	}
+	return getFullCulureName(culture);
 }
 
 export async function createDefaultZip(): Promise<JSZip> {

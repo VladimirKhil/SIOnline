@@ -4,7 +4,7 @@ import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 import GamesFilter from '../../../model/enums/GamesFilter';
 import localization from '../../../model/resources/localization';
 import { onGameFilterToggle } from '../../../state/online2Slice';
-import getLanguage from '../../../utils/getLanguage';
+import { getLanguage } from '../../../utils/LanguageHelper';
 
 import './GamesFilterView.scss';
 

@@ -1,6 +1,7 @@
 import PlayerInfo from '../model/PlayerInfo';
 import localization from '../model/resources/localization';
 import State from '../state/State';
+import { getFullCulureName } from './LanguageHelper';
 
 export function isHost(state: State): boolean {
 	return state.room2.name === state.room2.persons.hostName;
@@ -12,17 +13,7 @@ export function getCulture(state: State): string {
 
 export function getFullCulture(state: State): string {
 	const culture = getCulture(state);
-
-	switch (culture) {
-		case 'ru':
-			return 'ru-RU';
-		case 'sr':
-			return 'sr-RS';
-		case 'uz':
-			return 'uz-UZ';
-		default:
-			return 'en-US';
-	}
+	return getFullCulureName(culture);
 }
 
 export function getMeAsPlayer(state: State): PlayerInfo | null {
