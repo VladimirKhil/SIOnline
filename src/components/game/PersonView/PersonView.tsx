@@ -9,6 +9,7 @@ import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 import { kick, setHost } from '../../../state/room2Slice';
 import { changeTableType, deleteTable, freeTable, setTablePerson } from '../../../state/serverActions';
 import getAvatarClass from '../../../utils/AccountHelpers';
+import PersonName from '../PlayerView/PersonName';
 
 import './PersonView.css';
 import menuSvg from '../../../../assets/images/menu.svg';
@@ -122,7 +123,7 @@ export function PersonView(props: PersonViewProps): JSX.Element {
 
 			<div className='personNameWrapper'>
 				<span className='personName'>
-					{isEmptySeat ? '' : personName}
+					{isEmptySeat ? '' : <PersonName name={personName} />}
 				</span>
 			</div>
 
@@ -156,7 +157,7 @@ export function PersonView(props: PersonViewProps): JSX.Element {
 												className="personMenuReplacementItem"
 												onClick={() => onSetTable(person)}
 											>
-												{person}
+												<PersonName name={person} />
 											</div>
 										))}
 									</div>

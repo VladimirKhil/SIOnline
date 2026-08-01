@@ -2,6 +2,7 @@ import * as React from 'react';
 import { useAppSelector } from '../../../state/hooks';
 import localization from '../../../model/resources/localization';
 import AutoSizedText from '../../common/AutoSizedText/AutoSizedText';
+import PersonName from '../../game/PlayerView/PersonName';
 
 import './TableStatistics.css';
 
@@ -34,7 +35,7 @@ export default function TableStatistics(): JSX.Element | null {
 						</div>
 						<div className="statCell playerName">
 							<AutoSizedText maxFontSize={56}>
-								{stat.name}
+								<PersonName name={stat.name} />
 							</AutoSizedText>
 						</div>
 						<div className="statCell currentScore">

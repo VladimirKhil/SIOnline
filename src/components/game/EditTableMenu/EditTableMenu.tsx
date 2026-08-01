@@ -7,6 +7,7 @@ import Constants from '../../../model/enums/Constants';
 import { changeTableType, deleteTable, freeTable, setTablePerson } from '../../../state/serverActions';
 import PersonInfo from '../../../model/PersonInfo';
 import { kick, setHost } from '../../../state/room2Slice';
+import PersonName from '../PlayerView/PersonName';
 
 import './EditTableMenu.scss';
 import menuSvg from '../../../../assets/images/menu.svg';
@@ -180,7 +181,7 @@ const EditTableMenu: React.FC<EditTableMenuProps> = (props) => {
 										className="replacementItem"
 										onClick={() => onSetTable(person)}
 									>
-										{person}
+										<PersonName name={person} />
 									</div>
 								))}
 							</div>
