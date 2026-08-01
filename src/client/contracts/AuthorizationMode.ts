@@ -4,6 +4,7 @@
 enum AuthorizationMode {
     None = 'None',
     Steam = 'Steam',
+    Account = 'Account',
 }
 
 export default AuthorizationMode;

@@ -162,7 +162,7 @@ export default class SIHostClient implements ISIHostClient {
 
 		let request = joinGameRequest;
 
-		if (joinGameRequest.AuthorizationMode !== AuthorizationMode.None) {
+		if (joinGameRequest.AuthorizationMode !== AuthorizationMode.None && joinGameRequest.AuthorizationMode !== AuthorizationMode.Account) {
 			request = await this.enrichJoinRequestAsync(joinGameRequest);
 		}
 
@@ -174,7 +174,9 @@ export default class SIHostClient implements ISIHostClient {
 				AuthTicket: request.AuthorizationMode === AuthorizationMode.Steam ? null : request.AuthTicket ?? null,
 			};
 
-			this.userName = request.AuthorizationMode === AuthorizationMode.Steam ? `Ⓢ${request.UserName}` : request.UserName;
+			this.userName = request.AuthorizationMode === AuthorizationMode.Steam || joinGameRequest.AuthorizationMode === AuthorizationMode.Account
+				? `Ⓢ${request.UserName}`
+				: request.UserName;
 		}
 
 		return result;

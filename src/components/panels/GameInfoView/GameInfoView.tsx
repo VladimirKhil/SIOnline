@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import localization from '../../../model/resources/localization';
 import Role from '../../../model/Role';
 import ServerRole from '../../../client/contracts/ServerRole';
-import State from '../../../state/State';
 import onlineActionCreators from '../../../state/online/onlineActionCreators';
 import GameInfo from '../../../client/contracts/GameInfo';
 import ServerGameType from '../../../client/contracts/ServerGameType';
@@ -195,7 +194,7 @@ export function GameInfoView(props: GameInfoViewProps): JSX.Element {
 			return;
 		}
 
-		const authMode = useAuth ? AuthorizationMode.Steam : AuthorizationMode.None;
+		const authMode = useAuth ? AuthorizationMode.Account : AuthorizationMode.None;
 		props.onJoin(game.HostUri, game.GameID, nameToUse.trim(), role, appDispatch, authMode);
 	};
 
