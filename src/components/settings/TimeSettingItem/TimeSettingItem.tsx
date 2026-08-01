@@ -8,9 +8,12 @@ interface TimeSettingItemProps {
 	value: number;
 	maximum: number;
 	onValueChanged: (newValue: number) => void;
+	unitLabel?: string;
 }
 
 export default function TimeSettingItem(props: TimeSettingItemProps): JSX.Element {
+	const unitLabel = props.unitLabel ?? localization.sec;
+
 	const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const value = parseInt(e.target.value, 10);
 
@@ -42,7 +45,7 @@ export default function TimeSettingItem(props: TimeSettingItemProps): JSX.Elemen
 					onChange={onChange}
 				/>
 
-				<span>{localization.sec}</span>
+				<span className='timeUnit'>{unitLabel}</span>
 			</div>
 		</div>
 	);

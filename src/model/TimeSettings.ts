@@ -13,4 +13,5 @@ export default interface TimeSettings {
 	timeForBlockingButton: number;
 	partialImageTime: number;
 	imageTime: number;
+	buttonsAccepting: number;
 }

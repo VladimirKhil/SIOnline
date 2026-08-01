@@ -15,4 +15,5 @@ export default interface ServerTimeSettings {
 	timeForBlockingButton: number;
 	partialImageTime: number;
 	imageTime: number;
+	buttonsAccepting: number;
 }

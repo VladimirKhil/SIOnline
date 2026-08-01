@@ -79,6 +79,7 @@ export const initialState: AppSettings = {
 		timeForBlockingButton: 3,
 		partialImageTime: 3,
 		imageTime: 5,
+		buttonsAccepting: 300,
 	},
 	buttonPressMode: ButtonPressMode.RandomWithinInterval,
 	preloadRoundContent: true,

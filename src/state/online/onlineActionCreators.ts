@@ -299,6 +299,7 @@ function createGameSettings(
 		timeForBlockingButton: ts.timeForBlockingButton,
 		partialImageTime: ts.partialImageTime,
 		imageTime: ts.imageTime,
+		buttonsAccepting: ts.buttonsAccepting,
 	};
 
 	const appSettings: ServerAppSettings = {

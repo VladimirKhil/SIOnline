@@ -1,11 +1,17 @@
 @use "../../../scss/variables" as v;
 
+.timeSettingItem {
+	.timeUnit {
+		width: 20px;
+	}
+}
+
 .timeSettingItem.block {
-	height: 130px;
+	height: 150px;
 }
 
 .timeSettingItem .blockName {
-    flex: 0 0 150px;
+    flex: 0 0 180px;
 }
 
 .timeSettingItem .timeRange {
@@ -28,7 +34,7 @@
 
 @media screen and (min-width: 800px) {
 	.timeSettingItem.block {
-		height: 54px;
+		height: 80px;
 	}
 
 	.timeSettingItem .blockName {
