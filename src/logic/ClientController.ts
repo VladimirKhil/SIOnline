@@ -73,7 +73,8 @@ import {
 	setAnswerDeviation,
 	addPointMarker,
 	PointMarker,
-	overlayPoints
+	overlayPoints,
+	showLeaderboard
 } from '../state/tableSlice';
 
 import {
@@ -157,6 +158,7 @@ import {
 	setDeepMode,
 	setSettingUseAppellations,
 	setDemoButtonHighlights as setDemoButtonHighlightsAction,
+	playerCountChanged,
 } from '../state/room2Slice';
 
 import PersonInfo from '../model/PersonInfo';
@@ -806,6 +808,10 @@ export default class ClientController implements IClientController {
 		}
 	}
 
+	onLeaderboard(board: Record<string, number>) {
+		this.appDispatch(showLeaderboard(board));
+	}
+
 	onMediaLoaded(playerName: string) {
 		const { players } = this.getState().room2.persons;
 
@@ -1083,6 +1089,10 @@ export default class ClientController implements IClientController {
 		if (playerIndex !== -1) {
 			this.appDispatch(setPlayerApellating({ index: playerIndex, isAppellating: true }));
 		}
+	}
+
+	onPlayerCountChanged(count: number) {
+		this.appDispatch(playerCountChanged(count));
 	}
 
 	onPlayerScoreChanged(playerIndex: number, newScore: number) {

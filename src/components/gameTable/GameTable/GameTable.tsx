@@ -15,6 +15,7 @@ import ObjectView from '../ObjectView/ObjectView';
 import { useAppSelector } from '../../../state/hooks';
 import TableWelcome from '../TableWelcome/TableWelcome';
 import TableStatistics from '../TableStatistics/TableStatistics';
+import TableLeaderboard from '../TableLeaderboard/TableLeaderboard';
 import AnswerValidationBody from '../AnswerValidationBody/AnswerValidationBody';
 import Role from '../../../model/Role';
 import { DecisionType } from '../../../state/room2Slice';
@@ -55,6 +56,9 @@ function getContent(mode: TableMode) {
 		case TableMode.Statistics:
 			return <TableStatistics />;
 
+		case TableMode.Leaderboard:
+			return <TableLeaderboard />;
+
 		case TableMode.Object:
 		case TableMode.QuestionType:
 			return <ObjectView />;
@@ -79,6 +83,7 @@ function getCaption(mode: TableMode, caption: string): string {
 		case TableMode.Object:
 		case TableMode.QuestionType:
 		case TableMode.Statistics:
+		case TableMode.Leaderboard:
 			return caption ? caption : ' ';
 
 		default:

@@ -368,6 +368,18 @@ export const tableSlice = createSlice({
 			state.statistics = action.payload;
 			state.mode = TableMode.Statistics;
 		},
+		showLeaderboard: (state, action: PayloadAction<Record<string, number>>) => {
+			state.statistics = Object.entries(action.payload).map(([name, score]) => ({
+				name,
+				rightAnswerCount: 0,
+				wrongAnswerCount: 0,
+				rightTotal: 0,
+				wrongTotal: 0,
+				currentScore: score,
+			}));
+
+			state.mode = TableMode.Leaderboard;
+		},
 		setExternalMediaWarning: (state, action: PayloadAction<string[]>) => {
 			state.externalMediaUris = action.payload;
 		},
@@ -443,6 +455,7 @@ export const {
 	resumeLoadTimer,
 	showContentHint,
 	showStatistics,
+	showLeaderboard,
 	setExternalMediaWarning,
 	appendExternalMediaWarning,
 	addPointMarker,

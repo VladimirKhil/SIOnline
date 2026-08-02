@@ -1,0 +1,13 @@
+@import '../TableStatistics/TableStatistics.css';
+
+.leaderboardTableHeader,
+.leaderboardTableRow {
+	grid-template-columns: 0.3fr 2fr 1fr;
+}
+
+@media (max-width: 768px) {
+	.leaderboardTableHeader,
+	.leaderboardTableRow {
+		grid-template-columns: 0.35fr 1.85fr 0.8fr;
+	}
+}

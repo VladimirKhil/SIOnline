@@ -26,6 +26,30 @@
 	text-align: left;
 }
 
+.gameState header h1 .left .leftControls {
+	display: flex;
+	align-items: center;
+	height: 100%;
+}
+
+.gameState .arenaPlayerCount {
+	display: none;
+	align-items: center;
+	gap: 6px;
+	padding: 0 10px;
+	height: 32px;
+	border-radius: 16px;
+	color: rgba(255, 255, 255, 0.95);
+	background: rgba(255, 255, 255, 0.18);
+	font-size: 14px;
+	font-weight: 700;
+	line-height: 1;
+}
+
+.gameState .arenaPlayerCount svg {
+	flex: 0 0 auto;
+}
+
 .gameState header h1 .right {
 	text-align: right;
 	height: 100%;
@@ -59,4 +83,10 @@
 .gameState .welcomeExit.demoHighlighted {
 	animation: welcomeExitDemoBlink 2.2s ease-in-out infinite;
 	will-change: transform;
+}
+
+@media screen and (min-width: 1100px) {
+	.gameState .arenaPlayerCount {
+		display: inline-flex;
+	}
 }

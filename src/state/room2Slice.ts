@@ -63,6 +63,7 @@ export interface Room2State {
 		players: PlayerInfo[];
 		hostName: string | null;
 		all: Persons;
+		playerCount: number; // used in Arena only
 	};
 
 	name: string;
@@ -153,6 +154,7 @@ const initialState: Room2State = {
 		players: [],
 		hostName: null,
 		all: {},
+		playerCount: 0,
 	},
 
 	name: '',
@@ -1052,6 +1054,9 @@ export const room2Slice = createSlice({
 				next: false,
 			};
 		},
+		playerCountChanged: (state: Room2State, action: PayloadAction<number>) => {
+			state.persons.playerCount = action.payload;
+		},
 	},
 	extraReducers: (builder) => {
 		builder.addCase(sendAnswer.fulfilled, (state) => {
@@ -1422,6 +1427,7 @@ export const {
 	setWebCameraUrl,
 	setDemoButtonHighlights,
 	resetDemoButtonHighlights,
+	playerCountChanged,
 } = room2Slice.actions;
 
 export default room2Slice.reducer;

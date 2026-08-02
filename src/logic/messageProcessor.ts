@@ -462,7 +462,15 @@ const viewerHandler = (controller: ClientController, args: string[]) => {
 			break;
 
 		case GameMessages.Leaderboard:
-			// TODO
+			const board: Record<string, number> = {};
+
+			for (let i = 1; i + 1 < args.length; i += 2) {
+				const playerName = args[i];
+				const score = parseInt(args[i + 1], 10);
+				board[playerName] = score;
+			}
+
+			controller.onLeaderboard(board);
 			break;
 
 		case GameMessages.MediaLoaded:
@@ -519,7 +527,7 @@ const viewerHandler = (controller: ClientController, args: string[]) => {
 			break;
 
 		case GameMessages.Pass:
-			{
+			if (args.length > 1) {
 				const playerIndex = parseInt(args[1], 10);
 
 				if (playerIndex > -1) {
@@ -657,7 +665,11 @@ const viewerHandler = (controller: ClientController, args: string[]) => {
 			break;
 
 		case GameMessages.PlayerCount:
-			// TODO
+			if (args.length > 1) {
+				const count = parseInt(args[1], 10);
+				controller.onPlayerCountChanged(count);
+			}
+
 			break;
 
 		case GameMessages.PlayerScoreChanged:

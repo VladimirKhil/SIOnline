@@ -11,6 +11,7 @@
 	Object,
 	QuestionType,
 	Statistics,
+	Leaderboard,
 }
 
 export default TableMode;
