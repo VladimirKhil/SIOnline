@@ -13,6 +13,7 @@ import { createDefaultPackage, createDefaultZip, NewPackageOptions } from '../mo
 export type { NewPackageOptions };
 import { downloadPackageAsSIQ } from '../model/siquester/packageExporter';
 import { parseXMLtoPackage } from '../model/siquester/packageLoader';
+import { userInfoChanged } from './commonSlice';
 
 export interface SIQuesterState {
 	zip?: JSZip;
@@ -197,6 +198,7 @@ export const savePackage = createAsyncThunk(
 		}
 
 		await downloadPackageAsSIQ(pack, zip);
+		thunkAPI.dispatch(userInfoChanged(localization.packageDownloadedToDownloads));
 	},
 );
 

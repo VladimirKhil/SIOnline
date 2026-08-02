@@ -1,8 +1,51 @@
-import reducer, { addComplexAnswer, resetQuestion, SIQuesterState, undo, redo, updatePackageProperty, updateRoundProperty, addRound, setContentItemMedia } from '../src/state/siquesterSlice';
+import { configureStore } from '@reduxjs/toolkit';
+import reducer, { addComplexAnswer, resetQuestion, SIQuesterState, undo, redo, updatePackageProperty, updateRoundProperty, addRound, setContentItemMedia, savePackage } from '../src/state/siquesterSlice';
+import commonReducer from '../src/state/commonSlice';
 import { createDefaultPackage } from '../src/model/siquester/packageGenerator';
 import JSZip from 'jszip';
+import { downloadPackageAsSIQ } from '../src/model/siquester/packageExporter';
+
+jest.mock('../src/model/siquester/packageExporter', () => ({
+	downloadPackageAsSIQ: jest.fn(),
+}));
 
 describe('siquesterSlice', () => {
+	beforeEach(() => {
+		jest.clearAllMocks();
+	});
+
+	test('savePackage shows a success message after the package is downloaded', async () => {
+		const mockedDownloadPackageAsSIQ = downloadPackageAsSIQ as jest.MockedFunction<typeof downloadPackageAsSIQ>;
+		mockedDownloadPackageAsSIQ.mockResolvedValue(undefined);
+
+		const store = configureStore({
+			reducer: {
+				siquester: reducer as any,
+				common: commonReducer as any,
+			} as any,
+			preloadedState: {
+				siquester: {
+					pack: createDefaultPackage({
+						packageName: 'Test package',
+						authorName: 'Test author',
+						roundCount: 1,
+						themeCount: 1,
+						questionCount: 1,
+						includeFinalRound: false,
+						finalThemeCount: 0,
+					}),
+					zip: new JSZip(),
+				},
+				common: commonReducer(undefined, { type: '@@INIT' }),
+			} as any,
+		});
+
+		await store.dispatch(savePackage() as any);
+
+		expect(mockedDownloadPackageAsSIQ).toHaveBeenCalled();
+		expect(store.getState().common.userError).toBe('Package downloaded to Downloads folder');
+	});
+
 	test('addComplexAnswer initializes answer content with waitForFinish enabled', () => {
 		const state: SIQuesterState = {
 			pack: createDefaultPackage({
