@@ -924,13 +924,7 @@ const viewerHandler = (controller: ClientController, args: string[]) => {
 			break;
 
 		case GameMessages.Timer:
-			// Special case for automatic game
-			if (args.length === 5
-				&& args[1] === '2'
-				&& args[2] === 'GO'
-				&& args[4] === '-2') {
-				// TODO: will be removed in the future
-			} else if (args.length > 2) {
+			if (args.length > 2) {
 				const timerIndex = parseInt(args[1], 10);
 				const timerCommand = args[2];
 				const timerArgument = args.length > 3 ? parseInt(args[3], 10) : 0;

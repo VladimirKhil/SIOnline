@@ -19,6 +19,7 @@ interface ClickableAnswerProps {
 export default function ClickableAnswer(props: ClickableAnswerProps): JSX.Element {
 	const clipboardSupported = useAppSelector(state => state.common.clipboardSupported);
 	const appDispatch = useAppDispatch();
+	const content = props.children ?? props.text;
 
 	const onContextMenu = (e: React.MouseEvent) => {
 		if (!clipboardSupported) {
@@ -31,10 +32,14 @@ export default function ClickableAnswer(props: ClickableAnswerProps): JSX.Elemen
 		appDispatch(userInfoChanged(localization.answerCopied));
 	};
 
+	if (!clipboardSupported) {
+		return <span>{content}</span>;
+	}
+
 	return (
 		<span onContextMenu={onContextMenu}>
 			<Link className="clickableAnswer" href={searchOnlineUri(props.text)} target="_blank" rel="noopener noreferrer">
-				{props.children ?? props.text}
+				{content}
 			</Link>
 		</span>
 	);
