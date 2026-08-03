@@ -1,10 +1,7 @@
-import { AnyAction, Dispatch } from 'redux';
 import Message from '../client/contracts/Message';
-import State from '../state/State';
 import Account from '../model/Account';
 import Sex from '../model/enums/Sex';
 import PlayerStates, { parsePlayerStatesFromString } from '../model/enums/PlayerStates';
-import ThemeInfo from '../model/ThemeInfo';
 import PersonInfo from '../model/PersonInfo';
 import Persons from '../model/Persons';
 import PlayerInfo from '../model/PlayerInfo';

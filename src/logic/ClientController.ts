@@ -186,6 +186,7 @@ import getBestRowColumnCount from '../utils/stackedContentHelper';
 import { preloadRoundContent } from './contentPreloader';
 import StakeTypes from '../model/enums/StakeTypes';
 import clearUrls from '../utils/clearUrls';
+import { simplifyPersonName } from '../utils/NameHelpers';
 
 // Non-idempotent initialization of group properties
 function initGroup(group: ContentGroup, aspectRatio: number) {
@@ -2232,7 +2233,7 @@ export default class ClientController implements IClientController {
 			if (sum) {
 				this.appDispatch(playerSumChanged({ index: playerIndex, value: sum }));
 
-				const text = `${player.name}: ${isRight ? '+' : '-'}${sum}`;
+				const text = `${simplifyPersonName(player.name)}: ${isRight ? '+' : '-'}${sum}`;
 
 				if (state.settings.logPointsEvent) {
 					this.appDispatch(addToChat({
