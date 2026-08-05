@@ -24,6 +24,7 @@ import { useAudioContext } from '../../../contexts/AudioContextProvider';
 import ContentType from '../../../model/enums/ContentType';
 import LayoutMode from '../../../model/enums/LayoutMode';
 import PointsOverlay from '../PointsOverlay/PointsOverlay';
+import MediaTimer from '../MediaTimer/MediaTimer';
 
 import './GameTable.css';
 
@@ -140,9 +141,8 @@ export function GameTable(): JSX.Element {
 	}
 
 	const showAppelation = isAppellation && !shouldShowAnswerValidationInTable;
-	const hasSound = audio.length > 0 ||
-		content.some(g => g.content.some(c => c.type === ContentType.Video)) ||
-		cooperativeHtmlVolumeSupportIds.length > 0;
+	const hasVideo = content.some(g => g.content.some(c => c.type === ContentType.Video));
+	const hasSound = audio.length > 0 || hasVideo || cooperativeHtmlVolumeSupportIds.length > 0;
 
 	return (
 		<div id="table" style={themeProperties}>
@@ -175,6 +175,9 @@ export function GameTable(): JSX.Element {
 			) : null}
 
 			{contentHint.length > 0 ? <div className='contentHint'>{contentHint}</div> : null}
+
+			{/* Video hosts its own timer in the corner of the video itself */}
+			{!hasVideo && <MediaTimer />}
 
 			{showMainTimer ? (
 				<ProgressBar

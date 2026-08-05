@@ -25,7 +25,7 @@ function getLocalizedMinutes(minutes: number) : string {
 	return localization.minutes5;
 }
 
-function getLocalizedSeconds(seconds: number) : string {
+export function getLocalizedSeconds(seconds: number) : string {
 	if (seconds % 10 == 1 && seconds != 11) {
 		return localization.second;
 	}

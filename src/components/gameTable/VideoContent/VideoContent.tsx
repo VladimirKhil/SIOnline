@@ -8,6 +8,8 @@ import getExtension from '../../../utils/FileHelper';
 import { useAppDispatch } from '../../../state/hooks';
 import { onMediaEnded, onMediaLoaded } from '../../../state/serverActions';
 import { addOperationErrorMessage } from '../../../state/room2Slice';
+import { mediaTimeLeftChanged } from '../../../state/uiSlice';
+import MediaTimer from '../MediaTimer/MediaTimer';
 
 import './VideoContent.css';
 
@@ -89,6 +91,8 @@ export const VideoContent: React.FC<VideoContentProps> = ({
 		};
 
 		return () => {
+			appDispatch(mediaTimeLeftChanged(0));
+
 			if (videoRef.current) {
 				videoRef.current.src = '';
 				videoRef.current.load();
@@ -145,6 +149,15 @@ export const VideoContent: React.FC<VideoContentProps> = ({
 		};
 	}, [uri, soundVolume, isMediaStopped, isVisible, autoPlayEnabled, operationError, play]);
 
+	// Report the time left to the countdown shown to the showman
+	const onTimeUpdate = useCallback(() => {
+		const video = videoRef.current;
+
+		if (video && Number.isFinite(video.duration)) {
+			appDispatch(mediaTimeLeftChanged(Math.max(0, Math.ceil(video.duration - video.currentTime))));
+		}
+	}, [appDispatch]);
+
 	const onVideoEnded = useCallback(() => {
 		if (!isMediaStopped && isVisible) {
 			completedRef.current = true;
@@ -158,10 +171,13 @@ export const VideoContent: React.FC<VideoContentProps> = ({
 				ref={videoRef}
 				autoPlay={!isMediaStopped && isVisible}
 				onEnded={onVideoEnded}
+				onTimeUpdate={onTimeUpdate}
 				crossOrigin="anonymous"
 				onLoadedData={() => appDispatch(onMediaLoaded())}>
 				<source src={uri} />
 			</video>
+
+			<MediaTimer />
 		</div>
 	);
 };

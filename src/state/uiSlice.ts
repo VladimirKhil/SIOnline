@@ -38,6 +38,7 @@ export interface UIState {
 	isFullScreenSupported: boolean;
 	tableWidth: number;
 	tableHeight: number;
+	mediaTimeLeft: number;
 }
 
 const initialState: UIState = {
@@ -56,6 +57,7 @@ const initialState: UIState = {
 	isFullScreenSupported: true,
 	tableWidth: 1024,
 	tableHeight: 576,
+	mediaTimeLeft: 0,
 };
 
 export const uiSlice = createSlice({
@@ -98,6 +100,10 @@ export const uiSlice = createSlice({
 			state.tableWidth = action.payload.width;
 			state.tableHeight = action.payload.height;
 		},
+		// Seconds left until the current question media ends; 0 when nothing is playing
+		mediaTimeLeftChanged: (state: UIState, action: PayloadAction<number>) => {
+			state.mediaTimeLeft = action.payload;
+		},
 	}
 });
 
@@ -113,6 +119,7 @@ export const {
 	setQrCode,
 	setFullScreenSupported,
 	tableSizeChanged,
+	mediaTimeLeftChanged,
 } = uiSlice.actions;
 
 export default uiSlice.reducer;

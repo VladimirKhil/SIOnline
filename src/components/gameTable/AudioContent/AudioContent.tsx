@@ -6,6 +6,7 @@ import localization from '../../../model/resources/localization';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 import { onMediaEnded, onMediaLoaded } from '../../../state/serverActions';
 import { addOperationErrorMessage } from '../../../state/room2Slice';
+import { mediaTimeLeftChanged } from '../../../state/uiSlice';
 
 interface AudioContentProps {
 	audioContext: AudioContext;
@@ -162,6 +163,28 @@ const AudioContent: React.FC<AudioContentProps> = ({
 			play();
 		}
 	}, [isMediaStopped, isVisible, autoPlayEnabled]);
+
+	// Report the time left to the countdown shown to the showman
+	useEffect(() => {
+		if (audio.length === 0) {
+			return;
+		}
+
+		const intervalId = window.setInterval(() => {
+			// The source is dropped while the playback is stopped, so the reported time freezes with it
+			if (!audioBufferRef.current || !audioSourceRef.current) {
+				return;
+			}
+
+			const elapsed = pauseTimeRef.current + (audioContext.currentTime - startTimeRef.current);
+			appDispatch(mediaTimeLeftChanged(Math.max(0, Math.ceil(audioBufferRef.current.duration - elapsed))));
+		}, 500);
+
+		return () => {
+			window.clearInterval(intervalId);
+			appDispatch(mediaTimeLeftChanged(0));
+		};
+	}, [audio]);
 
 	return null;
 };
