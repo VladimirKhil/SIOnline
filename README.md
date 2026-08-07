@@ -66,10 +66,6 @@ API mocking for testing without a live server. See [docs/TESTING_WITH_MSW.md](do
 
 # Desktop build
 
-src/host/TauriHost.ts:
-
-const isSteam = false; // Also important for Web build too
-
 tauri/src-tauri/tauri.conf.json:
 
 "beforeBuildCommand": "npm run build",
@@ -80,10 +76,6 @@ tauri/vite.config.ts:
 comment out: root: '../dist'
 
 # Steam build
-
-src/host/TauriHost.ts:
-
-const isSteam = true; // TODO: STEAM_CLIENT: true
 
 tauri/src-tauri/tauri.conf.json:
 

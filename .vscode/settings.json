@@ -9,6 +9,7 @@
 			"matchCommandLine": true
 		},
 		"npx eslint": true,
-		"npx tsc": true
+		"npx tsc": true,
+		"npx jest": true
 	}
 }

@@ -1,7 +1,6 @@
 import SIStorageClient from 'sistorage-client';
 import AuthorizationMode from '../client/contracts/AuthorizationMode';
 import {
-	setClearUrls,
 	setClipboardSupported,
 	setExitSupported,
 	setHostManagedUrls,
@@ -38,7 +37,8 @@ declare global {
 
 interface TauriAPI {
 	opener?: {
-		openPath: (path: string) => Promise<void>;
+		openPath?: (path: string) => Promise<void>;
+		openUrl?: (url: string) => Promise<void>;
 	};
 	path?: {
 		appLogDir(): Promise<string>;
@@ -150,7 +150,6 @@ export default class TauriHost implements IHost {
 	async initAsync(store: Store): Promise<void> {
 		store.dispatch(setIsDesktop(true));
 		console.log('Loaded from Tauri');
-
 		store.dispatch(setHostManagedUrls(true));
 
 		if (!this.clipboardSupported) {
@@ -217,18 +216,30 @@ export default class TauriHost implements IHost {
 	}
 
 	openLink(url: string) {
-		try {
-			if (this.app?.opener) {
-				void this.app.opener.openPath(url).catch((error) => {
-					console.error('Failed to open link via opener:', error);
-				});
-				return;
-			}
+		const opener = this.app?.opener;
+		const normalizedUrl = url.trim();
+		const isWebUrl = /^https?:\/\//i.test(normalizedUrl) || /^(mailto|tel):/i.test(normalizedUrl);
 
-			console.warn('Tauri app opener/core is not available, cannot open link:', url);
-		} catch (e) {
-			console.error('Failed to open link:', e);
+		if (!opener) {
+			console.warn('Tauri app opener is not available, cannot open link:', normalizedUrl);
+			return;
 		}
+
+		if (isWebUrl && opener.openUrl) {
+			void opener.openUrl(normalizedUrl).catch((error) => {
+				console.error('Failed to open external URL:', error);
+			});
+			return;
+		}
+
+		if (opener.openPath) {
+			void opener.openPath(normalizedUrl).catch((error) => {
+				console.error('Failed to open path:', error);
+			});
+			return;
+		}
+
+		console.warn('Tauri opener method is not available for link:', normalizedUrl);
 	}
 
 	getSupportedAuthModes(): AuthorizationMode[] {
@@ -347,7 +358,7 @@ export default class TauriHost implements IHost {
 			);
 
 			console.log(`Opening game log file: ${fullPath}`);
-			await this.app.opener.openPath(fullPath);
+			await this.app.opener.openPath?.(fullPath);
 			return true;
 		} catch (error) {
 			console.error('Failed to open game log file:', error);
