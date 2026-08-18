@@ -50,10 +50,11 @@
 	overflow: hidden;
 	border: 2px solid transparent;
 	border-radius: 4px;
+	container-type: size;
 }
 
 #table .roundTable .roundTableCell div {
-	padding: 8%;
+	padding: 8cqw;
 	height: 100%;
 	width: 100%;
 	display: flex;
@@ -62,7 +63,11 @@
 }
 
 #table .roundTable .roundTableCell.themeHeader div {
-	padding: 2%;
+	padding: 2cqw;
+}
+
+#table .roundTable .roundTableCell.questHeader div {
+	padding: min(8cqw, 15cqh) 8cqw;
 }
 
 #table .roundTable .themeHeader {
