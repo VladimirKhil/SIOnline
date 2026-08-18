@@ -11,7 +11,7 @@ interface MediaItemProps {
 }
 
 function getZipFile(zip: JSZip, folder: string, fileName: string) {
-	return zip.file(`${folder}/${fileName}`) ?? zip.file(`${folder}/${encodeURIComponent(fileName)}`);
+	return zip.file(`${folder}/${fileName}`) ?? zip.file(`${folder}/${encodeURI(fileName)}`);
 }
 
 const MediaItem: React.FC<MediaItemProps> = ({ src, type, isRef }) => {
