@@ -58,6 +58,13 @@ export function HtmlContent(props: HtmlContentProps) {
 
 	React.useEffect(() => () => {
 		appDispatch(unregisterCooperativeHtmlVolumeSupport(supportIdRef.current));
+
+		// The content is a separate document: while the focus is inside it, the app window receives no key events.
+		// Removing the frame does not bring the focus back when the app is itself hosted in a frame
+		// (that is how the desktop client runs), and the game button stops working until the window is clicked
+		if (!document.hasFocus()) {
+			window.focus();
+		}
 	}, [appDispatch]);
 
 	React.useEffect(() => {
