@@ -381,7 +381,7 @@ export function serializePackageToXML(pack: Package): string {
 
 	// Set package attributes
 	packageElement.setAttribute('name', pack.name);
-	packageElement.setAttribute('version', pack.version || '5');
+	packageElement.setAttribute('version', '5');
 	packageElement.setAttribute('id', pack.id);
 
 	if (pack.restriction) {
