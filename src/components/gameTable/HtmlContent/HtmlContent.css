@@ -5,6 +5,11 @@
 	border-radius: 4px;
 	background: transparent;
 	transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+
+	/* The frame is a separate document, so mouse events over it never reach the app and the global handlers
+	   (right click presses the game button, keys are handled by the window) stop working.
+	   While the content is just played, nobody is supposed to interact with it, so let the events pass through. */
+	pointer-events: none;
 }
 
 @keyframes interactive-pulse {
@@ -24,6 +29,8 @@
 }
 
 .frame.interactive {
+	/* Cooperative HTML content accepts the answer, so it needs the mouse back. */
+	pointer-events: auto;
 	background:
 		linear-gradient(180deg, rgba(255, 255, 210, 0.2), rgba(255, 255, 160, 0.12));
 	border: 4px solid rgba(255, 245, 150, 0.95);
