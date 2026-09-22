@@ -12,6 +12,7 @@
 
 .tableCaption {
     flex: 0 0 45px;
+    position: relative;
     background: rgba(0, 0, 0, 0.3);
     font-size: 22px;
     display: flex;
@@ -48,6 +49,34 @@
     display: flex;
     align-items: center;
     justify-content: flex-end;
+}
+
+/* Pinned out of the caption flow, the offset reserving the collapsed volume button width */
+.questionStats {
+    position: absolute;
+    top: 50%;
+    right: 40px;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 16px;
+    white-space: nowrap;
+}
+
+/* The volume slider is expanded from this width on */
+@media screen and (min-width: 769px) {
+    .questionStats {
+        right: 148px;
+    }
+}
+
+.questionStats__tries {
+    color: #ffcc00;
+}
+
+.questionStats__right {
+    color: #28a745;
 }
 
 .tableCaptionContent {
