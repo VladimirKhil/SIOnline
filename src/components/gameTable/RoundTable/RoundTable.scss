@@ -110,15 +110,18 @@
 	transition: transform 0.1s;
 }
 
+#table .roundTable .themeHeader.editable,
 #table .roundTable .questHeader.editable {
 	cursor: pointer;
 }
 
+#table .roundTable .themeHeader.editable:hover,
 #table .roundTable .questHeader.editable:hover {
 	background: v.$accept-button-background;
 	border-color: rgba(39, 203, 92, 0.6);
 }
 
+#table .roundTable .themeHeader.editable.active:hover,
 #table .roundTable .questHeader.editable.active:hover {
 	background: v.$reject-button-background;
 	border-color: rgba(206, 32, 19, 0.6);
