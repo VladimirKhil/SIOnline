@@ -5,6 +5,7 @@ import State from '../../../state/State';
 import roomActionCreators from '../../../state/room/roomActionCreators';
 import PlayerInfo from '../../../model/PlayerInfo';
 import Persons from '../../../model/Persons';
+import PlayerStates from '../../../model/enums/PlayerStates';
 import getAvatarClass from '../../../utils/AccountHelpers';
 import PlayerView from '../PlayerView/PlayerView';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
@@ -39,6 +40,7 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 const PlayersView: React.FC<PlayersViewProps> = (props) => {
 	const appDispatch = useAppDispatch();
 	const name = useAppSelector(state => state.room2.name);
+	const questionType = useAppSelector(state => state.room.stage.questionType);
 	const listRef = React.useRef<HTMLUListElement>(null);
 
 	const onPlayerSelected = (index: number) => {
@@ -47,12 +49,23 @@ const PlayersView: React.FC<PlayersViewProps> = (props) => {
 
 	const isLarge = props.players.length > 6;
 
+	const isSingleAnswererQuestion = [
+		'secret',
+		'simple',
+		'secretNoQuestion',
+		'secretPublicPrice',
+		'noRisk',
+		'stake',
+	].includes(questionType) && props.players.some(p => p.state === PlayerStates.Press);
+
 	const renderPlayer = (player: PlayerInfo, index: number): JSX.Element => {
 		const account = props.all[player.name];
 		const isMe = player.name === name;
 		const avatar = isMe && props.avatar ? props.avatar : account?.avatar;
 
 		const avatarClass = getAvatarClass(account);
+		const isAnswerer = player.state === PlayerStates.Press;
+		const isDimmed = isSingleAnswererQuestion && !isAnswerer;
 
 		return <PlayerView
 			key={`${player.name}_${index}`}
@@ -66,6 +79,7 @@ const PlayersView: React.FC<PlayersViewProps> = (props) => {
 			avatarVideo={account?.avatarVideo}
 			avatarClass={avatarClass}
 			index={index}
+			isDimmed={isDimmed}
 			onPlayerSelected={() => onPlayerSelected(index)}
 			onSumChanged={(sum) => props.onSumChanged(index, sum)} />;
 	};
