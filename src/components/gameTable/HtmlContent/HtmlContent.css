@@ -5,6 +5,18 @@
 	border-radius: 4px;
 	background: transparent;
 	transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+
+	/* The frame is a separate document, so mouse events over it never reach the app and the global handlers
+	   (right click presses the game button, keys are handled by the window) stop working.
+	   By default nobody is supposed to interact with the played content, so let the events pass through.
+	   Content that needs the mouse itself reports 'supports-mouse' and takes over, including forwarding
+	   the right click back as 'button-pressed'. */
+	pointer-events: none;
+}
+
+.frame.interactive,
+.frame.handlesMouse {
+	pointer-events: auto;
 }
 
 @keyframes interactive-pulse {
