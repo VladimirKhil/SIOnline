@@ -3,6 +3,7 @@ import Constants from '../../../model/enums/Constants';
 import localization from '../../../model/resources/localization';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 import { sendAnswer, updateAnswer } from '../../../state/room2Slice';
+import WrongAnswerButton from '../WrongAnswerButton/WrongAnswerButton';
 
 import './AnswerInput.scss';
 
@@ -31,6 +32,8 @@ export default function AnswerInput(): JSX.Element | null {
 	};
 
 	return <div className='answerInputHost'>
+		<WrongAnswerButton />
+
 		<input
 			type={answerType === 'number' ? 'number' : 'text'}
 			autoFocus
