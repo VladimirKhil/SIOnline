@@ -584,9 +584,15 @@ function getStepValue(minimum: number, maximum: number, stepString: string): num
 }
 
 function dateFromSeconds(time: number): string | undefined {
-	const date = new Date();
-	date.setSeconds(time);
-	return date.toISOString().substr(11, 8);
+	const hours = Math.floor(time / 3600);
+	const minutes = Math.floor((time % 3600) / 60);
+	const seconds = time % 60;
+
+	const h = hours.toString().padStart(2, '0');
+	const m = minutes.toString().padStart(2, '0');
+	const s = seconds.toString().padStart(2, '0');
+
+	return `${h}:${m}:${s}`;
 }
 
 function formatDuration(time: number): string | undefined {
