@@ -2,6 +2,7 @@ import { Store } from 'redux';
 import AuthorizationMode from '../client/contracts/AuthorizationMode';
 import SIStorageInfo from '../client/contracts/SIStorageInfo';
 import SIStorageClient from 'sistorage-client';
+import RichPresence from '../model/RichPresence';
 
 export enum FullScreenMode {
 	Undefined,
@@ -93,4 +94,11 @@ export default interface IHost {
 		contentServiceUri: string,
 		callbacks: UploadCallbacks
 	): Promise<string | null>;
+
+	/**
+	 * Publishes what the user is currently doing (Discord Rich Presence on desktop).
+	 * This is optional and only supported by certain hosts (e.g., TauriHost).
+	 * Must never throw: presence is not required for the game to work.
+	 */
+	setRichPresence?(presence: RichPresence): void;
 }

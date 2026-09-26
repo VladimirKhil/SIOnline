@@ -186,6 +186,7 @@ import getBestRowColumnCount from '../utils/stackedContentHelper';
 import { preloadRoundContent } from './contentPreloader';
 import StakeTypes from '../model/enums/StakeTypes';
 import clearUrls from '../utils/clearUrls';
+import { getGameLink } from '../utils/inviteLink';
 import { simplifyPersonName } from '../utils/NameHelpers';
 
 // Non-idempotent initialization of group properties
@@ -323,19 +324,7 @@ export default class ClientController implements IClientController {
 
 		if (this.dataContext.config.rewriteUrl) {
 			if (navigation.gameId) {
-				let gameLink = null;
-
-				for (const [key, value] of Object.entries(state.common.siHosts)) {
-					if (value === navigation.hostUri) {
-						gameLink = '_' + key + navigation.gameId;
-						break;
-					}
-				}
-
-				if (!gameLink) {
-					gameLink = `gameId=${navigation.gameId}&host=${encodeURIComponent(navigation.hostUri ?? '')}`;
-				}
-
+				const gameLink = getGameLink(navigation.gameId, navigation.hostUri, state.common.siHosts);
 				url = `${this.dataContext.config.rootUri}?${gameLink}`;
 			} else {
 				url = this.dataContext.config.rootUri ?? null;

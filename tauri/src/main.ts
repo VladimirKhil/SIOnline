@@ -90,6 +90,12 @@ window.addEventListener('message', (event) => {
 			openGameLog();
 			break;
 
+		case 'setRichPresence':
+			invoke('set_rich_presence', { presence: event.data.payload }).catch((error) => {
+				console.error('Failed to set rich presence:', error);
+			});
+			break;
+
 		default:
 			console.warn('Unknown message type:', event.data.type);
 	}

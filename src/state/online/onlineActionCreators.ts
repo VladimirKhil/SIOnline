@@ -136,6 +136,7 @@ const initGameAsync = async (
 	appDispatch(setIsGameStarted(false));
 	dispatch(roomActionCreators.afterQuestionStateChanged(false));
 	dispatch(roomActionCreators.isQuestionChanged(false, ''));
+	dispatch(roomActionCreators.gameMetadataChanged('', '', '', null));
 	appDispatch(setAreSumsEditable(false));
 	appDispatch(resetQuestionCounter());
 	appDispatch(setRoundsNames([]));
