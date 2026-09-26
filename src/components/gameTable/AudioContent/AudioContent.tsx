@@ -177,12 +177,12 @@ const AudioContent: React.FC<AudioContentProps> = ({
 			}
 
 			const elapsed = pauseTimeRef.current + (audioContext.currentTime - startTimeRef.current);
-			appDispatch(mediaTimeLeftChanged(Math.max(0, Math.ceil(audioBufferRef.current.duration - elapsed))));
+			appDispatch(mediaTimeLeftChanged({ uri: audio, timeLeft: Math.ceil(audioBufferRef.current.duration - elapsed) }));
 		}, 500);
 
 		return () => {
 			window.clearInterval(intervalId);
-			appDispatch(mediaTimeLeftChanged(0));
+			appDispatch(mediaTimeLeftChanged({ uri: audio, timeLeft: 0 }));
 		};
 	}, [audio]);
 

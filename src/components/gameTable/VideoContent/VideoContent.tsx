@@ -91,7 +91,7 @@ export const VideoContent: React.FC<VideoContentProps> = ({
 		};
 
 		return () => {
-			appDispatch(mediaTimeLeftChanged(0));
+			appDispatch(mediaTimeLeftChanged({ uri, timeLeft: 0 }));
 
 			if (videoRef.current) {
 				videoRef.current.src = '';
@@ -154,9 +154,9 @@ export const VideoContent: React.FC<VideoContentProps> = ({
 		const video = videoRef.current;
 
 		if (video && Number.isFinite(video.duration)) {
-			appDispatch(mediaTimeLeftChanged(Math.max(0, Math.ceil(video.duration - video.currentTime))));
+			appDispatch(mediaTimeLeftChanged({ uri, timeLeft: Math.ceil(video.duration - video.currentTime) }));
 		}
-	}, [appDispatch]);
+	}, [appDispatch, uri]);
 
 	const onVideoEnded = useCallback(() => {
 		if (!isMediaStopped && isVisible) {

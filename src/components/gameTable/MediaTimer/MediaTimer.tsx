@@ -7,11 +7,11 @@ import { useAppSelector } from '../../../state/hooks';
 
 import './MediaTimer.css';
 
-/** Shows the showman how much time is left before the audio or video ends and the answering border appears. */
+/** Shows the showman how much time is left before the last audio or video ends and the answering border appears. */
 export function MediaTimer(): JSX.Element | null {
 	const role = useAppSelector(state => state.room2.role);
 	const mode = useAppSelector(state => state.table.mode);
-	const timeLeft = useAppSelector(state => state.ui.mediaTimeLeft);
+	const timeLeft = useAppSelector(state => Math.max(0, ...Object.values(state.ui.mediaTimeLeft)));
 
 	if (role !== Role.Showman || mode !== TableMode.Content || timeLeft === 0) {
 		return null;
