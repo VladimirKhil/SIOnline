@@ -64,6 +64,18 @@
     overflow: hidden;
 }
 
+/* Only the media itself is blurred, so question text stays readable */
+.tableContent.censored .inGameImg,
+.tableContent.censored .video-host video,
+.tableContent.censored .frame {
+    filter: blur(40px) brightness(0.5);
+}
+
+/* Image and video hosts clip the blur; the frame has no host, so it clips itself */
+.tableContent.censored .frame {
+    clip-path: inset(0);
+}
+
 #table .pauseLogo {
     position: absolute;
     left: 0;

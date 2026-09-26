@@ -38,6 +38,7 @@ export interface UIState {
 	isFullScreenSupported: boolean;
 	tableWidth: number;
 	tableHeight: number;
+	isCensored: boolean;
 }
 
 const initialState: UIState = {
@@ -56,6 +57,7 @@ const initialState: UIState = {
 	isFullScreenSupported: true,
 	tableWidth: 1024,
 	tableHeight: 576,
+	isCensored: false,
 };
 
 export const uiSlice = createSlice({
@@ -98,6 +100,9 @@ export const uiSlice = createSlice({
 			state.tableWidth = action.payload.width;
 			state.tableHeight = action.payload.height;
 		},
+		setCensored: (state: UIState, action: PayloadAction<boolean>) => {
+			state.isCensored = action.payload;
+		},
 	}
 });
 
@@ -113,6 +118,7 @@ export const {
 	setQrCode,
 	setFullScreenSupported,
 	tableSizeChanged,
+	setCensored,
 } = uiSlice.actions;
 
 export default uiSlice.reducer;

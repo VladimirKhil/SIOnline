@@ -10,6 +10,8 @@ const KeysSettingsView: React.FC = () => {
 
 	return (
 		<div className='keys-settings-view'>
+			<div className='header'>{localization.common}</div>
+			<KeySetting buttonKey='censor' label={localization.censorContent} value={settings.censorButtonKey} />
 			<div className='header'>{localization.showman}</div>
 			<KeySetting buttonKey='pause' label={localization.pause} value={settings.pauseButtonKey} />
 			<KeySetting buttonKey='next' label={localization.next} value={settings.nextButtonKey} />
