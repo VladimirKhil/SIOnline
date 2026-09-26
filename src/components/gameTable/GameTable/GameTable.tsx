@@ -6,6 +6,7 @@ import TableGameThemes from '../TableGameThemes/TableGameThemes';
 import TableRoundThemes from '../TableRoundThemes/TableRoundThemes';
 import RoundTable from '../RoundTable/RoundTable';
 import ThemeStack from '../ThemeStack/ThemeStack';
+import MediaTimer from '../MediaTimer/MediaTimer';
 import AutoSizedText from '../../common/AutoSizedText/AutoSizedText';
 import localization from '../../../model/resources/localization';
 import ProgressBar from '../../common/ProgressBar/ProgressBar';
@@ -140,9 +141,8 @@ export function GameTable(): JSX.Element {
 	}
 
 	const showAppelation = isAppellation && !shouldShowAnswerValidationInTable;
-	const hasSound = audio.length > 0 ||
-		content.some(g => g.content.some(c => c.type === ContentType.Video)) ||
-		cooperativeHtmlVolumeSupportIds.length > 0;
+	const hasVideo = content.some(g => g.content.some(c => c.type === ContentType.Video));
+	const hasSound = audio.length > 0 || hasVideo || cooperativeHtmlVolumeSupportIds.length > 0;
 
 	return (
 		<div id="table" style={themeProperties}>
@@ -175,6 +175,9 @@ export function GameTable(): JSX.Element {
 			) : null}
 
 			{contentHint.length > 0 ? <div className='contentHint'>{contentHint}</div> : null}
+
+			{/* Video hosts its own timer in the corner of the video itself */}
+			{!hasVideo && <MediaTimer />}
 
 			{showMainTimer ? (
 				<ProgressBar
