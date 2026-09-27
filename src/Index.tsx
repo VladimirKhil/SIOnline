@@ -31,6 +31,7 @@ import YandexHost from './host/YandexHost';
 import IHost, { FullScreenMode } from './host/IHost';
 import SIHostClient from './client/SIHostClient';
 import {
+	setCensorButtonKey,
 	setFullScreen,
 	setGameButtonKey,
 	setNextButtonKey,
@@ -41,7 +42,7 @@ import {
 } from './state/settingsSlice';
 import { commonErrorChanged, setFontsReady } from './state/commonSlice';
 import { saveStateToStorage } from './state/StateHelpers';
-import { INavigationState, setFullScreenSupported, settingKeyChanged, windowSizeChanged } from './state/uiSlice';
+import { INavigationState, setCensored, setFullScreenSupported, settingKeyChanged, windowSizeChanged } from './state/uiSlice';
 import { navigate } from './utils/Navigator';
 import TauriHost from './host/TauriHost';
 import SteamTauriHost from './host/SteamTauriHost';
@@ -217,6 +218,10 @@ function subscribeToExternalEvents(store: Store<State, any>, host: IHost) {
 					store.dispatch(setPauseButtonKey(e.key));
 					break;
 
+				case 'censor':
+					store.dispatch(setCensorButtonKey(e.key));
+					break;
+
 				default:
 					break;
 			}
@@ -234,6 +239,8 @@ function subscribeToExternalEvents(store: Store<State, any>, host: IHost) {
 			store.dispatch(rejectAnswerDefault());
 		} else if (e.key === state.settings.pauseButtonKey) {
 			store.dispatch(pauseGame());
+		} else if (e.key === state.settings.censorButtonKey) {
+			store.dispatch(setCensored(!state.ui.isCensored));
 		}
 
 		return true;
