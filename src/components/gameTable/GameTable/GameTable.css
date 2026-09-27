@@ -25,14 +25,11 @@
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.caption__left,
-.caption__right {
-    width: 52px;
-}
-
 .caption__left {
+    min-width: 52px;
     padding: 0 5px 5px 5px;
     display: flex;
+    align-items: center;
     overflow: hidden;
 }
 
@@ -43,6 +40,7 @@
 }
 
 .caption__right {
+    width: 52px;
     padding: 0;
     height: 45px;
     display: flex;

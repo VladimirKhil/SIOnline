@@ -155,13 +155,13 @@ export function GameTable(): JSX.Element {
 				<div className="tableCaption">
 					<div className='caption__left'>
 						{noRiskMode ? <div title={localization.noRiskQuestion}>🛡</div> : ''}
+						<CensorButton />
 						{answerDeviation !== 0 && layoutMode !== LayoutMode.OverlayPoints
 							? <div className='answer__deviation' style={reversedPropeties} title={localization.answerDeviation}>
 								± {answerDeviation}
 								</div>
 							: ''}
 					</div>
-					<CensorButton />
 					<div className='tableCaptionContent'>{caption}</div>
 					<div className='caption__right'>
 						{hasSound && <VolumeButton canPlayAudio={canPlayAudio} />}
