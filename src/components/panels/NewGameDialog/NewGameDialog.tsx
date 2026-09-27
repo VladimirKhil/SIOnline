@@ -98,15 +98,17 @@ export function NewGameDialog(props: NewGameDialogProps) {
 	};
 
 	const selectedUserName = useAuth && authName ? authName : userName;
-	const isSelectedNameInvalid = validateLoginName(selectedUserName) !== null;
-	const authorizationMode = useAuth ? AuthorizationMode.Steam : AuthorizationMode.None;
+	const isSelectedNameInvalid = !useAuth && validateLoginName(userName) !== null;
+	const authorizationMode = useAuth ? AuthorizationMode.Account : AuthorizationMode.None;
 
 	const onCreate = () => {
-		const validationError = validateLoginName(selectedUserName);
+		if (!useAuth) {
+			const validationError = validateLoginName(selectedUserName);
 
-		if (validationError) {
-			appDispatch(userErrorChanged(validationError));
-			return;
+			if (validationError) {
+				appDispatch(userErrorChanged(validationError));
+				return;
+			}
 		}
 
 		props.onCreate(props.isSingleGame, appDispatch, selectedUserName.trim(), authorizationMode);
@@ -119,13 +121,13 @@ export function NewGameDialog(props: NewGameDialogProps) {
 					isSingleGame={props.isSingleGame}
 					isSIStorageOpen={isSIStorageOpen}
 					setIsSIStorageOpen={openStorage}
-						userName={userName}
-						setUserName={setUserName}
-						useAuth={useAuth}
-						setUseAuth={setUseAuth}
-						authName={authName}
-						onNameBlur={onNameBlur}
-						onCreate={onCreate}
+					userName={userName}
+					setUserName={setUserName}
+					useAuth={useAuth}
+					setUseAuth={setUseAuth}
+					authName={authName}
+					onNameBlur={onNameBlur}
+					onCreate={onCreate}
 				/>;
 
 			case 1:

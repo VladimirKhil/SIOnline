@@ -32,7 +32,7 @@ export default class SIHostClient implements ISIHostClient {
 
 	private listener?: ISIHostListener;
 
-	public userName: string | null = null;
+	public userName: string | null = null; // TODO: remove. Server knows who the user is.
 
 	constructor(private readonly authorizationProvider?: (authorizationMode?: AuthorizationMode) => Promise<AuthorizationData | null>) {
 	}
@@ -160,40 +160,14 @@ export default class SIHostClient implements ISIHostClient {
 			throw new Error('Not connected to server');
 		}
 
-		let request = joinGameRequest;
-
-		if (joinGameRequest.AuthorizationMode !== AuthorizationMode.None && joinGameRequest.AuthorizationMode !== AuthorizationMode.Account) {
-			request = await this.enrichJoinRequestAsync(joinGameRequest);
-		}
-
-		const result = await this.connection.invoke<JoinGame2Result>('JoinGame2', request);
+		const result = await this.connection.invoke<JoinGame2Result>('JoinGame2', joinGameRequest);
 
 		if (result === JoinGame2Result.Success) {
-			this.joinInfo = {
-				...request,
-				AuthTicket: request.AuthorizationMode === AuthorizationMode.Steam ? null : request.AuthTicket ?? null,
-			};
-
-			this.userName = request.AuthorizationMode === AuthorizationMode.Steam || joinGameRequest.AuthorizationMode === AuthorizationMode.Account
-				? `Ⓢ${request.UserName}`
-				: request.UserName;
+			this.joinInfo = joinGameRequest;
+			this.userName = joinGameRequest.UserName;
 		}
 
 		return result;
-	}
-
-	private async enrichJoinRequestAsync(joinGameRequest: JoinGameRequest): Promise<JoinGameRequest> {
-		const authData = await this.authorizationProvider?.(joinGameRequest.AuthorizationMode);
-
-		if (!authData) {
-			return joinGameRequest;
-		}
-
-		return {
-			...joinGameRequest,
-			AuthorizationMode: authData.AuthorizationMode,
-			AuthTicket: authData.AuthTicket ?? null,
-		};
 	}
 
 	updateJoinRole(role: ServerRole): void {

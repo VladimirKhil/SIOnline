@@ -10,6 +10,7 @@
 		},
 		"npx eslint": true,
 		"npx tsc": true,
-		"npx jest": true
+		"npx jest": true,
+		"cargo check": true
 	}
 }

@@ -8,11 +8,11 @@ import Constants from '../../../model/enums/Constants';
 import ProgressDialog from '../../panels/ProgressDialog/ProgressDialog';
 import { validateLoginName } from '../../../utils/loginValidation';
 import { userErrorChanged } from '../../../state/commonSlice';
-
-import './JoinByPin.scss';
 import AuthModeSelector from '../../panels/AuthModeSelector/AuthModeSelector';
 import NameInput from '../../panels/NameInput/NameInput';
 import AuthorizationMode from '../../../client/contracts/AuthorizationMode';
+
+import './JoinByPin.scss';
 
 export default function JoinByPin(): JSX.Element {
 	const [pin, setPin] = React.useState(0);
@@ -23,6 +23,8 @@ export default function JoinByPin(): JSX.Element {
 	const [userName, setUserName] = React.useState(user.login);
 	const authName = useAppSelector(state => state.user.authName);
 
+	const [useAuth, setUseAuth] = React.useState(!!authName);
+
 	const onJoinByPin = () => {
 		const validationError = validateLoginName(userName);
 
@@ -31,7 +33,7 @@ export default function JoinByPin(): JSX.Element {
 			return;
 		}
 
-		const authMode = useAuth ? AuthorizationMode.Steam : AuthorizationMode.None;
+		const authMode = useAuth ? AuthorizationMode.Account : AuthorizationMode.None;
 
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		appDispatch(onlineActionCreators.joinByPin(pin, userName.trim(), Role.Player, appDispatch, authMode) as any);
@@ -60,8 +62,6 @@ export default function JoinByPin(): JSX.Element {
 
 	// Check if join button should be disabled
 	const isJoinDisabled = () => online.joinGameProgress || validateLoginName(userName) !== null;
-
-	const [useAuth, setUseAuth] = React.useState(!!authName);
 
 	return <Dialog className='enterPin' title={localization.joinByPin} onClose={() => window.history.back()}>
 		<div className='enterPinBody'>
