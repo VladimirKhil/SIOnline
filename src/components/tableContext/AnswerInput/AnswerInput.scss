@@ -49,3 +49,12 @@ button.standard.sendAnswer:disabled {
 		font-size: 28px;
 	}
 }
+
+.answerInputHost .wrongAnswerButton {
+	max-width: 35%;
+	margin: 0 2px;
+}
+
+.answerInputHost .answerInput {
+	min-width: 0;
+}
