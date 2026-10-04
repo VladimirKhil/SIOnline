@@ -29,7 +29,41 @@ export function RoundTable(props: RoundTableProps) {
 	const room = useAppSelector(state => state.room2);
 	const appDispatch = useAppDispatch();
 
+	// Toggles all theme questions: hides available questions on click and restores them on a repeated click until another element is edited.
+	const [themeMemory, setThemeMemory] = React.useState<{ themeIndex: number; indices: number[] } | null>(null);
+
+	const onThemeHeaderClick = (themeIndex: number) => {
+		if (!room.isEditTableEnabled) {
+			return;
+		}
+
+		if (themeMemory?.themeIndex === themeIndex) {
+			themeMemory.indices.forEach(questionIndex => {
+				appDispatch(toggleQuestion({ themeIndex, questionIndex }));
+			});
+			setThemeMemory(null);
+			return;
+		}
+
+		const indices = props.roundInfo[themeIndex].questions
+			.map((q, idx) => (q > -1 ? idx : -1))
+			.filter(idx => idx > -1);
+
+		if (indices.length === 0) {
+			setThemeMemory(null);
+			return;
+		}
+
+		indices.forEach(questionIndex => {
+			appDispatch(toggleQuestion({ themeIndex, questionIndex }));
+		});
+
+		setThemeMemory({ themeIndex, indices });
+	};
+
 	const onSelectQuestion = (themeIndex: number, questionIndex: number) => {
+		setThemeMemory(null);
+
 		if (room.isEditTableEnabled) {
 			appDispatch(toggleQuestion({ themeIndex, questionIndex }));
 			return;
@@ -54,8 +88,14 @@ export function RoundTable(props: RoundTableProps) {
 				const className = themeIndex % 2 === 0 ? 'right' : 'left';
 				const hasQuestions = themeInfo.questions.some(q => q > -1);
 
+				const isRemembered = themeMemory?.themeIndex === themeIndex;
+				const isThemeEditable = room.isEditTableEnabled && (hasQuestions || isRemembered);
+				const themeClassName = `roundTableCell themeHeader ${isThemeEditable ? 'editable' : ''} ${hasQuestions ? 'active' : ''}`;
+
 				return (<div key={themeIndex} className={`roundTableRow ${className}`}>
-					<div className="roundTableCell themeHeader">
+					<div
+						className={themeClassName}
+						onClick={() => onThemeHeaderClick(themeIndex)}>
 						<AutoSizedText minFontSize={8} maxFontSize={60}>
 							{hasQuestions ? themeInfo.name : ''}
 						</AutoSizedText>
