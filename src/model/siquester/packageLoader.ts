@@ -20,6 +20,8 @@ import {
 	QuestionTypeParams,
 	StepParameterValues
 } from './package';
+import { sanitizeFilename } from '../../utils/FileHelper';
+
 
 function getDirectChildByTagName(element: Element, tagName: string): Element | null {
 	return Array.from(element.children).find(child => child.tagName === tagName) || null;
@@ -32,6 +34,7 @@ function getDirectChildrenByTagName(element: Element, tagName: string): Element[
 export function parseXMLtoPackage(xmlDoc: Document): Package {
 	const packageElement = xmlDoc.documentElement;
 	const version = packageElement.getAttribute('version') || '';
+	const rawLogo = packageElement.getAttribute('logo');
 
 	const pack: Package = {
 		name: packageElement.getAttribute('name') || '',
@@ -42,7 +45,7 @@ export function parseXMLtoPackage(xmlDoc: Document): Package {
 		publisher: packageElement.getAttribute('publisher') || '',
 		difficulty: Number(packageElement.getAttribute('difficulty')) || 0,
 		language: packageElement.getAttribute('language') || '',
-		logo: packageElement.getAttribute('logo') || undefined,
+		logo: rawLogo ? `@${sanitizeFilename(rawLogo.substring(1))}` : undefined,
 		contactUri: packageElement.getAttribute('contactUri') || undefined,
 		tags: parseTags(packageElement),
 		info: parseInfo(packageElement),
@@ -309,10 +312,11 @@ function upgradeV4Question(
 		}
 
 		const isRef = atom.text.startsWith('@');
+		const rawValue = isRef ? atom.text.substring(1) : atom.text;
 
 		const contentItem: ContentItem = {
 			type: getContentType(atom.type),
-			value: isRef ? atom.text.substring(1) : atom.text,
+			value: isRef ? sanitizeFilename(rawValue) : rawValue,
 			duration: atom.time !== -1 ? formatDuration(atom.time) : undefined,
 			placement: getPlacement(atom.type),
 			waitForFinish: atom.time !== -1,
@@ -379,14 +383,18 @@ function getPlacement(type?: string): 'replic' | 'background' | 'screen' {
 
 function parseContentParam(paramElement: Element): ContentParam {
 	return {
-		items: getDirectChildrenByTagName(paramElement, 'item').map(item => ({
-			type: item.getAttribute('type') as ContentType ?? 'text',
-			value: item.textContent || '',
-			isRef: item.getAttribute('isRef')?.toLowerCase() === 'true', // Default to false
-			placement: item.getAttribute('placement') as 'replic' | 'background' | 'screen' ?? 'screen',
-			duration: item.getAttribute('duration') || undefined,
-			waitForFinish: item.getAttribute('waitForFinish')?.toLowerCase() !== 'false', // Default to true
-		})),
+		items: getDirectChildrenByTagName(paramElement, 'item').map(item => {
+			const isRef = item.getAttribute('isRef')?.toLowerCase() === 'true';
+			const rawValue = item.textContent || '';
+			return {
+				type: item.getAttribute('type') as ContentType ?? 'text',
+				value: isRef ? sanitizeFilename(rawValue) : rawValue,
+				isRef,
+				placement: item.getAttribute('placement') as 'replic' | 'background' | 'screen' ?? 'screen',
+				duration: item.getAttribute('duration') || undefined,
+				waitForFinish: item.getAttribute('waitForFinish')?.toLowerCase() !== 'false',
+			};
+		}),
 	};
 }
 

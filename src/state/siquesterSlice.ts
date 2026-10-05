@@ -6,6 +6,7 @@ import PackageTopLevelStats from 'sistatistics-client/dist/models/PackageTopLeve
 import localization from '../model/resources/localization';
 import { Package, Round, Theme, Question, ContentParam, ContentItem, ContentType, ContentPlacements } from '../model/siquester/package';
 import { navigate } from '../utils/Navigator';
+import { decodeMediaFileName, sanitizeFilename } from '../utils/FileHelper';
 import Path from '../model/enums/Path';
 import DataContext from '../model/DataContext';
 import { createDefaultPackage, createDefaultZip, NewPackageOptions } from '../model/siquester/packageGenerator';
@@ -122,6 +123,14 @@ function packageContainsMediaReference(
 		return false;
 	}
 
+	// Prevent accidental deletion of the package logo
+	if (targetType === 'image' && pack.logo) {
+		const logoFileName = pack.logo.startsWith('@') ? pack.logo.substring(1) : pack.logo;
+		if (logoFileName === targetValue) {
+			return true;
+		}
+	}
+
 	const questionContainsReference = (question: Question) => containsMediaReference(question.params, targetType, targetValue, excludedItem);
 
 	return pack.rounds.some(round => round.themes.some(theme => theme.questions.some(questionContainsReference)));
@@ -147,6 +156,142 @@ function removeOrphanedMediaFile(state: SIQuesterState, item: ContentItem, exclu
 	return true;
 }
 
+function cleanOrphanedMediaFiles(state: SIQuesterState): void {
+	if (!state.zip || !state.pack) {
+		return;
+	}
+
+	const folderToType: Record<string, Exclude<ContentType, 'text'>> = {
+		images: 'image',
+		audio: 'audio',
+		video: 'video',
+		html: 'html'
+	};
+
+	const filesToRemove: string[] = [];
+
+	state.zip.forEach((relativePath, file) => {
+		if (file.dir) return;
+
+		const match = relativePath.match(/^(Images|Audio|Video|Html)\/(.+)$/i);
+		if (!match) return;
+
+		const [, folder, fileName] = match;
+		const type = folderToType[folder.toLowerCase()];
+
+		if (type && !packageContainsMediaReference(state.pack, type, fileName)) {
+			filesToRemove.push(relativePath);
+		}
+	});
+
+	for (const path of filesToRemove) {
+		state.zip.remove(path);
+	}
+}
+
+/**
+ * Traverses the package and updates all media references (logo and question items)
+ * to match the normalized filenames in the archive using the rename map.
+ */
+function updatePackMediaReferences(pack: Package, renameMap: Map<string, string>): void {
+	const resolve = (folder: string, value: string) => renameMap.get(`${folder}/${value}`) ?? sanitizeFilename(value);
+
+	if (pack.logo) {
+		const rawLogo = pack.logo.startsWith('@') ? pack.logo.substring(1) : pack.logo;
+		pack.logo = `@${resolve('Images', rawLogo)}`;
+	}
+
+	const visit = (obj: unknown) => {
+		if (!obj || typeof obj !== 'object') return;
+
+		if (Array.isArray(obj)) {
+			obj.forEach(visit);
+			return;
+		}
+
+		if ('type' in obj && 'value' in obj && 'isRef' in obj) {
+			const item = obj as ContentItem;
+			if (item.isRef && item.type !== 'text' && item.value) {
+				const folder = getMediaFolderName(item.type);
+				if (folder) {
+					item.value = resolve(folder, item.value);
+				}
+			}
+			return;
+		}
+
+		Object.values(obj).forEach(visit);
+	};
+
+	for (const round of pack.rounds) {
+		for (const theme of round.themes) {
+			for (const question of theme.questions) {
+				visit(question.params);
+			}
+		}
+	}
+}
+
+/**
+ * Decodes, sanitizes, and resolves name collisions for media files in the archive.
+ * Renames files in-place within the ZIP and returns a mapping to update package references.
+ */
+function normalizeZipMedia(zip: JSZip): Map<string, string> {
+	const usedPaths = new Set<string>();
+	const renameMap = new Map<string, string>();
+	const filesToRename: { oldPath: string; newPath: string }[] = [];
+
+	zip.forEach((relativePath, file) => {
+		if (file.dir) return;
+
+		const match = relativePath.match(/^(Images|Audio|Video|Html)\/(.+)$/i);
+		if (!match) return;
+
+		const [, folder, fileName] = match;
+		const decoded = decodeMediaFileName(fileName);
+		const sanitized = sanitizeFilename(decoded);
+
+		// Name collision resolution: stem (i).ext
+		const lastDot = sanitized.lastIndexOf('.');
+		const stem = lastDot !== -1 ? sanitized.substring(0, lastDot) : sanitized;
+		const ext = lastDot !== -1 ? sanitized.substring(lastDot + 1) : '';
+
+		let uniqueName = sanitized;
+		let i = 1;
+		while (usedPaths.has(`${folder}/${uniqueName}`)) {
+			uniqueName = ext ? `${stem} (${i}).${ext}` : `${stem} (${i})`;
+			i += 1;
+		}
+
+		usedPaths.add(`${folder}/${uniqueName}`);
+
+		// References in content.xml are stored unencoded,
+		// but may contain invalid characters prior to sanitization).
+		renameMap.set(`${folder}/${decoded}`, uniqueName);
+		renameMap.set(`${folder}/${sanitized}`, uniqueName);
+
+		if (uniqueName !== fileName) {
+			filesToRename.push({
+				oldPath: relativePath,
+				newPath: `${folder}/${uniqueName}`,
+			});
+		}
+	});
+
+	// Instant in-place descriptor rename in zip without reading raw bytes
+	const zipFiles = (zip as any).files;
+	for (const { oldPath, newPath } of filesToRename) {
+		const fileObj = zipFiles[oldPath];
+		if (fileObj) {
+			fileObj.name = newPath;
+			zipFiles[newPath] = fileObj;
+			delete zipFiles[oldPath];
+		}
+	}
+
+	return renameMap;
+}
+
 export const openFile = createAsyncThunk(
 	'siquester/openFile',
 	async (arg: File, thunkAPI) => {
@@ -154,8 +299,10 @@ export const openFile = createAsyncThunk(
 		dataContext.file = arg;
 		const zip = new JSZip();
 		await zip.loadAsync(arg);
-		const contentFile = zip.file('content.xml');
 
+		const renameMap = normalizeZipMedia(zip);
+
+		const contentFile = zip.file('content.xml');
 		if (!contentFile) {
 			throw new Error(localization.corruptedPackage + ' (!contentFile)');
 		}
@@ -165,8 +312,9 @@ export const openFile = createAsyncThunk(
 		const xmlDoc = parser.parseFromString(content, 'application/xml');
 		const pack = parseXMLtoPackage(xmlDoc);
 
-		const qualityMarkerFile = zip.file('quality.marker');
+		updatePackMediaReferences(pack, renameMap);
 
+		const qualityMarkerFile = zip.file('quality.marker');
 		if (qualityMarkerFile) {
 			pack.isQualityMarked = true;
 		}
@@ -196,6 +344,8 @@ export const savePackage = createAsyncThunk(
 		if (!pack) {
 			throw new Error('No package to save');
 		}
+
+		cleanOrphanedMediaFiles(state.siquester);
 
 		await downloadPackageAsSIQ(pack, zip);
 		thunkAPI.dispatch(userInfoChanged(localization.packageDownloadedToDownloads));
@@ -791,19 +941,19 @@ export const siquesterSlice = createSlice({
 					return;
 				}
 
-				const { fileName } = action.payload;
+				const cleanFileName = sanitizeFilename(decodeMediaFileName(action.payload.fileName));
 
 				if (state.zip) {
 					if (action.payload.type === 'html') {
-						state.zip.file(`${targetFolder}/${fileName}`, action.payload.fileData);
+						state.zip.file(`${targetFolder}/${cleanFileName}`, action.payload.fileData);
 					} else {
 						// Decode base64 string before adding to zip
-						state.zip.file(`${targetFolder}/${fileName}`, action.payload.fileData, { base64: true });
+						state.zip.file(`${targetFolder}/${cleanFileName}`, action.payload.fileData, { base64: true });
 					}
 				}
 
 				item.type = action.payload.type;
-				item.value = action.payload.fileName;
+				item.value = cleanFileName;
 				item.isRef = true;
 			}
 		},
