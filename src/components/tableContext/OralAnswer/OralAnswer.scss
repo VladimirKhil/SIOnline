@@ -9,3 +9,9 @@
 	font-size: 30px;
 	border-radius: 3px;
 }
+
+.oral__answer .wrongAnswerButton,
+.oral__answer__hint {
+	flex: 1;
+	text-align: center;
+}

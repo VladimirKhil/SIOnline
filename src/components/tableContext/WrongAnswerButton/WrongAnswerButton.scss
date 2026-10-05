@@ -1,0 +1,25 @@
+@use '../../../scss/variables' as v;
+
+.wrongAnswerButton {
+	height: 100%;
+	border-radius: 5px;
+	font-size: 14px;
+	line-height: 1;
+	background: v.$reject-button-background;
+}
+
+.wrongAnswerButton:not(:disabled):hover {
+	background: linear-gradient(180deg, #d0726c 14.29%, #a8372f 100%);
+}
+
+@media screen and (min-width: 800px) {
+	.wrongAnswerButton {
+		font-size: 20px;
+	}
+}
+
+@media screen and (min-width: 1600px) {
+	.wrongAnswerButton {
+		font-size: 28px;
+	}
+}
