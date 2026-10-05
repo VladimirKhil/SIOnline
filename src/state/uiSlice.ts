@@ -32,6 +32,7 @@ export interface UIState {
 	isProfileVisible: boolean;
 	settingKey: string | null;
 	isVisible: boolean;
+	mediaTimeLeft: Record<string, number>;
 	navigation: INavigationState;
 	showPlayers: boolean;
 	qrCode: string | null;
@@ -48,6 +49,7 @@ const initialState: UIState = {
 	isProfileVisible: false,
 	settingKey: null,
 	isVisible: true,
+	mediaTimeLeft: {},
 	navigation: {
 		path: Path.Loading,
 	},
@@ -82,6 +84,14 @@ export const uiSlice = createSlice({
 		visibilityChanged: (state: UIState, action: PayloadAction<boolean>) => {
 			state.isVisible = action.payload;
 		},
+		// Seconds left until each playing media ends, keyed by its uri; 0 removes the media
+		mediaTimeLeftChanged: (state: UIState, action: PayloadAction<{ uri: string, timeLeft: number }>) => {
+			if (action.payload.timeLeft > 0) {
+				state.mediaTimeLeft[action.payload.uri] = action.payload.timeLeft;
+			} else {
+				delete state.mediaTimeLeft[action.payload.uri];
+			}
+		},
 		navigateCore: (state: UIState, action: PayloadAction<INavigationState>) => {
 			state.navigation = action.payload;
 		},
@@ -108,6 +118,7 @@ export const {
 	windowSizeChanged,
 	settingKeyChanged,
 	visibilityChanged,
+	mediaTimeLeftChanged,
 	navigateCore,
 	playersVisibilityChanged,
 	setQrCode,
