@@ -436,6 +436,20 @@ export const toggleQuestion = createAsyncThunk(
 	},
 );
 
+/**
+ * Removes the validated answer from the validation queue.
+ * The server validates all the equal answers at once, so all of them are removed together.
+ */
+function removeValidatedAnswer(state: Room2State) {
+	const [firstValidationItem] = state.validation.queue;
+
+	if (firstValidationItem) {
+		state.validation.queue = state.validation.queue.filter(item => item.answer !== firstValidationItem.answer);
+	}
+
+	state.stage.decisionType = DecisionType.None;
+}
+
 export const room2Slice = createSlice({
 	name: 'room2',
 	initialState,
@@ -1097,23 +1111,19 @@ export const room2Slice = createSlice({
 		});
 
 		builder.addCase(approveAnswerDefault.fulfilled, (state) => {
-			state.validation.queue.shift();
-			state.stage.decisionType = DecisionType.None;
+			removeValidatedAnswer(state);
 		});
 
 		builder.addCase(rejectAnswerDefault.fulfilled, (state) => {
-			state.validation.queue.shift();
-			state.stage.decisionType = DecisionType.None;
+			removeValidatedAnswer(state);
 		});
 
 		builder.addCase(approveAnswer.fulfilled, (state) => {
-			state.validation.queue.shift();
-			state.stage.decisionType = DecisionType.None;
+			removeValidatedAnswer(state);
 		});
 
 		builder.addCase(rejectAnswer.fulfilled, (state) => {
-			state.validation.queue.shift();
-			state.stage.decisionType = DecisionType.None;
+			removeValidatedAnswer(state);
 		});
 	},
 });
