@@ -29,6 +29,10 @@ const ImageContent: React.FC<ImageContentProps> = ({ uri }) => {
 
 	React.useEffect(() => {
 		setIsLoaded(false);
+
+		if (spinnerRef.current) {
+			spinnerRef.current.style.display = '';
+		}
 	}, [uri]);
 
 	const handleImageLoad = React.useCallback(() => {
@@ -46,6 +50,21 @@ const ImageContent: React.FC<ImageContentProps> = ({ uri }) => {
 	const animatingClass = isTimerRunning ? ' animate' : '';
 	const animationDuration = `${(loadTimer.maximum - loadTimer.value) * partialImageTime}s`;
 	const clipPath = `inset(0 0 ${(loadTimer.maximum - loadTimer.value) * 100}% 0)`;
+
+	// When several images are displayed one after another, the same img element is reused
+	// and the reveal animation would not restart by itself (it has already finished for the previous image).
+	// Restart it explicitly so that every image is revealed partially.
+	React.useLayoutEffect(() => {
+		const image = imageRef.current;
+
+		if (!image || !isTimerRunning) {
+			return;
+		}
+
+		image.style.animationName = 'none';
+		void image.offsetHeight; // forces reflow so that the animation is restarted from the beginning
+		image.style.animationName = '';
+	}, [uri, isTimerRunning]);
 
 	const cropStyle: React.CSSProperties = {
 		animationDuration,
