@@ -23,6 +23,7 @@ export interface SettingsState {
 	yesButtonKey: string | null;
 	noButtonKey: string | null;
 	pauseButtonKey: string | null;
+	censorButtonKey: string | null;
 	attachContentToTable: boolean;
 	showVideoAvatars: boolean;
 	theme: ThemeSettings;
@@ -49,6 +50,7 @@ const initialState: SettingsState = {
 	yesButtonKey: '+',
 	noButtonKey: '-',
 	pauseButtonKey: 'F9',
+	censorButtonKey: 'F8',
 	attachContentToTable: true,
 	showVideoAvatars: true,
 	theme: {
@@ -187,6 +189,9 @@ export const settingsSlice = createSlice({
 		setPauseButtonKey: (state: SettingsState, action: PayloadAction<string | null>) => {
 			state.pauseButtonKey = action.payload;
 		},
+		setCensorButtonKey: (state: SettingsState, action: PayloadAction<string | null>) => {
+			state.censorButtonKey = action.payload;
+		},
 		setTableTextColor: (state: SettingsState, action: PayloadAction<string>) => {
 			state.theme.table.textColor = action.payload;
 		},
@@ -235,6 +240,7 @@ export const settingsSlice = createSlice({
 			state.yesButtonKey = initialState.yesButtonKey;
 			state.noButtonKey = initialState.noButtonKey;
 			state.pauseButtonKey = initialState.pauseButtonKey;
+			state.censorButtonKey = initialState.censorButtonKey;
 		},
 		resetThemeSettings: (state: SettingsState) => {
 			state.theme = initialState.theme;
@@ -295,6 +301,7 @@ export const {
 	setYesButtonKey,
 	setNoButtonKey,
 	setPauseButtonKey,
+	setCensorButtonKey,
 	setTableTextColor,
 	setTableBackgroundColor,
 	setTableFontFamily,
