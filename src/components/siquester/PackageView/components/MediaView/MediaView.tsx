@@ -2,6 +2,7 @@ import React from 'react';
 import JSZip from 'jszip';
 import MediaItem from '../../../MediaItem/MediaItem';
 import localization from '../../../../../model/resources/localization';
+import { decodeMediaFileName } from '../../../../../utils/FileHelper';
 
 import './MediaView.scss';
 
@@ -12,15 +13,6 @@ interface MediaViewProps {
 interface MediaFile {
 	name: string;
 	type: 'image' | 'audio' | 'video' | 'html';
-	path: string;
-}
-
-function decodeMediaFileName(fileName: string): string {
-	try {
-		return decodeURIComponent(fileName);
-	} catch {
-		return fileName;
-	}
 }
 
 type MediaTab = 'images' | 'audio' | 'video' | 'html';
@@ -57,7 +49,6 @@ const MediaView: React.FC<MediaViewProps> = ({ zip }) => {
 					files.images.push({
 						name: decodeMediaFileName(fileName),
 						type: 'image',
-						path: fileName
 					});
 				}
 			} else if (relativePath.startsWith('Audio/')) {
@@ -66,7 +57,6 @@ const MediaView: React.FC<MediaViewProps> = ({ zip }) => {
 					files.audio.push({
 						name: decodeMediaFileName(fileName),
 						type: 'audio',
-						path: fileName
 					});
 				}
 			} else if (relativePath.startsWith('Video/')) {
@@ -75,7 +65,6 @@ const MediaView: React.FC<MediaViewProps> = ({ zip }) => {
 					files.video.push({
 						name: decodeMediaFileName(fileName),
 						type: 'video',
-						path: fileName
 					});
 				}
 			} else if (relativePath.startsWith('Html/')) {
@@ -84,7 +73,6 @@ const MediaView: React.FC<MediaViewProps> = ({ zip }) => {
 					files.html.push({
 						name: decodeMediaFileName(fileName),
 						type: 'html',
-						path: fileName
 					});
 				}
 			}
@@ -177,7 +165,7 @@ const MediaView: React.FC<MediaViewProps> = ({ zip }) => {
 								</div>
 								<div className="mediaView__item__content">
 									<MediaItem
-										src={file.path}
+										src={file.name}
 										type={file.type}
 										isRef={true}
 									/>
