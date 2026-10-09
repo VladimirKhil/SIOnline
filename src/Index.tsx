@@ -45,6 +45,7 @@ import { INavigationState, setFullScreenSupported, settingKeyChanged, windowSize
 import { navigate } from './utils/Navigator';
 import TauriHost from './host/TauriHost';
 import SteamTauriHost from './host/SteamTauriHost';
+import { subscribeToRichPresence } from './utils/RichPresenceHelpers';
 import { approveAnswerDefault, pressGameButton, rejectAnswerDefault } from './state/room2Slice';
 import { pauseGame } from './state/serverActions';
 import { setAnalytics } from './utils/Analytics';
@@ -398,6 +399,7 @@ async function run(host: IHost) {
 		});
 
 		subscribeToExternalEvents(store, host);
+		subscribeToRichPresence(store, host);
 
 		store.dispatch(windowSizeChanged({ width: window.innerWidth, height: window.innerHeight }));
 		store.dispatch(setFullScreenSupported(host.isFullScreenSupported()));

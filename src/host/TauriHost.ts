@@ -11,6 +11,7 @@ import { getCookie, setCookie } from '../utils/CookieHelpers';
 import IHost, { AuthorizationData, FullScreenMode, UploadCallbacks } from './IHost';
 import { Store } from 'redux';
 import SIStorageInfo from '../client/contracts/SIStorageInfo';
+import RichPresence from '../model/RichPresence';
 
 const ACCEPT_LICENSE_KEY = 'ACCEPT_LICENSE';
 
@@ -74,6 +75,8 @@ export default class TauriHost implements IHost {
 	private exitSupported = false;
 
 	private logSupported = false;
+
+	private richPresenceSupported = false;
 
 	private currentLogFilePath: string | null = null;
 
@@ -141,6 +144,7 @@ export default class TauriHost implements IHost {
 		this.clipboardSupported = !!this.app || urlParams.get('clipboardSupported') === 'true';
 		this.exitSupported = (!!this.app && !!this.app.process) || urlParams.get('exitSupported') === 'true';
 		this.logSupported = !!this.app || urlParams.get('logSupported') === 'true';
+		this.richPresenceSupported = !!this.app || urlParams.get('richPresenceSupported') === 'true';
 	}
 
 	isDesktop(): boolean {
@@ -474,5 +478,26 @@ export default class TauriHost implements IHost {
 			cleanup();
 			return null;
 		}
+	}
+
+	/**
+	 * Publishes Rich Presence through the native host (directly or via the parent desktop shell).
+	 * Presence is optional, so updates are silently dropped when the native host cannot handle them.
+	 */
+	setRichPresence(presence: RichPresence): void {
+		if (!this.richPresenceSupported) {
+			return;
+		}
+
+		if (!this.app) {
+			window.parent.postMessage({ type: 'setRichPresence', payload: presence }, '*');
+			return;
+		}
+
+		this.app.core?.invoke('set_rich_presence', { presence }).catch((error) => {
+			// Older native hosts do not have this command; do not retry on every state change
+			this.richPresenceSupported = false;
+			console.warn('Rich Presence is not supported by the host:', error);
+		});
 	}
 }
