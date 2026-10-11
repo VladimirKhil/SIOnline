@@ -31,6 +31,7 @@ export interface SettingsState {
 	logPointsEvent: boolean;
 	useProxy2: boolean;
 	loadExternalMedia: boolean;
+	clickableAnswer: boolean;
 	customSounds: Record<string, string | null>;
 }
 
@@ -68,6 +69,7 @@ const initialState: SettingsState = {
 	logPointsEvent: true,
 	useProxy2: true,
 	loadExternalMedia: false,
+	clickableAnswer: true,
 	customSounds: {},
 };
 
@@ -214,6 +216,9 @@ export const settingsSlice = createSlice({
 		setLoadExternalMedia: (state: SettingsState, action: PayloadAction<boolean>) => {
 			state.loadExternalMedia = action.payload;
 		},
+		setClickableAnswer: (state: SettingsState, action: PayloadAction<boolean>) => {
+			state.clickableAnswer = action.payload;
+		},
 		setCustomSound: (state: SettingsState, action: PayloadAction<{ soundKey: string, value: string | null }>) => {
 			state.customSounds[action.payload.soundKey] = action.payload.value;
 		},
@@ -232,6 +237,7 @@ export const settingsSlice = createSlice({
 			state.logPointsEvent = initialState.logPointsEvent;
 			state.useProxy2 = initialState.useProxy2;
 			state.loadExternalMedia = initialState.loadExternalMedia;
+			state.clickableAnswer = initialState.clickableAnswer;
 		},
 		resetKeysSettings: (state: SettingsState) => {
 			state.gameButtonKey = initialState.gameButtonKey;
@@ -309,6 +315,7 @@ export const {
 	setWriteGameLog,
 	setLogPointsEvent,
 	setLoadExternalMedia,
+	setClickableAnswer,
 	setCustomSound,
 	resetCommonSettings,
 	resetKeysSettings,

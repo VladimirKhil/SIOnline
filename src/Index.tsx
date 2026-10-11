@@ -152,6 +152,7 @@ function setState(state: State, savedState: SavedState | null, c: Config, isDesk
 			},
 			logPointsEvent: savedState.settings.logPointsEvent ?? true,
 			gameButtonKey: savedState.settings.gameButtonKey || Constants.KEY_SPACE,
+			clickableAnswer: savedState.settings.clickableAnswer ?? true,
 		} : state.settings,
 		history: savedState.history ? {
 			...state.history,
