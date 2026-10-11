@@ -83,14 +83,19 @@ export function RoundTable(props: RoundTableProps) {
 	};
 
 	return (
-		<div className={`roundTable ${props.isSelectable ? 'selectable' : ''} ${props.isHexagonal ? 'hexagonal' : ''}`}>
+		<div
+			className={`roundTable ${props.isSelectable ? 'selectable' : ''} ${props.isHexagonal ? 'hexagonal' : ''}`}
+			style={props.isHexagonal
+				? { '--hex-cols': Math.max(1, ...props.roundInfo.map(t => t.questions.length)) } as React.CSSProperties
+				: undefined}>
 			{props.roundInfo.map((themeInfo, themeIndex) => {
 				const className = themeIndex % 2 === 0 ? 'right' : 'left';
 				const hasQuestions = themeInfo.questions.some(q => q > -1);
 
 				const isRemembered = themeMemory?.themeIndex === themeIndex;
 				const isThemeEditable = room.isEditTableEnabled && (hasQuestions || isRemembered);
-				const themeClassName = `roundTableCell themeHeader ${isThemeEditable ? 'editable' : ''} ${hasQuestions ? 'active' : ''}`;
+				const isExtended = props.isHexagonal && themeIndex % 2 === 1;
+				const themeClassName = `roundTableCell themeHeader ${isThemeEditable ? 'editable' : ''} ${hasQuestions ? 'active' : ''} ${isExtended ? 'extended' : ''}`;
 
 				return (<div key={themeIndex} className={`roundTableRow ${className}`}>
 					<div
@@ -101,7 +106,7 @@ export function RoundTable(props: RoundTableProps) {
 						</AutoSizedText>
 					</div>
 
-					{props.isHexagonal && themeIndex % 2 === 1 ? <div className="hexSpacer" /> : null}
+					{/* On odd rows the header itself extends over the half-cell offset */}
 
 					{themeInfo.questions.map((question, questionIndex) => {
 						const isActive = question > -1;

@@ -133,37 +133,153 @@
 }
 
 #table .roundTable.hexagonal {
-	padding-top: 10px;
+	// Half-row spacers at the top and bottom leave room for the hexagon tips of the first and last rows
+	&::before,
+	&::after {
+		content: '';
+		flex: 0.1667 1 0;
+	}
 
+	// Half of the cell's outer width (cells have 2px side margins), so alternate rows nest symmetrically
 	.hexSpacer {
 		flex: 0.5 1 0;
+		margin: 0 1px;
 	}
 
 	.roundTableRow {
 		overflow: visible;
 	}
 
+	// A hexagon row overlaps its neighbours by a quarter of the cell height, so the row is 75% of the cell
 	.roundTableCell {
-		height: calc(100% + 10px);
-		margin-top: -10px;
+		height: 133.33%;
 	}
 
 	.themeHeader {
-		height: calc(100% - 10px);
-		background: rgba(255, 255, 255, 0.05);
-		border: 2px solid rgba(255, 255, 255, 0.15);
+		// Covers the inter-row gap but keeps the same small margin as the square layout
+		height: 100%;
 		transition: none;
+		--hex-border: rgba(255, 255, 255, 0.15);
+		--hex-fill: rgba(255, 255, 255, 0.05);
+		// The right edge spans 66.7% of the row height, matching the side edge of a hexagon cell (133.33% tall, edge 50%)
+		// Diagonal run is a quarter of a cell's width, so the slope equals the hexagon's: rise R/6 over W/4 (hexagon: R/3 over W/2).
+		// Cells share 60% of the row with a half-cell spacer, minus 4px margins per cell and the spacer's 2px:
+		// W = (1.5 * headerWidth - 4 * cols - 6px) / (cols + 0.5)
+		--hex-run: calc((37.5cqw - (var(--hex-cols, 5) + 1.5) * 1px) / (var(--hex-cols, 5) + 0.5));
+		--hex-clip: polygon(0 0, calc(100% - var(--hex-run)) 0, 100% 16.667%, 100% 83.333%, calc(100% - var(--hex-run)) 100%, 0 100%);
+		--hex-ring: polygon(
+			evenodd,
+			0 0, calc(100% - var(--hex-run)) 0, 100% 16.667%, 100% 83.333%, calc(100% - var(--hex-run)) 100%, 0 100%, 0 0,
+			2px 2px, calc(100% - var(--hex-run)) 2px, calc(100% - 2px) calc(16.667% + 1.6px), calc(100% - 2px) calc(83.333% - 1.6px), calc(100% - var(--hex-run)) calc(100% - 2px), 2px calc(100% - 2px), 2px 2px
+		);
+
+		> div {
+			padding-right: var(--hex-run);
+		}
+	}
+
+	// Two-layer shapes: ::before is the fill, ::after is the border ring drawn over it.
+	// The cell itself stays unclipped so hover/active transforms and glow behave like the square table.
+	.themeHeader.extended {
+		// Header also covers the spacer: 40% + spacer (0.5 * W + 2px margin), where
+		// W = (60% - 6px - 4px * cols) / (cols + 0.5) is the cell width in a regular row
+		flex: 0 0 calc(40% + 2px + 0.5 * (60% - 6px - 4px * var(--hex-cols, 5)) / (var(--hex-cols, 5) + 0.5));
+		// Same cell width recovered from the wider header: W = (150cqw - 9px - 4px * cols) / (cols + 1.25)
+		--hex-run: calc((37.5cqw - 2.25px - 1px * var(--hex-cols, 5)) / (var(--hex-cols, 5) + 1.25));
+
+		// The extra width over the spacer (2px + half a cell = 2px + 2 * run) is padding only, so the text stays centered
+		> div {
+			padding-right: calc(var(--hex-run) * 3 + 2px);
+		}
+	}
+
+	.questHeader,
+	.themeHeader {
+		--hex-glow: none;
+
 		align-self: center;
+		transform-origin: center;
+		overflow: visible;
+		position: relative;
+		background: transparent !important;
+		border: none !important;
+		box-shadow: none !important;
+		filter: var(--hex-glow);
+
+		&::before,
+		&::after {
+			content: '';
+			position: absolute;
+			inset: 0;
+			transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+			pointer-events: none;
+		}
+
+		// Fill spans the whole shape (under the border), as in the square cell
+		&::before {
+			clip-path: var(--hex-clip);
+			background: var(--hex-fill);
+		}
+
+		&::after {
+			clip-path: var(--hex-ring);
+			background: var(--hex-border);
+		}
+
+		> div {
+			position: relative;
+			z-index: 1;
+		}
 	}
 
 	.questHeader {
-		align-self: center;
-		clip-path: polygon(50% 0%, 100% 10px, 100% calc(100% - 10px), 50% 100%, 0% calc(100% - 10px), 0% 10px);
-		transform-origin: center;
-		overflow: hidden;
-		position: relative;
-		background: transparent;
-		border: none;
+		--hex-border: transparent;
+		--hex-fill: transparent;
+		--hex-clip: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+		// Outer hexagon minus an inner one inset by 2px
+		--hex-ring: polygon(
+			evenodd,
+			50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%, 50% 0%,
+			50% 2.2px, calc(100% - 2px) calc(25% + 1.6px), calc(100% - 2px) calc(75% - 1.6px), 50% calc(100% - 2.2px),
+			2px calc(75% - 1.6px), 2px calc(25% + 1.6px), 50% 2.2px
+		);
+
+		&.active {
+			--hex-border: rgba(255, 255, 255, 0.2);
+			--hex-fill: rgba(255, 255, 255, 0.1);
+			--hex-glow: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+		}
+
+		&.blink::before {
+			animation: hex-blink-fill 0.5s ease-in-out infinite alternate;
+		}
+
+		&.blink::after {
+			animation: hex-blink-border 0.5s ease-in-out infinite alternate;
+		}
+	}
+
+	&.selectable .questHeader.active {
+		--hex-border: rgba(255, 255, 255, 0.25);
+		--hex-fill: rgba(255, 255, 255, 0.15);
+
+		&:hover {
+			--hex-border: rgba(255, 255, 255, 0.5);
+			--hex-fill: rgba(255, 255, 255, 0.3);
+			--hex-glow: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
+		}
+	}
+
+	.questHeader.editable:hover,
+	.themeHeader.editable:hover {
+		--hex-border: rgba(39, 203, 92, 0.6);
+		--hex-fill: #{v.$accept-button-background};
+	}
+
+	.questHeader.editable.active:hover,
+	.themeHeader.editable.active:hover {
+		--hex-border: rgba(206, 32, 19, 0.6);
+		--hex-fill: #{v.$reject-button-background};
 	}
 }
 
