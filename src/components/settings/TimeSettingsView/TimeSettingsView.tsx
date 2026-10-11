@@ -41,12 +41,12 @@ export default function TimeSettingsView(): JSX.Element {
 				maximum={120}
 				onValueChanged={value => onTimeSettingChanged('timeForThinkingOnQuestion', value)} />
 
-			{/* <TimeSettingItem
+			<TimeSettingItem
 				label={localization.buttonsAccepting}
 				value={settings.buttonsAccepting}
 				maximum={1000}
 				unitLabel={localization.ms}
-				onValueChanged={value => onTimeSettingChanged('buttonsAccepting', value)} /> */}
+				onValueChanged={value => onTimeSettingChanged('buttonsAccepting', value)} />
 
 			<TimeSettingItem
 				label={localization.timeForPrintingAnswer}

@@ -204,6 +204,29 @@ export default class SIHostClient implements ISIHostClient {
 		}
 	}
 
+	async sendPrivateMessageAsync(receiver: string, message: string): Promise<boolean> {
+		if (!this.connection) {
+			throw new Error('Not connected to server');
+		}
+
+		try {
+			await this.connection.invoke('SendMessage', {
+				Text: message,
+				IsSystem: false,
+				Sender: this.userName,
+				Receiver: receiver
+			});
+
+			return true;
+		} catch (e) {
+			if (!this.completed) {
+				this.listener?.onError(e);
+			}
+
+			return false;
+		}
+	}
+
 	msgAsync(...args: any[]): Promise<boolean> {
 		return this.sendMessageToServerAsync(args.join('\n'));
 	}

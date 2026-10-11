@@ -554,9 +554,20 @@ export default class ClientController implements IClientController {
 	}
 
 	onAnswers(answers: string[]) {
-		if (this.getState().table.layoutMode === LayoutMode.OverlayPoints) {
-			const { players } = this.getState().room2.persons;
+		const state = this.getState();
+		const { players } = state.room2.persons;
 
+		if (state.settings.writeGameLog) {
+			answers.forEach((answer, playerIndex) => {
+				const player = players[playerIndex];
+
+				if (player && answer) {
+					this.appDispatch(addGameLog(`${player.name}: ${answer}`));
+				}
+			});
+		}
+
+		if (state.table.layoutMode === LayoutMode.OverlayPoints) {
 			answers.forEach((answer, playerIndex) => {
 				const label = players[playerIndex]?.name;
 				this.tryAddPointMarker(answer, 'player', label);
@@ -1069,6 +1080,13 @@ export default class ClientController implements IClientController {
 	}
 
 	onPlayerAnswer(playerIndex: number, answer: string) {
+		const state = this.getState();
+		const player = state.room2.persons.players[playerIndex];
+
+		if (state.settings.writeGameLog && player) {
+			this.appDispatch(addGameLog(`${player.name}: ${answer}`));
+		}
+
 		if (this.getState().table.layoutMode === LayoutMode.OverlayPoints) {
 			const label = this.getState().room2.persons.players[playerIndex]?.name;
 
@@ -1537,6 +1555,11 @@ export default class ClientController implements IClientController {
 			layoutId <= state.table.answerOptions.length &&
 			itemState) {
 			this.appDispatch(updateOptionState({ index: layoutId - 1, state: itemState }));
+
+			if (state.settings.writeGameLog && itemState === ItemState.Active) {
+				const optionLabel = state.table.answerOptions[layoutId - 1]?.label ?? '';
+				this.appDispatch(addGameLog(stringFormat(localization.answerOptionActivated, optionLabel)));
+			}
 		}
 	}
 
@@ -2313,4 +2336,3 @@ export default class ClientController implements IClientController {
 		this.appDispatch(playerStakeChanged({ index: playerIndex, stakeType, stake: playerStake }));
 	}
 }
-
