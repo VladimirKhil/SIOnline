@@ -18,6 +18,13 @@ const AnswerValidationBody: React.FC = () => {
 
 	const [firstValidationItem] = validation.queue;
 
+	// All the players having provided the same answer are validated at once
+	const answererNames = validation.queue
+		.filter(item => item.answer === firstValidationItem.answer)
+		.map(item => item.name)
+		.filter((name, index, names) => names.indexOf(name) === index)
+		.join(', ');
+
 	return (
 		<div className='answerValidationBody'>
 			<div className='answersPanel'>
@@ -43,7 +50,7 @@ const AnswerValidationBody: React.FC = () => {
 			<div className='validationHeader'>
 				<div className='mainMessage'>
 					<AutoSizedText maxFontSize={32} className='answererName'>
-						{localization.playerAnswerLabel.replace('{0}', firstValidationItem.name)}
+						{localization.playerAnswerLabel.replace('{0}', answererNames)}
 					</AutoSizedText>
 					<AutoSizedText maxFontSize={32} className='playerAnswer' title={localization.playersAnswer}>
 						<ClickableAnswer text={firstValidationItem.answer} />
