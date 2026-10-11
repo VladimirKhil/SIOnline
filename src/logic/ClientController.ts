@@ -521,6 +521,7 @@ export default class ClientController implements IClientController {
 		this.appDispatch(setHiddenComments(''));
 		this.appDispatch(questionReset());
 		this.appDispatch(incrementQuestionCounter());
+		this.appDispatch(setDecisionType(DecisionType.None));
 	}
 
 	onAds(ads: string) {

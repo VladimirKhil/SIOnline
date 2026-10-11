@@ -353,7 +353,7 @@ const ScreensView: React.FC<ScreensViewProps> = ({
 						onChange={(e) => handleContentChange('value', e.target.value)}
 					/>
 				) : (
-					<AutoSizedText maxFontSize={20} style={{ whiteSpace: 'pre-line' }}>{contentItem.value}</AutoSizedText>
+					<AutoSizedText className='screensView__text' maxFontSize={20}>{contentItem.value}</AutoSizedText>
 				);
 			case 'image':
 				return <MediaItem
