@@ -72,6 +72,13 @@ export default function GamesFilterView() {
 				{ filter: GamesFilter.Finished, label: localization.finished },
 			],
 		},
+		{
+			title: localization.fullRooms,
+			options: [
+				{ filter: GamesFilter.FullYes, label: localization.yes },
+				{ filter: GamesFilter.FullNo, label: localization.no },
+			],
+		},
 	];
 
 	return (

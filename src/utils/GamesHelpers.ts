@@ -1,5 +1,7 @@
 import GamesFilter from '../model/enums/GamesFilter';
 import GameInfo from '../client/contracts/GameInfo';
+import PersonInfo from '../client/contracts/PersonInfo';
+import ServerRole from '../client/contracts/ServerRole';
 import ServerGameType from '../client/contracts/ServerGameType';
 import localization from '../model/resources/localization';
 import GameRules, { parseRulesFromString } from '../client/contracts/GameRules';
@@ -21,11 +23,14 @@ export function filterGames(games: GameInfo[], filter: GamesFilter, search: stri
 	const isNew = (filter & GamesFilter.New) > 0;
 	const isStarted = (filter & GamesFilter.Started) > 0;
 	const isFinished = (filter & GamesFilter.Finished) > 0;
+	const fullYes = (filter & GamesFilter.FullYes) > 0;
+	const fullNo = (filter & GamesFilter.FullNo) > 0;
 	const hasGameTypeFilter = classic || simple || quiz || turnTaking;
 	const hasPasswordFilter = passwordRequired || noPassword;
 	const hasOralFilter = oralYes || oralNo;
 	const hasLanguageFilter = myLanguage || otherLanguage;
 	const hasStatusFilter = isNew || isStarted || isFinished;
+	const hasFullFilter = fullYes || fullNo;
 
 	const normalizedSearch = search.toLocaleLowerCase();
 	const currentLanguage = localization.getLanguage();
@@ -90,6 +95,16 @@ export function filterGames(games: GameInfo[], filter: GamesFilter, search: stri
 		return isStarted;
 	};
 
+	const isFullAllowed = (players: PersonInfo[]) => {
+		if (!hasFullFilter) {
+			return true;
+		}
+
+		const isFull = players.every(p => p.Role !== ServerRole.Player || p.IsOnline);
+		
+		return isFull ? fullYes : fullNo;
+	};
+
 	for (let j = 0; j < games.length; j += 1) {
 		const game = games[j];
 
@@ -98,6 +113,7 @@ export function filterGames(games: GameInfo[], filter: GamesFilter, search: stri
 			isOralAllowed(game.Rules) &&
 			isLanguageAllowed(game.Language) &&
 			isStatusAllowed(game.Stage) &&
+			isFullAllowed(game.Persons) &&
 			(normalizedSearch.length === 0 || game.GameName.toLocaleLowerCase().includes(normalizedSearch));
 
 		if (filteredOk) {
