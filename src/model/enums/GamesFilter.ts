@@ -13,7 +13,9 @@
 	New = 1024,
 	Started = 2048,
 	Finished = 4096,
-	All = 8191,
+	FullYes = 8192,
+	FullNo = 16384,
+	All = 32767,
 }
 
 export default GamesFilter;
