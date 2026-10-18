@@ -1,4 +1,4 @@
-import { Package, Round, Theme, Question, Info, ContentParam, ContentPlacements, StepParameterTypes } from './package';
+import { Package, PackageFile, Round, Theme, Question, Info, ContentParam, ContentPlacements, StepParameterTypes } from './package';
 
 function serializeInfo(xmlDoc: Document, info: Info): Element | null {
 	const hasAuthors = info.authors && info.authors.length > 0;
@@ -375,7 +375,7 @@ function serializeRound(xmlDoc: Document, round: Round): Element {
 /**
  * Serializes a Package object to XML string
  */
-export function serializePackageToXML(pack: Package): string {
+export function serializePackageToXML(pack: Package, files: PackageFile[] = []): string {
 	const xmlDoc = document.implementation.createDocument(null, 'package');
 	const packageElement = xmlDoc.documentElement;
 
@@ -420,6 +420,18 @@ export function serializePackageToXML(pack: Package): string {
 			tagsElement.appendChild(tagElement);
 		});
 		packageElement.appendChild(tagsElement);
+	}
+
+	// Add file names and hashes
+	if (files.length > 0) {
+		const filesElement = xmlDoc.createElement('files');
+		files.forEach(file => {
+			const fileElement = xmlDoc.createElement('file');
+			fileElement.setAttribute('name', file.name);
+			fileElement.setAttribute('hash', file.hash);
+			filesElement.appendChild(fileElement);
+		});
+		packageElement.appendChild(filesElement);
 	}
 
 	// Add info

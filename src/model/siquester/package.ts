@@ -18,6 +18,11 @@ export interface Package extends InfoOwner {
 	isQualityMarked: boolean;
 }
 
+export interface PackageFile {
+	name: string;
+	hash: string;
+}
+
 export interface Round extends InfoOwner {
 	name: string;
 	type: string;
@@ -184,6 +189,5 @@ export const QuestionTypeParams = {
 	BagCat_Self_Value_True: 'true',
 	BagCat_Self_Value_False: 'false'
 };
-
 
 
