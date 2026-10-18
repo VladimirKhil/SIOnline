@@ -14,6 +14,7 @@ import { useAppSelector } from '../../../state/hooks';
 import Persons from '../../../model/Persons';
 import EditTableMenu from '../EditTableMenu/EditTableMenu';
 import Constants from '../../../model/enums/Constants';
+import PersonName from '../PlayerView/PersonName';
 
 import './ShowmanReplicView.scss';
 
@@ -137,7 +138,9 @@ export function ShowmanReplicView(props: ShowmanReplicViewProps): JSX.Element {
 						{showmanAvatarContent}
 
 						<div className="showmanName">
-							<span className={meClass}>{account?.name ?? shownName}</span>
+							<span className={meClass}>
+								<PersonName name={account?.name ?? shownName} />
+							</span>
 						</div>
 
 						<div className='marksArea'>

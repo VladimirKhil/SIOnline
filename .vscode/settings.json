@@ -11,6 +11,7 @@
 		"npx eslint": true,
 		"npx tsc": true,
 		"npx jest": true,
-		"cargo check": true
+		"cargo check": true,
+		"npm run build-dev": true
 	}
 }
