@@ -91,6 +91,8 @@ export default interface IGameClient {
 
 	setTable(isShowman: boolean, tableIndex: number, name: string): Promise<boolean>;
 
+	showLeaderboard(): Promise<boolean>;
+
 	stakeAllIn(): Promise<boolean>;
 
 	stakePass(): Promise<boolean>;

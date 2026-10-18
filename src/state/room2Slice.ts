@@ -400,6 +400,14 @@ export const getPin = createAsyncThunk(
 	},
 );
 
+export const showLeaderboard = createAsyncThunk(
+	'room2/showLeaderboard',
+	async (arg: void, thunkAPI) => {
+		const dataContext = thunkAPI.extra as DataContext;
+		await dataContext.game.showLeaderboard();
+	},
+);
+
 export const setHost = createAsyncThunk(
 	'room2/setHost',
 	async (arg: string, thunkAPI) => {

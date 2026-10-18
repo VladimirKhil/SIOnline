@@ -15,7 +15,11 @@ export default function GamesList(props: GamesListProps): JSX.Element {
 	const appDispatch = useAppDispatch();
 	const error = useAppSelector(state => state.online2.error);
 	const sortedGames = props.games.slice();
-	sortedGames.sort((game1, game2) => game1.GameName.localeCompare(game2.GameName));
+	sortedGames.sort((game1, game2) => {
+		const game1Priority = game1.GameID < 100 ? 0 : 1;
+		const game2Priority = game2.GameID < 100 ? 0 : 1;
+		return game1Priority - game2Priority || game1.GameName.localeCompare(game2.GameName);
+	});
 
 	const onSelectGame = (gameId: number) => {
 		appDispatch(selectGameById(gameId));
