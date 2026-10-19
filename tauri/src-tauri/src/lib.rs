@@ -1,5 +1,8 @@
 #[cfg(feature = "steam_client")]
 mod content_service;
+mod discord_presence;
+
+use discord_presence::{DiscordPresence, RichPresence};
 
 #[cfg(feature = "steam_client")]
 use serde::{Deserialize, Serialize};
@@ -621,6 +624,12 @@ fn append_text_file(app_handle: tauri::AppHandle, file_name: String, content: St
   file.write(content.as_bytes()).expect("Failed to write file");
 }
 
+/// Shows what the user is doing in Discord (if Discord is running). Never blocks.
+#[tauri::command]
+fn set_rich_presence(discord_presence: tauri::State<DiscordPresence>, presence: RichPresence) {
+    discord_presence.update(presence);
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     // Initialize Tauri application with plugins
@@ -631,7 +640,8 @@ pub fn run() {
         .plugin(tauri_plugin_http::init())
         .plugin(tauri_plugin_process::init())
         .plugin(tauri_plugin_clipboard_manager::init())
-        .plugin(tauri_plugin_opener::init());
+        .plugin(tauri_plugin_opener::init())
+        .manage(DiscordPresence::start());
 
     #[cfg(feature = "steam_client")]
     {
@@ -697,7 +707,8 @@ pub fn run() {
             upload_workshop_package,
             append_text_file,
             get_steam_user_info,
-            get_steam_auth_ticket
+            get_steam_auth_ticket,
+            set_rich_presence
         ]);
     }
 
@@ -705,7 +716,8 @@ pub fn run() {
     {
         builder = builder.invoke_handler(tauri::generate_handler![
             greet,
-            append_text_file
+            append_text_file,
+            set_rich_presence
         ]);
     }
 
