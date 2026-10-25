@@ -20,7 +20,7 @@ export default class SteamTauriHost extends TauriHost {
 
 	private async loginBySteamAsync(): Promise<{ userId: string; username: string; token: string | null }> {
 		if (!this.app || !this.app.core) {
-			throw new Error('Steam authorization is not available');
+			throw new Error('Steam connection is not available');
 		}
 
 		const authTicket = await this.app.core.invoke('get_steam_auth_ticket', {
@@ -64,17 +64,7 @@ export default class SteamTauriHost extends TauriHost {
 		}
 
 		try {
-			const { userId, username, token } = await this.loginBySteamAsync();
-
-			console.log('Steam user logged in with userId:', userId, ' token:', token);
 			const userInfo: { avatar: string | null } = await this.app.core.invoke('get_steam_user_info', {});
-			const state = store.getState() as State;
-
-			if (!state.user.login) {
-				store.dispatch(changeLogin(username));
-			}
-
-			store.dispatch(changeAuthName(username));
 
 			if (userInfo.avatar && !localStorage.getItem(Constants.AVATAR_KEY)) {
 				localStorage.setItem(Constants.AVATAR_KEY, userInfo.avatar);
@@ -86,6 +76,23 @@ export default class SteamTauriHost extends TauriHost {
 		} catch (error) {
 			console.error('Failed to get Steam user info:', error);
 		}
+
+		setTimeout(async () => {
+			try {
+				const { userId, username, token } = await this.loginBySteamAsync();
+
+				console.log('Steam user info:', userId, ' token:', token);
+				const state = store.getState() as State;
+
+				if (!state.user.login) {
+					store.dispatch(changeLogin(username));
+				}
+
+				store.dispatch(changeAuthName(username));
+			} catch (error) {
+				console.error('Failed to get Steam user info:', error);
+			}
+		}, 0);
 	}
 
 	getSupportedAuthModes(): AuthorizationMode[] {
