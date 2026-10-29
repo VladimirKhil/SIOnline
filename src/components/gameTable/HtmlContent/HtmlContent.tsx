@@ -10,7 +10,8 @@ import {
 	sendAnswerAsRightByDefault,
 	sendAnswerAsWrongByDefault,
 } from '../../../state/serverActions';
-import { DecisionType, pressGameButton } from '../../../state/room2Slice';
+import { DecisionType } from '../../../state/room2Slice';
+import Role from '../../../model/Role';
 
 import './HtmlContent.css';
 
@@ -26,7 +27,7 @@ interface HtmlContentControlMessage {
 
 interface HtmlContentEventMessage {
 	type: 'si:media-event';
-	event: 'completed' | 'answer-right' | 'answer-wrong' | 'supports-set-volume' | 'supports-mouse' | 'button-pressed';
+	event: 'completed' | 'answer-right' | 'answer-wrong' | 'supports-set-volume';
 }
 
 export function HtmlContent(props: HtmlContentProps) {
@@ -36,12 +37,15 @@ export function HtmlContent(props: HtmlContentProps) {
 	const supportRegisteredRef = React.useRef(false);
 	const wasAnsweringRef = React.useRef(false);
 	const supportIdRef = React.useRef(`html-volume-support:${Math.random().toString(36).slice(2)}`);
-	const [handlesMouse, setHandlesMouse] = React.useState(false);
 	const appDispatch = useAppDispatch();
 	const isMediaStopped = useAppSelector(state => state.room2.stage.isGamePaused || state.table.isMediaStopped);
 	const isVisible = useAppSelector(state => state.ui.isVisible);
 	const soundVolume = useAppSelector(state => state.settings.soundVolume);
 	const shouldAnswer = useAppSelector(state => state.room2.stage.decisionType === DecisionType.Answer);
+
+	// The frame is a separate document, so mouse events over it never reach the app's global handlers.
+	// While the player can press the game button, let the events pass through so right click still presses it
+	const passMouse = useAppSelector(state => state.room2.role === Role.Player && state.table.canPress);
 
 	const postControlMessage = React.useCallback((action: HtmlContentControlMessage['action'], volume?: number) => {
 		frameRef.current?.contentWindow?.postMessage({
@@ -54,7 +58,6 @@ export function HtmlContent(props: HtmlContentProps) {
 	React.useEffect(() => {
 		completedRef.current = false;
 		supportRegisteredRef.current = false;
-		setHandlesMouse(false);
 		appDispatch(unregisterCooperativeHtmlVolumeSupport(supportIdRef.current));
 	}, [uri]);
 
@@ -80,14 +83,6 @@ export function HtmlContent(props: HtmlContentProps) {
 
 					supportRegisteredRef.current = true;
 					appDispatch(registerCooperativeHtmlVolumeSupport(supportIdRef.current));
-					return;
-
-				case 'supports-mouse':
-					setHandlesMouse(true);
-					return;
-
-				case 'button-pressed':
-					appDispatch(pressGameButton());
 					return;
 
 				case 'completed':
@@ -153,7 +148,7 @@ export function HtmlContent(props: HtmlContentProps) {
 	return <iframe
 		ref={frameRef}
 		aria-label='HTML content'
-		className={`frame ${shouldAnswer ? 'interactive' : ''} ${handlesMouse ? 'handlesMouse' : ''}`}
+		className={`frame ${shouldAnswer ? 'interactive' : ''} ${passMouse ? 'passMouse' : ''}`}
 		tabIndex={0}
 		src={uri}
 		allow='autoplay'
