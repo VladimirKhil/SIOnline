@@ -21,12 +21,11 @@ const ImageContent: React.FC<ImageContentProps> = ({ uri }) => {
 	const loadTimer = useSelector((state: State) => state.table.loadTimer);
 	const partialImageTime = useSelector((state: State) => state.room2.settings.timeSettings.partialImageTime);
 	const hideImageOnAnswerAndPause = useSelector((state: State) => state.room2.settings.hideImageOnAnswerAndPause);
-	const isMediaStopped = useSelector((state: State) => state.room2.stage.isGamePaused || state.table.isMediaStopped);
+	const isMediaStoppedOrPaused = useSelector((state: State) => state.table.isMediaStopped || state.room2.stage.isGamePaused);
 	const role = useSelector((state: State) => state.room2.role);
 
-	// The game rule allows to hide the image while a player is answering or the game is paused.
-	// The showman runs the game and keeps seeing the image in any case
-	const isImageHidden = hideImageOnAnswerAndPause && isMediaStopped && role !== Role.Showman;
+	// The showman runs the game and keeps seeing the image
+	const isImageHidden = hideImageOnAnswerAndPause && isMediaStoppedOrPaused && role !== Role.Showman;
 
 	React.useEffect(() => () => {
 		if (imageRef.current) {
