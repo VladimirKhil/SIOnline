@@ -117,9 +117,7 @@ test.describe('Game Flow', () => {
     // Visual regression test using Playwright's built-in snapshot testing
     await page.waitForLoadState('networkidle');
     await expect(page).toHaveScreenshot('home-page.png', {
-      // Tolerate text anti-aliasing changes between browser versions; layout or colour changes differ by thousands of pixels
-      threshold: 0.3,
-      maxDiffPixels: 200,
+      maxDiffPixels: 100, // Allow for minor differences
     });
   });
 });
