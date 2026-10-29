@@ -23,7 +23,8 @@ import { resetRulesSettings,
 	setQuestionForYourselfPenalty,
 	setQuestionWithButtonPenalty,
 	setReadingSpeed,
-	setUseApellations } from '../../../state/settingsSlice';
+	setUseApellations,
+	setValidateEqualAnswersSeparately } from '../../../state/settingsSlice';
 
 import { setType } from '../../../state/gameSlice';
 import PenaltyType from '../../../model/enums/PenaltyType';
@@ -301,6 +302,21 @@ export default function RulesSettingsView(): JSX.Element {
 						<option value={PenaltyType.None}>{localization.penaltyNone}</option>
 						<option value={PenaltyType.SubtractPoints}>{localization.penaltySubtractPoints}</option>
 					</select>
+				</div>
+			</div>
+
+			<div className="block">
+				<label className='blockName' htmlFor="validateEqualAnswersSeparately">{localization.validateEqualAnswersSeparately}</label>
+
+				<div className='blockValue'>
+					<input
+						id="validateEqualAnswersSeparately"
+						type="checkbox"
+						checked={settings.appSettings.validateEqualAnswersSeparately}
+						onChange={() => appDispatch(setValidateEqualAnswersSeparately(!settings.appSettings.validateEqualAnswersSeparately))}
+					/>
+
+					<div className="hint">{localization.validateEqualAnswersSeparatelyHint}</div>
 				</div>
 			</div>
 

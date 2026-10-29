@@ -125,6 +125,7 @@ function setState(state: State, savedState: SavedState | null, c: Config, isDesk
 				questionForYourselfPenalty: appSettings.questionForYourselfPenalty ?? PenaltyType.None,
 				questionForYourselfFactor: appSettings.questionForYourselfFactor ?? 2,
 				questionForAllPenalty: appSettings.questionForAllPenalty ?? PenaltyType.SubtractPoints,
+				validateEqualAnswersSeparately: appSettings.validateEqualAnswersSeparately ?? false,
 				culture: appSettings.culture,
 				managed: appSettings.managed ?? false,
 				buttonPressMode: appSettings.buttonPressMode ?? ButtonPressMode.RandomWithinInterval,

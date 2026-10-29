@@ -32,6 +32,9 @@ export default interface AppSettings {
 	/** Question for all penalty. */
 	questionForAllPenalty: PenaltyType;
 
+	/** Validate equal answers of different players in questions for all separately. */
+	validateEqualAnswersSeparately: boolean;
+
 	culture: string | null;
 	managed: boolean;
 	timeSettings: TimeSettings;
@@ -64,6 +67,7 @@ export const initialState: AppSettings = {
 	questionForYourselfPenalty: PenaltyType.None,
 	questionForYourselfFactor: 2,
 	questionForAllPenalty: PenaltyType.SubtractPoints,
+	validateEqualAnswersSeparately: false,
 	timeSettings: {
 		timeForChoosingQuestion: 30,
 		timeForThinkingOnQuestion: 5,
