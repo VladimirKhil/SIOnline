@@ -142,6 +142,7 @@ function setState(state: State, savedState: SavedState | null, c: Config, isDesk
 				playAllQuestionsInFinalRound: appSettings.playAllQuestionsInFinalRound ?? false,
 				displayAnswerOptionsLabels: appSettings.displayAnswerOptionsLabels ?? true,
 				displayAnswerOptionsOneByOne: appSettings.displayAnswerOptionsOneByOne ?? true,
+				hideImageOnAnswerAndPause: appSettings.hideImageOnAnswerAndPause ?? false,
 			},
 			theme: {
 				...state.settings.theme,

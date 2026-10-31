@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { useSelector } from 'react-redux';
 import State from '../../../state/State';
+import Role from '../../../model/Role';
 import { isRunning } from '../../../utils/TimerInfoHelpers';
 import { useAppDispatch } from '../../../state/hooks';
 import { onMediaLoaded } from '../../../state/serverActions';
@@ -13,13 +14,18 @@ interface ImageContentProps {
 }
 
 const ImageContent: React.FC<ImageContentProps> = ({ uri }) => {
-	const spinnerRef = React.useRef<HTMLImageElement>(null);
 	const imageRef = React.useRef<HTMLImageElement>(null);
 	const [isLoaded, setIsLoaded] = React.useState(false);
 	const appDispatch = useAppDispatch();
 
 	const loadTimer = useSelector((state: State) => state.table.loadTimer);
 	const partialImageTime = useSelector((state: State) => state.room2.settings.timeSettings.partialImageTime);
+	const hideImageOnAnswerAndPause = useSelector((state: State) => state.room2.settings.hideImageOnAnswerAndPause);
+	const isMediaStoppedOrPaused = useSelector((state: State) => state.table.isMediaStopped || state.room2.stage.isGamePaused);
+	const role = useSelector((state: State) => state.room2.role);
+
+	// The showman runs the game and keeps seeing the image
+	const isImageHidden = hideImageOnAnswerAndPause && isMediaStoppedOrPaused && role !== Role.Showman;
 
 	React.useEffect(() => () => {
 		if (imageRef.current) {
@@ -29,21 +35,11 @@ const ImageContent: React.FC<ImageContentProps> = ({ uri }) => {
 
 	React.useEffect(() => {
 		setIsLoaded(false);
-
-		if (spinnerRef.current) {
-			spinnerRef.current.style.display = '';
-		}
 	}, [uri]);
 
 	const handleImageLoad = React.useCallback(() => {
 		appDispatch(onMediaLoaded());
 		setIsLoaded(true);
-
-		if (!spinnerRef.current) {
-			return;
-		}
-
-		spinnerRef.current.style.display = 'none';
 	}, [appDispatch]);
 
 	const isTimerRunning = isRunning(loadTimer);
@@ -70,13 +66,13 @@ const ImageContent: React.FC<ImageContentProps> = ({ uri }) => {
 		animationDuration,
 		clipPath,
 		WebkitClipPath: clipPath,
-		opacity: isLoaded ? 1 : 0,
+		opacity: isLoaded && !isImageHidden ? 1 : 0,
 		transition: 'opacity 0.4s ease-out'
 	};
 
 	return (
 		<div className='image-host'>
-			<img alt='spinner' className="spinnerImg" ref={spinnerRef} src={spinnerSvg} />
+			{isLoaded || isImageHidden ? null : <img alt='spinner' className="spinnerImg" src={spinnerSvg} />}
 			<img alt='image' className={`inGameImg${animatingClass}`} style={cropStyle} ref={imageRef} src={uri} onLoad={handleImageLoad} />
 		</div>
 	);
