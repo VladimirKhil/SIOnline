@@ -5,7 +5,14 @@ import State from '../state/State';
 import { AppDispatch } from '../state/store';
 import { getFullCulture } from '../utils/StateHelpers';
 import SIStorageInfo from '../client/contracts/SIStorageInfo';
-import { computerAccountsChanged, serverInfoChanged, avatarLoadEnd, avatarLoadStart, userErrorChanged, avatarLoadError, setProxyAvailable } from '../state/commonSlice';
+import {
+	computerAccountsChanged,
+	serverInfoChanged,
+	avatarLoadEnd,
+	avatarLoadStart,
+	userErrorChanged,
+	avatarLoadError,
+	setProxyAvailable } from '../state/commonSlice';
 import { setStorages } from '../state/siPackagesSlice';
 import Constants from '../model/enums/Constants';
 import getServerInfo from '../client/GameServerLocator';
@@ -154,7 +161,7 @@ async function loadServerInfoAsync(
 ) {
 	const state = getState();
 
-	// Pre-initialize storages with an empty list to ensure that host-provided storages 
+	// Pre-initialize storages with an empty list to ensure that host-provided storages
 	// (like Steam Workshop) are available even before server info is loaded or in offline mode.
 	if (!dataContext.storageClients || dataContext.storageClients.length === 0) {
 		await initializeStoragesAsync(appDispatch, dataContext, []);
@@ -174,9 +181,7 @@ async function loadServerInfoAsync(
 		}
 	}
 
-	if (!dataContext.serverUri) {
-		throw new Error('No server URI');
-	}
+	// Empty dataContext.serverUri URI could also be fine (means window uri)
 
 	const requestCulture = getFullCulture(state);
 

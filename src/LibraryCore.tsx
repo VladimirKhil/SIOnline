@@ -3,7 +3,7 @@
 import { AnyAction, Store, applyMiddleware, createStore } from 'redux';
 import State, { initialState } from './state/State';
 import reducer from './state/reducer';
-import reduxThunk from 'redux-thunk';
+import { withExtraArgument } from 'redux-thunk';
 import GameServerClient from './client/GameServerClient';
 import GameClient from './client/game/GameClient';
 import DataContext from './model/DataContext';
@@ -315,7 +315,7 @@ export default function runCore(game?: IGameClient): Store<State, AnyAction> {
 		contentUris: null,
 		contentClients: [],
 		storageClients: [],
-		host: new BrowserHost(),
+		host: new BrowserHost(false),
 	};
 
 	const savedState = loadState();
@@ -337,7 +337,7 @@ export default function runCore(game?: IGameClient): Store<State, AnyAction> {
 				login: savedState?.login ?? '',
 			},
 		},
-		applyMiddleware(reduxThunk.withExtraArgument(dataContext))
+		applyMiddleware(withExtraArgument(dataContext))
 	);
 
 	const appDispatch = store.dispatch;

@@ -834,7 +834,7 @@ export const room2Slice = createSlice({
 			state.settings.partialText = action.payload;
 		},
 		setSettingReadingSpeed: (state: Room2State, action: PayloadAction<number>) => {
-			state.settings.readingSpeed = action.payload;
+			state.settings.readingSpeed = Math.max(1, action.payload);
 		},
 		setSettingManaged: (state: Room2State, action: PayloadAction<boolean>) => {
 			state.settings.managed = action.payload;

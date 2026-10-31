@@ -49,7 +49,7 @@ export default function TextContent(props: TextContentProps) {
 		previousTextRef.current = props.text;
 	}, [props.animateReading, props.text]);
 
-	const content = props.animateReading && room.settings.readingSpeed > 0
+	const content = props.animateReading && !room.settings.managed
 		? getAnimatableContent(props.text, room.settings.readingSpeed, animationCycle)
 		: props.text;
 

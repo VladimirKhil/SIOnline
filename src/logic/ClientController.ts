@@ -917,6 +917,22 @@ export default class ClientController implements IClientController {
 				break;
 			}
 
+			case 'ReadingSpeed2': {
+				this.appDispatch(setSettingReadingSpeed(parseInt(value, 10)));
+
+				if (reason.length > 0) {
+					const message = stringFormat(
+						localization.readingSpeedChanged,
+						reason,
+						value
+					);
+
+					this.appDispatch(userInfoChanged(message));
+					this.addSimpleMessage(message);
+				}
+				break;
+			}
+
 			case 'PartialText': {
 				const partialTextEnabled = value.toLowerCase() === 'true';
 				this.appDispatch(setSettingPartialText(partialTextEnabled));

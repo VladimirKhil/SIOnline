@@ -11,6 +11,9 @@ const ACCEPT_LICENSE_KEY = 'ACCEPT_LICENSE';
 export default class BrowserHost implements IHost {
 	private gameLog = '';
 
+	constructor(private useLicense = true) {
+	}
+
 	isDesktop(): boolean {
 		return false;
 	}
@@ -28,7 +31,7 @@ export default class BrowserHost implements IHost {
 	}
 
 	isLicenseAccepted(): boolean {
-		return getCookie(ACCEPT_LICENSE_KEY) !== '';
+		return !this.useLicense || getCookie(ACCEPT_LICENSE_KEY) !== '';
 	}
 
 	acceptLicense() {

@@ -6,7 +6,11 @@ import localization from '../model/resources/localization';
  * @returns Error message if invalid, null if valid
  */
 export const validateLoginName = (name: string): string | null => {
-	const trimmedName = name.trim();
+	let trimmedName = name.trim();
+
+	if (trimmedName.startsWith('Ⓢ')) {
+		trimmedName = trimmedName.slice(1);
+	}
 
 	// Check if name is empty or only spaces
 	if (trimmedName.length === 0) {
