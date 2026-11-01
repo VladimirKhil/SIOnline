@@ -54,7 +54,7 @@
     "serialize-javascript": "^6.0.0"
   },
   "devDependencies": {
-    "@playwright/test": "^1.57.0",
+    "@playwright/test": "^1.64.1",
     "@svgr/webpack": "^7.0.0",
     "@types/jest": "^27.5.2",
     "@types/react": "^17.0.38",
