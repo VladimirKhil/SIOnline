@@ -34,9 +34,10 @@ export default function JoinByPin(): JSX.Element {
 		}
 
 		const authMode = useAuth ? AuthorizationMode.Account : AuthorizationMode.None;
+		const nameToUse = useAuth && authName ? authName : userName;
 
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		appDispatch(onlineActionCreators.joinByPin(pin, userName.trim(), Role.Player, appDispatch, authMode) as any);
+		appDispatch(onlineActionCreators.joinByPin(pin, nameToUse.trim(), Role.Player, appDispatch, authMode) as any);
 	};
 
 	const onKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {

@@ -23,7 +23,7 @@ const mapStateToProps = (state: State) => ({
 const getContent = (path: Path) => {
 	switch (path) {
 		case Path.Login:
-			return <div>{localization.connectionClosed}</div>;
+			return <ErrorView error={localization.connectionClosed} />;
 
 		case Path.Room:
 			return <div className='miniRoom'><MiniGameStatus /><TableContextView /></div>;
