@@ -400,6 +400,14 @@ export const getPin = createAsyncThunk(
 	},
 );
 
+export const showLeaderboard = createAsyncThunk(
+	'room2/showLeaderboard',
+	async (arg: void, thunkAPI) => {
+		const dataContext = thunkAPI.extra as DataContext;
+		await dataContext.game.showLeaderboard();
+	},
+);
+
 export const setHost = createAsyncThunk(
 	'room2/setHost',
 	async (arg: string, thunkAPI) => {
@@ -826,7 +834,7 @@ export const room2Slice = createSlice({
 			state.settings.partialText = action.payload;
 		},
 		setSettingReadingSpeed: (state: Room2State, action: PayloadAction<number>) => {
-			state.settings.readingSpeed = action.payload;
+			state.settings.readingSpeed = Math.max(1, action.payload);
 		},
 		setSettingManaged: (state: Room2State, action: PayloadAction<boolean>) => {
 			state.settings.managed = action.payload;

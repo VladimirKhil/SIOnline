@@ -143,7 +143,7 @@ function removeOrphanedMediaFile(state: SIQuesterState, item: ContentItem, exclu
 	}
 
 	state.zip.remove(`${folderName}/${item.value}`);
-	state.zip.remove(`${folderName}/${encodeURIComponent(item.value)}`);
+	state.zip.remove(`${folderName}/${encodeURI(item.value)}`);
 	return true;
 }
 

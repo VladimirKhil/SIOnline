@@ -18,21 +18,22 @@ const defaultSteamAuthIdentity = 'SIGameServer';
 export default class SteamTauriHost extends TauriHost {
 	private readonly accountServiceClient = new AccountServiceClient('https://vladimirkhil.com/account');
 
-	private async loginBySteamAsync(): Promise<{ userId: string; token: string | null }> {
+	private async loginBySteamAsync(): Promise<{ userId: string; username: string; token: string | null }> {
 		if (!this.app || !this.app.core) {
-			throw new Error('Steam authorization is not available');
+			throw new Error('Steam connection is not available');
 		}
 
 		const authTicket = await this.app.core.invoke('get_steam_auth_ticket', {
 			identity: defaultSteamAuthIdentity,
 		});
 
-		const { userId, token } = await this.accountServiceClient.loginBySteamAsync({
+		const { userId, username, token } = await this.accountServiceClient.loginBySteamAsync({
 			authTicket,
 		}, true);
 
 		return {
 			userId,
+			username,
 			token: token ?? this.accountServiceClient.getBearerToken() ?? null,
 		};
 	}
@@ -63,16 +64,7 @@ export default class SteamTauriHost extends TauriHost {
 		}
 
 		try {
-			const userInfo: { name: string, avatar: string | null } = await this.app.core.invoke('get_steam_user_info', {});
-			const state = store.getState() as State;
-
-			if (userInfo.name) {
-				if (!state.user.login) {
-					store.dispatch(changeLogin(userInfo.name));
-				}
-
-				store.dispatch(changeAuthName(userInfo.name));
-			}
+			const userInfo: { avatar: string | null } = await this.app.core.invoke('get_steam_user_info', {});
 
 			if (userInfo.avatar && !localStorage.getItem(Constants.AVATAR_KEY)) {
 				localStorage.setItem(Constants.AVATAR_KEY, userInfo.avatar);
@@ -81,40 +73,38 @@ export default class SteamTauriHost extends TauriHost {
 			} else if (localStorage.getItem(Constants.AVATAR_KEY) && !localStorage.getItem(Constants.AVATAR_NAME_KEY)) {
 				localStorage.setItem(Constants.AVATAR_NAME_KEY, 'steam_avatar.png');
 			}
-
-			// const { userId, token } = await this.loginBySteamAsync();
-
-			// console.log('Steam user logged in with userId:', userId, ' token:', token);
 		} catch (error) {
 			console.error('Failed to get Steam user info:', error);
 		}
+
+		setTimeout(async () => {
+			try {
+				const { userId, username, token } = await this.loginBySteamAsync();
+
+				console.log('Steam user info:', userId, ' token:', token);
+				const state = store.getState() as State;
+
+				if (!state.user.login) {
+					store.dispatch(changeLogin(username));
+				}
+
+				store.dispatch(changeAuthName(username));
+			} catch (error) {
+				console.error('Failed to get Steam user info:', error);
+			}
+		}, 0);
 	}
 
 	getSupportedAuthModes(): AuthorizationMode[] {
-		return [AuthorizationMode.Steam];
+		return [];
 	}
 
 	getAuthToken(): string | null {
-		return /*this.accountServiceClient.getBearerToken() ??*/ null;
+		return this.accountServiceClient.getBearerToken() ?? null;
 	}
 
 	async getAuthorizationData(authorizationMode?: AuthorizationMode): Promise<AuthorizationData | null> {
-		if (authorizationMode !== AuthorizationMode.Steam) {
-			return null;
-		}
-
-		if (!this.app || !this.app.core) {
-			throw new Error('Steam authorization is not available');
-		}
-
-		const authTicket = await this.app.core.invoke('get_steam_auth_ticket', {
-			identity: defaultSteamAuthIdentity,
-		});
-
-		return {
-			AuthorizationMode: AuthorizationMode.Steam,
-			AuthTicket: authTicket,
-		};
+		return null;
 	}
 
 	async setFullScreen(fullScreen: boolean): Promise<boolean> {

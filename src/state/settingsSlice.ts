@@ -23,6 +23,7 @@ export interface SettingsState {
 	yesButtonKey: string | null;
 	noButtonKey: string | null;
 	pauseButtonKey: string | null;
+	censorButtonKey: string | null;
 	attachContentToTable: boolean;
 	showVideoAvatars: boolean;
 	theme: ThemeSettings;
@@ -30,6 +31,7 @@ export interface SettingsState {
 	logPointsEvent: boolean;
 	useProxy2: boolean;
 	loadExternalMedia: boolean;
+	clickableAnswer: boolean;
 	customSounds: Record<string, string | null>;
 }
 
@@ -49,6 +51,7 @@ const initialState: SettingsState = {
 	yesButtonKey: '+',
 	noButtonKey: '-',
 	pauseButtonKey: 'F9',
+	censorButtonKey: 'F8',
 	attachContentToTable: true,
 	showVideoAvatars: true,
 	theme: {
@@ -66,6 +69,7 @@ const initialState: SettingsState = {
 	logPointsEvent: true,
 	useProxy2: true,
 	loadExternalMedia: false,
+	clickableAnswer: true,
 	customSounds: {},
 };
 
@@ -187,6 +191,9 @@ export const settingsSlice = createSlice({
 		setPauseButtonKey: (state: SettingsState, action: PayloadAction<string | null>) => {
 			state.pauseButtonKey = action.payload;
 		},
+		setCensorButtonKey: (state: SettingsState, action: PayloadAction<string | null>) => {
+			state.censorButtonKey = action.payload;
+		},
 		setTableTextColor: (state: SettingsState, action: PayloadAction<string>) => {
 			state.theme.table.textColor = action.payload;
 		},
@@ -209,6 +216,9 @@ export const settingsSlice = createSlice({
 		setLoadExternalMedia: (state: SettingsState, action: PayloadAction<boolean>) => {
 			state.loadExternalMedia = action.payload;
 		},
+		setClickableAnswer: (state: SettingsState, action: PayloadAction<boolean>) => {
+			state.clickableAnswer = action.payload;
+		},
 		setCustomSound: (state: SettingsState, action: PayloadAction<{ soundKey: string, value: string | null }>) => {
 			state.customSounds[action.payload.soundKey] = action.payload.value;
 		},
@@ -227,6 +237,7 @@ export const settingsSlice = createSlice({
 			state.logPointsEvent = initialState.logPointsEvent;
 			state.useProxy2 = initialState.useProxy2;
 			state.loadExternalMedia = initialState.loadExternalMedia;
+			state.clickableAnswer = initialState.clickableAnswer;
 		},
 		resetKeysSettings: (state: SettingsState) => {
 			state.gameButtonKey = initialState.gameButtonKey;
@@ -235,6 +246,7 @@ export const settingsSlice = createSlice({
 			state.yesButtonKey = initialState.yesButtonKey;
 			state.noButtonKey = initialState.noButtonKey;
 			state.pauseButtonKey = initialState.pauseButtonKey;
+			state.censorButtonKey = initialState.censorButtonKey;
 		},
 		resetThemeSettings: (state: SettingsState) => {
 			state.theme = initialState.theme;
@@ -295,6 +307,7 @@ export const {
 	setYesButtonKey,
 	setNoButtonKey,
 	setPauseButtonKey,
+	setCensorButtonKey,
 	setTableTextColor,
 	setTableBackgroundColor,
 	setTableFontFamily,
@@ -302,6 +315,7 @@ export const {
 	setWriteGameLog,
 	setLogPointsEvent,
 	setLoadExternalMedia,
+	setClickableAnswer,
 	setCustomSound,
 	resetCommonSettings,
 	resetKeysSettings,

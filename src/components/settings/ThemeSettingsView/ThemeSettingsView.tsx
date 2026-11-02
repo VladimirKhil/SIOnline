@@ -106,7 +106,7 @@ const ThemeSettingsView: React.FC = () => {
 				</select>
 			</div>
 
-			{/* <div className='settingItem'>
+			<div className='settingItem'>
 				<input
 					id='isHexagonal'
 					type='checkbox'
@@ -114,7 +114,7 @@ const ThemeSettingsView: React.FC = () => {
 					onChange={e => appDispatch(setIsHexagonal(e.target.checked))} />
 
 				<label htmlFor='isHexagonal'>{localization.hexagonalRoundTable}</label>
-			</div> */}
+			</div>
 
 			<h2>{localization.room}</h2>
 

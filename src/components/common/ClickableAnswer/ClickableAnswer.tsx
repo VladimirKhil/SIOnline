@@ -18,6 +18,7 @@ interface ClickableAnswerProps {
 /** Displays an answer that could be searched online by click and copied to clipboard by right click. */
 export default function ClickableAnswer(props: ClickableAnswerProps): JSX.Element {
 	const clipboardSupported = useAppSelector(state => state.common.clipboardSupported);
+	const enabled = useAppSelector(state => state.settings.clickableAnswer !== false);
 	const appDispatch = useAppDispatch();
 	const content = props.children ?? props.text;
 
@@ -32,7 +33,7 @@ export default function ClickableAnswer(props: ClickableAnswerProps): JSX.Elemen
 		appDispatch(userInfoChanged(localization.answerCopied));
 	};
 
-	if (!clipboardSupported) {
+	if (!enabled || !clipboardSupported) {
 		return <span>{content}</span>;
 	}
 

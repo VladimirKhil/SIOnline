@@ -13,7 +13,8 @@ import {
 	setSoundVolume,
 	setLogPointsEvent,
 	setWriteGameLog,
-	setLoadExternalMedia
+	setLoadExternalMedia,
+	setClickableAnswer
 } from '../../../state/settingsSlice';
 import { setExternalMediaWarning } from '../../../state/tableSlice';
 
@@ -97,6 +98,17 @@ export function CommonSettingsView(): JSX.Element {
 
 			<div className="settingItem">
 				<input
+					id="clickableAnswer"
+					type="checkbox"
+					checked={settings.clickableAnswer !== false}
+					onChange={() => appDispatch(setClickableAnswer(settings.clickableAnswer === false))}
+				/>
+
+				<label htmlFor="clickableAnswer">{localization.clickableAnswer}</label>
+			</div>
+
+			<div className="settingItem">
+				<input
 					id="showVideoAvatars"
 					type="checkbox"
 					checked={settings.showVideoAvatars}
@@ -152,4 +164,3 @@ export function CommonSettingsView(): JSX.Element {
 }
 
 export default CommonSettingsView;
-

@@ -184,6 +184,10 @@ export default class GameClient implements IGameClient {
 		return this.gameServerClient.msgAsync(Messages.Config, 'SET', isShowman ? 'showman' : 'player', isShowman ? '' : tableIndex, name);
 	}
 
+	showLeaderboard(): Promise<boolean> {
+		return this.gameServerClient.msgAsync(Messages.Leaderboard);
+	}
+
 	stakeAllIn(): Promise<boolean> {
 		return this.gameServerClient.msgAsync(Messages.SetStake, 'AllIn');
 	}

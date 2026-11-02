@@ -4,17 +4,26 @@ import { getCookie, setCookie } from '../utils/CookieHelpers';
 import IHost, { AuthorizationData, FullScreenMode } from './IHost';
 import SIStorageClient from 'sistorage-client';
 import SIStorageInfo from '../client/contracts/SIStorageInfo';
+import { setFullScreen } from '../state/settingsSlice';
 
 const ACCEPT_LICENSE_KEY = 'ACCEPT_LICENSE';
 
 export default class BrowserHost implements IHost {
 	private gameLog = '';
 
+	constructor(private useLicense = true) {
+	}
+
 	isDesktop(): boolean {
 		return false;
 	}
 
 	initAsync(store: Store): Promise<void> {
+		// Window can be resized before fullscreenElement is updated, so the resize handler alone can miss the change
+		document.addEventListener('fullscreenchange', () => {
+			store.dispatch(setFullScreen(document.fullscreenElement !== null));
+		});
+
 		return Promise.resolve();
 	}
 
@@ -22,7 +31,7 @@ export default class BrowserHost implements IHost {
 	}
 
 	isLicenseAccepted(): boolean {
-		return getCookie(ACCEPT_LICENSE_KEY) !== '';
+		return !this.useLicense || getCookie(ACCEPT_LICENSE_KEY) !== '';
 	}
 
 	acceptLicense() {
@@ -46,6 +55,12 @@ export default class BrowserHost implements IHost {
 	}
 
 	detectFullScreen(): FullScreenMode {
+		// Window size in fullscreen mode can differ from screen size on mobile devices (e.g. because of display cutout)
+		if (document.fullscreenElement) {
+			return FullScreenMode.Yes;
+		}
+
+		// Browser fullscreen mode (F11) does not set fullscreenElement
 		return window.innerHeight == screen.height && window.innerWidth == screen.width ? FullScreenMode.Yes : FullScreenMode.No;
 	}
 

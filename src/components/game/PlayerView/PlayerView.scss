@@ -229,7 +229,7 @@
 	overflow: hidden;
 	height: 100%;
 	width: 100%;
-	transition: background 0.3s, border-color 0.3s, transform 0.2s;
+	transition: background 0.3s, border-color 0.3s, transform 0.3s ease, opacity 0.3s ease, box-shadow 0.3s ease;
 }
 
 .playerCard__top {
@@ -306,6 +306,11 @@
 
 .gamePlayers .playerCard.out_of_game {
 	opacity: 0.5;
+}
+
+.gamePlayers .playerCard.dimmed {
+	opacity: 0.6;
+	transform: scale(0.9);
 }
 
 .gamePlayers .playerCard.selectable {

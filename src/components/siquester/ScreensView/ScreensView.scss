@@ -35,6 +35,18 @@
 	height: 100%;
 }
 
+// Same box model as the game table text (#table .tableText): the element must fill the group cell,
+// otherwise AutoSizedText measures its own content height and never shrinks the font.
+.screensView__text {
+	width: 100%;
+	height: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	overflow: hidden;
+	white-space: pre-line;
+}
+
 .packageView__question__content__list {
 	display: flex;
 	flex-direction: column;

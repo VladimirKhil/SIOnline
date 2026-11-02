@@ -3,7 +3,6 @@
  */
 enum AuthorizationMode {
     None = 'None',
-    Steam = 'Steam',
     Account = 'Account',
 }
 

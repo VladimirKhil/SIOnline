@@ -242,64 +242,78 @@ const finishInitializationAsync = (
 		// 4. Execution: Navigation or Joining
 		if (targetView.path === Path.Room) {
 			if (targetView.gameId && targetView.role !== undefined && hostUri) {
-				const siHostClient = await connectToSIHostAsync(
-					hostUri,
-					dispatch,
-					appDispatch,
-					getState,
-					dataContext,
-				);
+				try {
+					const siHostClient = await connectToSIHostAsync(
+						hostUri,
+						dispatch,
+						appDispatch,
+						getState,
+						dataContext,
+					);
 
-				const result = await siHostClient.joinGameAsync({
-					GameId: targetView.gameId,
-					UserName: targetView.userName ?? (getState() as State).user.login,
-					Role: getServerRole(targetView.role),
-					Sex: targetView.sex === Sex.Male ? ServerSex.Male : ServerSex.Female,
-					Password: targetView.password ?? '',
-					Pin: targetView.pin ?? null,
-					AuthorizationMode: targetView.authorizationMode ?? AuthorizationMode.None,
-				});
+					const result = await siHostClient.joinGameAsync({
+						GameId: targetView.gameId,
+						UserName: targetView.userName ?? (getState() as State).user.login,
+						Role: getServerRole(targetView.role),
+						Sex: targetView.sex === Sex.Male ? ServerSex.Male : ServerSex.Female,
+						Password: targetView.password ?? '',
+						Pin: targetView.pin ?? null,
+						AuthorizationMode: targetView.authorizationMode ?? AuthorizationMode.None,
+					});
 
-				if (result !== JoinGame2Result.Success) {
-					const joinError = getJoinErrorMessage(result);
-					const userError = joinError ? `${localization.joinError}: ${joinError}` : localization.joinError;
-					appDispatch(userErrorChanged(userError));
-					await dataContext.game.leaveGame();
-					appDispatch(navigate({ navigation: { path: Path.Root }, saveState: true }));
-					return;
-				}
-
-				await onlineActionCreators.initGameAsync(
-					dispatch,
-					appDispatch,
-					targetView.gameId,
-					(getState() as State).user.login,
-					targetView.role,
-					targetView.isAutomatic ?? false,
-				);
-			} else {
-				appDispatch(navigate({ navigation: { path: Path.Root }, saveState: true }));
-				return;
-			}
-		} else if (targetView.path === Path.JoinRoom && targetView.gameId && hostUri) {
-			try {
-				const siHostClient = await connectToSIHostAsync(hostUri, dispatch, appDispatch, getState, dataContext);
-				const gameInfo = await siHostClient.tryGetGameInfoAsync(targetView.gameId);
-
-				if (gameInfo) {
-					if (!gameInfo.HostUri) {
-						gameInfo.HostUri = hostUri;
+					if (result !== JoinGame2Result.Success) {
+						const joinError = getJoinErrorMessage(result);
+						const userError = joinError ? `${localization.joinError}: ${joinError}` : localization.joinError;
+						appDispatch(userErrorChanged(userError));
+						await dataContext.game.leaveGame();
+						appDispatch(navigate({ navigation: { path: Path.Root }, saveState: true, replaceState: true }));
+						return;
 					}
 
-					appDispatch(selectGame(gameInfo));
-					appDispatch(navigate({ navigation: targetView, saveState: true }));
+					await onlineActionCreators.initGameAsync(
+						dispatch,
+						appDispatch,
+						targetView.gameId,
+						(getState() as State).user.login,
+						targetView.role,
+						targetView.isAutomatic ?? false,
+					);
+				} catch (e) {
+					appDispatch(commonErrorChanged(getErrorMessage(e)));
+					await dataContext.game.leaveGame();
+					appDispatch(navigate({ navigation: { path: Path.Root }, saveState: true, replaceState: true }));
 					return;
-				} else {
-					appDispatch(commonErrorChanged(`${localization.joinError}: ${localization.gameNotFound}`));
 				}
-			} catch (e) {
-				appDispatch(commonErrorChanged(getErrorMessage(e)));
+			} else {
+				appDispatch(navigate({ navigation: { path: Path.Root }, saveState: true, replaceState: true }));
+				return;
 			}
+		} else if (targetView.path === Path.JoinRoom) {
+			if (targetView.gameId && hostUri) {
+				try {
+					const siHostClient = await connectToSIHostAsync(hostUri, dispatch, appDispatch, getState, dataContext);
+					const gameInfo = await siHostClient.tryGetGameInfoAsync(targetView.gameId);
+
+					if (gameInfo) {
+						if (!gameInfo.HostUri) {
+							gameInfo.HostUri = hostUri;
+						}
+
+						appDispatch(selectGame(gameInfo));
+						appDispatch(navigate({ navigation: targetView, saveState: true }));
+						return;
+					} else {
+						appDispatch(commonErrorChanged(`${localization.joinError}: ${localization.gameNotFound}`));
+					}
+				} catch (e) {
+					appDispatch(commonErrorChanged(getErrorMessage(e)));
+				}
+			} else {
+				appDispatch(commonErrorChanged(`${localization.joinError}: ${localization.gameNotFound}`));
+			}
+
+			appDispatch(navigate({ navigation: { path: Path.Root }, saveState: true, replaceState: true }));
+			return;
 		}
 
 		if (targetView.path === Path.SIQuesterPackage && !(getState() as State).siquester.zip) {

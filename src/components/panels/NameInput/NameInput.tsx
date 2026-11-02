@@ -21,13 +21,16 @@ export default function NameInput({
     setName: (name: string) => void;
     className: string;
 }): JSX.Element {
+    const displayValue = useAuth && authName ? authName : userName;
+    const isSteam = displayValue.startsWith('Ⓢ');
+
     return (
         <input
             type="text"
             aria-label='Name'
             className={`${className} nameInput ${useAuth ? 'nameInput--auth' : ''}`}
             disabled={joinGameProgress || useAuth}
-            value={useAuth && authName ? authName : userName}
+            value={isSteam ? displayValue.substring(1) : displayValue}
             onChange={e => setName(e.target.value)}
             onKeyDown={onKeyDown}
             onBlur={onNameBlur}

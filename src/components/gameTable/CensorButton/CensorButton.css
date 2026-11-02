@@ -1,0 +1,34 @@
+.censorButton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    padding: 5px;
+    border: 0;
+    width: 32px;
+    height: 32px;
+    background: transparent;
+    color: #FFFFFF;
+    opacity: 0.6;
+    transition: all 0.2s ease;
+}
+
+.censorButton svg {
+    width: 100%;
+    height: 100%;
+}
+
+.censorButton.active {
+    opacity: 1;
+}
+
+.censorButton:hover {
+    opacity: 1;
+    background: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 0 12px rgba(255, 255, 255, 0.2);
+}
+
+.censorButton:active {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(0.95);
+}

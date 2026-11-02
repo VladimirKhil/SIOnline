@@ -32,11 +32,6 @@ export default interface JoinGameRequest {
     AuthorizationMode?: AuthorizationMode;
 
     /**
-     * Authorization ticket.
-     */
-    AuthTicket?: string | null;
-
-    /**
      * Game password.
      */
     Password?: string | null;

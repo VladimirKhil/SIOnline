@@ -194,12 +194,12 @@ export function GameInfoView(props: GameInfoViewProps): JSX.Element {
 			return;
 		}
 
-		const authMode = useAuth ? AuthorizationMode.Steam : AuthorizationMode.None;
+		const authMode = useAuth ? AuthorizationMode.Account : AuthorizationMode.None;
 		props.onJoin(game.HostUri, game.GameID, nameToUse.trim(), role, appDispatch, authMode);
 	};
 
 	// Check if join buttons should be disabled due to validation
-	const isNameInvalid = () => validateLoginName(useAuth && authName ? authName : userName) !== null;
+	const isNameInvalid = () => !useAuth && validateLoginName(userName) !== null;
 
 	const rules = buildRules(game.Rules, game.Mode);
 

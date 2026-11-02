@@ -31,6 +31,8 @@ const enum Messages {
 	/** Validates player answer. */
 	IsRight = 'ISRIGHT',
 
+	Leaderboard = 'LEADERBOARD',
+
 	Mark = 'MARK',
 
 	/** Notifies that media has been successfully loaded. */

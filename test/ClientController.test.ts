@@ -18,6 +18,8 @@ import ItemState from '../src/model/enums/ItemState';
 import ServerRole from '../src/client/contracts/ServerRole';
 import Path from '../src/model/enums/Path';
 import Role from '../src/model/Role';
+import * as globalActions from '../src/state/globalActions';
+import localization from '../src/model/resources/localization';
 
 describe('ClientController - Game Initialization Flow', () => {
 	let controller: ClientController;
@@ -804,13 +806,19 @@ describe('ClientController - Answer Phase Flow', () => {
 	});
 
 	describe('onPlayerAnswer', () => {
-		it('should display player answer', () => {
+		it('should display player answer and add it to the game log', () => {
+			state.settings.writeGameLog = true;
+			const addGameLogSpy = jest.spyOn(globalActions, 'addGameLog');
+
 			controller.onPlayerAnswer(0, 'My answer');
 
 			expect(mockAppDispatch).toHaveBeenCalled();
 			const actions = dispatchedActions.map(a => a.type);
 			expect(actions).toContain('room2/setPlayerAnswer');
 			expect(actions).toContain('room2/replicIndexChanged');
+			expect(addGameLogSpy).toHaveBeenCalledWith('Player1: My answer');
+
+			addGameLogSpy.mockRestore();
 		});
 	});
 
@@ -822,6 +830,19 @@ describe('ClientController - Answer Phase Flow', () => {
 			const actions = dispatchedActions.map(a => a.type);
 			expect(actions).toContain('room2/playersAnswersChanged');
 			expect(actions).not.toContain('room2/replicIndexChanged');
+		});
+
+		it('should add server-broadcast answers to the game log', () => {
+			state.settings.writeGameLog = true;
+			state.room2.persons.players.push({ ...state.room2.persons.players[0], name: 'Player2' });
+			const addGameLogSpy = jest.spyOn(globalActions, 'addGameLog');
+
+			controller.onAnswers(['First answer', 'Second answer']);
+
+			expect(addGameLogSpy).toHaveBeenNthCalledWith(1, 'Player1: First answer');
+			expect(addGameLogSpy).toHaveBeenNthCalledWith(2, 'Player2: Second answer');
+
+			addGameLogSpy.mockRestore();
 		});
 	});
 
@@ -1699,6 +1720,25 @@ describe('ClientController - Miscellaneous Operations', () => {
 			// The method only dispatches if conditions are met
 			// Let's verify the method was called without errors
 			expect(controller).toBeDefined();
+		});
+
+		it('should log activated answer options with a localized message', () => {
+			state.table.layoutMode = 1; // LayoutMode.AnswerOptions
+			state.settings.writeGameLog = true;
+			state.table.answerOptions = [
+				{
+					label: 'A',
+					state: ItemState.Normal,
+					content: { type: 0, value: 'text', read: false, partial: false },
+				},
+			];
+			const addGameLogSpy = jest.spyOn(globalActions, 'addGameLog');
+
+			controller.onContentState('screen', 1, ItemState.Active);
+
+			expect(addGameLogSpy).toHaveBeenCalledWith(localization.answerOptionActivated.replace('{0}', 'A'));
+
+			addGameLogSpy.mockRestore();
 		});
 	});
 });

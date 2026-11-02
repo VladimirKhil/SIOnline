@@ -13,7 +13,7 @@ import BannedView from '../BannedView/BannedView';
 import isWellFormedUri from '../../../utils/isWellFormedUri';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 
-import { setChatMode, setUsersMode } from '../../../state/room2Slice';
+import { setChatMode, setUsersMode, showLeaderboard } from '../../../state/room2Slice';
 
 import TabControl from '../../common/TabControl/TabControl';
 import ValidationArea from '../ValidationArea/ValidationArea';
@@ -79,6 +79,7 @@ function getSideArea(props: GameChatViewProps, chatMode: ChatMode, usersMode: Us
 export function GameChatView(props: GameChatViewProps): JSX.Element {
 	const appDispatch = useAppDispatch();
 	const chat = useAppSelector(state => state.room2.chat);
+	const deepMode = useAppSelector(state => state.room2.deepMode);
 	const role = useAppSelector(state => state.room2.role);
 
 	return (
@@ -147,12 +148,19 @@ export function GameChatView(props: GameChatViewProps): JSX.Element {
 
 			{chat.mode === ChatMode.Users
 				? <div className="wide tabHeader usersHeader">
-					<TabControl
-						tabs={[
-							{ id: UsersMode.Users, label: localization.members },
-							{ id: UsersMode.Banned, label: '🚫', title: localization.bannedList } ]}
-						activeTab={chat.usersMode}
-						onTabClick={n => appDispatch(setUsersMode(n))} />
+					<div className="usersHeaderContent">
+						<TabControl
+							tabs={[
+								{ id: UsersMode.Users, label: localization.members },
+								{ id: UsersMode.Banned, label: '🚫', title: localization.bannedList } ]}
+							activeTab={chat.usersMode}
+							onTabClick={n => appDispatch(setUsersMode(n))} />
+						{deepMode ? (
+							<button type="button" className="standard leaderboardButton" onClick={() => appDispatch(showLeaderboard())}>
+								{localization.showLeaderboard}
+							</button>
+						) : null}
+					</div>
 				</div> : null}
 
 			<div className="sideArea">

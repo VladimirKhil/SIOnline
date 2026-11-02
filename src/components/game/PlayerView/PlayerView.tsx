@@ -34,6 +34,7 @@ interface PlayerViewProps {
 	windowWidth: number;
 	windowHeight: number;
 	currentPrice: number;
+	isDimmed?: boolean;
 
 	listRef: React.RefObject<HTMLUListElement>;
 
@@ -54,7 +55,7 @@ export function PlayerView(props: PlayerViewProps): JSX.Element {
 	const scoreEditorRef = React.useRef<HTMLDivElement>(null);
 	const sumFieldRef = React.useRef<HTMLDivElement>(null);
 	const [isScoreEditorVisible, setIsScoreEditorVisible] = React.useState(false);
-	const { player, account, isMe, sex, avatar, avatarClass, avatarVideo, index } = props;
+	const { player, account, isMe, sex, avatar, avatarClass, avatarVideo, index, isDimmed } = props;
 
 	const areSumsEditable = useAppSelector(state => state.room2.areSumsEditable);
 	const isGameStarted = useAppSelector(state => state.room2.stage.isGameStarted);
@@ -79,7 +80,8 @@ export function PlayerView(props: PlayerViewProps): JSX.Element {
 		const meClass = isMe ? 'me' : '';
 		const inGameClass = player.inGame ? '' : 'out_of_game';
 		const selectableClass = player.canBeSelected && props.isSelectionEnabled ? 'selectable' : '';
-		return `playerCard ${stateClass} ${meClass} ${inGameClass} ${selectableClass}`;
+		const dimmedClass = isDimmed ? 'dimmed' : '';
+		return `playerCard ${stateClass} ${meClass} ${inGameClass} ${selectableClass} ${dimmedClass}`.trim();
 	};
 
 	const onCancelSumChange = () => {

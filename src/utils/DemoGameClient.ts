@@ -325,6 +325,10 @@ export default class DemoGameClient implements IGameClient {
 		throw new Error('Method not implemented.');
 	}
 
+	showLeaderboard(): Promise<boolean> {
+		throw new Error('Method not implemented.');
+	}
+
 	stakeAllIn(): Promise<boolean> {
 		throw new Error('Method not implemented.');
 	}

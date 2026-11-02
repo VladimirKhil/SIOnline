@@ -151,16 +151,17 @@ function getServerRole(role: Role) {
 	return role === Role.Player ? ServerRole.Player : ServerRole.Showman;
 }
 
-function getReservedUserName(userName: string, authorizationMode: AuthorizationMode): string {
-	if (authorizationMode !== AuthorizationMode.Steam) {
-		return userName;
-	}
-
-	return userName.startsWith('Ⓢ') ? userName : `Ⓢ${userName}`;
-}
-
 const joinGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
-	(hostUri: string, gameId: number, userName: string, role: Role, pin: number | null, appDispatch: AppDispatch, isAutomatic: boolean, authorizationMode: AuthorizationMode = AuthorizationMode.None) => async (
+	(
+		hostUri: string,
+		gameId: number,
+		userName: string,
+		role: Role,
+		pin: number | null,
+		appDispatch: AppDispatch,
+		isAutomatic: boolean,
+		authorizationMode: AuthorizationMode = AuthorizationMode.None,
+	) => async (
 		dispatch: Dispatch<any>,
 		getState: () => State,
 		dataContext: DataContext,
@@ -214,7 +215,7 @@ const joinGame: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 				return;
 			}
 
-			await initGameAsync(dispatch, appDispatch, gameId, siHostClient.userName ?? userName, role, isAutomatic);
+			await initGameAsync(dispatch, appDispatch, gameId, userName, role, isAutomatic);
 			saveStateToStorage(getState()); // use state that could be changed by initGameAsync
 
 			const navigation: INavigationState = {
@@ -253,7 +254,16 @@ const joinByPin: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
 			return;
 		}
 
-		appDispatch(joinGame(gameInfo.hostUri, gameInfo.gameId, userName, role, pin, appDispatch, false, authorizationMode) as unknown as UnknownAction);
+		appDispatch(joinGame(
+			gameInfo.hostUri,
+			gameInfo.gameId,
+			userName,
+			role,
+			pin,
+			appDispatch,
+			false,
+			authorizationMode
+		) as unknown as UnknownAction);
 	};
 
 function createGameSettings(
@@ -542,7 +552,6 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 			const effectiveUserName = authorizationMode !== AuthorizationMode.None && state.user.authName
 				? state.user.authName
 				: trimmedUserName;
-			const reservedUserName = getReservedUserName(effectiveUserName, authorizationMode);
 
 			const game = isSingleGame
 				? {
@@ -554,7 +563,7 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 				} : state.game;
 
 			const { playersCount, role } = game;
-			const me: AccountSettings = { name: reservedUserName, isHuman: true, isMale: state.settings.sex === Sex.Male };
+			const me: AccountSettings = { name: effectiveUserName, isHuman: true, isMale: state.settings.sex === Sex.Male };
 
 			let showman: AccountSettings;
 
@@ -579,7 +588,7 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 				playersCount,
 				role,
 				state,
-				reservedUserName,
+				effectiveUserName,
 				players,
 				game,
 				isSingleGame,

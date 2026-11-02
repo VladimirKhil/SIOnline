@@ -56,13 +56,13 @@ struct SteamUserInfo {
 fn get_steam_user_info(client_state: tauri::State<Client>) -> Result<SteamUserInfo, String> {
     let friends = client_state.friends();
     let name = friends.name();
-    
+
     let steam_id = client_state.user().steam_id();
     let me = friends.get_friend(steam_id);
     let avatar_data = me.large_avatar();
-    
+
     let mut avatar_base64 = None;
-    
+
     if let Some(data) = avatar_data {
         if let Some(img) = image::RgbaImage::from_raw(184, 184, data) {
             let mut cursor = Cursor::new(Vec::new());
