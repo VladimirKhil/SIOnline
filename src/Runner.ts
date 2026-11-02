@@ -9,7 +9,7 @@ import SIStorageInfo from './client/contracts/SIStorageInfo';
 import GameServerClient from './client/GameServerClient';
 import SIHostClient from './client/SIHostClient';
 import GameClient from './client/game/GameClient';
-import reduxThunk from 'redux-thunk';
+import { withExtraArgument } from 'redux-thunk';
 import actionCreators from './logic/actionCreators';
 import { INavigationState } from './state/uiSlice';
 import Path from './model/enums/Path';
@@ -245,7 +245,7 @@ async function initializeApp() {
 		{
 			...initialState,
 		},
-		applyMiddleware(reduxThunk.withExtraArgument(dataContext))
+		applyMiddleware(withExtraArgument(dataContext))
 	);
 
 	let oldState = store.getState();
