@@ -10,7 +10,6 @@ import SavedState, { loadState } from './state/SavedState';
 import actionCreators from './logic/actionCreators';
 import DataContext from './model/DataContext';
 import Config from './Config';
-import roomActionCreators from './state/room/roomActionCreators';
 import localization from './model/resources/localization';
 import GameClient from './client/game/GameClient';
 import { FirebaseApp, FirebaseOptions, initializeApp } from 'firebase/app';
@@ -48,7 +47,7 @@ import TauriHost from './host/TauriHost';
 import SteamTauriHost from './host/SteamTauriHost';
 import { subscribeToRichPresence } from './utils/RichPresenceHelpers';
 import { approveAnswerDefault, pressGameButton, rejectAnswerDefault } from './state/room2Slice';
-import { pauseGame } from './state/serverActions';
+import { moveNext, onPass, pauseGame } from './state/serverActions';
 import { setAnalytics } from './utils/Analytics';
 import { getPressedKey, matchesKey } from './utils/KeyHelpers';
 
@@ -233,9 +232,9 @@ function subscribeToExternalEvents(store: Store<State, any>, host: IHost) {
 		} else if (matchesKey(e, state.settings.gameButtonKey)) {
 			store.dispatch(pressGameButton());
 		} else if (matchesKey(e, state.settings.passButtonKey)) {
-			store.dispatch(roomActionCreators.onPass());
+			store.dispatch(onPass());
 		} else if (matchesKey(e, state.settings.nextButtonKey)) {
-			store.dispatch(roomActionCreators.moveNext());
+			store.dispatch(moveNext());
 		} else if (matchesKey(e, state.settings.yesButtonKey)) {
 			store.dispatch(approveAnswerDefault());
 		} else if (matchesKey(e, state.settings.noButtonKey)) {
@@ -492,4 +491,3 @@ const deviceType = getDeviceType();
 if (config.enableNoSleep && deviceType === 'mobile' && !isSafari()) {
 	enableNoSleep();
 }
-

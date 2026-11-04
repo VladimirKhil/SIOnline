@@ -1,24 +1,13 @@
 import * as React from 'react';
-import { Action, Dispatch } from 'redux';
-import { connect } from 'react-redux';
 import localization from '../../../model/resources/localization';
-import roomActionCreators from '../../../state/room/roomActionCreators';
-import { useAppSelector } from '../../../state/hooks';
+import { onPass } from '../../../state/serverActions';
+import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 import PlayerStates from '../../../model/enums/PlayerStates';
 
 import './PassButton.scss';
 
-interface PassButtonProps {
-	onPass: () => void;
-}
-
-const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
-	onPass: () => {
-		dispatch(roomActionCreators.onPass() as unknown as Action);
-	},
-});
-
-export function PassButton(props: PassButtonProps): JSX.Element {
+export default function PassButton(): JSX.Element {
+	const appDispatch = useAppDispatch();
 	const name = useAppSelector((state) => state.room2.name);
 	const persons = useAppSelector((state) => state.room2.persons);
 	const isConnected = useAppSelector((state) => state.common.isSIHostConnected);
@@ -31,11 +20,9 @@ export function PassButton(props: PassButtonProps): JSX.Element {
 			type="button"
 			className={`passButton ${canPass ? '' : ' hidden'}`}
 			disabled={!isConnected || !canPass}
-			onClick={() => props.onPass()}
+			onClick={() => appDispatch(onPass())}
 		>
 			{localization.pass.toLocaleUpperCase()}
 		</button>
 	);
 }
-
-export default connect(null, mapDispatchToProps)(PassButton);

@@ -16,12 +16,10 @@ import {
 	selectPlayers,
 	setAreSumsEditable,
 	setChatVisibility,
-	setDecisionType,
-	setIsEditingTables
-} from '../../../state/room2Slice';
+	setDecisionType } from '../../../state/room2Slice';
 
 import Constants from '../../../model/enums/Constants';
-import { pauseGame } from '../../../state/serverActions';
+import { moveNext as moveNextAction, pauseGame, startGame } from '../../../state/serverActions';
 import { analytics } from '../../../Index';
 import { logEvent } from 'firebase/analytics';
 
@@ -44,10 +42,7 @@ interface SideControlPanelProps {
 	onShowBanned: () => void;
 	onShowGameInfo: () => void;
 	onGiveTurn: () => void;
-	onMoveNext: () => void;
 	showGameManageDialog: () => void;
-	onStart: () => void;
-	onPass: () => void;
 }
 
 const mapStateToProps = (state: State) => ({
@@ -70,17 +65,8 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 	onGiveTurn: () => {
 		dispatch(roomActionCreators.giveTurn() as unknown as Action);
 	},
-	onMoveNext: () => {
-		dispatch(roomActionCreators.moveNext() as unknown as Action);
-	},
 	showGameManageDialog: () => {
 		dispatch(roomActionCreators.runShowManageGame());
-	},
-	onStart: () => {
-		dispatch(roomActionCreators.startGame() as unknown as Action);
-	},
-	onPass: () => {
-		dispatch(roomActionCreators.onPass() as unknown as Action);
 	},
 });
 
@@ -120,8 +106,12 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 	};
 
 	const moveNext = () => {
-		props.onMoveNext();
+		appDispatch(moveNextAction());
 		appDispatch(setAreSumsEditable(false));
+	};
+
+	const start = () => {
+		appDispatch(startGame());
 	};
 
 	const onExit = () => {
@@ -293,7 +283,7 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 							type="button"
 							className={nextButtonClassName}
 							title={canStart ? localization.startGameHint : localization.next}
-							onClick={canStart ? props.onStart : moveNext}>
+							onClick={canStart ? start : moveNext}>
 							{canStart ? <span role="img" aria-label="arrow right">▶</span> : <img alt='Next' src={nextImg} />}
 						</button>
 					) : null}

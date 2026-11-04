@@ -1,10 +1,9 @@
 import * as React from 'react';
-import { Action, Dispatch } from 'redux';
 import { connect } from 'react-redux';
 import State from '../../../state/State';
 import localization from '../../../model/resources/localization';
 import Sex from '../../../model/enums/Sex';
-import roomActionCreators from '../../../state/room/roomActionCreators';
+import { apellate, disagree } from '../../../state/serverActions';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 import { DialogView, showDialog } from '../../../state/room2Slice';
 
@@ -14,22 +13,11 @@ interface ReactionPanelProps {
 	isConnected: boolean;
 	sex: Sex;
 
-	apellate: () => void;
-	disagree: () => void;
 }
 
 const mapStateToProps = (state: State) => ({
 	isConnected: state.common.isSIHostConnected,
 	sex: state.settings.sex,
-});
-
-const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
-	apellate: () => {
-		dispatch(roomActionCreators.apellate() as object as Action);
-	},
-	disagree: () => {
-		dispatch(roomActionCreators.disagree() as object as Action);
-	},
 });
 
 export function ReactionPanel(props: ReactionPanelProps): JSX.Element | null {
@@ -47,7 +35,7 @@ export function ReactionPanel(props: ReactionPanelProps): JSX.Element | null {
 					className="reactionButton standard"
 					disabled={!props.isConnected}
 					title={localization.apellateAnswer}
-					onClick={() => props.apellate()}>
+					onClick={() => appDispatch(apellate())}>
 					{rightString}
 				</button>
 
@@ -56,7 +44,7 @@ export function ReactionPanel(props: ReactionPanelProps): JSX.Element | null {
 					className="reactionButton standard"
 					disabled={!props.isConnected || playerCount < 4} // 2 players cannot overvote third player + showman
 					title={localization.iDisagreeHint}
-					onClick={() => props.disagree()}>
+					onClick={() => appDispatch(disagree())}>
 					{localization.iDisagree}
 				</button>
 			</> )
@@ -74,4 +62,4 @@ export function ReactionPanel(props: ReactionPanelProps): JSX.Element | null {
 	);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ReactionPanel);
+export default connect(mapStateToProps)(ReactionPanel);

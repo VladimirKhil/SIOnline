@@ -1,8 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { Dispatch, Action } from 'redux';
 import State from '../../../state/State';
-import roomActionCreators from '../../../state/room/roomActionCreators';
+import { changePlayerSum } from '../../../state/serverActions';
 import PlayerInfo from '../../../model/PlayerInfo';
 import Persons from '../../../model/Persons';
 import PlayerStates from '../../../model/enums/PlayerStates';
@@ -20,7 +19,6 @@ interface PlayersViewProps {
 	avatarKey: string | null;
 	isVisible: boolean;
 
-	onSumChanged: (playerIndex: number, sum: number) => void;
 }
 
 const mapStateToProps = (state: State) => ({
@@ -29,12 +27,6 @@ const mapStateToProps = (state: State) => ({
 	avatar: state.user.avatar,
 	avatarKey: state.settings.avatarKey,
 	isVisible: state.ui.showPlayers,
-});
-
-const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
-	onSumChanged: (playerIndex: number, sum: number) => {
-		dispatch(roomActionCreators.changePlayerSum(playerIndex, sum) as object as Action);
-	},
 });
 
 const PlayersView: React.FC<PlayersViewProps> = (props) => {
@@ -47,10 +39,14 @@ const PlayersView: React.FC<PlayersViewProps> = (props) => {
 		appDispatch(playerSelected(index));
 	};
 
+	const onSumChanged = (playerIndex: number, sum: number) => {
+		appDispatch(changePlayerSum({ playerIndex, sum }));
+	};
+
 	const isLarge = props.players.length > 6;
 
 	const isSingleAnswererQuestion = !!questionType && !questionType.endsWith('All') && props.players.some(p => p.state === PlayerStates.Press);
-	
+
 	const renderPlayer = (player: PlayerInfo, index: number): JSX.Element => {
 		const account = props.all[player.name];
 		const isMe = player.name === name;
@@ -74,7 +70,7 @@ const PlayersView: React.FC<PlayersViewProps> = (props) => {
 			index={index}
 			isDimmed={isDimmed}
 			onPlayerSelected={() => onPlayerSelected(index)}
-			onSumChanged={(sum) => props.onSumChanged(index, sum)} />;
+			onSumChanged={(sum) => onSumChanged(index, sum)} />;
 	};
 
 	return !props.isVisible ? null : (
@@ -86,4 +82,4 @@ const PlayersView: React.FC<PlayersViewProps> = (props) => {
 	);
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(PlayersView);
+export default connect(mapStateToProps)(PlayersView);

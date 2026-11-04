@@ -1,12 +1,11 @@
 import * as React from 'react';
-import { Action, Dispatch } from 'redux';
 import { connect } from 'react-redux';
 import State from '../../../state/State';
 import localization from '../../../model/resources/localization';
-import roomActionCreators from '../../../state/room/roomActionCreators';
+import { ready } from '../../../state/serverActions';
 import Sex from '../../../model/enums/Sex';
 import Role from '../../../model/Role';
-import { useAppSelector } from '../../../state/hooks';
+import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 
 import './ReadyButton.scss';
 import PersonInfo from '../../../model/PersonInfo';
@@ -19,7 +18,6 @@ interface ReadyButtonProps {
 	isConnected: boolean;
 	sex: Sex;
 
-	onReady: (isReady: boolean) => void;
 }
 
 const getIsReady = (role: Role, showman: PersonInfo, players: PlayerInfo[], name: string) => {
@@ -43,12 +41,6 @@ const mapStateToProps = (state: State) => ({
 	sex: state.settings.sex,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
-	onReady: (isReady: boolean) => {
-		dispatch(roomActionCreators.ready(isReady) as unknown as Action);
-	},
-});
-
 function getNotReadyMessage(props: ReadyButtonProps) {
 	return props.sex === Sex.Female ? localization.readyToPlayFemale : localization.readyToPlayMale;
 }
@@ -61,6 +53,7 @@ function getReadyMessage() {
  * Renders the ready status toggle button for room participants.
  */
 export function ReadyButton(props: ReadyButtonProps): JSX.Element | null {
+	const appDispatch = useAppDispatch();
 	const role = useAppSelector(state => state.room2.role);
 	const persons = useAppSelector(state => state.room2.persons);
 	const name = useAppSelector(state => state.room2.name);
@@ -75,7 +68,7 @@ export function ReadyButton(props: ReadyButtonProps): JSX.Element | null {
 			<button
 				type="button"
 				className={`ready_button ${isReady ? 'ready' : 'not-ready'} ${enabledClass} ${demoButtonHighlights.ready ? 'demoHighlighted' : ''}`}
-				onClick={() => props.onReady(!isReady)}
+				onClick={() => appDispatch(ready(!isReady))}
 				disabled={!props.isConnected}
 			>
 				{label}
@@ -84,4 +77,4 @@ export function ReadyButton(props: ReadyButtonProps): JSX.Element | null {
 	);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ReadyButton);
+export default connect(mapStateToProps)(ReadyButton);

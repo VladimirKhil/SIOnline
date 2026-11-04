@@ -4,6 +4,8 @@ import { connect } from 'react-redux';
 import localization from '../../../model/resources/localization';
 import State from '../../../state/State';
 import roomActionCreators from '../../../state/room/roomActionCreators';
+import { unban } from '../../../state/serverActions';
+import { useAppDispatch } from '../../../state/hooks';
 
 import './BannedView.css';
 
@@ -13,7 +15,6 @@ interface BannedViewProps {
 	selectedInfoIp: string | null;
 
 	selectItem: (ip: string) => void;
-	unban: (ip: string) => void;
 }
 
 const mapStateToProps = (state: State) => ({
@@ -27,12 +28,10 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
 		dispatch(roomActionCreators.selectBannedItem(ip) as object as Action);
 	},
 
-	unban: (ip: string) => {
-		dispatch(roomActionCreators.unban(ip) as object as Action);
-	},
 });
 
 export function BannedView(props: BannedViewProps): JSX.Element {
+	const appDispatch = useAppDispatch();
 	return (
 		<div className='bannedView'>
 			<ul className='bannedList'>
@@ -49,7 +48,7 @@ export function BannedView(props: BannedViewProps): JSX.Element {
 				<button
 					type="button"
 					className='standard'
-					onClick={() => props.unban(props.selectedInfoIp ?? '')}
+					onClick={() => appDispatch(unban(props.selectedInfoIp ?? ''))}
 					disabled={!props.isConnected || !props.selectedInfoIp}>
 					{localization.unban}
 				</button>
