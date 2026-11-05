@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useSelector } from 'react-redux';
 import State from '../../../state/State';
-import Role from '../../../model/Role';
+import Role from '../../../client/models/Role';
 import { isRunning } from '../../../utils/TimerInfoHelpers';
 import { useAppDispatch } from '../../../state/hooks';
 import { onMediaLoaded } from '../../../state/serverActions';
