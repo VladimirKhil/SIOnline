@@ -1,5 +1,5 @@
 import * as React from 'react';
-import Role from '../../../model/Role';
+import Role from '../../../client/models/Role';
 import TableMode from '../../../model/enums/TableMode';
 import localization from '../../../model/resources/localization';
 import { getLocalizedSeconds } from '../../../utils/TimeHelpers';

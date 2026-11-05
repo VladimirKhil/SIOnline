@@ -1,26 +1,26 @@
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import DataContext from '../model/DataContext';
-import PlayerInfo from '../model/PlayerInfo';
-import PersonInfo from '../model/PersonInfo';
-import PlayerStates from '../model/enums/PlayerStates';
+import PlayerInfo from '../client/models/PlayerInfo';
+import PersonInfo from '../client/models/PersonInfo';
+import PlayerStates from '../client/models/enums/PlayerStates';
 import localization from '../model/resources/localization';
 import State from './State';
 import Constants from '../model/enums/Constants';
-import Role from '../model/Role';
+import Role from '../client/models/Role';
 import AppSettings, { initialState as initialAppSettings } from '../model/AppSettings';
 import ChatMode from '../model/enums/ChatMode';
 import ChatMessage from '../model/ChatMessage';
 import UsersMode from '../model/enums/UsersMode';
 import MessageLevel from '../model/enums/MessageLevel';
 import JoinMode from '../client/game/JoinMode';
-import Account from '../model/Account';
-import Persons from '../model/Persons';
+import Account from '../client/models/Account';
+import Persons from '../client/models/Persons';
 import Timers from '../model/Timers';
 import TimerInfo from '../model/TimerInfo';
 import TimerStates from '../model/enums/TimeStates';
 import { stopAudio, userErrorChanged } from './commonSlice';
 import { clearGameLog } from './globalActions';
-import StakeTypes from '../model/enums/StakeTypes';
+import StakeTypes from '../client/models/enums/StakeTypes';
 
 export enum DialogView {
 	None,

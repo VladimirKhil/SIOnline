@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import GameType from '../model/GameType';
 import PackageType from '../model/enums/PackageType';
-import Role from '../model/Role';
+import Role from '../client/models/Role';
 import localization from '../model/resources/localization';
 
 export interface PackageData {

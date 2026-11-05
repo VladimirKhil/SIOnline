@@ -45,7 +45,7 @@ import { changeLogin } from '../src/state/userSlice';
 import AuthorizationMode from '../src/client/contracts/AuthorizationMode';
 import { setName, setPackageType, setRole, setPlayersCount, setType, setPassword } from '../src/state/gameSlice';
 import PackageType from '../src/model/enums/PackageType';
-import Role from '../src/model/Role';
+import Role from '../src/client/models/Role';
 import GameType from '../src/model/GameType';
 import { newGame } from '../src/state/online2Slice';
 import { randomBytes } from 'crypto';
