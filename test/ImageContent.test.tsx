@@ -2,7 +2,7 @@ import * as React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { useSelector } from 'react-redux';
 import ImageContent from '../src/components/gameTable/ImageContent/ImageContent';
-import Role from '../src/model/Role';
+import Role from '../src/client/models/Role';
 import TimerStates from '../src/model/enums/TimeStates';
 import { useAppDispatch } from '../src/state/hooks';
 
