@@ -11,7 +11,8 @@ import {
 	sendAnswerAsWrongByDefault,
 } from '../../../state/serverActions';
 import { DecisionType } from '../../../state/room2Slice';
-import Role from '../../../model/Role';
+import Role from '../../../client/models/Role';
+import { getMeAsPlayer } from '../../../utils/StateHelpers';
 
 import './HtmlContent.css';
 
@@ -19,15 +20,52 @@ interface HtmlContentProps {
 	uri: string;
 }
 
+/** Role of the local participant as it is seen by cooperative HTML content. */
+export type HtmlContentRole = 'viewer' | 'player' | 'showman';
+
 interface HtmlContentControlMessage {
 	type: 'si:media-control';
-	action: 'play' | 'pause' | 'set-volume' | 'answer' | 'answer-end';
+	action: 'play' | 'pause' | 'set-volume' | 'answer' | 'answer-end' | 'hello';
 	volume?: number;
+
+	/** Name of the local participant. 'hello' only. */
+	name?: string;
+
+	/** Role of the local participant. 'hello' only. */
+	role?: HtmlContentRole;
+
+	/** Score of the local participant when the greeting was sent. 'hello' of a player only. */
+	sum?: number;
 }
 
 interface HtmlContentEventMessage {
 	type: 'si:media-event';
-	event: 'completed' | 'answer-right' | 'answer-wrong' | 'supports-set-volume';
+	event: 'completed' | 'answer-right' | 'answer-wrong' | 'supports-set-volume' | 'hello';
+}
+
+/** Converts internal role value to its cooperative HTML content representation. */
+export function getHtmlContentRole(role: Role): HtmlContentRole {
+	switch (role) {
+		case Role.Showman:
+			return 'showman';
+
+		case Role.Player:
+			return 'player';
+
+		default:
+			return 'viewer';
+	}
+}
+
+/** Builds a greeting message which tells the content who watches it. */
+export function buildHelloMessage(name: string, role: Role, sum?: number) {
+	return {
+		type: 'si:media-control',
+		action: 'hello',
+		name,
+		role: getHtmlContentRole(role),
+		sum,
+	} satisfies HtmlContentControlMessage;
 }
 
 export function HtmlContent(props: HtmlContentProps) {
@@ -42,6 +80,9 @@ export function HtmlContent(props: HtmlContentProps) {
 	const isVisible = useAppSelector(state => state.ui.isVisible);
 	const soundVolume = useAppSelector(state => state.settings.soundVolume);
 	const shouldAnswer = useAppSelector(state => state.room2.stage.decisionType === DecisionType.Answer);
+	const name = useAppSelector(state => state.room2.name);
+	const role = useAppSelector(state => state.room2.role);
+	const sum = useAppSelector(state => getMeAsPlayer(state)?.sum);
 
 	// The frame is a separate document, so mouse events over it never reach the app's global handlers.
 	// While the player can press the game button, let the events pass through so right click still presses it
@@ -54,6 +95,10 @@ export function HtmlContent(props: HtmlContentProps) {
 			volume,
 		} satisfies HtmlContentControlMessage, '*');
 	}, []);
+
+	const postHelloMessage = React.useCallback(() => {
+		frameRef.current?.contentWindow?.postMessage(buildHelloMessage(name, role, sum), '*');
+	}, [name, role, sum]);
 
 	React.useEffect(() => {
 		completedRef.current = false;
@@ -92,6 +137,11 @@ export function HtmlContent(props: HtmlContentProps) {
 					appDispatch(registerCooperativeHtmlVolumeSupport(supportIdRef.current));
 					return;
 
+				case 'hello':
+					// Content could start listening after the frame load event, so it is allowed to ask for a greeting itself.
+					postHelloMessage();
+					return;
+
 				case 'completed':
 					if (completedRef.current || isMediaStopped || !isVisible) {
 						return;
@@ -119,7 +169,7 @@ export function HtmlContent(props: HtmlContentProps) {
 		return () => {
 			window.removeEventListener('message', handleMessage);
 		};
-	}, [appDispatch, isMediaStopped, isVisible, uri]);
+	}, [appDispatch, isMediaStopped, isVisible, postHelloMessage, uri]);
 
 	React.useEffect(() => {
 		if (completedRef.current) {
@@ -161,6 +211,7 @@ export function HtmlContent(props: HtmlContentProps) {
 		allow='autoplay'
 		onLoad={() => {
 			appDispatch(onMediaLoaded());
+			postHelloMessage();
 			postControlMessage('set-volume', soundVolume);
 			postControlMessage(isMediaStopped || !isVisible ? 'pause' : 'play');
 

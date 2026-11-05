@@ -2,8 +2,84 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import DataContext from '../model/DataContext';
 import State from './State';
 import { isSelectableChanged } from './tableSlice';
-import { DecisionType, setDecisionType } from './room2Slice';
+import { DecisionType, setDecisionType, setDemoButtonHighlights } from './room2Slice';
 import JoinMode from '../client/game/JoinMode';
+import Path from '../model/enums/Path';
+
+export const onPass = createAsyncThunk(
+	'server/onPass',
+	async (_arg: void, thunkAPI) => {
+		await (thunkAPI.extra as DataContext).game.pass();
+	}
+);
+
+export const apellate = createAsyncThunk(
+	'server/apellate',
+	async (_arg: void, thunkAPI) => {
+		await (thunkAPI.extra as DataContext).game.apellate(true);
+	}
+);
+
+export const disagree = createAsyncThunk(
+	'server/disagree',
+	async (_arg: void, thunkAPI) => {
+		await (thunkAPI.extra as DataContext).game.apellate(false);
+	}
+);
+
+export const changePlayerSum = createAsyncThunk(
+	'server/changePlayerSum',
+	async (arg: { playerIndex: number, sum: number }, thunkAPI) => {
+		await (thunkAPI.extra as DataContext).game.setPlayerScore(arg.playerIndex, arg.sum);
+	}
+);
+
+export const startGame = createAsyncThunk(
+	'server/startGame',
+	async (_arg: void, thunkAPI) => {
+		await (thunkAPI.extra as DataContext).game.start();
+	}
+);
+
+export const ready = createAsyncThunk(
+	'server/ready',
+	async (isReady: boolean, thunkAPI) => {
+		const dataContext = thunkAPI.extra as DataContext;
+		await dataContext.game.ready(isReady);
+
+		if (isReady && (thunkAPI.getState() as State).ui.navigation.path === Path.Demo) {
+			thunkAPI.dispatch(setDemoButtonHighlights({ leaveRoom: false, ready: false, next: true }));
+		}
+	}
+);
+
+export const moveNext = createAsyncThunk(
+	'server/moveNext',
+	async (_arg: void, thunkAPI) => {
+		const dataContext = thunkAPI.extra as DataContext;
+		await dataContext.game.moveNext();
+
+		const state = thunkAPI.getState() as State;
+
+		if (state.ui.navigation.path === Path.Demo && state.room2.demoButtonHighlights.next) {
+			thunkAPI.dispatch(setDemoButtonHighlights({ next: false }));
+		}
+	}
+);
+
+export const navigateToRound = createAsyncThunk(
+	'server/navigateToRound',
+	async (roundIndex: number, thunkAPI) => {
+		await (thunkAPI.extra as DataContext).game.moveToRound(roundIndex);
+	}
+);
+
+export const unban = createAsyncThunk(
+	'server/unban',
+	async (ip: string, thunkAPI) => {
+		await (thunkAPI.extra as DataContext).game.unban(ip);
+	}
+);
 
 export const initRoom = createAsyncThunk(
 	'server/initRoom',

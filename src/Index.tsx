@@ -10,7 +10,6 @@ import SavedState, { loadState } from './state/SavedState';
 import actionCreators from './logic/actionCreators';
 import DataContext from './model/DataContext';
 import Config from './Config';
-import roomActionCreators from './state/room/roomActionCreators';
 import localization from './model/resources/localization';
 import GameClient from './client/game/GameClient';
 import { FirebaseApp, FirebaseOptions, initializeApp } from 'firebase/app';
@@ -46,9 +45,11 @@ import { INavigationState, setCensored, setFullScreenSupported, settingKeyChange
 import { navigate } from './utils/Navigator';
 import TauriHost from './host/TauriHost';
 import SteamTauriHost from './host/SteamTauriHost';
+import { subscribeToRichPresence } from './utils/RichPresenceHelpers';
 import { approveAnswerDefault, pressGameButton, rejectAnswerDefault } from './state/room2Slice';
-import { pauseGame } from './state/serverActions';
+import { moveNext, onPass, pauseGame } from './state/serverActions';
 import { setAnalytics } from './utils/Analytics';
+import { getPressedKey, matchesKey } from './utils/KeyHelpers';
 
 import './utils/polyfills';
 import './scss/style.scss';
@@ -196,31 +197,31 @@ function subscribeToExternalEvents(store: Store<State, any>, host: IHost) {
 		if (state.ui.settingKey) {
 			switch (state.ui.settingKey) {
 				case 'answer':
-					store.dispatch(setGameButtonKey(e.key));
+					store.dispatch(setGameButtonKey(getPressedKey(e)));
 					break;
 
 				case 'pass':
-					store.dispatch(setPassButtonKey(e.key));
+					store.dispatch(setPassButtonKey(getPressedKey(e)));
 					break;
 
 				case 'next':
-					store.dispatch(setNextButtonKey(e.key));
+					store.dispatch(setNextButtonKey(getPressedKey(e)));
 					break;
 
 				case 'yes':
-					store.dispatch(setYesButtonKey(e.key));
+					store.dispatch(setYesButtonKey(getPressedKey(e)));
 					break;
 
 				case 'no':
-					store.dispatch(setNoButtonKey(e.key));
+					store.dispatch(setNoButtonKey(getPressedKey(e)));
 					break;
 
 				case 'pause':
-					store.dispatch(setPauseButtonKey(e.key));
+					store.dispatch(setPauseButtonKey(getPressedKey(e)));
 					break;
 
 				case 'censor':
-					store.dispatch(setCensorButtonKey(e.key));
+					store.dispatch(setCensorButtonKey(getPressedKey(e)));
 					break;
 
 				default:
@@ -228,19 +229,19 @@ function subscribeToExternalEvents(store: Store<State, any>, host: IHost) {
 			}
 
 			store.dispatch(settingKeyChanged(null));
-		} else if (e.key === state.settings.gameButtonKey) {
+		} else if (matchesKey(e, state.settings.gameButtonKey)) {
 			store.dispatch(pressGameButton());
-		} else if (e.key === state.settings.passButtonKey) {
-			store.dispatch(roomActionCreators.onPass());
-		} else if (e.key === state.settings.nextButtonKey) {
-			store.dispatch(roomActionCreators.moveNext());
-		} else if (e.key === state.settings.yesButtonKey) {
+		} else if (matchesKey(e, state.settings.passButtonKey)) {
+			store.dispatch(onPass());
+		} else if (matchesKey(e, state.settings.nextButtonKey)) {
+			store.dispatch(moveNext());
+		} else if (matchesKey(e, state.settings.yesButtonKey)) {
 			store.dispatch(approveAnswerDefault());
-		} else if (e.key === state.settings.noButtonKey) {
+		} else if (matchesKey(e, state.settings.noButtonKey)) {
 			store.dispatch(rejectAnswerDefault());
-		} else if (e.key === state.settings.pauseButtonKey) {
+		} else if (matchesKey(e, state.settings.pauseButtonKey)) {
 			store.dispatch(pauseGame());
-		} else if (e.key === state.settings.censorButtonKey) {
+		} else if (matchesKey(e, state.settings.censorButtonKey)) {
 			store.dispatch(setCensored(!state.ui.isCensored));
 		}
 
@@ -406,6 +407,7 @@ async function run(host: IHost) {
 		});
 
 		subscribeToExternalEvents(store, host);
+		subscribeToRichPresence(store, host);
 
 		store.dispatch(windowSizeChanged({ width: window.innerWidth, height: window.innerHeight }));
 		store.dispatch(setFullScreenSupported(host.isFullScreenSupported()));
@@ -489,4 +491,3 @@ const deviceType = getDeviceType();
 if (config.enableNoSleep && deviceType === 'mobile' && !isSafari()) {
 	enableNoSleep();
 }
-

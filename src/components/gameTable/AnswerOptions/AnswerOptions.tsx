@@ -3,7 +3,7 @@ import ContentItem from '../../../model/ContentItem';
 import ContentType from '../../../model/enums/ContentType';
 import TextContent from '../TextContent/TextContent';
 import ImageContent from '../ImageContent/ImageContent';
-import ItemState from '../../../model/enums/ItemState';
+import ItemState from '../../../client/models/enums/ItemState';
 import AutoSizedText from '../../common/AutoSizedText/AutoSizedText';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 import { RootState } from '../../../state/store';

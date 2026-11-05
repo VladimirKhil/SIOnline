@@ -10,7 +10,7 @@ import { userErrorChanged } from '../state/commonSlice';
 import localization from '../model/resources/localization';
 import getErrorMessage from './ErrorHelpers';
 import onlineActionCreators from '../state/online/onlineActionCreators';
-import Role from '../model/Role';
+import Role from '../client/models/Role';
 import DemoGameClient from './DemoGameClient';
 import ClientController from '../logic/ClientController';
 import { ensureServerInfoLoadedAsync } from '../logic/ServerInitializer';
@@ -21,7 +21,8 @@ import registerApp from './registerApp';
 import { analytics } from './Analytics';
 import { logEvent } from 'firebase/analytics';
 import stringFormat from './StringHelpers';
-import Sex from '../model/enums/Sex';
+import Sex from '../client/models/enums/Sex';
+import { getGameLink } from './inviteLink';
 
 let isInitialized = false;
 
@@ -32,18 +33,7 @@ function saveNavigationState(navigation: INavigationState, dataContext: DataCont
 
 	if (window.history.length === 0 || !window.history.state || (window.history.state as INavigationState).path !== navigation.path) {
 		if (navigation.path === Path.Room && navigation.gameId) {
-			let gameLink = null;
-
-			for (const [key, value] of Object.entries(siHosts)) {
-				if (value === navigation.hostUri) {
-					gameLink = '_' + key + navigation.gameId;
-					break;
-				}
-			}
-
-			if (!gameLink) {
-				gameLink = `gameId=${navigation.gameId}&host=${encodeURIComponent(navigation.hostUri ?? '')}`;
-			}
+			const gameLink = getGameLink(navigation.gameId, navigation.hostUri, siHosts);
 
 			dataContext.host.saveNavigationState(
 				navigation,

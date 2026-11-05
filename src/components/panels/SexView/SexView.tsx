@@ -1,5 +1,5 @@
 import * as React from 'react';
-import Sex from '../../../model/enums/Sex';
+import Sex from '../../../client/models/enums/Sex';
 import localization from '../../../model/resources/localization';
 import Selector from '../../common/Selector/Selector';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';

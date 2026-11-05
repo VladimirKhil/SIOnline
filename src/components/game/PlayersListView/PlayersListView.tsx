@@ -1,11 +1,10 @@
 import { connect } from 'react-redux';
 import * as React from 'react';
 import State from '../../../state/State';
-import { Action, Dispatch } from 'redux';
-import PlayerInfo from '../../../model/PlayerInfo';
-import roomActionCreators from '../../../state/room/roomActionCreators';
+import PlayerInfo from '../../../client/models/PlayerInfo';
+import { changePlayerSum } from '../../../state/serverActions';
 import NumericTextBox from '../../common/NumericTextBox/NumericTextBox';
-import Persons from '../../../model/Persons';
+import Persons from '../../../client/models/Persons';
 import getAvatarClass from '../../../utils/AccountHelpers';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 import { playerSelected, setAreSumsEditable } from '../../../state/room2Slice';
@@ -17,7 +16,6 @@ interface PlayersListViewProps {
 	all: Persons;
 	avatar: string | null;
 
-	onSumChanged: (playerIndex: number, sum: number) => void;
 }
 
 const mapStateToProps = (state: State) => ({
@@ -26,19 +24,13 @@ const mapStateToProps = (state: State) => ({
 	avatar: state.user.avatar,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
-	onSumChanged: (playerIndex: number, sum: number) => {
-		dispatch(roomActionCreators.changePlayerSum(playerIndex, sum) as object as Action);
-	},
-});
-
 export function PlayersListView(props: PlayersListViewProps): JSX.Element {
 	const appDispatch = useAppDispatch();
 	const name = useAppSelector(state => state.room2.name);
 	const areSumsEditable = useAppSelector(state => state.room2.areSumsEditable);
 
 	const onSumChanged = (index: number, value: number) => {
-		props.onSumChanged(index, value);
+		appDispatch(changePlayerSum({ playerIndex: index, sum: value }));
 	};
 
 	const onCancelSumChange = () => {
@@ -84,4 +76,4 @@ export function PlayersListView(props: PlayersListViewProps): JSX.Element {
 	</div>;
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(PlayersListView);
+export default connect(mapStateToProps)(PlayersListView);

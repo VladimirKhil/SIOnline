@@ -1,4 +1,4 @@
-﻿import Role from '../model/Role';
+import Role from '../client/models/Role';
 import GameType from '../model/GameType';
 import GameInfo from '../model/GameInfo';
 import { SettingsState } from './settingsSlice';
