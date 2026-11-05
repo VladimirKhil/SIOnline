@@ -3,8 +3,8 @@ import ServerRole from '../client/contracts/ServerRole';
 import IGameClient from '../client/game/IGameClient';
 import JoinMode from '../client/game/JoinMode';
 import ClientController from '../logic/ClientController';
-import PlayerStates from '../model/enums/PlayerStates';
-import Sex from '../model/enums/Sex';
+import PlayerStates from '../client/models/enums/PlayerStates';
+import Sex from '../client/models/enums/Sex';
 import localization from '../model/resources/localization';
 import State from '../state/State';
 

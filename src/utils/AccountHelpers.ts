@@ -1,5 +1,5 @@
-import Account from '../model/Account';
-import Sex from '../model/enums/Sex';
+import Account from '../client/models/Account';
+import Sex from '../client/models/enums/Sex';
 
 export default function getAvatarClass(account: Account | null): string | null {
 	if (!account) {

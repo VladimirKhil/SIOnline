@@ -16,7 +16,7 @@ import PackageType from '../../../model/enums/PackageType';
 import FlyoutButton, { FlyoutTheme } from '../../common/FlyoutButton/FlyoutButton';
 import PackageFileSelector from '../PackageFileSelector/PackageFileSelector';
 import PackageSources from '../PackageSources/PackageSources';
-import Role from '../../../model/Role';
+import Role from '../../../client/models/Role';
 import { userErrorChanged } from '../../../state/commonSlice';
 import AutoSizedText from '../../common/AutoSizedText/AutoSizedText';
 import AuthModeSelector from '../AuthModeSelector/AuthModeSelector';

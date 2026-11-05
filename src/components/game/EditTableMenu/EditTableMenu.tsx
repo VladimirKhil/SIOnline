@@ -2,10 +2,10 @@ import React from 'react';
 import FlyoutButton, { FlyoutHorizontalOrientation, FlyoutVerticalOrientation } from '../../common/FlyoutButton/FlyoutButton';
 import localization from '../../../model/resources/localization';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
-import Account from '../../../model/Account';
+import Account from '../../../client/models/Account';
 import Constants from '../../../model/enums/Constants';
 import { changeTableType, deleteTable, freeTable, setTablePerson } from '../../../state/serverActions';
-import PersonInfo from '../../../model/PersonInfo';
+import PersonInfo from '../../../client/models/PersonInfo';
 import { kick, setHost } from '../../../state/room2Slice';
 import PersonName from '../PlayerView/PersonName';
 

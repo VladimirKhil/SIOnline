@@ -7,7 +7,7 @@ import ChatMode from '../../../model/enums/ChatMode';
 import UsersMode from '../../../model/enums/UsersMode';
 import localization from '../../../model/resources/localization';
 import ChatInput from '../ChatInput/ChatInput';
-import Role from '../../../model/Role';
+import Role from '../../../client/models/Role';
 import GameMetadataView from '../GameMetadataView/GameMetadataView';
 import BannedView from '../BannedView/BannedView';
 import isWellFormedUri from '../../../utils/isWellFormedUri';

@@ -1,4 +1,4 @@
-﻿import * as React from 'react';
+import * as React from 'react';
 import TableMode from '../../../model/enums/TableMode';
 import TableLogo from '../TableLogo/TableLogo';
 import TableText from '../TableText/TableText';
@@ -18,7 +18,7 @@ import TableWelcome from '../TableWelcome/TableWelcome';
 import TableStatistics from '../TableStatistics/TableStatistics';
 import TableLeaderboard from '../TableLeaderboard/TableLeaderboard';
 import AnswerValidationBody from '../AnswerValidationBody/AnswerValidationBody';
-import Role from '../../../model/Role';
+import Role from '../../../client/models/Role';
 import { DecisionType } from '../../../state/room2Slice';
 import VolumeButton from '../../common/VolumeButton/VolumeButton';
 import { useAudioContext } from '../../../contexts/AudioContextProvider';

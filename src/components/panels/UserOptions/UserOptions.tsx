@@ -3,7 +3,7 @@ import FullScreenButton from '../FullScreenButton/FullScreenButton';
 import SettingsButton from '../SettingsButton/SettingsButton';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 import { showProfile } from '../../../state/uiSlice';
-import Sex from '../../../model/enums/Sex';
+import Sex from '../../../client/models/enums/Sex';
 
 import './UserOptions.css';
 import Constants from '../../../model/enums/Constants';

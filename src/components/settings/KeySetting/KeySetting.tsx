@@ -3,6 +3,7 @@ import localization from '../../../model/resources/localization';
 import Constants from '../../../model/enums/Constants';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 import { settingKeyChanged } from '../../../state/uiSlice';
+import { getLayoutKeyName } from '../../../utils/KeyHelpers';
 
 import './KeySetting.scss';
 
@@ -24,7 +25,7 @@ function getKeyName(key: string) {
 			return localization.keyRight;
 
 		default:
-			return key;
+			return getLayoutKeyName(key) ?? key;
 	}
 }
 

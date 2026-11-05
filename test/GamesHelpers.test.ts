@@ -1,5 +1,7 @@
 import { filterGames } from '../src/utils/GamesHelpers';
 import GameInfo from '../src/client/contracts/GameInfo';
+import PersonInfo from '../src/client/contracts/PersonInfo';
+import ServerRole from '../src/client/contracts/ServerRole';
 import ServerGameType from '../src/client/contracts/ServerGameType';
 
 const Classic = 1;
@@ -15,7 +17,9 @@ const OtherLanguage = 512;
 const New = 1024;
 const Started = 2048;
 const Finished = 4096;
-const AllUpdated = 8191;
+const FullYes = 8192;
+const FullNo = 16384;
+const AllUpdated = 32767;
 
 // GameStage is a const enum with string values; use string literals to avoid import issues
 const GameStageCreated = 'Created' as any;
@@ -42,6 +46,15 @@ function makeGame(overrides: Partial<GameInfo> = {}): GameInfo {
 		Rules: '',
 		Stage: GameStageCreated,
 		StageName: '',
+		...overrides,
+	};
+}
+
+function makePerson(overrides: Partial<PersonInfo> = {}): PersonInfo {
+	return {
+		IsOnline: false,
+		Name: '',
+		Role: ServerRole.Player,
 		...overrides,
 	};
 }
@@ -169,6 +182,30 @@ describe('filterGames - oral filters', () => {
 		expect(filterGames(games, OralNo, '')).toHaveLength(1);
 		expect(filterGames(games, OralNo, '')[0].GameID).toBe(2);
 	});
+});
+
+describe('filterGames - full room filters', () => {
+    test('full yes filter includes only full games', () => {
+        const games = [
+            makeGame({ GameID: 1, Persons: [makePerson({IsOnline: true}), makePerson({IsOnline: true})] }),
+            makeGame({ GameID: 2, Persons: [makePerson({IsOnline: true}), makePerson({IsOnline: false})] }),
+        ];
+
+        const result = filterGames(games, FullYes, '');
+        expect(result).toHaveLength(1);
+        expect(result[0].GameID).toBe(1);
+    });
+
+    test('full no filter includes only games with available slots', () => {
+        const games = [
+            makeGame({ GameID: 1, Persons: [makePerson({IsOnline: true}), makePerson({IsOnline: true})] }),
+            makeGame({ GameID: 2, Persons: [makePerson({IsOnline: true}), makePerson({IsOnline: false})] }),
+        ];
+
+        const result = filterGames(games, FullNo, '');
+        expect(result).toHaveLength(1);
+        expect(result[0].GameID).toBe(2);
+    });
 });
 
 describe('filterGames - language filters', () => {

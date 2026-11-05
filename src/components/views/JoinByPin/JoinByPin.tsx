@@ -3,7 +3,7 @@ import Dialog from '../../common/Dialog/Dialog';
 import localization from '../../../model/resources/localization';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 import onlineActionCreators from '../../../state/online/onlineActionCreators';
-import Role from '../../../model/Role';
+import Role from '../../../client/models/Role';
 import Constants from '../../../model/enums/Constants';
 import ProgressDialog from '../../panels/ProgressDialog/ProgressDialog';
 import { validateLoginName } from '../../../utils/loginValidation';
