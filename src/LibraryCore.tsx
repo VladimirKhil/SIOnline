@@ -12,7 +12,7 @@ import TableMode from './model/enums/TableMode';
 import BrowserHost from './host/BrowserHost';
 import SIHostClient from './client/SIHostClient';
 import localization from './model/resources/localization';
-import Role from './model/Role';
+import Role from './client/models/Role';
 import IGameClient from './client/game/IGameClient';
 import { gameSoundPlayer } from './utils/GameSoundPlayer';
 import GameSound from './model/enums/GameSound';

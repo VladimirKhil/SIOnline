@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import localization from '../../../model/resources/localization';
-import Role from '../../../model/Role';
+import Role from '../../../client/models/Role';
 import ServerRole from '../../../client/contracts/ServerRole';
 import onlineActionCreators from '../../../state/online/onlineActionCreators';
 import GameInfo from '../../../client/contracts/GameInfo';

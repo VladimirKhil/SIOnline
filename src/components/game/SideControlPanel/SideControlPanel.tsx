@@ -5,7 +5,7 @@ import State from '../../../state/State';
 import roomActionCreators from '../../../state/room/roomActionCreators';
 import localization from '../../../model/resources/localization';
 import FlyoutButton, { FlyoutVerticalOrientation, FlyoutTheme, FlyoutHorizontalOrientation } from '../../common/FlyoutButton/FlyoutButton';
-import Role from '../../../model/Role';
+import Role from '../../../client/models/Role';
 import { isHost } from '../../../utils/StateHelpers';
 import isWellFormedUri from '../../../utils/isWellFormedUri';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';

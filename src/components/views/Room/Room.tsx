@@ -28,7 +28,7 @@ import { userErrorChanged } from '../../../state/commonSlice';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 import { DecisionType, DialogView, rejectAnswer, setChatVisibility } from '../../../state/room2Slice';
 import ComplainDialog from '../../panels/ComplainDialog/ComplainDialog';
-import Role from '../../../model/Role';
+import Role from '../../../client/models/Role';
 import Link from '../../common/Link/Link';
 import Path from '../../../model/enums/Path';
 import { navigate } from '../../../utils/Navigator';

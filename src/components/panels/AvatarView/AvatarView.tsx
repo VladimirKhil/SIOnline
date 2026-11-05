@@ -10,7 +10,7 @@ import { userErrorChanged } from '../../../state/commonSlice';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 import { setAvatarKey } from '../../../state/settingsSlice';
 import { AppDispatch } from '../../../state/store';
-import Sex from '../../../model/enums/Sex';
+import Sex from '../../../client/models/enums/Sex';
 
 import './AvatarView.css';
 

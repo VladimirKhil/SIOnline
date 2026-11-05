@@ -5,7 +5,7 @@ import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 import GameProgress from '../GameProgress/GameProgress';
 import MoveRoundButton from '../MoveRoundButton/MoveRoundButton';
 import QuestionCounter from '../QuestionCounter/QuestionCounter';
-import Role from '../../../model/Role';
+import Role from '../../../client/models/Role';
 import Path from '../../../model/enums/Path';
 import { navigate } from '../../../utils/Navigator';
 import Constants from '../../../model/enums/Constants';

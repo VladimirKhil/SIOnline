@@ -1,4 +1,4 @@
-import PlayerInfo from '../model/PlayerInfo';
+import PlayerInfo from '../client/models/PlayerInfo';
 import localization from '../model/resources/localization';
 import State from '../state/State';
 import { getFullCulureName } from './LanguageHelper';

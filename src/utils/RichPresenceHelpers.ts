@@ -3,7 +3,7 @@ import IHost from '../host/IHost';
 import Constants from '../model/enums/Constants';
 import GameStage from '../model/enums/GameStage';
 import Path from '../model/enums/Path';
-import PersonInfo from '../model/PersonInfo';
+import PersonInfo from '../client/models/PersonInfo';
 import RichPresence from '../model/RichPresence';
 import localization from '../model/resources/localization';
 import State from '../state/State';

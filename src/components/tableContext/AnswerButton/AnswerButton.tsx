@@ -1,7 +1,7 @@
 import localization from '../../../model/resources/localization';
 import * as React from 'react';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
-import PlayerStates from '../../../model/enums/PlayerStates';
+import PlayerStates from '../../../client/models/enums/PlayerStates';
 import { pressGameButton } from '../../../state/room2Slice';
 
 import './AnswerButton.scss';

@@ -1,4 +1,4 @@
-﻿import * as React from 'react';
+import * as React from 'react';
 import { Action, Dispatch } from 'redux';
 import { connect } from 'react-redux';
 import Constants from '../../../model/enums/Constants';

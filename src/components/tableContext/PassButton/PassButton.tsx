@@ -2,7 +2,7 @@ import * as React from 'react';
 import localization from '../../../model/resources/localization';
 import { onPass } from '../../../state/serverActions';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
-import PlayerStates from '../../../model/enums/PlayerStates';
+import PlayerStates from '../../../client/models/enums/PlayerStates';
 
 import './PassButton.scss';
 

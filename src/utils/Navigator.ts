@@ -10,7 +10,7 @@ import { userErrorChanged } from '../state/commonSlice';
 import localization from '../model/resources/localization';
 import getErrorMessage from './ErrorHelpers';
 import onlineActionCreators from '../state/online/onlineActionCreators';
-import Role from '../model/Role';
+import Role from '../client/models/Role';
 import DemoGameClient from './DemoGameClient';
 import ClientController from '../logic/ClientController';
 import { ensureServerInfoLoadedAsync } from '../logic/ServerInitializer';
@@ -21,7 +21,7 @@ import registerApp from './registerApp';
 import { analytics } from './Analytics';
 import { logEvent } from 'firebase/analytics';
 import stringFormat from './StringHelpers';
-import Sex from '../model/enums/Sex';
+import Sex from '../client/models/enums/Sex';
 import { getGameLink } from './inviteLink';
 
 let isInitialized = false;

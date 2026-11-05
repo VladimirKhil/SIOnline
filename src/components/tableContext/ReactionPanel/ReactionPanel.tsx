@@ -2,7 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import State from '../../../state/State';
 import localization from '../../../model/resources/localization';
-import Sex from '../../../model/enums/Sex';
+import Sex from '../../../client/models/enums/Sex';
 import { apellate, disagree } from '../../../state/serverActions';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 import { DialogView, showDialog } from '../../../state/room2Slice';

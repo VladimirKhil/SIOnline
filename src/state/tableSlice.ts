@@ -5,7 +5,7 @@ import ThemeInfo from '../model/ThemeInfo';
 import LayoutMode from '../model/enums/LayoutMode';
 import TableMode from '../model/enums/TableMode';
 import ContentType from '../model/enums/ContentType';
-import ItemState from '../model/enums/ItemState';
+import ItemState from '../client/models/enums/ItemState';
 import TimerInfo from '../model/TimerInfo';
 import TimerStates from '../model/enums/TimeStates';
 import PlayerStatistics from '../model/PlayerStatistics';

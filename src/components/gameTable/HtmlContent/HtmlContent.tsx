@@ -11,7 +11,7 @@ import {
 	sendAnswerAsWrongByDefault,
 } from '../../../state/serverActions';
 import { DecisionType } from '../../../state/room2Slice';
-import Role from '../../../model/Role';
+import Role from '../../../client/models/Role';
 import { getMeAsPlayer } from '../../../utils/StateHelpers';
 
 import './HtmlContent.css';

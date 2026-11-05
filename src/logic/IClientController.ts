@@ -1,5 +1,5 @@
-import PlayerStates from '../model/enums/PlayerStates';
-import StakeTypes from '../model/enums/StakeTypes';
+import PlayerStates from '../client/models/enums/PlayerStates';
+import StakeTypes from '../client/models/enums/StakeTypes';
 
 /**
  * Interface for ClientController that handles game messages and state updates.

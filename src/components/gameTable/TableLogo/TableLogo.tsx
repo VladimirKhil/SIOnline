@@ -1,4 +1,4 @@
-﻿import * as React from 'react';
+import * as React from 'react';
 import localization from '../../../model/resources/localization';
 import ContentGroup from '../../../model/ContentGroup';
 import ContentType from '../../../model/enums/ContentType';

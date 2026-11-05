@@ -3,13 +3,13 @@ import { connect } from 'react-redux';
 import State from '../../../state/State';
 import localization from '../../../model/resources/localization';
 import { ready } from '../../../state/serverActions';
-import Sex from '../../../model/enums/Sex';
-import Role from '../../../model/Role';
+import Sex from '../../../client/models/enums/Sex';
+import Role from '../../../client/models/Role';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 
 import './ReadyButton.scss';
-import PersonInfo from '../../../model/PersonInfo';
-import PlayerInfo from '../../../model/PlayerInfo';
+import PersonInfo from '../../../client/models/PersonInfo';
+import PlayerInfo from '../../../client/models/PlayerInfo';
 
 /**
  * Props for the ReadyButton component.

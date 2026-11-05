@@ -18,7 +18,7 @@ import onlineActionCreators from './state/online/onlineActionCreators';
 import { changeLogin } from './state/userSlice';
 import { setName, setPackageType, setRole, setPlayersCount, setType, setPassword } from './state/gameSlice';
 import PackageType from './model/enums/PackageType';
-import Role from './model/Role';
+import Role from './client/models/Role';
 import GameType from './model/GameType';
 import { newGame } from './state/online2Slice';
 import { randomBytes } from 'crypto';
@@ -28,7 +28,7 @@ import { DecisionType, playerSelected, pressGameButton, sendAllIn, sendAnswer, s
 import TableMode from './model/enums/TableMode';
 import StakeModes from './client/game/StakeModes';
 import GameStage from './model/enums/GameStage';
-import ItemState from './model/enums/ItemState';
+import ItemState from './client/models/enums/ItemState';
 import LayoutMode from './model/enums/LayoutMode';
 import OpenAI from 'openai';
 import getServerInfo from './client/GameServerLocator';

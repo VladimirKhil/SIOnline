@@ -1,4 +1,4 @@
-import Role from '../src/model/Role';
+import Role from '../src/client/models/Role';
 import { buildHelloMessage, getHtmlContentRole } from '../src/components/gameTable/HtmlContent/HtmlContent';
 
 describe('HTML content greeting', () => {

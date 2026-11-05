@@ -1,5 +1,5 @@
 import ContentItem from './ContentItem';
-import ItemState from './enums/ItemState';
+import ItemState from '../client/models/enums/ItemState';
 
 /** Defines answer option. */
 export default interface AnswerOption {

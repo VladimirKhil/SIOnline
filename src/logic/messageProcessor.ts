@@ -1,22 +1,22 @@
 import Message from '../client/contracts/Message';
-import Account from '../model/Account';
-import Sex from '../model/enums/Sex';
-import PlayerStates, { parsePlayerStatesFromString } from '../model/enums/PlayerStates';
-import PersonInfo from '../model/PersonInfo';
-import Persons from '../model/Persons';
-import PlayerInfo from '../model/PlayerInfo';
+import Account from '../client/models/Account';
+import Sex from '../client/models/enums/Sex';
+import PlayerStates, { parsePlayerStatesFromString } from '../client/models/enums/PlayerStates';
+import PersonInfo from '../client/models/PersonInfo';
+import Persons from '../client/models/Persons';
+import PlayerInfo from '../client/models/PlayerInfo';
 import Constants from '../model/enums/Constants';
-import Role from '../model/Role';
+import Role from '../client/models/Role';
 import localization from '../model/resources/localization';
 import { trimLength } from '../utils/StringHelpers';
 import GameMessages from '../client/game/GameMessages';
 import JoinMode from '../client/game/JoinMode';
 import { parseStakeModesFromString } from '../client/game/StakeModes';
 import ClientController from './ClientController';
-import ContentInfo from '../model/ContentInfo';
-import ItemState from '../model/enums/ItemState';
-import ThemesPlayMode from '../model/enums/ThemesPlayMode';
-import StakeTypes from '../model/enums/StakeTypes';
+import ContentInfo from '../client/models/ContentInfo';
+import ItemState from '../client/models/enums/ItemState';
+import ThemesPlayMode from '../client/models/enums/ThemesPlayMode';
+import StakeTypes from '../client/models/enums/StakeTypes';
 
 const MAX_APPEND_TEXT_LENGTH = 150;
 
