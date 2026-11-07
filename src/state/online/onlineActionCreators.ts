@@ -333,6 +333,7 @@ function createGameSettings(
 		questionForYourselfPenalty: state.settings.appSettings.questionForYourselfPenalty,
 		questionForYourselfFactor: state.settings.appSettings.questionForYourselfFactor,
 		questionForAllPenalty: state.settings.appSettings.questionForAllPenalty,
+		validateEqualAnswersSeparately: state.settings.appSettings.validateEqualAnswersSeparately,
 		managed: state.settings.appSettings.managed,
 		gameMode: gameMode,
 		partialText: state.settings.appSettings.partialText,
