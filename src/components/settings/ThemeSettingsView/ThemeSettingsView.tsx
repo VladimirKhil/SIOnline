@@ -1,10 +1,11 @@
 import * as React from 'react';
 import localization from '../../../model/resources/localization';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
-import { setStudiaBackgroundImageKey, setTableBackgroundColor, setTableTextColor, setTableFontFamily, setIsHexagonal } from '../../../state/settingsSlice';
+import { setStudiaBackgroundImageKey, setTableTextColor, setTableFontFamily, setIsHexagonal } from '../../../state/settingsSlice';
 import { userErrorChanged } from '../../../state/commonSlice';
 import { selectStudiaBackground } from '../../../state/globalActions';
 import Constants from '../../../model/enums/Constants';
+import BackgroundModeSelector from '../BackgroundModeSelector/BackgroundModeSelector';
 
 import './ThemeSettingsView.scss';
 
@@ -81,15 +82,7 @@ const ThemeSettingsView: React.FC = () => {
 				<label htmlFor='tableTextColor'>{localization.textColor}</label>
 			</div>
 
-			<div className='settingItem'>
-				<input
-					id='tableBackgroundColor'
-					type='color'
-					value={theme.table.backgroundColor}
-					onChange={e => appDispatch(setTableBackgroundColor(e.target.value))} />
-
-				<label htmlFor='tableBackgroundColor'>{localization.backgroundColor}</label>
-			</div>
+			<BackgroundModeSelector />
 
 			<div className='settingItem'>
 				<label htmlFor='tableFontFamily' className='common-label'>{localization.font || 'Font'}</label>

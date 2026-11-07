@@ -53,8 +53,6 @@ export function Lobby() {
 	const joinGameProgress = useAppSelector(state => state.online2.joinGameProgress);
 	const inProgress = useAppSelector(state => state.online2.inProgress);
 
-	const isConnected = useAppSelector(state => state.common.isConnected);
-
 	const filteredGames = filterGames(Object.values(games), gamesFilter, gamesSearch);
 	const selectedGame = games[selectedGameId];
 	const newGame = (
@@ -84,7 +82,7 @@ export function Lobby() {
 
 						{selectedGame
 							? <Dialog className="gameInfoView" title={selectedGame.GameName} onClose={onCloseGameInfo}>
-								<GameInfoView canJoinAsViewer={true} isConnected={isConnected} game={selectedGame} showGameName={false} />
+								<GameInfoView canJoinAsViewer={true} game={selectedGame} showGameName={false} />
 							</Dialog>
 							: <div className='emptyGameInfo' />}
 					</div>

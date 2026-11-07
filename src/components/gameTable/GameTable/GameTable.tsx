@@ -26,6 +26,7 @@ import ContentType from '../../../model/enums/ContentType';
 import LayoutMode from '../../../model/enums/LayoutMode';
 import PointsOverlay from '../PointsOverlay/PointsOverlay';
 import CensorButton from '../CensorButton/CensorButton';
+import { generateTableBackgroundProperties, generateTableTextProperties } from '../../../utils/ThemeUtils';
 
 import './GameTable.css';
 
@@ -125,21 +126,17 @@ export function GameTable(): JSX.Element {
 		? localization.validateAnswer
 		: getCaption(mode, tableCaption);
 
-	const themeProperties: React.CSSProperties = {};
+	const themeProperties = generateTableTextProperties(tableTheme);
 	const reversedPropeties: React.CSSProperties = {};
 
 	if (tableTheme.textColor) {
-		themeProperties.color = tableTheme.textColor;
 		reversedPropeties.backgroundColor = tableTheme.textColor;
 	}
 
-	if (tableTheme.backgroundColor) {
-		themeProperties.backgroundColor = tableTheme.backgroundColor;
-		reversedPropeties.color = tableTheme.backgroundColor;
-	}
+	const backgroundProperties = generateTableBackgroundProperties(tableTheme);
 
-	if (tableTheme.fontFamily) {
-		themeProperties.fontFamily = tableTheme.fontFamily;
+	if (tableTheme.backgroundColor) {
+		reversedPropeties.color = tableTheme.backgroundColor;
 	}
 
 	const showAppelation = isAppellation && !shouldShowAnswerValidationInTable;
@@ -151,6 +148,7 @@ export function GameTable(): JSX.Element {
 
 	return (
 		<div id="table" style={themeProperties}>
+			<div className="tableBackground" style={backgroundProperties} aria-hidden="true" />
 			{caption ? (
 				<div className="tableCaption">
 					<div className='caption__left'>

@@ -1,0 +1,100 @@
+.backgroundModeSelector {
+	display: flex;
+	flex-direction: column;
+
+	.gradientSection {
+		display: flex;
+		flex-direction: column;
+		gap: 10px;
+		margin-top: 20px;
+
+		.settingItem {
+			margin-top: 0;
+		}
+	}
+
+	.settingsDialogBody & {
+		label[for='gradientAngle'],
+		label[for='tableBackgroundAlpha'],
+		.gradientStops > label {
+			margin-left: 0;
+		}
+	}
+
+	.alphaControl,
+	.angleControl {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+
+		input[type='range'] {
+			flex: 1;
+			min-width: 100px;
+		}
+
+		.alphaValue,
+		.angleValue {
+			min-width: 45px;
+			text-align: right;
+		}
+	}
+
+	.gradientStops {
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+
+		label {
+			font-weight: bold;
+			margin-bottom: 5px;
+		}
+
+		.gradientStop {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+
+			input[type='color'] {
+				min-width: 50px;
+				height: 40px;
+				border: none;
+				border-radius: 4px;
+				cursor: pointer;
+			}
+
+			button {
+				flex: 0 0 auto;
+			}
+		}
+
+		button.standard {
+			align-self: flex-start;
+			margin-top: 5px;
+		}
+	}
+
+	.imageSection {
+		.settingItem__simple {
+			font-weight: bold;
+			display: block;
+			margin-bottom: 10px;
+		}
+
+		.backgroundImagePreview {
+			max-width: 100%;
+			max-height: 150px;
+			border-radius: 4px;
+			margin-bottom: 10px;
+			object-fit: cover;
+		}
+
+		.backgroundImageSelector {
+			display: block;
+			margin-bottom: 10px;
+		}
+
+		button.delete {
+			margin-top: 10px;
+		}
+	}
+}

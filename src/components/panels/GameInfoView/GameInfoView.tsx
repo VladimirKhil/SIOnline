@@ -28,7 +28,6 @@ import AuthModeSelector from '../AuthModeSelector/AuthModeSelector';
 import NameInput from '../NameInput/NameInput';
 
 interface GameInfoViewOwnProps {
-	isConnected: boolean;
 	onJoin: (hostUri: string, gameId: number, name: string, role: Role, appDispatch: AppDispatch, authorizationMode: AuthorizationMode) => void;
 }
 
@@ -205,8 +204,7 @@ export function GameInfoView(props: GameInfoViewProps): JSX.Element {
 
 	const onKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
 		if (e.key === Constants.KEY_ENTER_NEW) {
-			if (!props.isConnected ||
-				joinGameProgress ||
+			if (joinGameProgress ||
 				isNameInvalid() ||
 				(game.PasswordRequired && !password)) {
 				return;
@@ -313,8 +311,7 @@ export function GameInfoView(props: GameInfoViewProps): JSX.Element {
 									className="join standard"
 									onClick={() => validateAndJoin(Role.Showman)}
 									title={localization.joinAsShowmanHint}
-									disabled={!props.isConnected ||
-										joinGameProgress ||
+									disabled={joinGameProgress ||
 										gameCreationProgress ||
 										isNameInvalid() ||
 										(game.PasswordRequired && !password) ||
@@ -328,8 +325,7 @@ export function GameInfoView(props: GameInfoViewProps): JSX.Element {
 									className="join standard"
 									onClick={() => validateAndJoin(Role.Player)}
 									title={localization.joinAsPlayerHint}
-									disabled={!props.isConnected ||
-										joinGameProgress ||
+									disabled={joinGameProgress ||
 										gameCreationProgress ||
 										isNameInvalid() ||
 										(game.PasswordRequired && !password) ||
@@ -343,8 +339,7 @@ export function GameInfoView(props: GameInfoViewProps): JSX.Element {
 									className="join standard"
 									onClick={() => validateAndJoin(Role.Viewer)}
 									title={localization.joinAsViewerHint}
-									disabled={!props.isConnected ||
-										joinGameProgress ||
+									disabled={joinGameProgress ||
 										gameCreationProgress ||
 										isNameInvalid() ||
 										(game.PasswordRequired && !password) ||

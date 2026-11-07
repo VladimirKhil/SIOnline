@@ -6,8 +6,16 @@
     flex-direction: column;
     overflow: hidden;
     position: relative;
+    isolation: isolate;
     font-family: Standard;
     font-weight: 500;
+}
+
+.tableBackground {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
 }
 
 .tableCaption {

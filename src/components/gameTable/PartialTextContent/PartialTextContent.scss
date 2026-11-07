@@ -2,7 +2,7 @@
 
 #table .tableText.nonAligned {
     align-items: flex-start;
-    color: v.$highlighted-text-color;
+    color: var(--table-highlighted-text-color, #{v.$highlighted-text-color});
 }
 
 .animatablePartialCharacter {

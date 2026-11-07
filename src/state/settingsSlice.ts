@@ -4,7 +4,7 @@ import Constants from '../model/enums/Constants';
 import Sex from '../client/models/enums/Sex';
 import ButtonPressMode from '../model/ButtonPressMode';
 import TimeSettings from '../model/TimeSettings';
-import ThemeSettings from '../model/ThemeSettings';
+import ThemeSettings, { DefaultHighlightedTextColor } from '../model/ThemeSettings';
 import PenaltyType from '../model/enums/PenaltyType';
 
 export interface SettingsState {
@@ -58,8 +58,13 @@ const initialState: SettingsState = {
 		table: {
 			textColor: '#FFFFFF',
 			backgroundColor: '#0A0E30',
+			backgroundAlpha: 90,
+			highlightedTextColor: DefaultHighlightedTextColor,
 			fontFamily: undefined, // Default font family will be used
 			isHexagonal: false,
+			backgroundMode: 'solid',
+			backgroundImage: null,
+			backgroundGradient: undefined,
 		},
 		room: {
 			backgroundImageKey: null,
@@ -206,6 +211,21 @@ export const settingsSlice = createSlice({
 		setIsHexagonal: (state: SettingsState, action: PayloadAction<boolean>) => {
 			state.theme.table.isHexagonal = action.payload;
 		},
+		setTableBackgroundAlpha: (state: SettingsState, action: PayloadAction<number>) => {
+			state.theme.table.backgroundAlpha = action.payload;
+		},
+		setTableHighlightedTextColor: (state: SettingsState, action: PayloadAction<string>) => {
+			state.theme.table.highlightedTextColor = action.payload;
+		},
+		setTableBackgroundMode: (state: SettingsState, action: PayloadAction<string>) => {
+			state.theme.table.backgroundMode = action.payload as any;
+		},
+		setTableBackgroundImage: (state: SettingsState, action: PayloadAction<string | null>) => {
+			state.theme.table.backgroundImage = action.payload;
+		},
+		setTableBackgroundGradient: (state: SettingsState, action: PayloadAction<any>) => {
+			state.theme.table.backgroundGradient = action.payload;
+		},
 		setWriteGameLog: (state: SettingsState, action: PayloadAction<boolean>) => {
 			state.writeGameLog = action.payload;
 		},
@@ -312,6 +332,11 @@ export const {
 	setTableBackgroundColor,
 	setTableFontFamily,
 	setIsHexagonal,
+	setTableBackgroundAlpha,
+	setTableHighlightedTextColor,
+	setTableBackgroundMode,
+	setTableBackgroundImage,
+	setTableBackgroundGradient,
 	setWriteGameLog,
 	setLogPointsEvent,
 	setLoadExternalMedia,

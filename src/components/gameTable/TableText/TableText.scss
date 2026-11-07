@@ -5,7 +5,7 @@
 }
 
 @keyframes color-change {
-	100% { color: v.$highlighted-text-color; }
+	100% { color: var(--table-highlighted-text-color, #{v.$highlighted-text-color}); }
 }
 
 .textHost {
