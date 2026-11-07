@@ -56,4 +56,7 @@ export default interface ServerAppSettings {
 
 	displayAnswerOptionsLabels: boolean;
 	displayAnswerOptionsOneByOne: boolean;
+
+	/** Hide question image while a player is answering or the game is paused. */
+	hideImageOnAnswerAndPause: boolean;
 }
