@@ -201,6 +201,7 @@ function getServerRole(role: Role) {
 
 const finishInitializationAsync = (
 	targetView: INavigationState,
+	options: { skipLoginGuard?: boolean } = {},
 ) => async (
 	dispatch: Dispatch<Action>,
 	appDispatch: AppDispatch,
@@ -211,7 +212,7 @@ const finishInitializationAsync = (
 		const { login } = state.user;
 
 		// 1. Guard: Login
-		if (login === null || login === '') {
+		if (!options.skipLoginGuard && (login === null || login === '')) {
 			appDispatch(navigate({
 				navigation: {
 					path: Path.Login,
@@ -325,12 +326,12 @@ const finishInitializationAsync = (
 	};
 
 const initStageSkipLoginLicenseAsync: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
-	(view: INavigationState, appDispatch: AppDispatch) => async (
+	(view: INavigationState, appDispatch: AppDispatch, options: { skipLoginGuard?: boolean } = {}) => async (
 		dispatch: Dispatch<Action>,
 		getState: () => State,
 		dataContext: DataContext
 	) => {
-		await finishInitializationAsync(view)(dispatch, appDispatch, getState, dataContext);
+		await finishInitializationAsync(view, options)(dispatch, appDispatch, getState, dataContext);
 	};
 
 const initStage0: ActionCreator<ThunkAction<void, State, DataContext, Action>> =
