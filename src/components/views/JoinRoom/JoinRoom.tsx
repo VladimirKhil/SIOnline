@@ -11,6 +11,7 @@ import './JoinRoom.css';
 
 interface JoinRoomProps {
 	canJoinAsViewer: boolean;
+	showCloseButton?: boolean;
 }
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
@@ -39,7 +40,7 @@ export default function JoinRoom(props: JoinRoomProps): JSX.Element | null {
 		<Dialog
 			className="joinRoom animated"
 			title={`${localization.gameJoin}: ${selectedGame.GameName}`}
-			onClose={navigateToLogin}>
+			onClose={props.showCloseButton !== false ? navigateToLogin : undefined}>
 			<div className='logo' />
 			<GameInfoView canJoinAsViewer={props.canJoinAsViewer} isConnected={common.isSIHostConnected} game={selectedGame} showGameName={false} />
 		</Dialog>

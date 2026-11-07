@@ -29,7 +29,7 @@ const getContent = (path: Path) => {
 			return <div className='miniRoom'><MiniGameStatus /><TableContextView /></div>;
 
 		case Path.JoinRoom:
-			return <JoinRoom canJoinAsViewer={false} />;
+			return <JoinRoom canJoinAsViewer={false} showCloseButton={false} />;
 
 		default:
 			return null;
