@@ -10,6 +10,7 @@ import { showLogo } from './state/tableSlice';
 import { setAppSound } from './state/settingsSlice';
 import QRCodeView from './components/panels/QRCodeView/QRCodeView';
 import { AudioContextProvider } from './contexts/AudioContextProvider';
+import DemoContext from './contexts/DemoContext';
 
 import './scss/style.scss';
 
@@ -29,12 +30,14 @@ export function run(elementId: string, game?: IGameClient): void {
 	ReactDOM.render(
 		<Provider store={store}>
 			<AudioContextProvider>
-				<div className='playersAndTable'>
-					<PlayersView />
-					<GameTable />
-					<AudioController />
-					<QRCodeView />
-				</div>
+				<DemoContext.Provider value={true}>
+					<div className='playersAndTable'>
+						<PlayersView />
+						<GameTable />
+						<AudioController />
+						<QRCodeView />
+					</div>
+				</DemoContext.Provider>
 			</AudioContextProvider>
 		</Provider>,
 		host
