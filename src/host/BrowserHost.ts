@@ -104,10 +104,6 @@ export default class BrowserHost implements IHost {
 		return null;
 	}
 
-	async getAuthorizationData(authorizationMode?: AuthorizationMode): Promise<AuthorizationData | null> {
-		return null;
-	}
-
 	getStorage(): { storageClient?: SIStorageClient; storageInfo?: SIStorageInfo; } {
 		return { };
 	}

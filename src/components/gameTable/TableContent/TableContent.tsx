@@ -7,7 +7,7 @@ import AudioContent from '../AudioContent/AudioContent';
 import ContentGroup from '../../../model/ContentGroup';
 import LayoutMode from '../../../model/enums/LayoutMode';
 import AnswerOptions from '../AnswerOptions/AnswerOptions';
-import Constants from '../../../model/enums/Constants';
+import ServerConstants from '../../../client/system/Constants';
 import StackedContent from '../StackedContent/StackedContent';
 import ExternalMediaWarning from '../ExternalMediaWarning/ExternalMediaWarning';
 import { useAudioContext } from '../../../contexts/AudioContextProvider';
@@ -130,7 +130,7 @@ const TableContentComponent: React.FC<TableContentProps> = (props) => {
 			content[0].content.length === 1 &&
 			content[0].content[0].type !== ContentType.Text))) {
 		if (props.appendText.length > 0) {
-			const textWeight = Math.min(Constants.LARGE_CONTENT_WEIGHT, Math.max(1, props.appendText.length / 80));
+			const textWeight = Math.min(ServerConstants.LARGE_CONTENT_WEIGHT, Math.max(1, props.appendText.length / 80));
 
 			content = [...content, {
 				columnCount: 1,
@@ -143,7 +143,7 @@ const TableContentComponent: React.FC<TableContentProps> = (props) => {
 				}]
 			}];
 		} else if (props.prependText.length > 0) {
-			const textWeight = Math.min(Constants.LARGE_CONTENT_WEIGHT, Math.max(1, props.prependText.length / 80));
+			const textWeight = Math.min(ServerConstants.LARGE_CONTENT_WEIGHT, Math.max(1, props.prependText.length / 80));
 
 			content = [ {
 				columnCount: 1,

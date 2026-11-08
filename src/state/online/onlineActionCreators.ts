@@ -23,7 +23,6 @@ import actionCreators from '../../logic/actionCreators';
 import ServerTimeSettings from '../../client/contracts/ServerTimeSettings';
 import Path from '../../model/enums/Path';
 import ServerSex from '../../client/contracts/ServerSex';
-import IGameClient from '../../client/game/IGameClient';
 import ServerRole from '../../client/contracts/ServerRole';
 import { userErrorChanged } from '../commonSlice';
 import WellKnownSIContentServiceErrorCode from 'sicontent-client/dist/models/WellKnownSIContentServiceErrorCode';

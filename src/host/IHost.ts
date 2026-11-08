@@ -53,8 +53,6 @@ export default interface IHost {
 
 	getAuthToken(): string | null;
 
-	getAuthorizationData(authorizationMode?: AuthorizationMode): Promise<AuthorizationData | null>;
-
 	getStorage(): { storageClient?: SIStorageClient; storageInfo?: SIStorageInfo; };
 
 	getPackageData(id: string): Promise<[File, string] | null>;

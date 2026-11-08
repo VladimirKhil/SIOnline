@@ -1,8 +1,8 @@
-import * as React from 'react';
+﻿import * as React from 'react';
 import localization from '../../../model/resources/localization';
 import ContentGroup from '../../../model/ContentGroup';
 import ContentType from '../../../model/enums/ContentType';
-import Constants from '../../../model/enums/Constants';
+import ServerConstants from '../../../client/system/Constants';
 import StackedContent from '../StackedContent/StackedContent';
 
 import './TableLogo.css';
@@ -17,7 +17,7 @@ export default function TableLogo() {
 			read: false,
 			partial: false,
 		}],
-		weight: Constants.LARGE_CONTENT_WEIGHT,
+		weight: ServerConstants.LARGE_CONTENT_WEIGHT,
 		columnCount: 1,
 	}, {
 		content: [{

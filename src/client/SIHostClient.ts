@@ -2,22 +2,17 @@ import * as signalR from '@microsoft/signalr';
 import * as signalRMsgPack from '@microsoft/signalr-protocol-msgpack';
 import ISIHostClient from './ISIHostClient';
 import ISIHostListener from './ISIHostListener';
-import AuthorizationMode from './contracts/AuthorizationMode';
 import GameInfo from './contracts/GameInfo';
 import JoinGame2Result from './contracts/JoinGame2Result';
 import JoinGameRequest from './contracts/JoinGameRequest';
 import ServerRole from './contracts/ServerRole';
+import DefaultEndpoints from './system/DefaultEndpoints';
 
 export class ReconnectError extends Error {
 	constructor(public result: JoinGame2Result) {
 		super(result);
 		this.name = 'ReconnectError';
 	}
-}
-
-interface AuthorizationData {
-	AuthorizationMode: AuthorizationMode;
-	AuthTicket?: string | null;
 }
 
 export default class SIHostClient implements ISIHostClient {
@@ -33,9 +28,6 @@ export default class SIHostClient implements ISIHostClient {
 	private listener?: ISIHostListener;
 
 	public userName: string | null = null; // TODO: remove. Server knows who the user is.
-
-	constructor(private readonly authorizationProvider?: (authorizationMode?: AuthorizationMode) => Promise<AuthorizationData | null>) {
-	}
 
 	async connectAsync(serverUri: string, listener: ISIHostListener, authToken?: string): Promise<void> {
 		this.listener = listener;
@@ -191,7 +183,7 @@ export default class SIHostClient implements ISIHostClient {
 				Text: message,
 				IsSystem: true,
 				Sender: this.userName,
-				Receiver: '@'
+				Receiver: DefaultEndpoints.GameClient,
 			});
 
 			return true;
@@ -204,7 +196,7 @@ export default class SIHostClient implements ISIHostClient {
 		}
 	}
 
-	async sendPrivateMessageAsync(receiver: string, message: string): Promise<boolean> {
+	async sendDirectMessageAsync(receiver: string, message: string): Promise<boolean> {
 		if (!this.connection) {
 			throw new Error('Not connected to server');
 		}
@@ -212,7 +204,7 @@ export default class SIHostClient implements ISIHostClient {
 		try {
 			await this.connection.invoke('SendMessage', {
 				Text: message,
-				IsSystem: false,
+				IsSystem: true, // = not a chat
 				Sender: this.userName,
 				Receiver: receiver
 			});
@@ -240,7 +232,7 @@ export default class SIHostClient implements ISIHostClient {
 			Text: message,
 			IsSystem: false,
 			Sender: this.userName,
-			Receiver: '*'
+			Receiver: DefaultEndpoints.Everyone,
 		});
 	}
 

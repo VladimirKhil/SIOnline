@@ -23,12 +23,12 @@ export default interface ISIHostClient {
 	sendMessageToServerAsync(message: string): Promise<boolean>;
 
 	/**
-	 * Sends a private message to a specific user inside game.
+	 * Sends a direct message to a specific user inside game.
 	 * @param receiver The recipient of the message.
 	 * @param message Message to send.
 	 * @returns The success status of sending operation.
 	 */
-	sendPrivateMessageAsync(receiver: string, message: string): Promise<boolean>;
+	sendDirectMessageAsync(receiver: string, message: string): Promise<boolean>;
 
 	/**
 	 * Sends a message inside game.

@@ -3,6 +3,7 @@ import State from '../state/State';
 import DataContext from '../model/DataContext';
 import ContentGroup from '../model/ContentGroup';
 import Constants from '../model/enums/Constants';
+import ServerConstants from '../client/system/Constants';
 import ContentInfo from '../client/models/ContentInfo';
 import ContentType from '../model/enums/ContentType';
 import AnswerOption from '../model/AnswerOption';
@@ -416,7 +417,7 @@ export default class ClientController implements IClientController {
 						group = null;
 					}
 
-					const textWeight = Math.min(Constants.LARGE_CONTENT_WEIGHT, Math.max(1, value.length / 80));
+					const textWeight = Math.min(ServerConstants.LARGE_CONTENT_WEIGHT, Math.max(1, value.length / 80));
 					const textGroup: ContentGroup = { weight: textWeight, content: [], columnCount: 1 };
 
 					textGroup.content.push({
@@ -439,7 +440,7 @@ export default class ClientController implements IClientController {
 				case 'video':
 				case 'html': {
 					if (!group) {
-						group = { weight: Constants.LARGE_CONTENT_WEIGHT, content: [], columnCount: 1 };
+						group = { weight: ServerConstants.LARGE_CONTENT_WEIGHT, content: [], columnCount: 1 };
 					}
 
 					const processedUri = this.preprocessServerUri(value);
@@ -1600,7 +1601,7 @@ export default class ClientController implements IClientController {
 
 		// Options weight is proportional to row count (like ContentGroup.weight)
 		// Use larger weight if options contain at least one image
-		const optionsWeight = hasImageOption ? Constants.LARGE_CONTENT_WEIGHT : rowCount;
+		const optionsWeight = hasImageOption ? ServerConstants.LARGE_CONTENT_WEIGHT : rowCount;
 
 		this.appDispatch(answerOptions({
 			questionHasScreenContent,

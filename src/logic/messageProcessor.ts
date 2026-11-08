@@ -5,7 +5,7 @@ import PlayerStates, { parsePlayerStatesFromString } from '../client/models/enum
 import PersonInfo from '../client/models/PersonInfo';
 import Persons from '../client/models/Persons';
 import PlayerInfo from '../client/models/PlayerInfo';
-import Constants from '../model/enums/Constants';
+import Constants from '../client/system/Constants';
 import Role from '../client/models/Role';
 import localization from '../model/resources/localization';
 import { trimLength } from '../utils/StringHelpers';
@@ -17,6 +17,7 @@ import ContentInfo from '../client/models/ContentInfo';
 import ItemState from '../client/models/enums/ItemState';
 import ThemesPlayMode from '../client/models/enums/ThemesPlayMode';
 import StakeTypes from '../client/models/enums/StakeTypes';
+import DefaultEndpoints from '../client/system/DefaultEndpoints';
 
 const MAX_APPEND_TEXT_LENGTH = 150;
 
@@ -1289,11 +1290,20 @@ function processSystemMessage(controller: ClientController, message: Message) {
 	}
 }
 
+function processDirectMessage(controller: ClientController, message: Message) {
+	// TODO
+}
+
 export default class MessageHandler {
 	constructor(private controller: ClientController) { }
 
 	processMessage(message: Message) {
 		if (message.IsSystem) {
+			if (message.Sender !== DefaultEndpoints.GameClient) {
+				processDirectMessage(this.controller, message);
+				return;
+			}
+
 			processSystemMessage(this.controller, message);
 		} else {
 			this.controller.onMessage(message.Sender, message.Text);

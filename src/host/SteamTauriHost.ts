@@ -103,10 +103,6 @@ export default class SteamTauriHost extends TauriHost {
 		return this.accountServiceClient.getBearerToken() ?? null;
 	}
 
-	async getAuthorizationData(authorizationMode?: AuthorizationMode): Promise<AuthorizationData | null> {
-		return null;
-	}
-
 	async setFullScreen(fullScreen: boolean): Promise<boolean> {
 		if (this.app && this.app.webviewWindow) {
 			try {

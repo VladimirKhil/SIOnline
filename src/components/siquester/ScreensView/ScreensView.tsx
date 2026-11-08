@@ -3,7 +3,7 @@ import { ContentItem, ContentParam, ContentType } from '../../../model/siquester
 import MediaItem from '../MediaItem/MediaItem';
 import AutoSizedText from '../../common/AutoSizedText/AutoSizedText';
 import localization from '../../../model/resources/localization';
-import Constants from '../../../model/enums/Constants';
+import ServerConstants from '../../../client/system/Constants';
 import { useAppDispatch } from '../../../state/hooks';
 import getExtension from '../../../utils/FileHelper';
 import { userErrorChanged } from '../../../state/commonSlice';
@@ -219,7 +219,7 @@ const ScreensView: React.FC<ScreensViewProps> = ({
 						}
 
 						const textWeight = Math.min(
-							Constants.LARGE_CONTENT_WEIGHT,
+							ServerConstants.LARGE_CONTENT_WEIGHT,
 							Math.max(1, contentItem.value.length / 80),
 						);
 						const textGroup: ContentGroup = { content: [contentItem], weight: textWeight, columnCount: 1 };
@@ -229,7 +229,7 @@ const ScreensView: React.FC<ScreensViewProps> = ({
 
 					default:
 						if (!group) {
-							group = { content: [], weight: Constants.LARGE_CONTENT_WEIGHT, columnCount: 1 };
+							group = { content: [], weight: ServerConstants.LARGE_CONTENT_WEIGHT, columnCount: 1 };
 						}
 
 						group.content.push(contentItem);

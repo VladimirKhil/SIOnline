@@ -160,7 +160,7 @@ const connectToSIHostAsync = async (
 	const listener = new SIHostListener(controller, appDispatch);
 
 	const authToken = dataContext.host.getAuthToken() ?? undefined;
-	let siHostClient = new SIHostClient((authMode) => dataContext.host.getAuthorizationData(authMode));
+	let siHostClient = new SIHostClient();
 	try {
 		await siHostClient.connectAsync(uriChecked, listener, authToken);
 		appDispatch(isSIHostConnectedChanged({ isConnected: true, reason: '' }));
@@ -170,7 +170,7 @@ const connectToSIHostAsync = async (
 			const fallbackUri = siHostUri.endsWith('/') ? siHostUri : siHostUri + '/';
 			await siHostClient.disconnectAsync(); // ensure old loops are dead
 
-			siHostClient = new SIHostClient((authMode) => dataContext.host.getAuthorizationData(authMode));
+			siHostClient = new SIHostClient();
 			await siHostClient.connectAsync(fallbackUri, listener, authToken);
 			appDispatch(isSIHostConnectedChanged({ isConnected: true, reason: '' }));
 		} else if (siHostUri === dataContext.proxyUri) {
@@ -178,7 +178,7 @@ const connectToSIHostAsync = async (
 			const fallbackUri = dataContext.serverUri;
 			await siHostClient.disconnectAsync();
 
-			siHostClient = new SIHostClient((authMode) => dataContext.host.getAuthorizationData(authMode));
+			siHostClient = new SIHostClient();
 			await siHostClient.connectAsync(fallbackUri, listener, authToken);
 			appDispatch(isSIHostConnectedChanged({ isConnected: true, reason: '' }));
 		} else {

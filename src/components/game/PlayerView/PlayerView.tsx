@@ -7,6 +7,7 @@ import ProgressBar from '../../common/ProgressBar/ProgressBar';
 import localization from '../../../model/resources/localization';
 import Sex from '../../../client/models/enums/Sex';
 import Constants from '../../../model/enums/Constants';
+import ServerConstants from '../../../client/system/Constants';
 import { isRunning } from '../../../utils/TimerInfoHelpers';
 import State from '../../../state/State';
 import { connect } from 'react-redux';
@@ -138,7 +139,7 @@ export function PlayerView(props: PlayerViewProps): JSX.Element {
 
 	const displayedStake = player.stake > 0
 		? player.stake.toString()
-		: (player.stake === Constants.HIDDEN_STAKE ? '######' : null);
+		: (player.stake === ServerConstants.HIDDEN_STAKE ? '######' : null);
 
 	const effectiveAvatar = React.useMemo(() => {
 		let currentAvatar = isMe && avatar ? avatar : account?.avatar;
