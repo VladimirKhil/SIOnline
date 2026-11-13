@@ -123,6 +123,7 @@ import {
 	setTheme,
 	setSettingDisplayAnswerOptionsLabels,
 	setSettingFalseStart,
+	setSettingHideImageOnAnswerAndPause,
 	setSettingManaged,
 	setSettingOral,
 	setSettingPartialImageTime,
@@ -1010,6 +1011,22 @@ export default class ClientController implements IClientController {
 				if (reason.length > 0) {
 					const message = stringFormat(
 						displayLabelsEnabled ? localization.displayLabelsEnabled : localization.displayLabelsDisabled,
+						reason
+					);
+
+					this.appDispatch(userInfoChanged(message));
+					this.addSimpleMessage(message);
+				}
+				break;
+			}
+
+			case 'HideImageOnAnswerAndPause': {
+				const hideImageEnabled = value.toLowerCase() === 'true';
+				this.appDispatch(setSettingHideImageOnAnswerAndPause(hideImageEnabled));
+
+				if (reason.length > 0) {
+					const message = stringFormat(
+						hideImageEnabled ? localization.hideImageOnAnswerAndPauseEnabled : localization.hideImageOnAnswerAndPauseDisabled,
 						reason
 					);
 

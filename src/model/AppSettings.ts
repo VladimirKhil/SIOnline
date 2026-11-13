@@ -46,6 +46,9 @@ export default interface AppSettings {
 	displayAnswerOptionsOneByOne: boolean;
 
 	displayAnswerOptionsLabels: boolean;
+
+	/** Hide question image while a player is answering or the game is paused. */
+	hideImageOnAnswerAndPause: boolean;
 }
 
 export const initialState: AppSettings = {
@@ -86,4 +89,5 @@ export const initialState: AppSettings = {
 	useApellations: true,
 	displayAnswerOptionsLabels: true,
 	displayAnswerOptionsOneByOne: true,
+	hideImageOnAnswerAndPause: false,
 };
