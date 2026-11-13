@@ -139,6 +139,9 @@ export const settingsSlice = createSlice({
 		setQuestionForAllPenalty: (state: SettingsState, action: PayloadAction<PenaltyType>) => {
 			state.appSettings.questionForAllPenalty = action.payload;
 		},
+		setValidateEqualAnswersSeparately: (state: SettingsState, action: PayloadAction<boolean>) => {
+			state.appSettings.validateEqualAnswersSeparately = action.payload;
+		},
 		setButtonPressMode: (state: SettingsState, action: PayloadAction<ButtonPressMode>) => {
 			state.appSettings.buttonPressMode = action.payload;
 		},
@@ -308,6 +311,7 @@ export const {
 	setQuestionForYourselfPenalty,
 	setQuestionForYourselfFactor,
 	setQuestionForAllPenalty,
+	setValidateEqualAnswersSeparately,
 	setButtonPressMode,
 	setPreloadRoundContent,
 	setTimeSetting,

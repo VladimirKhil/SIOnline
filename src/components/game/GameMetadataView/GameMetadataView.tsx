@@ -154,6 +154,20 @@ export function GameMetadataView(props: GameMetadataViewProps): JSX.Element {
 							onChange={(e) => appDispatch(setOption({ name: 'DisplayAnswerOptionsLabels', value: e.target.checked.toString() }))}
 						/>
 					</div>
+
+					<div className='room__option'>
+						<label htmlFor="validateEqualAnswersSeparately-input">{localization.validateEqualAnswersSeparately}</label>
+						<input
+							id="validateEqualAnswersSeparately-input"
+							type="checkbox"
+							checked={room2Settings.validateEqualAnswersSeparately}
+							disabled={!isHost}
+							onChange={(e) => appDispatch(setOption({
+								name: 'ValidateEqualAnswersSeparately',
+								value: e.target.checked.toString()
+							}))}
+						/>
+					</div>
 				</div>
 			</div>
 
