@@ -53,6 +53,14 @@ export const ready = createAsyncThunk(
 	}
 );
 
+export const moveBack = createAsyncThunk(
+	'server/moveBack',
+	async (_arg: void, thunkAPI) => {
+		const dataContext = thunkAPI.extra as DataContext;
+		await dataContext.game.moveBack();
+	}
+);
+
 export const moveNext = createAsyncThunk(
 	'server/moveNext',
 	async (_arg: void, thunkAPI) => {

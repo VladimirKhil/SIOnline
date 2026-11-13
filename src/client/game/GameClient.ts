@@ -84,6 +84,10 @@ export default class GameClient implements IGameClient {
 		return this.gameServerClient.msgAsync(Messages.Moveable);
 	}
 
+	moveBack(): Promise<boolean> {
+		return this.gameServerClient.msgAsync(Messages.Move, '-1');
+	}
+
 	moveNext(): Promise<boolean> {
 		return this.gameServerClient.msgAsync(Messages.Move, '1');
 	}

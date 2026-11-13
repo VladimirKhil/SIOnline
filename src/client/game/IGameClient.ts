@@ -37,6 +37,8 @@ export default interface IGameClient {
 
 	moveable(): Promise<boolean>;
 
+	moveBack(): Promise<boolean>;
+
 	moveNext(): Promise<boolean>;
 
 	moveToRound(roundIndex: number): Promise<boolean>;

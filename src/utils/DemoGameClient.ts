@@ -194,6 +194,10 @@ export default class DemoGameClient implements IGameClient {
 		return true;
 	}
 
+	async moveBack(): Promise<boolean> {
+		return true;
+	}
+
 	moveNext(): Promise<boolean> {
 		if (!this.isManagedFlow || this.stage === DemoStage.Finished) {
 			return Promise.resolve(true);

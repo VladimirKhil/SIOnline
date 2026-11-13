@@ -19,12 +19,13 @@ import {
 	setDecisionType } from '../../../state/room2Slice';
 
 import Constants from '../../../model/enums/Constants';
-import { moveNext as moveNextAction, pauseGame, startGame } from '../../../state/serverActions';
+import { moveBack, moveNext as moveNextAction, pauseGame, startGame } from '../../../state/serverActions';
 import { analytics } from '../../../Index';
 import { logEvent } from 'firebase/analytics';
 
 import './SideControlPanel.css';
 import nextImg from '../../../../assets/images/next.png';
+import moveBackImg from '../../../../assets/images/back.png';
 import pauseImg from '../../../../assets/images/pause.png';
 import exitImg from '../../../../assets/images/exit.png';
 import sumsImg from '../../../../assets/images/sums.png';
@@ -105,6 +106,11 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 		appDispatch(setDecisionType(DecisionType.SelectChooser));
 	};
 
+	const onMoveBack = () => {
+		appDispatch(moveBack());
+		appDispatch(setAreSumsEditable(false));
+	};
+
 	const moveNext = () => {
 		appDispatch(moveNextAction());
 		appDispatch(setAreSumsEditable(false));
@@ -132,7 +138,7 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 		isDemoMode &&
 		!canPress &&
 		(demoButtonHighlights.next || (isGameStarted && !demoButtonHighlights.leaveRoom));
-	const showNextButton = props.isHost || showDemoNextButton;
+	const showNextButton = props.isHost || role === Role.Showman || showDemoNextButton;
 	const isDemoNextHighlighted = isDemoMode && demoButtonHighlights.next;
 	const nextButtonClassName = [
 		'sidecontrol_button nextButton standard imageButton',
@@ -263,6 +269,18 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 							title={localization.changeSums}
 						>
 							<img alt='sums' src={sumsImg} />
+						</button>
+					) : null}
+
+					{role === Role.Showman ? (
+						<button
+							type="button"
+							className="sidecontrol_button moveBackButton standard imageButton"
+							disabled={!props.isConnected}
+							onClick={onMoveBack}
+							title={localization.moveBack}
+						>
+							<img alt='Move back' src={moveBackImg} />
 						</button>
 					) : null}
 
