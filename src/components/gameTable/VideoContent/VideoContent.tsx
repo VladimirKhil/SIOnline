@@ -2,6 +2,7 @@ import * as React from 'react';
 import { useRef, useEffect, useCallback } from 'react';
 import State from '../../../state/State';
 import { connect } from 'react-redux';
+import { getPreloadedVideoUri } from '../../../logic/contentPreloader';
 import getErrorMessage from '../../../utils/ErrorHelpers';
 import localization from '../../../model/resources/localization';
 import getExtension from '../../../utils/FileHelper';
@@ -174,7 +175,7 @@ export const VideoContent: React.FC<VideoContentProps> = ({
 				onTimeUpdate={onTimeUpdate}
 				crossOrigin="anonymous"
 				onLoadedData={() => appDispatch(onMediaLoaded())}>
-				<source src={uri} />
+				<source src={getPreloadedVideoUri(uri) ?? uri} />
 			</video>
 
 			<MediaTimer />
