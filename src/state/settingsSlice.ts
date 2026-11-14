@@ -58,7 +58,7 @@ const initialState: SettingsState = {
 		table: {
 			textColor: '#FFFFFF',
 			backgroundColor: '#0A0E30',
-			backgroundAlpha: 90,
+			backgroundAlpha: 70,
 			highlightedTextColor: DefaultHighlightedTextColor,
 			fontFamily: undefined, // Default font family will be used
 			isHexagonal: false,
