@@ -121,6 +121,7 @@ export interface Room2State {
 
 	lastReplic: ChatMessage | null;
 	replicIndex: number;
+	isContentReplic: boolean;
 
 	isEditTableEnabled: boolean;
 	isGameButtonEnabled: boolean;
@@ -237,6 +238,7 @@ const initialState: Room2State = {
 
 	lastReplic: null,
 	replicIndex: -1,
+	isContentReplic: false,
 
 	isEditTableEnabled: false,
 	isGameButtonEnabled: true,
@@ -461,6 +463,7 @@ export const room2Slice = createSlice({
 		showmanReplicChanged: (state: Room2State, action: PayloadAction<string | null>) => {
 			state.persons.showman.replic = action.payload;
 			state.replicIndex = -1;
+			state.isContentReplic = false;
 
 			state.persons.players.forEach(p => {
 				p.replic = null;
@@ -473,6 +476,9 @@ export const room2Slice = createSlice({
 			state.persons.players.forEach((p, i) => {
 				p.replic = i === action.payload.playerIndex ? action.payload.replic : null;
 			});
+		},
+		setIsContentReplic: (state: Room2State, action: PayloadAction<boolean>) => {
+			state.isContentReplic = action.payload;
 		},
 		replicIndexChanged: (state: Room2State, action: PayloadAction<number>) => {
 			if (action.payload < 0 || action.payload >= state.persons.players.length) {
@@ -1341,6 +1347,7 @@ export const {
 	showmanReplicChanged,
 	playerReplicChanged,
 	replicIndexChanged,
+	setIsContentReplic,
 	infoChanged,
 	playersStateCleared,
 	playerRoundStateCleared,

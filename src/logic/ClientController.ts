@@ -154,6 +154,7 @@ import {
 	setReview,
 	setPlayerAnswer,
 	replicIndexChanged,
+	setIsContentReplic,
 	endAskingState,
 	setHiddenComments,
 	setDeepMode,
@@ -1653,6 +1654,12 @@ export default class ClientController implements IClientController {
 
 		if (personCode === 's') {
 			this.appDispatch(showmanReplicChanged(text));
+
+			// TODO: content replic should be marked by server
+			if (state.room.stage.isQuestion && state.room.stage.questionType === 'simple') {
+				this.appDispatch(setIsContentReplic(true));
+			}
+
 			return;
 		}
 	}
