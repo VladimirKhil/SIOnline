@@ -1284,6 +1284,11 @@ export default class ClientController implements IClientController {
 	}
 
 	onShowmanReplic(messageIndex: number, messageCode: string, args: string[]) {
+		if (this.getState().room2.isContentReplic && ['Answer', 'SelectAnswerOption', 'WrongAnswer'].includes(messageCode.toString())) {
+			this.appDispatch(replicIndexChanged(-1)); // Keeping content replic visible while players are answering
+			return;
+		}
+
 		const text = localization.getString('replic_' + messageCode.toString());
 
 		if (text) {
