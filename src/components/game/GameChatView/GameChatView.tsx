@@ -11,6 +11,7 @@ import Role from '../../../client/models/Role';
 import GameMetadataView from '../GameMetadataView/GameMetadataView';
 import BannedView from '../BannedView/BannedView';
 import isWellFormedUri from '../../../utils/isWellFormedUri';
+import isDiscordUri from '../../../utils/isDiscordUri';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 
 import { setChatMode, setUsersMode, showLeaderboard } from '../../../state/room2Slice';
@@ -21,6 +22,7 @@ import Link from '../../common/Link/Link';
 import UserOptions from '../../panels/UserOptions/UserOptions';
 
 import './GameChatView.css';
+import discordImg from '../../../../assets/images/discord_logo.png';
 
 interface GameChatViewProps {
 	voiceChatUri: string | null;
@@ -40,7 +42,10 @@ function getSideArea(props: GameChatViewProps, chatMode: ChatMode, usersMode: Us
 
 					{props.voiceChatUri && isWellFormedUri(props.voiceChatUri) ? (
 						<Link href={props.voiceChatUri} className='voiceChatUrl' target='_blank' rel='noopener noreferrer' title={props.voiceChatUri}>
-							<button type='button' className="standard wide commandButton bottomButton">{localization.voiceChat}</button>
+							<button type='button' className="standard wide commandButton bottomButton">
+								{isDiscordUri(props.voiceChatUri) ? <img src={discordImg} alt='Discord' /> : null}
+								{localization.voiceChat}
+							</button>
 						</Link>
 					) : null}
 				</div>
