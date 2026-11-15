@@ -39,6 +39,9 @@ export default interface ServerAppSettings {
 	/** Question for all penalty. */
 	questionForAllPenalty: PenaltyType;
 
+	/** Validate equal answers of different players in questions for all separately. */
+	validateEqualAnswersSeparately: boolean;
+
 	/** Display package items sources. */
 	displaySources: boolean;
 

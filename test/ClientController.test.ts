@@ -1628,6 +1628,14 @@ describe('ClientController - Miscellaneous Operations', () => {
 			const actions = dispatchedActions.map(a => a.type);
 			expect(actions).toContain('room2/setSettingReadingSpeed');
 		});
+
+		it('should change separate validation of equal answers setting', () => {
+			controller.onOptionChanged('ValidateEqualAnswersSeparately', 'true', 'Host');
+
+			expect(mockAppDispatch).toHaveBeenCalled();
+			const actions = dispatchedActions.map(a => a.type);
+			expect(actions).toContain('room2/setSettingValidateEqualAnswersSeparately');
+		});
 	});
 
 	describe('onCancel', () => {
