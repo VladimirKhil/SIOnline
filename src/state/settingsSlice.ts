@@ -184,6 +184,9 @@ export const settingsSlice = createSlice({
 		setDisplayAnswerOptionsLabels: (state: SettingsState, action: PayloadAction<boolean>) => {
 			state.appSettings.displayAnswerOptionsLabels = action.payload;
 		},
+		setHideImageOnAnswerAndPause: (state: SettingsState, action: PayloadAction<boolean>) => {
+			state.appSettings.hideImageOnAnswerAndPause = action.payload;
+		},
 		setNextButtonKey: (state: SettingsState, action: PayloadAction<string | null>) => {
 			state.nextButtonKey = action.payload;
 		},
@@ -323,6 +326,7 @@ export const {
 	setShowVideoAvatars,
 	setDisplayAnswerOptionsOneByOne,
 	setDisplayAnswerOptionsLabels,
+	setHideImageOnAnswerAndPause,
 	setNextButtonKey,
 	setYesButtonKey,
 	setNoButtonKey,
