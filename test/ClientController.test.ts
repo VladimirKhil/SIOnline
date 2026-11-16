@@ -20,6 +20,7 @@ import Path from '../src/model/enums/Path';
 import Role from '../src/client/models/Role';
 import * as globalActions from '../src/state/globalActions';
 import localization from '../src/model/resources/localization';
+import { DecisionType } from '../src/state/room2Slice';
 
 describe('ClientController - Game Initialization Flow', () => {
 	let controller: ClientController;
@@ -803,6 +804,22 @@ describe('ClientController - Answer Phase Flow', () => {
 			const actions = dispatchedActions.map(a => a.type);
 			expect(actions).toContain('table/isSelectableChanged');
 		});
+
+		it('should allow passing in the firstCorrect completion mode', () => {
+			state.table.layoutMode = 0; // LayoutMode.Simple
+
+			controller.onAskAnswer('text', true);
+
+			expect(dispatchedActions).toContainEqual(expect.objectContaining({ type: 'room2/canPassChanged', payload: true }));
+		});
+
+		it('should not allow passing by default', () => {
+			state.table.layoutMode = 0; // LayoutMode.Simple
+
+			controller.onAskAnswer('text');
+
+			expect(dispatchedActions).toContainEqual(expect.objectContaining({ type: 'room2/canPassChanged', payload: false }));
+		});
 	});
 
 	describe('onPlayerAnswer', () => {
@@ -1025,6 +1042,28 @@ describe('ClientController - Answer Result Flow', () => {
 			expect(mockAppDispatch).toHaveBeenCalled();
 			const actions = dispatchedActions.map(a => a.type);
 			expect(actions).toContain('room2/playerStateChanged');
+		});
+
+		it('should leave the answer stage when the local player has passed', () => {
+			state.room2.name = 'Player1';
+			state.room2.stage.decisionType = DecisionType.Answer;
+
+			controller.onPass(0);
+
+			expect(dispatchedActions).toContainEqual(expect.objectContaining({
+				type: 'room2/setDecisionType',
+				payload: DecisionType.None,
+			}));
+		});
+
+		it('should stay in the answer stage when another player has passed', () => {
+			state.room2.name = 'Player2';
+			state.room2.stage.decisionType = DecisionType.Answer;
+
+			controller.onPass(0);
+
+			const actions = dispatchedActions.map(a => a.type);
+			expect(actions).not.toContain('room2/setDecisionType');
 		});
 	});
 });

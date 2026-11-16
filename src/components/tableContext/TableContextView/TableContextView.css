@@ -17,3 +17,27 @@
 	backdrop-filter: none;
 	box-shadow: none;
 }
+
+.answerWithPass {
+	display: flex;
+	height: 100%;
+}
+
+.answerWithPass > :first-child {
+	flex: 1;
+	min-width: 0;
+}
+
+.answerWithPass .passButton {
+	flex: 0 0 auto;
+	padding: 0 20px;
+	margin: 0 2px;
+	font-size: 20px;
+	border-radius: 10px;
+}
+
+@media screen and (min-width: 1600px) {
+	.answerWithPass .passButton {
+		font-size: 28px;
+	}
+}

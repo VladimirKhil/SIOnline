@@ -97,6 +97,9 @@ export interface Room2State {
 	answer: string;
 	answerType: string;
 
+	/** Can the player refuse to answer (the "firstCorrect" completion mode of a question for all). */
+	canPass: boolean;
+
 	hiddenComments: string;
 
 	validation: {
@@ -212,6 +215,7 @@ const initialState: Room2State = {
 
 	answer: '',
 	answerType: '',
+	canPass: false,
 
 	hiddenComments: '',
 
@@ -784,6 +788,9 @@ export const room2Slice = createSlice({
 		},
 		answerTypeChanged(state: Room2State, action: PayloadAction<string>) {
 			state.answerType = action.payload;
+		},
+		canPassChanged(state: Room2State, action: PayloadAction<boolean>) {
+			state.canPass = action.payload;
 		},
 		toggleEditTable(state: Room2State) {
 			state.isEditTableEnabled = !state.isEditTableEnabled;
@@ -1385,6 +1392,7 @@ export const {
 	setTheme,
 	answerChanged,
 	answerTypeChanged,
+	canPassChanged,
 	toggleEditTable,
 	setIsGameStarted,
 	setIsAppellation,

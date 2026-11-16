@@ -32,7 +32,7 @@ and each instance only ever talks to its own client.
 | `pause` | The game is paused, media is stopped, or the app window is hidden | — |
 | `set-volume` | On load and every time the user changes the sound volume | `volume` |
 | `answer` | The local participant is asked to answer (the frame also receives focus) | — |
-| `answer-end` | The answer stage is over | — |
+| `answer-end` | The answer stage is over, or the local player has passed | — |
 
 `play` and `pause` are not sent any more after the content has reported `completed`.
 
@@ -71,9 +71,15 @@ Notes:
 | `completed` | The content is finished. The client reports the end of the media to the game server exactly once (ignored while the content is paused or hidden) |
 | `answer-right` | The client sends the default **right** answer to the game server on behalf of the local player |
 | `answer-wrong` | The client sends the default **wrong** answer to the game server on behalf of the local player |
+| `pass` | The client sends a refusal to answer to the game server on behalf of the local player |
 
 `answer-right` and `answer-wrong` only make sense for a player who is currently answering: the game server accepts them
 as that player's answer and validates it automatically, no showman decision required.
+
+`pass` is accepted only in a question for all with the `firstCorrect` completion mode (question parameter `completionMode`),
+where only the first right answer is scored.
+The player gets nothing, stops answering and receives `answer-end`. Send it instead of `answer-wrong` when losing
+the game should not be penalized. In other questions the game server ignores `pass`.
 
 ---
 
