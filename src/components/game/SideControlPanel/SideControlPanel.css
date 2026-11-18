@@ -169,6 +169,13 @@ ul.gameMenu,
     pointer-events: none;
 }
 
+.gameMenu li img {
+    width: 24px;
+    height: 24px;
+    margin-right: 8px;
+    vertical-align: middle;
+}
+
 #exitMenuPopup {
     padding-top: 10px;
 }
