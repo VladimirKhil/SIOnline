@@ -148,6 +148,9 @@ const enum GameMessages {
 	/** Comments for the question (if any). */
 	QuestionComments = 'QUESTION_COMMENTS',
 
+	/** Represents a question sequential index in round. */
+	QuestionCounter = 'QUESTION_COUNTER',
+
 	/** Question has ended. */
 	QuestionEnd = 'QUESTION_END',
 
@@ -232,6 +235,9 @@ const enum GameMessages {
 	Unbanned = 'UNBANNED',
 
 	UserError = 'USER_ERROR',
+
+	/** Known external identity of a person: name, auth provider, external user id. */
+	UserIdentity = 'USER_IDENTITY',
 
 	/** Answer validation. */
 	Validation2 = 'VALIDATION2',

@@ -720,6 +720,18 @@ export const room2Slice = createSlice({
 				state.persons.all[action.payload.personName].avatarVideo = action.payload.avatarUri;
 			}
 		},
+		userIdentityChanged: (
+			state: Room2State,
+			action: PayloadAction<{ name: string, authProvider: string, userId: string, badges: string[] }>
+		) => {
+			const person = state.persons.all[action.payload.name];
+
+			if (person) {
+				person.authProvider = action.payload.authProvider;
+				person.userId = action.payload.userId;
+				person.badges = action.payload.badges;
+			}
+		},
 		questionAnswersChanged(state: Room2State, action: PayloadAction<{ rightAnswers: string[], wrongAnswers: string[] }>) {
 			state.validation.rightAnswers = action.payload.rightAnswers;
 			state.validation.wrongAnswers = action.payload.wrongAnswers;
@@ -808,6 +820,9 @@ export const room2Slice = createSlice({
 		},
 		incrementQuestionCounter(state: Room2State) {
 			state.stage.questionCounter += 1;
+		},
+		setQuestionCounter(state: Room2State, action: PayloadAction<number>) {
+			state.stage.questionCounter = action.payload;
 		},
 		resetQuestionCounter(state: Room2State) {
 			state.stage.questionCounter = 0;
@@ -1392,6 +1407,7 @@ export const {
 	setIsPaused,
 	setRoomRole,
 	incrementQuestionCounter,
+	setQuestionCounter,
 	resetQuestionCounter,
 	setSettingDisplayAnswerOptionsLabels,
 	setSettingFalseStart,
@@ -1436,6 +1452,7 @@ export const {
 	setDemoButtonHighlights,
 	resetDemoButtonHighlights,
 	playerCountChanged,
+	userIdentityChanged,
 } = room2Slice.actions;
 
 export default room2Slice.reducer;

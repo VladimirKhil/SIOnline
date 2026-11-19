@@ -1,5 +1,6 @@
 import { AnyAction, Dispatch } from 'redux';
 import ClientController from '../src/logic/ClientController';
+import MessageHandler from '../src/logic/messageProcessor';
 import State, { initialState } from '../src/state/State';
 import reducer from '../src/state/reducer';
 import DataContext from '../src/model/DataContext';
@@ -10,7 +11,6 @@ import PersonInfo from '../src/client/models/PersonInfo';
 import PlayerInfo from '../src/client/models/PlayerInfo';
 import Persons from '../src/client/models/Persons';
 import PlayerStates from '../src/client/models/enums/PlayerStates';
-import ThemeInfo from '../src/model/ThemeInfo';
 import ContentInfo from '../src/client/models/ContentInfo';
 import JoinMode from '../src/client/game/JoinMode';
 import StakeModes from '../src/client/game/StakeModes';
@@ -18,6 +18,7 @@ import ItemState from '../src/client/models/enums/ItemState';
 import ServerRole from '../src/client/contracts/ServerRole';
 import Path from '../src/model/enums/Path';
 import Role from '../src/client/models/Role';
+import DefaultEndpoints from '../src/client/system/DefaultEndpoints';
 import * as globalActions from '../src/state/globalActions';
 import localization from '../src/model/resources/localization';
 
@@ -563,6 +564,27 @@ describe('ClientController - Question Flow', () => {
 			expect(actions).toContain('room2/incrementQuestionCounter');
 			expect(actions).toContain('room2/setTheme');
 			expect(actions).toContain('common/playAudio');
+		});
+	});
+
+	describe('question counter message', () => {
+		it('should update the local counter from the server value', () => {
+			const messageHandler = new MessageHandler(controller);
+
+			messageHandler.processMessage({
+				IsSystem: true,
+				Sender: DefaultEndpoints.GameClient,
+				Text: 'QUESTION_COUNTER\n7',
+			});
+
+			const counterAction = dispatchedActions.find(action => action.type === 'room2/setQuestionCounter');
+
+			expect(counterAction).toBeDefined();
+
+			if (counterAction) {
+				expect(counterAction.payload).toBe(7);
+				expect(reducer(initialState, counterAction).room2.stage.questionCounter).toBe(7);
+			}
 		});
 	});
 

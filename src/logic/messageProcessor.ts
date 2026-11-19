@@ -696,6 +696,16 @@ const viewerHandler = (controller: ClientController, args: string[]) => {
 			}
 			break;
 
+		case GameMessages.QuestionCounter:
+			if (args.length > 1) {
+				const counter = Number(args[1]);
+
+				if (Number.isInteger(counter) && counter >= 0) {
+					controller.onQuestionCounter(counter);
+				}
+			}
+			break;
+
 		case GameMessages.QuestionAuthors:
 			if (args.length < 2) {
 				break;
@@ -1039,6 +1049,17 @@ const viewerHandler = (controller: ClientController, args: string[]) => {
 		case GameMessages.UserError:
 			if (args.length > 1) {
 				controller.onUserError(parseInt(args[1], 10), args.slice(2));
+			}
+			break;
+
+		case GameMessages.UserIdentity:
+			if (args.length > 4) {
+				const name = args[1];
+				const authProvider = args[2];
+				const userId = args[3];
+				const badges = args[4].split(',');
+
+				controller.onUserIdentity(name, authProvider, userId, badges);
 			}
 			break;
 

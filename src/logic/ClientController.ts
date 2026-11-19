@@ -119,6 +119,7 @@ import {
 	setIsPaused,
 	setRoomRole,
 	incrementQuestionCounter,
+	setQuestionCounter,
 	resetQuestionCounter,
 	setTheme,
 	setSettingDisplayAnswerOptionsLabels,
@@ -160,6 +161,7 @@ import {
 	setSettingUseAppellations,
 	setDemoButtonHighlights as setDemoButtonHighlightsAction,
 	playerCountChanged,
+	userIdentityChanged,
 } from '../state/room2Slice';
 
 import PersonInfo from '../client/models/PersonInfo';
@@ -1422,6 +1424,10 @@ export default class ClientController implements IClientController {
 		this.addSimpleMessage(stringFormat(localization.userUnbanned, name));
 	}
 
+	onUserIdentity(name: string, authProvider: string, userId: string, badges: string[]) {
+		this.appDispatch(userIdentityChanged({ name, authProvider, userId, badges }));
+	}
+
 	onWinner(winnerIndex: number) {
 		this.playGameSound(GameSound.APPLAUSE_FINAL);
 
@@ -1691,6 +1697,10 @@ export default class ClientController implements IClientController {
 
 	onTableCaption(caption: string) {
 		this.appDispatch(captionChanged(caption));
+	}
+
+	onQuestionCounter(counter: number) {
+		this.appDispatch(setQuestionCounter(counter));
 	}
 
 	onQuestionSelected(themeIndex: number, questionIndex: number, questionPrice: number) {

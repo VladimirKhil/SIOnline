@@ -6,4 +6,7 @@ export default interface Account {
 	isHuman: boolean;
 	avatar: string | null;
 	avatarVideo?: string;
+	authProvider?: string;
+	userId?: string;
+	badges?: string[];
 }
