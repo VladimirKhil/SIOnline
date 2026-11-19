@@ -17,6 +17,7 @@ import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 import ScoreEditor from './ScoreEditor/ScoreEditor';
 import { setAreSumsEditable } from '../../../state/room2Slice';
 import PersonName from './PersonName';
+import SeatButton from '../SeatButton/SeatButton';
 
 import './PlayerView.scss';
 
@@ -237,6 +238,7 @@ export function PlayerView(props: PlayerViewProps): JSX.Element {
 						<div className='playerAvatar'>
 							<iframe title='Video avatar' src={avatarVideo} />
 							{answerOverlay}
+							<SeatButton isShowman={false} tableIndex={index} personName={player.name} />
 						</div>
 					) : (
 						<div
@@ -245,6 +247,7 @@ export function PlayerView(props: PlayerViewProps): JSX.Element {
 							title={`${player.name} ${player.sum}`}
 						>
 							{answerOverlay}
+							<SeatButton isShowman={false} tableIndex={index} personName={player.name} />
 						</div>
 					)}
 

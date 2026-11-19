@@ -124,6 +124,10 @@ export default class GameClient implements IGameClient {
 		return this.gameServerClient.sayAsync(text);
 	}
 
+	seat(isShowman: boolean, tableIndex: number): Promise<boolean> {
+		return this.gameServerClient.msgAsync(Messages.Seat, isShowman ? 'showman' : 'player', isShowman ? '' : tableIndex);
+	}
+
 	selectChooser(playerIndex: number): Promise<boolean> {
 		return this.gameServerClient.msgAsync(Messages.SetChooser, playerIndex);
 	}

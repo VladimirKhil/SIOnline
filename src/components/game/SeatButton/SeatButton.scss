@@ -1,0 +1,22 @@
+.seatButton {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	z-index: 6;
+	padding: 4px 8px;
+	font-size: 20px;
+	font-weight: bold;
+	border: 1px solid #666;
+	border-radius: 4px;
+	background: rgba(64, 64, 64, 0.8);
+	color: #fff;
+	cursor: pointer;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+	line-height: 1;
+	min-width: 36px;
+}
+
+.seatButton:hover {
+	background: rgba(112, 112, 112, 0.85);
+}

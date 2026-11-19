@@ -15,6 +15,7 @@ import Persons from '../../../client/models/Persons';
 import EditTableMenu from '../EditTableMenu/EditTableMenu';
 import Constants from '../../../model/enums/Constants';
 import PersonName from '../PlayerView/PersonName';
+import SeatButton, { canTakeSeat } from '../SeatButton/SeatButton';
 
 import './ShowmanReplicView.scss';
 
@@ -49,6 +50,7 @@ export function ShowmanReplicView(props: ShowmanReplicViewProps): JSX.Element {
 	const mediaPreloadStarted = useAppSelector(state => state.room2.persons.showman.mediaPreloadStarted);
 	const mediaPreloadProgress = useAppSelector(state => state.room2.persons.showman.mediaPreloadProgress);
 	const hostName = useAppSelector(state => state.room2.persons.hostName);
+	const canSeatShowman = useAppSelector(state => canTakeSeat(state, showmanName));
 
 	const isHost = showmanName === hostName;
 
@@ -85,7 +87,7 @@ export function ShowmanReplicView(props: ShowmanReplicViewProps): JSX.Element {
 		</div>
 	) : null;
 
-	const showmanInfoStyle: React.CSSProperties = isGameStarted && !activePlayer ? {} : {
+	const showmanInfoStyle: React.CSSProperties = isGameStarted && !activePlayer && !canSeatShowman ? {} : {
 		display: 'flex'
 	};
 
@@ -99,10 +101,12 @@ export function ShowmanReplicView(props: ShowmanReplicViewProps): JSX.Element {
 		<div className='showmanAvatar'>
 			<iframe title='Video avatar' src={account?.avatarVideo} />
 			{showmanPreload}
+			{!activePlayer && <SeatButton isShowman={true} tableIndex={0} personName={showmanName} />}
 		</div>
 	) : (
 		<div className={`showmanAvatar ${avatarClass}`} style={avatarStyle}>
 			{showmanPreload}
+			{!activePlayer && <SeatButton isShowman={true} tableIndex={0} personName={showmanName} />}
 		</div>
 	);
 

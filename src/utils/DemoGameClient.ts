@@ -267,6 +267,10 @@ export default class DemoGameClient implements IGameClient {
 		throw new Error('Method not implemented.');
 	}
 
+	seat(isShowman: boolean, tableIndex: number): Promise<boolean> {
+		throw new Error('Method not implemented.');
+	}
+
 	async sendAnswer(answer: string): Promise<boolean> {
 		if (this.stage !== DemoStage.Answer) {
 			return false;

@@ -164,6 +164,14 @@ export const pauseGame = createAsyncThunk(
 	}
 );
 
+export const seat = createAsyncThunk(
+	'server/seat',
+	async (arg: { isShowman: boolean, tableIndex: number }, thunkAPI) => {
+		const dataContext = thunkAPI.extra as DataContext;
+		await dataContext.game.seat(arg.isShowman, arg.tableIndex);
+	}
+);
+
 export const setOption = createAsyncThunk(
 	'server/setOption',
 	async (arg: { name: string, value: string }, thunkAPI) => {

@@ -66,6 +66,7 @@ Package authors are responsible for package content. The package will be automat
 		profile: 'Profile',
 		selectAvatar: 'Select avatar',
 		sex: 'Sex',
+		seat: 'Seat',
 	},
 	ru: {
 		anyonePlay: 'Игра со случайными соперниками',
@@ -134,6 +135,7 @@ Package authors are responsible for package content. The package will be automat
 		profile: 'Профиль',
 		selectAvatar: 'Выбрать аватар',
 		sex: 'Пол',
+		seat: 'Занять место',
 	},
 	sr: {
 		anyonePlay: 'Igra sa slučajnim protivnicima',
@@ -202,6 +204,7 @@ Autori paketa odgovorni su za sadržaj paketa. Paket će biti automatski obrisan
 		profile: 'Profil',
 		selectAvatar: 'Izabrati avatar',
 		sex: 'Pol',
+		seat: 'Zauzeti mesto',
 	},
 	uz: {
 		anyonePlay: 'Tasodifiy raqiblar bilan o‘ynash',
@@ -264,12 +267,13 @@ Paketlar mazmuni uchun ularning mualliflari mas’uldir. O‘yin yakunlangach, p
 		users: 'o‘yinchilar',
 		welcomeTitle: 'Amalni tanlang',
 		withoutPassword: 'Parolsiz',
-		friendsPlay: 'Do‘stlar bilan o‘ynash',
+		friendsPlay: 'Dostlar bilan oynash',
 		my: 'Mening',
 		pin: 'PIN-kod',
 		profile: 'Profil',
 		selectAvatar: 'Avatar tanlash',
 		sex: 'Jins',
+		seat: 'Oringa otish',
 	},
 	es: {
 		anyonePlay: 'Jugar con oponentes aleatorios',
@@ -338,6 +342,7 @@ Los autores de los paquetes son responsables del contenido del paquete. El paque
 		profile: 'Perfil',
 		selectAvatar: 'Seleccionar avatar',
 		sex: 'Sexo',
+		seat: 'Ocupar asiento',
 	},
 };
 

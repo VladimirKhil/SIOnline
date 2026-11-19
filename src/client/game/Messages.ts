@@ -55,6 +55,9 @@ const enum Messages {
 
 	Report = 'REPORT',
 
+	/** Viewer takes showman or player seat. */
+	Seat = 'SEAT',
+
 	SelectPlayer = 'SELECT_PLAYER',
 
 	/** Gives turn to player. */

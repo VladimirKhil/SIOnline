@@ -57,6 +57,8 @@ export default interface IGameClient {
 
 	say(text: string): Promise<boolean>;
 
+	seat(isShowman: boolean, tableIndex: number): Promise<boolean>;
+
 	selectChooser(playerIndex: number): Promise<boolean>;
 
 	selectPlayer(playerIndex: number): Promise<boolean>;
