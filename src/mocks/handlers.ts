@@ -4,6 +4,7 @@ import StorageFilter from '../client/contracts/StorageFilter';
 import GameInfo from '../client/contracts/GameInfo';
 import Slice from '../client/contracts/Slice';
 import ServerGameType from '../client/contracts/ServerGameType';
+import AuthSource from '../client/contracts/AuthSource';
 
 // Mock data for bot names
 const mockBotNames = [
@@ -69,9 +70,9 @@ const mockGames: GameInfo[] = [
 		PackageName: 'Test Package 1',
 		PasswordRequired: false,
 		Persons: [
-			{ IsOnline: true, Name: 'TestUser', Role: 'Showman' as any },
-			{ IsOnline: true, Name: 'AI Player 1', Role: 'Player' as any },
-			{ IsOnline: true, Name: 'AI Player 2', Role: 'Player' as any }
+			{ IsOnline: true, Name: 'TestUser', Role: 'Showman' as any, AuthSource: AuthSource.Steam, UserId: 'user-1' },
+			{ IsOnline: true, Name: 'AI Player 1', Role: 'Player' as any, AuthSource: AuthSource.Steam, UserId: 'user-2' },
+			{ IsOnline: true, Name: 'AI Player 2', Role: 'Player' as any, AuthSource: AuthSource.Steam, UserId: 'user-3' }
 		],
 		ProgressCurrent: 0,
 		ProgressTotal: 100,
@@ -92,8 +93,8 @@ const mockGames: GameInfo[] = [
 		PackageName: 'Test Package 2',
 		PasswordRequired: true,
 		Persons: [
-			{ IsOnline: true, Name: 'Player2', Role: 'Showman' as any },
-			{ IsOnline: true, Name: 'AI Player 3', Role: 'Player' as any }
+			{ IsOnline: true, Name: 'Player2', Role: 'Showman' as any, AuthSource: AuthSource.Steam, UserId: 'user-4' },
+			{ IsOnline: true, Name: 'AI Player 3', Role: 'Player' as any, AuthSource: AuthSource.Steam, UserId: 'user-5' }
 		],
 		ProgressCurrent: 25,
 		ProgressTotal: 100,

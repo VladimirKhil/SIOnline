@@ -10,6 +10,10 @@ import * as signalR from '@microsoft/signalr';
 import * as signalRMsgPack from '@microsoft/signalr-protocol-msgpack';
 import StorageFilter from './contracts/StorageFilter';
 import IGameServerListener from './IGameServerListener';
+import RunGameRequest2 from './models/RunGameRequest2';
+import RunGameResponse2 from './models/RunGameResponse2';
+import RunGameError2 from './models/RunGameError2';
+import RunGameResult2 from './models/RunGameResult2';
 
 /** Represents a connection to a SIGame Server. */
 export default class GameServerClient implements IGameServerClient {
@@ -162,6 +166,33 @@ export default class GameServerClient implements IGameServerClient {
 		}
 
 		return <RunGameResponse>(await response.json());
+	}
+
+	async runGame2Async(runGameRequest: RunGameRequest2): Promise<RunGameResult2> {
+		const response = await fetch(`${this.serverUri}/api/v2/games`, {
+			method: 'POST',
+			headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(runGameRequest)
+		});
+
+		if (response.status === 201) {
+			return {
+				isSuccess: true,
+				response: <RunGameResponse2>(await response.json())
+			};
+		}
+
+		if (response.status === 400) {
+			return {
+				isSuccess: false,
+				error: <RunGameError2>(await response.json())
+			};
+		}
+
+		throw new Error(`Error while running game: ${response.status} ${await response.text()}`);
 	}
 
 	async runAutoGameAsync(runAutoGameRequest: RunAutoGameRequest): Promise<RunGameResponse> {

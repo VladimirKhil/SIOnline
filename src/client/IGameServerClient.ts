@@ -7,6 +7,8 @@ import RunAutoGameRequest from './contracts/RunAutoGameRequest';
 import GetGameByPinResponse from './contracts/GetGameByPinResponse';
 import StorageFilter from './contracts/StorageFilter';
 import IGameServerListener from './IGameServerListener';
+import RunGameRequest2 from './models/RunGameRequest2';
+import RunGameResult2 from './models/RunGameResult2';
 
 /** Defines the SIGame Server client. */
 export default interface IGameServerClient {
@@ -39,6 +41,12 @@ export default interface IGameServerClient {
 	 * @param runGameRequest Game options.
 	 */
 	runGameAsync(runGameRequest: RunGameRequest): Promise<RunGameResponse>;
+
+	/**
+	 * Runs a new game using the v2 settings contract.
+	 * @param runGameRequest Game options.
+	 */
+	runGame2Async(runGameRequest: RunGameRequest2): Promise<RunGameResult2>;
 
 	/**
 	 * Runs a new automatic game.

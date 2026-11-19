@@ -30,6 +30,10 @@ import RandomPackageParameters from 'sistorage-client/dist/models/RandomPackageP
 import SIStorageServiceError from 'sistorage-client/dist/models/SIStorageServiceError';
 import { AppDispatch } from '../store';
 import { showWelcome, tableReset } from '../tableSlice';
+import RunGameRequest2 from '../../client/models/RunGameRequest2';
+import AccountType from '../../client/models/enums/AccountType';
+import GameMode2 from '../../client/models/enums/GameMode';
+import Gender from '../../client/models/enums/Gender';
 
 import {
 	ContextView,
@@ -599,6 +603,90 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 
 			const packageInfo = await getPackageInfoAsync(state, game, dataContext, dispatch);
 
+			const gameMode2 = (() => {
+				switch (gameSettings.appSettings.gameMode) {
+					case GameType.Classic:
+						return GameMode2.Classic;
+					case GameType.Simple:
+						return GameMode2.Sequential;
+					case GameType.Quiz:
+						return GameMode2.Quiz;
+					case GameType.TurnTaking:
+						return GameMode2.TurnTaking;
+					default:
+						throw new Error(`Unsupported game mode: ${gameSettings.appSettings.gameMode}`);
+				}
+			})();
+
+			const toGameAccount = (account: AccountSettings) => ({
+				name: account.name,
+				type: account.isHuman ? AccountType.Human : AccountType.Bot,
+				gender: account.isMale === false ? Gender.Female : Gender.Male,
+				avatarUri: ''
+			});
+
+			const runGameRequest2: RunGameRequest2 = {
+				roomSettings: {
+					hostName: gameSettings.humanPlayerName,
+					showman: toGameAccount(gameSettings.showman),
+					players: gameSettings.players.map(toGameAccount),
+					name: gameSettings.networkGameName,
+					password: gameSettings.networkGamePassword,
+					voiceChatUri: gameSettings.networkVoiceChat,
+					isPrivate: gameSettings.isPrivate,
+					isAutomatic: false
+				},
+				rulesSettings: {
+					readingSpeed: gameSettings.appSettings.readingSpeed,
+					falseStart: gameSettings.appSettings.falseStart,
+					partialText: gameSettings.appSettings.partialText,
+					partialImages: gameSettings.appSettings.partialImages,
+					hideImageOnAnswerAndPause: false,
+					playAllThemesInThemesRemovalRound: false,
+					allowEveryoneToPlayHiddenStakes: gameSettings.appSettings.allowEveryoneToPlayHiddenStakes,
+					oral: gameSettings.appSettings.oral,
+					oralPlayersActions: gameSettings.appSettings.oralPlayersActions,
+					managed: gameSettings.appSettings.managed,
+					questionWithButtonPenalty: gameSettings.appSettings.questionWithButtonPenalty,
+					questionForYourselfPenalty: gameSettings.appSettings.questionForYourselfPenalty,
+					questionForAllPenalty: gameSettings.appSettings.questionForAllPenalty,
+					validateEqualAnswersSeparately: false,
+					questionForYourselfFactor: gameSettings.appSettings.questionForYourselfFactor,
+					buttonPressMode: gameSettings.appSettings.buttonPressMode,
+					buttonsAcceptInterval: gameSettings.appSettings.timeSettings.buttonsAccepting,
+					preloadRoundContent: gameSettings.appSettings.preloadRoundContent,
+					gameMode: gameMode2,
+					useAppellations: gameSettings.appSettings.useApellations,
+					displayAnswerOptionsOneByOne: gameSettings.appSettings.displayAnswerOptionsOneByOne,
+					displayAnswerOptionsLabels: gameSettings.appSettings.displayAnswerOptionsLabels,
+					prependThemeCommentsToQuestion: state.settings.attachContentToTable, // TODO: replace with actual setting when available
+					appendRightAnswerTextToComplexAnswer: state.settings.attachContentToTable, // TODO: replace with actual setting when available
+				},
+				timeSettings: {
+					questionSelection: gameSettings.appSettings.timeSettings.timeForChoosingQuestion,
+					themeSelection: gameSettings.appSettings.timeSettings.timeForChoosingFinalTheme,
+					playerSelection: gameSettings.appSettings.timeSettings.timeForGivingACat,
+					buttonPressing: gameSettings.appSettings.timeSettings.timeForThinkingOnQuestion,
+					buttonsAccepting: gameSettings.appSettings.timeSettings.buttonsAccepting,
+					answering: gameSettings.appSettings.timeSettings.timeForThinkingOnQuestion,
+					soloAnswering: gameSettings.appSettings.timeSettings.timeForFinalThinking,
+					hiddenAnswering: gameSettings.appSettings.timeSettings.timeForPrintingAnswer,
+					stakeMaking: gameSettings.appSettings.timeSettings.timeForMakingStake,
+					showmanDecision: gameSettings.appSettings.timeSettings.timeForShowmanDecisions,
+					round: gameSettings.appSettings.timeSettings.timeOfRound,
+					buttonBlocking: gameSettings.appSettings.timeSettings.timeForBlockingButton,
+					reflection: gameSettings.appSettings.timeSettings.timeForRightAnswer,
+					image: gameSettings.appSettings.timeSettings.imageTime,
+					partialImage: gameSettings.appSettings.timeSettings.partialImageTime,
+					appellation: gameSettings.appSettings.timeSettings.timeForShowmanDecisions, // TODO: replace with actual appellation time when available
+				},
+				language: gameSettings.appSettings.culture,
+				packageInfo,
+				computerAccounts: []
+			};
+
+			// Alternative: use the v2 settings contract.
+			//const result = await dataContext.gameClient.runGame2Async(runGameRequest2);
 			const result = await dataContext.gameClient.runGameAsync({
 				gameSettings: gameSettings,
 				packageInfo: packageInfo,
@@ -608,9 +696,11 @@ const createNewGame: ActionCreator<ThunkAction<void, State, DataContext, Action>
 			saveStateToStorage(state);
 
 			if (!result.isSuccess) {
+				//appDispatch(userErrorChanged(GameErrorsHelper.getMessage(result.error.code)));
 				appDispatch(userErrorChanged(GameErrorsHelper.getMessage(result.errorType)));
 			} else {
 				appDispatch(passwordChanged(gameSettings.networkGamePassword));
+				//dispatch(joinGame(result.response.hostUri, result.response.gameId, effectiveUserName, role, null, appDispatch, false, authorizationMode));
 				dispatch(joinGame(result.hostUri, result.gameId, effectiveUserName, role, null, appDispatch, false, authorizationMode));
 			}
 		} catch (error) {
