@@ -111,6 +111,9 @@ export const VideoContent: React.FC<VideoContentProps> = ({
 
 		// Handle URI changes
 		if (uri !== prevProps.uri) {
+			// The component is reused when another video takes its place, and the new video is not completed yet
+			completedRef.current = false;
+
 			if (uri !== video.currentSrc) {
 				video.load();
 			}
