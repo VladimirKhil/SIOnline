@@ -7,6 +7,7 @@ import {
 import {
 	onMediaEnded,
 	onMediaLoaded,
+	onPass,
 	sendAnswerAsRightByDefault,
 	sendAnswerAsWrongByDefault,
 } from '../../../state/serverActions';
@@ -40,7 +41,7 @@ interface HtmlContentControlMessage {
 
 interface HtmlContentEventMessage {
 	type: 'si:media-event';
-	event: 'completed' | 'answer-right' | 'answer-wrong' | 'supports-set-volume' | 'hello';
+	event: 'completed' | 'answer-right' | 'answer-wrong' | 'pass' | 'supports-set-volume' | 'hello';
 }
 
 /** Converts internal role value to its cooperative HTML content representation. */
@@ -153,6 +154,10 @@ export function HtmlContent(props: HtmlContentProps) {
 
 				case 'answer-wrong':
 					appDispatch(sendAnswerAsWrongByDefault());
+					return;
+
+				case 'pass':
+					appDispatch(onPass());
 					return;
 
 				default:

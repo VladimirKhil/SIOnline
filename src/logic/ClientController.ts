@@ -151,6 +151,7 @@ import {
 	setPlayerApellating,
 	answerChanged,
 	answerTypeChanged,
+	canPassChanged,
 	showLeftSeconds,
 	setReview,
 	setPlayerAnswer,
@@ -584,7 +585,7 @@ export default class ClientController implements IClientController {
 		this.appDispatch(setDeepMode(true));
 	}
 
-	onAskAnswer(answerType: string | null) {
+	onAskAnswer(answerType: string | null, canPass = false) {
 		if (this.getState().table.layoutMode === LayoutMode.AnswerOptions) {
 			this.appDispatch(isSelectableChanged(true));
 		} else {
@@ -592,6 +593,7 @@ export default class ClientController implements IClientController {
 			this.appDispatch(answerTypeChanged(answerType ?? ''));
 		}
 
+		this.appDispatch(canPassChanged(canPass));
 		this.appDispatch(setDecisionType(DecisionType.Answer));
 	}
 
@@ -1081,6 +1083,15 @@ export default class ClientController implements IClientController {
 
 	onPass(playerIndex: number) {
 		this.appDispatch(playerStateChanged({ index: playerIndex, state: PlayerStates.Pass }));
+
+		const state = this.getState();
+
+		if (state.room2.stage.decisionType === DecisionType.Answer &&
+			state.room2.persons.players[playerIndex]?.name === state.room2.name) {
+			// The game server has accepted the refusal to answer ("firstCorrect" completion mode)
+			this.appDispatch(answerChanged(''));
+			this.appDispatch(setDecisionType(DecisionType.None));
+		}
 	}
 
 	onPin(pin: string) {
