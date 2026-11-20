@@ -3,6 +3,7 @@ import GameInfo from '../src/client/contracts/GameInfo';
 import PersonInfo from '../src/client/contracts/PersonInfo';
 import ServerRole from '../src/client/contracts/ServerRole';
 import ServerGameType from '../src/client/contracts/ServerGameType';
+import AuthSource from '../src/client/contracts/AuthSource';
 
 const Classic = 1;
 const Simple = 2;
@@ -55,6 +56,8 @@ function makePerson(overrides: Partial<PersonInfo> = {}): PersonInfo {
 		IsOnline: false,
 		Name: '',
 		Role: ServerRole.Player,
+		AuthSource: AuthSource.Steam,
+		UserId: '',
 		...overrides,
 	};
 }
