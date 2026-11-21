@@ -111,7 +111,7 @@ All game functionality is available for free—donations do not affect gameplay 
 	 и не используются для доступа к дополнительным функциям игры. Спасибо за поддержку!`,
 		enter: 'Вход',
 		errorHappened: 'Ошибка',
-		gameAuthor: 'Автор программы',
+		gameAuthor: 'Автор игры',
 		gameLoading: 'Идёт загрузка игры…',
 		howToPlay: 'Как играть',
 		connectingToServer: 'Подключение к серверу…',

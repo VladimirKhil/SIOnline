@@ -360,6 +360,12 @@
 	border: 1px solid rgba(76, 175, 80, 0.5);
 }
 
+.gameAuthorMark {
+	background: linear-gradient(135deg, #bb3c00, #b53200);
+	font-size: 14px;
+	font-weight: bold;
+}
+
 .chooserMark {
 	background: linear-gradient(135deg, #2196f3, #1565c0);
 	border: 1px solid rgba(33, 150, 243, 0.5);
@@ -437,5 +443,14 @@
 		width: 18px;
 		margin-right: 4px;
 		object-fit: contain;
+	}
+}
+
+.personProfileLink {
+	color: inherit;
+	text-decoration: none;
+
+	&:hover {
+		text-decoration: underline;
 	}
 }

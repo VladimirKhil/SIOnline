@@ -123,7 +123,7 @@ export function PersonView(props: PersonViewProps): JSX.Element {
 
 			<div className='personNameWrapper'>
 				<span className='personName'>
-					{isEmptySeat ? '' : <PersonName name={personName} />}
+					{isEmptySeat ? '' : <PersonName name={personName} account={props.account ?? persons.all[personName]} />}
 				</span>
 			</div>
 

@@ -1833,7 +1833,8 @@ export default class ClientController implements IClientController {
 		let text, hint = '';
 
 		switch (questionType) {
-			case 'simple': // 'withButton':
+			case 'simple':
+			case 'withButton':
 				text = localization.questionTypeSimple;
 				hint = localization.questionTypeSimpleHint;
 				break;
@@ -1865,7 +1866,8 @@ export default class ClientController implements IClientController {
 				this.appDispatch(questionReset());
 				break;
 
-			case 'noRisk': // 'forYourself':
+			case 'noRisk':
+			case 'forYourself':
 				this.playGameSound(GameSound.QUESTION_FOR_YOURSELF);
 				text = localization.questionTypeForYourself;
 				hint = localization.questionTypeForYourselfHint;

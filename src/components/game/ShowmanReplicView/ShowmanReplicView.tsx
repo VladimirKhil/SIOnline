@@ -143,13 +143,17 @@ export function ShowmanReplicView(props: ShowmanReplicViewProps): JSX.Element {
 
 						<div className="showmanName">
 							<span className={meClass}>
-								<PersonName name={account?.name ?? shownName} />
+								<PersonName name={account?.name ?? shownName} account={account} />
 							</span>
 						</div>
 
 						<div className='marksArea'>
 							{isHost ? (
 								<div className="mark" title={localization.host}>⭐</div>
+							) : null}
+
+							{account?.badges?.includes('GameAuthor') ? (
+								<div className='gameAuthorMark' title={localization.gameAuthor}>✦</div>
 							) : null}
 
 							{isReady && !isGameStarted ? (

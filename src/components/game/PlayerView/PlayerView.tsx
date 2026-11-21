@@ -254,7 +254,7 @@ export function PlayerView(props: PlayerViewProps): JSX.Element {
 				<div className="playerInfo">
 					<div className="name" title={player.name}>
 						<AutoSizedText className='nameValue' maxFontSize={48}>
-							<PersonName name={player.name} />
+							<PersonName name={player.name} account={account} />
 						</AutoSizedText>
 
 						{areSumsEditable ? (
@@ -286,6 +286,10 @@ export function PlayerView(props: PlayerViewProps): JSX.Element {
 				<div className='marksArea'>
 					{isHost ? (
 						<div className="mark" title={localization.host}>⭐</div>
+					) : null}
+
+					{account?.badges?.includes('GameAuthor') ? (
+						<div className='gameAuthorMark' title={localization.gameAuthor}>✦</div>
 					) : null}
 
 					{player.isReady && !isGameStarted ? (

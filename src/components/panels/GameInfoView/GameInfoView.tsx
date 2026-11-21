@@ -3,8 +3,10 @@ import { connect } from 'react-redux';
 import localization from '../../../model/resources/localization';
 import Role from '../../../client/models/Role';
 import ServerRole from '../../../client/contracts/ServerRole';
+import AuthSource from '../../../client/contracts/AuthSource';
 import onlineActionCreators from '../../../state/online/onlineActionCreators';
 import GameInfo from '../../../client/contracts/GameInfo';
+import PersonInfo from '../../../client/contracts/PersonInfo';
 import ServerGameType from '../../../client/contracts/ServerGameType';
 import ProgressBar from '../../common/ProgressBar/ProgressBar';
 import { getReadableTimeSpan } from '../../../utils/TimeHelpers';
@@ -26,6 +28,7 @@ import folderSvg from '../../../../assets/images/folder.svg';
 import timerSvg from '../../../../assets/images/timer.svg';
 import AuthModeSelector from '../AuthModeSelector/AuthModeSelector';
 import NameInput from '../NameInput/NameInput';
+import Link from '../../common/Link/Link';
 
 interface GameInfoViewOwnProps {
 	onJoin: (hostUri: string, gameId: number, name: string, role: Role, appDispatch: AppDispatch, authorizationMode: AuthorizationMode) => void;
@@ -133,8 +136,8 @@ export function GameInfoView(props: GameInfoViewProps): JSX.Element {
 		[ServerRole.Showman]: false
 	};
 
-	let showman = '';
-	const players: string[] = [];
+	let showman: PersonInfo | undefined;
+	const players: PersonInfo[] = [];
 	const viewers: string[] = [];
 
 	const { Persons } = props.game;
@@ -156,13 +159,30 @@ export function GameInfoView(props: GameInfoViewProps): JSX.Element {
 				freePlayers++;
 			}
 		} else if (person.Role === ServerRole.Showman) {
-			showman = person.Name;
+			showman = person;
 		} else if (person.Role === ServerRole.Player) {
-			players.push(person.Name);
+			players.push(person);
 		} else {
 			viewers.push(person.Name);
 		}
 	}
+
+	const renderPersonName = (person: PersonInfo, className?: string) => {
+		if (person.AuthSource !== AuthSource.Steam) {
+			return person.Name;
+		}
+
+		return (
+			<Link
+				className={className ? `personProfileLink ${className}` : 'personProfileLink'}
+				href={`https://steamcommunity.com/profiles/${person.UserId}`}
+				target='_blank'
+				rel='noopener noreferrer'
+			>
+				{person.Name}
+			</Link>
+		);
+	};
 
 	const canJoinAsPlayer = free[ServerRole.Player];
 	const canJoinAsShowman = free[ServerRole.Showman];
@@ -242,14 +262,16 @@ export function GameInfoView(props: GameInfoViewProps): JSX.Element {
 								{showman ? (
 									<div className='info__block showman'>
 										<img alt='showman' title={localization.showman} src={personSvg} />
-										<span style={{ marginLeft: '8px' }}>{showman}</span>
+										<span style={{ marginLeft: '8px' }}>{renderPersonName(showman)}</span>
 									</div>
 								) : null}
 
 								<div className='info__block players'>
 									<img alt='players' title={localization.players} src={personsSvg} />
 									<span>{totalPlayers - freePlayers}/{totalPlayers}</span>
-									{players.map((name, i) => <div className='player' key={i}>{name}</div>)}
+									{players.map((person, i) => person.AuthSource === AuthSource.Steam
+										? <React.Fragment key={i}>{renderPersonName(person, 'player')}</React.Fragment>
+										: <div className='player' key={i}>{person.Name}</div>)}
 								</div>
 
 								<dt>

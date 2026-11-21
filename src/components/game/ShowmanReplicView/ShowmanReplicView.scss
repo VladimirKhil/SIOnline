@@ -105,6 +105,12 @@
     border: 1px solid rgba(76, 175, 80, 0.5);
 }
 
+.showmanInfo .gameAuthorMark {
+    background:linear-gradient(135deg, #bb3c00, #b53200);
+    font-size: 14px;
+    font-weight: bold;
+}
+
 @media screen and (max-width: 1100px) {
     .showmanInfo .marksArea {
         top: 5px;
