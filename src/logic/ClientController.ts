@@ -155,6 +155,7 @@ import {
 	setReview,
 	setPlayerAnswer,
 	replicIndexChanged,
+	setIsContentReplic,
 	endAskingState,
 	setHiddenComments,
 	setDeepMode,
@@ -1285,6 +1286,11 @@ export default class ClientController implements IClientController {
 	}
 
 	onShowmanReplic(messageIndex: number, messageCode: string, args: string[]) {
+		if (this.getState().room2.isContentReplic && ['Answer', 'SelectAnswerOption', 'WrongAnswer'].includes(messageCode.toString())) {
+			this.appDispatch(replicIndexChanged(-1)); // Keeping content replic visible while players are answering
+			return;
+		}
+
 		const text = localization.getString('replic_' + messageCode.toString());
 
 		if (text) {
@@ -1659,6 +1665,12 @@ export default class ClientController implements IClientController {
 
 		if (personCode === 's') {
 			this.appDispatch(showmanReplicChanged(text));
+
+			// TODO: content replic should be marked by server
+			if (state.room.stage.isQuestion && state.room.stage.questionType === 'simple') {
+				this.appDispatch(setIsContentReplic(true));
+			}
+
 			return;
 		}
 	}
