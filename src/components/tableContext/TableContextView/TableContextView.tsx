@@ -6,6 +6,7 @@ import StakePanel from '../stakes/StakePanel/StakePanel';
 import ReactionPanel from '../ReactionPanel/ReactionPanel';
 import AnswerInput from '../AnswerInput/AnswerInput';
 import PlayerButtonsPanel from '../PlayerButtonsPanel/PlayerButtonsPanel';
+import PassButton from '../PassButton/PassButton';
 import ReadyButton from '../ReadyButton/ReadyButton';
 import { useAppSelector } from '../../../state/hooks';
 import { ContextView } from '../../../state/room2Slice';
@@ -34,6 +35,11 @@ const mapStateToProps = (state: State) => ({
 	isAutomatic: state.game.isAutomatic,
 });
 
+/** Adds the pass button to the answer view when the player can refuse to answer ("firstCorrect" completion mode). */
+function withPassButton(answerView: JSX.Element, canPass: boolean): JSX.Element {
+	return canPass ? <div className='answerWithPass'>{answerView}<PassButton /></div> : answerView;
+}
+
 function renderBody(
 	props: TableContextViewProps,
 	contextView: ContextView,
@@ -46,15 +52,16 @@ function renderBody(
 	layoutMode: LayoutMode,
 	deepMode: boolean,
 	answerType: string,
+	canPass: boolean,
 ): JSX.Element | null {
 	switch (decisionType) {
 		case DecisionType.Answer:
 			if (layoutMode === LayoutMode.OverlayPoints) {
-				return <div className='oral__answer'>{localization.pointAnswerHint}</div>;
+				return withPassButton(<div className='oral__answer'>{localization.pointAnswerHint}</div>, canPass);
 			}
 
 			if (layoutMode === LayoutMode.Simple && (answerType === 'text' || answerType === 'number')) {
-				return <AnswerInput />;
+				return withPassButton(<AnswerInput />, canPass);
 			}
 
 			break;
@@ -116,6 +123,7 @@ export function TableContextView(props: TableContextViewProps): JSX.Element | nu
 	const layoutMode = useAppSelector(rootState => rootState.table.layoutMode);
 	const deepMode = useAppSelector(rootState => rootState.room2.deepMode);
 	const answerType = useAppSelector(rootState => rootState.room2.answerType);
+	const canPass = useAppSelector(rootState => rootState.room2.canPass);
 
 	const body = renderBody(
 		props,
@@ -129,6 +137,7 @@ export function TableContextView(props: TableContextViewProps): JSX.Element | nu
 		layoutMode,
 		deepMode,
 		answerType,
+		canPass,
 	);
 
 	return body == null ? null : <div className='tableContextView'>{body}</div>;
