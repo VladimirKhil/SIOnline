@@ -9,6 +9,7 @@ const BASE_DELAY = 500; // Base delay between requests
 const MAX_RETRIES = 3;
 const PRELOAD_TIMEOUT_MS = 30000;
 const preloadedAudioData = new Map<string, ArrayBuffer>();
+const preloadedVideoUris = new Map<string, string>();
 
 function reportContentPreloadError(contentUri: string, contentType: string, errorMessage: string): void {
 	if (!analytics) {
@@ -93,8 +94,14 @@ export function getPreloadedAudioData(contentUri: string): ArrayBuffer | undefin
 	return data?.slice(0);
 }
 
+export function getPreloadedVideoUri(contentUri: string): string | undefined {
+	return preloadedVideoUris.get(contentUri);
+}
+
 export function clearPreloadedRoundContent(): void {
 	preloadedAudioData.clear();
+	preloadedVideoUris.forEach(uri => URL.revokeObjectURL(uri));
+	preloadedVideoUris.clear();
 }
 
 /**
@@ -110,9 +117,36 @@ function preloadFile(contentUri: string, addSimpleMessage: (message: string) => 
 		let element: HTMLImageElement | HTMLVideoElement | HTMLAudioElement | HTMLIFrameElement;
 
 		if (isVideo) {
-			element = document.createElement('video');
-			(element as HTMLVideoElement).preload = 'auto';
-			(element as HTMLVideoElement).crossOrigin = 'anonymous';
+			if (preloadedVideoUris.has(contentUri)) {
+				resolve();
+				return;
+			}
+
+			// Video is loaded entirely: a partially loaded video is not always kept by the browser cache
+			fetchWithTimeout(contentUri, 'Video')
+				.then(response => response.blob())
+				.then(blob => {
+					preloadedVideoUris.set(contentUri, URL.createObjectURL(blob));
+					resolve();
+				})
+				.catch(error => {
+					if (retryCount < MAX_RETRIES) {
+						const retryDelay = Math.min(BASE_DELAY * Math.pow(2, retryCount), 5000);
+						console.log(`Retrying preload of ${contentUri} (attempt ${retryCount + 1}/${MAX_RETRIES}) after ${retryDelay}ms`);
+
+						setTimeout(() => {
+							preloadFile(contentUri, addSimpleMessage, retryCount + 1).then(resolve).catch(reject);
+						}, retryDelay);
+					} else {
+						const errorMessage = withErrorCause(`Failed to load video: ${contentUri}`, error);
+						console.warn(`Failed to preload ${contentUri} after ${MAX_RETRIES} attempts: ${error}`);
+						reportContentPreloadError(contentUri, 'video', errorMessage);
+						addSimpleMessage(toContentPreloadErrorMessage(errorMessage));
+						resolve();
+					}
+				});
+
+			return;
 		} else if (isAudio) {
 			if (preloadedAudioData.has(contentUri)) {
 				resolve();
@@ -178,9 +212,6 @@ function preloadFile(contentUri: string, addSimpleMessage: (message: string) => 
 		const clearElementHandlers = () => {
 			element.onload = null;
 			element.onerror = null;
-			if ('onloadeddata' in element) {
-				(element as HTMLVideoElement).onloadeddata = null;
-			}
 			if (timeoutId !== null) {
 				globalThis.clearTimeout(timeoutId);
 				timeoutId = null;
@@ -228,11 +259,7 @@ function preloadFile(contentUri: string, addSimpleMessage: (message: string) => 
 		};
 
 		// Set up event listeners
-		if (isVideo) {
-			(element as HTMLVideoElement).onloadeddata = handleSuccess;
-		} else {
-			element.onload = handleSuccess;
-		}
+		element.onload = handleSuccess;
 		element.onerror = handleError;
 		timeoutId = globalThis.setTimeout(() => {
 			if (element instanceof HTMLVideoElement) {
