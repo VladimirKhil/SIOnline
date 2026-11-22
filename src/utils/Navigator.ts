@@ -13,6 +13,7 @@ import onlineActionCreators from '../state/online/onlineActionCreators';
 import Role from '../client/models/Role';
 import DemoGameClient from './DemoGameClient';
 import ClientController from '../logic/ClientController';
+import { cancelPreloadRoundContent } from '../logic/contentPreloader';
 import { ensureServerInfoLoadedAsync } from '../logic/ServerInitializer';
 import State from '../state/State';
 import { showText } from '../state/tableSlice';
@@ -170,6 +171,7 @@ export const navigate = createAsyncThunk(
 				break;
 
 			case Path.Room:
+				cancelPreloadRoundContent();
 				thunkAPI.dispatch(exitGame());
 				break;
 

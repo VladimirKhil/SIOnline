@@ -8,7 +8,11 @@ import { logEvent } from 'firebase/analytics';
 const BASE_DELAY = 500; // Base delay between requests
 const MAX_RETRIES = 3;
 const PRELOAD_TIMEOUT_MS = 30000;
+const MAX_PRELOADED_AUDIO = 100;
+const MAX_PRELOADED_URIS = 1000;
 const preloadedAudioData = new Map<string, ArrayBuffer>();
+const preloadedUris = new Set<string>();
+let activePreloadAbort: AbortController | null = null;
 
 function reportContentPreloadError(contentUri: string, contentType: string, errorMessage: string): void {
 	if (!analytics) {
@@ -64,9 +68,21 @@ function describePreloadEventError(contentUri: string, error: Event): string {
 	return details.join(', ');
 }
 
-async function fetchWithTimeout(contentUri: string, contentType: string): Promise<Response> {
+async function fetchWithTimeout(contentUri: string, contentType: string, signal?: AbortSignal): Promise<Response> {
 	const abortController = new AbortController();
-	const timeoutId = globalThis.setTimeout(() => abortController.abort(), PRELOAD_TIMEOUT_MS);
+	let timedOut = false;
+
+	const onAbort = () => abortController.abort();
+	if (signal?.aborted) {
+		abortController.abort();
+	} else {
+		signal?.addEventListener('abort', onAbort, { once: true });
+	}
+
+	const timeoutId = globalThis.setTimeout(() => {
+		timedOut = true;
+		abortController.abort();
+	}, PRELOAD_TIMEOUT_MS);
 
 	try {
 		const response = await fetch(contentUri, { signal: abortController.signal });
@@ -77,14 +93,49 @@ async function fetchWithTimeout(contentUri: string, contentType: string): Promis
 
 		return response;
 	} catch (error) {
-		if (error instanceof Error && error.name === 'AbortError') {
+		if (timedOut || (error instanceof Error && error.name === 'AbortError' && !signal?.aborted)) {
 			throw createTimeoutError(contentType, contentUri);
 		}
 
 		throw error;
 	} finally {
 		globalThis.clearTimeout(timeoutId);
+		signal?.removeEventListener('abort', onAbort);
 	}
+}
+
+function storePreloadedAudio(contentUri: string, arrayBuffer: ArrayBuffer): void {
+	preloadedAudioData.delete(contentUri);
+	preloadedAudioData.set(contentUri, arrayBuffer);
+
+	if (preloadedAudioData.size > MAX_PRELOADED_AUDIO) {
+		const oldestKey = preloadedAudioData.keys().next().value;
+		if (oldestKey !== undefined) {
+			preloadedAudioData.delete(oldestKey);
+		}
+	}
+}
+
+function markUriPreloaded(contentUri: string): void {
+	preloadedUris.delete(contentUri);
+	preloadedUris.add(contentUri);
+
+	if (preloadedUris.size > MAX_PRELOADED_URIS) {
+		const oldestUri = preloadedUris.values().next().value;
+		if (oldestUri !== undefined) {
+			preloadedUris.delete(oldestUri);
+		}
+	}
+}
+
+function isAudioUri(contentUri: string): boolean {
+	return /\.(mp3|wav|ogg|oga|opus|m4a|aac)$/i.test(contentUri);
+}
+
+function isAlreadyPreloaded(contentUri: string): boolean {
+	return isAudioUri(contentUri)
+		? preloadedAudioData.has(contentUri)
+		: preloadedUris.has(contentUri);
 }
 
 export function getPreloadedAudioData(contentUri: string): ArrayBuffer | undefined {
@@ -93,18 +144,34 @@ export function getPreloadedAudioData(contentUri: string): ArrayBuffer | undefin
 	return data?.slice(0);
 }
 
+export function cancelPreloadRoundContent(): void {
+	activePreloadAbort?.abort();
+	activePreloadAbort = null;
+}
+
 export function clearPreloadedRoundContent(): void {
+	cancelPreloadRoundContent();
 	preloadedAudioData.clear();
+	preloadedUris.clear();
 }
 
 /**
  * Helper function to preload a single file with retry logic using actual DOM elements
  */
-function preloadFile(contentUri: string, addSimpleMessage: (message: string) => void, retryCount = 0): Promise<void> {
+function preloadFile(
+	contentUri: string,
+	addSimpleMessage: (message: string) => void,
+	signal: AbortSignal,
+	retryCount = 0
+): Promise<void> {
+	if (signal.aborted) {
+		return Promise.resolve();
+	}
+
 	return new Promise((resolve, reject) => {
 		// Determine file type from URI
 		const isVideo = /\.(mp4|webm|ogv)$/i.test(contentUri);
-		const isAudio = /\.(mp3|wav|ogg|oga|opus|m4a|aac)$/i.test(contentUri);
+		const isAudio = isAudioUri(contentUri);
 		const isHtml = /\.(html|htm)$/i.test(contentUri);
 
 		let element: HTMLImageElement | HTMLVideoElement | HTMLAudioElement | HTMLIFrameElement;
@@ -119,19 +186,31 @@ function preloadFile(contentUri: string, addSimpleMessage: (message: string) => 
 				return;
 			}
 
-			fetchWithTimeout(contentUri, 'Audio')
+			fetchWithTimeout(contentUri, 'Audio', signal)
 				.then(response => response.arrayBuffer())
 				.then(arrayBuffer => {
-					preloadedAudioData.set(contentUri, arrayBuffer);
+					if (!signal.aborted) {
+						storePreloadedAudio(contentUri, arrayBuffer);
+					}
 					resolve();
 				})
 				.catch(error => {
+					if (signal.aborted) {
+						resolve();
+						return;
+					}
+
 					if (retryCount < MAX_RETRIES) {
 						const retryDelay = Math.min(BASE_DELAY * Math.pow(2, retryCount), 5000);
 						console.log(`Retrying preload of ${contentUri} (attempt ${retryCount + 1}/${MAX_RETRIES}) after ${retryDelay}ms`);
 
 						setTimeout(() => {
-							preloadFile(contentUri, addSimpleMessage, retryCount + 1).then(resolve).catch(reject);
+							if (signal.aborted) {
+								resolve();
+								return;
+							}
+
+							preloadFile(contentUri, addSimpleMessage, signal, retryCount + 1).then(resolve).catch(reject);
 						}, retryDelay);
 					} else {
 						const errorMessage = withErrorCause(`Failed to load audio: ${contentUri}`, error);
@@ -144,19 +223,37 @@ function preloadFile(contentUri: string, addSimpleMessage: (message: string) => 
 
 			return;
 		} else if (isHtml) {
+			if (preloadedUris.has(contentUri)) {
+				resolve();
+				return;
+			}
+
 			// For HTML content, use fetch to load and cache it
-			fetchWithTimeout(contentUri, 'HTML')
+			fetchWithTimeout(contentUri, 'HTML', signal)
 				.then(response => response.text())
 				.then(() => {
+					if (!signal.aborted) {
+						markUriPreloaded(contentUri);
+					}
 					resolve();
 				})
 				.catch(error => {
+					if (signal.aborted) {
+						resolve();
+						return;
+					}
+
 					if (retryCount < MAX_RETRIES) {
 						const retryDelay = Math.min(BASE_DELAY * Math.pow(2, retryCount), 5000);
 						console.log(`Retrying preload of ${contentUri} (attempt ${retryCount + 1}/${MAX_RETRIES}) after ${retryDelay}ms`);
 
 						setTimeout(() => {
-							preloadFile(contentUri, addSimpleMessage, retryCount + 1).then(resolve).catch(reject);
+							if (signal.aborted) {
+								resolve();
+								return;
+							}
+
+							preloadFile(contentUri, addSimpleMessage, signal, retryCount + 1).then(resolve).catch(reject);
 						}, retryDelay);
 					} else {
 						const errorMessage = withErrorCause(`Failed to load HTML: ${contentUri}`, error);
@@ -187,27 +284,37 @@ function preloadFile(contentUri: string, addSimpleMessage: (message: string) => 
 			}
 		};
 
-		const handleSuccess = () => {
-			clearElementHandlers();
-
-			if (element instanceof HTMLVideoElement) {
-				element.src = '';
-				element.load(); // aborts network, releases pipeline
-			} else if (element instanceof HTMLImageElement) {
-				element.src = '';
+		const releaseElement = () => {
+			if (isVideo) {
+				(element as HTMLVideoElement).src = '';
+				(element as HTMLVideoElement).load(); // aborts network, releases pipeline
+			} else {
+				(element as HTMLImageElement).src = '';
 			}
+		};
 
+		const handleAbort = () => {
+			clearElementHandlers();
+			releaseElement();
+			resolve();
+		};
+
+		const handleSuccess = () => {
+			signal.removeEventListener('abort', handleAbort);
+			clearElementHandlers();
+			releaseElement();
+			markUriPreloaded(contentUri);
 			resolve();
 		};
 
 		const handleError = (error: Event | string) => {
+			signal.removeEventListener('abort', handleAbort);
 			clearElementHandlers();
+			releaseElement();
 
-			if (element instanceof HTMLVideoElement) {
-				element.src = '';
-				element.load();
-			} else if (element instanceof HTMLImageElement) {
-				element.src = '';
+			if (signal.aborted) {
+				resolve();
+				return;
 			}
 
 			if (retryCount < MAX_RETRIES) {
@@ -215,7 +322,12 @@ function preloadFile(contentUri: string, addSimpleMessage: (message: string) => 
 				console.log(`Retrying preload of ${contentUri} (attempt ${retryCount + 1}/${MAX_RETRIES}) after ${retryDelay}ms`);
 
 				setTimeout(() => {
-					preloadFile(contentUri, addSimpleMessage, retryCount + 1).then(resolve).catch(reject);
+					if (signal.aborted) {
+						resolve();
+						return;
+					}
+
+					preloadFile(contentUri, addSimpleMessage, signal, retryCount + 1).then(resolve).catch(reject);
 				}, retryDelay);
 			} else {
 				const errorMessage = error instanceof Event ? describePreloadEventError(contentUri, error) : String(error);
@@ -227,6 +339,8 @@ function preloadFile(contentUri: string, addSimpleMessage: (message: string) => 
 			}
 		};
 
+		signal.addEventListener('abort', handleAbort, { once: true });
+
 		// Set up event listeners
 		if (isVideo) {
 			(element as HTMLVideoElement).onloadeddata = handleSuccess;
@@ -235,13 +349,7 @@ function preloadFile(contentUri: string, addSimpleMessage: (message: string) => 
 		}
 		element.onerror = handleError;
 		timeoutId = globalThis.setTimeout(() => {
-			if (element instanceof HTMLVideoElement) {
-				element.src = '';
-				element.load();
-			} else if (element instanceof HTMLImageElement) {
-				element.src = '';
-			}
-
+			releaseElement();
 			handleError(createTimeoutError(isVideo ? 'Video' : 'Image', contentUri).message);
 		}, PRELOAD_TIMEOUT_MS);
 
@@ -266,6 +374,11 @@ export async function preloadRoundContent(
 	appDispatch: AppDispatch,
 	addSimpleMessage: (message: string) => void
 ): Promise<void> {
+	cancelPreloadRoundContent();
+	const abortController = new AbortController();
+	activePreloadAbort = abortController;
+	const { signal } = abortController;
+
 	let lastNotifiedProgressTens = 0;
 
 	// Helper function to notify progress at 10% intervals
@@ -279,13 +392,34 @@ export async function preloadRoundContent(
 		}
 	};
 
-	clearPreloadedRoundContent();
-
 	// Helper function to delay between requests
-	const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+	const delay = (ms: number) => new Promise<void>(resolve => {
+		let timeoutId: ReturnType<typeof setTimeout> | null = null;
 
-	// Process files one by one, skipping external ones
+		const onAbort = () => {
+			if (timeoutId !== null) {
+				clearTimeout(timeoutId);
+			}
+			resolve();
+		};
+
+		timeoutId = setTimeout(() => {
+			timeoutId = null;
+			signal.removeEventListener('abort', onAbort);
+			resolve();
+		}, ms);
+
+		signal.addEventListener('abort', onAbort, { once: true });
+	});
+
+	let hasDownloaded = false;
+
+	// Process files one by one, skipping external and already downloaded ones
 	for (let i = 0; i < content.length; i += 1) {
+		if (signal.aborted) {
+			return;
+		}
+
 		const url = content[i];
 		const contentUri = preprocessServerUri(url);
 
@@ -294,18 +428,30 @@ export async function preloadRoundContent(
 			continue;
 		}
 
-		// Add delay between requests (except for first processed request)
-		if (i > 0) {
-			// eslint-disable-next-line no-await-in-loop
-			await delay(BASE_DELAY);
+		if (!isAlreadyPreloaded(contentUri)) {
+			// Add delay between network requests (except for first processed request)
+			if (hasDownloaded) {
+				// eslint-disable-next-line no-await-in-loop
+				await delay(BASE_DELAY);
+
+				if (signal.aborted) {
+					return;
+				}
+			}
+
+			hasDownloaded = true;
+
+			try {
+				// eslint-disable-next-line no-await-in-loop
+				await preloadFile(contentUri, addSimpleMessage, signal);
+			} catch (error) {
+				// Continue processing even if this file failed
+				console.error(`Failed to preload ${url}: ${getErrorMessage(error)}`);
+			}
 		}
 
-		try {
-			// eslint-disable-next-line no-await-in-loop
-			await preloadFile(contentUri, addSimpleMessage);
-		} catch (error) {
-			// Continue processing even if this file failed
-			console.error(`Failed to preload ${url}: ${getErrorMessage(error)}`);
+		if (signal.aborted) {
+			return;
 		}
 
 		// Calculate and notify progress after each file
@@ -313,8 +459,12 @@ export async function preloadRoundContent(
 		notifyProgress(progress);
 	}
 
+	if (activePreloadAbort === abortController) {
+		activePreloadAbort = null;
+	}
+
 	// Ensure 100% is always notified at the end
-	if (lastNotifiedProgressTens < 100) {
+	if (!signal.aborted && lastNotifiedProgressTens < 100) {
 		appDispatch(mediaPreloadProgress(100));
 	}
 }
