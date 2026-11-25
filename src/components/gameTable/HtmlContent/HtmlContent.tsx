@@ -84,6 +84,10 @@ export function HtmlContent(props: HtmlContentProps) {
 	const role = useAppSelector(state => state.room2.role);
 	const sum = useAppSelector(state => getMeAsPlayer(state)?.sum);
 
+	// The frame is a separate document, so mouse events over it never reach the app's global handlers.
+	// While the player can press the game button, let the events pass through so right click still presses it
+	const passMouse = useAppSelector(state => state.room2.role === Role.Player && state.table.canPress);
+
 	const postControlMessage = React.useCallback((action: HtmlContentControlMessage['action'], volume?: number) => {
 		frameRef.current?.contentWindow?.postMessage({
 			type: 'si:media-control',
@@ -201,7 +205,7 @@ export function HtmlContent(props: HtmlContentProps) {
 	return <iframe
 		ref={frameRef}
 		aria-label='HTML content'
-		className={`frame ${shouldAnswer ? 'interactive' : ''}`}
+		className={`frame ${shouldAnswer ? 'interactive' : ''} ${passMouse ? 'passMouse' : ''}`}
 		tabIndex={0}
 		src={uri}
 		allow='autoplay'
