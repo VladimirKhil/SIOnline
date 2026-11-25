@@ -373,6 +373,30 @@ function serializeRound(xmlDoc: Document, round: Round): Element {
 }
 
 /**
+ * Recursively formats an XML element by inserting newlines and indentation between child elements.
+ */
+function formatXmlNode(xmlDoc: Document, element: Element, level = 0, indent = '  '): void {
+	const childElements = Array.from(element.children);
+	if (childElements.length === 0) {
+		return;
+	}
+
+	// Skip formatting if the element contains non-element nodes (mixed content)
+	const hasNonElementNodes = Array.from(element.childNodes).some(node => node.nodeType !== Node.ELEMENT_NODE);
+	if (hasNonElementNodes) {
+		return;
+	}
+
+	const childIndent = '\n' + indent.repeat(level + 1);
+	childElements.forEach(child => {
+		element.insertBefore(xmlDoc.createTextNode(childIndent), child);
+		formatXmlNode(xmlDoc, child, level + 1, indent);
+	});
+
+	element.appendChild(xmlDoc.createTextNode('\n' + indent.repeat(level)));
+}
+
+/**
  * Serializes a Package object to XML string
  */
 export function serializePackageToXML(pack: Package): string {
@@ -439,6 +463,9 @@ export function serializePackageToXML(pack: Package): string {
 	});
 	packageElement.appendChild(roundsElement);
 
+	// Format XML
+	formatXmlNode(xmlDoc, packageElement);
+	
 	// Convert to string
 	const serializer = new XMLSerializer();
 	let xmlString = serializer.serializeToString(xmlDoc);
