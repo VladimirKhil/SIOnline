@@ -10,6 +10,7 @@ import { resetRulesSettings,
 	setDisplayAnswerOptionsLabels,
 	setDisplayAnswerOptionsOneByOne,
 	setFalseStarts,
+	setHideImageOnAnswerAndPause,
 	setHintShowman,
 	setManaged,
 	setOral,
@@ -219,6 +220,21 @@ export default function RulesSettingsView(): JSX.Element {
 					/>
 
 					<div className="hint">{localization.partialImagesHint}</div>
+				</div>
+			</div>
+
+			<div className="block">
+				<label className='blockName' htmlFor='hideImageOnAnswerAndPause'>{localization.hideImageOnAnswerAndPause}</label>
+
+				<div className='blockValue'>
+					<input
+						id="hideImageOnAnswerAndPause"
+						type="checkbox"
+						checked={settings.appSettings.hideImageOnAnswerAndPause}
+						onChange={() => appDispatch(setHideImageOnAnswerAndPause(!settings.appSettings.hideImageOnAnswerAndPause))}
+					/>
+
+					<div className="hint">{localization.hideImageOnAnswerAndPauseHint}</div>
 				</div>
 			</div>
 

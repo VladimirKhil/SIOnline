@@ -145,6 +145,17 @@ export function GameMetadataView(props: GameMetadataViewProps): JSX.Element {
 					</div>
 
 					<div className='room__option'>
+						<label htmlFor="hideImageOnAnswerAndPause-input">{localization.hideImageOnAnswerAndPause}</label>
+						<input
+							id="hideImageOnAnswerAndPause-input"
+							type="checkbox"
+							checked={room2Settings.hideImageOnAnswerAndPause}
+							disabled={!isHost}
+							onChange={(e) => appDispatch(setOption({ name: 'HideImageOnAnswerAndPause', value: e.target.checked.toString() }))}
+						/>
+					</div>
+
+					<div className='room__option'>
 						<label htmlFor="displayLabels-input">{localization.displayAnswerOptionsLabels}</label>
 						<input
 							id="displayLabels-input"

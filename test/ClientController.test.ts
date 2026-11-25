@@ -1650,6 +1650,14 @@ describe('ClientController - Miscellaneous Operations', () => {
 			const actions = dispatchedActions.map(a => a.type);
 			expect(actions).toContain('room2/setSettingReadingSpeed');
 		});
+
+		it('should change image hiding on answer and pause setting', () => {
+			controller.onOptionChanged('HideImageOnAnswerAndPause', 'true', 'Host');
+
+			expect(mockAppDispatch).toHaveBeenCalled();
+			const actions = dispatchedActions.map(a => a.type);
+			expect(actions).toContain('room2/setSettingHideImageOnAnswerAndPause');
+		});
 	});
 
 	describe('onCancel', () => {

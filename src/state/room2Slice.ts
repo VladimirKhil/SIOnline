@@ -833,6 +833,9 @@ export const room2Slice = createSlice({
 		setSettingFalseStart: (state: Room2State, action: PayloadAction<boolean>) => {
 			state.settings.falseStart = action.payload;
 		},
+		setSettingHideImageOnAnswerAndPause: (state: Room2State, action: PayloadAction<boolean>) => {
+			state.settings.hideImageOnAnswerAndPause = action.payload;
+		},
 		setSettingOral: (state: Room2State, action: PayloadAction<boolean>) => {
 			state.settings.oral = action.payload;
 		},
@@ -1411,6 +1414,7 @@ export const {
 	resetQuestionCounter,
 	setSettingDisplayAnswerOptionsLabels,
 	setSettingFalseStart,
+	setSettingHideImageOnAnswerAndPause,
 	setSettingOral,
 	setSettingPartialImages,
 	setSettingPartialImageTime,

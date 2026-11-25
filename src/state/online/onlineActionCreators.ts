@@ -352,6 +352,7 @@ function createGameSettings(
 		useApellations: state.settings.appSettings.useApellations,
 		displayAnswerOptionsOneByOne: state.settings.appSettings.displayAnswerOptionsOneByOne,
 		displayAnswerOptionsLabels: state.settings.appSettings.displayAnswerOptionsLabels,
+		hideImageOnAnswerAndPause: state.settings.appSettings.hideImageOnAnswerAndPause,
 	};
 
 	const gameSettings: GameSettings = {
