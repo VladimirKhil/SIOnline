@@ -50,6 +50,9 @@ export function RoundTable(props: RoundTableProps) {
 			.filter(idx => idx > -1);
 
 		if (indices.length === 0) {
+			props.roundInfo[themeIndex].questions.forEach((_, questionIndex) => {
+				appDispatch(toggleQuestion({ themeIndex, questionIndex }));
+			});
 			setThemeMemory(null);
 			return;
 		}
@@ -92,8 +95,7 @@ export function RoundTable(props: RoundTableProps) {
 				const className = themeIndex % 2 === 0 ? 'right' : 'left';
 				const hasQuestions = themeInfo.questions.some(q => q > -1);
 
-				const isRemembered = themeMemory?.themeIndex === themeIndex;
-				const isThemeEditable = room.isEditTableEnabled && (hasQuestions || isRemembered);
+				const isThemeEditable = room.isEditTableEnabled && themeInfo.questions.length > 0;
 				const isExtended = props.isHexagonal && themeIndex % 2 === 1;
 				const themeClassName = `roundTableCell themeHeader ${isThemeEditable ? 'editable' : ''} ${hasQuestions ? 'active' : ''} ${isExtended ? 'extended' : ''}`;
 
