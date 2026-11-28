@@ -124,6 +124,7 @@ import {
 	setTheme,
 	setSettingDisplayAnswerOptionsLabels,
 	setSettingFalseStart,
+	setSettingValidateEqualAnswersSeparately,
 	setSettingManaged,
 	setSettingOral,
 	setSettingPartialImageTime,
@@ -1012,6 +1013,24 @@ export default class ClientController implements IClientController {
 				if (reason.length > 0) {
 					const message = stringFormat(
 						displayLabelsEnabled ? localization.displayLabelsEnabled : localization.displayLabelsDisabled,
+						reason
+					);
+
+					this.appDispatch(userInfoChanged(message));
+					this.addSimpleMessage(message);
+				}
+				break;
+			}
+
+			case 'ValidateEqualAnswersSeparately': {
+				const validateSeparately = value.toLowerCase() === 'true';
+				this.appDispatch(setSettingValidateEqualAnswersSeparately(validateSeparately));
+
+				if (reason.length > 0) {
+					const message = stringFormat(
+						validateSeparately
+							? localization.validateEqualAnswersSeparatelyEnabled
+							: localization.validateEqualAnswersSeparatelyDisabled,
 						reason
 					);
 
