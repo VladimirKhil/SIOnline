@@ -8,6 +8,7 @@ import FlyoutButton, { FlyoutVerticalOrientation, FlyoutTheme, FlyoutHorizontalO
 import Role from '../../../client/models/Role';
 import { isHost } from '../../../utils/StateHelpers';
 import isWellFormedUri from '../../../utils/isWellFormedUri';
+import isDiscordUri from '../../../utils/isDiscordUri';
 import { useAppDispatch, useAppSelector } from '../../../state/hooks';
 
 import {
@@ -30,6 +31,7 @@ import pauseImg from '../../../../assets/images/pause.png';
 import exitImg from '../../../../assets/images/exit.png';
 import sumsImg from '../../../../assets/images/sums.png';
 import activePlayerImg from '../../../../assets/images/active_player.png';
+import discordImg from '../../../../assets/images/discord_logo.png';
 import { navigate } from '../../../utils/Navigator';
 import Path from '../../../model/enums/Path';
 
@@ -192,6 +194,7 @@ export function SideControlPanel(props: SideControlPanelProps): JSX.Element {
 											<li
 												title={validVoiceChatUri}
 												onClick={() => window.open(validVoiceChatUri, '_blank')}>
+												{isDiscordUri(validVoiceChatUri) ? <img src={discordImg} alt='Discord' /> : null}
 												{localization.voiceChat}
 											</li>
 										) : null}
